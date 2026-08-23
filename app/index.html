@@ -266,12 +266,20 @@
   /* ============================= header ============================= */
   /* the vertical padding is a variable because the tabs have to reach past it to
      sit on the header's bottom edge, the way a browser tab sits on its toolbar */
-  header.top { --hpadv:7px;
-    display:flex; align-items:center; gap:12px; padding:var(--hpadv) 22px; background:var(--card);
-    border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30; flex-wrap:wrap; }
-  .logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:18px; letter-spacing:-.02em; }
+  /* The row never wraps. It used to, and a fourth tab pushed the whole toolbar
+     onto a second line that the sticky header then clipped: the cloud switch,
+     theme, palette and download simply vanished. The toolbar is now a single
+     unshrinkable group and the tab strip is the only thing allowed to give way,
+     by scrolling. */
+  header.top { --hpadv:7px; --hgap:12px;
+    display:flex; align-items:center; gap:var(--hgap); padding:var(--hpadv) 22px; background:var(--card);
+    border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30; flex-wrap:nowrap; }
+  .logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:18px;
+    letter-spacing:-.02em; flex:0 0 auto; }
   .logo .mark { width:22px; height:22px; flex:0 0 auto; color:var(--brand); }
-  .hspacer { margin-left:auto; }
+  /* flex:0 0 auto and nowrap together are the protection: whatever the tabs do,
+     these controls keep their width and their place */
+  .htools { display:flex; align-items:center; gap:var(--hgap); flex:0 0 auto; margin-left:auto; }
 
   .hbtn { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--card);
     font:inherit; font-size:12.5px; font-weight:650; color:var(--muted); border-radius:9px; padding:7px 11px; cursor:pointer; }
@@ -285,13 +293,13 @@
   /* One header row is worth ~40px of board height, and the controls only just fit
      on a 1512-wide laptop: tighten them rather than let the bar wrap. */
   @media (max-width:1820px) {
-    header.top { --hpadv:6px; gap:8px; padding:var(--hpadv) 14px; }
+    header.top { --hpadv:6px; --hgap:8px; padding:var(--hpadv) 14px; }
     .hbtn { padding:7px 9px; gap:5px; }
     .tab { padding:6px 11px 7px; }
     .logo { font-size:16px; }
   }
   @media (max-width:1560px) {
-    header.top { --hpadv:6px; gap:6px; padding:var(--hpadv) 11px; }
+    header.top { --hpadv:6px; --hgap:6px; padding:var(--hpadv) 11px; }
     .hbtn { padding:7px 8px; font-size:12px; }
     .tab { padding:6px 9px 7px; font-size:12px; }
     .logo { font-size:15px; } .logo .mark { width:19px; height:19px; }
@@ -301,13 +309,24 @@
      shoulders that flare outwards at the base are what make the shape read as a
      tab rather than a button: a transparent square with a single rounded corner,
      spread by a box-shadow in the page colour. */
-  .tabs { --tabr:10px;
+  /* The strip scrolls sideways once the tabs outgrow the space left over. The
+     bottom padding is not decoration: overflow-x makes this a scroll container,
+     which clips overflow-y too, and the active tab's shoulders are drawn by a
+     box-shadow that spreads below the tab. The extra padding gives that shadow
+     room inside the scroll box, and the matching extra negative margin puts the
+     tabs back on the header's bottom edge where they were. */
+  .tabs { --tabr:10px; --tabfoot:13px;
     display:flex; align-items:flex-end; gap:2px; margin-left:10px;
-    align-self:stretch; margin-bottom:calc(-1 * var(--hpadv) - 1px); padding-top:var(--hpadv); }
+    align-self:stretch; flex:0 1 auto; min-width:0;
+    margin-bottom:calc(-1 * var(--hpadv) - 1px - var(--tabfoot));
+    padding-top:var(--hpadv); padding-bottom:var(--tabfoot);
+    overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none;
+    overscroll-behavior-x:contain; }
+  .tabs::-webkit-scrollbar { display:none; }
   .tab { position:relative; z-index:1;
     display:flex; align-items:center; gap:6px; border:none; background:none; font:inherit;
     font-size:12.5px; font-weight:650; color:var(--muted); padding:7px 14px 8px; cursor:pointer;
-    border-radius:var(--tabr) var(--tabr) 0 0; max-width:230px; }
+    border-radius:var(--tabr) var(--tabr) 0 0; max-width:230px; flex:0 0 auto; }
   .tab:hover { color:var(--ink); background:var(--well); }
   /* the page grey and the header white are four units apart, so the fill alone
      cannot carry the shape: a brand cap on top and hairlines down the sides give
@@ -717,6 +736,117 @@
   .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
   .arm .band-lbl .bl-name { font-size:12.5px; }
+
+  /* ---------- platform style: Z, S, T, reverse T ----------
+     Four shapes out of two independent facts, so nothing here is written four
+     times over: does the UPPER block own the left arm column, and does it own
+     the right one. `ul-top` means the upper block reaches out over the left arm
+     and the lower block starts one column in; `ul-bot` is the other way round,
+     and `ur-*` says the same about the right. That gives
+
+       Z  ul-top ur-bot     S  ul-bot ur-top
+       T  ul-top ur-top     ⊥  ul-bot ur-bot
+
+     and everything below reads off one flag or the other. The overlap between
+     the two blocks is always the centre column, which is what keeps a single
+     outline possible in all four.
+
+     Confined to the fitting width on purpose: below it the layout is one stack
+     with no overhangs to place, and these rules are specific enough to have
+     overridden that. */
+  @media (min-width:1100px) {
+    /* the head caps the upper block and stops where it stops, because a pocket
+       outside the platform may be sitting in the column beyond */
+    body.ul-top .plat-head, body.ul-top .plat-top { grid-column-start:3; }
+    body.ul-bot .plat-head, body.ul-bot .plat-top { grid-column-start:4; }
+    body.ur-top .plat-head, body.ur-top .plat-top { grid-column-end:6; }
+    body.ur-bot .plat-head, body.ur-bot .plat-top { grid-column-end:5; }
+    body.ul-top .plat-body { grid-column-start:4; }
+    body.ul-bot .plat-body { grid-column-start:3; }
+    body.ur-top .plat-body { grid-column-end:5; }
+    body.ur-bot .plat-body { grid-column-end:6; }
+
+    /* Each pocket keeps its own side of the diagram and moves rows instead: it
+       tucks into the notch left by whichever block does NOT reach over its arm.
+       The gap on the side facing the platform is what cuts the notch. */
+    body.ul-top .pocket.ing { grid-row:3;
+      margin:var(--pgap) var(--pgap) 0 0; }
+    body.ul-bot .pocket.ing { grid-row:1 / 3;
+      margin:0 var(--pgap) var(--pgap) 0; }
+    body.ur-top .pocket.ppl { grid-row:3;
+      margin:var(--pgap) 0 0 var(--pgap); }
+    body.ur-bot .pocket.ppl { grid-row:1 / 3;
+      margin:0 0 var(--pgap) var(--pgap); }
+
+    /* The pocket's own hand-over climbs into the arm above it or drops into the
+       arm below it. Longhands, so the colours set on .pocket.ing / .pocket.ppl
+       survive: a border shorthand here would reset them to currentColor. */
+    body.ul-top .pocket.ing::before, body.ur-top .pocket.ppl::before {
+      top:calc(var(--pgap) * -1 + var(--zo) + 8px); bottom:auto;
+      animation-name:flowdashu; background-position:0 calc(var(--dash-t,0) * -13px); }
+    body.ul-top .pocket.ing::after, body.ur-top .pocket.ppl::after {
+      top:calc(var(--pgap) * -1 + var(--zo)); bottom:auto;
+      border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
+    body.ul-bot .pocket.ing::before, body.ur-bot .pocket.ppl::before {
+      bottom:calc(var(--pgap) * -1 + var(--zo) + 8px); top:auto;
+      animation-name:flowdashv; background-position:0 calc(var(--dash-t,0) * 13px); }
+    body.ul-bot .pocket.ing::after, body.ur-bot .pocket.ppl::after {
+      bottom:calc(var(--pgap) * -1 + var(--zo)); top:auto;
+      border-top-width:8px; border-top-style:solid; border-bottom:0; }
+
+    /* Row 2 connectors take the upper block's hand-over line, row 3 the lower
+       block's. Which gutter lands in which row is exactly what the style
+       changes, so the line is assigned by row and never by gutter name. */
+    body.ul-top .gutter.g1, body.ul-bot .gutter.g0,
+    body.ur-top .gutter.g3, body.ur-bot .gutter.g2 { grid-row:2; align-items:flex-start; }
+    body.ul-top .gutter.g1 > .flow, body.ul-bot .gutter.g0 > .flow,
+    body.ur-top .gutter.g3 > .flow, body.ur-bot .gutter.g2 > .flow {
+      margin-top:calc(var(--upper-mid, 44px) - 7px); margin-bottom:0; }
+    body.ul-top .gutter.g0, body.ul-bot .gutter.g1,
+    body.ur-top .gutter.g2, body.ur-bot .gutter.g3 { grid-row:3; align-items:flex-end; }
+    body.ul-top .gutter.g0 > .flow, body.ul-bot .gutter.g1 > .flow,
+    body.ur-top .gutter.g2 > .flow, body.ur-bot .gutter.g3 > .flow {
+      margin-bottom:calc(var(--lower-mid, 85px) - 7px); margin-top:0; }
+
+    /* the two horizontal paths through the notch, each landing on the block that
+       holds the arm on that side */
+    body.ur-bot .flow.left.ppl.tuck { grid-row:2; align-self:start;
+      margin-top:calc(var(--upper-mid, 44px) - 7px); margin-bottom:0; }
+    body.ur-top .flow.left.ppl.tuck { grid-row:3; align-self:end;
+      margin-bottom:calc(var(--lower-mid, 85px) - 7px); margin-top:0; }
+    body.ul-top .flow.ingtuck { grid-row:3; align-self:end;
+      margin-bottom:calc(var(--lower-mid, 85px) - 7px); margin-top:0; }
+    body.ul-bot .flow.ingtuck { grid-row:2; align-self:start;
+      margin-top:calc(var(--upper-mid, 44px) - 7px); margin-bottom:0; }
+
+    /* An arrow with nowhere left to land is dropped rather than drawn across the
+       shape. In T the people sit beside the stem, a row below the band they used
+       to put their questions to; in S and reverse T the ingestion pocket sits
+       above the platform, away from the cloud services under it. */
+    body.ur-top .flow.up.pplup { display:none; }
+    body.ul-bot .flow.down.ingdown { display:none; }
+
+    /* The seam eraser covers the overlap and no more: erase past either reflex
+       corner and the single outline breaks open. The overlap is always the
+       centre column, so each end is either this block's own edge (2px in, just
+       inside the border) or one arm short of it. */
+    body.ul-top .plat-body::before { left:2px; }
+    body.ul-bot .plat-body::before { left:var(--armw); }
+    body.ur-top .plat-body::before { right:2px; }
+    body.ur-bot .plat-body::before { right:var(--armw); }
+
+    /* Square only the two corners where the blocks actually meet. The other six
+       are free edges of the shape and stay rounded. */
+    .plat-top, .plat-body { border-radius:14px; }
+    body.ul-bot .plat-top  { border-bottom-left-radius:0; }
+    body.ur-bot .plat-top  { border-bottom-right-radius:0; }
+    body.ul-top .plat-body { border-top-left-radius:0; }
+    body.ur-top .plat-body { border-top-right-radius:0; }
+    /* a stage filter narrow enough to empty one block leaves the other a plain
+       card, so it closes every corner and drops the seam strip */
+    .plat-top.solo, .plat-body.solo { border-radius:14px; }
+    .plat-body.solo::before { display:none; }
+  }
   .arm .band-lbl .bl-sub { font-size:9px; margin-top:2px; }
   /* the cards share the arm's height rather than stacking at the top and leaving
      a column of empty fill under them */
@@ -1022,6 +1152,23 @@
   .pal-dots { display:inline-flex; gap:2px; }
   .pal-dots i { width:6px; height:11px; border-radius:2px; display:block; }
   .pal-menu .pal-dots i { width:7px; height:13px; }
+  /* Stage and Style reuse the palette menu's box. A row that carries a count
+     puts it hard right, so the tick that follows it needs its own small gap
+     instead of the auto margin the palette rows rely on. */
+  .pal-menu button i { margin-left:auto; font-style:normal; font-size:9.5px;
+    font-weight:650; color:var(--faint); }
+  .pal-menu button.cnt.on::after { margin-left:6px; }
+  .pal-menu .men-hd { font-size:9.5px; font-weight:750; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--faint); padding:6px 9px 3px; }
+  /* the shape thumbnails are drawn from the same tokens as the platform itself,
+     so a palette or theme change carries into the menu without a second table */
+  .shp { flex:0 0 auto; width:20px; height:15px; color:var(--brand); }
+  .shp path { fill:none; stroke:currentColor; stroke-width:2.1; stroke-linejoin:round; }
+
+  /* One release-stage filter, applied to the platform box only. Wrappers left
+     empty by it go with their contents, so a filtered band never shows a
+     heading over nothing. */
+  .st-off { display:none !important; }
 
   /* Print: drop the chrome, unclip the fit box and let the board sit at the scale
      exportPdf works out for the paper, so "Save as PDF" gives one landscape page. */
@@ -1056,7 +1203,7 @@
   .bld-go:disabled { background:var(--well); color:var(--faint); cursor:not-allowed; }
   .bld-note { margin-top:11px; font-size:11.5px; line-height:1.5; color:var(--muted); min-height:1em; }
   body.tab-alt .board { display:none !important; }
-  /* Platform Focus and Download belong to the toolbar, not to one tab: they hold
+  /* Platform, Stage, Style and Download belong to the toolbar, not to one tab: they hold
      their place on the tab line everywhere. A builder tab has no diagram for
      them to act on yet, so selectTab disables them rather than removing them,
      which would shuffle the rest of the row every time the tab changed. */
@@ -1248,14 +1395,22 @@
     <button class="tab-add" id="tab-add" title="Start a new architecture from a description"><span class="plus">+</span><span class="plus-lbl">New</span></button>
   </nav>
 
-  <div class="hspacer"></div>
+  <div class="htools">
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
   <button class="hbtn" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl">Dark</span></button>
   <div class="pal-wrap" id="pal-wrap">
     <button class="hbtn" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span> Palette</button>
     <div class="pal-menu" id="pal-menu"></div>
   </div>
-  <button class="hbtn" id="plat-btn" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services">▣ Platform Focus</button>
+  <div class="pal-wrap" id="shape-wrap">
+    <button class="hbtn" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span> Style</button>
+    <div class="pal-menu" id="shape-menu"></div>
+  </div>
+  <button class="hbtn" id="plat-btn" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services">▣ Platform</button>
+  <div class="pal-wrap" id="stage-wrap">
+    <button class="hbtn" id="stage-btn" title="Choose which release stages the platform box shows">◑ <span id="stage-lbl">Stage</span></button>
+    <div class="pal-menu" id="stage-menu"></div>
+  </div>
   <div class="dl-wrap" id="dl-wrap">
     <button class="hbtn" id="dl-btn" title="Download this architecture">⭳ Download</button>
     <div class="dl-menu" id="dl-menu">
@@ -1267,6 +1422,7 @@
       <div class="dl-note">PDF, PPTX and PNG capture the current view, including
         <b>Platform only</b>. HTML stays interactive.</div>
     </div>
+  </div>
   </div>
 </header>
 
@@ -1370,6 +1526,26 @@
 <div class="tip" id="tip" role="tooltip"></div>
 
 <script>
+/* ==================================================================
+   0. STORAGE — the only code in this file that touches localStorage
+   ==================================================================
+   A blocked or partitioned store does not return null, it throws, and it
+   throws on read, write and delete alike. That happens for real: a page on
+   *.databricksapps.com is a different site from the workspace that links to
+   it, so a browser set to block third-party storage, or one showing the app
+   inside a frame, hands out a localStorage whose every method raises.
+
+   This whole file is a single <script>, so one escaping throw stops the rest
+   of it from ever running and every control declared below the throw is left
+   unwired: the page still paints, and nothing clicks. Wrapping each call site
+   is not enough either, because the natural shape `catch(_){ removeItem(k) }`
+   throws a second time from inside the handler that was meant to contain it.
+   So reads answer null and writes report false, and no caller has to care. */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k, v){ try { localStorage.setItem(k, v); return true; } catch(e){ return false; } },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} },
+};
 /* ==================================================================
    1. ICONS — inline 24x24 line/solid glyphs, stroke=currentColor
    ================================================================== */
@@ -1570,10 +1746,10 @@ const ARCH = {
         { n:"Apps", s:"Custom Apps", ic:"apps", st:"GA",
           long:"Build and host interactive data and AI applications next to governed data. DAIS 2026 added App Spaces for enterprise app governance and Serverless Micro Apps for lightweight deployment.",
           caps2:["App Spaces","Serverless Micro Apps"], rel:["Lakebase","Genie App Builder"] },
-        { n:"Lakewatch", s:"Agentic Security", ic:"watch", st:"Private preview",
+        { n:"Lakewatch", s:"Agentic Security", ic:"watch", st:"Private Preview",
           long:"Agentic SIEM on the security lakehouse: ingests high-volume security telemetry, triages alerts autonomously and drives SOC investigation, keeping the telemetry in your own object storage rather than a vendor-held index.",
           caps2:["Agentic SIEM","Detection-as-code","AI SOC"], rel:["Lakeflow","Unity Catalog"] },
-        { n:"CustomerLake", s:"Agentic Marketing", ic:"custlake", st:"Private preview",
+        { n:"CustomerLake", s:"Agentic Marketing", ic:"custlake", st:"Private Preview",
           long:"Agentic customer data platform built natively on the lakehouse: unified customer profiles, segments and campaign activation without copying data into a separate CDP.",
           caps2:["Unified profiles","Segmentation","Campaign activation"], rel:["Genie Agents","Lakehouse"] },
       ]} ]},
@@ -1599,10 +1775,10 @@ const ARCH = {
               caps:["Data engineering","Genie Code for ML"], rel:["Lakeflow","Genie ZeroOps"] },
           ],
           side:[
-            { n:"Genie ZeroOps", label:"ZeroOps", ic:"zeroops", st:"Preview",
+            { n:"Genie ZeroOps", label:"ZeroOps", ic:"zeroops", st:"Public Preview",
               long:"Autonomous background agent that monitors pipelines, detects failures, investigates root causes and proposes fixes. A ZeroOps for ML variant monitors and remediates production ML systems.",
               rel:["Lakeflow","Genie Code"] },
-            { n:"Genie App Builder", label:"App Builder", ic:"appbuilder", st:"Private preview",
+            { n:"Genie App Builder", label:"App Builder", ic:"appbuilder", st:"Private Preview",
               long:"AI-powered application builder that uses Genie context and inherits Unity Catalog governance, so generated apps are governed by construction.",
               rel:["Apps","Genie Ontology"] },
             { n:"Lakeflow Designer", ic:"flow", st:"GA",
@@ -1619,7 +1795,7 @@ const ARCH = {
           long:"The developer surface of the platform: notebooks, IDE integrations, MLflow, AI Runtime serverless GPU compute and Databricks Asset Bundles for shipping agents, apps and models to production.",
           caps:["MLflow","AI Runtime (serverless GPU)","Asset Bundles","IDE + notebooks"], rel:["Agent Bricks","Unity Gateway"] },
       ]} ],
-      foot:{ n:"Genie Ontology", ic:"ontology", st:"Preview",
+      foot:{ n:"Genie Ontology", ic:"ontology", st:"Public Preview",
         long:"The live, self-improving context layer beneath every Genie and agent. Extracts knowledge snippets from tables, queries, dashboards, pipelines and connected apps into a living graph of how the company works, and ranks authority with OntoRank (a PageRank-inspired algorithm scoring usage, recency and source credibility). Lifted agent answer accuracy from ~50% to 84.5% on the Summit benchmark.",
         caps:["OntoRank","Living knowledge graph","50+ connected apps","Unity Catalog Semantics upload"],
         rel:["Unity Catalog","Genie One","Genie Agents"] }},
@@ -2008,6 +2184,10 @@ function reg(el, tile, arr, sectionName){
   el.dataset.id = id;
   el.classList.add("atom");
   el.onclick = (e)=>{ e.stopPropagation(); editMode ? openEdit(id) : openDetail(id); };
+  /* the release-stage filter reads this attribute off the DOM, so every atom
+     gets it in the one place every atom is created */
+  const sk = stageKey(tile.st);
+  if(sk) el.dataset.stage = sk;
   byId[id] = { tile, arr, section:sectionName, el };
   nameIndex[tile.n] = id;
   if(tile.role) roleIndex["cloud:" + tile.role] = id;
@@ -2369,16 +2549,15 @@ function storedStateUsable(s){
         return;
       }
     }
-    const s = JSON.parse(localStorage.getItem(CUSTOM_LS) || "null");
+    const s = JSON.parse(store.get(CUSTOM_LS) || "null");
     if(!s) return;
-    if(!storedStateUsable(s)){ localStorage.removeItem(CUSTOM_LS); return; }
+    if(!storedStateUsable(s)){ store.del(CUSTOM_LS); return; }
     ARCH.bands = s.bands; ARCH.rails = s.rails; ARCH.top = s.top; ARCH.cloud = s.cloud;
-  }catch(_){ localStorage.removeItem(CUSTOM_LS); }
+  }catch(_){ store.del(CUSTOM_LS); }
 })();
 function persistCustom(){
-  try{ localStorage.setItem(CUSTOM_LS,
-    JSON.stringify({ schema:SCHEMA, bands:ARCH.bands, rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud })); }
-  catch(_){}
+  store.set(CUSTOM_LS,
+    JSON.stringify({ schema:SCHEMA, bands:ARCH.bands, rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud }));
 }
 
 const platTopEl  = document.getElementById("plat-top");
@@ -2390,15 +2569,20 @@ const railConsEl = document.getElementById("rail-cons");
 const cloudEl    = document.getElementById("cloud");
 const topBandEl  = document.getElementById("topband");
 
-/* Each half of the Z is [arm | stack] or [stack | arm]. The arm is the overhang
-   that gives the shape its step, so it is a real container, not a margin. */
-function zHalf(host, armSide){
+/* A block is [left arm?][stack][right arm?]. An arm is the overhang that gives
+   the shape its step, so it is a real container, not a margin. Ingest is always
+   the left arm and Serve always the right one, whatever the style: what the
+   style changes is which of the two blocks owns each arm, which is the whole
+   difference between a Z, an S, a T and a reverse T. */
+function platHalf(host, sides){
   host.innerHTML = "";
-  const arm = document.createElement("div"); arm.className = "arm " + armSide;
+  const mk = s=>{ const a = document.createElement("div"); a.className = "arm " + s;
+    host.appendChild(a); return a; };
+  const left = sides.indexOf("left") >= 0 ? mk("left") : null;
   const stack = document.createElement("div"); stack.className = "plat-stack";
-  host.appendChild(armSide === "left" ? arm : stack);
-  host.appendChild(armSide === "left" ? stack : arm);
-  return { arm, stack };
+  host.appendChild(stack);
+  const right = sides.indexOf("right") >= 0 ? mk("right") : null;
+  return { left, right, stack };
 }
 
 function build(){
@@ -2408,9 +2592,11 @@ function build(){
   uid = 0;
   railSrcEl.innerHTML = ""; railIngEl.innerHTML = "";
   railPplEl.innerHTML = ""; railConsEl.innerHTML = "";
-  const up = zHalf(platTopEl, "left"), lo = zHalf(platformEl, "right");
-  /* `arm` bands render into the overhang of their half, `blk` into its stack */
-  const dest = b=> b.arm === "left" ? up.arm : b.arm === "right" ? lo.arm
+  const sh = shapeDef();
+  const up = platHalf(platTopEl, sh.up), lo = platHalf(platformEl, sh.lo);
+  /* `arm` bands render into the overhang on their own side, wherever the style
+     has put it; `blk` bands into the stack of their own block */
+  const dest = b=> b.arm ? (up[b.arm] || lo[b.arm])
     : b.blk === "top" ? up.stack : lo.stack;
   ARCH.bands.forEach(b=> renderBand(b, dest(b)));
   renderTop(topBandEl);
@@ -2426,6 +2612,9 @@ function build(){
     h.insertAdjacentHTML("afterbegin", svg(h.dataset.ic, ""));
   });
   if(activeRef) paintRef(activeRef);
+  /* the filter is a property of the view, not of the model, so it is re-applied
+     to the fresh DOM here rather than at each of build()'s callers */
+  applyStageFilter();
 }
 
 /* ==================================================================
@@ -3052,7 +3241,7 @@ function persistTabs(){
     const order = [].map.call(tabsEl.querySelectorAll(".tab"), t=> t.dataset.tab)
       .filter(id=> customTabs.has(id));
     const act = activeTabEl();
-    localStorage.setItem(TABS_LS, JSON.stringify({
+    store.set(TABS_LS, JSON.stringify({
       tabs: order.map(id=> ({ id, ...customTabs.get(id) })),
       active: act ? act.dataset.tab : "reference",
     }));
@@ -3064,8 +3253,8 @@ function persistTabs(){
 let restoredActive = null;
 (function restoreTabs(){
   let s;
-  try{ s = JSON.parse(localStorage.getItem(TABS_LS) || "null"); }
-  catch(_){ localStorage.removeItem(TABS_LS); return; }
+  try{ s = JSON.parse(store.get(TABS_LS) || "null"); }
+  catch(_){ store.del(TABS_LS); return; }
   if(!s || !Array.isArray(s.tabs)) return;
   s.tabs.forEach(t=>{
     if(!t || typeof t.id !== "string" || !/^custom\d+$/.test(t.id)) return;
@@ -3123,6 +3312,7 @@ const PLAT_BTN_TITLE = platBtn.title;
    not want it flipped back when their Mac goes dark at sunset. */
 const themeBtn = document.getElementById("theme-btn");
 const THEME_KEY = "dbx-arch-theme";
+let themeChosen = store.get(THEME_KEY) !== null;
 /* Split in two on purpose: the sync half runs during startup, before the layout
    consts further down this script exist, so it must not reach for them. */
 function syncThemeUi(dark){
@@ -3133,15 +3323,17 @@ function syncThemeUi(dark){
 }
 function applyTheme(dark, remember){
   syncThemeUi(dark);
-  if(remember){ try { localStorage.setItem(THEME_KEY, dark ? "dark" : "light"); } catch(e){} }
+  /* The flag, not the store, is what says "the user has chosen". Storage can be
+     unavailable, and then a write is a no-op, so asking the store afterwards
+     would answer "never chosen" and the next sunset would undo the click. */
+  if(remember){ themeChosen = true; store.set(THEME_KEY, dark ? "dark" : "light"); }
   paintPalMenu();   /* every palette has its own dark ladder, so the previews move too */
   /* the palette changes tile borders and heading bars, which changes measured
      heights by a fraction, so the fit and both hand-over lines are recomputed */
   fitBoard();
 }
 function themeIsDark(){
-  let saved = null;
-  try { saved = localStorage.getItem(THEME_KEY); } catch(e){}
+  const saved = store.get(THEME_KEY);
   if(saved === "dark") return true;
   if(saved === "light") return false;
   return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -3154,8 +3346,7 @@ themeBtn.onclick = ()=> applyTheme(!document.body.classList.contains("theme-dark
 /* follow the OS only while the user has not expressed a preference of their own */
 if(window.matchMedia){
   const mq = window.matchMedia("(prefers-color-scheme: dark)");
-  const onOs = e=>{ let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch(err){}
-    if(!saved) applyTheme(e.matches, false); };   /* fires long after startup */
+  const onOs = e=>{ if(!themeChosen) applyTheme(e.matches, false); };   /* fires long after startup */
   if(mq.addEventListener) mq.addEventListener("change", onOs); else if(mq.addListener) mq.addListener(onOs);
 }
 /* ==================================================================
@@ -3214,7 +3405,7 @@ function applyPalette(k, remember){
   const had = currentPal();
   if(had) document.body.classList.remove("pal-" + had);
   if(k) document.body.classList.add("pal-" + k);
-  if(remember){ try { localStorage.setItem(PAL_KEY, k); } catch(e){} }
+  if(remember){ store.set(PAL_KEY, k); }
   paintPalMenu();
   /* tile borders and heading bars move by a fraction of a pixel between
      palettes, and both hand-over lines are measured, so re-fit */
@@ -3223,7 +3414,12 @@ function applyPalette(k, remember){
 document.getElementById("pal-btn").onclick = e=>{
   e.stopPropagation(); palWrap.classList.toggle("open");
 };
-document.addEventListener("click", e=>{ if(!palWrap.contains(e.target)) palWrap.classList.remove("open"); });
+/* One listener for every drop-down in the toolbar, so a menu added later cannot
+   be the one that forgets to close. */
+document.addEventListener("click", e=>{
+  document.querySelectorAll(".pal-wrap.open, .dl-wrap.open").forEach(w=>{
+    if(!w.contains(e.target)) w.classList.remove("open"); });
+});
 paintPalMenu();
 
 platBtn.onclick = ()=>{
@@ -3231,6 +3427,195 @@ platBtn.onclick = ()=>{
   platBtn.classList.toggle("on", on);
   fitBoard();
 };
+
+/* ==================================================================
+   7a-2. RELEASE STAGE FILTER
+   ==================================================================
+   Which of the platform's features are drawn, by how far along they are. The
+   selection lives on the body as one class per HIDDEN stage, for two reasons:
+   the HTML download clones the live document, so the choice travels with it
+   without a second serialisation path, and the filter can then be re-applied
+   after any re-render by reading the DOM rather than a parallel variable. */
+const STAGES = [
+  { k:"ga",      label:"GA" },
+  { k:"pubpre",  label:"Public Preview" },
+  { k:"beta",    label:"Beta" },
+  { k:"privpre", label:"Private Preview" },
+  { k:"soon",    label:"Coming soon" },
+];
+const STAGE_STORE = "dbx-arch-stages";
+/* The model's `st` strings, normalised. An `st` this does not recognise maps to
+   nothing and is treated as unstaged, which is the same conservative reading
+   stageBadge takes: an unknown stage must not be silently filed as available. */
+const STAGE_OF = { "ga":"ga", "public preview":"pubpre", "beta":"beta",
+  "private preview":"privpre", "coming soon":"soon" };
+function stageKey(st){ return STAGE_OF[String(st || "").trim().toLowerCase()] || ""; }
+
+const stageWrap = document.getElementById("stage-wrap");
+const stageMenu = document.getElementById("stage-menu");
+
+function stagesOff(){
+  return new Set(STAGES.map(s=>s.k).filter(k=>document.body.classList.contains("st-off-" + k)));
+}
+/* Counted off the DOM rather than off ARCH, so the number on each row is the
+   number of boxes in the tab actually on screen. */
+function stageCounts(){
+  const c = {};
+  [platTopEl, platformEl].forEach(root => root &&
+    root.querySelectorAll("[data-stage]").forEach(el=>{
+      const k = el.dataset.stage; if(k) c[k] = (c[k] || 0) + 1; }));
+  return c;
+}
+/* Every wrapper inside the platform that can be emptied by the filter. The test
+   below looks only at atoms, never at another wrapper, so this list needs no
+   particular order: an outer box asks the same question as an inner one. */
+const STAGE_BOXES = ".side-col, .panel-cols, .panel, .fmt-grid, .band-row," +
+  " .band-foot, .band-body, .band, .arm, .plat-stack";
+function applyStageFilter(){
+  const off = stagesOff();
+  const blocks = [platTopEl, platformEl].filter(Boolean);
+  blocks.forEach(root=>{
+    root.querySelectorAll("[data-stage]").forEach(el=>
+      el.classList.toggle("st-off", off.has(el.dataset.stage)));
+    root.querySelectorAll(STAGE_BOXES).forEach(box=>
+      box.classList.toggle("st-off", !box.querySelector(".atom:not(.st-off)")));
+    root.classList.toggle("st-off", !root.querySelector(".atom:not(.st-off)"));
+  });
+  /* A filter narrow enough to empty one of the two blocks leaves no Z to draw,
+     so the survivor stops being half a shape and closes its own corners. */
+  const live = blocks.filter(b=>!b.classList.contains("st-off"));
+  blocks.forEach(b=> b.classList.toggle("solo", live.length < 2));
+  paintStageMenu();
+}
+function paintStageMenu(){
+  const off = stagesOff(), c = stageCounts();
+  const rows = ['<div class="men-hd">Release stage</div>',
+    '<button data-stage-all="1" class="' + (off.size ? "" : "on") + '">' +
+    '<span>All stages</span></button>'];
+  STAGES.forEach(s=>{
+    if(!c[s.k]) return;          /* nothing at this stage in this tab */
+    rows.push('<button class="cnt' + (off.has(s.k) ? "" : " on") + '" data-stage="' + s.k +
+      '"><span>' + s.label + '</span><i>' + c[s.k] + '</i></button>');
+  });
+  rows.push('<div class="dl-note">Filters the platform box only. Groupings that ' +
+    'carry no stage of their own, like Agentic Dev and the medallion steps, stay.</div>');
+  stageMenu.innerHTML = rows.join("");
+  stageMenu.querySelectorAll("button").forEach(b=> b.onclick = ()=>{
+    if(b.dataset.stageAll) setStages([], true);
+    else {
+      const next = new Set(off);
+      next.has(b.dataset.stage) ? next.delete(b.dataset.stage) : next.add(b.dataset.stage);
+      /* turning the last one off would leave an empty platform and no way back
+         from inside the box, so the last live stage stays live */
+      if([...Object.keys(c)].every(k=>next.has(k))) return;
+      setStages([...next], true);
+    }
+  });
+  const on = STAGES.filter(s=>c[s.k] && !off.has(s.k));
+  document.getElementById("stage-lbl").textContent =
+    !off.size ? "Stage" : on.length === 1 ? on[0].label : on.length + " stages";
+  document.getElementById("stage-btn").classList.toggle("on", off.size > 0);
+}
+function setStages(off, remember){
+  STAGES.forEach(s=> document.body.classList.toggle("st-off-" + s.k, off.indexOf(s.k) >= 0));
+  if(remember){ store.set(STAGE_STORE, off.join(",")); }
+  applyStageFilter();
+  drawZRing();
+  fitBoard();
+}
+document.getElementById("stage-btn").onclick = e=>{
+  e.stopPropagation(); stageWrap.classList.toggle("open");
+};
+
+/* ==================================================================
+   7a-3. PLATFORM STYLE: Z, S, T, REVERSE T
+   ==================================================================
+   Ingest keeps the left of the diagram and Serve the right, because Sources sit
+   on one side and Consumers on the other and an arm that swapped sides would
+   drag its arrow across the whole drawing. What the style changes is which of
+   the two blocks each arm belongs to, and that is enough: the block that does
+   NOT reach over an arm leaves a notch, and the pocket on that side tucks into
+   it. `ul` and `ur` name the owner of the left and right arm, and the CSS reads
+   nothing but those two. */
+const SHAPES = [
+  { k:"z",  label:"Z",         ul:"top", ur:"bot", d:"M2 2 H18 V9 H24 V16 H8 V9 H2 Z" },
+  { k:"s",  label:"S",         ul:"bot", ur:"top", d:"M8 2 H24 V9 H18 V16 H2 V9 H8 Z" },
+  { k:"t",  label:"T",         ul:"top", ur:"top", d:"M2 2 H24 V9 H16 V16 H10 V9 H2 Z" },
+  { k:"rt", label:"Reverse T", ul:"bot", ur:"bot", d:"M10 2 H16 V9 H24 V16 H2 V9 H10 Z" },
+];
+const SHAPE_STORE = "dbx-arch-shape";
+const shapeWrap = document.getElementById("shape-wrap");
+const shapeMenu = document.getElementById("shape-menu");
+
+/* The body class is the single source of truth, for the same reason the stage
+   selection is: the HTML download clones the live document, so the choice
+   travels with the file. `up` and `lo` are the arms each block renders. */
+function shapeDef(){
+  const c = [...document.body.classList].find(x=>x.startsWith("shape-"));
+  const s = SHAPES.find(x=>x.k === (c ? c.slice(6) : "")) || SHAPES[0];
+  return Object.assign({}, s, {
+    up: ["left","right"].filter(side=> s[side === "left" ? "ul" : "ur"] === "top"),
+    lo: ["left","right"].filter(side=> s[side === "left" ? "ul" : "ur"] === "bot"),
+  });
+}
+/* drawn from one path per shape, at the size of the swatches beside it */
+function shapeIcon(s){
+  return '<svg class="shp" viewBox="0 0 26 18" aria-hidden="true"><path d="' + s.d + '"/></svg>';
+}
+function applyShape(k, remember){
+  const s = SHAPES.find(x=>x.k === k) || SHAPES[0];
+  const b = document.body;
+  SHAPES.forEach(x=> b.classList.remove("shape-" + x.k));
+  ["ul-top","ul-bot","ur-top","ur-bot"].forEach(c=> b.classList.remove(c));
+  b.classList.add("shape-" + s.k, "ul-" + s.ul, "ur-" + s.ur);
+  if(remember){ store.set(SHAPE_STORE, s.k); }
+  /* the arms change block, so this is a re-render and not a restyle */
+  build();
+  paintShapeMenu();
+  fitBoard();
+}
+function paintShapeMenu(){
+  const cur = shapeDef().k;
+  shapeMenu.innerHTML = '<div class="men-hd">Platform shape</div>' +
+    SHAPES.map(s=> '<button data-shape="' + s.k + '" class="' + (s.k === cur ? "on" : "") +
+      '">' + shapeIcon(s) + '<span>' + s.label + '</span></button>').join("") +
+    '<div class="dl-note">Ingest stays on the left and Serve on the right. A side ' +
+    'with no notch left has no room for the arrow that used to cross it, so T ' +
+    'drops the people\u2019s path up to the apps band and S drops the ingestion ' +
+    'pocket\u2019s path down to cloud services.</div>';
+  shapeMenu.querySelectorAll("button").forEach(b=> b.onclick = ()=>{
+    applyShape(b.dataset.shape, true); shapeWrap.classList.remove("open"); });
+  document.getElementById("shape-ico").innerHTML = shapeIcon(shapeDef());
+}
+document.getElementById("shape-btn").onclick = e=>{
+  e.stopPropagation(); shapeWrap.classList.toggle("open");
+};
+
+/* Both choices are seeded from storage ONLY when the document does not already
+   carry one. An exported HTML copy is a clone of the live document and arrives
+   with the author's shape and stages already on the body; reading this browser's
+   own storage over the top of that would rewrite somebody else's diagram. The
+   marker class is what makes "all stages on" distinguishable from "never set". */
+(function seedView(){
+  const b = document.body;
+  if(![...b.classList].some(c=>c.startsWith("shape-"))){
+    const k = store.get(SHAPE_STORE) || "";
+    const s = SHAPES.find(x=>x.k === k) || SHAPES[0];
+    b.classList.add("shape-" + s.k, "ul-" + s.ul, "ur-" + s.ur);
+  }
+  if(!b.classList.contains("st-set")){
+    const raw = store.get(STAGE_STORE) || "";
+    const keys = STAGES.map(s=>s.k);
+    raw.split(",").filter(k=>keys.indexOf(k) >= 0)
+      .forEach(k=> b.classList.add("st-off-" + k));
+  }
+  b.classList.add("st-set");
+})();
+/* The stage menu is painted by the filter, which build() runs anyway. The shape
+   menu has no such pass, and seedView writes the body classes directly rather
+   than through applyShape, so without this the Style dropdown opens empty on a
+   first visit and the button shows the placeholder letter from the markup. */
+paintShapeMenu();
 
 /* ==================================================================
    7b. DOWNLOAD: png / pptx / pdf / html
@@ -4214,7 +4599,6 @@ async function exportPdf(){
 const dlWrap = document.getElementById("dl-wrap"), dlBtn = document.getElementById("dl-btn");
 const DL_BTN_TITLE = dlBtn.title;
 dlBtn.onclick = (e)=>{ e.stopPropagation(); dlWrap.classList.toggle("open"); };
-document.addEventListener("click", (e)=>{ if(!dlWrap.contains(e.target)) dlWrap.classList.remove("open"); });
 document.getElementById("dl-menu").addEventListener("click", async (e)=>{
   const b = e.target.closest("button[data-dl]"); if(!b) return;
   dlWrap.classList.remove("open");
@@ -4397,13 +4781,32 @@ function roundPoly(pts, r){
    body.zring-on), so the Z reads as one moving line rather than two. */
 /* the eight corners on their own, so the pptx exporter can rebuild the same
    outline as real geometry instead of tracing the rendered stroke */
+/* Two blocks sharing a seam trace the same eight corners in every shape: across
+   the top of the upper block, out over whichever block is wider on the right,
+   along the bottom of the lower block, and back under whichever is wider on the
+   left. Only the standoff at the seam changes sign, and it follows the overhang
+   rather than the shape: where the LOWER block sticks out the step runs along
+   the top of that overhang, so the outside is above and the line lifts by d;
+   where the UPPER block sticks out the step runs along its underside, so the
+   outside is below and the line drops by d. Z and S disagree on both sides, T
+   and reverse T agree on both, which is why hard-coding Z's pair drew nothing
+   for the other three. */
 function zPoints(U, L, yTop, d){
-  return [
+  const seamR = L.r > U.r ? U.b - d : U.b + d;
+  const seamL = L.l < U.l ? U.b - d : U.b + d;
+  const pts = [
     { x:U.l - d, y:yTop - d }, { x:U.r + d, y:yTop - d },   /* top of the upper block */
-    { x:U.r + d, y:U.b - d }, { x:L.r + d, y:U.b - d },     /* down and out over the serve arm */
-    { x:L.r + d, y:L.b + d }, { x:L.l - d, y:L.b + d },     /* bottom of the lower block */
-    { x:L.l - d, y:U.b + d }, { x:U.l - d, y:U.b + d },     /* up and back under the ingest arm */
+    { x:U.r + d, y:seamR },    { x:L.r + d, y:seamR },      /* out over the wider right edge */
+    { x:L.r + d, y:L.b + d },  { x:L.l - d, y:L.b + d },    /* bottom of the lower block */
+    { x:L.l - d, y:seamL },    { x:U.l - d, y:seamL },      /* back under the wider left edge */
   ];
+  /* A side whose two edges line up contributes a zero-length step. Left in, it
+     would hand roundPoly a degenerate corner to round; dropped, the polygon is
+     simply the hexagon that side actually has. */
+  return pts.filter((p, i)=>{
+    const q = pts[(i + 1) % pts.length];
+    return Math.abs(p.x - q.x) > 0.5 || Math.abs(p.y - q.y) > 0.5;
+  });
 }
 function zOutline(U, L, yTop, d, r){
   return roundPoly(zPoints(U, L, yTop, d), r);
@@ -4414,12 +4817,14 @@ function drawZRing(){
   const off = el => ({ l:el.offsetLeft, t:el.offsetTop,
                        r:el.offsetLeft + el.offsetWidth, b:el.offsetTop + el.offsetHeight });
   const U = off(platTopEl), L = off(platformEl);
-  /* stacked and phone layouts drop the overhangs, so there is no Z to trace and
-     the two blocks go back to drawing their own borders */
-  const isZ = document.body.classList.contains("fitting")
-    && L.l - U.l > 40 && L.r - U.r > 40 && Math.abs(L.t - U.b) < 3;
-  document.body.classList.toggle("zring-on", isZ);
-  if(!isZ){ zpathEl.removeAttribute("d"); return; }
+  /* stacked and phone layouts drop the overhangs, so there is no outline to
+     trace and the two blocks go back to drawing their own borders. The test is
+     on the SIZE of each overhang, not its direction, so it reads the same for
+     all four shapes while still rejecting the two equal-width stacked blocks. */
+  const isRing = document.body.classList.contains("fitting")
+    && Math.abs(L.l - U.l) > 40 && Math.abs(L.r - U.r) > 40 && Math.abs(L.t - U.b) < 3;
+  document.body.classList.toggle("zring-on", isRing);
+  if(!isRing){ zpathEl.removeAttribute("d"); return; }
   zringEl.setAttribute("viewBox", `0 0 ${mid.offsetWidth} ${mid.offsetHeight}`);
   /* the same standoff the outer zones use: outline-offset plus half the 2px
      stroke, measured from the heading bar rather than from the upper block */
