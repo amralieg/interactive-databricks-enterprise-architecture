@@ -139,6 +139,19 @@ PALETTES = [
 # apart by more than MONO_MIN once luminance is worked out rather than lightness.
 MONO_BG = {"light": (0.985, 0.852), "dark": (0.175, 0.062)}
 MONO_MIN = 1.035
+# A 2px outline is a far smaller target than a filled tile, so it needs a wider
+# step to read as a different zone. This bar is set just under the tightest step
+# the outline ladder actually produces, which is the pair the 3:1 page solve
+# still clamps at the pale end.
+MONO_LINE_MIN = 1.12
+# The outlines need a band of their own, and not the fills'. Every line is
+# solved for 3:1 against the page, and when the fill ladder is handed to the
+# line slot most of the ladder is on the wrong side of that bar: the solve drags
+# each one back to the edge of passing, so all nine zones end up the same grey
+# and the outline stops saying which zone you are looking at. These two ends are
+# picked to clear 3:1 already, so the solve has nothing to correct and the
+# spread survives it.
+MONO_LINE = {"light": (0.58, 0.20), "dark": (0.47, 0.97)}
 
 
 def lit_of_lum(y):
@@ -176,12 +189,18 @@ def build(pal, theme):
         # with no chroma the hue is meaningless, so the group's position on the
         # lightness ladder is the only thing left to tell it from its neighbours
         shift = 0.0
+        mono_line_l = None
         if pal.get("mono") and not struct:
             spread = [n for n in order if n != STRUCTURAL]
-            a, b = MONO_BG[theme]
-            ya, yb = lum(hsl(0, 0, a)) + 0.05, lum(hsl(0, 0, b)) + 0.05
             t = spread.index(name) / float(len(spread) - 1)
-            shift = lit_of_lum(ya * (yb / ya) ** t - 0.05) - rec["bg"][1]
+
+            def rung(band):
+                a, b = band
+                ya, yb = lum(hsl(0, 0, a)) + 0.05, lum(hsl(0, 0, b)) + 0.05
+                return lit_of_lum(ya * (yb / ya) ** t - 0.05)
+
+            shift = rung(MONO_BG[theme]) - rec["bg"][1]
+            mono_line_l = rung(MONO_LINE[theme])
 
         def s(slot):
             return min(1.0, rec[slot][0] * k)
@@ -195,8 +214,8 @@ def build(pal, theme):
         # head carries white text: always darken until white clears 4.5
         head = solve(hue, hsat, 0.39 + shift * 0.5, 4.5, "#ffffff", True, 0.22)
         # line is a graphical element against the page, 3:1 is the bar
-        line = solve(hue, s("line"), L("line"), 3.0, page,
-                     theme == "light", 0.22 if theme == "light" else 0.82)
+        line = solve(hue, s("line"), mono_line_l if mono_line_l is not None else L("line"),
+                     3.0, page, theme == "light", 0.22 if theme == "light" else 0.82)
         # ink is text on that group's own pale fill
         ink = solve(hue, s("ink"), L("ink"), 4.5, hsl(hue, s("bg"), L("bg")),
                     theme == "light", 0.18 if theme == "light" else 0.92)
@@ -244,18 +263,23 @@ def check():
                         print("  FAIL %s: %s and %s only %d deg apart" % (tag, a, b, d))
             # A palette with no chroma cannot lean on that separation, so the
             # ladder has to do the work instead: two groups a hair apart in grey
-            # are one group as far as the reader is concerned. Checked on the
-            # fill, because that is the largest area of each group on the board.
+            # are one group as far as the reader is concerned. Both the fill and
+            # the outline are checked: the fill is the largest area of a group,
+            # and the outline is the only thing marking a zone that has no fill
+            # at all, which is how nine identical grey zone outlines shipped
+            # while the fills alone were passing this gate.
             if pal.get("mono"):
-                for a in HUES:
-                    for b in HUES:
-                        if a >= b or STRUCTURAL in (a, b):
-                            continue
-                        r = contrast(v["--g-%s-bg" % a], v["--g-%s-bg" % b])
-                        if r < MONO_MIN:
-                            bad += 1
-                            print("  FAIL %s: greys %s and %s only %.3f apart, bar %.3f"
-                                  % (tag, a, b, r, MONO_MIN))
+                for slot, bar in (("bg", MONO_MIN), ("line", MONO_LINE_MIN)):
+                    for a in HUES:
+                        for b in HUES:
+                            if a >= b or STRUCTURAL in (a, b):
+                                continue
+                            r = contrast(v["--g-%s-%s" % (a, slot)],
+                                         v["--g-%s-%s" % (b, slot)])
+                            if r < bar:
+                                bad += 1
+                                print("  FAIL %s: %s greys %s and %s only %.3f apart, bar %.3f"
+                                      % (tag, slot, a, b, r, bar))
     print("worst text contrast : %.2f  (%s)  bar 4.5" % worst_text)
     print("worst line contrast : %.2f  (%s)  bar 3.0" % worst_line)
     print("failures            : %d" % bad)
