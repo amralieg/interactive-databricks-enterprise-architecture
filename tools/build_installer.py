@@ -65,8 +65,10 @@ later is `Pull` on the Git folder followed by Run All here.
 
 **Download from GitHub** is for the case where only this one notebook was
 imported. It pulls the repository archive over HTTPS and writes the `app/`
-folder into your workspace home. It needs the workspace to have outbound
-internet access, which some locked-down deployments do not.
+folder into your workspace home. Two things have to be true for it to work: the
+workspace needs outbound internet access, which some locked-down deployments do
+not have, and the repository has to be readable without a token. A private repo
+returns 404 to an anonymous archive request, so use the Git folder path for one.
 """
 
 CODE_HELPERS = '''import base64, io, json, os, re, time, zipfile
@@ -159,7 +161,11 @@ def source_github(w, repo, user_home):
             break
         last = None
     if last is None:
-        raise RuntimeError("No main or master branch archive found for %s." % repo)
+        raise RuntimeError(
+            "No readable main or master archive for %s. GitHub answers 404 to an "
+            "anonymous request for a private repository, so if this one is "
+            "private, clone it as a Git folder and use option 1 instead." % repo
+        )
 
     target = "%s/idea-app" % user_home
     w.workspace.mkdirs(target)
