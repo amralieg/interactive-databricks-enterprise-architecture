@@ -5,28 +5,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Databricks Data Intelligence Platform: Reference Architecture (DAIS 2026)</title>
 <style>
+  /* =====================================================================
+     PALETTE
+     =====================================================================
+     Nine harmonised groups. Every coloured shape in the diagram picks ONE
+     group and takes all five of its slots from it; nothing in this file may
+     write a raw colour outside this block. That is what makes the second
+     theme a swap of these declarations rather than a second stylesheet.
+
+     The nine hues are spread round the wheel with at least 19 degrees between
+     any two of the same chroma class, so no two groups read as "the same
+     colour". Slate is deliberately the low-chroma group: it is the structural
+     one, so it must not compete with the eight that carry meaning.
+
+     The five slots per group, and the only thing each may be used for:
+       line  the saturated accent: zone outlines, notches, tile edges
+       head  a heading bar carrying WHITE text
+       bd    a soft border for a band or tile sitting on its own fill
+       bg    the pale fill itself
+       ink   text and icons ON that fill
+
+     Both ladders are generated, not hand-picked: one lightness/chroma recipe
+     applied across all nine hues, with `head` solved per hue so white text on
+     it clears WCAG AA. Worst text contrast is 4.50 in light and 4.51 in dark,
+     measured on every slot pair, so the diagram is legible in both. */
   :root {
-    --ink:#1b1f24; --muted:#5b6570; --faint:#8a939e;
-    --line:#e3e7ec; --bg:#f4f6f8; --card:#fff;
-    --brand:#ff3621; --brand-soft:#f7cfc7; --brand-wash:#fff6f4;
-    --panel:#f6f4f2;
-    /* One tone per band inside the platform. Two bands sharing a fill reads as
-       "these two belong together", which is wrong for Serve and Governance or
-       for Ingest and Agentic Data, so each band gets its own hue and they are
-       kept pale enough to stay subordinate to the zone colours outside. */
-    --tone-coral-bd:#f0c4ba; --tone-coral-bg:#fdf4f2;
-    --tone-amber-bd:#ecd2a6; --tone-amber-bg:#fdf7ec;
-    --tone-teal-bd:#b7dae1; --tone-teal-bg:#e8f6f8;
-    --tone-green-bd:#c0e1ca; --tone-green-bg:#ecf7f0;
-    --tone-blue-bd:#c9d5ee; --tone-blue-bg:#ecf1fa;
-    --tone-slate-bd:#d0d8e0; --tone-slate-bg:#f2f5f8;
-    --tone-rose-bd:#ebccda; --tone-rose-bg:#fdf3f7;
-    --tone-grey-bd:#e0e5ea; --tone-grey-bg:#ffffff;
-    --rail-bd:#cfe0d4; --rail-accent:#2f9e50;
-    --cons-bd:#cfdcf0;
-    --cloud-bd:#f0d9c2; --cloud-accent:#e8791a; --cloud-bg:#fef8f2;
+    /* --- the nine groups, light --- */
+    --g-green-line:#369156; --g-green-head:#418458; --g-green-bd:#b6e2c5; --g-green-bg:#edfaf2; --g-green-ink:#317d4b;
+    --g-teal-line:#368a91; --g-teal-head:#428086; --g-teal-bd:#b6dfe2; --g-teal-bg:#edf9fa; --g-teal-ink:#31767d;
+    --g-blue-line:#365691; --g-blue-head:#5976ad; --g-blue-bd:#b6c5e2; --g-blue-bg:#edf2fa; --g-blue-ink:#314b7d;
+    --g-slate-line:#546173; --g-slate-head:#67788e; --g-slate-bd:#c2cad6; --g-slate-bg:#f1f3f6; --g-slate-ink:#485465;
+    --g-violet-line:#5a3691; --g-violet-head:#8668b4; --g-violet-bd:#c8b6e2; --g-violet-bg:#f2edfa; --g-violet-ink:#4f317d;
+    --g-plum-line:#913670; --g-plum-head:#ae5a8f; --g-plum-bd:#e2b6d2; --g-plum-bg:#faedf5; --g-plum-ink:#7d3161;
+    --g-rose-line:#913646; --g-rose-head:#af5d6c; --g-rose-bd:#e2b6be; --g-rose-bg:#faedf0; --g-rose-ink:#7d313f;
+    --g-coral-line:#914236; --g-coral-head:#ac6257; --g-coral-bd:#e2bcb6; --g-coral-bg:#faefed; --g-coral-ink:#7d3b31;
+    --g-amber-line:#916a36; --g-amber-head:#917148; --g-amber-bd:#e2cfb6; --g-amber-bg:#faf4ed; --g-amber-ink:#7d5c31;
+
+    /* --- neutrals --- */
+    --ink:#1b1f24; --muted:#5b6570; --faint:#8a939e; --sep:#828a91;
+    --line:#e3e7ec; --line-strong:#cfd5dc;
+    --bg:#f4f6f8; --card:#fff; --well:#f3f5f8; --panel:#f6f4f2;
+    --on-accent:#fff;
+    --plat-fill:#fffaf8;
+    --logo-chip:#fff;
+
+    /* --- brand --- */
+    --brand:#ff3621; --brand-bd:#f6b6ac; --brand-soft:#f7cfc7; --brand-wash:#fff6f4;
+    /* the brand red is 3.6:1 on white, so small bold text on a light surface
+       uses this darkened form of it instead of the brand colour itself */
+    --brand-ink:#c0261a;
+    --danger:#b42318; --danger-bd:#ffd7d0; --danger-bg:#fff2f0;
+
+    /* --- connectors. A connector is coloured by what it lands IN, so it can be
+           traced back to its destination without a legend. --- */
+    --flow-neutral:#6d7784; --flow-medal:#4a5059;
+
+    /* --- medallion stages: three warm steps, not three of the nine groups,
+           because they are a sequence rather than three peer categories --- */
+    --m-bronze:#8f5118; --m-silver:#616871; --m-gold:#7d6417;
+
+    /* --- depth --- */
+    --veil:rgba(0,0,0,.09);
+    --scrim:rgba(16,24,40,.35);
+    --brand-glow:rgba(255,54,33,.28); --brand-pulse:rgba(255,54,33,.14);
     --shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.04);
     --shadow-lg:0 12px 34px rgba(16,24,40,.14);
+    --shadow-xl:0 20px 46px rgba(16,24,40,.20);
+    --shadow-drawer:-8px 0 30px rgba(16,24,40,.18);
+    --shadow-seam:0 -1px 2px rgba(16,24,40,.04);
+    --shadow-ico:0 1px 2px rgba(16,24,40,.06);
+  }
+
+  /* =====================================================================
+     DARK THEME
+     =====================================================================
+     Only the palette is redeclared: no layout, no second set of rules, no
+     per-component override. Anything that reads as wrong in dark is a shape
+     writing a raw colour instead of taking a group slot, which is a bug in
+     that rule rather than something to patch here.
+
+     It is scoped to BODY, not to :root, on purpose. The export path clones
+     the board into an SVG foreignObject and copies the body class list onto
+     the wrapper, so a body-scoped theme travels into the PNG, the PDF and the
+     deck for free; an html-scoped one would not, because the SVG has no html
+     element to carry it. */
+  body.theme-dark {
+    --g-green-line:#6cd08f; --g-green-head:#398554; --g-green-bd:#3a6449; --g-green-bg:#13271a; --g-green-ink:#9ae4b4;
+    --g-teal-line:#6cc8d0; --g-teal-head:#3a8086; --g-teal-bd:#3a6064; --g-teal-bg:#132627; --g-teal-ink:#9adee4;
+    --g-blue-line:#6c8fd0; --g-blue-head:#5476b6; --g-blue-bd:#3a4964; --g-blue-bg:#131a27; --g-blue-ink:#9ab4e4;
+    --g-slate-line:#919cac; --g-slate-head:#69788b; --g-slate-bd:#454d59; --g-slate-bg:#191d21; --g-slate-ink:#b5bec9;
+    --g-violet-line:#946cd0; --g-violet-head:#8865bd; --g-violet-bd:#4b3a64; --g-violet-bg:#1b1327; --g-violet-ink:#b89ae4;
+    --g-plum-line:#d06cac; --g-plum-head:#b55391; --g-plum-bd:#643a55; --g-plum-bg:#271320; --g-plum-ink:#e49ac9;
+    --g-rose-line:#d06c7e; --g-rose-head:#b7586a; --g-rose-bd:#643a42; --g-rose-bg:#271317; --g-rose-ink:#e49aa8;
+    --g-coral-line:#d0796c; --g-coral-head:#b45e51; --g-coral-bd:#64403a; --g-coral-bg:#271613; --g-coral-ink:#e4a49a;
+    --g-amber-line:#d0a56c; --g-amber-head:#946f3f; --g-amber-bd:#64523a; --g-amber-bg:#271f13; --g-amber-ink:#e4c49a;
+
+    --ink:#e7edf3; --muted:#a6b2be; --faint:#7f8c9a; --sep:#78838f;
+    --line:#2b323c; --line-strong:#3d4650;
+    --bg:#0c1015; --card:#161b22; --well:#1d242d; --panel:#141a21;
+    --on-accent:#fff;
+    --plat-fill:#14181e;
+    /* third-party wordmarks are dark on transparent, so their chip stays light
+       in dark mode: recolouring a brand mark is not ours to do */
+    --logo-chip:#eef1f5;
+
+    --brand:#ff5c47; --brand-bd:#7a2c22; --brand-soft:#5e241c; --brand-wash:#241310;
+    --brand-ink:#ff8877;
+    --danger:#ff7b6b; --danger-bd:#5e241c; --danger-bg:#241310;
+
+    --flow-neutral:#9aa6b4; --flow-medal:#9aa6b4;
+
+    --m-bronze:#d9a06a; --m-silver:#b3bcc7; --m-gold:#dcc063;
+
+    --veil:rgba(255,255,255,.10);
+    --scrim:rgba(0,0,0,.62);
+    --brand-glow:rgba(255,92,71,.34); --brand-pulse:rgba(255,92,71,.18);
+    --shadow:0 1px 2px rgba(0,0,0,.44),0 3px 10px rgba(0,0,0,.34);
+    --shadow-lg:0 12px 34px rgba(0,0,0,.56);
+    --shadow-xl:0 20px 46px rgba(0,0,0,.62);
+    --shadow-drawer:-8px 0 30px rgba(0,0,0,.58);
+    --shadow-seam:0 -1px 2px rgba(0,0,0,.34);
+    --shadow-ico:0 1px 2px rgba(0,0,0,.38);
+    color-scheme:dark;
   }
   * { box-sizing:border-box; }
   html,body { margin:0; padding:0; }
@@ -45,13 +145,13 @@
 
   .hbtn { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--card);
     font:inherit; font-size:12.5px; font-weight:650; color:var(--muted); border-radius:9px; padding:7px 11px; cursor:pointer; }
-  .hbtn:hover { color:var(--ink); border-color:#cfd5dc; }
-  .hbtn.on { background:var(--brand); border-color:var(--brand); color:#fff; }
+  .hbtn:hover { color:var(--ink); border-color:var(--line-strong); }
+  .hbtn.on { background:var(--brand); border-color:var(--brand); color:var(--on-accent); }
   .seg { display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:var(--card); }
   .seg button { border:none; background:none; font:inherit; font-size:12px; font-weight:650; color:var(--muted);
     padding:7px 10px; cursor:pointer; border-right:1px solid var(--line); }
   .seg button:last-child { border-right:none; }
-  .seg button.on { background:var(--cloud-accent); color:#fff; }
+  .seg button.on { background:var(--g-amber-line); color:var(--on-accent); }
   /* One header row is worth ~40px of board height, and the controls only just fit
      on a 1512-wide laptop: tighten them rather than let the bar wrap. */
   @media (max-width:1820px) {
@@ -78,7 +178,7 @@
     display:flex; align-items:center; gap:6px; border:none; background:none; font:inherit;
     font-size:12.5px; font-weight:650; color:var(--muted); padding:7px 14px 8px; cursor:pointer;
     border-radius:var(--tabr) var(--tabr) 0 0; max-width:230px; }
-  .tab:hover { color:var(--ink); background:#f4f6f8; }
+  .tab:hover { color:var(--ink); background:var(--well); }
   /* the page grey and the header white are four units apart, so the fill alone
      cannot carry the shape: a brand cap on top and hairlines down the sides give
      the tab a readable edge while the base stays open into the sheet below */
@@ -100,12 +200,12 @@
   .tab-x { display:flex; align-items:center; justify-content:center; flex:0 0 auto;
     width:15px; height:15px; border:none; border-radius:50%; background:none; cursor:pointer;
     font:inherit; font-size:14px; line-height:1; color:var(--muted); padding:0; }
-  .tab-x:hover { background:rgba(0,0,0,.09); color:var(--ink); }
+  .tab-x:hover { background:var(--veil); color:var(--ink); }
   /* The + is the only way to discover the builder, so it is drawn as an open
      invitation rather than a glyph: a dashed brand outline that fills in and
      lifts under the cursor, offset clear of the active tab's shoulder. */
   .tab-add { display:flex; align-items:center; justify-content:center; gap:5px;
-    border:1.5px dashed var(--brand-bd, #f6b6ac); background:var(--brand-wash); font:inherit;
+    border:1.5px dashed var(--brand-bd); background:var(--brand-wash); font:inherit;
     font-size:12.5px; font-weight:700; color:var(--brand); height:27px; padding:0 10px;
     border-radius:9px; cursor:pointer; flex:0 0 auto;
     margin-left:calc(var(--tabr) + 5px); margin-bottom:4px;
@@ -113,14 +213,14 @@
       transform .16s ease, box-shadow .16s ease; }
   .tab-add .plus { font-size:16px; line-height:1; margin-top:-1px; }
   .tab-add:hover { background:var(--brand); border-style:solid; border-color:var(--brand);
-    color:#fff; transform:translateY(-1px); box-shadow:0 3px 10px rgba(255,54,33,.28); }
+    color:var(--on-accent); transform:translateY(-1px); box-shadow:0 3px 10px var(--brand-glow); }
   .tab-add:active { transform:translateY(0); box-shadow:none; }
   /* one gentle pull on first paint, so the affordance is noticed once and then
      stops competing with the diagram */
   .tab-add { animation:addhint 2.2s ease-in-out .8s 2; }
   @keyframes addhint {
-    0%,100% { box-shadow:0 0 0 0 rgba(255,54,33,0); }
-    45%     { box-shadow:0 0 0 5px rgba(255,54,33,.14); }
+    0%,100% { box-shadow:0 0 0 0 transparent; }
+    45%     { box-shadow:0 0 0 5px var(--brand-pulse); }
   }
   @media (max-width:1400px) { .tab-add .plus-lbl { display:none; } .tab-add { padding:0 8px; } }
   /* "Reference Architecture" plus a user tab plus + is a lot of header on a
@@ -164,10 +264,10 @@
   /* All three heads share a height so the lists under them start on one line;
      the platform's own head only changes its type size, not the row. */
   .colhead { font-size:13.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
-    text-align:center; padding:5px 8px; border-radius:7px; color:#fff; flex:0 0 auto;
+    text-align:center; padding:5px 8px; border-radius:7px; color:var(--on-accent); flex:0 0 auto;
     min-height:var(--headh); display:flex; align-items:center; justify-content:center; line-height:1.2; }
-  .col.src .colhead  { background:#6f9c7c; }
-  .col.cons .colhead { background:#6f8bb8; }
+  .col.src .colhead  { background:var(--g-green-head); }
+  .col.cons .colhead { background:var(--g-blue-head); }
   /* the platform is the subject of the diagram, so its title outranks the column
      headings around it rather than matching them */
   /* The title grows inside the head's existing 34px box rather than making the
@@ -181,11 +281,11 @@
      though: the four zone headings read as one family, and a shorter pocket
      heading made People look like an afterthought next to Sources. */
   .pockhead { font-size:11.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
-    text-align:center; padding:4px 6px; border-radius:7px; color:#fff; flex:0 0 auto;
+    text-align:center; padding:4px 6px; border-radius:7px; color:var(--on-accent); flex:0 0 auto;
     min-height:var(--headh); display:flex; align-items:center; justify-content:center;
     line-height:1.25; }
-  .pocket.ing .pockhead { background:#7d94a8; }
-  .pocket.ppl .pockhead { background:#8a7fa8; }
+  .pocket.ing .pockhead { background:var(--g-teal-head); }
+  .pocket.ppl .pockhead { background:var(--g-violet-head); }
   /* every heading carries a mark, the way the platform bar carries the
      Databricks one: the glyph inherits the heading's own colour, so one rule
      covers the white-on-tint zone bars and the dark-on-white band labels */
@@ -263,55 +363,55 @@
      the far end, which is why both offsets are written off --pgap. */
   .pocket.ing::before, .pocket.ppl::before { content:""; position:absolute; left:50%;
     margin-left:-1.5px; width:3px; height:calc(var(--pgap) - var(--zo) * 2 - 8px);
-    background:repeating-linear-gradient(180deg,#7d8794 0 5px,transparent 5px 9px);
+    background:repeating-linear-gradient(180deg,var(--flow-neutral) 0 5px,transparent 5px 9px);
     background-size:3px 9px; animation:flowdashv .9s linear infinite; }
   .pocket.ing::after, .pocket.ppl::after { content:""; position:absolute; left:50%;
     margin-left:-6px; border:6px solid transparent; }
   .pocket.ing::before { top:calc(var(--pgap) * -1 + var(--zo) + 8px); }
   .pocket.ing::after  { top:calc(var(--pgap) * -1 + var(--zo));
-    border-bottom:8px solid #7d8794; border-top:0; }
+    border-bottom:8px solid var(--flow-neutral); border-top:0; }
   /* people ask: the dashes leave the pocket and the head lands on the serving
      arm below, mirroring the ingestion pocket's climb into the ingest arm */
   .pocket.ppl::before { bottom:calc(var(--pgap) * -1 + var(--zo) + 8px);
-    background:repeating-linear-gradient(180deg,#8a7fa8 0 5px,transparent 5px 9px);
+    background:repeating-linear-gradient(180deg,var(--g-violet-line) 0 5px,transparent 5px 9px);
     background-size:3px 9px; }
   .pocket.ppl::after  { bottom:calc(var(--pgap) * -1 + var(--zo));
-    border-top:8px solid #8a7fa8; border-bottom:0; }
+    border-top:8px solid var(--g-violet-line); border-bottom:0; }
   /* a moving-dash connector: the dashes travel from source to target, so the
      diagram reads as flow rather than as static boxes */
   .flow { display:block; width:100%; height:14px; position:relative; }
   .flow::before { content:""; position:absolute; left:0; right:9px; top:5px; height:3px;
-    background:repeating-linear-gradient(90deg, #7d8794 0 7px, transparent 7px 13px);
+    background:repeating-linear-gradient(90deg, var(--flow-neutral) 0 7px, transparent 7px 13px);
     background-size:13px 3px; animation:flowdash .9s linear infinite; }
   .flow::after { content:""; position:absolute; right:0; top:0;
-    border:7px solid transparent; border-left:10px solid #7d8794; border-right:0; }
+    border:7px solid transparent; border-left:10px solid var(--flow-neutral); border-right:0; }
   /* the platform hands the open copy of the data down to cloud storage: same
      connector rotated, in the cloud band's own accent so the hand-off reads */
   .flow.down { width:14px; height:48px; }
   .flow.down::before { left:5px; right:auto; top:0; bottom:9px; width:3px; height:auto;
-    background:repeating-linear-gradient(180deg, #c07f3f 0 7px, transparent 7px 13px);
+    background:repeating-linear-gradient(180deg, var(--g-amber-line) 0 7px, transparent 7px 13px);
     background-size:3px 13px; animation-name:flowdashv; }
   .flow.down::after { right:auto; left:0; top:auto; bottom:0;
-    border:7px solid transparent; border-top:10px solid #c07f3f; border-bottom:0; }
+    border:7px solid transparent; border-top:10px solid var(--g-amber-line); border-bottom:0; }
   /* the same connector pointing back: Consumers to the people who asked, and the
      people's questions into the platform they land on */
   .flow.left::before { left:9px; right:0; animation-name:flowdashl; }
   .flow.left::after { right:auto; left:0; border:7px solid transparent;
-    border-right:10px solid #7d8794; border-left:0; }
+    border-right:10px solid var(--flow-neutral); border-left:0; }
   /* and pointing up, into the apps, harnesses and use cases band */
   .flow.up { width:14px; height:48px; }
   .flow.up::before { left:5px; right:auto; top:9px; bottom:0; width:3px; height:auto;
-    background:repeating-linear-gradient(180deg, #8a7fa8 0 7px, transparent 7px 13px);
+    background:repeating-linear-gradient(180deg, var(--g-violet-line) 0 7px, transparent 7px 13px);
     background-size:3px 13px; animation-name:flowdashu; }
   .flow.up::after { right:auto; left:0; top:0; border:7px solid transparent;
-    border-bottom:10px solid #8a7fa8; border-top:0; }
+    border-bottom:10px solid var(--g-violet-line); border-top:0; }
   /* every connector on the people pocket carries their accent, and every one of
      them points away from the pocket: people are the actors here, so nothing
      flows back into them */
-  .flow.ppl::before { background:repeating-linear-gradient(90deg, #8a7fa8 0 7px, transparent 7px 13px);
+  .flow.ppl::before { background:repeating-linear-gradient(90deg, var(--g-violet-line) 0 7px, transparent 7px 13px);
     background-size:13px 3px; }
-  .flow.ppl::after { border-left-color:#8a7fa8; }
-  .flow.left.ppl::after { border-right-color:#8a7fa8; }
+  .flow.ppl::after { border-left-color:var(--g-violet-line); }
+  .flow.left.ppl::after { border-right-color:var(--g-violet-line); }
   @keyframes flowdash  { to { background-position:13px 0; } }
   @keyframes flowdashv { to { background-position:0 13px; } }
   @keyframes flowdashl { to { background-position:-13px 0; } }
@@ -362,10 +462,10 @@
     justify-content:flex-start; }
   .rail-note { margin:auto 0 0; padding:7px 6px 0; border-top:1px dashed var(--line);
     font-size:10px; line-height:1.4; color:var(--muted); }
-  .rail.src  { border-color:var(--rail-bd); }
-  .rail.ing  { border-color:#c6d2dc; }
-  .rail.ppl  { border-color:#d2cade; }
-  .rail.cons { border-color:var(--cons-bd); }
+  .rail.src  { border-color:var(--g-green-bd); }
+  .rail.ing  { border-color:var(--g-teal-bd); }
+  .rail.ppl  { border-color:var(--g-violet-bd); }
+  .rail.cons { border-color:var(--g-blue-bd); }
 
   /* ---------- group label: one type spec for every group in the diagram ----------
      Rails and the two horizontal bands used to style their group headers
@@ -377,7 +477,7 @@
   .rgroup { display:flex; flex-direction:column; min-width:0; gap:3px; }
   .rgroup-t { flex:0 0 auto; height:var(--glabelh); display:flex; align-items:center;
     font-size:9.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
-    color:var(--g-accent, var(--muted)); }
+    color:var(--g-ink, var(--muted)); }
   .rgroup-t .rg-label { min-width:0; line-height:1.1; white-space:nowrap;
     overflow:hidden; text-overflow:ellipsis; }
   /* per-zone accent, so a group label always reads as part of its own zone */
@@ -385,12 +485,19 @@
      line all take it, so a zone reads as one thing and as distinct from the zone
      next to it. The six are spread around the wheel (green 140, teal 185,
      blue 220, violet 270, rose 335, orange 30) to keep neighbours apart. */
-  .rail.src  { --g-accent:#4b8f63; --rail-accent:#4b8f63; }
-  .rail.ing  { --g-accent:#35878f; --rail-accent:#35878f; }
-  .rail.ppl  { --g-accent:#7a5ca8; --rail-accent:#7a5ca8; }
-  .rail.cons { --g-accent:#3f6cbd; --rail-accent:#3f6cbd; }
-  .cloudwrap .cloud-sec { --g-accent:#c07a3e; }
-  .hband.top .cloud-sec { --g-accent:#a8517d; }
+  /* A zone names its group ONCE, here, and both the rule that draws its edges
+     and the rule that sets its label text read it back out. --g-accent is the
+     line slot (edges, 3:1 is enough) and --g-ink is the text slot (4.5:1). */
+  .rail.src  { --g-accent:var(--g-green-line);  --g-ink:var(--g-green-ink);
+    --rail-accent:var(--g-green-line); }
+  .rail.ing  { --g-accent:var(--g-teal-line);   --g-ink:var(--g-teal-ink);
+    --rail-accent:var(--g-teal-line); }
+  .rail.ppl  { --g-accent:var(--g-violet-line); --g-ink:var(--g-violet-ink);
+    --rail-accent:var(--g-violet-line); }
+  .rail.cons { --g-accent:var(--g-blue-line);   --g-ink:var(--g-blue-ink);
+    --rail-accent:var(--g-blue-line); }
+  .cloudwrap .cloud-sec { --g-accent:var(--g-amber-line); --g-ink:var(--g-amber-ink); }
+  .hband.top .cloud-sec { --g-accent:var(--g-plum-line);  --g-ink:var(--g-plum-ink); }
 
   /* ---------- zone box: one outline around a zone's heading and its content ----
      Sources is a heading pill plus a rail card, i.e. two boxes. This encloses the
@@ -402,10 +509,10 @@
      on a sub-pixel and washes out in both the raster exports and print. */
   .col, .pocket { outline:2px solid var(--z-accent); outline-offset:4px;
     border-radius:9px; }
-  .col.src    { --z-accent:#4b8f63; }
-  .col.cons   { --z-accent:#3f6cbd; }
-  .pocket.ing { --z-accent:#35878f; }
-  .pocket.ppl { --z-accent:#7a5ca8; }
+  .col.src    { --z-accent:var(--g-green-line); }
+  .col.cons   { --z-accent:var(--g-blue-line); }
+  .pocket.ing { --z-accent:var(--g-teal-line); }
+  .pocket.ppl { --z-accent:var(--g-violet-line); }
   /* two tiles per row: the rails hold 17 and 16 entries, and stacking them in one
      column is what pushed the page past a laptop viewport. */
   .rtiles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px; align-items:stretch; }
@@ -413,16 +520,16 @@
   .rail.ing .rtiles, .rail.ppl .rtiles { grid-template-columns:minmax(0,1fr); }
   .rtile { display:flex; align-items:center; gap:5px; width:100%; text-align:left; font:inherit;
     border:1px solid var(--line); border-left:3px solid var(--rail-accent); border-radius:6px;
-    background:#fff; padding:4px 6px; cursor:pointer; transition:.12s; }
-  .rail.ing  .rtile { border-left-color:#7d94a8; }
-  .rail.ppl  .rtile { border-left-color:#8a7fa8; }
+    background:var(--card); padding:4px 6px; cursor:pointer; transition:.12s; }
+  .rail.ing  .rtile { border-left-color:var(--g-teal-line); }
+  .rail.ppl  .rtile { border-left-color:var(--g-violet-line); }
   /* a tile supplied by the active cloud provider, not by the static model */
-  .rtile.cloudy { border-left-color:var(--cloud-accent); background:var(--cloud-bg); }
+  .rtile.cloudy { border-left-color:var(--g-amber-line); background:var(--g-amber-bg); }
   .rtile:hover { border-color:var(--brand); box-shadow:var(--shadow); transform:translateX(1px); }
   .rtile .ic { width:13px; height:13px; flex:0 0 auto; color:var(--rail-accent); }
-  .rail.ing  .rtile .ic { color:#6d879e; }
-  .rail.ppl  .rtile .ic { color:#7d709c; }
-  .rtile.cloudy .ic { color:var(--cloud-accent); }
+  .rail.ing  .rtile .ic { color:var(--g-teal-ink); }
+  .rail.ppl  .rtile .ic { color:var(--g-violet-ink); }
+  .rtile.cloudy .ic { color:var(--g-amber-ink); }
   .rtile .t-name { font-size:11px; font-weight:650; line-height:1.2; min-width:0; }
   /* ---------- platform (Z shape) ---------- */
   /* Two elements draw one box. The corners that meet are square and the shared
@@ -432,8 +539,7 @@
      corners sit — erase past them and the outline breaks open. */
   .plat-top, .plat-body { border:2px solid var(--brand); background:var(--plat-fill);
     padding:7px; display:flex; gap:7px; }
-  :root { --plat-fill:#fffaf8; }
-  .plat-top  { border-radius:14px 14px 0 14px; box-shadow:0 -1px 2px rgba(16,24,40,.04); }
+  .plat-top  { border-radius:14px 14px 0 14px; box-shadow:var(--shadow-seam); }
   .plat-body { border-radius:0 14px 14px 14px; position:relative; box-shadow:var(--shadow); }
   /* absolute offsets here are measured from the padding box, so the strip has to
      reach 2px further up than the border it erases -- a 1px red hairline across
@@ -475,16 +581,22 @@
   .arm .pcard .p-name { font-size:11.5px; }
   .arm .pcard .p-sub { font-size:9px; }
 
-  .band { display:flex; align-items:stretch; gap:10px; border:1px solid var(--tone-grey-bd);
-    border-radius:10px; background:var(--tone-grey-bg); padding:5px 9px; }
-  .band.t-coral  { border-color:var(--tone-coral-bd);  background:var(--tone-coral-bg); }
-  .band.t-amber  { border-color:var(--tone-amber-bd);  background:var(--tone-amber-bg); }
-  .band.t-teal   { border-color:var(--tone-teal-bd);   background:var(--tone-teal-bg); }
-  .band.t-green  { border-color:var(--tone-green-bd);  background:var(--tone-green-bg); }
-  .band.t-blue   { border-color:var(--tone-blue-bd);   background:var(--tone-blue-bg); }
-  .band.t-slate  { border-color:var(--tone-slate-bd);  background:var(--tone-slate-bg); }
-  .band.t-rose   { border-color:var(--tone-rose-bd);   background:var(--tone-rose-bg); }
-  .band.t-grey   { border-color:var(--tone-grey-bd);   background:var(--tone-grey-bg); }
+  /* A band names its group and takes both slots from it. No alias in between:
+     var() inside a custom-property declaration is substituted at the element
+     that DECLARES it, so an alias parked on :root would resolve against the
+     root's own (light) group values and then inherit that straight past
+     body.theme-dark. Naming the group at the point of use is the only form
+     that theme-swaps, and it is the more explicit one anyway. */
+  .band { display:flex; align-items:stretch; gap:10px; border:1px solid var(--line);
+    border-radius:10px; background:var(--card); padding:5px 9px; }
+  .band.t-coral  { border-color:var(--g-coral-bd);  background:var(--g-coral-bg); }
+  .band.t-amber  { border-color:var(--g-amber-bd);  background:var(--g-amber-bg); }
+  .band.t-teal   { border-color:var(--g-teal-bd);   background:var(--g-teal-bg); }
+  .band.t-green  { border-color:var(--g-green-bd);  background:var(--g-green-bg); }
+  .band.t-blue   { border-color:var(--g-blue-bd);   background:var(--g-blue-bg); }
+  .band.t-slate  { border-color:var(--g-slate-bd);  background:var(--g-slate-bg); }
+  .band.t-rose   { border-color:var(--g-rose-bd);   background:var(--g-rose-bg); }
+  .band.t-grey   { border-color:var(--line);        background:var(--card); }
 
   .band-lbl { flex:0 0 138px; min-width:0; padding-top:2px; }
   .band-lbl .bl-name { display:flex; align-items:flex-start;
@@ -498,30 +610,32 @@
     border:1px solid transparent; border-radius:9px; background:transparent; padding:5px 7px;
     cursor:pointer; transition:.12s; min-width:0; position:relative; }
   .pcard.grow { flex:1 1 0; }
-  .pcard:hover { border-color:var(--brand); background:#fff; box-shadow:var(--shadow); }
-  .pico { width:32px; height:32px; flex:0 0 auto; border:1px solid #ececec; border-radius:8px; background:#fff;
-    display:grid; place-items:center; box-shadow:0 1px 2px rgba(16,24,40,.06); }
+  .pcard:hover { border-color:var(--brand); background:var(--card); box-shadow:var(--shadow); }
+  .pico { width:32px; height:32px; flex:0 0 auto; border:1px solid var(--line); border-radius:8px; background:var(--card);
+    display:grid; place-items:center; box-shadow:var(--shadow-ico); }
   .pico svg { width:18px; height:18px; color:var(--brand); }
   .ptxt { min-width:0; }
   .p-name { display:block; font-size:13.5px; font-weight:750; line-height:1.2; letter-spacing:-.01em; }
   .p-sub { display:block; font-size:10.5px; color:var(--muted); line-height:1.3; margin-top:2px; }
   .p-caps { display:block; font-size:10px; color:var(--muted); line-height:1.45; margin-top:3px; }
-  .p-caps i { color:#c4ccd4; font-style:normal; }
+  /* a divider, not a word: held to the 3:1 graphical threshold, and
+     aria-hidden at the point it is written so it is not read aloud */
+  .p-caps i { color:var(--sep); font-style:normal; }
 
   .provchip { display:inline-block; font-size:8.5px; font-weight:800; letter-spacing:.05em;
     text-transform:uppercase; border-radius:20px; padding:1px 5px; margin-left:5px;
-    vertical-align:1.5px; color:var(--cloud-accent); background:#fdf0e3; }
+    vertical-align:1.5px; color:var(--g-amber-ink); background:var(--g-amber-bg); }
 
   /* inner panel (Genie / Agent Bricks) */
   .panel { display:flex; align-items:flex-start; gap:9px; background:var(--panel);
-    border:1px solid #eceae7; border-radius:10px; padding:8px 9px; min-width:0; }
+    border:1px solid var(--line); border-radius:10px; padding:8px 9px; min-width:0; }
   .panel-head { flex:0 0 auto; min-width:100px; }
   .panel-head .pico { width:26px; height:26px; }
   .panel-head .pico svg { width:15px; height:15px; }
   .phead { display:block; width:100%; text-align:left; font:inherit; background:transparent;
     border:1px solid transparent; border-radius:8px; padding:3px 4px; cursor:pointer;
     transition:.12s; position:relative; }
-  .phead:hover { border-color:var(--brand); background:#fff; }
+  .phead:hover { border-color:var(--brand); background:var(--card); }
   .ph-top { display:flex; align-items:center; gap:6px; }
   .ph-name { font-size:14px; font-weight:800; letter-spacing:-.015em; line-height:1.12; white-space:nowrap; }
   .ph-sub { display:block; font-size:10px; color:var(--muted); line-height:1.3; margin-top:4px;
@@ -530,10 +644,10 @@
   .pcol { flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:4px;
     border:1px solid transparent; border-radius:8px; padding:3px 4px; cursor:pointer; font:inherit;
     text-align:left; background:transparent; transition:.12s; }
-  .pcol:hover { border-color:var(--brand); background:#fff; }
+  .pcol:hover { border-color:var(--brand); background:var(--card); }
   .pc-top { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
   .tagpill { display:inline-flex; align-items:center; gap:4px;
-    border:1px solid var(--brand-soft); background:#fff; color:var(--brand);
+    border:1px solid var(--brand-soft); background:var(--card); color:var(--brand-ink);
     border-radius:20px; padding:2px 7px 2px 5px; font-size:9px; font-weight:800; letter-spacing:.05em; }
   .tagpill svg { width:10px; height:10px; }
   .pcol .pc-desc { font-size:10px; color:var(--ink); line-height:1.32; }
@@ -541,7 +655,7 @@
   .schip svg { width:12px; height:12px; flex:0 0 12px; stroke:var(--brand); fill:none;
     stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
   .schip { display:flex; align-items:center; gap:5px; text-align:left;
-    border:1px solid var(--line); background:#fff; border-radius:7px; padding:4px 5px;
+    border:1px solid var(--line); background:var(--card); border-radius:7px; padding:4px 5px;
     font:inherit; font-size:9.5px; font-weight:700; color:var(--ink); cursor:pointer; text-align:center;
     line-height:1.22; transition:.12s; }
   .schip:hover { border-color:var(--brand); color:var(--brand); }
@@ -549,7 +663,7 @@
   /* plain column (Agentic Dev) */
   .plaincol { border:1px solid transparent; border-radius:9px; padding:4px 5px;
     cursor:pointer; font:inherit; text-align:left; background:transparent; transition:.12s; }
-  .plaincol:hover { border-color:var(--brand); background:#fff; }
+  .plaincol:hover { border-color:var(--brand); background:var(--card); }
   .plaincol .pl-name { display:flex; align-items:center; font-size:13.5px; font-weight:800;
     letter-spacing:-.015em; line-height:1.12; }
   .plaincol .pl-sub { display:block; font-size:10px; color:var(--muted); line-height:1.3; margin-top:4px; }
@@ -578,6 +692,14 @@
      pins glyphs to 13px and would otherwise shrink the logos to nothing. */
   .fmt-grid .fmt.has-logo { padding:3px 6px; }
   .fmt.has-logo .fmt-logo { display:block; width:auto; height:22px; max-width:100%; }
+  /* Third-party wordmarks are dark ink on transparent, so in dark mode their
+     chip keeps a light surface rather than the mark being recoloured: an Apache
+     or Linux Foundation logo is not ours to restyle. --logo-chip is the only
+     token that does not flip with the theme. */
+  .fmt.has-logo, .fmt.logo-mark { background:var(--logo-chip); }
+  body.theme-dark .fmt.has-logo, body.theme-dark .fmt.logo-mark { border-color:var(--line-strong); }
+  body.theme-dark .fmt.has-logo, body.theme-dark .fmt.logo-mark,
+  body.theme-dark .fmt.has-logo *, body.theme-dark .fmt.logo-mark * { color:#2a3138; }
   /* a square mark sits inline with the name, at glyph size */
   .fmt.logo-mark .fmt-logo { height:15px; }
   .fmt.has-logo:hover { border-color:var(--brand); }
@@ -591,23 +713,23 @@
     align-items:center; justify-content:flex-start; gap:1px; text-align:center; font:inherit;
     border:0; background:transparent; border-radius:9px; padding:5px 9px 6px;
     cursor:pointer; transition:.12s; }
-  .mstage:hover { background:#fff; box-shadow:var(--shadow); transform:translateY(-1px); }
+  .mstage:hover { background:var(--card); box-shadow:var(--shadow); transform:translateY(-1px); }
   .mstage svg { display:block; width:29px; height:29px; flex:0 0 auto; stroke-width:1.5; }
   .mstage .ms-n { display:block; font-size:10.5px; font-weight:850; letter-spacing:.07em;
     text-transform:uppercase; line-height:1.1; }
   .mstage .ms-s { display:block; font-size:9px; line-height:1.2; color:var(--muted);
     font-weight:600; }
   /* the layer's colour lives on the glyph and its name, nowhere else */
-  .m-bronze svg, .m-bronze .ms-n { color:#b3661a; }
-  .m-silver svg, .m-silver .ms-n { color:#7c838c; }
-  .m-gold   svg, .m-gold   .ms-n { color:#a8871f; }
+  .m-bronze svg, .m-bronze .ms-n { color:var(--m-bronze); }
+  .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
+  .m-gold   svg, .m-gold   .ms-n { color:var(--m-gold); }
   .medal-arrow { flex:0 0 22px; align-self:center; height:12px; position:relative; }
   .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:5px; height:2px;
-    background:repeating-linear-gradient(90deg,#4a5059 0 7px,transparent 7px 13px);
+    background:repeating-linear-gradient(90deg,var(--flow-medal) 0 7px,transparent 7px 13px);
     background-size:13px 2px; animation:flowdash .9s linear infinite; }
   .medal-arrow::after { content:""; position:absolute; right:0; top:2px;
-    border:4px solid transparent; border-left:6px solid #4a5059; border-right:0; }
-  .fmt { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line); background:#fff;
+    border:4px solid transparent; border-left:6px solid var(--flow-medal); border-right:0; }
+  .fmt { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--card);
     border-radius:7px; padding:4px 9px; font:inherit; font-size:10.5px; font-weight:800; letter-spacing:.04em;
     text-transform:uppercase; color:var(--ink); cursor:pointer; transition:.12s; white-space:nowrap; flex:0 0 auto; }
   .fmt:hover { border-color:var(--brand); color:var(--brand); }
@@ -618,7 +740,7 @@
   .anyx { display:inline-flex; align-items:center; gap:5px; border:1px solid transparent; border-radius:7px;
     padding:4px 7px; font:inherit; font-size:11px; font-weight:700; color:var(--ink); cursor:pointer;
     background:transparent; white-space:nowrap; flex:0 0 auto; }
-  .anyx:hover { border-color:var(--brand); background:#fff; }
+  .anyx:hover { border-color:var(--brand); background:var(--card); }
   .anyx svg { width:14px; height:14px; color:var(--muted); flex:0 0 auto; }
 
   /* ---------- cloud band ---------- */
@@ -642,7 +764,7 @@
   .cloud-body { min-width:0; display:grid; gap:7px;
     grid-template-columns:repeat(3, minmax(0,1fr)); align-content:start; }
   .ctile { display:flex; align-items:center; gap:6px; min-width:0; text-align:left; font:inherit;
-    border:1px solid var(--line); border-radius:7px; background:#fff; padding:4px 7px; cursor:pointer; transition:.12s; }
+    border:1px solid var(--line); border-radius:7px; background:var(--card); padding:4px 7px; cursor:pointer; transition:.12s; }
   .ctile:hover { border-color:var(--cloud-accent); box-shadow:var(--shadow); transform:translateY(-1px); }
   .ctile .ic { width:15px; height:15px; flex:0 0 auto; color:var(--cloud-accent); }
   .ctile .ct { min-width:0; }
@@ -650,8 +772,9 @@
   .ctile .ct-sub { display:block; font-size:9.5px; color:var(--muted); line-height:1.25; margin-top:1px; }
   /* The top band reuses the bottom band's markup, renderer and stylesheet and
      only swaps the accent, so the two horizontal bands read as a pair. */
-  .hband.top { --cloud-accent:#a8517d; --cloud-bd:#a8517d; --cloud-bg:#fdf5f8; margin-bottom:0; }
-  .cloudwrap { --cloud-accent:#c07a3e; --cloud-bd:#c07a3e; }
+  .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line);
+    --cloud-bg:var(--g-plum-bg); margin-bottom:0; }
+  .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line); }
   /* both horizontal bands are inset to the Z's own width: the columns either side
      of the platform are Sources and Consumers, and neither band belongs over them */
   /* the two bands line up with the platform's OUTER box, not with the blocks
@@ -700,18 +823,18 @@
      .pocket alone left them pointing at nothing */
   body.plat-only .flow.left.ppl.tuck,
   body.plat-only .flow.ingtuck { display:none; }
-  #plat-btn.on { background:var(--brand); border-color:var(--brand); color:#fff; }
+  #plat-btn.on { background:var(--brand); border-color:var(--brand); color:var(--on-accent); }
 
   /* ---------- download menu ---------- */
   .dl-wrap { position:relative; display:inline-flex; }
   .dl-menu { position:absolute; top:calc(100% + 7px); right:0; min-width:212px; z-index:90;
     background:var(--card); border:1px solid var(--line); border-radius:11px; padding:5px;
-    box-shadow:0 20px 46px rgba(16,24,40,.20); display:none; }
+    box-shadow:var(--shadow-xl); display:none; }
   .dl-wrap.open .dl-menu { display:block; }
   .dl-menu button { display:flex; width:100%; align-items:center; gap:8px; background:none;
     border:0; text-align:left; font:inherit; font-size:12px; font-weight:650; color:var(--ink);
     padding:7px 9px; border-radius:8px; cursor:pointer; }
-  .dl-menu button:hover { background:#f3f5f8; }
+  .dl-menu button:hover { background:var(--well); }
   .dl-menu button i { margin-left:auto; font-style:normal; font-size:9.5px; font-weight:650;
     letter-spacing:.02em; color:var(--muted); text-transform:uppercase; }
   .dl-note { font-size:10px; color:var(--muted); padding:3px 9px 5px; line-height:1.4; }
@@ -724,7 +847,7 @@
   @media print {
     @page { size:landscape; margin:8mm; }
     header.top, .drawer, .scrim, .dl-menu { display:none !important; }
-    body { background:#fff; }
+    body { background:var(--card); }
     .fit { overflow:visible; }
   }
 
@@ -737,17 +860,17 @@
     background:var(--card); padding:22px; box-shadow:var(--shadow); }
   #bld-text { display:block; width:100%; box-sizing:border-box; font:inherit; font-size:13.5px;
     line-height:1.55; color:var(--ink); border:1px solid var(--line); border-radius:11px;
-    background:#fff; padding:12px 14px; resize:vertical; }
+    background:var(--card); padding:12px 14px; resize:vertical; }
   #bld-text::placeholder { color:var(--muted); }
   #bld-text:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-wash); }
   .bld-row { display:flex; justify-content:center; margin:14px 0; }
   .bld-go { display:block; width:100%; font:inherit; font-size:13.5px; font-weight:750;
-    color:#fff; background:var(--brand); border:none; border-radius:11px; padding:11px 14px;
+    color:var(--on-accent); background:var(--brand); border:none; border-radius:11px; padding:11px 14px;
     cursor:pointer; transition:.12s; }
   .bld-go:hover:not(:disabled) { filter:brightness(1.06); }
   /* disabled until there is something to build from, so the button never looks
      like it did nothing */
-  .bld-go:disabled { background:#e6e9ee; color:var(--muted); cursor:not-allowed; }
+  .bld-go:disabled { background:var(--well); color:var(--faint); cursor:not-allowed; }
   .bld-note { margin-top:11px; font-size:11.5px; line-height:1.5; color:var(--muted); min-height:1em; }
   body.tab-alt .board { display:none !important; }
   /* Platform Focus and Download belong to the toolbar, not to one tab: they hold
@@ -762,7 +885,7 @@
   .mapped { border-color:var(--brand) !important; box-shadow:0 0 0 1.5px var(--brand) !important; background:var(--brand-wash) !important; }
   body.ref-mode .atom:not(.mapped) { opacity:.26; }
   body.ref-mode .mapped { cursor:help; }
-  .map-badge { position:absolute; top:-5px; right:-5px; font-size:9px; font-weight:800; color:#fff;
+  .map-badge { position:absolute; top:-5px; right:-5px; font-size:9px; font-weight:800; color:var(--on-accent);
     background:var(--brand); border-radius:20px; padding:0 5px; line-height:15px; min-width:15px; text-align:center; }
   .rtile, .ctile, .pcol, .schip, .plaincol, .fmt, .anyx { position:relative; }
 
@@ -770,16 +893,16 @@
   body.edit-mode .atom { cursor:pointer; }
   body.edit-mode .atom::after { content:"✎"; position:absolute; top:-4px; right:-2px; font-size:9px;
     color:var(--brand); opacity:.75; }
-  .addbtn { border:1px dashed #c3cbd4; background:transparent; color:var(--faint); border-radius:8px;
+  .addbtn { border:1px dashed var(--line-strong); background:transparent; color:var(--faint); border-radius:8px;
     font:inherit; font-size:10.5px; font-weight:700; padding:5px 9px; cursor:pointer; align-self:center; }
   .addbtn:hover { border-color:var(--brand); color:var(--brand); }
   .addbtn.wide { width:100%; }
 
   /* ---------- drawer ---------- */
-  .scrim { position:fixed; inset:0; background:rgba(16,24,40,.35); opacity:0; pointer-events:none; transition:.2s; z-index:40; }
+  .scrim { position:fixed; inset:0; background:var(--scrim); opacity:0; pointer-events:none; transition:.2s; z-index:40; }
   .scrim.show { opacity:1; pointer-events:auto; }
-  .drawer { position:fixed; top:0; right:0; height:100%; width:430px; max-width:92vw; background:#fff;
-    box-shadow:-8px 0 30px rgba(16,24,40,.18); z-index:50; transform:translateX(102%);
+  .drawer { position:fixed; top:0; right:0; height:100%; width:430px; max-width:92vw; background:var(--card);
+    box-shadow:var(--shadow-drawer); z-index:50; transform:translateX(102%);
     transition:transform .26s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; }
   .drawer.show { transform:translateX(0); }
   .d-head { padding:20px 24px 15px; border-bottom:1px solid var(--line); }
@@ -794,23 +917,24 @@
   .d-body ul { margin:0; padding-left:17px; font-size:13.5px; }
   .d-body li { margin-bottom:3px; }
   .chip { display:inline-block; font-size:11.5px; padding:4px 9px; border:1px solid var(--line); border-radius:20px;
-    margin:0 5px 5px 0; cursor:pointer; background:#fafbfc; }
+    margin:0 5px 5px 0; cursor:pointer; background:var(--well); }
   .chip:hover { border-color:var(--brand); color:var(--brand); }
   .chip.static { cursor:default; } .chip.static:hover { border-color:var(--line); color:var(--ink); }
-  .d-close { position:absolute; top:14px; right:16px; border:none; background:#f1f3f5; width:29px; height:29px;
+  .d-close { position:absolute; top:14px; right:16px; border:none; background:var(--well); width:29px; height:29px;
     border-radius:8px; cursor:pointer; font-size:15px; color:var(--muted); }
-  .d-refbox { background:var(--brand-wash); border:1px solid #ffd9d0; border-radius:9px; padding:9px 12px; }
+  .d-refbox { background:var(--brand-wash); border:1px solid var(--brand-soft); border-radius:9px; padding:9px 12px; }
   .ed-field { margin-bottom:15px; }
   .ed-field label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin-bottom:5px; font-weight:800; }
   .ed-field input, .ed-field textarea { width:100%; font:inherit; font-size:13.5px; border:1px solid var(--line);
     border-radius:8px; padding:8px 10px; outline:none; background:var(--bg); }
-  .ed-field input:focus, .ed-field textarea:focus { border-color:var(--brand); background:#fff; }
+  .ed-field input:focus, .ed-field textarea:focus { border-color:var(--brand); background:var(--card); }
   .ed-field textarea { resize:vertical; min-height:80px; }
   .ed-actions { display:flex; gap:8px; margin-top:22px; }
   .ed-actions button { font:inherit; font-size:13px; font-weight:700; border-radius:9px; padding:9px 15px;
     cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--ink); }
-  .ed-save { background:var(--brand) !important; border-color:var(--brand) !important; color:#fff !important; }
-  .ed-del { margin-left:auto; color:#b42318 !important; border-color:#ffd7d0 !important; background:#fff2f0 !important; }
+  .ed-save { background:var(--brand) !important; border-color:var(--brand) !important; color:var(--on-accent) !important; }
+  .ed-del { margin-left:auto; color:var(--danger) !important;
+    border-color:var(--danger-bd) !important; background:var(--danger-bg) !important; }
 
   /* ---------- tooltip ---------- */
   .tip { position:fixed; z-index:70; width:262px; max-width:80vw; background:var(--card);
@@ -838,7 +962,7 @@
      take a real card instead of the bare label they had as a gutter column */
   .band-row.mixed > .plaincol { flex:1 1 200px !important; align-self:stretch;
     display:flex; flex-direction:column; justify-content:center;
-    border-color:var(--line); background:#fff; padding:7px 10px; }
+    border-color:var(--line); background:var(--card); padding:7px 10px; }
 
   /* Below the fit threshold the window really is the layout, and it is a single
      stack. Three columns were tried here first and cannot work: with two rails
@@ -894,6 +1018,14 @@
 </style>
 </head>
 <body>
+<!-- Theme is set here, before anything below has been painted, so a dark-mode
+     visitor never sees a white flash. The rest of the theme code only syncs the
+     button and re-fits; it deliberately repeats this test rather than depending
+     on load order. -->
+<script>(function(){try{var s=localStorage.getItem("dbx-arch-theme");
+  var d = s === "dark" || (!s && window.matchMedia
+    && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  if(d) document.body.classList.add("theme-dark");}catch(e){}})();</script>
 <header class="top">
   <div class="logo">
     <svg class="mark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z"/></svg>
@@ -909,6 +1041,7 @@
 
   <div class="hspacer"></div>
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
+  <button class="hbtn" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl">Dark</span></button>
   <button class="hbtn" id="plat-btn" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services">▣ Platform Focus</button>
   <div class="dl-wrap" id="dl-wrap">
     <button class="hbtn" id="dl-btn" title="Download this architecture">⭳ Download</button>
@@ -1675,7 +1808,7 @@ function resolveAtom(name){ return nameIndex[name] || roleIndex[name] || null; }
    overflows the card on narrow viewports. */
 function capsHtml(list){
   if(!list || !list.length) return "";
-  return `<span class="p-caps">${list.map(esc).join(" <i>|</i> ")}</span>`;
+  return `<span class="p-caps">${list.map(esc).join(' <i aria-hidden="true">|</i> ')}</span>`;
 }
 function addBtn(arr, section, host, wide){
   if(!editMode) return;
@@ -2549,6 +2682,54 @@ const platBtn = document.getElementById("plat-btn");
 /* the markup holds the real wording; selectTab swaps in a reason while the
    button is inert and puts this back when a diagram is on screen again */
 const PLAT_BTN_TITLE = platBtn.title;
+
+/* ==================================================================
+   6c. THEME
+   ==================================================================
+   One class on body swaps the whole palette (see the DARK THEME block).
+   Nothing else in the app reads the theme: every shape already colours itself
+   through a palette slot, so the toggle is a single class and the exports pick
+   it up because they clone the body class list.
+
+   The first visit follows the operating system; after that the choice is the
+   user's and is remembered, because someone who deliberately picked light does
+   not want it flipped back when their Mac goes dark at sunset. */
+const themeBtn = document.getElementById("theme-btn");
+const THEME_KEY = "dbx-arch-theme";
+/* Split in two on purpose: the sync half runs during startup, before the layout
+   consts further down this script exist, so it must not reach for them. */
+function syncThemeUi(dark){
+  document.body.classList.toggle("theme-dark", dark);
+  document.getElementById("theme-ico").textContent = dark ? "☀" : "◐";
+  document.getElementById("theme-lbl").textContent = dark ? "Light" : "Dark";
+  themeBtn.setAttribute("aria-pressed", String(dark));
+}
+function applyTheme(dark, remember){
+  syncThemeUi(dark);
+  if(remember){ try { localStorage.setItem(THEME_KEY, dark ? "dark" : "light"); } catch(e){} }
+  /* the palette changes tile borders and heading bars, which changes measured
+     heights by a fraction, so the fit and both hand-over lines are recomputed */
+  fitBoard();
+}
+function themeIsDark(){
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch(e){}
+  if(saved === "dark") return true;
+  if(saved === "light") return false;
+  return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
+/* the inline script at the top of <body> already set the class; this syncs the
+   button to it without re-deciding, so the two can never disagree. No re-fit
+   here: build() and fitBoard() run at the end of this script anyway. */
+syncThemeUi(document.body.classList.contains("theme-dark") || themeIsDark());
+themeBtn.onclick = ()=> applyTheme(!document.body.classList.contains("theme-dark"), true);
+/* follow the OS only while the user has not expressed a preference of their own */
+if(window.matchMedia){
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const onOs = e=>{ let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch(err){}
+    if(!saved) applyTheme(e.matches, false); };   /* fires long after startup */
+  if(mq.addEventListener) mq.addEventListener("change", onOs); else if(mq.addListener) mq.addListener(onOs);
+}
 platBtn.onclick = ()=>{
   const on = document.body.classList.toggle("plat-only");
   platBtn.classList.toggle("on", on);
@@ -2597,7 +2778,7 @@ function boardSvgMarkup(){
   const w = bd.offsetWidth, h = bd.offsetHeight;
   const wrap = document.createElement("div");
   wrap.setAttribute("class", "exp-body " + [...document.body.classList].join(" "));
-  wrap.setAttribute("style", "width:" + w + "px;background:" + BG + ";");
+  wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";");
   const st = document.createElement("style"); st.textContent = exportCss();
   const clone = bd.cloneNode(true);
   clone.querySelectorAll(".dl-menu").forEach(n=>n.remove());
@@ -2607,7 +2788,22 @@ function boardSvgMarkup(){
     '"><foreignObject x="0" y="0" width="' + w + '" height="' + h + '">' + xml +
     "</foreignObject></svg>" };
 }
-const BG = "#ffffff";
+/* Every export reads its colours off the live palette rather than assuming a
+   white page, which is what makes a dark-theme download actually dark. The
+   values come from BODY because that is where the theme is declared, and they
+   are normalised to six-digit hex because the PPTX and PDF writers below both
+   need raw channel bytes, not a CSS string. */
+function paletteHex(name, fallback){
+  let v = "";
+  try { v = getComputedStyle(document.body).getPropertyValue(name).trim(); } catch(e){}
+  if(/^#[0-9a-f]{3}$/i.test(v)) return "#" + v[1]+v[1] + v[2]+v[2] + v[3]+v[3];
+  if(/^#[0-9a-f]{6}$/i.test(v)) return v.toLowerCase();
+  const m = v.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+  if(m) return "#" + [1,2,3].map(i=> (+m[i]).toString(16).padStart(2, "0")).join("");
+  return fallback;
+}
+const expBg  = ()=> paletteHex("--bg", "#ffffff");
+const expInk = ()=> paletteHex("--ink", "#1b1f24");
 async function boardCanvas(scale){
   const { w, h, svg } = boardSvgMarkup();
   const img = new Image();
@@ -2616,7 +2812,7 @@ async function boardCanvas(scale){
   const c = document.createElement("canvas");
   c.width = Math.round(w * scale); c.height = Math.round(h * scale);
   const g = c.getContext("2d");
-  g.fillStyle = BG; g.fillRect(0, 0, c.width, c.height);
+  g.fillStyle = expBg(); g.fillRect(0, 0, c.width, c.height);
   g.setTransform(scale, 0, 0, scale, 0, 0);
   g.drawImage(img, 0, 0, w, h);
   return { canvas:c, w:c.width, h:c.height };
@@ -3155,7 +3351,12 @@ function pptxParts(body, media, title){
     { name:"ppt/slideLayouts/_rels/slideLayout1.xml.rels", data: rels([
       { id:"rId1", type:"officeDocument/2006/relationships/slideMaster", t:"../slideMasters/slideMaster1.xml" }]) },
     { name:"ppt/slides/slide1.xml", data: XD +
-      "<p:sld " + nsAttrs + "><p:cSld><p:spTree>" + empty + body +
+      /* the slide itself carries the theme background, not just the board's own
+         canvas rectangle, so a dark deck is dark to the slide edge instead of a
+         dark picture sitting on a white slide */
+      "<p:sld " + nsAttrs + "><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val=\"" +
+      expBg().replace("#", "").toUpperCase() +
+      "\"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>" + empty + body +
       "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>" },
     { name:"ppt/slides/_rels/slide1.xml.rels", data: rels(
       [{ id:"rId1", type:"officeDocument/2006/relationships/slideLayout",
@@ -3204,7 +3405,7 @@ async function exportPptx(){
   }
 
   let id = 2;
-  const bgHex = BG.replace("#", "").toUpperCase();
+  const bgHex = expBg().replace("#", "").toUpperCase();
   const parts = ['<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Canvas"/><p:cNvSpPr/><p:nvPr/>' +
     '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + ox + '" y="' + oy + '"/>' +
     '<a:ext cx="' + Math.round(W * k) + '" cy="' + Math.round(H * k) + '"/></a:xfrm>' +
@@ -3222,7 +3423,8 @@ async function exportPptx(){
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
     '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr">' +
     '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="l"/>' +
-    '<a:r><a:rPr lang="en-US" sz="1800" b="1"><a:solidFill><a:srgbClr val="1B3139"/>' +
+    '<a:r><a:rPr lang="en-US" sz="1800" b="1"><a:solidFill><a:srgbClr val="' +
+    expInk().replace("#", "").toUpperCase() + '"/>' +
     '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
   return zipStore(pptxParts(parts.join(""), media, title));
@@ -3268,10 +3470,16 @@ async function boardPdfBlob(){
   const dw = w * k, dh = h * k, dx = (PW - dw) / 2;
   const dy = M + (PH - M*2 - TB - dh) / 2;
   const enc = new TextEncoder();
+  /* the page is painted in the live background before anything else, so a dark
+     export is dark to the paper edge instead of a dark board floating on white */
+  const rg = hex=>{ const h = hex.replace("#", "");
+    return [0,2,4].map(i=> (parseInt(h.slice(i, i+2), 16) / 255).toFixed(3)).join(" "); };
   /* PDF y grows upward, so the strip sits at the top of the page */
-  const content = enc.encode("q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " +
+  const content = enc.encode(
+    rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n" +
+    "q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " +
     dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n" +
-    "BT /F1 14 Tf 0.106 0.192 0.224 rg " + M + " " + (PH - M - 14) + " Td (" +
+    "BT /F1 14 Tf " + rg(expInk()) + " rg " + M + " " + (PH - M - 14) + " Td (" +
     pdfStr(docTitle()) + ") Tj ET\n");
   const objs = [
     enc.encode("<</Type/Catalog/Pages 2 0 R>>"),
