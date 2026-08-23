@@ -137,22 +137,8 @@ PALETTES = [
 # the groups ran past white, clamped, and came back the same grey. The range is
 # therefore stated outright, and sized so that even the two closest fills stay
 # apart by more than MONO_MIN once luminance is worked out rather than lightness.
-MONO_BG = {"light": (0.985, 0.852), "dark": (0.175, 0.062)}
+MONO_BG = {"light": (0.985, 0.884), "dark": (0.172, 0.088)}
 MONO_MIN = 1.035
-
-
-def lit_of_lum(y):
-    """The grey whose luminance is y. Inverse of the sRGB transfer curve.
-
-    Stepping the eight fills evenly along LIGHTNESS looks like the obvious way
-    to spread them and it is not: the curve is far steeper at the dark end, so
-    equal lightness steps give wildly unequal contrast and the closest pair sat
-    under the bar while the widest pair wasted room. Stepping evenly along
-    luminance instead gives every neighbouring pair the same ratio, so the whole
-    range is used and one number decides whether the palette passes.
-    """
-    y = max(0.0, min(1.0, y))
-    return y * 12.92 if y <= 0.00304 else 1.055 * (y ** (1 / 2.4)) - 0.055
 
 # base chroma and lightness per slot, before the palette's own multiplier
 RECIPE = {
@@ -178,10 +164,9 @@ def build(pal, theme):
         shift = 0.0
         if pal.get("mono") and not struct:
             spread = [n for n in order if n != STRUCTURAL]
-            a, b = MONO_BG[theme]
-            ya, yb = lum(hsl(0, 0, a)) + 0.05, lum(hsl(0, 0, b)) + 0.05
-            t = spread.index(name) / float(len(spread) - 1)
-            shift = lit_of_lum(ya * (yb / ya) ** t - 0.05) - rec["bg"][1]
+            lo, hi = MONO_BG[theme]
+            step = spread.index(name) / float(len(spread) - 1)
+            shift = (lo + (hi - lo) * step) - rec["bg"][1]
 
         def s(slot):
             return min(1.0, rec[slot][0] * k)
@@ -252,10 +237,10 @@ def check():
                         if a >= b or STRUCTURAL in (a, b):
                             continue
                         r = contrast(v["--g-%s-bg" % a], v["--g-%s-bg" % b])
-                        if r < MONO_MIN:
+                        if r < 1.06:
                             bad += 1
-                            print("  FAIL %s: greys %s and %s only %.3f apart, bar %.3f"
-                                  % (tag, a, b, r, MONO_MIN))
+                            print("  FAIL %s: greys %s and %s only %.3f apart"
+                                  % (tag, a, b, r))
     print("worst text contrast : %.2f  (%s)  bar 4.5" % worst_text)
     print("worst line contrast : %.2f  (%s)  bar 3.0" % worst_line)
     print("failures            : %d" % bad)
