@@ -868,15 +868,16 @@
   /* ---------- rails (sources / ingest / consumers / integrations) ---------- */
   /* groups are top-aligned so every column's first group header sits on the same
      line, the way the cloud system-architecture slides read across. */
-  .rail { flex:1 1 auto; border:1px solid var(--line); border-radius:12px; background:var(--card);
-    box-shadow:var(--shadow); padding:8px; display:flex; flex-direction:column; gap:8px;
+  /* The panel carries the zone's own fill, not the neutral card colour. With
+     --card here a palette change repainted the platform and left Sources,
+     Consumers and both bands white, so four of the six zones looked like they
+     were not part of the scheme at all. The tiles inside stay on --card, so
+     they still read as cards sitting on the zone rather than as the zone. */
+  .rail { flex:1 1 auto; border:0; border-radius:12px; background:transparent;
+    padding:8px; display:flex; flex-direction:column; gap:8px;
     justify-content:flex-start; }
   .rail-note { margin:auto 0 0; padding:7px 6px 0; border-top:1px dashed var(--line);
     font-size:10px; line-height:1.4; color:var(--muted); }
-  .rail.src  { border-color:var(--g-green-bd); }
-  .rail.ing  { border-color:var(--g-teal-bd); }
-  .rail.ppl  { border-color:var(--g-violet-bd); }
-  .rail.cons { border-color:var(--g-blue-bd); }
 
   /* ---------- group label: one type spec for every group in the diagram ----------
      Rails and the two horizontal bands used to style their group headers
@@ -918,12 +919,19 @@
      them. A border here would push every rail down by its own width. */
   /* 2px, not 1: the board is drawn at ~0.85 fit scale, where a 1px outline lands
      on a sub-pixel and washes out in both the raster exports and print. */
-  .col, .pocket { outline:2px solid var(--z-accent); outline-offset:4px;
-    border-radius:9px; }
-  .col.src    { --z-accent:var(--g-green-line); }
-  .col.cons   { --z-accent:var(--g-blue-line); }
-  .pocket.ing { --z-accent:var(--g-teal-line); }
-  .pocket.ppl { --z-accent:var(--g-violet-line); }
+  /* Drawn as two box-shadow rings rather than an offset outline. An outline
+     offset by 4px shows the PAGE through the gap, and once the zone itself is
+     tinted that gap became a bright seam tracing every zone, worst on the
+     loudest palettes. A shadow ring costs no layout either, and the inner ring
+     is the zone's own fill, so the gap is part of the zone instead of a hole in
+     it. The zone also carries the fill itself, which closes the second seam:
+     the one between the heading pill and the panel below it. */
+  .col, .pocket { background:var(--zone-fill); border-radius:9px;
+    box-shadow:0 0 0 4px var(--zone-fill), 0 0 0 6px var(--z-accent); }
+  .col.src    { --z-accent:var(--g-green-line);  --zone-fill:var(--g-green-bg); }
+  .col.cons   { --z-accent:var(--g-blue-line);   --zone-fill:var(--g-blue-bg); }
+  .pocket.ing { --z-accent:var(--g-teal-line);   --zone-fill:var(--g-teal-bg); }
+  .pocket.ppl { --z-accent:var(--g-violet-line); --zone-fill:var(--g-violet-bg); }
   /* two tiles per row: the rails hold 17 and 16 entries, and stacking them in one
      column is what pushed the page past a laptop viewport. */
   .rtiles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px; align-items:stretch; }
@@ -935,7 +943,7 @@
   .rail.ing  .rtile { border-left-color:var(--g-teal-line); }
   .rail.ppl  .rtile { border-left-color:var(--g-violet-line); }
   /* a tile supplied by the active cloud provider, not by the static model */
-  .rtile.cloudy { border-left-color:var(--g-amber-line); background:var(--g-amber-bg); }
+  .rtile.cloudy { border-left-color:var(--g-amber-line); }
   .rtile:hover { border-color:var(--brand); box-shadow:var(--shadow); transform:translateX(1px); }
   .rtile .ic { width:13px; height:13px; flex:0 0 auto; color:var(--rail-accent); }
   .rail.ing  .rtile .ic { color:var(--g-teal-ink); }
@@ -1025,49 +1033,66 @@
        shape here where they are inside the platform rather than beside it.
 
        This is also the only shape symmetric on both axes, so it is the one that
-       shows a misaligned pocket the most plainly; the pockets take equal
-       margins top and bottom for that reason, and hand over in both directions
-       instead of picking a side. */
+       shows a misaligned pocket the most plainly, which is why the pockets take
+       equal margins top and bottom. */
     body.ul-both .plat-head, body.ul-both .plat-top,
     body.ul-both .plat-body { grid-column-start:3; }
     body.ur-both .plat-head, body.ur-both .plat-top,
     body.ur-both .plat-body { grid-column-end:6; }
     body.shape-h90 .plat-waist { display:flex; }
+    /* Wider arms than the other four shapes, for two reasons. The arm's cards
+       are split between the two bars here, so half of them have the whole arm
+       width to sit in and the upper bar stopped being the crowded one. And the
+       pocket in the notch can then pair its tiles instead of running them down
+       one column, which is what set the height of the waist: a column of nine
+       made the waist twice the height of the band inside it, and the board 345px
+       taller than the Z for nothing but that. */
+    /* Only the VERTICAL notch is special here, and it is smaller than --pgap
+       because it has nothing to cross: it carries one arrow into the bar above
+       and it is doubled, once at each end of the pocket, so a full --pgap at
+       both ends padded the waist out past both bars for nothing.
+
+       The arm width and the horizontal notch are deliberately NOT overridden.
+       Widening the arms to pair the pocket's tiles into two columns bought 18px
+       of waist height and cost the pocket half its tile width, and it took the
+       four Agentic Apps cards 31px past the middle they had left, which put the
+       last two card names out over the Serve arm. The arms and the notch stay
+       the width they are in every other shape. */
+    body.shape-h90 { --pgapv:26px; }
     /* Equal top and bottom, because this is the one shape where a reader can
-       see both notches at once. Vertically the gap only has to carry an arrow,
-       and the pocket sets the height of the whole waist row, so a full --pgap at
-       each end padded the waist out past both bars for no gain. */
-    body.shape-h90 { --pgapv:calc(var(--pgap) * .52); }
+       see both notches at once. The horizontal gap is the notch and the vertical
+       one only has to carry an arrow, so they are sized separately. */
     body.shape-h90 .pocket.ing { grid-row:r-waist; grid-column:3;
       margin:var(--pgapv) var(--pgap) var(--pgapv) 0; }
     body.shape-h90 .pocket.ppl { grid-row:r-waist; grid-column:5;
       margin:var(--pgapv) 0 var(--pgapv) var(--pgap); }
-    /* the pocket's hand-over UP into the bar above it, drawn by the pocket
-       itself the way it is in every other shape */
+    /* ONE hand-over per pocket, up into the bar above it, the same single arrow
+       every other shape gives it. It used to hand over up AND down, which is two
+       arrows saying one thing: a reader cannot act on the difference between
+       them because there is no difference. */
     body.shape-h90 .pocket.ing::before, body.shape-h90 .pocket.ppl::before {
       top:calc(var(--pgapv) * -1 + var(--zo) + 8px); bottom:auto;
       animation-name:flowdashu; background-position:0 calc(var(--dash-t,0) * -13px); }
     body.shape-h90 .pocket.ing::after, body.shape-h90 .pocket.ppl::after {
       top:calc(var(--pgapv) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
-    /* and the matching hand-over DOWN into the bar below, which is the one the
-       other four shapes have no room for. The two spare connectors that carry
-       the horizontal path through the notch are reused: in the I-beam there is
-       no notch to cross, and a second arrow is what the shape needs instead. */
-    body.shape-h90 .flow.ingtuck { grid-row:r-waist; grid-column:3;
-      justify-self:stretch; align-self:end; width:auto; height:calc(var(--pgapv) - var(--zo));
-      margin:0 var(--pgap) 0 0; }
-    body.shape-h90 .flow.left.ppl.tuck { grid-row:r-waist; grid-column:5;
-      justify-self:stretch; align-self:end; width:auto; height:calc(var(--pgapv) - var(--zo));
-      margin:0 0 0 var(--pgap); }
-    /* Sources and Consumers reach both bars, because in this shape both bars
-       come out to meet them. */
+    body.shape-h90 .flow.ingtuck,
+    body.shape-h90 .flow.left.ppl.tuck { display:none; }
+    /* The pocket is in the middle of the platform in this shape, not at its
+       edge, so the two connectors that run from a pocket out to a horizontal
+       band would have to cross a whole bar to get there. */
+    body.shape-h90 .flow.down.ingdown, body.shape-h90 .flow.up.pplup { display:none; }
+    /* Four connectors on the outside, one per relationship, exactly as in the
+       other four shapes. The pocket sits in the waist row here, so the two that
+       serve a pocket move to that row with it; pointing them at the second half
+       of an arm instead is what lost Sources -> third-party ingestion and left
+       two arrows into Ingest doing the same job. */
     body.ul-both .gutter.g1 { grid-row:r-top; align-items:flex-start; }
     body.ul-both .gutter.g1 > .flow { margin-top:calc(var(--upper-mid, 44px) - 7px); margin-bottom:0; }
-    body.ul-both .gutter.g0 { grid-row:r-body; align-items:flex-end; }
-    body.ul-both .gutter.g0 > .flow { margin-bottom:calc(var(--lower-mid, 85px) - 7px); margin-top:0; }
-    body.ur-both .gutter.g2 { grid-row:r-top; align-items:flex-start; }
-    body.ur-both .gutter.g2 > .flow { margin-top:calc(var(--upper-mid, 44px) - 7px); margin-bottom:0; }
+    body.ul-both .gutter.g0 { grid-row:r-waist; align-items:center; }
+    body.ul-both .gutter.g0 > .flow { margin:0; }
+    body.ur-both .gutter.g2 { grid-row:r-waist; align-items:center; }
+    body.ur-both .gutter.g2 > .flow { margin:0; }
     body.ur-both .gutter.g3 { grid-row:r-body; align-items:flex-end; }
     body.ur-both .gutter.g3 > .flow { margin-bottom:calc(var(--lower-mid, 85px) - 7px); margin-top:0; }
     /* Three blocks means TWO seams to hide rather than one, and each is only as
@@ -1089,10 +1114,24 @@
        held level with the upper one, so in both the bands are shorter than the
        space they sit in. Let them stretch and spend the slack on their own rows
        instead of leaving it as a gap under the last band. */
+    /* Stretched, not centred. The waist and the lower bar are both held to a
+       height they did not ask for, the waist by the pockets in the notches
+       beside it and the lower bar by the upper one, so in both the bands are
+       shorter than the space they sit in. Let them spend the slack on their own
+       rows instead of leaving it as a gap under the last band. */
     body.shape-h90 .plat-waist .plat-stack,
     body.shape-h90 .plat-body .plat-stack { justify-content:stretch; }
     body.shape-h90 .plat-waist .band,
     body.shape-h90 .plat-body .band { flex:1 1 auto; }
+    /* The waist is one band in a row the pockets made twice its natural height,
+       so the band spends the difference the same way an arm does: the cards take
+       the slack and centre their own contents in it, rather than sitting at the
+       top of a panel with a band's worth of bare fill under them. The label
+       centres with them instead of staying pinned to the first line. */
+    body.shape-h90 .plat-waist .band-lbl { align-self:center; padding-top:0; }
+    body.shape-h90 .plat-waist .band-body { justify-content:stretch; }
+    body.shape-h90 .plat-waist .band-row { flex:1 1 auto; align-items:stretch; }
+    body.shape-h90 .plat-waist .pcard { align-items:center; }
 
     /* Each pocket keeps its own side of the diagram and moves rows instead: it
        tucks into the notch left by whichever block does NOT reach over its arm.
@@ -1351,7 +1390,12 @@
     background-size:13px 2px; animation:flowdash .9s linear infinite; }
   .medal-arrow::after { content:""; position:absolute; right:0; top:2px;
     border:4px solid transparent; border-left:6px solid var(--flow-medal); border-right:0; }
-  .fmt { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line); background:var(--card);
+  /* Transparent, not --card. The vendor marks are inline SVG and so carry no
+     background of their own, but a card behind them put a hard white block on
+     the band, which is what made the logo row look like a set of pasted opaque
+     images that ignored the palette. The product cards beside them are already
+     transparent for the same reason; the border alone is enough to make a chip. */
+  .fmt { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line); background:transparent;
     border-radius:7px; padding:4px 9px; font:inherit; font-size:10.5px; font-weight:800; letter-spacing:.04em;
     text-transform:uppercase; color:var(--ink); cursor:pointer; transition:.12s; white-space:nowrap; flex:0 0 auto; }
   .fmt:hover { border-color:var(--brand); color:var(--brand); }
@@ -1370,7 +1414,7 @@
      sub-pixel and washes out, which is why these two bands read as unenclosed
      next to Sources and Consumers. The line takes the band's own notch colour. */
   .cloud { border:2px solid var(--cloud-bd); border-left:5px solid var(--cloud-accent);
-    border-radius:12px; background:var(--card); box-shadow:var(--shadow); padding:7px 12px;
+    border-radius:12px; background:var(--cloud-bg, var(--card)); box-shadow:var(--shadow); padding:7px 12px;
     display:flex; align-items:stretch; gap:13px; }
   .cloud-lbl { flex:0 0 268px; }
   .cloud-lbl .cl-name { display:flex; align-items:flex-start; flex-wrap:wrap;
@@ -1382,53 +1426,6 @@
   .cloud-sec { min-width:0; display:flex; flex-direction:column; gap:4px; }
   .cloud-sec + .cloud-sec { border-left:1px dashed var(--line); padding-left:13px; }
 
-  /* ---- the key ----------------------------------------------------------
-     One line under the board, indented to the same left edge as the two cloud
-     bands so it reads as a caption of the drawing rather than a sixth zone.
-     It carries no outline of its own for the same reason. */
-  .legend { display:flex; flex-wrap:wrap; align-items:center; gap:7px 14px;
-    margin:13px 0 0; padding-top:9px; border-top:1px dashed var(--line);
-    margin-left:calc(var(--railw) + var(--gut) - var(--zo));
-    margin-right:calc(var(--railw) + var(--gut) - var(--zo));
-    font-size:10.5px; color:var(--muted); animation:fadein .34s ease .3s backwards; }
-  .lg-lbl { font-size:9.5px; font-weight:800; letter-spacing:.09em; text-transform:uppercase;
-    color:var(--faint); }
-  .lg-sec { display:flex; flex-wrap:wrap; align-items:center; gap:7px 14px; }
-  .lg-sec + .lg-sec { border-left:1px dashed var(--line); padding-left:14px; }
-  .lg-i { display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
-  /* the glyphs are the board's own elements, so they only need a size here */
-  .lg-g { flex:0 0 auto; }
-  /* 40px, not 30: the dash rhythm is 13px, so a shorter sample shows one dash
-     and an arrowhead, which reads as a bullet rather than as the board's line */
-  .lg-i > .flow { width:40px; }
-  .lg-i > .medal-arrow { flex:0 0 40px; }
-  /* the ring on the board is a travelling dash, and a dashed CSS border cannot
-     travel, so the sample is a masked repeating gradient instead: same 15/9
-     rhythm, same --dash-t, and it moves with everything else */
-  .lg-ring { width:30px; height:13px; position:relative; }
-  .lg-ring::before { content:""; position:absolute; inset:0; border-radius:4px;
-    background:var(--plat-accent);
-    -webkit-mask:repeating-linear-gradient(90deg,#000 0 15px,transparent 15px 24px);
-    mask:repeating-linear-gradient(90deg,#000 0 15px,transparent 15px 24px);
-    -webkit-mask-position:calc(var(--dash-t,0) * 24px) 0;
-    mask-position:calc(var(--dash-t,0) * 24px) 0;
-    animation:lgdash 1.15s linear infinite; }
-  .lg-ring::after { content:""; position:absolute; inset:2px; border-radius:2px;
-    background:var(--bg); }
-  @keyframes lgdash { to { -webkit-mask-position:24px 0; mask-position:24px 0; } }
-  .lg-box { width:30px; height:13px; border:2px solid var(--g-green-line);
-    border-radius:4px; }
-  /* one chip per zone accent, in the order the board reads left to right */
-  /* one chip per zone accent, read left to right off the board itself, so a
-     palette change repaints the key with it */
-  .lg-chips { display:inline-flex; gap:3px; }
-  .lg-chip { width:8px; height:13px; border-radius:2px; background:var(--c); }
-  .lg-chip.c-src  { --c:var(--g-green-line); }
-  .lg-chip.c-ing  { --c:var(--g-teal-line); }
-  .lg-chip.c-band { --c:var(--g-plum-line); }
-  .lg-chip.c-ppl  { --c:var(--g-violet-line); }
-  .lg-chip.c-cons { --c:var(--g-blue-line); }
-  @media (prefers-reduced-motion:reduce) { .lg-ring::before { animation:none; } }
   /* A fixed column count keeps the last row balanced instead of leaving an orphan. */
   .cloud-body { min-width:0; display:grid; gap:7px;
     grid-template-columns:repeat(3, minmax(0,1fr)); align-content:start; }
@@ -1443,7 +1440,8 @@
      only swaps the accent, so the two horizontal bands read as a pair. */
   .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line);
     --cloud-bg:var(--g-plum-bg); margin-bottom:0; }
-  .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line); }
+  .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
+    --cloud-bg:var(--g-amber-bg); }
   /* both horizontal bands are inset to the Z's own width: the columns either side
      of the platform are Sources and Consumers, and neither band belongs over them */
   /* the two bands line up with the platform's OUTER box, not with the blocks
@@ -1542,7 +1540,11 @@
     text-transform:uppercase; color:var(--faint); padding:6px 9px 3px; }
   /* the shape thumbnails are drawn from the same tokens as the platform itself,
      so a palette or theme change carries into the menu without a second table */
-  .shp { flex:0 0 auto; width:20px; height:15px; color:var(--brand); }
+  /* block, and the wrapper a flex box: as an inline element the glyph sat on a
+     text baseline and the line box kept a descender's worth of space under it,
+     which pushed the shape 2.3px above the centre of the word beside it */
+  #shape-ico { display:inline-flex; align-items:center; }
+  .shp { display:block; flex:0 0 auto; width:20px; height:15px; color:var(--brand); }
   .shp path { fill:none; stroke:currentColor; stroke-width:2.1; stroke-linejoin:round; }
 
   /* One release-stage filter, applied to the platform box only. Wrappers left
@@ -1900,29 +1902,6 @@
     <span class="flow down ingdown"></span>
   </div>
   <div class="cloudwrap"><div class="cloud hband bot" id="cloud"></div></div>
-  <!-- The key. Every glyph in it is the SAME element the board draws, not a
-       picture of one, so the key cannot drift from the drawing when a palette,
-       a theme or the dash phase changes. That is also why it exports correctly:
-       it is inside #board and animates off the same --dash-t. -->
-  <footer class="legend" id="legend">
-    <span class="lg-lbl">How to read this</span>
-    <!-- three groups, in the order a reader meets them: what the line around a
-         box means, what an arrow between boxes means, what the colour means -->
-    <span class="lg-sec">
-      <span class="lg-i"><span class="lg-g lg-ring"></span>Travelling dashes: Databricks runs it</span>
-      <span class="lg-i"><span class="lg-g lg-box"></span>Solid outline: your estate</span>
-    </span>
-    <span class="lg-sec">
-      <span class="lg-i"><span class="lg-g flow"></span>Data crossing a boundary</span>
-      <span class="lg-i"><span class="lg-g flow ppl"></span>People asking, answers back</span>
-      <span class="lg-i"><span class="lg-g medal-arrow"></span>Bronze to gold: one copy, refined</span>
-    </span>
-    <span class="lg-sec">
-      <span class="lg-i"><span class="lg-g lg-chips"
-        ><i class="lg-chip c-src"></i><i class="lg-chip c-ing"></i><i class="lg-chip c-band"
-        ></i><i class="lg-chip c-ppl"></i><i class="lg-chip c-cons"></i></span>Colour names a zone, not a rank</span>
-    </span>
-  </footer>
 </main>
 </div></div>
 
@@ -3000,14 +2979,17 @@ function platHalf(host, sides){
   return { left, right, stack };
 }
 
-/* Which bands move into the waist of the I-beam. The waist takes its height from
-   the pockets in the notches beside it, which hold more rows than any one band
-   does, so a single band there is a large panel with two tiles adrift in it.
-   Two bands fill the same space without stretching, and these are the two that
-   belong in the piece joining the bars: what governs everything above and below
-   it, and the data it governs. Open Infrastructure stays in the lower bar
-   because it carries the medallion row and needs the width. */
-const WAIST_BANDS = ["gov", "data"];
+/* Which band moves into the waist of the I-beam. Governance, and only
+   governance: it is the one band that is true of everything above it and
+   everything below it, which is what the piece joining the two bars should say.
+
+   It is one band and not two because the flanges have to carry the weight. With
+   Agentic Data up here as well the upper bar held two bands and the lower bar
+   held one, and since the two bars are kept level the lower one was then a band
+   and a half of bare fill. One band each side of the waist reads as a beam;
+   Apps + Work above and Data + Infrastructure below are close enough in height
+   that neither bar has to be padded out to match the other. */
+const WAIST_BANDS = ["gov"];
 
 /* One arm band as two, split down the middle of its cards. Each half is a
    shallow copy: the cards themselves are shared by reference, because every card
