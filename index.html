@@ -239,7 +239,11 @@
      box, instead of running under the two outlines it connects */
   .gutter { display:flex; align-items:center; justify-content:center; }
   .gutter .flow { width:calc(100% - var(--zo) * 2); }
-  .gutter.g0 { grid-column:2; grid-row:3; }
+  /* g0 feeds the ingestion pocket, and the pocket hands straight on into Open
+     Infrastructure, so this one leaves the row's centre line and joins the
+     band's: Sources, the pocket and the band then read as a single path. */
+  .gutter.g0 { grid-column:2; grid-row:3; align-items:flex-end; }
+  .gutter.g0 .flow { margin-bottom:calc(var(--infra-mid, 85px) - 7px); }
   .gutter.g1 { grid-column:2; grid-row:2; }
   .gutter.g2 { grid-column:6; grid-row:2; }
   .gutter.g3 { grid-column:6; grid-row:3; }
@@ -329,6 +333,20 @@
      the pocket's outline to the platform's rather than under both of them */
   .flow.left.tuck { grid-column:5; grid-row:2; justify-self:start; align-self:center;
     width:calc(var(--pgap) - var(--zo) * 2); margin-left:var(--zo); height:14px; }
+  /* The ingestion pocket hands over three ways: up into the Databricks ingest
+     arm (its own ::before/::after, above), right into the platform, and down
+     into the cloud services those pipelines run on. The right-hand one lands on
+     the Open Infrastructure line rather than the middle of the lower block,
+     because the open formats it writes live in that band, and the arrow arriving
+     from Sources is pulled onto the same line. The band's height moves with its
+     content, so --infra-mid is measured in alignIngest instead of tuned here. */
+  .flow.ingtuck { grid-column:3; grid-row:3; justify-self:end; align-self:end;
+    width:calc(var(--pgap) - var(--zo) * 2); margin-right:var(--zo); height:14px;
+    margin-bottom:calc(var(--infra-mid, 85px) - 7px); }
+  /* on the pocket's own centre line, in the same gap the platform's hand-off
+     uses, so the two land on the cloud band together */
+  .downflow .flow.down.ingdown { position:absolute; bottom:2px; margin:0;
+    left:calc(var(--railw) + var(--gut) + (var(--armw) - var(--pgap)) / 2 - 7px); }
 
   /* ---------- rails (sources / ingest / consumers / integrations) ---------- */
   /* groups are top-aligned so every column's first group header sits on the same
@@ -672,9 +690,10 @@
   body.plat-only .hband.top, body.plat-only .cloudwrap, body.plat-only .downflow,
   body.plat-only .col.src, body.plat-only .col.cons,
   body.plat-only .pocket, body.plat-only .gutter,
-  /* the People arrow is a grid child of .mid, not of the pocket, so hiding
-     .pocket alone left it pointing at nothing */
-  body.plat-only .flow.left.ppl.tuck { display:none; }
+  /* both pocket arrows are grid children of .mid, not of the pockets, so hiding
+     .pocket alone left them pointing at nothing */
+  body.plat-only .flow.left.ppl.tuck,
+  body.plat-only .flow.ingtuck { display:none; }
   #plat-btn.on { background:var(--brand); border-color:var(--brand); color:#fff; }
 
   /* ---------- download menu ---------- */
@@ -725,7 +744,12 @@
   .bld-go:disabled { background:#e6e9ee; color:var(--muted); cursor:not-allowed; }
   .bld-note { margin-top:11px; font-size:11.5px; line-height:1.5; color:var(--muted); min-height:1em; }
   body.tab-alt .board { display:none !important; }
-  body.tab-alt #plat-btn, body.tab-alt #dl-wrap { display:none; }
+  /* Platform Focus and Download belong to the toolbar, not to one tab: they hold
+     their place on the tab line everywhere. A builder tab has no diagram for
+     them to act on yet, so selectTab disables them rather than removing them,
+     which would shuffle the rest of the row every time the tab changed. */
+  .hbtn:disabled { opacity:.4; cursor:default; }
+  .hbtn:disabled:hover { color:var(--muted); border-color:var(--line); }
 
   /* ---------- states ---------- */
   .hit { box-shadow:0 0 0 2px var(--brand) !important; }
@@ -838,7 +862,7 @@
     .plat-top, .plat-body { flex-direction:column; }
     .arm { flex:0 0 auto; }
     .plat-body .plat-stack { justify-content:flex-start; }
-    .gutter, .downflow, .flow.tuck, .flow.pplup { display:none; }
+    .gutter, .downflow, .flow.tuck, .flow.pplup, .flow.ingtuck { display:none; }
     .cloud { flex-direction:column; }
     .cloud-lbl, .hband .cloud-lbl { flex:0 0 auto; }
     .cloud-body { grid-template-columns:repeat(2, minmax(0,1fr)) !important; }
@@ -907,7 +931,7 @@
      painted by the same paintSeg, so the two never disagree. -->
 <div class="builder" id="builder">
   <div class="builder-card">
-    <textarea id="bld-text" rows="7" placeholder="Describe your customer, use cases, source systems, consumers and any useful context to build a draft architecture"></textarea>
+    <textarea id="bld-text" rows="7" placeholder="Describe your customer, their use cases, source systems, consumers and anything else that should shape the architecture"></textarea>
     <div class="bld-row">
       <div class="seg" id="bld-seg"></div>
     </div>
@@ -952,6 +976,9 @@
     <!-- the people's path into the platform: a grid child, not a child of the
          pocket, so it centres on the same row line as the gutters beside it -->
     <span class="flow left ppl tuck"></span>
+    <!-- the ingestion pocket's path into the platform, drawn in the notch gap on
+         its own side and landing on the Open Infrastructure line -->
+    <span class="flow ingtuck"></span>
     <!-- people reach out to the agents and APIs, so this points away from them
          like every other connector on the pocket -->
     <div class="gutter g2"><span class="flow ppl"></span></div>
@@ -967,7 +994,11 @@
       <aside class="rail cons" id="rail-cons"></aside>
     </div>
   </div>
-  <div class="downflow"><span class="flow down"></span></div>
+  <div class="downflow">
+    <span class="flow down"></span>
+    <!-- the cloud and third-party pipelines run on the cloud services below -->
+    <span class="flow down ingdown"></span>
+  </div>
   <div class="cloudwrap"><div class="cloud hband bot" id="cloud"></div></div>
 </main>
 </div></div>
@@ -2323,6 +2354,14 @@ function selectTab(tab){
   const custom = customTabs.get(id);
   document.body.classList.toggle("tab-alt", !!custom);
   builderEl.classList.toggle("show", !!custom);
+  /* the toolbar buttons stay put on every tab; on a builder tab there is no
+     diagram behind them yet, so they go inert instead of vanishing */
+  platBtn.disabled = dlBtn.disabled = !!custom;
+  platBtn.title = custom
+    ? "Build this architecture first, then zoom into the platform on its own"
+    : PLAT_BTN_TITLE;
+  dlBtn.title = custom ? "Build this architecture first, then download it" : DL_BTN_TITLE;
+  if(custom) dlWrap.classList.remove("open");
   if(custom){
     refBanner.classList.remove("show");
     /* each tab keeps its own draft, so switching away and back does not lose it */
@@ -2501,6 +2540,9 @@ paintSeg();
 /* Platform-only strips the context zones and re-fits against the narrower design
    width, so the Z fills the window instead of sitting in the middle of it. */
 const platBtn = document.getElementById("plat-btn");
+/* the markup holds the real wording; selectTab swaps in a reason while the
+   button is inert and puts this back when a diagram is on screen again */
+const PLAT_BTN_TITLE = platBtn.title;
 platBtn.onclick = ()=>{
   const on = document.body.classList.toggle("plat-only");
   platBtn.classList.toggle("on", on);
@@ -3276,6 +3318,7 @@ async function exportPdf(){
 }
 
 const dlWrap = document.getElementById("dl-wrap"), dlBtn = document.getElementById("dl-btn");
+const DL_BTN_TITLE = dlBtn.title;
 dlBtn.onclick = (e)=>{ e.stopPropagation(); dlWrap.classList.toggle("open"); };
 document.addEventListener("click", (e)=>{ if(!dlWrap.contains(e.target)) dlWrap.classList.remove("open"); });
 document.getElementById("dl-menu").addEventListener("click", async (e)=>{
@@ -3490,11 +3533,32 @@ function drawZRing(){
   zpathEl.setAttribute("d", zOutline(U, L, off(platHeadEl).t, zo - 1, Z_R + zo));
 }
 
+/* Both of the ingestion pocket's horizontal connectors sit on the Open
+   Infrastructure band's centre line, and that band's height moves with its
+   content: the format chips rewrap at every breakpoint and the medallion row
+   comes and goes. So the line is measured, not tuned. It is measured UP FROM THE
+   ROW'S BOTTOM because the pocket, the lower block and the band all share that
+   edge, which keeps the offset good no matter what changes above it. */
+function alignIngest(){
+  const band = platformEl && platformEl.querySelector(".band.b-infra");
+  if(!band) return;
+  const b = band.getBoundingClientRect(), p = platformEl.getBoundingClientRect();
+  /* hidden (a builder tab, or a collapsed band): keep the last good line rather
+     than writing a zero that would park both arrows on the row's bottom edge */
+  if(!b.height || !p.height) return;
+  /* rects are post-transform screen px and the property feeds a margin, which is
+     layout px, so the fit scale has to come back out of the measurement */
+  const k = p.width / (platformEl.offsetWidth || 1) || 1;
+  document.documentElement.style.setProperty("--infra-mid",
+    ((p.bottom - (b.top + b.bottom) / 2) / k).toFixed(1) + "px");
+}
+
 /* The ring is geometry, so it is redrawn by whatever redraws the layout: every
    caller of fitBoard (build, resize, tab, platform-only) gets it for free. */
 function fitBoard(){
   fitLayout();
   drawZRing();
+  alignIngest();
 }
 function fitLayout(){
   fitInEl.style.transform = "";
