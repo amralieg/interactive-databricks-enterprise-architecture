@@ -239,11 +239,18 @@
      box, instead of running under the two outlines it connects */
   .gutter { display:flex; align-items:center; justify-content:center; }
   .gutter .flow { width:calc(100% - var(--zo) * 2); }
-  /* g0 feeds the ingestion pocket, and the pocket hands straight on into Open
-     Infrastructure, so this one leaves the row's centre line and joins the
-     band's: Sources, the pocket and the band then read as a single path. */
-  .gutter.g0 { grid-column:2; grid-row:3; align-items:flex-end; }
-  .gutter.g0 .flow { margin-bottom:calc(var(--infra-mid, 85px) - 7px); }
+  /* Each block has ONE hand-over line, and every connector that touches that
+     block sits on it, left and right alike, so the two sides mirror each other.
+     The upper block's line is the Agentic Apps band, the first thing anything
+     arriving from outside actually lands in; the lower block's is Open
+     Infrastructure, where the open copy of the data lives. Each line is measured
+     from the edge nearest its own band (top for the upper, bottom for the lower)
+     so it survives content growing in the middle: see alignConnectors. */
+  .gutter.g1, .gutter.g2 { align-items:flex-start; }
+  .gutter.g1 .flow, .gutter.g2 .flow { margin-top:calc(var(--upper-mid, 44px) - 7px); }
+  .gutter.g0, .gutter.g3 { align-items:flex-end; }
+  .gutter.g0 .flow, .gutter.g3 .flow { margin-bottom:calc(var(--lower-mid, 85px) - 7px); }
+  .gutter.g0 { grid-column:2; grid-row:3; }
   .gutter.g1 { grid-column:2; grid-row:2; }
   .gutter.g2 { grid-column:6; grid-row:2; }
   .gutter.g3 { grid-column:6; grid-row:3; }
@@ -331,18 +338,17 @@
     right:calc(var(--railw) + var(--gut) + (var(--armw) - var(--pgap)) / 2 - 7px); }
   /* their path into the platform, drawn in the notch gap beside the pocket, from
      the pocket's outline to the platform's rather than under both of them */
-  .flow.left.tuck { grid-column:5; grid-row:2; justify-self:start; align-self:center;
-    width:calc(var(--pgap) - var(--zo) * 2); margin-left:var(--zo); height:14px; }
+  /* the two pocket connectors are exact mirrors: same width, same standoff, same
+     distance in from their own block's edge, each on its block's hand-over line */
+  .flow.left.tuck { grid-column:5; grid-row:2; justify-self:start; align-self:start;
+    width:calc(var(--pgap) - var(--zo) * 2); margin-left:var(--zo); height:14px;
+    margin-top:calc(var(--upper-mid, 44px) - 7px); }
   /* The ingestion pocket hands over three ways: up into the Databricks ingest
      arm (its own ::before/::after, above), right into the platform, and down
-     into the cloud services those pipelines run on. The right-hand one lands on
-     the Open Infrastructure line rather than the middle of the lower block,
-     because the open formats it writes live in that band, and the arrow arriving
-     from Sources is pulled onto the same line. The band's height moves with its
-     content, so --infra-mid is measured in alignIngest instead of tuned here. */
+     into the cloud services those pipelines run on. */
   .flow.ingtuck { grid-column:3; grid-row:3; justify-self:end; align-self:end;
     width:calc(var(--pgap) - var(--zo) * 2); margin-right:var(--zo); height:14px;
-    margin-bottom:calc(var(--infra-mid, 85px) - 7px); }
+    margin-bottom:calc(var(--lower-mid, 85px) - 7px); }
   /* on the pocket's own centre line, in the same gap the platform's hand-off
      uses, so the two land on the cloud band together */
   .downflow .flow.down.ingdown { position:absolute; bottom:2px; margin:0;
@@ -3533,24 +3539,30 @@ function drawZRing(){
   zpathEl.setAttribute("d", zOutline(U, L, off(platHeadEl).t, zo - 1, Z_R + zo));
 }
 
-/* Both of the ingestion pocket's horizontal connectors sit on the Open
-   Infrastructure band's centre line, and that band's height moves with its
-   content: the format chips rewrap at every breakpoint and the medallion row
-   comes and goes. So the line is measured, not tuned. It is measured UP FROM THE
-   ROW'S BOTTOM because the pocket, the lower block and the band all share that
-   edge, which keeps the offset good no matter what changes above it. */
-function alignIngest(){
-  const band = platformEl && platformEl.querySelector(".band.b-infra");
-  if(!band) return;
-  const b = band.getBoundingClientRect(), p = platformEl.getBoundingClientRect();
-  /* hidden (a builder tab, or a collapsed band): keep the last good line rather
-     than writing a zero that would park both arrows on the row's bottom edge */
-  if(!b.height || !p.height) return;
-  /* rects are post-transform screen px and the property feeds a margin, which is
-     layout px, so the fit scale has to come back out of the measurement */
-  const k = p.width / (platformEl.offsetWidth || 1) || 1;
-  document.documentElement.style.setProperty("--infra-mid",
-    ((p.bottom - (b.top + b.bottom) / 2) / k).toFixed(1) + "px");
+/* Each block publishes one hand-over line, and every connector touching that
+   block hangs off it, so the left and right sides mirror instead of drifting.
+   The lines are MEASURED, not tuned: the bands rewrap at every breakpoint and
+   the medallion row changes height. Each is measured from the edge NEAREST its
+   own band (the upper block's top, the lower block's bottom), because that edge
+   is the one the pocket and the gutters share, so content growing between the
+   two blocks cannot move either line. */
+function alignConnectors(){
+  const put = (name, blockEl, bandSel, fromBottom)=>{
+    const band = blockEl && blockEl.querySelector(bandSel);
+    if(!band) return;
+    const b = band.getBoundingClientRect(), p = blockEl.getBoundingClientRect();
+    /* hidden (a builder tab, or a collapsed band): keep the last good line
+       rather than writing a zero that would park the arrows on the block edge */
+    if(!b.height || !p.height) return;
+    /* rects are post-transform screen px and the value feeds a margin, which is
+       layout px, so the fit scale has to come back out of the measurement */
+    const k = p.width / (blockEl.offsetWidth || 1) || 1;
+    const mid = (b.top + b.bottom) / 2;
+    document.documentElement.style.setProperty(name,
+      ((fromBottom ? p.bottom - mid : mid - p.top) / k).toFixed(1) + "px");
+  };
+  put("--upper-mid", platTopEl, ".band.b-apps", false);
+  put("--lower-mid", platformEl, ".band.b-infra", true);
 }
 
 /* The ring is geometry, so it is redrawn by whatever redraws the layout: every
@@ -3558,7 +3570,7 @@ function alignIngest(){
 function fitBoard(){
   fitLayout();
   drawZRing();
-  alignIngest();
+  alignConnectors();
 }
 function fitLayout(){
   fitInEl.style.transform = "";
