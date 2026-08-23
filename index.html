@@ -10,12 +10,20 @@
     --line:#e3e7ec; --bg:#f4f6f8; --card:#fff;
     --brand:#ff3621; --brand-soft:#f7cfc7; --brand-wash:#fff6f4;
     --panel:#f6f4f2;
-    --tone-red-bd:#f4c9c0; --tone-red-bg:#ffffff;
-    --tone-green-bd:#c9e5d5; --tone-green-bg:#e7f4ec;
-    --tone-blue-bd:#d2dbf1; --tone-blue-bg:#eaeef9;
+    /* One tone per band inside the platform. Two bands sharing a fill reads as
+       "these two belong together", which is wrong for Serve and Governance or
+       for Ingest and Agentic Data, so each band gets its own hue and they are
+       kept pale enough to stay subordinate to the zone colours outside. */
+    --tone-coral-bd:#f0c4ba; --tone-coral-bg:#fdf4f2;
+    --tone-amber-bd:#ecd2a6; --tone-amber-bg:#fdf7ec;
+    --tone-teal-bd:#b7dae1; --tone-teal-bg:#e8f6f8;
+    --tone-green-bd:#c0e1ca; --tone-green-bg:#ecf7f0;
+    --tone-blue-bd:#c9d5ee; --tone-blue-bg:#ecf1fa;
+    --tone-slate-bd:#d0d8e0; --tone-slate-bg:#f2f5f8;
+    --tone-rose-bd:#ebccda; --tone-rose-bg:#fdf3f7;
     --tone-grey-bd:#e0e5ea; --tone-grey-bg:#ffffff;
     --rail-bd:#cfe0d4; --rail-accent:#2f9e50;
-    --cons-bd:#cfdcf0; --cons-accent:#2f6fd0;
+    --cons-bd:#cfdcf0;
     --cloud-bd:#f0d9c2; --cloud-accent:#e8791a; --cloud-bg:#fef8f2;
     --shadow:0 1px 2px rgba(16,24,40,.05),0 3px 10px rgba(16,24,40,.04);
     --shadow-lg:0 12px 34px rgba(16,24,40,.14);
@@ -207,7 +215,7 @@
      connector is inset by it at both ends, so an arrow starts and lands on the
      OUTER box of a zone rather than disappearing under it. --gut and --pgap are
      sized so the arrow that remains after that inset still reads as an arrow. */
-  :root { --designw:1980px; --railw:262px; --gut:60px; --armw:212px; --pgap:42px;
+  :root { --designw:1980px; --railw:262px; --gut:60px; --armw:230px; --pgap:60px;
     --headh:38px; --headgap:6px; --zo:6px;
     --c-src:var(--railw); --c-cons:var(--railw); --c-gutl:var(--gut); --c-gutr:var(--gut); }
   .col.src    { grid-column:1; grid-row:1 / 4; }
@@ -268,7 +276,7 @@
     border:7px solid transparent; border-left:10px solid #7d8794; border-right:0; }
   /* the platform hands the open copy of the data down to cloud storage: same
      connector rotated, in the cloud band's own accent so the hand-off reads */
-  .flow.down { width:14px; height:20px; }
+  .flow.down { width:14px; height:48px; }
   .flow.down::before { left:5px; right:auto; top:0; bottom:9px; width:3px; height:auto;
     background:repeating-linear-gradient(180deg, #c07f3f 0 7px, transparent 7px 13px);
     background-size:3px 13px; animation-name:flowdashv; }
@@ -280,7 +288,7 @@
   .flow.left::after { right:auto; left:0; border:7px solid transparent;
     border-right:10px solid #7d8794; border-left:0; }
   /* and pointing up, into the apps, harnesses and use cases band */
-  .flow.up { width:14px; height:20px; }
+  .flow.up { width:14px; height:48px; }
   .flow.up::before { left:5px; right:auto; top:9px; bottom:0; width:3px; height:auto;
     background:repeating-linear-gradient(180deg, #8a7fa8 0 7px, transparent 7px 13px);
     background-size:3px 13px; animation-name:flowdashu; }
@@ -349,12 +357,16 @@
   .rgroup-t .rg-label { min-width:0; line-height:1.1; white-space:nowrap;
     overflow:hidden; text-overflow:ellipsis; }
   /* per-zone accent, so a group label always reads as part of its own zone */
-  .rail.src  { --g-accent:#b98b7a; }
-  .rail.ing  { --g-accent:#7d94a8; }
-  .rail.ppl  { --g-accent:#8a7fa8; }
-  .rail.cons { --g-accent:#5f7fb8; }
+  /* Each zone owns one hue, and its section labels, tile notches and enclosing
+     line all take it, so a zone reads as one thing and as distinct from the zone
+     next to it. The six are spread around the wheel (green 140, teal 185,
+     blue 220, violet 270, rose 335, orange 30) to keep neighbours apart. */
+  .rail.src  { --g-accent:#4b8f63; --rail-accent:#4b8f63; }
+  .rail.ing  { --g-accent:#35878f; --rail-accent:#35878f; }
+  .rail.ppl  { --g-accent:#7a5ca8; --rail-accent:#7a5ca8; }
+  .rail.cons { --g-accent:#3f6cbd; --rail-accent:#3f6cbd; }
   .cloudwrap .cloud-sec { --g-accent:#c07a3e; }
-  .hband.top .cloud-sec { --g-accent:#7a6ca8; }
+  .hband.top .cloud-sec { --g-accent:#a8517d; }
 
   /* ---------- zone box: one outline around a zone's heading and its content ----
      Sources is a heading pill plus a rail card, i.e. two boxes. This encloses the
@@ -366,10 +378,10 @@
      on a sub-pixel and washes out in both the raster exports and print. */
   .col, .pocket { outline:2px solid var(--z-accent); outline-offset:4px;
     border-radius:9px; }
-  .col.src    { --z-accent:#6f9c7c; }
-  .col.cons   { --z-accent:#6f8bb8; }
-  .pocket.ing { --z-accent:#7d94a8; }
-  .pocket.ppl { --z-accent:#8a7fa8; }
+  .col.src    { --z-accent:#4b8f63; }
+  .col.cons   { --z-accent:#3f6cbd; }
+  .pocket.ing { --z-accent:#35878f; }
+  .pocket.ppl { --z-accent:#7a5ca8; }
   /* two tiles per row: the rails hold 17 and 16 entries, and stacking them in one
      column is what pushed the page past a laptop viewport. */
   .rtiles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px; align-items:stretch; }
@@ -380,14 +392,12 @@
     background:#fff; padding:4px 6px; cursor:pointer; transition:.12s; }
   .rail.ing  .rtile { border-left-color:#7d94a8; }
   .rail.ppl  .rtile { border-left-color:#8a7fa8; }
-  .rail.cons .rtile { border-left-color:var(--cons-accent); }
   /* a tile supplied by the active cloud provider, not by the static model */
   .rtile.cloudy { border-left-color:var(--cloud-accent); background:var(--cloud-bg); }
   .rtile:hover { border-color:var(--brand); box-shadow:var(--shadow); transform:translateX(1px); }
   .rtile .ic { width:13px; height:13px; flex:0 0 auto; color:var(--rail-accent); }
   .rail.ing  .rtile .ic { color:#6d879e; }
   .rail.ppl  .rtile .ic { color:#7d709c; }
-  .rail.cons .rtile .ic { color:var(--cons-accent); }
   .rtile.cloudy .ic { color:var(--cloud-accent); }
   .rtile .t-name { font-size:11px; font-weight:650; line-height:1.2; min-width:0; }
   /* ---------- platform (Z shape) ---------- */
@@ -443,10 +453,14 @@
 
   .band { display:flex; align-items:stretch; gap:10px; border:1px solid var(--tone-grey-bd);
     border-radius:10px; background:var(--tone-grey-bg); padding:5px 9px; }
-  .band.t-red   { border-color:var(--tone-red-bd);   background:var(--tone-red-bg); }
-  .band.t-green { border-color:var(--tone-green-bd); background:var(--tone-green-bg); }
-  .band.t-blue  { border-color:var(--tone-blue-bd);  background:var(--tone-blue-bg); }
-  .band.t-grey  { border-color:var(--tone-grey-bd);  background:var(--tone-grey-bg); }
+  .band.t-coral  { border-color:var(--tone-coral-bd);  background:var(--tone-coral-bg); }
+  .band.t-amber  { border-color:var(--tone-amber-bd);  background:var(--tone-amber-bg); }
+  .band.t-teal   { border-color:var(--tone-teal-bd);   background:var(--tone-teal-bg); }
+  .band.t-green  { border-color:var(--tone-green-bd);  background:var(--tone-green-bg); }
+  .band.t-blue   { border-color:var(--tone-blue-bd);   background:var(--tone-blue-bg); }
+  .band.t-slate  { border-color:var(--tone-slate-bd);  background:var(--tone-slate-bg); }
+  .band.t-rose   { border-color:var(--tone-rose-bd);   background:var(--tone-rose-bg); }
+  .band.t-grey   { border-color:var(--tone-grey-bd);   background:var(--tone-grey-bg); }
 
   .band-lbl { flex:0 0 138px; min-width:0; padding-top:2px; }
   .band-lbl .bl-name { display:flex; align-items:flex-start;
@@ -585,7 +599,10 @@
 
   /* ---------- cloud band ---------- */
   .cloudwrap { margin-top:0; }
-  .cloud { border:1px solid var(--cloud-bd); border-left:4px solid var(--cloud-accent);
+  /* 2px, like the zone outlines: at ~0.83 fit scale a 1px line lands on a
+     sub-pixel and washes out, which is why these two bands read as unenclosed
+     next to Sources and Consumers. The line takes the band's own notch colour. */
+  .cloud { border:2px solid var(--cloud-bd); border-left:5px solid var(--cloud-accent);
     border-radius:12px; background:var(--card); box-shadow:var(--shadow); padding:7px 12px;
     display:flex; align-items:stretch; gap:13px; }
   .cloud-lbl { flex:0 0 268px; }
@@ -609,7 +626,8 @@
   .ctile .ct-sub { display:block; font-size:9.5px; color:var(--muted); line-height:1.25; margin-top:1px; }
   /* The top band reuses the bottom band's markup, renderer and stylesheet and
      only swaps the accent, so the two horizontal bands read as a pair. */
-  .hband.top { --cloud-accent:#7a6ca8; --cloud-bd:#d8d2e6; --cloud-bg:#f6f4fb; margin-bottom:0; }
+  .hband.top { --cloud-accent:#a8517d; --cloud-bd:#a8517d; --cloud-bg:#fdf5f8; margin-bottom:0; }
+  .cloudwrap { --cloud-accent:#c07a3e; --cloud-bd:#c07a3e; }
   /* both horizontal bands are inset to the Z's own width: the columns either side
      of the platform are Sources and Consumers, and neither band belongs over them */
   /* the two bands line up with the platform's OUTER box, not with the blocks
@@ -1119,7 +1137,7 @@ const ARCH = {
        These are Databricks products. They sit inside the outline so no reader
        mistakes them for third-party tooling; cloud-native and third-party
        ingestion stays outside, in the pocket under this arm. */
-    { id:"ingest", name:"Ingest", ic:"autoload", sub:"Databricks-native landing paths", tone:"blue", inline:true, arm:"left",
+    { id:"ingest", name:"Ingest", ic:"autoload", sub:"Databricks-native landing paths", tone:"teal", inline:true, arm:"left",
       rows:[ { kind:"cards", items:[
         { n:"Lakeflow Connect", s:"Managed connectors", ic:"connect", st:"GA",
           long:"Managed connectors for 100+ enterprise sources (SaaS, databases, file stores and applications) with schema evolution and CDC handled for you.",
@@ -1138,7 +1156,7 @@ const ARCH = {
     /* --------- Serve: the Z's right arm, facing the people who read it -------
        The outbound counterpart of the left arm: the low-latency paths by which
        governed data and models leave the platform. */
-    { id:"serve", name:"Serve", ic:"export", sub:"Governed paths out", tone:"green", inline:true, arm:"right",
+    { id:"serve", name:"Serve", ic:"export", sub:"Governed paths out", tone:"rose", inline:true, arm:"right",
       rows:[ { kind:"cards", items:[
         { n:"SQL Warehouses", s:"Serverless SQL", ic:"lakehouse", st:"GA",
           long:"Serverless SQL compute behind every dashboard, BI tool and SQL client, with Unity Catalog permissions enforced on the same tables the pipelines write.",
@@ -1156,7 +1174,7 @@ const ARCH = {
       ]} ]},
 
     /* ---------------------------- Agentic Apps ---------------------------- */
-    { id:"apps", name:"Agentic Apps", ic:"apps", sub:"Deploy agents at scale to transform work", tone:"red", inline:true, blk:"top",
+    { id:"apps", name:"Agentic Apps", ic:"apps", sub:"Deploy agents at scale to transform work", tone:"coral", inline:true, blk:"top",
       rows:[ { kind:"cards", items:[
         { n:"AI/BI", s:"Business Intelligence", ic:"aibi", st:"GA",
           long:"Governed dashboards and natural-language analytics built directly on lakehouse tables, with Genie behind the ask-a-question experience.",
@@ -1173,7 +1191,7 @@ const ARCH = {
       ]} ]},
 
     /* ---------------------------- Agentic Work ---------------------------- */
-    { id:"work", name:"Agentic Work", ic:"agents", sub:"Data-smart coworkers for every employee", tone:"red", blk:"top",
+    { id:"work", name:"Agentic Work", ic:"agents", sub:"Data-smart coworkers for every employee", tone:"amber", blk:"top",
       rows:[ { kind:"mixed", items:[
         { kind:"panel", flex:"2.4 1 0", headw:"58px",
           head:{ n:"Genie", ic:"genie",
@@ -1246,7 +1264,7 @@ const ARCH = {
       ]} ]},
 
     /* ------------------------- Open Infrastructure ------------------------ */
-    { id:"infra", name:"Open Infrastructure", ic:"zopen", sub:"Open source at the core, one open copy of your data", tone:"grey", inline:true, blk:"bot",
+    { id:"infra", name:"Open Infrastructure", ic:"zopen", sub:"Open source at the core, one open copy of your data", tone:"slate", inline:true, blk:"bot",
       rows:[
         /* the open row runs full width: open-source projects, open formats and
            the open sharing protocol, no label column stealing the first cell */
@@ -1939,7 +1957,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 9;   /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 10;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -1953,7 +1971,9 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    People pocket (no Data Engineers, "Developers", "Partners & Regulators"), v7
    kept Partners & Platforms inside the People pocket and had no Business /
    Technical split, v8 named the bottom band "Cloud Services & External
-   Integrations" and would restore that title over the current one.
+   Integrations" and would restore that title over the current one, v9 labelled
+   the Agentic Dev side chip "Flow" and would restore that over "Lakeflow
+   Designer" for anyone who had already opened the page.
    Restoring any of them renders empty columns or throws, so anything that fails
    this check is discarded rather than half-applied. */
 function storedStateUsable(s){
@@ -2698,15 +2718,19 @@ async function rasterSvg(el, cssW, cssH, scale){
    containing block is the host's padding box and getComputedStyle already gives
    used px for left/top/right/bottom. The exporter cannot see pseudo-elements by
    walking the DOM, which is why three connectors were absent from the deck. */
-function pseudoBox(el, which){
+function pseudoBox(el, which, k){
   const cs = getComputedStyle(el, which);
   if(!cs || cs.content === "none" || cs.display === "none") return null;
-  const n = v=>{ const x = parseFloat(v); return isNaN(x) ? null : x; };
+  /* getBoundingClientRect is post-transform screen px but getComputedStyle is
+     unscaled layout px, so every length taken from the style has to be put on
+     the screen scale before it is added to a rect-derived origin. */
+  k = k || 1;
+  const n = v=>{ const x = parseFloat(v); return isNaN(x) ? null : x * k; };
   const hr = el.getBoundingClientRect(), hs = getComputedStyle(el);
-  const bl = n(hs.borderLeftWidth) || 0, bt = n(hs.borderTopWidth) || 0;
+  const bl = (parseFloat(hs.borderLeftWidth) || 0) * k, bt = (parseFloat(hs.borderTopWidth) || 0) * k;
   const cbL = hr.left + bl, cbT = hr.top + bt;
-  const cbW = hr.width - bl - (n(hs.borderRightWidth) || 0);
-  const cbH = hr.height - bt - (n(hs.borderBottomWidth) || 0);
+  const cbW = hr.width - bl - (parseFloat(hs.borderRightWidth) || 0) * k;
+  const cbH = hr.height - bt - (parseFloat(hs.borderBottomWidth) || 0) * k;
   /* triangle heads carry their size entirely in borders, so measure border-box */
   const bw = { l:n(cs.borderLeftWidth) || 0, r:n(cs.borderRightWidth) || 0,
                t:n(cs.borderTopWidth) || 0, b:n(cs.borderBottomWidth) || 0 };
@@ -2774,6 +2798,10 @@ function collectBoardInner(){
   const B = board.getBoundingClientRect();
   const shapes = [], svgs = [];
   const rel = r=> ({ x:r.left - B.left, y:r.top - B.top, w:r.width, h:r.height });
+  /* the board is drawn under a fit transform: rects come back already scaled,
+     computed styles do not, so anything read from a style needs this factor */
+  const fitK = (()=>{ const m = document.querySelector(".mid");
+    return m ? m.getBoundingClientRect().width / (m.offsetWidth || 1) : 1; })();
 
   const flowShape = (el, r)=>{
     const cl = el.classList;
@@ -2785,10 +2813,11 @@ function collectBoardInner(){
        9px, so the arrow is the full span with a head on the pointing end */
     const b = rel(r);
     let a1, a2;
-    if(dir === "right"){ a1 = { x:b.x, y:b.y + 6.5 }; a2 = { x:b.x + b.w, y:b.y + 6.5 }; }
-    else if(dir === "left"){ a1 = { x:b.x + b.w, y:b.y + 6.5 }; a2 = { x:b.x, y:b.y + 6.5 }; }
-    else if(dir === "down"){ a1 = { x:b.x + 6.5, y:b.y }; a2 = { x:b.x + 6.5, y:b.y + b.h }; }
-    else { a1 = { x:b.x + 6.5, y:b.y + b.h }; a2 = { x:b.x + 6.5, y:b.y }; }
+    const cy = b.y + b.h / 2, cx = b.x + b.w / 2;
+    if(dir === "right"){ a1 = { x:b.x, y:cy }; a2 = { x:b.x + b.w, y:cy }; }
+    else if(dir === "left"){ a1 = { x:b.x + b.w, y:cy }; a2 = { x:b.x, y:cy }; }
+    else if(dir === "down"){ a1 = { x:cx, y:b.y }; a2 = { x:cx, y:b.y + b.h }; }
+    else { a1 = { x:cx, y:b.y + b.h }; a2 = { x:cx, y:b.y }; }
     shapes.push({ t:"arrow", a1, a2, col, w:3 });
   };
 
@@ -2875,7 +2904,7 @@ function collectBoardInner(){
        native arrow, a solid strip becomes a rect. .flow and .medal-arrow already
        have purpose-built geometry, so they are skipped here to avoid doubling. */
     if(!el.classList.contains("flow") && !el.classList.contains("medal-arrow")){
-      const shaft = pseudoBox(el, "::before"), head = pseudoBox(el, "::after");
+      const shaft = pseudoBox(el, "::before", fitK), head = pseudoBox(el, "::after", fitK);
       const dashed = shaft && /repeating-linear-gradient/.test(shaft.cs.backgroundImage);
       if(dashed && head){
         const col = headColour(head.cs) ||
@@ -3101,8 +3130,12 @@ async function exportPptx(){
   const pad = 0.03;
   const title = docTitle();
   const { shapes, svgs, W, H } = collectBoard();
-  const k = Math.min(SW * (1 - pad * 2) / W, SH * (1 - pad * 2) / H);
-  const ox = Math.round((SW - W * k) / 2), oy = Math.round((SH - H * k) / 2);
+  /* the deck needs to say what it is once it leaves the browser, so the board
+     gives up a strip at the top rather than having the title laid over it */
+  const bandH = Math.round(SH * 0.072), availH = SH * (1 - pad * 2) - bandH;
+  const k = Math.min(SW * (1 - pad * 2) / W, availH / H);
+  const ox = Math.round((SW - W * k) / 2);
+  const oy = Math.round(SH * pad + bandH + (availH - H * k) / 2);
 
   /* one media part per distinct glyph at its rendered size, reused everywhere
      that glyph appears, so ~200 icons collapse to a few dozen images */
@@ -3134,6 +3167,16 @@ async function exportPptx(){
     const xml = pptxShapeXml(sh, id, k, ox, oy, sh.embed ? "rId" + (sh.embed + 1) : null);
     if(xml){ parts.push(xml); id++; }
   });
+  parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Title"/>' +
+    '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="' +
+    Math.round(SW * pad) + '" y="' + Math.round(SH * pad) + '"/><a:ext cx="' +
+    Math.round(SW * (1 - pad * 2)) + '" cy="' + bandH + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr">' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="l"/>' +
+    '<a:r><a:rPr lang="en-US" sz="1800" b="1"><a:solidFill><a:srgbClr val="1B3139"/>' +
+    '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
+    '</a:t></a:r></a:p></p:txBody></p:sp>');
   return zipStore(pptxParts(parts.join(""), media, title));
 }
 /* A copy of this page with the live state frozen in, so the download opens with
@@ -3172,21 +3215,27 @@ async function boardPdfBlob(){
   const img = await flate(rgb);
   if(!img) return null;
   const PW = 842, PH = 595, M = 14;                        /* A4 landscape, points */
-  const k = Math.min((PW - M*2) / w, (PH - M*2) / h);
-  const dw = w * k, dh = h * k, dx = (PW - dw) / 2, dy = (PH - dh) / 2;
+  const TB = 26;                          /* title strip, points, above the board */
+  const k = Math.min((PW - M*2) / w, (PH - M*2 - TB) / h);
+  const dw = w * k, dh = h * k, dx = (PW - dw) / 2;
+  const dy = M + (PH - M*2 - TB - dh) / 2;
   const enc = new TextEncoder();
+  /* PDF y grows upward, so the strip sits at the top of the page */
   const content = enc.encode("q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " +
-    dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n");
+    dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n" +
+    "BT /F1 14 Tf 0.106 0.192 0.224 rg " + M + " " + (PH - M - 14) + " Td (" +
+    pdfStr(docTitle()) + ") Tj ET\n");
   const objs = [
     enc.encode("<</Type/Catalog/Pages 2 0 R>>"),
     enc.encode("<</Type/Pages/Kids[3 0 R]/Count 1>>"),
     enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH +
-      "]/Resources<</XObject<</Im0 4 0 R>>>>/Contents 5 0 R>>"),
+      "]/Resources<</XObject<</Im0 4 0 R>>/Font<</F1 7 0 R>>>>/Contents 5 0 R>>"),
     { dict:"<</Type/XObject/Subtype/Image/Width " + w + "/Height " + h +
       "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>",
       stream:img },
     { dict:"<</Length " + content.length + ">>", stream:content },
     enc.encode("<</Title (" + pdfStr(docTitle()) + ")/Producer (Databricks Reference Architecture)>>"),
+    enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>"),
   ];
   const parts = [], offs = [];
   let len = 0;
@@ -3202,7 +3251,7 @@ async function boardPdfBlob(){
   const xref = len;
   let x = "xref\n0 " + (objs.length+1) + "\n0000000000 65535 f \n";
   offs.forEach(o=> x += String(o).padStart(10, "0") + " 00000 n \n");
-  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info " + objs.length + " 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
+  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info 6 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
   push(enc.encode(x));
   return new Blob(parts, {type:"application/pdf"});
 }
