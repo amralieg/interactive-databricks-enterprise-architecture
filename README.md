@@ -211,12 +211,6 @@ encoder walks one step per frame. Only the moving pixels differ between frames,
 and the encoder stores the rest as transparent, which is why the animation fits
 in about 90 KB.
 
----
-
-## Credits
-
-Built by Amr Ali, Databricks Middle East and Africa.
-
 The Apache Spark, MLflow, Delta Lake, Unity Catalog, Apache Iceberg and Delta
 Sharing marks belong to their respective projects and are used to identify those
 projects.
