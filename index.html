@@ -833,7 +833,6 @@
   .fmt svg { width:13px; height:13px; color:var(--brand); flex:0 0 auto; }
   /* margin-left:auto keeps the group right-aligned, and grouping the three means
      they wrap together onto the next line instead of one at a time. */
-  .anys { display:flex; align-items:center; gap:2px; margin-left:auto; flex:0 0 auto; }
   .anyx { display:inline-flex; align-items:center; gap:5px; border:1px solid transparent; border-radius:7px;
     padding:4px 7px; font:inherit; font-size:11px; font-weight:700; color:var(--ink); cursor:pointer;
     background:transparent; white-space:nowrap; flex:0 0 auto; }
@@ -1027,6 +1026,18 @@
   .d-title { font-size:21px; font-weight:800; margin:6px 0 3px; display:flex; gap:10px; align-items:center; letter-spacing:-.02em; }
   .d-title .d-ic { width:23px; height:23px; flex:0 0 auto; color:var(--brand); }
   .d-tagline { color:var(--muted); font-size:13px; }
+  /* Release stage. It lives in the panel and never on the canvas, so the drawing
+     does not date while the question "can I build on this today" still has an
+     answer one click away. Two treatments only: available, or not yet. Grading
+     Beta against Preview against Private preview would invite a reader to rank
+     them, and the plannable distinction is binary. */
+  .d-stage { display:inline-flex; align-items:center; gap:5px; margin-top:7px;
+    font-size:11px; font-weight:750; padding:3px 9px 3px 7px; border-radius:999px;
+    border:1px solid var(--g-slate-bd); background:var(--g-slate-bg); color:var(--g-slate-ink); }
+  .d-stage::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .d-stage.ga { border-color:var(--g-green-bd); background:var(--g-green-bg); color:var(--g-green-ink); }
+  .d-stage.pre { border-color:var(--g-amber-bd); background:var(--g-amber-bg); color:var(--g-amber-ink); }
+  .d-stage em { font-style:normal; font-weight:600; opacity:.8; }
   .d-body { padding:18px 24px 40px; overflow-y:auto; }
   .d-body h4 { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin:17px 0 7px; font-weight:800; }
   .d-body h4:first-child { margin-top:0; }
@@ -1284,6 +1295,7 @@
     <div class="d-eyebrow" id="d-eyebrow"></div>
     <div class="d-title" id="d-title"></div>
     <div class="d-tagline" id="d-tagline"></div>
+    <div id="d-stage"></div>
   </div>
   <div class="d-body" id="d-body"></div>
 </aside>
@@ -1424,9 +1436,12 @@ function svg(id, cls){
   return `<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65"
     stroke-linecap="round" stroke-linejoin="round">${ICONS[id]||ICONS.dot}</svg>`;
 }
-/* Tiles keep their `st` release stage in the content model below, but nothing
-   renders it: a reference architecture outlives any GA / Preview label, and the
-   badges dated the diagram. Restore by wrapping names in a badge span again. */
+/* Tiles keep their `st` release stage below. It renders in the detail panel and
+   deliberately NOT on the canvas: a badge on every tile dates the drawing, but
+   with no badge anywhere a reader cannot tell a Beta from a decade-old GA
+   product, which is the one mistake that stalls a build after sign-off. The
+   panel is the compromise, so keep `st` accurate even though nothing on the
+   canvas reads it. */
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 /* ==================================================================
@@ -1610,10 +1625,6 @@ const ARCH = {
             { n:"Gold", s:"Business-level data", ic:"cyl",
               long:"Aggregated, contracted data products and metrics that dashboards, Genie and published data products read. Governed by Unity Catalog Domains, Metrics and the Business Glossary.",
               rel:["Lakehouse","AI/BI","Data Products"] },
-          ],
-          anys:[
-            { n:"Any Model", ic:"model", long:"Bring any model: Databricks-hosted, frontier APIs, open weights or your own fine-tunes, governed through Unity Gateway. DAIS 2026 added Kimi and Grok to Agent Bricks.", rel:["Unity Gateway"] },
-            { n:"Any Data", ic:"anydata", long:"Structured, semi-structured, unstructured, documents and real-time events, in your own object storage.", rel:["Lakeflow"] },
           ]} ]},
   ],
 
@@ -2087,19 +2098,6 @@ function infraRow(row, section){
     wrap.appendChild(st);
   }
 
-  /* only the last infra row carries the Any Model / Any Data chips */
-  if(row.anys){
-    const anys = document.createElement("div");
-    anys.className = "anys";
-    row.anys.forEach(a=>{
-      const b = document.createElement("button");
-      b.className = "anyx";
-      b.innerHTML = esc(a.n) + svg(a.ic,"");
-      reg(b, a, row.anys, section);
-      anys.appendChild(b);
-    });
-    wrap.appendChild(anys);
-  }
   return wrap;
 }
 
@@ -2517,6 +2515,17 @@ function detailLinks(name){
 }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
 
+/* Says what a stage means rather than just naming it, because "Beta" alone is
+   the thing that gets read as "nearly done" and then blocks a build. Anything
+   that is not exactly GA is treated as not-yet-plannable, including a stage this
+   never saw before: an unrecognised value must not fall through as available. */
+function stageBadge(st){
+  if(!st) return "";
+  const ga = /^ga$/i.test(st.trim());
+  return `<span class="d-stage ${ga ? "ga" : "pre"}">${esc(st)}` +
+    `<em>${ga ? "available now" : "not yet generally available"}</em></span>`;
+}
+
 function openDetail(id){
   const rec = byId[id]; if(!rec) return;
   openId = id;
@@ -2524,6 +2533,7 @@ function openDetail(id){
   document.getElementById("d-eyebrow").textContent = rec.section;
   document.getElementById("d-title").innerHTML = svg(t.ic||"dot","d-ic") + " " + esc(t.n);
   document.getElementById("d-tagline").textContent = t.s || t.desc || "";
+  document.getElementById("d-stage").innerHTML = stageBadge(t.st);
   let html = "";
   if(activeRef && activeRef.map[t.n]){
     html += `<h4>How it is used in this architecture</h4><div class="d-refbox"><ul>` +
@@ -2641,7 +2651,6 @@ const REFERENCES = [
       "cloud:identity":["Operator and engineer SSO into the plant-floor app"],
       "cloud:streaming":["Kafka-compatible ingress"],
       "Lakehouse//RT":["Millisecond reads behind the live plant-floor dashboards"],
-      "Any Data":["Structured telemetry plus unstructured inspection images"],
     }},
   { id:"security-lakehouse", name:"Security Lakehouse & Agentic SOC",
     blurb:"Lakewatch as the agentic SIEM on cost-efficient long-retention storage, with detection-as-code and an agent doing first-pass triage.",
@@ -2690,7 +2699,6 @@ const REFERENCES = [
       "External Orchestrator":["Existing scheduler triggering agent workflows"],
       "cloud:identity":["Employee identity the agents act on behalf of"],
       "cloud:network":["Private egress for agent tool calls"],
-      "Any Model":["Kimi, Grok, frontier and open-weight models"],
     }},
   { id:"cust360", name:"Customer 360 & Activation: Insurance",
     blurb:"One governed profile across policy, claims and digital, published as a data product and activated through CustomerLake.",
