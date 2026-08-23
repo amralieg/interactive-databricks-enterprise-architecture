@@ -499,8 +499,11 @@
     border-radius:20px; padding:2px 7px 2px 5px; font-size:9px; font-weight:800; letter-spacing:.05em; }
   .tagpill svg { width:10px; height:10px; }
   .pcol .pc-desc { font-size:10px; color:var(--ink); line-height:1.32; }
-  .side-col { flex:0 0 66px; display:flex; flex-direction:column; gap:4px; }
-  .schip { border:1px solid var(--line); background:#fff; border-radius:7px; padding:4px 5px;
+  .side-col { flex:0 0 104px; display:flex; flex-direction:column; gap:4px; }
+  .schip svg { width:12px; height:12px; flex:0 0 12px; stroke:var(--brand); fill:none;
+    stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .schip { display:flex; align-items:center; gap:5px; text-align:left;
+    border:1px solid var(--line); background:#fff; border-radius:7px; padding:4px 5px;
     font:inherit; font-size:9.5px; font-weight:700; color:var(--ink); cursor:pointer; text-align:center;
     line-height:1.22; transition:.12s; }
   .schip:hover { border-color:var(--brand); color:var(--brand); }
@@ -886,7 +889,7 @@
      painted by the same paintSeg, so the two never disagree. -->
 <div class="builder" id="builder">
   <div class="builder-card">
-    <textarea id="bld-text" rows="7" placeholder="Describe your architecture here"></textarea>
+    <textarea id="bld-text" rows="7" placeholder="Describe your customer, use cases, source systems, consumers and any useful context to build a draft architecture"></textarea>
     <div class="bld-row">
       <div class="seg" id="bld-seg"></div>
     </div>
@@ -1196,7 +1199,7 @@ const ARCH = {
             { n:"Genie App Builder", label:"App Builder", ic:"appbuilder", st:"Private preview",
               long:"AI-powered application builder that uses Genie context and inherits Unity Catalog governance, so generated apps are governed by construction.",
               rel:["Apps","Genie Ontology"] },
-            { n:"Lakeflow Designer", label:"Flow", ic:"flow", st:"Preview",
+            { n:"Lakeflow Designer", ic:"flow", st:"Preview",
               long:"No-code, Genie-powered data preparation that generates Spark Declarative Pipelines, so business users build pipelines that engineers can own.",
               rel:["Lakeflow"] },
           ]},
@@ -1682,7 +1685,7 @@ function panelEl(g, section){
     g.side.forEach(s=>{
       const chip = document.createElement("button");
       chip.className = "schip";
-      chip.innerHTML = esc(s.label || s.n);
+      chip.innerHTML = (s.ic ? svg(s.ic) : "") + "<span>" + esc(s.label || s.n) + "</span>";
       reg(chip, s, g.side, section);
       side.appendChild(chip);
     });
@@ -2491,6 +2494,12 @@ platBtn.onclick = ()=>{
    board is rasterised through an SVG foreignObject, the deck is a hand-built
    OOXML package in a stored (uncompressed) zip, the PDF goes through the print
    dialog, and the HTML copy is this document plus a frozen state snapshot. */
+/* Title carried into the PDF and PPTX metadata, so the file identifies itself
+   and its cloud variant once it is out of the browser. */
+function docTitle(){
+  const p = ARCH.cloud.providers[ARCH.cloud.provider];
+  return "Databricks Reference Architecture - " + ((p && p.label) || ARCH.cloud.provider);
+}
 function dlName(ext){
   const tab = document.querySelector(".tab.active");
   const base = "databricks-" + ((tab && tab.dataset.tab) || "reference") + "-architecture";
@@ -2684,6 +2693,44 @@ async function rasterSvg(el, cssW, cssH, scale){
 }
 
 /* ---- walk the board and describe every visible thing ---- */
+/* Resolve the on-screen box of a ::before / ::after. These pseudo-elements are
+   absolutely positioned inside their own relatively-positioned host, so the
+   containing block is the host's padding box and getComputedStyle already gives
+   used px for left/top/right/bottom. The exporter cannot see pseudo-elements by
+   walking the DOM, which is why three connectors were absent from the deck. */
+function pseudoBox(el, which){
+  const cs = getComputedStyle(el, which);
+  if(!cs || cs.content === "none" || cs.display === "none") return null;
+  const n = v=>{ const x = parseFloat(v); return isNaN(x) ? null : x; };
+  const hr = el.getBoundingClientRect(), hs = getComputedStyle(el);
+  const bl = n(hs.borderLeftWidth) || 0, bt = n(hs.borderTopWidth) || 0;
+  const cbL = hr.left + bl, cbT = hr.top + bt;
+  const cbW = hr.width - bl - (n(hs.borderRightWidth) || 0);
+  const cbH = hr.height - bt - (n(hs.borderBottomWidth) || 0);
+  /* triangle heads carry their size entirely in borders, so measure border-box */
+  const bw = { l:n(cs.borderLeftWidth) || 0, r:n(cs.borderRightWidth) || 0,
+               t:n(cs.borderTopWidth) || 0, b:n(cs.borderBottomWidth) || 0 };
+  const w = (n(cs.width) || 0) + bw.l + bw.r, h = (n(cs.height) || 0) + bw.t + bw.b;
+  const l = n(cs.left), r = n(cs.right), t = n(cs.top), b = n(cs.bottom);
+  const ml = n(cs.marginLeft) || 0, mt = n(cs.marginTop) || 0;
+  return {
+    x:(l !== null ? cbL + l : r !== null ? cbL + cbW - r - w : cbL) + ml,
+    y:(t !== null ? cbT + t : b !== null ? cbT + cbH - b - h : cbT) + mt,
+    w, h, cs, bw };
+}
+/* First non-transparent border colour: the triangle heads paint their direction
+   through exactly one border edge. */
+function headColour(cs){
+  /* only an edge with width paints, and a zero-width edge reported via the
+     border-top:0 shorthand still reports currentColor, so width must gate this */
+  for(const k of ["Top","Right","Bottom","Left"]){
+    if((parseFloat(cs["border" + k + "Width"]) || 0) <= 0) continue;
+    const c = cssRgb(cs["border" + k + "Color"]);
+    if(c && c.a > .05) return c.hex;
+  }
+  return null;
+}
+
 /* Break a text node into the lines Chrome actually rendered, each with its own
    rect. Exporting a line at a time means the deck never depends on PowerPoint
    choosing the same wrap points as the browser. */
@@ -2824,6 +2871,41 @@ function collectBoardInner(){
       });
     });
 
+    /* pseudo-element decoration: a dashed shaft plus its triangle head become one
+       native arrow, a solid strip becomes a rect. .flow and .medal-arrow already
+       have purpose-built geometry, so they are skipped here to avoid doubling. */
+    if(!el.classList.contains("flow") && !el.classList.contains("medal-arrow")){
+      const shaft = pseudoBox(el, "::before"), head = pseudoBox(el, "::after");
+      const dashed = shaft && /repeating-linear-gradient/.test(shaft.cs.backgroundImage);
+      if(dashed && head){
+        const col = headColour(head.cs) ||
+          (String(shaft.cs.backgroundImage).match(/rgba?\([^)]+\)/) || [])[0];
+        const hex = col && col.charAt(0) !== "r" ? col : (cssRgb(col) || {}).hex;
+        const vertical = shaft.h >= shaft.w;
+        const sc = { x:shaft.x + shaft.w / 2, y:shaft.y + shaft.h / 2 };
+        let a1, a2;
+        if(vertical){
+          const up = head.y < shaft.y;
+          a1 = { x:sc.x, y:up ? shaft.y + shaft.h : shaft.y };
+          a2 = { x:sc.x, y:up ? head.y : head.y + head.h };
+        }else{
+          const left = head.x < shaft.x;
+          a1 = { x:left ? shaft.x + shaft.w : shaft.x, y:sc.y };
+          a2 = { x:left ? head.x : head.x + head.w, y:sc.y };
+        }
+        const rb = { x:Math.min(a1.x, a2.x), y:Math.min(a1.y, a2.y) };
+        const rel1 = rel({ left:a1.x, top:a1.y }), rel2 = rel({ left:a2.x, top:a2.y });
+        shapes.push({ t:"arrow", a1:{ x:rel1.x, y:rel1.y }, a2:{ x:rel2.x, y:rel2.y },
+          col:hex || "7D8794", w:Math.max(shaft.w, shaft.h) === shaft.h ? shaft.w : shaft.h,
+          dash:"dash" });
+      }else if(shaft && cssRgb(shaft.cs.backgroundColor) &&
+               cssRgb(shaft.cs.backgroundColor).a > .05 && shaft.w > 1 && shaft.h > 1){
+        const sb = rel({ left:shaft.x, top:shaft.y, width:shaft.w, height:shaft.h });
+        shapes.push({ t:"rect", box:sb, radius:0,
+          fill:cssRgb(shaft.cs.backgroundColor).hex, line:null });
+      }
+    }
+
     for(const c of el.children) walk(c);
   };
 
@@ -2897,7 +2979,7 @@ function pptxShapeXml(sh, id, k, ox, oy, embed){
     return '<p:sp><p:nvSpPr>' + nv("Platform outline", "<p:cNvSpPr/><p:nvPr/>") + "</p:nvSpPr><p:spPr>" +
       '<a:xfrm><a:off x="' + X(bx) + '" y="' + Y(by) + '"/><a:ext cx="' + bw + '" cy="' + bh +
       '"/></a:xfrm><a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>' +
-      '<a:rect l="0" t="0" r="r" b="b"/><a:pathLst>' + path + "</a:pathLst></a:custGeom><a:noFill/>" +
+      '<a:rect l="0" t="0" r="' + bw + '" b="' + bh + '"/><a:pathLst>' + path + "</a:pathLst></a:custGeom><a:noFill/>" +
       '<a:ln w="' + Math.max(3175, E(sh.w)) + '"><a:solidFill><a:srgbClr val="' + sh.col +
       '"/></a:solidFill>' + (sh.dash ? '<a:prstDash val="' + sh.dash + '"/>' : "") +
       "</a:ln></p:spPr></p:sp>";
@@ -2999,8 +3081,10 @@ function pptxParts(body, media, title){
       "<p:sld " + nsAttrs + "><p:cSld><p:spTree>" + empty + body +
       "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>" },
     { name:"ppt/slides/_rels/slide1.xml.rels", data: rels(
-      media.map((m, i)=> ({ id:"rId" + (i + 1),
-        type:"officeDocument/2006/relationships/image", t:"../media/image" + (i + 1) + ".png" }))) },
+      [{ id:"rId1", type:"officeDocument/2006/relationships/slideLayout",
+         t:"../slideLayouts/slideLayout1.xml" }].concat(
+      media.map((m, i)=> ({ id:"rId" + (i + 2),
+        type:"officeDocument/2006/relationships/image", t:"../media/image" + (i + 1) + ".png" })))) },
   ].concat(media.map((m, i)=> ({ name:"ppt/media/image" + (i + 1) + ".png", data:m })));
 }
 function xmlEsc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -3015,7 +3099,7 @@ async function exportPng(){
 async function exportPptx(){
   const SW = PPT_SW, SH = PPT_SH;
   const pad = 0.03;
-  const title = ((document.querySelector(".tab.active") || {}).textContent || "Reference Architecture").trim();
+  const title = docTitle();
   const { shapes, svgs, W, H } = collectBoard();
   const k = Math.min(SW * (1 - pad * 2) / W, SH * (1 - pad * 2) / H);
   const ox = Math.round((SW - W * k) / 2), oy = Math.round((SH - H * k) / 2);
@@ -3047,7 +3131,7 @@ async function exportPptx(){
     '"/></a:solidFill><a:ln><a:noFill/></a:ln></p:spPr></p:sp>'];
   shapes.forEach(sh=>{
     if(sh.t === "img" && !sh.embed) return;            /* a glyph that would not rasterise */
-    const xml = pptxShapeXml(sh, id, k, ox, oy, sh.embed ? "rId" + sh.embed : null);
+    const xml = pptxShapeXml(sh, id, k, ox, oy, sh.embed ? "rId" + (sh.embed + 1) : null);
     if(xml){ parts.push(xml); id++; }
   });
   return zipStore(pptxParts(parts.join(""), media, title));
@@ -3078,6 +3162,8 @@ async function flate(u8){
   const s = new Blob([u8]).stream().pipeThrough(new CompressionStream("deflate"));
   return new Uint8Array(await new Response(s).arrayBuffer());
 }
+/* ( ) and \ terminate or escape a PDF literal string, so they need escaping */
+function pdfStr(t){ return String(t).replace(/([\\()])/g, "\\$&"); }
 async function boardPdfBlob(){
   const { canvas, w, h } = await boardCanvas(1.6);
   const px = canvas.getContext("2d").getImageData(0, 0, w, h).data;
@@ -3100,6 +3186,7 @@ async function boardPdfBlob(){
       "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>",
       stream:img },
     { dict:"<</Length " + content.length + ">>", stream:content },
+    enc.encode("<</Title (" + pdfStr(docTitle()) + ")/Producer (Databricks Reference Architecture)>>"),
   ];
   const parts = [], offs = [];
   let len = 0;
@@ -3115,7 +3202,7 @@ async function boardPdfBlob(){
   const xref = len;
   let x = "xref\n0 " + (objs.length+1) + "\n0000000000 65535 f \n";
   offs.forEach(o=> x += String(o).padStart(10, "0") + " 00000 n \n");
-  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
+  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info " + objs.length + " 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
   push(enc.encode(x));
   return new Blob(parts, {type:"application/pdf"});
 }
