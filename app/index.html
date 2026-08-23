@@ -3664,7 +3664,7 @@ function boardSvgMarkup(phase){
   const wrap = document.createElement("div");
   wrap.setAttribute("class", "exp-body " + [...document.body.classList].join(" "));
   wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";" +
-    (phase ? "--dash-t:" + phase + ";" : ""));
+    (phase == null ? "" : "--dash-t:" + phase + ";"));
   const st = document.createElement("style"); st.textContent = exportCss();
   const clone = bd.cloneNode(true);
   clone.querySelectorAll(".dl-menu").forEach(n=>n.remove());
@@ -3764,6 +3764,15 @@ function gifQuantize(frames, maxColors){
     const sorted = b.list.slice().sort((x, y)=> ((x >> sh) & 31) - ((y >> sh) & 31));
     let acc = 0, cut = 0;
     for(; cut < sorted.length - 1; cut++){ acc += hist[sorted[cut]]; if(acc >= b.n / 2) break; }
+    /* The board is mostly flat fill, so one bin can hold a third of the frame.
+       When that bin sorts last the walk above never reaches half and stops on
+       the final index, and the right-hand slice comes back EMPTY: the box is
+       not divided, its average is 0/0, and NaN stored into a Uint8Array reads
+       as black. The same box is then the biggest again, so it splits into
+       nothing over and over until every entry but a handful is black, which is
+       why the GIF arrived grey while the PNG off the same canvas did not.
+       Both sides must keep at least one bin for the cut to be a cut. */
+    cut = Math.min(cut, sorted.length - 2);
     boxes.splice(pick, 1, box(sorted.slice(0, cut + 1)), box(sorted.slice(cut + 1)));
   }
   const pal = new Uint8Array(768);
