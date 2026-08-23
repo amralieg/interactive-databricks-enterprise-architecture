@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Databricks Data Intelligence Platform: Reference Architecture</title>
+<title>IDEA: Interactive Databricks Enterprise Architecture</title>
 <style>
   /* =====================================================================
      PALETTE
@@ -551,6 +551,18 @@
   @keyframes flowdashv { to { background-position:0 13px; } }
   @keyframes flowdashl { to { background-position:-13px 0; } }
   @keyframes flowdashu { to { background-position:0 -13px; } }
+  /* Phase hooks for the animated GIF. A raster export freezes every animation,
+     so a frame grabbed at t=0.4 would show the dashes exactly where t=0 left
+     them. These declarations reproduce each keyframe's travel from --dash-t, a
+     0..1 phase the encoder walks one step per frame, which is what makes the
+     dashes actually move between GIF frames. They are inert while the page is
+     live because a running animation outranks a normal declaration, and they
+     mirror the animation-name assignments above one for one, so a connector
+     that travels up on screen also travels up in the file. */
+  .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 13px) 0; }
+  .flow.left::before { background-position:calc(var(--dash-t,0) * -13px) 0; }
+  .flow.down::before, .pocket.ppl::before { background-position:0 calc(var(--dash-t,0) * 13px); }
+  .flow.up::before, .pocket.ing::before { background-position:0 calc(var(--dash-t,0) * -13px); }
   @media (prefers-reduced-motion:reduce) { .flow::before, .medal-arrow::before { animation:none; } }
   /* Export freeze. The intro animations reveal with opacity and clip-path, and a
      DOM walk that runs mid-animation reads those transient values as the truth:
@@ -688,7 +700,10 @@
   .zring { position:absolute; inset:0; width:100%; height:100%; overflow:visible;
     pointer-events:none; z-index:3; }
   .zring path { fill:none; stroke:var(--plat-accent); stroke-width:2;
-    stroke-dasharray:15 9; animation:zdash 1.15s linear infinite; }
+    stroke-dasharray:15 9; animation:zdash 1.15s linear infinite;
+    /* same phase hook as the connectors, so the ring keeps travelling in the
+       exported GIF instead of freezing while everything else moves */
+    stroke-dashoffset:calc(var(--dash-t,0) * -24); }
   @keyframes zdash { to { stroke-dashoffset:-24; } }
   body.zring-on .plat-top, body.zring-on .plat-body { border-color:transparent; }
   /* the ring is the platform's zone box as well as its moving edge, so reduced
@@ -872,7 +887,7 @@
   .m-bronze svg, .m-bronze .ms-n { color:var(--m-bronze); }
   .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
   .m-gold   svg, .m-gold   .ms-n { color:var(--m-gold); }
-  .medal-arrow { flex:0 0 18px; align-self:center; height:12px; position:relative; }
+  .medal-arrow { flex:0 0 30px; align-self:center; height:12px; position:relative; }
   .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:5px; height:2px;
     background:repeating-linear-gradient(90deg,var(--flow-medal) 0 7px,transparent 7px 13px);
     background-size:13px 2px; animation:flowdash .9s linear infinite; }
@@ -1247,6 +1262,7 @@
       <button data-dl="pdf">PDF <i>1 page</i></button>
       <button data-dl="pptx">PowerPoint <i>pptx</i></button>
       <button data-dl="png">Image <i>png</i></button>
+      <button data-dl="gif">Animated <i>gif</i></button>
       <button data-dl="html">Interactive <i>html</i></button>
       <div class="dl-note">PDF, PPTX and PNG capture the current view, including
         <b>Platform only</b>. HTML stays interactive.</div>
@@ -2431,8 +2447,20 @@ function build(){
      dbx   Databricks documentation PATH for connecting to that third party
      site  absolute URL to the product's landing page
      blog  absolute URL to one worthwhile deep dive
+     also  [[label, url], ...] extra reading where one link cannot carry the
+           subject. The medallion stages use it: the pattern is the doorway to
+           the industry data models built on it, and one "blog" slot cannot hold
+           a repo, a launch post and the agent that generates them.
      note  one sentence a customer would not get from the name alone
    ================================================================== */
+/* The medallion stages all open the same further reading: which layer you
+   clicked does not change what you would go and read next. */
+const MEDALLION_ALSO = [
+  ["Databricks Industry Data Models", "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models"],
+  ["Jumpstart your data modeling with Databricks Industry Data Models", "https://www.databricks.com/blog/jumpstart-your-data-modeling-databricks-industry-data-models"],
+  ["Reimagining data modeling on the lakehouse: introducing Vibe Data Modeling", "https://www.databricks.com/blog/reimagining-data-modeling-lakehouse-introducing-vibe-data-modeling"],
+  ["Vibe Data Modeling agent", "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/model-agent"],
+];
 const LINKS = {
   "ADLS Gen2": { url:"https://learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction", dbx:"connect/storage/azure-storage/", site:"https://azure.microsoft.com/products/storage/data-lake-storage", note:"Primary table storage; access goes through Unity Catalog storage credentials and external locations, and requires hierarchical namespace enabled." },
   "AI/BI": { doc:"ai-bi/", site:"https://www.databricks.com/product/business-intelligence/ai-bi-dashboards", blog:"https://www.databricks.com/blog/next-level-interactivity-aibi-dashboards", note:"Dashboards execute on SQL warehouses and support Slack and Teams subscriptions, but external embedding has to be enabled by an admin before it works." },
@@ -2463,7 +2491,7 @@ const LINKS = {
   "Azure SQL Database": { url:"https://learn.microsoft.com/azure/azure-sql/database/sql-database-paas-overview", dbx:"query-federation/sql-server/", site:"https://azure.microsoft.com/products/azure-sql/database", note:"Source for CDC ingestion or federated queries; needs firewall or private endpoint access from the Databricks VNet and a stored credential." },
   "Azure Synapse": { url:"https://learn.microsoft.com/azure/synapse-analytics/", dbx:"query-federation/sqldw/", site:"https://azure.microsoft.com/products/synapse-analytics", note:"Read Synapse dedicated SQL pool tables through Lakehouse Federation, or migrate them; the old Synapse connector using PolyBase staging is deprecated." },
   "BigQuery": { url:"https://docs.cloud.google.com/bigquery/docs/introduction", dbx:"query-federation/bigquery/", site:"https://cloud.google.com/bigquery", note:"Query it without copying via Lakehouse Federation; the service account needs BigQuery read session and job creation permissions in the source project." },
-  "Bronze": { doc:"lakehouse/medallion/", blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
+  "Bronze": { doc:"lakehouse/medallion/", also:MEDALLION_ALSO, blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
   "Classic & Serverless Compute": { url:"https://docs.databricks.com/aws/en/compute/", dbx:"compute/", note:"Classic compute runs in your cloud account with full network and instance control; serverless starts in seconds but has documented library and networking limits." },
   "Cloud Build": { url:"https://docs.cloud.google.com/build/docs/overview", dbx:"dev-tools/ci-cd/", site:"https://cloud.google.com/build", note:"Runs the Databricks CLI to validate and deploy Asset Bundles; the build service account needs a Databricks service principal token." },
   "Cloud Data Fusion": { url:"https://docs.cloud.google.com/data-fusion/docs", site:"https://cloud.google.com/data-fusion", note:"Visual ingestion tool built on CDAP that typically lands data in Cloud Storage or BigQuery for Databricks to read downstream." },
@@ -2488,7 +2516,7 @@ const LINKS = {
   "Genie One": { doc:"genie-one/", site:"https://www.databricks.com/product/genie/one", blog:"https://www.databricks.com/blog/get-started-genie-one-top-ai-cowork-use-cases-business-users", note:"Generally available on web, iOS and Android. It is grounded in Genie Ontology and reads over 50 connected workplace apps, not only Databricks tables." },
   "Genie Ontology": { site:"https://www.databricks.com/genie", blog:"https://www.databricks.com/blog/introducing-genie-one-genie-ontology-and-genie-agents", note:"Context layer that extracts business definitions from Databricks and connected apps using an OntoRank algorithm; it is in preview and has no separate documentation section." },
   "Genie ZeroOps": { site:"https://www.databricks.com/genie", blog:"https://www.databricks.com/blog/introducing-genie-zeroops", note:"Private Preview background agent for pipelines, jobs, tables and models. It proposes fixes rather than applying them, so a human still approves each change." },
-  "Gold": { doc:"lakehouse/medallion/", blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
+  "Gold": { doc:"lakehouse/medallion/", also:MEDALLION_ALSO, blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
   "Hive Metastore": { url:"https://cwiki.apache.org/confluence/display/Hive/AdminManual+Metastore+Administration", dbx:"query-federation/hms-federation-external/", site:"https://hive.apache.org/", note:"Legacy metadata store; federate it into Unity Catalog to query existing tables read-only before migrating them, avoiding a hard cutover." },
   "IAM Identity Center": { url:"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html", dbx:"security/auth/single-sign-on/aws-iam/", site:"https://aws.amazon.com/iam/identity-center/", note:"Acts as the SAML identity provider for Databricks account login, with group membership pushed separately through SCIM provisioning." },
   "LTAP": { doc:"oltp/projects/ltap-overview/", site:"https://www.databricks.com/product/lakebase", blog:"https://www.databricks.com/blog/lakebase-ltap-rethinking-database-storage", note:"An architecture rather than a single feature. Available capabilities differ by cloud, and Unity Catalog governs only the analytical read path, not Postgres tables directly." },
@@ -2513,7 +2541,7 @@ const LINKS = {
   "RDS / DynamoDB": { url:"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html", dbx:"query-federation/postgresql/", site:"https://aws.amazon.com/rds/", note:"Serving targets for curated results consumed by applications; DynamoDB fits single key lookups at high request rates, RDS fits relational access." },
   "SQL DB / Cosmos DB": { url:"https://learn.microsoft.com/azure/azure-sql/database/sql-database-paas-overview", dbx:"query-federation/sql-server/", site:"https://azure.microsoft.com/products/azure-sql/database", note:"Common serving targets for curated tables feeding applications; Cosmos DB suits low latency key lookups where Azure SQL suits relational queries." },
   "SQL Warehouses": { doc:"compute/sql-warehouse/", site:"https://www.databricks.com/product/databricks-lakehouse", blog:"https://www.databricks.com/blog/2025-review-databricks-sql-faster-every-workload", note:"Three types exist: serverless, pro and classic. Intelligent Workload Management is serverless only and Predictive IO is unavailable on classic, so warehouse type changes concurrency behaviour." },
-  "Silver": { doc:"lakehouse/medallion/", blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
+  "Silver": { doc:"lakehouse/medallion/", also:MEDALLION_ALSO, blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
   "Unity Catalog": { doc:"data-governance/unity-catalog/", site:"https://www.databricks.com/product/unity-catalog", blog:"https://www.databricks.com/blog/whats-new-unity-catalog-data-ai-summit-2026", note:"Models, MCP servers, functions and connections are now securables alongside tables, so AI assets reuse the same grants and ABAC policies as data." },
   "Unity Catalog OSS": { site:"https://unitycatalog.io/", blog:"https://www.databricks.com/blog/open-sourcing-unity-catalog", note:"Apache 2.0 project with its own REST APIs and no Databricks docs path; the managed Databricks service is a superset, so features do not map one to one." },
   "Unity Gateway": { doc:"ai-gateway/", site:"https://www.databricks.com/product/artificial-intelligence/unity-ai-gateway", blog:"https://www.databricks.com/blog/unity-ai-gateway-generally-available", note:"Databricks calls this Unity AI Gateway; the box is shortened to fit. Generally available, but service policies and other beta capabilities must be enabled separately by an account admin." },
@@ -2608,6 +2636,7 @@ function detailLinks(name){
   }
   if(L.site) rows.push(linkRow(L.site, "Product page", host(L.site)));
   if(L.blog) rows.push(linkRow(L.blog, "Blog and deep dive", host(L.blog)));
+  (L.also || []).forEach(([label, url])=> rows.push(linkRow(url, label, host(url))));
   if(!rows.length) return "";
   return `<h4>Learn more</h4><div class="d-links">${rows.join("")}</div>`;
 }
@@ -3240,12 +3269,17 @@ function exportCss(){
     .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body") +
     "\n*,*::before,*::after{animation:none!important;transition:none!important;}\n";
 }
-function boardSvgMarkup(){
+/* `phase` is the 0..1 dash position the frame should be drawn at. It is set on
+   the wrapper rather than on the live page because the foreignObject is its own
+   document: it inherits nothing from :root, so the variable has to travel
+   inside the serialised markup. */
+function boardSvgMarkup(phase){
   const bd = document.getElementById("board");
   const w = bd.offsetWidth, h = bd.offsetHeight;
   const wrap = document.createElement("div");
   wrap.setAttribute("class", "exp-body " + [...document.body.classList].join(" "));
-  wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";");
+  wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";" +
+    (phase ? "--dash-t:" + phase + ";" : ""));
   const st = document.createElement("style"); st.textContent = exportCss();
   const clone = bd.cloneNode(true);
   clone.querySelectorAll(".dl-menu").forEach(n=>n.remove());
@@ -3271,8 +3305,8 @@ function paletteHex(name, fallback){
 }
 const expBg  = ()=> paletteHex("--bg", "#ffffff");
 const expInk = ()=> paletteHex("--ink", "#1b1f24");
-async function boardCanvas(scale){
-  const { w, h, svg } = boardSvgMarkup();
+async function boardCanvas(scale, phase){
+  const { w, h, svg } = boardSvgMarkup(phase);
   const img = new Image();
   img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   await img.decode();
@@ -3288,6 +3322,178 @@ async function boardPngBlob(scale){
   const { canvas, w, h } = await boardCanvas(scale);
   const blob = await new Promise(res=> canvas.toBlob(res, "image/png"));
   return { blob, w, h };
+}
+
+/* ---------- animated GIF ----------
+   The still exports lose the thing the diagram is actually about: the direction
+   data travels. A GIF is the one format that carries the movement into a slide,
+   a wiki or a chat window without a player, so the moving dashes survive being
+   pasted somewhere that is not a browser.
+
+   Every frame is a full raster of the board at a different --dash-t, so the
+   dashes advance exactly one 13px period over the whole loop and the last frame
+   hands back to the first with no jump. GIF89a is written by hand here for the
+   same reason the PPTX and PDF writers are: pulling a library in for one button
+   would outweigh the format. */
+const GIF_W = 1400, GIF_FRAMES = 12, GIF_DELAY_CS = 8, GIF_TRANSPARENT = 255;
+
+/* Median cut over a 15-bit histogram. Flat fills dominate the board but the
+   antialiased type behind them runs to thousands of shades, so a popularity
+   palette would quantise the text into mud while spending entries on fills
+   nothing needs. Cutting on population keeps both. */
+function gifQuantize(frames, maxColors){
+  const hist = new Int32Array(32768);
+  const sr = new Float64Array(32768), sg = new Float64Array(32768), sb = new Float64Array(32768);
+  for(const f of frames){
+    const d = f.data;
+    for(let i = 0; i < d.length; i += 4){
+      const r = d[i], g = d[i+1], b = d[i+2];
+      const k = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+      hist[k]++; sr[k] += r; sg[k] += g; sb[k] += b;
+    }
+  }
+  const all = [];
+  for(let k = 0; k < 32768; k++) if(hist[k]) all.push(k);
+  const box = (list)=>{
+    let r0 = 31, r1 = 0, g0 = 31, g1 = 0, b0 = 31, b1 = 0, n = 0;
+    for(const k of list){
+      const r = k >> 10, g = (k >> 5) & 31, b = k & 31;
+      if(r < r0) r0 = r; if(r > r1) r1 = r;
+      if(g < g0) g0 = g; if(g > g1) g1 = g;
+      if(b < b0) b0 = b; if(b > b1) b1 = b;
+      n += hist[k];
+    }
+    return { list, r0, r1, g0, g1, b0, b1, n };
+  };
+  let boxes = [box(all)];
+  while(boxes.length < maxColors){
+    let pick = -1, most = 0;
+    for(let i = 0; i < boxes.length; i++){
+      const b = boxes[i];
+      if(b.list.length > 1 && b.n > most){ most = b.n; pick = i; }
+    }
+    if(pick < 0) break;
+    const b = boxes[pick];
+    const dr = b.r1 - b.r0, dg = b.g1 - b.g0, db = b.b1 - b.b0;
+    const sh = (dg >= dr && dg >= db) ? 5 : (dr >= db ? 10 : 0);
+    const sorted = b.list.slice().sort((x, y)=> ((x >> sh) & 31) - ((y >> sh) & 31));
+    let acc = 0, cut = 0;
+    for(; cut < sorted.length - 1; cut++){ acc += hist[sorted[cut]]; if(acc >= b.n / 2) break; }
+    boxes.splice(pick, 1, box(sorted.slice(0, cut + 1)), box(sorted.slice(cut + 1)));
+  }
+  const pal = new Uint8Array(768);
+  boxes.forEach((bx, i)=>{
+    let R = 0, G = 0, B = 0, n = 0;
+    for(const k of bx.list){ R += sr[k]; G += sg[k]; B += sb[k]; n += hist[k]; }
+    pal[i*3] = Math.round(R / n); pal[i*3+1] = Math.round(G / n); pal[i*3+2] = Math.round(B / n);
+  });
+  return { pal, count:boxes.length };
+}
+
+/* Indices for one frame. Anything identical to the previous frame becomes the
+   transparent index, which is what keeps the file small: only the dashes and
+   the ring change, so the rest of the board turns into one long run the LZW
+   stage collapses to almost nothing. */
+function gifIndices(cur, prev, pal, count, cache){
+  const n = cur.length >> 2, out = new Uint8Array(n);
+  for(let p = 0, i = 0; p < n; p++, i += 4){
+    const r = cur[i], g = cur[i+1], b = cur[i+2];
+    if(prev && prev[i] === r && prev[i+1] === g && prev[i+2] === b){ out[p] = GIF_TRANSPARENT; continue; }
+    const k = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+    let v = cache[k];
+    if(v < 0){
+      let bi = 0, bd = Infinity;
+      for(let c = 0; c < count; c++){
+        const dr = r - pal[c*3], dg = g - pal[c*3+1], db = b - pal[c*3+2];
+        const d = dr*dr*3 + dg*dg*6 + db*db;
+        if(d < bd){ bd = d; bi = c; }
+      }
+      v = cache[k] = bi;
+    }
+    out[p] = v;
+  }
+  return out;
+}
+
+function gifLzw(px, minCode, sink){
+  const clear = 1 << minCode, eoi = clear + 1;
+  let size = minCode + 1, next = eoi + 1, dict = new Map();
+  let cur = 0, bits = 0;
+  const bytes = [];
+  const emit = (code)=>{
+    cur |= code << bits; bits += size;
+    while(bits >= 8){ bytes.push(cur & 255); cur >>>= 8; bits -= 8; }
+  };
+  emit(clear);
+  let prefix = px[0];
+  for(let i = 1; i < px.length; i++){
+    const k = px[i], key = prefix * 256 + k, hit = dict.get(key);
+    if(hit !== undefined){ prefix = hit; continue; }
+    emit(prefix);
+    if(next === 4096){
+      emit(clear); dict = new Map(); size = minCode + 1; next = eoi + 1;
+    } else {
+      /* The width grows just before the first code that needs it is ASSIGNED,
+         not right after the last one that fit. A decoder builds its table one
+         entry behind the encoder, so growing a code early desynchronises the
+         two and every byte after that point decodes as noise. */
+      if(next === (1 << size) && size < 12) size++;
+      dict.set(key, next++);
+    }
+    prefix = k;
+  }
+  emit(prefix); emit(eoi);
+  if(bits > 0) bytes.push(cur & 255);
+  /* the data stream is carried in sub-blocks of at most 255 bytes, each one
+     announced by its own length byte and the run closed by a zero */
+  for(let o = 0; o < bytes.length; o += 255){
+    const chunk = bytes.slice(o, o + 255);
+    sink.push(chunk.length); for(const v of chunk) sink.push(v);
+  }
+  sink.push(0);
+}
+
+function gifBuild(frameIdx, pal, w, h, delayCs){
+  const out = [];
+  const u16 = (v)=>{ out.push(v & 255, (v >> 8) & 255); };
+  for(const ch of "GIF89a") out.push(ch.charCodeAt(0));
+  u16(w); u16(h);
+  out.push(0xF7, 0, 0);                      /* global table, 256 entries, 8-bit */
+  for(let i = 0; i < 768; i++) out.push(pal[i]);
+  out.push(0x21, 0xFF, 0x0B);
+  for(const ch of "NETSCAPE2.0") out.push(ch.charCodeAt(0));
+  out.push(0x03, 0x01, 0, 0, 0);             /* loop forever */
+  frameIdx.forEach((px, i)=>{
+    /* disposal 1 leaves the previous frame in place, which is the half of the
+       delta trick the transparent index cannot do on its own */
+    out.push(0x21, 0xF9, 0x04, i ? 0x05 : 0x04);
+    u16(delayCs);
+    out.push(i ? GIF_TRANSPARENT : 0, 0);
+    out.push(0x2C); u16(0); u16(0); u16(w); u16(h); out.push(0);
+    out.push(8);
+    gifLzw(px, 8, out);
+  });
+  out.push(0x3B);
+  return new Uint8Array(out);
+}
+
+async function boardGifBlob(onStep){
+  const bd = document.getElementById("board");
+  const scale = Math.min(1.5, GIF_W / bd.offsetWidth);
+  const raw = [];
+  let w = 0, h = 0;
+  for(let i = 0; i < GIF_FRAMES; i++){
+    if(onStep) onStep(i, GIF_FRAMES);
+    const shot = await boardCanvas(scale, i / GIF_FRAMES);
+    w = shot.w; h = shot.h;
+    raw.push(shot.canvas.getContext("2d").getImageData(0, 0, w, h));
+    /* hand the main thread back between frames so the busy state can paint */
+    await new Promise(r=> setTimeout(r, 0));
+  }
+  const { pal, count } = gifQuantize(raw, GIF_TRANSPARENT);
+  const cache = new Int16Array(32768).fill(-1);
+  const idx = raw.map((f, i)=> gifIndices(f.data, i ? raw[i-1].data : null, pal, count, cache));
+  return { blob:new Blob([gifBuild(idx, pal, w, h, GIF_DELAY_CS)], { type:"image/gif" }), w, h };
 }
 
 /* ---------- zip (stored entries only, so no deflate implementation) ---------- */
@@ -3838,6 +4044,13 @@ async function exportPng(){
   const { blob } = await boardPngBlob(2);
   dlBlob(blob, dlName("png"));
 }
+async function exportGif(){
+  /* twelve rasters is the slow part, so the button reports which one it is on
+     rather than sitting spinning for the whole run */
+  const { blob } = await boardGifBlob((i, n)=>{ dlBtn.title = "Frame " + (i + 1) + " of " + n; });
+  dlBtn.title = DL_BTN_TITLE;
+  dlBlob(blob, dlName("gif"));
+}
 /* The slide is assembled from the live DOM: one shape per box, one text box per
    run, one connector per arrow, and a picture only where the artwork is a glyph
    or an official project logo. */
@@ -4011,6 +4224,7 @@ document.getElementById("dl-menu").addEventListener("click", async (e)=>{
   try{
     if(kind === "png") await exportPng();
     else if(kind === "pdf") await exportPdf();
+    else if(kind === "gif") await exportGif();
     else dlBlob(await exportPptx(), dlName("pptx"));
   }catch(err){
     alert("Could not build the " + kind.toUpperCase() + " here: " + err.message +
@@ -4020,7 +4234,7 @@ document.getElementById("dl-menu").addEventListener("click", async (e)=>{
 });
 /* the audit harness drives the same paths the menu does */
 window.__exp = { png:boardPngBlob, pptx:exportPptx, pdf:boardPdfBlob,
-  html:exportHtmlDoc, svg:boardSvgMarkup };
+  html:exportHtmlDoc, svg:boardSvgMarkup, gif:boardGifBlob };
 
 /* ==================================================================
    8. EDIT MODE
