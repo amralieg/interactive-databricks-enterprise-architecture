@@ -10,7 +10,8 @@ Slots, and the only thing each may be used for:
   head  a heading bar carrying WHITE text
   bd    a soft border for a band or tile on its own fill
   bg    the pale fill itself
-  ink   text and icons ON that fill
+  tile  a chip sitting ON that fill: one step deeper, so it does not vanish
+  ink   text and icons ON either fill
 
 `head` is solved per hue for >=4.5 against white, and `line` for >=3.0 against
 the page background, because both vary with hue at fixed lightness: a yellow and
@@ -58,6 +59,26 @@ def lum(c):
 def contrast(a, b):
     x, y = lum(a), lum(b)
     return (max(x, y) + 0.05) / (min(x, y) + 0.05)
+
+
+def chip(hue, sat, l_bg, l_bd):
+    """The chip fill: one step off the panel, toward the group's border tone.
+
+    Deepening the chip until the group's ink stopped passing was the first attempt
+    and it cannot work: ink is solved to only just clear the panel, so there is no
+    headroom left and most hues came back with a step of 1.00, i.e. no chip at all.
+    The chip is therefore fixed by recipe and INK is solved against it instead, so
+    the deepest surface a label ever sits on is the one contrast is proved against.
+    The step is widened per hue only when the recipe's step is too flat to see,
+    which is what the pale end of a high-chroma palette produces.
+    """
+    base = hsl(hue, sat, l_bg)
+    for i in range(0, 67):
+        t = min(1.0, TILE_STEP + i * 0.01)
+        c = hsl(hue, sat, l_bg + (l_bd - l_bg) * t)
+        if contrast(c, base) >= TILE_MIN:
+            return c
+    return hsl(hue, sat, l_bd)
 
 
 def solve(hue, sat, lit, want, against, darker, limit):
@@ -144,6 +165,12 @@ MONO_MIN = 1.035
 # the outline ladder actually produces, which is the pair the 3:1 page solve
 # still clamps at the pale end.
 MONO_LINE_MIN = 1.12
+# A chip on its zone's own fill has no border of its own, so the step between the
+# two fills is the only thing drawing its box. Set just above the point where the
+# step stops being visible on a projector, which is the surface that flattens it.
+TILE_MIN = 1.055
+# How far the chip travels from the panel fill toward that group's border tone.
+TILE_STEP = 0.34
 # The outlines need a band of their own, and not the fills'. Every line is
 # solved for 3:1 against the page, and when the fill ladder is handed to the
 # line slot most of the ladder is on the wrong side of that bar: the solve drags
@@ -216,20 +243,27 @@ def build(pal, theme):
         # line is a graphical element against the page, 3:1 is the bar
         line = solve(hue, s("line"), mono_line_l if mono_line_l is not None else L("line"),
                      3.0, page, theme == "light", 0.22 if theme == "light" else 0.82)
-        # ink is text on that group's own pale fill
-        ink = solve(hue, s("ink"), L("ink"), 4.5, hsl(hue, s("bg"), L("bg")),
+        # the chip on that group's fill. It borrows the fill's chroma and moves
+        # only in lightness, so a mono palette stays mono and a hue keeps family.
+        tile = chip(hue, s("bg"), L("bg"), L("bd"))
+        # ink is text on that group's own fills, and the chip is the deeper of the
+        # two: solved against the panel alone, every label on a chip failed
+        ink = solve(hue, s("ink"), L("ink"), 4.5, tile,
                     theme == "light", 0.18 if theme == "light" else 0.92)
         out["--g-%s-line" % name] = line
         out["--g-%s-head" % name] = head
         out["--g-%s-bd" % name]   = hsl(hue, s("bd"), L("bd"))
         out["--g-%s-bg" % name]   = hsl(hue, s("bg"), L("bg"))
+        # the chip on that fill. It borrows the fill's chroma and moves only in
+        # lightness, so a mono palette stays mono and a hue keeps its family.
+        out["--g-%s-tile" % name] = tile
         out["--g-%s-ink" % name]  = ink
     out["--plat-accent"] = pal["plat"][0 if theme == "light" else 1]
     return out
 
 
 def check():
-    worst_text, worst_line, bad = (99, ""), (99, ""), 0
+    worst_text, worst_line, worst_tile, bad = (99, ""), (99, ""), (99, ""), 0
     for pal in PALETTES:
         for theme in ("light", "dark"):
             v = build(pal, theme)
@@ -238,15 +272,21 @@ def check():
                 head = v["--g-%s-head" % name]
                 ink  = v["--g-%s-ink" % name]
                 bg   = v["--g-%s-bg" % name]
+                tile = v["--g-%s-tile" % name]
                 line = v["--g-%s-line" % name]
                 for label, c, ref, bar in (
                         ("white on head", "#ffffff", head, 4.5),
                         ("ink on bg",     ink,       bg,   4.5),
+                        ("ink on tile",   ink,       tile, 4.5),
+                        ("tile off bg",   tile,      bg,   TILE_MIN),
                         ("line on page",  line,      PAGE_BG[theme], 3.0)):
                     r = contrast(c, ref)
                     if label == "line on page":
                         if r < worst_line[0]:
                             worst_line = (r, "%s %s" % (tag, name))
+                    elif label == "tile off bg":
+                        if r < worst_tile[0]:
+                            worst_tile = (r, "%s %s" % (tag, name))
                     elif r < worst_text[0]:
                         worst_text = (r, "%s %s %s" % (tag, name, label))
                     if r < bar:
@@ -269,7 +309,8 @@ def check():
             # at all, which is how nine identical grey zone outlines shipped
             # while the fills alone were passing this gate.
             if pal.get("mono"):
-                for slot, bar in (("bg", MONO_MIN), ("line", MONO_LINE_MIN)):
+                for slot, bar in (("bg", MONO_MIN), ("tile", MONO_MIN),
+                                  ("line", MONO_LINE_MIN)):
                     for a in HUES:
                         for b in HUES:
                             if a >= b or STRUCTURAL in (a, b):
@@ -281,6 +322,7 @@ def check():
                                 print("  FAIL %s: %s greys %s and %s only %.3f apart, bar %.3f"
                                       % (tag, slot, a, b, r, bar))
     print("worst text contrast : %.2f  (%s)  bar 4.5" % worst_text)
+    print("worst chip step     : %.3f (%s)  bar %.2f" % (worst_tile + (TILE_MIN,)))
     print("worst line contrast : %.2f  (%s)  bar 3.0" % worst_line)
     print("failures            : %d" % bad)
     return bad
@@ -298,7 +340,7 @@ def emit():
             for name in HUES:
                 print("  " + " ".join(
                     "%s:%s;" % ("--g-%s-%s" % (name, s), v["--g-%s-%s" % (name, s)])
-                    for s in ("line", "head", "bd", "bg", "ink")))
+                    for s in ("line", "head", "bd", "bg", "tile", "ink")))
             print("  --plat-accent:%s;" % v["--plat-accent"])
             print("  }")
 
