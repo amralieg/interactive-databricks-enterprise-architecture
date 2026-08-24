@@ -67,8 +67,9 @@ later is `Pull` on the Git folder followed by Run All here.
 imported. It pulls the repository archive over HTTPS and writes the `app/`
 folder into your workspace home. Two things have to be true for it to work: the
 workspace needs outbound internet access, which some locked-down deployments do
-not have, and the repository has to be readable without a token. A private repo
-returns 404 to an anonymous archive request, so use the Git folder path for one.
+not have, and the repository has to be readable without a token. This repository
+is public, so it is. A fork you keep private returns 404 to an anonymous archive
+request, so use the Git folder path for one of those.
 """
 
 CODE_HELPERS = '''import base64, io, json, os, re, time, zipfile

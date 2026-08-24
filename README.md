@@ -224,9 +224,10 @@ Widgets, if you want to change something:
 
 Choose **Download from GitHub** if you imported only the notebook rather than
 cloning the repository. It pulls the archive over HTTPS and writes the `app/`
-folder into your workspace home. Two things have to be true for it to work: the
-workspace needs outbound internet access, and the repository has to be readable
-without a token. While this repository is private, use the Git folder path.
+folder into your workspace home. This repository is public, so the only
+remaining requirement is outbound internet access from the workspace, which some
+locked-down deployments do not have. A fork you keep private returns 404 to the
+anonymous archive request, so use the Git folder path for one of those.
 
 To upgrade later: **Pull** on the Git folder, then Run All again. The installer
 reuses the existing app and redeploys it.

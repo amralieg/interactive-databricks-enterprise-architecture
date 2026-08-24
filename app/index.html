@@ -2458,13 +2458,11 @@ const ARCH = {
   /* One dataset per provider drives four surfaces: Sources › Federation,
      Cloud-Native Ingest, Consumers › BI, and this bottom band. `role` is the
      provider-neutral handle every reference architecture and AI answer uses, so a
-     highlight survives an Azure → AWS → GCP switch.
-     Content tracks the Databricks cloud system-architecture decks cited in `deck`. */
+     highlight survives an Azure → AWS → GCP switch. */
   cloud: {
     name:"Cloud Services & Integrations", ic:"zcloudgear",
-    /* The old caption claimed everything runs inside the customer perimeter. That
-       is only true of classic compute. Review of the Azure, AWS
-       and GCP material made the same correction about serverless. */
+    /* An earlier caption claimed everything runs inside the customer perimeter.
+       That is only true of classic compute, so the caption names both. */
     sub:"Your data stays in your own cloud storage under Unity Catalog. Classic compute runs in your account; serverless runs in the Databricks account over private connectivity.",
     provider:"azure",
     /* vendor-neutral integrations, present whichever cloud is selected */
@@ -2476,8 +2474,6 @@ const ARCH = {
     providers: {
       azure: {
         label:"Azure",
-        deck:{ title:"Azure Databricks System Architecture", slide:25, rev:"2025-10-31",
-          url:"REDACTED-INTERNAL-LINK" },
         fed:[
           { n:"Azure Synapse", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
           { n:"Azure SQL Database", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
@@ -2515,8 +2511,6 @@ const ARCH = {
       },
       aws: {
         label:"AWS",
-        deck:{ title:"AWS Databricks System Architecture", slide:21, rev:"2026-02-20",
-          url:"REDACTED-INTERNAL-LINK" },
         fed:[
           { n:"Amazon Redshift", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
           { n:"Amazon RDS / Aurora", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
@@ -2554,8 +2548,6 @@ const ARCH = {
       },
       gcp: {
         label:"GCP",
-        deck:{ title:"GCP Databricks System Architecture", slide:17, rev:"2026-04-10",
-          url:"REDACTED-INTERNAL-LINK" },
         fed:[
           { n:"BigQuery", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
           { n:"Cloud SQL", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
