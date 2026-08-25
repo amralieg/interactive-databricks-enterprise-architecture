@@ -169,8 +169,6 @@ MONO_LINE_MIN = 1.12
 # two fills is the only thing drawing its box. Set just above the point where the
 # step stops being visible on a projector, which is the surface that flattens it.
 TILE_MIN = 1.055
-# How far the chip travels from the panel fill toward that group's border tone.
-TILE_STEP = 0.34
 # The outlines need a band of their own, and not the fills'. Every line is
 # solved for 3:1 against the page, and when the fill ladder is handed to the
 # line slot most of the ladder is on the wrong side of that bar: the solve drags
@@ -256,7 +254,7 @@ def build(pal, theme):
         out["--g-%s-bg" % name]   = hsl(hue, s("bg"), L("bg"))
         # the chip on that fill. It borrows the fill's chroma and moves only in
         # lightness, so a mono palette stays mono and a hue keeps its family.
-        out["--g-%s-tile" % name] = tile
+        out["--g-%s-tile" % name] = deepen(hue, s("bg"), L("bg"), L("bd"), ink)
         out["--g-%s-ink" % name]  = ink
     out["--plat-accent"] = pal["plat"][0 if theme == "light" else 1]
     return out
