@@ -5,6 +5,8 @@ Intelligence Platform. One HTML file, no build step, no dependencies, no
 backend. Open it locally, or deploy it into your own Databricks workspace as an
 app your teams reach from the workspace navigation.
 
+**[Open the live board](https://amralieg.github.io/interactive-databricks-enterprise-architecture/)**
+
 ![IDEA in light theme](docs/screenshot-light.png)
 
 ---
@@ -238,7 +240,9 @@ Choose **Download from GitHub** if you imported only the notebook rather than
 cloning the repository. It pulls the archive over HTTPS and writes the `app/`
 folder into your workspace home. Two things have to be true for it to work: the
 workspace needs outbound internet access, and the repository has to be readable
-without a token. While this repository is private, use the Git folder path.
+without a token. This repository is public, so only the first is left, and some
+locked-down workspaces do not have it. A fork you keep private returns 404 to the
+anonymous archive request, so use the Git folder path for one of those.
 
 To upgrade later: **Pull** on the Git folder, then Run All again. The installer
 reuses the existing app and redeploys it.
