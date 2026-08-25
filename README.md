@@ -96,6 +96,18 @@ exists.
 Every shape is measured, not eyeballed: the two pockets are equalised to the
 taller one, so the arms stay symmetrical to the pixel in all five.
 
+H90 works differently enough from the other four to be worth spelling out. Each
+pocket splits into two labelled boxes side by side, Cloud ETL beside 3rd Party
+and Business beside Technical, and each box runs its tiles down a single column.
+Both pockets sit inside their own arm column rather than spanning the middle, so
+the crossbar of the I stays clear, and the governance band renders there instead
+of in the lower block: the narrow middle of the shape carries the platform's
+control plane rather than being a spacer. The arms are wider here than in the
+other shapes to fit those boxes, and the design canvas is wider to match, which
+is free because the fit in this shape is bound by height rather than width.
+
+![H90, the full board](docs/screenshot-h90.png)
+
 ### Palette: thirteen schemes, solved rather than picked
 
 ![Six of the thirteen palettes](docs/screenshot-palettes.png)
@@ -224,10 +236,9 @@ Widgets, if you want to change something:
 
 Choose **Download from GitHub** if you imported only the notebook rather than
 cloning the repository. It pulls the archive over HTTPS and writes the `app/`
-folder into your workspace home. This repository is public, so the only
-remaining requirement is outbound internet access from the workspace, which some
-locked-down deployments do not have. A fork you keep private returns 404 to the
-anonymous archive request, so use the Git folder path for one of those.
+folder into your workspace home. Two things have to be true for it to work: the
+workspace needs outbound internet access, and the repository has to be readable
+without a token. While this repository is private, use the Git folder path.
 
 To upgrade later: **Pull** on the Git folder, then Run All again. The installer
 reuses the existing app and redeploys it.
@@ -280,6 +291,7 @@ app/
 docs/                      the screenshots and the animated export used above
 tools/
   palgen.py                generates the colour palettes with solved contrast
+  markgen.py               fetches the official product marks and inlines them
   build_installer.py       generates app-installer.ipynb from readable sources
 ```
 
