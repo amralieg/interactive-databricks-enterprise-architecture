@@ -1102,8 +1102,15 @@
     /* Wide and short: the groups sit beside each other and their tiles pair up,
        which is what buys the height back. */
     body.shape-h90 .rail.ing, body.shape-h90 .rail.ppl {
-      flex-direction:row; align-items:flex-start; gap:12px; }
-    body.shape-h90 .rail.ing > .rgroup, body.shape-h90 .rail.ppl > .rgroup { flex:1 1 0; }
+      flex-direction:row; flex-wrap:wrap; align-items:flex-start; gap:12px; }
+    /* Two boxes per row, wrapping to a second row beyond that. `flex:1 1 0` gave
+       every group an equal share of one row, which is right for the two the
+       generic board has and wrong the moment there are more: an industry People
+       pocket carrying Executive, Commercial, Operations and Technical split the
+       arm four ways and clipped every label in it. A half-width basis keeps the
+       two-group case pixel-identical and lets four wrap into 2x2 instead. */
+    body.shape-h90 .rail.ing > .rgroup, body.shape-h90 .rail.ppl > .rgroup {
+      flex:1 1 calc(50% - 6px); }
     /* One tile column per box. The two boxes already sit side by side, so pairing
        the tiles as well splits one arm four ways and every label clipped. */
     body.shape-h90 .rail.ing .rtiles, body.shape-h90 .rail.ppl .rtiles {
@@ -1554,7 +1561,43 @@
      .pocket alone left them pointing at nothing */
   body.plat-only .flow.left.ppl.tuck,
   body.plat-only .flow.ingtuck { display:none; }
-  #plat-btn.on { background:var(--brand); border-color:var(--brand); color:var(--on-accent); }
+  /* The zoom control sits in the platform's own heading bar rather than in the
+     toolbar, so the thing that zooms is the thing you click. It is absolutely
+     placed, which keeps the title optically centred in the bar exactly as it was
+     before the button existed, and keeps .plat-head's measured height unchanged
+     for the zring geometry that takes the heading bar in. */
+  .plat-head { position:relative; }
+  .ph-max { position:absolute; right:9px; top:50%; transform:translateY(-50%);
+    width:27px; height:27px; display:flex; align-items:center; justify-content:center;
+    padding:0; border:1px solid rgba(255,255,255,.42); border-radius:7px;
+    background:rgba(255,255,255,.14); color:var(--on-accent); cursor:pointer;
+    font:inherit; font-size:14px; line-height:1;
+    transition:background .15s ease, border-color .15s ease; }
+  .ph-max svg { width:14px; height:14px; display:block; }
+  /* Corners point outward to offer the zoom and inward to offer the way back, so
+     the glyph states what the click will do rather than what the view is. */
+  .ph-max .ph-max-in { display:none; }
+  body.plat-only .ph-max .ph-max-out { display:none; }
+  body.plat-only .ph-max .ph-max-in { display:inline; }
+  .ph-max:hover { background:rgba(255,255,255,.3); border-color:rgba(255,255,255,.72); }
+  .ph-max:focus-visible { outline:2px solid var(--on-accent); outline-offset:2px; }
+  body.plat-only .ph-max { background:rgba(255,255,255,.34); border-color:rgba(255,255,255,.8); }
+  /* PDF goes through the print dialog rather than the SVG clone, so the raster
+     path's removal does not reach it. */
+  @media print { .ph-max { display:none; } }
+  #ind-btn.on { background:var(--brand); border-color:var(--brand); color:var(--on-accent); }
+  /* Forty entries do not fit a menu. The filter stays pinned and only the list
+     below it scrolls, so the outer box gives up the .pal-menu scroll it would
+     otherwise apply to both. */
+  .ind-menu { min-width:274px; max-height:none; overflow:visible; }
+  .ind-search { width:100%; box-sizing:border-box; margin:2px 0 5px; padding:6px 9px;
+    border:1px solid var(--line); border-radius:8px; background:var(--well);
+    color:var(--ink); font:inherit; font-size:12px; }
+  .ind-search::placeholder { color:var(--muted); }
+  .ind-list { max-height:min(52vh, 330px); overflow-y:auto; overscroll-behavior:contain; }
+  .ind-list button[disabled] { opacity:.4; cursor:default; }
+  .ind-list button[disabled]:hover { background:none; }
+  .ind-none { font-size:11px; color:var(--muted); padding:7px 9px; }
 
   /* ---------- download menu ---------- */
   .dl-wrap { position:relative; display:inline-flex; }
@@ -1859,7 +1902,10 @@
     <button class="hbtn" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span> Style</button>
     <div class="pal-menu" id="shape-menu"></div>
   </div>
-  <button class="hbtn" id="plat-btn" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services">▣ Platform</button>
+  <div class="pal-wrap" id="ind-wrap">
+    <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, people, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Industry</span></button>
+    <div class="pal-menu ind-menu" id="ind-menu"></div>
+  </div>
   <div class="pal-wrap" id="stage-wrap">
     <button class="hbtn" id="stage-btn" title="Choose which release stages the platform box shows">◑ <span id="stage-lbl">Stage</span></button>
     <div class="pal-menu" id="stage-menu"></div>
@@ -1922,6 +1968,7 @@
     <div class="colhead plat-head">
       <svg class="ph-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z"/></svg>
       Databricks Data Intelligence Platform
+      <button class="ph-max" id="plat-max" type="button" aria-pressed="false" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="ph-max-out" d="M6 2H2v4M10 2h4v4M10 14h4v-4M6 14H2v-4"/><path class="ph-max-in" d="M2 6h4V2M14 6h-4V2M14 10h-4v4M2 10h4v4"/></svg></button>
     </div>
     <section class="plat-top" id="plat-top"></section>
     <!-- The waist of the H90 I-beam, and nothing at all in the other four
@@ -2695,6 +2742,334 @@ const ARCH = {
 };
 
 /* ==================================================================
+   2b. INDUSTRY VIEW
+   ==================================================================
+   The platform is the same everywhere. What differs by industry is everything
+   OUTSIDE it: which systems the data comes from, who asks the questions, what
+   the platform is used for, and where the answers land. An industry therefore
+   replaces four rails and the top band, and relabels the medallion stages,
+   while the platform bands and the cloud services underneath stay untouched.
+
+   BASE is taken here, from the literal above and before loadCustom() can put a
+   saved board over it, so it is always the pristine generic content. Switching
+   industry rebuilds from BASE rather than from whatever is on screen, which is
+   what stops two switches in a row compounding into a board that is half one
+   industry and half another. The cost of that choice: tile edits made while an
+   industry is showing do not survive a switch away and back. That is the
+   predictable behaviour of the two, and the alternative (per-industry edit
+   journals) buys very little for the complexity.
+
+   A group carrying `from` pulls the current cloud provider's tiles in, so an
+   industry that wants federation, cloud ETL or provider BI in its rails must
+   restate those groups. They are spelled out per industry rather than merged in
+   behind the author's back: an explicit boilerplate group is easier to reason
+   about than a merge rule that silently reorders somebody's rail. */
+const BASE = JSON.parse(JSON.stringify({
+  rails: ARCH.rails,
+  top:   ARCH.top,
+  bands: ARCH.bands,
+}));
+
+/* The medallion stages live inside the bands tree. Finding them by walking is
+   better than hard-coding a path that a later band reshuffle would silently
+   break: the walk either finds the block or the caption override is skipped. */
+function medallionStages(){
+  for(const band of ARCH.bands){
+    for(const row of (band.rows || [])){
+      if(row.kind === "medallion" && Array.isArray(row.stages)) return row.stages;
+    }
+  }
+  return null;
+}
+
+/* The forty names come from the Databricks industry data models, so the menu
+   and the data models agree on what an industry IS and on how it is spelled.
+   `built` is what separates a board that exists from a name on the roadmap: an
+   unbuilt entry is listed and disabled rather than hidden, because a menu that
+   silently omits thirty-nine of forty reads as a bug rather than as progress. */
+const INDUSTRY_CATALOG = [
+  ["advertising","Advertising"], ["agriculture","Agriculture"], ["airlines","Airlines"],
+  ["apparel_fashion","Apparel & Fashion"], ["automotive","Automotive"], ["banking","Banking"],
+  ["chemical_mfg","Chemical Manufacturing"], ["clinical_trials","Clinical Trials"],
+  ["construction","Construction"], ["consumer_goods","Consumer Goods"],
+  ["ecommerce","E-Commerce"], ["education","Education"], ["energy_utilities","Energy & Utilities"],
+  ["food_beverage","Food & Beverage"], ["gaming","Gaming"], ["genomics_biotech","Genomics & Biotech"],
+  ["grocery","Grocery"], ["health_insurance","Health Insurance"], ["healthcare","Healthcare"],
+  ["legal","Legal"], ["life_insurance","Life Insurance"], ["manufacturing","Manufacturing"],
+  ["media_broadcasting","Media & Broadcasting"], ["mining","Mining"], ["ngo","NGO & Non-Profit"],
+  ["oil_gas","Oil & Gas"], ["payments_fintech","Payments & Fintech"],
+  ["pharmaceuticals","Pharmaceuticals"], ["real_estate","Real Estate"], ["restaurants","Restaurants"],
+  ["retail","Retail"], ["semiconductors","Semiconductors"], ["shipping_ports","Shipping & Ports"],
+  ["sports_entertainment","Sports & Entertainment"], ["staffing_hr","Staffing & HR"],
+  ["telecommunication","Telecommunications"], ["transport_shipping","Transport & Logistics"],
+  ["travel_hospitality","Travel & Hospitality"], ["waste_management","Waste Management"],
+  ["water_utilities","Water Utilities"],
+];
+
+/* An industry supplies whole `groups` arrays for the rails it changes and whole
+   `secs` for the top band. Anything it leaves out falls back to BASE, so a
+   partially authored industry renders the generic content for the rest rather
+   than an empty rail. */
+const INDUSTRIES = {
+  airlines: {
+    label:"Airlines",
+    blurb:"Passenger and cargo operations: reservations and revenue management, network and crew planning, airport turnaround, and line maintenance.",
+    medallion:{
+      Bronze:{ s:"Raw operational feeds",
+        long:"PNR and ticketing records from the passenger service system, ACARS and OOOI movement messages, AODB stand and gate events, AMOS work orders and ATPCO fare filings, landed exactly as received so a fare or a delay code can always be replayed as it stood." },
+      Silver:{ s:"Conformed flight, passenger, tail",
+        long:"Flight legs, passenger journeys and aircraft tails resolved into single conformed entities across the reservation, operations and maintenance estates, with IATA and ICAO station codes reconciled and interline segments stitched to one itinerary." },
+      Gold:{ s:"On-time, RASK, turnaround",
+        long:"Contracted products the commercial and operations teams run on: on-time performance and delay attribution by cause code, RASK and CASK by route and cabin, turnaround compliance, and load factor and yield by market." },
+    },
+    rails:{
+      src:[
+        { box:"Reservations & Revenue", ic:"erp", tiles:[
+          { n:"Amadeus Altéa PSS", ic:"erp", long:"Reservation, Inventory and Departure Control. The system of record for PNRs, seat inventory, fare classes and check-in, and the source of the passenger journey.",
+            cite:["amadeus-altea"] },
+          { n:"Sabre / Travelport GDS", ic:"globe", long:"Global distribution systems carrying agency and OTA bookings, ticket coupons and schedule feeds into the airline estate.",
+            cite:["sabre-gds"] },
+          { n:"PROS Revenue Management", ic:"market", long:"Origin and destination forecasting, bid price and availability control. Supplies the demand forecasts and fare class recommendations the commercial team prices against.",
+            cite:["pros-rm"] },
+          { n:"ATPCO Fare Filings", ic:"market", long:"Industry fare, rule and surcharge filings, the reference against which published pricing and NDC offers are validated.",
+            cite:["atpco"] },
+        ]},
+        { box:"Network & Crew", ic:"sheet", tiles:[
+          { n:"NetLine/Sched", ic:"sheet", long:"Lufthansa Systems schedule and network planning: rotations, slot compliance and fleet assignment across the season.",
+            cite:["netline"] },
+          { n:"AIMS Crew Management", ic:"people", long:"Crew pairing, rostering, qualifications and flight time limitation tracking, the source of legality and standby state.",
+            cite:["aims"] },
+          { n:"Jeppesen Crew & Ops", ic:"people", long:"Crew planning and operations optimisation used where AIMS is not the incumbent, feeding the same pairing and roster entities.",
+            cite:["jeppesen"] },
+        ]},
+        { box:"Airport & Operations", ic:"stream", tiles:[
+          { n:"Airport Operational Database", ic:"db", long:"The AODB: stand and gate allocation, actual movement times and turnaround milestones, shared with the airport under A-CDM.",
+            cite:["aodb"] },
+          { n:"ACARS / OOOI Messages", ic:"stream", long:"Out, Off, On and In movement messages from the aircraft, the ground truth for block and air times and for delay attribution.",
+            cite:["acars"] },
+          { n:"ADS-B Surveillance", ic:"iot", long:"Broadcast position, altitude and velocity from every airframe, used for airspace and taxi analysis independent of the airline's own reporting.",
+            cite:["adsb"] },
+          { n:"SITA WorldTracer", ic:"partner", long:"Industry baggage tracing: mishandling reports, file matching and delivery status across carriers.",
+            cite:["worldtracer"] },
+        ]},
+        { box:"Engineering & Cargo", ic:"zplug", tiles:[
+          { n:"Swiss-AS AMOS", ic:"erp", long:"Maintenance, repair and overhaul: work orders, component lifing, defect history and AOG events against each tail.",
+            cite:["amos"] },
+          { n:"Aircraft Sensor & QAR", ic:"iot", long:"Quick access recorder and engine condition monitoring data, the basis for fuel burn analysis and predictive component removal." },
+          { n:"CHAMP Cargospot", ic:"product", long:"Air cargo management: air waybills, ULD build-up, capacity and revenue for the freight side of the operation.",
+            cite:["cargospot"] },
+        ]},
+        { box:"Commercial & Loyalty", ic:"partner", tiles:[
+          { n:"IATA BSP Settlement", ic:"market", long:"Billing and Settlement Plan files: agency sales, refunds and commissions, reconciled against revenue accounting.",
+            cite:["iata-bsp"] },
+          { n:"Loyalty & FFP", ic:"custlake", long:"Frequent flyer accruals, redemptions, tier status and partner earn, the profile every personalised offer is scored against." },
+          { n:"Web & App Clickstream", ic:"observ", long:"Search, shop and book events from the airline's own channels, joined to bookings for look-to-book and abandonment analysis." },
+        ]},
+        { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
+          { n:"Revenue Accounting", ic:"fed", long:"Revenue accounting and proration marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers." },
+        ]},
+      ],
+      ing:[
+        { box:"Cloud ETL", ic:"etl", from:"ingest", tiles:[] },
+        { box:"Industry Messaging", ic:"zplug", tiles:[
+          { n:"SITA Type-B Messaging", ic:"stream", long:"The teletype-era message bus the industry still runs on: PNL, ADL, MVT and LDM messages parsed on arrival and landed as structured events.",
+            cite:["sita-typeb"] },
+          { n:"A-CDM Message Bus", ic:"stream", long:"Airport Collaborative Decision Making milestones exchanged with the airport operator, the shared clock for turnaround performance.",
+            cite:["acdm"] },
+          { n:"IATA NDC / ONE Order APIs", ic:"api", long:"Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic.",
+            cite:["ndc"] },
+        ]},
+        { box:"3rd Party", ic:"etl", tiles:[
+          { n:"Managed ELT", ic:"etl", long:"Third-party managed connectors landing SaaS and database sources not yet covered by Lakeflow Connect." },
+          { n:"Streaming Brokers", ic:"stream", long:"Kafka and MSK topics already carrying movement, baggage and sensor events, consumed by Lakeflow streaming pipelines." },
+        ]},
+      ],
+      ppl:[
+        { box:"Executive", ic:"zbrief", tiles:[
+          { n:"CEO", ic:"chart", long:"Network profitability, fleet commitments and the trade between growth and margin." },
+          { n:"Chief Commercial Officer", ic:"market", long:"Pricing, distribution, loyalty and ancillary revenue across every market the airline sells in." },
+          { n:"Chief Operating Officer", ic:"gauge", long:"On-time performance, disruption cost and the safety and compliance record of the operation." },
+        ]},
+        { box:"Commercial", ic:"market", tiles:[
+          { n:"Revenue Management Analysts", ic:"market", long:"Set bid prices and fare class availability by market and departure date, and judge the forecast the optimiser is working from." },
+          { n:"Network Planners", ic:"sheet", long:"Decide which routes are flown, at what frequency and with which aircraft, season by season." },
+          { n:"Loyalty & Ancillary Managers", ic:"custlake", long:"Own tier economics, partner earn and the merchandising of seats, bags and lounge access." },
+        ]},
+        { box:"Operations", ic:"people", tiles:[
+          { n:"OCC Duty Managers", ic:"gauge", long:"Run the operations control centre: hold or cancel, swap tails, protect connections and own the recovery plan on a disrupted day." },
+          { n:"Ground & Ramp Teams", ic:"people", long:"Turn the aircraft: loading, fuelling, pushback and the milestone reporting the turnaround clock is built on." },
+          { n:"Crew Scheduling", ic:"people", long:"Keep rosters legal and covered, calling standbys and reassigning pairings as the day moves." },
+          { n:"Line & Base Engineering", ic:"dev", long:"Clear defects, plan component removals and decide whether an aircraft departs or goes AOG." },
+        ]},
+        { box:"Technical", ic:"code", tiles:[
+          { n:"Technical Engineering", ic:"lakeflow", long:"Data engineering, analytics engineering and platform teams building the pipelines, models and semantics the rest of the airline reads. Collapsed into one tile so the operational roles above have room." },
+          { n:"Data Scientists", ic:"model", long:"Build the forecasting, propensity and predictive maintenance models on governed features, tracked in MLflow." },
+          { n:"App Developers", ic:"dev", long:"Build the OCC, turnaround and crew-facing applications on Databricks Apps and Agent Bricks." },
+        ]},
+      ],
+      cons:[
+        { box:"BI & Productivity", ic:"chart", from:"bi", tiles:[
+          { n:"Tableau / Qlik / ThoughtSpot", ic:"chart", long:"External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end." },
+          { n:"Notebooks & IDEs", ic:"notebook", long:"Notebooks, VS Code and JetBrains against governed data and Genie Code." },
+        ]},
+        { box:"Distribution & Partners", ic:"partner", tiles:[
+          { n:"NDC Offer & Order API", ic:"api", long:"Continuous pricing and merchandised offers served to agencies, OTAs and metasearch through the airline's offer and order engine.",
+            cite:["ndc"] },
+          { n:"Interline & Codeshare", ic:"partner", long:"Partner carriers reading schedule, availability and disruption state over Delta Sharing rather than nightly file exchange." },
+          { n:"Airport A-CDM Partners", ic:"globe", long:"Turnaround milestones and stand demand shared back to airport operators and ground handlers under the A-CDM agreement.",
+            cite:["acdm"] },
+        ]},
+        { box:"Operational Writeback", ic:"opdb", tiles:[
+          { n:"Altéa Inventory Writeback", ic:"db", long:"Availability, bid prices and reaccommodation decisions written back into the passenger service system so the answer reaches the booking path.",
+            cite:["amadeus-altea"] },
+          { n:"AMOS Work Orders", ic:"erp", long:"Predicted component removals raised as maintenance work orders against the tail, in the system engineering already works in.",
+            cite:["amos"] },
+          { n:"Crew & Ground Mobile", ic:"apps", long:"Roster changes, standby calls and turnaround tasks pushed to the devices crew and ramp teams actually carry." },
+        ]},
+        { box:"Regulatory & Reporting", ic:"gavel", tiles:[
+          { n:"Regulatory Submissions", ic:"gavel", long:"Punctuality, safety and emissions reporting to the regulator, and CORSIA and EU ETS emissions accounting, produced from the same governed tables the airline runs on.",
+            cite:["corsia"] },
+          { n:"IATA Industry Reporting", ic:"share", long:"Settlement, interline and industry benchmark submissions filed from contracted Gold products." },
+        ]},
+        { box:"Published Products", ic:"product", tiles:[
+          { n:"Data Products", ic:"product", long:"Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing." },
+          { n:"Sharing Recipients", ic:"share", long:"Lessors, maintenance partners and alliance members reading live tables with no copy and no egress duplication." },
+        ]},
+      ],
+    },
+    top:[
+      { title:"Apps", ic:"apps", span:3, cols:2, tiles:[
+        { n:"OCC Recovery Cockpit", s:"Disruption management", ic:"gauge",
+          long:"The screen the duty manager runs a disrupted day from: cancel and delay options costed against passenger reaccommodation, crew legality and downline aircraft rotation, on Databricks Apps over Lakebase." },
+        { n:"Turnaround Manager", s:"Stand-side milestones", ic:"stream",
+          long:"Live turnaround state against the A-CDM clock, flagging the stands that will miss target off-block so the ramp can be moved before the delay is booked." },
+        { n:"RM Analyst Workbench", s:"Pricing decisions", ic:"market",
+          long:"Where revenue management analysts see the forecast, the override history and the revenue at risk on a flight before they touch a bid price." },
+        { n:"AOG Watchtower", s:"Fleet health", ic:"iot",
+          long:"Component health and predicted removals by tail, so engineering plans the change at a base overnight instead of discovering it at a gate." },
+      ]},
+      { title:"Use Cases", ic:"ztarget", span:5, cols:3, tiles:[
+        { n:"IROPS Recovery", s:"Disruption", ic:"gauge",
+          long:"Recovering aircraft, crew and passengers together after weather, ATC or technical disruption, optimising total cost of the day rather than any single resource." },
+        { n:"Continuous Pricing & NDC", s:"Revenue", ic:"market",
+          long:"Moving from filed fare classes to continuous price points served through NDC offers, scored per shopping request against demand and remaining capacity." },
+        { n:"Crew Pairing & Rostering", s:"Planning", ic:"people",
+          long:"Building legal, low-cost pairings and rosters under flight time limitations, and repairing them when the operation moves." },
+        { n:"Predictive Maintenance", s:"Engineering", ic:"iot",
+          long:"Predicting component removal from sensor, QAR and defect history so an AOG becomes a planned base visit." },
+        { n:"Fuel Burn & Tankering", s:"Cost & emissions", ic:"chart",
+          long:"Route, load and tankering decisions that cut fuel burn and the emissions reported under CORSIA and EU ETS." },
+        { n:"Baggage Mishandling", s:"Service", ic:"partner",
+          long:"Predicting which connections will lose a bag from the connection time, the stand pair and the handler, and intervening before the flight departs." },
+      ]},
+      { title:"Agent Harnesses", ic:"agents", span:3, cols:2, tiles:[
+        { n:"Omnigent", s:"Databricks, open source", ic:"omni",
+          long:"Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
+          caps:["Build","Deploy","Optimize","Govern"], rel:["Agent Bricks","Unity Gateway"] },
+        { n:"Claude Code", s:"3rd-party harness", ic:"code",
+          long:"Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity Gateway." },
+        { n:"OpenAI Codex", s:"3rd-party harness", ic:"code",
+          long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
+        { n:"Any MCP Harness", s:"Cursor, IDEs, frameworks", ic:"mcp",
+          long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity Gateway registry." },
+      ]},
+    ],
+    sources:{
+      "amadeus-altea":{ t:"Amadeus Altéa PSS", u:"https://amadeus.com/en/portfolio/airlines/altea-passenger-service-system" },
+      "sabre-gds":{ t:"Sabre global distribution", u:"https://www.sabre.com/products/suites/network-planning-and-optimization/" },
+      "pros-rm":{ t:"PROS revenue management for airlines", u:"https://pros.com/products/travel/revenue-management/" },
+      "atpco":{ t:"ATPCO fare and rule filing", u:"https://www.atpco.net/" },
+      "netline":{ t:"Lufthansa Systems NetLine/Sched", u:"https://www.lhsystems.com/product/netline-sched" },
+      "aims":{ t:"AIMS crew management", u:"https://aims.aero/" },
+      "jeppesen":{ t:"Jeppesen crew and operations", u:"https://www.jeppesen.com/crew-solutions" },
+      "aodb":{ t:"Airport Operational Database, A-CDM", u:"https://www.eurocontrol.int/concept/airport-collaborative-decision-making" },
+      "acars":{ t:"ACARS OOOI reporting", u:"https://www.icao.int/safety/acp/Pages/default.aspx" },
+      "adsb":{ t:"ADS-B surveillance", u:"https://www.faa.gov/air_traffic/technology/adsb" },
+      "worldtracer":{ t:"SITA WorldTracer baggage tracing", u:"https://www.sita.aero/solutions/sita-at-airports/baggage-solutions/worldtracer/" },
+      "amos":{ t:"Swiss-AS AMOS MRO", u:"https://www.swiss-as.com/amos" },
+      "cargospot":{ t:"CHAMP Cargospot", u:"https://www.champ.aero/solutions/cargospot" },
+      "iata-bsp":{ t:"IATA Billing and Settlement Plan", u:"https://www.iata.org/en/services/finance/bsp/" },
+      "sita-typeb":{ t:"SITA Type B messaging", u:"https://www.sita.aero/solutions/sita-for-aircraft/" },
+      "acdm":{ t:"Airport Collaborative Decision Making", u:"https://www.eurocontrol.int/concept/airport-collaborative-decision-making" },
+      "ndc":{ t:"IATA NDC and ONE Order", u:"https://www.iata.org/en/programs/airline-distribution/retailing/ndc/" },
+      "corsia":{ t:"ICAO CORSIA emissions scheme", u:"https://www.icao.int/environmental-protection/CORSIA/Pages/default.aspx" },
+    },
+  },
+};
+
+/* Which industry is showing. Persisted with the board, so a reload and an
+   exported HTML copy both open on the industry they were left on. */
+ARCH.industry = "generic";
+
+function industryLabel(id){
+  if(id === "generic") return "Industry";
+  const row = INDUSTRY_CATALOG.find(x=> x[0] === id);
+  return (INDUSTRIES[id] && INDUSTRIES[id].label) || (row && row[1]) || id;
+}
+
+/* Rebuild rails, top band and medallion captions from BASE, then lay the
+   industry over the top. Always from BASE, never from the live tree, so
+   switching A -> B -> A lands on exactly the same board every time. */
+function applyIndustry(id, remember){
+  const ind = INDUSTRIES[id];
+  const fresh = JSON.parse(JSON.stringify(BASE));
+  ARCH.rails = fresh.rails;
+  ARCH.top   = fresh.top;
+  /* Only the medallion stages are restored from BASE, not the whole bands tree:
+     the bands carry the platform itself, and a user's own edits to it should
+     survive an industry switch because the platform is not what changes. */
+  const stages = medallionStages(), baseStages = (function(){
+    for(const band of fresh.bands){
+      for(const row of (band.rows || [])){
+        if(row.kind === "medallion" && Array.isArray(row.stages)) return row.stages;
+      }
+    }
+    return null;
+  })();
+  if(stages && baseStages){
+    stages.forEach((st, i)=>{
+      const b = baseStages[i];
+      if(b){ st.s = b.s; st.long = b.long; }
+    });
+  }
+
+  ARCH.industry = ind ? id : "generic";
+
+  if(ind){
+    if(ind.rails){
+      RAIL_IDS.forEach(rid=>{
+        if(Array.isArray(ind.rails[rid])) ARCH.rails[rid].groups = JSON.parse(JSON.stringify(ind.rails[rid]));
+      });
+    }
+    if(Array.isArray(ind.top)) ARCH.top.secs = JSON.parse(JSON.stringify(ind.top));
+    if(ind.blurb) ARCH.top.sub = ind.blurb;
+    if(ind.medallion && stages){
+      stages.forEach(st=>{
+        const o = ind.medallion[st.n];
+        if(o){ if(o.s) st.s = o.s; if(o.long) st.long = o.long; }
+      });
+    }
+  }
+
+  /* A solution overlay is keyed by the generic board's tile names, so against an
+     industry board roughly half of them resolve and paintRef silently skips the
+     rest: the platform lights up and the rails do not, which reads as a broken
+     overlay rather than as one that does not apply here. Clearing it is honest.
+     Making the overlays survive a switch means keying them by role instead of by
+     name, which is a change to all six and to every industry that follows. */
+  if(activeRef){ clearReference(); refBanner.classList.remove("show"); }
+
+  if(remember) persistCustom();
+  build();
+  paintIndustryMenu();
+  syncIndustryBtn();
+  /* build() rewrites every tile, so a drawer left open is pointing at a node
+     that no longer exists and is captioned for the previous industry. */
+  if(openId && byId[openId]) openDetail(openId); else closeDrawer();
+  fitBoard();
+}
+
+/* ==================================================================
    3. RENDER — every clickable atom registers into byId / nameIndex so the
       drawer, edit mode and the solution-overlay painter all work generically.
    ================================================================== */
@@ -3034,7 +3409,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 11;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 12;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -3052,9 +3427,25 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    the Agentic Dev side chip "Flow" and would restore that over "Lakeflow
    Designer" for anyone who had already opened the page.
    Restoring any of them renders empty columns or throws, so anything that fails
-   this check is discarded rather than half-applied. */
+   this check is discarded rather than half-applied.
+
+   v11 is the exception, and is MIGRATED rather than discarded. The only thing
+   v12 added is the `industry` key, and a board saved before industries existed
+   is by definition the generic one, so the upgrade is to default that key. A
+   discard here would silently throw away every edit anyone had made, which is
+   a real cost to pay for a field we can infer. */
+const SCHEMA_MIGRATABLE = [11];
+function migrateStored(s){
+  if(!s || typeof s !== "object") return s;
+  if(s.schema === SCHEMA) return s;
+  if(SCHEMA_MIGRATABLE.indexOf(s.schema) < 0) return s;
+  s.industry = "generic";
+  s.schema = SCHEMA;
+  return s;
+}
 function storedStateUsable(s){
   if(!s || s.schema !== SCHEMA) return false;
+  if(s.industry != null && typeof s.industry !== "string") return false;
   if(!Array.isArray(s.bands) || !s.bands.length) return false;
   if(!s.rails || RAIL_IDS.some(id=> !s.rails[id] || !Array.isArray(s.rails[id].groups))) return false;
   if(!s.top || !Array.isArray(s.top.secs) || !s.top.secs.every(x=> Array.isArray(x.tiles))) return false;
@@ -3069,21 +3460,25 @@ function storedStateUsable(s){
        browser happens to have saved, so the file opens as it was exported. */
     const frozen = document.getElementById("frozen-state");
     if(frozen){
-      const f = JSON.parse(frozen.textContent || "null");
+      const f = migrateStored(JSON.parse(frozen.textContent || "null"));
       if(storedStateUsable(f)){
         ARCH.bands = f.bands; ARCH.rails = f.rails; ARCH.top = f.top; ARCH.cloud = f.cloud;
+        /* The saved tree is already the industry's own content, so the id is
+           restored for the label and the export name, not re-applied over it. */
+        ARCH.industry = f.industry || "generic";
         return;
       }
     }
-    const s = JSON.parse(store.get(CUSTOM_LS) || "null");
+    const s = migrateStored(JSON.parse(store.get(CUSTOM_LS) || "null"));
     if(!s) return;
     if(!storedStateUsable(s)){ store.del(CUSTOM_LS); return; }
     ARCH.bands = s.bands; ARCH.rails = s.rails; ARCH.top = s.top; ARCH.cloud = s.cloud;
+    ARCH.industry = s.industry || "generic";
   }catch(_){ store.del(CUSTOM_LS); }
 })();
 function persistCustom(){
   store.set(CUSTOM_LS,
-    JSON.stringify({ schema:SCHEMA, bands:ARCH.bands, rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud }));
+    JSON.stringify({ schema:SCHEMA, industry:ARCH.industry, bands:ARCH.bands, rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud }));
 }
 
 const platTopEl   = document.getElementById("plat-top");
@@ -3424,6 +3819,20 @@ function stageBadge(st){
     `<em>${ga ? "available now" : "not yet generally available"}</em></span>`;
 }
 
+/* An industry tile that names a commercial product carries the ids of the
+   sources that back it. The ids resolve against the industry that is actually
+   showing, so a stale id from a board saved under a different industry simply
+   drops out rather than rendering a dead link. */
+function citeLinks(t){
+  if(!t.cite || !t.cite.length) return "";
+  const ind = INDUSTRIES[ARCH.industry];
+  const tbl = (ind && ind.sources) || {};
+  const rows = t.cite.map(k=> tbl[k]).filter(Boolean)
+    .map(r=> linkRow(r.u, r.t, host(r.u)));
+  if(!rows.length) return "";
+  return `<h4>Sources</h4><div class="d-links">${rows.join("")}</div>`;
+}
+
 function openDetail(id){
   const rec = byId[id]; if(!rec) return;
   openId = id;
@@ -3445,6 +3854,7 @@ function openDetail(id){
     html += `<h4>Capabilities</h4><div>` + caps.map(c=>`<span class="chip static">${esc(c)}</span>`).join("") + `</div>`;
   }
   html += detailLinks(t.n);
+  html += citeLinks(t);
   if(t.rel && t.rel.length){
     const chips = t.rel.filter(r=>nameIndex[r]).map(r=>`<span class="chip" data-go="${nameIndex[r]}">${esc(r)}</span>`).join("");
     if(chips) html += `<h4>Related</h4><div>${chips}</div>`;
@@ -3690,7 +4100,7 @@ function activeTabEl(){ return tabsEl.querySelector(".tab.active"); }
    unreachable. Any open dropdown is closed on the way in, otherwise a menu
    would be left floating over a disabled button. */
 const TOOL_BTNS = [
-  ["plat-btn",  null,         "Build this architecture first, then zoom into the platform on its own"],
+  ["ind-btn",   "ind-wrap",   "Build this architecture first, then specialise it for an industry"],
   ["stage-btn", "stage-wrap", "Build this architecture first, then filter it by release stage"],
   ["shape-btn", "shape-wrap", "Build this architecture first, then choose a shape for it"],
   ["pal-btn",   "pal-wrap",   "Build this architecture first, then recolour it"],
@@ -3925,11 +4335,9 @@ function paintSeg(){
 paintSeg();
 
 /* Platform-only strips the context zones and re-fits against the narrower design
-   width, so the Z fills the window instead of sitting in the middle of it. */
-const platBtn = document.getElementById("plat-btn");
-/* the markup holds the real wording; selectTab swaps in a reason while the
-   button is inert and puts this back when a diagram is on screen again */
-const PLAT_BTN_TITLE = platBtn.title;
+   width, so the Z fills the window instead of sitting in the middle of it. The
+   control for it lives in the platform's own heading bar. */
+const platMaxBtn = document.getElementById("plat-max");
 
 /* ==================================================================
    6c. THEME
@@ -4074,11 +4482,96 @@ document.addEventListener("click", e=>{
 });
 paintPalMenu();
 
-platBtn.onclick = ()=>{
+platMaxBtn.onclick = ()=>{
   const on = document.body.classList.toggle("plat-only");
-  platBtn.classList.toggle("on", on);
+  platMaxBtn.setAttribute("aria-pressed", String(on));
+  platMaxBtn.title = on
+    ? "Show the whole architecture again: sources, consumers, the apps band and cloud services"
+    : "Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services";
   fitBoard();
 };
+
+/* ==================================================================
+   7a-1. INDUSTRY PICKER
+   ==================================================================
+   Forty names, one of which is showing. The filter is there because a
+   forty-row menu is a scroll hunt otherwise, and the disabled rows are there
+   because hiding the thirty-nine unbuilt boards would make the menu look like
+   it had lost them. */
+const indWrap = document.getElementById("ind-wrap");
+const indMenu = document.getElementById("ind-menu");
+const indBtn  = document.getElementById("ind-btn");
+let indFilter = "";
+
+function syncIndustryBtn(){
+  const on = ARCH.industry !== "generic";
+  indBtn.classList.toggle("on", on);
+  document.getElementById("ind-lbl").textContent = industryLabel(ARCH.industry);
+}
+
+function paintIndustryMenu(){
+  const cur = ARCH.industry;
+  const q = indFilter.trim().toLowerCase();
+  const rows = INDUSTRY_CATALOG
+    .filter(([id, label])=> !q || label.toLowerCase().indexOf(q) >= 0 || id.indexOf(q) >= 0);
+
+  const rowHtml = ([id, label])=>{
+    const built = !!INDUSTRIES[id];
+    return '<button data-ind="' + id + '"' + (built ? "" : " disabled") +
+      ' class="' + (id === cur ? "on" : "") + '"><span>' + label + "</span>" +
+      (built ? "" : "<i>soon</i>") + "</button>";
+  };
+
+  indMenu.innerHTML =
+    '<div class="men-hd">Industry view</div>' +
+    '<input class="ind-search" id="ind-search" type="search" autocomplete="off" ' +
+      'placeholder="Filter industries" value="' + indFilter.replace(/"/g, "&quot;") + '">' +
+    '<div class="ind-list">' +
+      '<button data-ind="generic" class="' + (cur === "generic" ? "on" : "") +
+        '"><span>Generic (no industry)</span></button>' +
+      (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
+    "</div>" +
+    '<div class="dl-note">Replaces Sources, Ingestion, People, Consumers and the ' +
+      'Apps and Use Cases band, and relabels the medallion stages. The platform ' +
+      'itself and the cloud services band do not change.</div>';
+
+  const search = document.getElementById("ind-search");
+  search.oninput = ()=>{
+    indFilter = search.value;
+    paintIndustryMenu();
+    const again = document.getElementById("ind-search");
+    again.focus();
+    /* repainting replaces the node, so the caret would jump to the front */
+    again.setSelectionRange(again.value.length, again.value.length);
+  };
+  /* the menu closes on any document click, and a click in its own search box
+     is still a document click */
+  search.onclick = e=> e.stopPropagation();
+
+  indMenu.querySelectorAll("button[data-ind]").forEach(b=>{
+    if(b.disabled) return;
+    b.onclick = ()=>{
+      indWrap.classList.remove("open");
+      indFilter = "";
+      applyIndustry(b.dataset.ind, true);
+    };
+  });
+}
+
+indBtn.onclick = e=>{
+  e.stopPropagation();
+  const opening = !indWrap.classList.contains("open");
+  indWrap.classList.toggle("open");
+  if(opening){
+    paintIndustryMenu();
+    const s = document.getElementById("ind-search");
+    if(s) s.focus();
+  }
+};
+/* The board itself is already restored by loadCustom, industry content and all,
+   so startup only has to make the button agree with it. The menu paints when it
+   is first opened. */
+syncIndustryBtn();
 
 /* ==================================================================
    7a-2. RELEASE STAGE FILTER
@@ -4291,11 +4784,13 @@ paintShapeMenu();
    and its cloud variant once it is out of the browser. */
 function docTitle(){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
-  return "Databricks Reference Architecture - " + ((p && p.label) || ARCH.cloud.provider);
+  const ind = ARCH.industry !== "generic" ? industryLabel(ARCH.industry) + " " : "";
+  return "Databricks " + ind + "Reference Architecture - " + ((p && p.label) || ARCH.cloud.provider);
 }
 function dlName(ext){
   const tab = document.querySelector(".tab.active");
-  const base = "databricks-" + ((tab && tab.dataset.tab) || "reference") + "-architecture";
+  const ind = ARCH.industry !== "generic" ? ARCH.industry.replace(/_/g, "-") + "-" : "";
+  const base = "databricks-" + ind + ((tab && tab.dataset.tab) || "reference") + "-architecture";
   return base + (document.body.classList.contains("plat-only") ? "-platform" : "") + "." + ext;
 }
 function dlBlob(blob, name){
@@ -4330,7 +4825,9 @@ function boardSvgMarkup(phase){
     (phase == null ? "" : "--dash-t:" + phase + ";"));
   const st = document.createElement("style"); st.textContent = exportCss();
   const clone = bd.cloneNode(true);
-  clone.querySelectorAll(".dl-menu").forEach(n=>n.remove());
+  /* .ph-max is interface, not architecture: it belongs on screen and nowhere in
+     a downloaded picture of the board. */
+  clone.querySelectorAll(".dl-menu, .ph-max").forEach(n=>n.remove());
   /* The clone is serialised as XML, where a comment may not contain a double
      hyphen. The board's comments are full of CSS custom property names, so one
      of them is enough to make the whole document unparseable and every raster
@@ -5181,8 +5678,8 @@ async function exportPptx(){
 function exportHtmlDoc(){
   const snap = document.createElement("script");
   snap.type = "application/json"; snap.id = "frozen-state";
-  snap.textContent = JSON.stringify({ schema:SCHEMA, bands:ARCH.bands, rails:ARCH.rails,
-    top:ARCH.top, cloud:ARCH.cloud });
+  snap.textContent = JSON.stringify({ schema:SCHEMA, industry:ARCH.industry, bands:ARCH.bands,
+    rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud });
   const html = document.documentElement.cloneNode(true);
   html.querySelector("#frozen-state")?.remove();
   html.querySelector("head").appendChild(snap);
