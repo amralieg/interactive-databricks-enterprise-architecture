@@ -1032,22 +1032,21 @@
      motion freezes the dashes rather than hiding the box */
   @media (prefers-reduced-motion:reduce) { .zring path { animation:none; } }
   /* each block is [arm | stack] or [stack | arm]; the arm is the overhang */
-  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:10px; }
+  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:8px; }
   /* The bands ABSORB the row's slack, they do not stand apart in it. The pocket
      beside this bar is what sets the row height, so there is always a few dozen
      px more than the bands need, and space-between put every one of them into the
      two gaps: three bands floating far apart inside one outline, which is what
      made the platform read as fragments instead of one block. */
   .plat-top > .plat-stack, .plat-body > .plat-stack, .plat-waist > .plat-stack {
-    flex:1 1 auto; min-height:0; justify-content:stretch; }
-  .plat-body .plat-stack { justify-content:stretch; }
+    flex:1 1 auto; min-height:0; }
+  .plat-body .plat-stack { justify-content:flex-start; }
   .plat-stack > .band { flex:0 0 auto; }
-  .plat-body .plat-stack > .band { flex:1 1 auto; min-height:0; }
-  /* balanceHalves() pads the shorter platform half to match the taller one; the
-     last band in the upper half absorbs that slack so Agentic Work fills the
-     void above Unified Governance instead of leaving bare fill under it. */
-  .plat-top .plat-stack > .band.b-apps { flex:0 0 auto; }
+  /* balanceHalves() may pad a half taller than its content; only the last band in
+     each half absorbs that slack. Inner rows stay content-sized so nothing leaves
+     a white void inside a panel or a stretched empty card in an arm. */
   .plat-top .plat-stack > .band.b-work { flex:1 1 auto; min-height:0; }
+  .plat-body .plat-stack > .band.b-infra { flex:1 1 auto; min-height:0; }
   .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; }
   .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
@@ -1289,13 +1288,13 @@
   .arm .band-lbl .bl-sub { font-size:10px; margin-top:2px; }
   /* the cards share the arm's height rather than stacking at the top and leaving
      a column of empty fill under them */
-  .arm .band-body { justify-content:stretch; }
+  .arm .band-body { justify-content:flex-start; gap:8px; }
   /* stretch, not centre: a column of shrink-to-fit cards puts every icon at a
      different x, which reads as a zig-zag down the arm instead of a column.
      Centring the card contents then puts the icons of the taller Serve cards on
      the same axis as their text block. */
-  .arm .band-row.cards { flex-direction:column; gap:5px; flex:1 1 auto; align-items:stretch; }
-  .arm .band-row.cards > * { flex:1 1 auto; }
+  .arm .band-row.cards { flex-direction:column; gap:8px; flex:0 0 auto; align-items:stretch; }
+  .arm .band-row.cards > * { flex:0 0 auto; }
   .arm .pcard { padding:5px 7px; align-items:center; }
   .arm .pcard .p-name { font-size:13px; }
   .arm .pcard .p-sub { font-size:10.5px; }
@@ -1322,22 +1321,25 @@
     font-size:16px; font-weight:800; letter-spacing:-.015em; line-height:1.15; }
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
-  .plat-stack .band-body { justify-content:flex-start; gap:10px; }
-  .band.b-work .band-body { flex:1 1 auto; min-height:0; gap:12px; }
-  .band.b-work .band-row.mixed { flex:1 1 auto; align-items:stretch; gap:10px; }
-  .band.b-work .band-row.mixed > .panel { align-self:stretch; }
-  .band.b-work .panel { align-items:stretch; gap:10px; padding:10px 11px; }
-  .band.b-work .panel-cols { align-items:stretch; gap:10px; }
-  .band.b-work .pcol { gap:6px; justify-content:center; flex:1 1 0; }
+  .plat-stack .band-body { justify-content:flex-start; gap:8px; }
+  .band.b-work { flex:1 1 auto; min-height:0; }
+  .band.b-work .band-body { flex:1 1 auto; min-height:0; gap:10px; justify-content:flex-start; }
+  .band.b-work .band-row.mixed { flex:0 0 auto; align-items:flex-start; gap:10px; }
+  .band.b-work .band-row.mixed > .panel { flex:2.4 1 0; min-width:0; align-self:stretch; }
+  .band.b-work .panel { align-items:flex-start; gap:10px; padding:10px 11px; }
+  .band.b-work .panel-cols { flex:1 1 auto; align-items:stretch; gap:10px; }
+  .band.b-work .pcol { flex:1 1 0; gap:8px; justify-content:flex-start; padding:8px 6px; }
   .band.b-work .side-col {
-    flex:0 0 108px; width:108px; gap:6px; align-self:stretch; min-height:0;
-    display:grid; grid-template-rows:repeat(3, minmax(0, 1fr)); }
+    flex:0 0 108px; width:108px; gap:8px; align-self:flex-start;
+    display:flex; flex-direction:column; }
   .band.b-work .side-col .schip {
-    place-self:center; width:100%; max-height:100%; aspect-ratio:1;
+    width:108px; height:108px; flex:0 0 108px;
     flex-direction:column; align-items:center; justify-content:center;
-    padding:6px 4px; font-size:11px; line-height:1.15; box-sizing:border-box; }
-  .band.b-work .band-row.mixed > .plaincol { gap:6px; }
+    padding:8px 6px; font-size:11px; line-height:1.15; box-sizing:border-box; }
+  .band.b-work .band-row.mixed > .plaincol {
+    align-self:stretch; display:flex; flex-direction:column; justify-content:flex-start; gap:8px; }
   .band.b-work .band-foot { flex:0 0 auto; margin-top:auto; }
+  .band.b-infra .band-body { flex:1 1 auto; min-height:0; justify-content:flex-start; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* a card row on fixed columns instead of shared flex width, so a card can name
      the column it belongs under; the column count is set per row in script */
