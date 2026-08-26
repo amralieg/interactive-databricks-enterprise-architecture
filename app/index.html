@@ -628,7 +628,11 @@
   /* ============================= board ============================= */
   /* symmetric top and bottom padding: the leftover height is split evenly above
      and below the board by fitLayout, so the two margins read as one */
-  .board { max-width:var(--designw); margin:0 auto; padding:5px 20px; }
+  .board { max-width:var(--designw); margin:0 auto; padding:5px 20px; position:relative; }
+  /* Parked in the corner the bottom band leaves free, so it is on the picture
+     without being in the layout. `right` clears the board's own 20px padding. */
+  .credit { position:absolute; right:22px; bottom:4px; font-size:10px; font-weight:650;
+    letter-spacing:.02em; color:var(--muted); pointer-events:none; }
   /* The whole diagram is scaled down to whatever is left below the header so it
      fits at the browser's own 100% zoom. Only ever shrinks, never enlarges, and
      stays off below 1100px where the layout stacks and is meant to scroll.
@@ -1597,7 +1601,19 @@
   /* Forty entries do not fit a menu. The filter stays pinned and only the list
      below it scrolls, so the outer box gives up the .pal-menu scroll it would
      otherwise apply to both. */
-  .ind-menu { min-width:274px; max-height:none; overflow:visible; }
+  /* Qualified with .pal-menu because that rule is further down the sheet and at
+     equal specificity was winning: this menu had been rendering at the shared
+     196px, not the width written here, and three of the forty-one names wrapped
+     to two lines. 304px clears the longest of them ("Standard Reference
+     Architecture" needs 197px of text inside 18px of button padding) with room
+     for the trailing "soon" marker on the unbuilt rows. */
+  .pal-menu.ind-menu { min-width:304px; max-height:none; overflow:visible; }
+  /* One line per entry, and a row wider than the menu widens the MENU rather
+     than clipping: the shared rule sets width:100% on the button, which with
+     nowrap would cut a long name off instead. The menu is absolutely positioned,
+     so it shrink-to-fits and 304px is a floor, not a ceiling. */
+  .ind-list button { width:auto; min-width:100%; }
+  .ind-list button span { white-space:nowrap; }
   .ind-search { width:100%; box-sizing:border-box; margin:2px 0 5px; padding:6px 9px;
     border:1px solid var(--line); border-radius:8px; background:var(--well);
     color:var(--ink); font:inherit; font-size:12px; }
@@ -1869,11 +1885,16 @@
      visitor never sees a white flash. The rest of the theme code only syncs the
      button and re-fits; it deliberately repeats this test rather than depending
      on load order. -->
-<script>(function(){try{var s=localStorage.getItem("dbx-arch-theme");
+<script>(function(){try{
+  /* A shared link carries the look it was shared in, and it has to win here
+     rather than three scripts down, or the visitor sees this browser's own
+     theme flash before the link's theme replaces it. */
+  var q=new URLSearchParams(location.search), qt=q.get("theme"), qp=q.get("pal");
+  var s=(qt==="dark"||qt==="light") ? qt : localStorage.getItem("dbx-arch-theme");
   var d = s === "dark" || (!s && window.matchMedia
     && window.matchMedia("(prefers-color-scheme: dark)").matches);
   if(d) document.body.classList.add("theme-dark");
-  var p=localStorage.getItem("dbx-arch-pal");
+  var p=(qp && /^[a-z]+$/.test(qp)) ? qp : localStorage.getItem("dbx-arch-pal");
   if(p && /^[a-z]+$/.test(p)) document.body.classList.add("pal-"+p);}catch(e){}})();</script>
 <header class="top">
   <div class="logo">
@@ -2018,6 +2039,12 @@
     <span class="flow down"></span>
   </div>
   <div class="cloudwrap"><div class="cloud hband bot" id="cloud"></div></div>
+  <!-- Absolute rather than a last child in the flow: in every shape the bottom
+       band is inset to the platform's outer box, so the board's bottom-right
+       corner is already empty and the line costs no height. As a flow child it
+       would add ~18 design px, which every label on the diagram pays for in fit
+       scale. It lives inside #board so it travels into the PNG, PDF and deck. -->
+  <div class="credit" id="credit">&#169; Databricks Industry Solutions</div>
 </main>
 </div></div>
 
@@ -2533,6 +2560,17 @@ const ARCH = {
        scaled down to fit. So a row added here is paid for by every label on the
        diagram. `uses` carries the half of the detail that matters most and read
        worst as prose: which surface of the platform the team actually touches. */
+    /* Eight tiles is the measured capacity of this pocket, not a taste call. In
+       the Z family the two boxes stack in one narrow column, so the ninth tile
+       adds 42 design px to the board and drops the fit from 0.818 to 0.789,
+       shrinking every label on the diagram by 3.5%. In h90 the boxes sit side by
+       side, so what binds there is the TALLER box: keep either box at five or
+       under. Re-measure with tools/heightgate.py before exceeding either.
+
+       A tile NAME here also has a one-line budget of 120 design px, about 105px
+       of text at 11px/650. "Revenue Management" needs 122 and wrapped to two
+       lines, which cost the airlines board 14px and 1.2% of every label on it;
+       "Revenue & Pricing" fits. Two-line names in this pocket are not free. */
     ppl: { id:"ppl", name:"Teams", groups:[
       { box:"Business", ic:"zbrief", tiles:[
         { n:"Executives", ic:"chart",
@@ -2548,6 +2586,13 @@ const ARCH = {
             ["Genie One", "Ask questions in Slack, Teams or on mobile and follow up in the same thread, on data they are permitted to see."],
             ["AI/BI", "Self-service dashboards they filter and drill themselves rather than raising a ticket for."],
             ["Excel Add-in", "The same governed tables inside the spreadsheet they already work in, with write-back where it is allowed."],
+          ] },
+        { n:"Risk & Compliance", ic:"gavel",
+          long:"Risk, audit, data protection and the regulatory reporting function. They are not asking the platform for insight so much as for evidence: who touched what, where a number came from, and whether the control actually held.",
+          uses:[
+            ["Unity Catalog", "Lineage, audit and access history behind a control, on the same catalogue the business reads."],
+            ["Unity Gateway", "Policy and spend limits on the models and agents, so an automated decision has an owner and a ceiling."],
+            ["AI/BI", "Regulatory and risk reporting on certified Metric Views instead of a workbook rebuilt every quarter."],
           ] },
       ]},
       /* Ordered from the data's own path: engineered, modelled, analysed, then built on. */
@@ -3005,15 +3050,23 @@ const INDUSTRIES = {
               ["AI/BI", "Network profitability, load factor and on-time performance on one certified set of Metric Views, so commercial and operations quote the same number."],
               ["Unity Catalog", "Certification and the business glossary, so \"on time\" means one thing across the airline."],
             ] },
-          { n:"Commercial Teams", ic:"market",
-            long:"Revenue management analysts setting bid prices and fare class availability by market and departure date; network planners deciding which routes are flown, at what frequency and with which aircraft; and the loyalty and ancillary teams owning tier economics, partner earn and the merchandising of seats, bags and lounge access.",
+          { n:"Revenue & Pricing", ic:"market",
+            long:"Revenue management: the analysts setting bid prices and fare class availability by market and departure date, the pricing team filing and matching fares, and the loyalty and ancillary owners behind tier economics, partner earn and the merchandising of seats, bags and lounge access. One team in the sense that matters here: they are all paid to move revenue per seat.",
             uses:[
               ["RM Analyst Workbench", "The forecast, the override history and the revenue at risk on a flight, before a bid price is touched."],
-              ["Model Serving", "Demand and willingness-to-pay models scored per shopping request behind continuous pricing."],
-              ["AI/BI", "Route and market performance, and look-to-book and abandonment from clickstream joined to bookings."],
-              ["Genie", "A question about one market or one departure date, answered without a report request."],
+              ["Continuous Pricing & NDC", "Offers priced per shopping request rather than against a filed fare ladder."],
+              ["Model Serving", "Demand and willingness-to-pay models scored inside the offer path."],
+              ["AI/BI", "Market performance, and look-to-book and abandonment from clickstream joined to bookings."],
             ] },
-          { n:"Operations Teams", ic:"gauge",
+          { n:"Network Planning", ic:"globe",
+            long:"The team deciding which routes are flown, at what frequency and with which aircraft, and holding the schedule against slot constraints, maintenance windows and partner connections. Their decisions are made a season out and paid for every day after.",
+            uses:[
+              ["Network & Fleet Planning", "Route and fleet scenarios scored on profitability rather than on load factor alone."],
+              ["Interline & Codeshare", "Partner schedule and availability read directly, so connection assumptions come from data and not from an agreement document."],
+              ["Genie", "A question about one market or one season, answered without a report request."],
+              ["AI/BI", "Route profitability, RASK and CASK on the same certified definitions the executive team reads."],
+            ] },
+          { n:"Operations Control", ic:"gauge",
             long:"Duty managers in the operations control centre deciding whether to hold or cancel, swap tails and protect connections; the ground and ramp teams turning the aircraft and reporting the milestones the turnaround clock is built on; crew scheduling keeping rosters legal and covered; and line and base engineering clearing defects and deciding whether an aircraft departs or goes AOG.",
             uses:[
               ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers together on a disrupted day."],
@@ -3795,13 +3848,15 @@ function build(){
      also  [[label, url], ...] extra reading where one link cannot carry the
            subject. The medallion stages use it: the pattern is the doorway to
            the industry data models built on it, and one "blog" slot cannot hold
-           a repo, a launch post and the agent that generates them.
+           two launch posts and the agent that generates the models.
      note  one sentence a customer would not get from the name alone
    ================================================================== */
 /* The medallion stages all open the same further reading: which layer you
-   clicked does not change what you would go and read next. */
+   clicked does not change what you would go and read next. The repo root used
+   to be the first row here; modelLinks() now puts the showing industry's own
+   folder above this block, so keeping the root as well was the same destination
+   listed twice under two headings. */
 const MEDALLION_ALSO = [
-  ["Databricks Industry Data Models", "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models"],
   ["Jumpstart your data modeling with Databricks Industry Data Models", "https://www.databricks.com/blog/jumpstart-your-data-modeling-databricks-industry-data-models"],
   ["Reimagining data modeling on the lakehouse: introducing Vibe Data Modeling", "https://www.databricks.com/blog/reimagining-data-modeling-lakehouse-introducing-vibe-data-modeling"],
   ["Vibe Data Modeling agent", "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/model-agent"],
@@ -3990,6 +4045,26 @@ function detailLinks(name){
 }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
 
+/* Every id in INDUSTRY_CATALOG is also the folder name under data-models in the
+   published repo, which is why the menu was built from those names in the first
+   place. So the id doubles as the path and there is no second table to keep in
+   step: a new industry gets its model link for free. */
+const MODELS_REPO = "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models";
+function modelUrl(id){
+  return MODELS_REPO + "/tree/main/data-models" + (id && id !== "generic" ? "/" + id : "");
+}
+/* The medallion strip is where a reader stops asking what the architecture does
+   and starts asking what the actual tables are, so that is where the published
+   data model belongs. On the standard reference board there is no one industry
+   to point at, so it lands on the index of all forty. */
+function modelLinks(){
+  const id = ARCH.industry, own = id !== "generic";
+  return `<h4>Data model</h4><div class="d-links">` + linkRow(modelUrl(id),
+    own ? industryLabel(id) + " Industry Data Model" : "Databricks Industry Data Models",
+    own ? "github.com, entities and columns per layer" : "github.com, forty industry models") +
+    `</div>`;
+}
+
 /* Says what a stage means rather than just naming it, because "Beta" alone is
    the thing that gets read as "nearly done" and then blocks a build. Anything
    that is not exactly GA is treated as not-yet-plannable, including a stage this
@@ -4051,6 +4126,10 @@ function openDetail(id){
   if(caps.length){
     html += `<h4>Capabilities</h4><div>` + caps.map(c=>`<span class="chip static">${esc(c)}</span>`).join("") + `</div>`;
   }
+  /* `arr` is the live array the atom was registered from, so identity against the
+     stages array is what identifies a medallion stage. Cheaper and harder to get
+     wrong than a flag copied onto three tiles in every industry. */
+  if(rec.arr && rec.arr === medallionStages()) html += modelLinks();
   html += detailLinks(t.n);
   html += citeLinks(t);
   if(t.rel && t.rel.length){
@@ -4537,6 +4616,12 @@ function applyTheme(dark, remember){
   fitBoard();
 }
 function themeIsDark(){
+  /* The link is asked before storage for the same reason the inline script asks
+     it first: on a shared link the sender's choice is the answer, and reading
+     this browser's saved theme over the top would flip a light link to dark. */
+  const q = urlParam("theme");
+  if(q === "dark") return true;
+  if(q === "light") return false;
   const saved = store.get(THEME_KEY);
   if(saved === "dark") return true;
   if(saved === "light") return false;
@@ -4646,12 +4731,17 @@ document.addEventListener("click", e=>{
 });
 paintPalMenu();
 
-platMaxBtn.onclick = ()=>{
-  const on = document.body.classList.toggle("plat-only");
+/* Split out from the click handler so a link that arrives with platform=1 gets
+   the same button state as a click, rather than a zoomed board behind a button
+   still offering to zoom it. */
+function syncPlatMax(on){
   platMaxBtn.setAttribute("aria-pressed", String(on));
   platMaxBtn.title = on
     ? "Show the whole architecture again: sources, consumers, the apps band and cloud services"
     : "Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services";
+}
+platMaxBtn.onclick = ()=>{
+  syncPlatMax(document.body.classList.toggle("plat-only"));
   fitBoard();
 };
 
@@ -4951,6 +5041,59 @@ function docTitle(){
   const ind = ARCH.industry !== "generic" ? industryLabel(ARCH.industry) + " " : "";
   return "Databricks " + ind + "Reference Architecture - " + ((p && p.label) || ARCH.cloud.provider);
 }
+/* The published copy of this page. Only a fallback: an export made from the live
+   site links back to the live site, so a fork or a Databricks App deployment
+   points at itself rather than sending its readers here. */
+const HOME_URL = "https://amralieg.github.io/interactive-databricks-enterprise-architecture/";
+/* Read once per call rather than cached, because the audit harness drives the
+   board through several industries in one page load. */
+function urlParam(k){
+  try { return new URLSearchParams(location.search).get(k); } catch(e){ return null; }
+}
+/* An exported page has to be able to say "here is the living version of this
+   picture", and that means a URL that reopens THIS board and not the default
+   one: same industry, cloud, shape, palette, theme and platform zoom. Every
+   parameter here is read back by seedFromUrl at the bottom of this script. */
+function liveUrl(){
+  const base = /^https?:$/.test(location.protocol)
+    ? location.origin + location.pathname : HOME_URL;
+  const q = new URLSearchParams();
+  if(ARCH.industry && ARCH.industry !== "generic") q.set("industry", ARCH.industry);
+  q.set("cloud", ARCH.cloud.provider);
+  q.set("shape", shapeDef().k);
+  const pal = currentPal();
+  if(pal) q.set("pal", pal);
+  q.set("theme", document.body.classList.contains("theme-dark") ? "dark" : "light");
+  if(document.body.classList.contains("plat-only")) q.set("platform", "1");
+  return base + "?" + q.toString();
+}
+/* One source of truth for the credit: the corner mark on the canvas itself. The
+   PDF cover and the deck's cover slide read it back rather than restating it,
+   so changing the line changes it in all three places. */
+function creditText(){
+  const el = document.getElementById("credit");
+  return (el && el.textContent.trim()) || "\u00a9 Databricks Industry Solutions";
+}
+/* Which variant of the diagram this export is, in one line: the reader of a
+   printed page cannot open the Industry, Cloud and Style menus to find out. */
+function coverMeta(){
+  const p = ARCH.cloud.providers[ARCH.cloud.provider];
+  const s = shapeDef();
+  return [ARCH.industry !== "generic" ? industryLabel(ARCH.industry) : "Standard reference architecture",
+    (p && p.label) || ARCH.cloud.provider,
+    (s && s.label ? s.label : "") + " layout"].filter(Boolean).join(" \u00b7 ");
+}
+/* The cover's link rows, shared by the PDF and the deck so the two covers cannot
+   drift. First the living version of this exact board, then the data model the
+   medallion on it is built from. */
+function coverLinks(){
+  const own = ARCH.industry !== "generic";
+  return [
+    { label:"Open the live diagram", url:liveUrl() },
+    { label: own ? industryLabel(ARCH.industry) + " industry data model"
+                 : "Databricks industry data models", url:modelUrl(ARCH.industry) },
+  ];
+}
 function dlName(ext){
   const tab = document.querySelector(".tab.active");
   const ind = ARCH.industry !== "generic" ? ARCH.industry.replace(/_/g, "-") + "-" : "";
@@ -5021,8 +5164,10 @@ function paletteHex(name, fallback){
   if(m) return "#" + [1,2,3].map(i=> (+m[i]).toString(16).padStart(2, "0")).join("");
   return fallback;
 }
-const expBg  = ()=> paletteHex("--bg", "#ffffff");
-const expInk = ()=> paletteHex("--ink", "#1b1f24");
+const expBg    = ()=> paletteHex("--bg", "#ffffff");
+const expInk   = ()=> paletteHex("--ink", "#1b1f24");
+const expMuted = ()=> paletteHex("--muted", "#5c6672");
+const expBrand = ()=> paletteHex("--brand", "#ff3621");
 async function boardCanvas(scale, phase){
   const { w, h, svg } = boardSvgMarkup(phase);
   const img = new Image();
@@ -5686,11 +5831,23 @@ function pptxShapeXml(sh, id, k, ox, oy, embed){
   return "";
 }
 
-function pptxParts(body, media, title){
+/* `slides` is one entry per slide, in order: { body, media, hlinks }. The board
+   slide brings ~40 rasterised glyphs and the cover brings two external links,
+   and both of those are per-slide relationships, so the package is built from a
+   list rather than from one hard-coded slide1. */
+function pptxParts(slides, title){
   const SW = PPT_SW, SH = PPT_SH;
   const rels = (list)=> XD + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
     list.map(o=>'<Relationship Id="' + o.id + '" Type="http://schemas.openxmlformats.org/' +
-      o.type + '" Target="' + o.t + '"/>').join("") + "</Relationships>";
+      o.type + '" Target="' + o.t + '"' +
+      (o.ext ? ' TargetMode="External"' : "") + "/>").join("") + "</Relationships>";
+  /* Media parts are numbered across the whole package, not per slide, so a
+     second slide carrying images cannot collide with the first. */
+  let mediaSeq = 0;
+  slides.forEach(s=>{ s.mediaNames = (s.media || []).map(()=> "image" + (++mediaSeq) + ".png"); });
+  const allMedia = [];
+  slides.forEach(s=> (s.media || []).forEach((m, i)=>
+    allMedia.push({ name:"ppt/media/" + s.mediaNames[i], data:m })));
   const empty = '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>' +
     '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>' +
     '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
@@ -5704,7 +5861,8 @@ function pptxParts(body, media, title){
       '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>' +
       '<Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>' +
       '<Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>' +
-      '<Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>' +
+      slides.map((s, i)=> '<Override PartName="/ppt/slides/slide' + (i + 1) +
+        '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>').join("") +
       '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>' +
       '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
       '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
@@ -5724,17 +5882,20 @@ function pptxParts(body, media, title){
     { name:"docProps/app.xml", data: XD +
       '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"' +
       ' xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
-      "<Slides>1</Slides><Application>Databricks Reference Architecture</Application></Properties>" },
+      "<Slides>" + slides.length + "</Slides><Application>Databricks Reference Architecture</Application></Properties>" },
     { name:"ppt/presentation.xml", data: XD +
       "<p:presentation " + nsAttrs + ' saveSubsetFonts="1">' +
       '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>' +
-      '<p:sldIdLst><p:sldId id="256" r:id="rId2"/></p:sldIdLst>' +
+      "<p:sldIdLst>" + slides.map((s, i)=> '<p:sldId id="' + (256 + i) +
+        '" r:id="rId' + (i + 2) + '"/>').join("") + "</p:sldIdLst>" +
       '<p:sldSz cx="' + SW + '" cy="' + SH + '"/><p:notesSz cx="6858000" cy="9144000"/>' +
       "</p:presentation>" },
     { name:"ppt/_rels/presentation.xml.rels", data: rels([
-      { id:"rId1", type:"officeDocument/2006/relationships/slideMaster", t:"slideMasters/slideMaster1.xml" },
-      { id:"rId2", type:"officeDocument/2006/relationships/slide", t:"slides/slide1.xml" },
-      { id:"rId3", type:"officeDocument/2006/relationships/theme", t:"theme/theme1.xml" }]) },
+      { id:"rId1", type:"officeDocument/2006/relationships/slideMaster", t:"slideMasters/slideMaster1.xml" }]
+      .concat(slides.map((s, i)=> ({ id:"rId" + (i + 2),
+        type:"officeDocument/2006/relationships/slide", t:"slides/slide" + (i + 1) + ".xml" })))
+      .concat([{ id:"rId" + (slides.length + 2),
+        type:"officeDocument/2006/relationships/theme", t:"theme/theme1.xml" }])) },
     { name:"ppt/theme/theme1.xml", data: pptxTheme() },
     { name:"ppt/slideMasters/slideMaster1.xml", data: XD +
       "<p:sldMaster " + nsAttrs + "><p:cSld><p:spTree>" + empty + "</p:spTree></p:cSld>" +
@@ -5751,20 +5912,33 @@ function pptxParts(body, media, title){
       empty + "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>" },
     { name:"ppt/slideLayouts/_rels/slideLayout1.xml.rels", data: rels([
       { id:"rId1", type:"officeDocument/2006/relationships/slideMaster", t:"../slideMasters/slideMaster1.xml" }]) },
-    { name:"ppt/slides/slide1.xml", data: XD +
+  ].concat(slides.flatMap((s, i)=> [
+    { name:"ppt/slides/slide" + (i + 1) + ".xml", data: XD +
       /* the slide itself carries the theme background, not just the board's own
          canvas rectangle, so a dark deck is dark to the slide edge instead of a
          dark picture sitting on a white slide */
       "<p:sld " + nsAttrs + "><p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val=\"" +
       expBg().replace("#", "").toUpperCase() +
-      "\"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>" + empty + body +
+      "\"/></a:solidFill><a:effectLst/></p:bgPr></p:bg><p:spTree>" + empty + s.body +
       "</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>" },
-    { name:"ppt/slides/_rels/slide1.xml.rels", data: rels(
+    /* Images then hyperlinks, in the order pptxSlideRel() below numbers them, so
+       an r:embed or an r:id written into the body resolves here. */
+    { name:"ppt/slides/_rels/slide" + (i + 1) + ".xml.rels", data: rels(
       [{ id:"rId1", type:"officeDocument/2006/relationships/slideLayout",
-         t:"../slideLayouts/slideLayout1.xml" }].concat(
-      media.map((m, i)=> ({ id:"rId" + (i + 2),
-        type:"officeDocument/2006/relationships/image", t:"../media/image" + (i + 1) + ".png" })))) },
-  ].concat(media.map((m, i)=> ({ name:"ppt/media/image" + (i + 1) + ".png", data:m })));
+         t:"../slideLayouts/slideLayout1.xml" }]
+      .concat(s.mediaNames.map((nm, j)=> ({ id:"rId" + (j + 2),
+        type:"officeDocument/2006/relationships/image", t:"../media/" + nm })))
+      .concat((s.hlinks || []).map((u, j)=> ({
+        id:"rId" + (s.mediaNames.length + j + 2),
+        type:"officeDocument/2006/relationships/hyperlink", t:xmlEsc(u), ext:true })))) },
+  ])).concat(allMedia);
+}
+/* The relationship id a slide's Nth image or Nth hyperlink lands on. rId1 is
+   always the layout, images follow, then hyperlinks. Written once here because
+   the body and the .rels file have to agree and they are built apart. */
+function pptxSlideRel(slide, kind, n){
+  const imgs = (slide.media || []).length;
+  return "rId" + (kind === "img" ? n + 2 : imgs + n + 2);
 }
 function xmlEsc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
@@ -5779,9 +5953,81 @@ async function exportGif(){
   dlBtn.title = DL_BTN_TITLE;
   dlBlob(blob, dlName("gif"));
 }
-/* The slide is assembled from the live DOM: one shape per box, one text box per
-   run, one connector per arrow, and a picture only where the artwork is a glyph
-   or an official project logo. */
+/* One text run in its own box, positioned in EMU. The cover is a handful of
+   lines of type and nothing else, so it is built from these rather than from the
+   DOM walker the board slide uses. */
+function pptxCoverText(id, x, y, w, h, size, bold, colour, s, link){
+  const rPr = '<a:rPr lang="en-US" sz="' + Math.round(size * 100) + '" b="' + (bold ? 1 : 0) +
+    '"><a:solidFill><a:srgbClr val="' + colour.replace("#", "").toUpperCase() + '"/></a:solidFill>' +
+    (link ? '<a:hlinkClick xmlns:r="' + PPTX_NS.r + '" r:id="' + link + '"/>' : "") +
+    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr>';
+  return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="t' + id + '"/>' +
+    '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr>' +
+    '<a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t">' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="l"/><a:r>' + rPr +
+    "<a:t>" + xmlEsc(s) + "</a:t></a:r></a:p></p:txBody></p:sp>";
+}
+/* Slide 1: what this is, which variant, and a live link back to the board it
+   came from. A deck outlives the picture in it; the URL does not go stale. */
+function pptxCoverSlide(){
+  const SW = PPT_SW, SH = PPT_SH;
+  const PT = 12700;                                   /* EMU per point */
+  const M = Math.round(SW * 0.062);
+  const W = SW - M * 2;
+  const links = coverLinks();
+  const slide = { media:[], hlinks:links.map(r=> r.url) };
+  const ink = expInk(), mut = expMuted(), brand = expBrand();
+  let id = 2, y = Math.round(SH * 0.22);
+  const parts = [];
+  const line = (size, bold, colour, s, link, rows)=>{
+    const h = Math.round(size * 1.5 * (rows || 1) * PT);
+    parts.push(pptxCoverText(id++, M, y, W, h, size, bold, colour, s, link));
+    y += h;
+  };
+  line(13, false, mut, "Databricks Data Intelligence Platform");
+  y += Math.round(6 * PT);
+  line(33, true, ink, docTitle());
+  y += Math.round(4 * PT);
+  line(14, false, mut, coverMeta());
+  /* the same sentence the board carries above the top band, so the cover says what
+     this architecture is for and not only which industry it belongs to */
+  if(ARCH.top && ARCH.top.sub) line(14, false, mut, ARCH.top.sub, null, 2);
+  y += Math.round(10 * PT);
+  parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="rule"/>' +
+    '<p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr>' +
+    '<a:xfrm><a:off x="' + M + '" y="' + y + '"/>' +
+    '<a:ext cx="' + W + '" cy="' + Math.round(0.7 * PT) + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="' +
+    mut.replace("#", "").toUpperCase() + '"><a:alpha val="45000"/></a:srgbClr>' +
+    "</a:solidFill><a:ln><a:noFill/></a:ln></p:spPr>" +
+    "<p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>");
+  y += Math.round(18 * PT);
+  links.forEach((row, i)=>{
+    line(11, true, mut, row.label);
+    line(14, false, brand, row.url, pptxSlideRel(slide, "link", i));
+    y += Math.round(10 * PT);
+  });
+  /* bottom right, the same corner it sits in on the canvas */
+  parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="credit"/>' +
+    '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr>' +
+    '<a:xfrm><a:off x="' + M + '" y="' + Math.round(SH - M - 20 * PT) + '"/>' +
+    '<a:ext cx="' + W + '" cy="' + Math.round(18 * PT) + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="b">' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="r"/><a:r>' +
+    '<a:rPr lang="en-US" sz="1000"><a:solidFill><a:srgbClr val="' +
+    mut.replace("#", "").toUpperCase() + '"/></a:solidFill>' +
+    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(creditText()) +
+    "</a:t></a:r></a:p></p:txBody></p:sp>");
+  slide.body = parts.join("");
+  return slide;
+}
+/* The board slide is assembled from the live DOM: one shape per box, one text box
+   per run, one connector per arrow, and a picture only where the artwork is a
+   glyph or an official project logo. */
 async function exportPptx(){
   const SW = PPT_SW, SH = PPT_SH;
   const pad = 0.03;
@@ -5813,6 +6059,9 @@ async function exportPptx(){
   }
 
   let id = 2;
+  /* built now so the shape loop can ask pptxSlideRel for its image ids instead
+     of repeating the numbering rule the .rels writer uses */
+  const board = { media, body:null };
   const bgHex = expBg().replace("#", "").toUpperCase();
   const parts = ['<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Canvas"/><p:cNvSpPr/><p:nvPr/>' +
     '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + ox + '" y="' + oy + '"/>' +
@@ -5821,7 +6070,8 @@ async function exportPptx(){
     '"/></a:solidFill><a:ln><a:noFill/></a:ln></p:spPr></p:sp>'];
   shapes.forEach(sh=>{
     if(sh.t === "img" && !sh.embed) return;            /* a glyph that would not rasterise */
-    const xml = pptxShapeXml(sh, id, k, ox, oy, sh.embed ? "rId" + (sh.embed + 1) : null);
+    const xml = pptxShapeXml(sh, id, k, ox, oy,
+      sh.embed ? pptxSlideRel(board, "img", sh.embed - 1) : null);
     if(xml){ parts.push(xml); id++; }
   });
   parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Title"/>' +
@@ -5835,7 +6085,8 @@ async function exportPptx(){
     expInk().replace("#", "").toUpperCase() + '"/>' +
     '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
-  return zipStore(pptxParts(parts.join(""), media, title));
+  board.body = parts.join("");
+  return zipStore(pptxParts([pptxCoverSlide(), board], title));
 }
 /* A copy of this page with the live state frozen in, so the download opens with
    the same edits and cloud provider the user is looking at. */
@@ -5853,18 +6104,53 @@ function exportHtmlDoc(){
 function exportHtml(){
   dlBlob(new Blob([exportHtmlDoc()], {type:"text/html;charset=utf-8"}), dlName("html"));
 }
-/* ---------- pdf: one landscape A4 page, written by hand ----------
+/* ---------- pdf: two landscape A4 pages, written by hand ----------
    The print dialog is the fallback, not the path: it re-lays the page out for
-   paper, which loses the fit scale and splits the board across sheets. A
-   one-page PDF holding the same lossless raster is what people expect from a
-   Download button. FlateDecode comes from CompressionStream, so no library. */
+   paper, which loses the fit scale and splits the board across sheets. A PDF
+   holding the same lossless raster is what people expect from a Download button.
+   FlateDecode comes from CompressionStream, so no library.
+
+   Page 1 is a cover: what this is, which variant of it, and a live link back to
+   the board it was exported from, because a picture in a deck goes stale and the
+   URL does not. Page 2 is the board as it stands today. */
 async function flate(u8){
   if(typeof CompressionStream === "undefined") return null;
   const s = new Blob([u8]).stream().pipeThrough(new CompressionStream("deflate"));
   return new Uint8Array(await new Response(s).arrayBuffer());
 }
-/* ( ) and \ terminate or escape a PDF literal string, so they need escaping */
-function pdfStr(t){ return String(t).replace(/([\\()])/g, "\\$&"); }
+/* The base-14 fonts are WinAnsi, and the content stream is written as raw bytes,
+   so a character outside that set would arrive as its UTF-8 pair and render as
+   mojibake. Accents are folded to ASCII and the handful of punctuation marks
+   this app actually emits are written as octal escapes. */
+const PDF_WINANSI = { "\u00a9":"\\251", "\u00ae":"\\256", "\u2018":"\\221",
+  "\u2019":"\\222", "\u201c":"\\223", "\u201d":"\\224", "\u2013":"\\226",
+  "\u2014":"\\227", "\u2022":"\\225", "\u00b7":"\\267", "\u2122":"\\231" };
+/* ( ) and \ terminate or escape a PDF literal string, so they go first: the
+   octal escapes added afterwards carry backslashes of their own. */
+function pdfStr(t){
+  return String(t).normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/([\\()])/g, "\\$&")
+    .replace(/[^\x20-\x7e]/g, ch=> PDF_WINANSI[ch] || "");
+}
+/* Helvetica is the PDF base font and it is also on the machine, so the browser
+   can measure it. Used to right-align the credit and to size the clickable
+   rectangle over a link, both of which need a width before the byte is written. */
+function pdfTextW(s, size, bold){
+  const g = (pdfTextW.ctx = pdfTextW.ctx || document.createElement("canvas").getContext("2d"));
+  g.font = (bold ? "bold " : "") + size + "px Helvetica, Arial, sans-serif";
+  return g.measureText(s).width;
+}
+function pdfWrap(s, size, max){
+  const out = [];
+  let line = "";
+  String(s).split(/\s+/).forEach(word=>{
+    const next = line ? line + " " + word : word;
+    if(line && pdfTextW(next, size) > max){ out.push(line); line = word; }
+    else line = next;
+  });
+  if(line) out.push(line);
+  return out;
+}
 async function boardPdfBlob(){
   const { canvas, w, h } = await boardCanvas(1.6);
   const px = canvas.getContext("2d").getImageData(0, 0, w, h).data;
@@ -5882,24 +6168,71 @@ async function boardPdfBlob(){
      export is dark to the paper edge instead of a dark board floating on white */
   const rg = hex=>{ const h = hex.replace("#", "");
     return [0,2,4].map(i=> (parseInt(h.slice(i, i+2), 16) / 255).toFixed(3)).join(" "); };
-  /* PDF y grows upward, so the strip sits at the top of the page */
+  const ink = rg(expInk()), mut = rg(expMuted()), brand = rg(expBrand());
+  /* /F1 bold, /F2 regular. `y` is a baseline, and PDF y grows upward. */
+  const txt = (font, size, colour, x, y, s)=>
+    "BT /" + font + " " + size + " Tf " + colour + " rg " +
+    x.toFixed(2) + " " + y.toFixed(2) + " Td (" + pdfStr(s) + ") Tj ET\n";
+
+  /* ---- page 1: the cover ---- */
+  const CM = 54;                                     /* cover margin, points */
+  const links = coverLinks();
+  const cover = [];
+  const annots = [];
+  cover.push(rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n");
+  let y = PH - 132;
+  cover.push(txt("F2", 11, mut, CM, y, "Databricks Data Intelligence Platform"));
+  y -= 40;
+  cover.push(txt("F1", 27, ink, CM, y, docTitle()));
+  y -= 26;
+  cover.push(txt("F2", 11.5, mut, CM, y, coverMeta()));
+  const sub = ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 11.5, PW - CM * 2).slice(0, 2) : [];
+  sub.forEach(line=>{ y -= 17; cover.push(txt("F2", 11.5, mut, CM, y, line)); });
+  y -= 26;
+  cover.push(mut + " RG 0.7 w " + CM + " " + y.toFixed(2) + " m " +
+    (PW - CM) + " " + y.toFixed(2) + " l S\n");
+  links.forEach(row=>{
+    y -= 30;
+    cover.push(txt("F1", 9, mut, CM, y, row.label));
+    y -= 17;
+    cover.push(txt("F2", 11.5, brand, CM, y, row.url));
+    /* The rectangle is sized from the measured string rather than the column so
+       the hand cursor appears over the URL and not over the empty half of the
+       page beside it. */
+    const lw = pdfTextW(row.url, 11.5);
+    annots.push("<</Type/Annot/Subtype/Link/Border[0 0 0]/Rect[" +
+      (CM - 2).toFixed(2) + " " + (y - 4).toFixed(2) + " " +
+      (CM + lw + 2).toFixed(2) + " " + (y + 12).toFixed(2) +
+      "]/A<</Type/Action/S/URI/URI(" + pdfStr(row.url) + ")>>>>");
+  });
+  const cred = creditText();
+  cover.push(txt("F2", 9, mut, PW - CM - pdfTextW(cred, 9), CM, cred));
+  const coverStream = enc.encode(cover.join(""));
+
+  /* ---- page 2: the board as it stands ---- */
   const content = enc.encode(
     rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n" +
     "q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " +
     dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n" +
-    "BT /F1 14 Tf " + rg(expInk()) + " rg " + M + " " + (PH - M - 14) + " Td (" +
-    pdfStr(docTitle()) + ") Tj ET\n");
+    txt("F1", 14, ink, M, PH - M - 14, docTitle()));
   const objs = [
     enc.encode("<</Type/Catalog/Pages 2 0 R>>"),
-    enc.encode("<</Type/Pages/Kids[3 0 R]/Count 1>>"),
+    enc.encode("<</Type/Pages/Kids[3 0 R 4 0 R]/Count 2>>"),
+    /* Annotations are written inline: they are read once, by the viewer, and a
+       numbered object each would only lengthen the table. */
     enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH +
-      "]/Resources<</XObject<</Im0 4 0 R>>/Font<</F1 7 0 R>>>>/Contents 5 0 R>>"),
+      "]/Resources<</Font<</F1 9 0 R/F2 10 0 R>>>>/Contents 5 0 R" +
+      (annots.length ? "/Annots[" + annots.join("") + "]" : "") + ">>"),
+    enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH +
+      "]/Resources<</XObject<</Im0 6 0 R>>/Font<</F1 9 0 R/F2 10 0 R>>>>/Contents 7 0 R>>"),
+    { dict:"<</Length " + coverStream.length + ">>", stream:coverStream },
     { dict:"<</Type/XObject/Subtype/Image/Width " + w + "/Height " + h +
       "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>",
       stream:img },
     { dict:"<</Length " + content.length + ">>", stream:content },
     enc.encode("<</Title (" + pdfStr(docTitle()) + ")/Producer (Databricks Reference Architecture)>>"),
     enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>"),
+    enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>"),
   ];
   const parts = [], offs = [];
   let len = 0;
@@ -5915,7 +6248,7 @@ async function boardPdfBlob(){
   const xref = len;
   let x = "xref\n0 " + (objs.length+1) + "\n0000000000 65535 f \n";
   offs.forEach(o=> x += String(o).padStart(10, "0") + " 00000 n \n");
-  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info 6 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
+  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info 8 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
   push(enc.encode(x));
   return new Blob(parts, {type:"application/pdf"});
 }
@@ -6319,7 +6652,38 @@ window.addEventListener("resize", scheduleFit);
 /* content height changes on every rebuild, tab switch and edit */
 new ResizeObserver(scheduleFit).observe(document.querySelector(".board"));
 
-build();
+/* The other half of liveUrl(): a link written into an exported PDF or deck has
+   to reopen the board it was exported from. Nothing here is remembered, because
+   following somebody's link is looking at their diagram, not adopting it as your
+   own default. Returns whether it has already rebuilt, so the boot build below
+   does not run twice on a deep link. */
+function seedFromUrl(){
+  let q;
+  try { q = new URLSearchParams(location.search); } catch(e){ return false; }
+  if(!q.toString()) return false;
+  /* Shape is body classes, so they are written the way seedView writes them.
+     Going through applyShape would rebuild here and then again below. */
+  const s = SHAPES.find(x=> x.k === q.get("shape"));
+  if(s){
+    const b = document.body;
+    SHAPES.forEach(x=> b.classList.remove("shape-" + x.k));
+    ["ul-top","ul-bot","ul-both","ur-top","ur-bot","ur-both"].forEach(c=> b.classList.remove(c));
+    b.classList.add("shape-" + s.k, "ul-" + s.ul, "ur-" + s.ur);
+    paintShapeMenu();
+  }
+  const cp = q.get("cloud");
+  if(cp && ARCH.cloud.providers[cp]){ ARCH.cloud.provider = cp; paintSeg(); }
+  if(q.get("platform") === "1"){
+    document.body.classList.add("plat-only");
+    syncPlatMax(true);
+  }
+  /* Last, because it is the only one that rebuilds. An unknown or unbuilt id is
+     ignored rather than blanking the board: a stale link should still open. */
+  const ind = q.get("industry");
+  if(ind && (ind === "generic" || INDUSTRIES[ind])){ applyIndustry(ind, false); return true; }
+  return false;
+}
+if(!seedFromUrl()) build();
 fitBoard();
 restoreActiveTab();
 </script>

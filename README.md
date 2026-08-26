@@ -31,8 +31,13 @@ IDEA is the same architecture as a live document:
   party in the middle.
 - **Release stage is a filter.** Show GA only for a procurement conversation, or
   add Beta and the previews for a roadmap one.
-- **It exports.** PDF, PowerPoint with native editable shapes, PNG, an animated
-  GIF that keeps the flow moving, and a standalone HTML copy.
+- **Industry is a switch too.** Forty industries, each one specialising the
+  sources, ingestion, teams, apps, use cases and consumers, with the medallion
+  layers pointing at that industry's own data model.
+- **It exports, and the export points back.** PDF and PowerPoint open on a cover
+  carrying the title and a link to the exact live board the file was made from,
+  with the architecture on the second page. Plus PNG, an animated GIF that keeps
+  the flow moving, and a standalone HTML copy.
 
 ![IDEA in dark theme](docs/screenshot-dark.png)
 
@@ -71,7 +76,7 @@ on the diagram itself.
 
 | Control | What it does |
 |---|---|
-| **Industry** | Specialises everything outside the platform for one industry: sources, ingestion, teams, apps, use cases and consumers. Searchable. The platform itself and the cloud services band do not change |
+| **Industry** | Forty industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
 | **Dark / Light** | Follows the operating system by default, and remembers an explicit choice. Downloads follow whatever is on screen |
 | **Palette** | Thirteen colour schemes in three groups |
@@ -84,6 +89,26 @@ Everything that acts on a diagram goes inert on a tab that has no diagram yet,
 so the toolbar cannot be used against nothing. Dark/Light and Cloud stay live,
 because they are global and are the two things worth setting before a diagram
 exists.
+
+Every one of those choices is also a URL parameter, so a board can be linked to
+in the state it was read in: `?industry=airlines&cloud=aws&shape=h90&pal=nordic&theme=light&platform=1`.
+That is the link the PDF and PowerPoint covers carry.
+
+### Industry: forty models, and the same board size for each
+
+The industry list is the
+[Databricks Industry Data Models](https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/data-models)
+catalogue. Picking one rewrites the four zones outside the platform, and the
+medallion layers start pointing at that industry's own folder in the repository.
+
+An industry board is held to the reference board's height, which matters more
+than it sounds: the board is scaled to fit, so one industry carrying a few more
+tiles than the rest would render every label in that industry smaller. Teams and
+ingestion each get a fixed pocket, eight tiles and three groups, and industry
+content is written to that budget rather than allowed to grow past it.
+`tools/heightgate.py` measures every industry against the reference in all five
+shapes and fails on a board that is taller, a label that is clipped, or a label
+that only fits by wrapping.
 
 ### Style: five platform shapes
 
@@ -152,11 +177,17 @@ reading is the honest one in front of a customer.
 
 | Format | What you get |
 |---|---|
-| **PDF** | One page, vector text, sized to the diagram, in the current theme and palette |
-| **PowerPoint** | Native shapes, text boxes and connectors, editable in PowerPoint. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not |
+| **PDF** | Two A4 landscape pages: a cover with the title, the industry and cloud, the sentence the board leads with, and clickable links to the exact live board and to the industry's data model; then the architecture, vector text, in the current theme and palette |
+| **PowerPoint** | The same two, as a cover slide and a board slide. The board is native shapes, text boxes and connectors, editable in PowerPoint. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not |
 | **PNG** | 2x raster of the current view |
 | **GIF** | A looping animation, 1400px wide, twelve frames, that keeps the travelling dashes and the platform ring moving. Roughly 200 KB, because only the moving pixels are stored per frame, in the palette and theme on screen |
 | **HTML** | A standalone copy of the page with your current choices baked in, which opens anywhere with no server |
+
+Every download is named for what is in it, so a folder of them stays readable:
+`databricks-airlines-reference-architecture.pdf`, and `-platform` on the end when
+the platform zoom is on. The board carries
+*(C) Databricks Industry Solutions* in its bottom right corner, on screen and in
+every export.
 
 ![The animated GIF export](docs/idea-animated.gif)
 
@@ -177,9 +208,16 @@ Click any box.
 | **Learn more** | Cloud-specific documentation, the cloud vendor's own page, the product page, and a blog or deep dive |
 | **Related** | The boxes it touches, which highlight on the diagram and are one click away |
 
-The three medallion layers each open the
-[Databricks Industry Data Models](https://github.com/databricks-industry-solutions/lakehouse-industry-data-models)
-repository, the
+A Teams tile reads a little differently, because a team is not a product: the
+panel names the team, says what it is accountable for, and then lists the
+platform surfaces it actually works in with one line each on what it uses them
+for. Those surface names are clickable, so the panel is a route into the diagram
+rather than a description beside it.
+
+The three medallion layers open the data model for the industry on screen, so on
+an airline board that is the
+[airlines model](https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/data-models/airlines)
+rather than the catalogue root. They also open the
 [launch blog](https://www.databricks.com/blog/jumpstart-your-data-modeling-databricks-industry-data-models),
 the
 [Vibe Data Modeling blog](https://www.databricks.com/blog/reimagining-data-modeling-lakehouse-introducing-vibe-data-modeling)
@@ -197,16 +235,18 @@ a tab of your own, renamed by double-click and closed with its own x. The strip
 scrolls horizontally with arrows on whichever side has more to show, so adding
 tabs never pushes the toolbar off the right edge.
 
-A tab of your own opens a builder: a description of the customer, their use
-cases, sources and consumers, plus the cloud to draw it on.
+A tab of your own says **Coming Soon**, and nothing else. Describing a customer
+in words and having this architecture drawn for them is not implemented, so the
+tab offers no form to fill in: a form that collects a description and then
+answers "no model is connected" reads as a broken feature rather than an unbuilt
+one.
 
-**The generator is not connected to a model.** `buildFromDescription()` in
-`app/index.html` is a single documented hook that is handed everything a model
-would need and everything it has to write back, and it currently answers with a
-notice saying so. Wiring an LLM to it is one function, and nothing else in the
-file has to change. The editing engine behind it (add, rename, remove and
-re-parent boxes) is in the file and working, but has no button in the header
-today: it is reached from a generated diagram, not from the reference one.
+Where the work goes when it happens is marked in `app/index.html`: a tab already
+holds a name and a description, and generating means producing the same shape as
+`ARCH` (bands, rails, top, cloud), assigning it, and calling `build()` and
+`fitBoard()`. The editing engine behind that (add, rename, remove and re-parent
+boxes) is in the file and working, reached from a generated diagram rather than
+from the reference one.
 
 What is remembered between visits: theme, palette, platform shape, stage filter,
 and your tabs with their descriptions, including which one was open. The cloud
@@ -299,6 +339,9 @@ tools/
   palgen.py                generates the colour palettes with solved contrast
   markgen.py               fetches the official product marks and inlines them
   build_installer.py       generates app-installer.ipynb from readable sources
+  heightgate.py            fails a board that is taller than the reference, clipped, or wrapped
+  probe.py                 runs a JS probe against the board and prints what it measured
+  shot.py                  regenerates the screenshots and montages in docs/
 ```
 
 ---
@@ -317,9 +360,11 @@ the product descriptions, stages and links are fixed facts that have no business
 being editable.
 
 **Exports are written by hand.** The PDF, PowerPoint and GIF writers are in the
-file. Pulling in a library for each format would be more code than the formats
-need, and would put the exports behind a network fetch that a workspace with no
-internet egress would fail on.
+file: object tables and cross-reference offsets for the PDF, the parts and
+relationships of an Office package for the PPTX, both including the cover and its
+clickable links. Pulling in a library for each format would be more code than the
+formats need, and would put the exports behind a network fetch that a workspace
+with no internet egress would fail on.
 
 **Colours are solved, not chosen.** `tools/palgen.py` takes a hue recipe per
 zone and walks lightness until every foreground clears WCAG AA against the
@@ -337,6 +382,13 @@ width and then scaled to fit, and the two halves of the platform are balanced
 after the first measurement and re-measured before the scale is applied. That is
 why a shape change, a stage filter and a palette switch all land on the same
 symmetrical geometry instead of drifting a few pixels each time.
+
+**Content is written to a measured budget.** Because the board is scaled to fit,
+content and type size are the same decision: a zone that grows by one tile
+shrinks every label on the board. So the pockets are measured rather than
+guessed. `tools/probe.py` injects a probe that clones tiles into a zone until the
+board gets taller, which is how the eight-tile Teams pocket is an eight-tile
+pocket, and `tools/heightgate.py` holds every industry to it in all five shapes.
 
 ---
 
