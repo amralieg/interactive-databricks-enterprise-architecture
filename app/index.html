@@ -3574,20 +3574,34 @@ function providerTiles(key){
 /* In h90 each pocket is two boxes side by side; five tiles is the per-box cap.
    Overflow spills into the next box without changing which tiles exist. */
 const H90_TILE_CAP = 5;
+/* The People pocket sets the top half's height, so an industry with seven
+   business roles pads the whole upper block taller than its content and opens a
+   gap above the lower half. Capping the Business group to five keeps the pocket
+   short across every shape and industry. The cap is applied to the rendered
+   entries only, never to g.tiles, so edit mode still writes back to the live
+   array behind the first five tiles. */
+const PPL_BUSINESS_CAP = 5;
 function railGroupEntries(g){
   const extra = g.from ? providerTiles(g.from) : [];
   const own = g.tiles.map(tile => ({ tile, arr: g.tiles, cloudy: false }));
   const cloud = extra.map(tile => ({ tile, arr: extra, cloudy: true }));
   return g.tail ? cloud.concat(own) : own.concat(cloud);
 }
-function h90RailSlots(groups){
+function cappedRailEntries(railId, g){
+  const entries = railGroupEntries(g);
+  if(railId === "ppl" && /^business$/i.test(g.box || "") && entries.length > PPL_BUSINESS_CAP)
+    return entries.slice(0, PPL_BUSINESS_CAP);
+  return entries;
+}
+function h90RailSlots(rail){
   if(!document.body.classList.contains("shape-h90")) return null;
+  const groups = rail.groups;
   const slots = groups.map(g => ({
     box: g.box, ic: g.ic, tail: g.tail, from: g.from,
     tiles: g.tiles, entries: [], slotIdx: 0
   }));
   groups.forEach((g, gi) => {
-    const entries = railGroupEntries(g);
+    const entries = cappedRailEntries(rail.id, g);
     let si = gi;
     entries.forEach(e => {
       while(si < slots.length && slots[si].entries.length >= H90_TILE_CAP) si++;
@@ -3598,10 +3612,10 @@ function h90RailSlots(groups){
   return slots;
 }
 function renderRail(rail, target){
-  const h90 = (rail.id === "ing" || rail.id === "ppl") ? h90RailSlots(rail.groups) : null;
+  const h90 = (rail.id === "ing" || rail.id === "ppl") ? h90RailSlots(rail) : null;
   const slots = h90 || rail.groups.map(g => ({
     box: g.box, ic: g.ic, tail: g.tail, from: g.from,
-    tiles: g.tiles, entries: railGroupEntries(g)
+    tiles: g.tiles, entries: cappedRailEntries(rail.id, g)
   }));
   slots.forEach((slot, gi) => {
     if(!slot.entries.length) return;
