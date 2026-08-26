@@ -1,0 +1,245 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl_rail2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles instead of shared TECH_PPL."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles},
+    ]
+
+
+INDUSTRIES_BATCH_MANUFACTURING = {
+    'manufacturing': {
+        "label": "Manufacturing",
+        "blurb": "Discrete and process manufacturing: ERP and MES shop-floor execution, quality and traceability, supply chain planning, and asset maintenance.",
+        "medallion": medallion(
+            "Raw plant feeds",
+            "ERP production orders, MES cycle and downtime events, SCADA historian tags, quality inspection results and supplier ASNs, landed exactly as received so a lot or a downtime code can always be replayed as it stood.",
+            "Conformed order, lot",
+            "Work orders, lots, equipment and materials resolved into single conformed entities across ERP, MES and quality estates, with serial and batch genealogy reconciled and multi-site BOM revisions stitched to one product definition.",
+            "OEE, yield, OTIF",
+            "Contracted products operations and supply chain leaders run on: overall equipment effectiveness by line, first-pass yield and scrap, on-time-in-full to customer promise, and maintenance cost per unit produced.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "ERP & Planning", "ic": "erp", "tiles": [
+                        tile("SAP S/4HANA", "erp", "Manufacturing orders, BOMs, routings, inventory and financial postings. The system of record for what was planned to be made and what was consumed.", "sap-s4"),
+                        tile("Oracle SCM Cloud", "erp", "Supply planning, work definitions and costed transactions for plants on the Oracle manufacturing estate.", "oracle-scm"),
+                        tile("Kinaxis Maestro", "sheet", "Concurrent S&OP scenarios, constraint-based planning and what-if responses when a supplier or line goes down.", "kinaxis"),
+                    ]},
+                {"box": "MES & Shop Floor", "ic": "stream", "tiles": [
+                        tile("Siemens Opcenter", "stream", "Work instructions, cycle counts, downtime reason codes and WIP status from the MES the operators work in.", "opcenter"),
+                        tile("Rockwell FactoryTalk", "iot", "Line state, OEE counters and recipe execution from Allen-Bradley controlled assets.", "factorytalk"),
+                        tile("AVEVA MES", "db", "Batch records, electronic batch tickets and equipment logbooks for process manufacturing sites.", "aveva-mes"),
+                    ]},
+                {"box": "Quality & PLM", "ic": "gavel", "tiles": [
+                        tile("PTC Windchill", "product", "Engineering BOMs, change orders and approved drawings the shop floor must build to.", "windchill"),
+                        tile("MasterControl QMS", "gavel", "Non-conformance, CAPA and audit findings tied to lots and suppliers.", "mastercontrol"),
+                        tile("ETQ Reliance", "gavel", "Inspection plans, SPC results and supplier quality scorecards for regulated industries.", "etq"),
+                    ]},
+                {"box": "IoT & Historians", "ic": "iot", "tiles": [
+                        tile("AVEVA PI System", "iot", "High-frequency sensor and actuator tags from lines, utilities and environmental systems.", "aveva-pi"),
+                        tile("AspenTech IP.21", "stream", "Process historian data for batch analytics, energy intensity and abnormal event detection.", "aspen-ip21"),
+                        tile("Machine Vision QC", "observ", "Inline defect images and measurement vectors joined to lot and serial for root-cause analysis."),
+                    ]},
+                fed_group("Corporate Data Warehouse", "Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations."),
+            ],
+            "ing": ing_rail([
+                tile("OPC-UA Plant Gateway", "iot", "Shop-floor protocol bridges normalising PLC and robot telemetry on ingest before historian landing.", "opc-ua"),
+                tile("EDI ASN / DESADV", "api", "Supplier advance ship notices and delivery confirmations parsed into structured receipt events.", "edi-asn"),
+                tile("GS1 EPCIS Events", "stream", "Serialised product movement events for track-and-trace across plants, DCs and customers.", "gs1-epcis"),
+            ]),
+            "ppl": ppl_rail2([
+                biz("Plant Leadership", "Genie One", "The plant manager and VP operations on OEE by line, cost per unit produced and OTIF service level when a line stalls or a key supplier slips.", [["Genie One", "Ask what yesterday's scrap cost or which customer orders are at risk without waiting on manufacturing IT."], ["AI/BI", "OEE, yield and OTIF on one certified set of Metric Views."], ["Unity Catalog", "Certification and the business glossary, so \"downtime\" means one thing across plants."]],
+                    sub=[
+                        ["Plant Manager", "daily OEE, downtime cost and hitting the production plan across every line."],
+                        ["VP Operations", "cost per unit, safety and the capital case for new capacity."],
+                        ["Continuous Improvement", "the loss buckets and the Kaizen backlog that lift throughput."],
+                    ],
+                    ucs=["OEE & Downtime", "Energy Intensity", "Yield Optimisation"]),
+                biz("Production & Scheduling", "AI/BI", "Finite scheduling, changeover sequencing and labour loading against orders commercial already promised, watched on schedule adherence and WIP ageing.", [["Production Scheduler", "Sequence and changeover plans scored before the shift board posts."], ["AI/BI", "Schedule adherence and WIP ageing on governed definitions."], ["Lakehouse//RT", "Live line state at the latency a bottleneck moves at."]],
+                    sub=[
+                        ["Master Scheduler", "finite sequencing and changeover order against the dates commercial promised."],
+                        ["Shift Supervisor", "the shift board, labour loading and WIP ageing on the floor."],
+                        ["Production Planner", "the NPI ramp and cut-over from pilot to volume."],
+                    ],
+                    ucs=["OEE & Downtime", "New Product Intro", "Digital Work Instructions"]),
+                biz("Quality & Compliance", "Model Serving", "Lot release, SPC violations and supplier corrective actions scored on first-pass yield and non-conformance rate before product leaves the site.", [["Quality Cockpit", "Hold and release decisions with genealogy back to supplier lot."], ["Model Serving", "Defect and drift models scored on inline vision and SPC signals."], ["Unity Catalog", "One definition of non-conformance across MES and QMS."]],
+                    sub=[
+                        ["Quality Manager", "first-pass yield, SPC violations and lot release before shipment."],
+                        ["Regulatory Affairs", "FDA and ISO lot genealogy and the audit trail behind a recall."],
+                        ["Supplier Quality", "non-conformance and corrective action across the supplier base."],
+                    ],
+                    ucs=["Yield Optimisation", "Genealogy & Recall", "Digital Work Instructions"]),
+                biz("Supply Chain", "AI/BI", "S&OP, inventory positioning and supplier OTIF when lead times stretch, balancing inventory turns against the customer service level finance commits.", [["Supply Control Tower", "Shortages and expedites costed across alternate BOMs and sites."], ["AI/BI", "Inventory turns and supplier OTIF on certified Metric Views."], ["Genie One", "Ask which SKUs will stock out before the next planning cycle."]],
+                    sub=[
+                        ["S&OP Lead", "the demand-supply balance and the plan when a plant goes offline."],
+                        ["Inventory Planner", "safety stock and reorder points against real lead-time variability."],
+                        ["Procurement", "supplier OTIF and single-source concentration risk."],
+                    ],
+                    ucs=["S&OP / IBP", "Inventory Optimisation", "Supplier Risk"]),
+                biz("Maintenance & Reliability", "Lakeflow", "Planned downtime, spare parts and technician capacity tracked on MTBF and maintenance cost per unit so failures become scheduled work not line stops.", [["Maintenance Hub", "Work orders raised from predicted failures before the line stops."], ["Lakeflow", "Historian and CMMS feeds conformed for reliability analytics."], ["MLflow", "Remaining-useful-life models tracked for audit and reproduction."]],
+                    sub=[
+                        ["Reliability Engineer", "MTBF, failure modes and the remaining-life models per asset."],
+                        ["Maintenance Planner", "spare parts, technician capacity and the planned-downtime window."],
+                        ["Asset Manager", "maintenance cost per unit and the capital-repair decision."],
+                    ],
+                    ucs=["Predictive Maintenance", "OEE & Downtime", "Inventory Optimisation"]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land the ERP order, MES cycle, SCADA historian and supplier ASN feeds; own the Bronze to Silver path and the pager when a plant pipeline breaks.", [["Lakeflow Connect", "Managed connectors for SAP, Opcenter MES and quality sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on downtime and inspection feeds."], ["Lakewatch", "Freshness on the OEE and inventory tables the shift board reads each morning."]],
+                    sub=[
+                        ["Platform Data Engineer", "the Bronze-to-Silver path for ERP, MES and historian feeds."],
+                        ["Streaming Engineer", "OPC-UA and SCADA telemetry landed at line latency."],
+                        ["Pipeline On-call", "freshness on the OEE and inventory tables the shift board reads."],
+                    ],
+                    ucs=["OEE & Downtime", "Predictive Maintenance", "Genealogy & Recall"]),
+                biz("Data Scientists", "MLflow", "First-pass yield, remaining-useful-life, demand and defect-vision models, and whether they still hold six months after deployment on the floor.", [["Feature Store", "Historian and SPC features read identically in training and serving."], ["MLflow", "Every yield and RUL run tracked for audit and reproduction."], ["Model Serving", "Defect and failure models scored on inline vision and SPC signals."]],
+                    sub=[
+                        ["Reliability Data Scientist", "remaining-useful-life and anomaly models on historian data."],
+                        ["Quality Data Scientist", "defect-vision and first-pass-yield models on inline signals."],
+                        ["Demand Scientist", "demand and inventory models across plants and SKUs."],
+                    ],
+                    ucs=["Predictive Maintenance", "Yield Optimisation", "Inventory Optimisation"]),
+                biz("App Developers", "Apps", "Ship the plant performance, quality cockpit and maintenance applications operators and planners work in, hosted next to governed shop-floor data.", [["Apps", "Operational screens with no separate web tier to run or secure."], ["Lakebase", "Serverless Postgres for work-order state and governed writes."], ["Agent Bricks", "Agents that draft a maintenance work order against governed tools."]],
+                    sub=[
+                        ["Apps Developer", "the plant, quality and maintenance screens over governed data."],
+                        ["Lakebase Engineer", "work-order and hold-release state with governed writes."],
+                        ["Agent Developer", "agents that draft a work order against governed tools."],
+                    ],
+                    ucs=["Predictive Maintenance", "Genealogy & Recall", "OEE & Downtime"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                        tile("Tableau / Qlik / ThoughtSpot", "chart", "External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end."),
+                        tile("Microsoft Teams", "chat", "Genie in Teams for Unity Catalog-governed answers from the lakehouse and floor andon updates in the channel the plant already works in (Beta)."),
+                        tile("Notebooks & IDEs", "notebook", "Notebooks, VS Code and JetBrains against governed data and Genie Code."),
+                    ]},
+                {"box": "Plant & ERP", "ic": "opdb", "tiles": [
+                        tile("SAP Order Confirmation", "db", "Production confirmations and component backflush written back into ERP so finance sees reality.", "sap-s4"),
+                        tile("MES Recipe Download", "stream", "Approved recipes and work instructions pushed to lines after engineering change release.", "opcenter"),
+                        tile("CMMS Work Orders", "erp", "Predicted failures raised as maintenance work orders the technician crew already schedules."),
+                    ]},
+                {"box": "Customers & Suppliers", "ic": "partner", "tiles": [
+                        tile("Customer ASN Portal", "api", "Shipment and lot certificates served to OEM customers from governed genealogy rather than emailed spreadsheets.", "gs1-epcis"),
+                        tile("Supplier Scorecards", "share", "OTIF and quality metrics shared to tier-one suppliers over Delta Sharing.", "edi-asn"),
+                        tile("Contract Manufacturer", "globe", "Co-man sites reading BOM and quality limits live instead of nightly flat files."),
+                    ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                        tile("FDA / ISO Lot Trace", "gavel", "Lot genealogy and deviation records produced from the same governed tables production runs on.", "mastercontrol"),
+                        tile("Carbon & ESG Reporting", "share", "Scope 1 and 2 intensity filed from contracted Gold products for buyer sustainability programs."),
+                    ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Sharing Recipients", "share", "Customers, co-mans and auditors reading live tables with no copy and no egress duplication."),
+                    ]},
+            ]),
+        },
+        "top": top_band(
+            [
+                app("Plant Performance", "Live OEE", "gauge", "The screen the shift supervisor runs the day from: downtime pareto, scrap by reason and orders at risk, on Databricks Apps over Lakebase."),
+                app("Quality Cockpit", "Hold and release", "gavel", "Lot status, SPC violations and supplier genealogy on one surface before product ships."),
+                app("Supply Control Tower", "Shortage response", "sheet", "Component shortages and alternate sourcing costed before customer OTIF is missed."),
+                app("Maintenance Hub", "Asset health", "iot", "Predicted failures and spare parts by line so downtime becomes a planned window."),
+            ],
+            [
+                uc("Predictive Maintenance", "Reliability", "iot", "Component failure predicted from historian and vibration signals before the line stops.",
+                    problem="Failures surface only when a line stops, and the historian and vibration signals that would have warned days earlier sit unused in a plant historian nobody queries.",
+                    who="Maintenance & Reliability",
+                    how="Historian and vibration signals feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Maintenance Hub before the line stops.",
+                    comps=["Maintenance Hub", "AVEVA PI System", "Model Serving", "MLflow", "Lakehouse//RT"],
+                    stories=[
+                        ["Rolls-Royce keeps their engines running with data intelligence", "https://www.databricks.com/customers/rolls-royce"],
+                        ["What is predictive maintenance on the Databricks platform", "https://www.databricks.com/blog/what-is-predictive-maintenance"],
+                    ]),
+                uc("OEE & Downtime", "Throughput", "gauge", "Loss buckets by line and shift attacked with pareto evidence rather than anecdote.",
+                    problem="Downtime and loss are argued from shift anecdote and manual spreadsheets, so the real pareto by line and shift stays invisible and the same losses recur quarter after quarter.",
+                    who="Plant Leadership",
+                    how="FactoryTalk and Opcenter line state land in Lakehouse//RT and are conformed on Delta Lake, so Plant Performance shows loss buckets by line and shift on certified AI/BI Metric Views.",
+                    comps=["Plant Performance", "Rockwell FactoryTalk", "Siemens Opcenter", "AI/BI", "Lakehouse//RT"],
+                    stories=[
+                        ["What is Overall Equipment Effectiveness (OEE)?", "https://www.databricks.com/blog/what-is-overall-equipment-effectiveness"],
+                        ["Solution Accelerator: Multi-factory OEE and KPI monitoring", "https://www.databricks.com/blog/2022/11/29/solution-accelerator-multi-factory-overall-equipment-effectiveness.html"],
+                    ]),
+                uc("S&OP / IBP", "Planning", "sheet", "Demand, supply and inventory balanced when a plant or supplier goes offline mid-quarter.",
+                    problem="Demand, supply and inventory live in separate ERP and planning tools, so when a plant or supplier goes offline mid-quarter the replan is a spreadsheet scramble finance cannot trust.",
+                    who="Supply Chain",
+                    how="Kinaxis and SAP demand, supply and inventory feeds are conformed on Delta Lake and balanced in the Supply Control Tower, on the certified AI/BI Metric Views the S&OP cycle runs on.",
+                    comps=["Supply Control Tower", "Kinaxis Maestro", "SAP S/4HANA", "AI/BI", "Delta Lake"],
+                    stories=[
+                        ["What is supply chain management on Databricks", "https://www.databricks.com/blog/what-is-supply-chain-management"],
+                        ["How DuPont achieved 11x latency reduction with Photon", "https://www.databricks.com/blog/how-dupont-achieved-11x-latency-reduction-and-4x-cost-reduction-photon"],
+                    ]),
+                uc("Genealogy & Recall", "Traceability", "product", "Every serial traced from supplier lot through WIP to customer shipment in minutes not days.",
+                    problem="When a defect escapes, tracing every affected serial from supplier lot through WIP to customer shipment takes days of manual joins across MES, ERP and quality systems while risk grows.",
+                    who="Quality & Compliance",
+                    how="EPCIS movement events and QMS records are conformed under Unity Catalog on Delta Lake, so the Quality Cockpit resolves full serial and lot genealogy in minutes for a targeted recall.",
+                    comps=["Quality Cockpit", "GS1 EPCIS Events", "MasterControl QMS", "Unity Catalog", "Delta Lake"]),
+                uc("Yield Optimisation", "Scrap reduction", "chart", "Recipe and parameter sets scored on first-pass yield using historian and quality history.",
+                    problem="Scrap and first-pass-yield loss is diagnosed after the fact, and the recipe, parameter and inline-inspection history that would explain it sits scattered across historians and quality tools.",
+                    who="Quality & Compliance",
+                    how="Machine-vision and SPC signals become features in Feature Store scored by Model Serving and tracked in MLflow, so the Quality Cockpit ties parameter sets to first-pass yield.",
+                    comps=["Quality Cockpit", "Machine Vision QC", "Model Serving", "MLflow", "Feature Store"],
+                    stories=[
+                        ["How Corning built end-to-end ML on Databricks", "https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html"],
+                        ["IoT in manufacturing: strategy, components and use cases", "https://www.databricks.com/blog/iot-in-manufacturing"],
+                    ]),
+                uc("Energy Intensity", "Sustainability", "stream", "kWh per unit by line and product for carbon reporting and cost reduction.",
+                    problem="Energy is billed at the meter and the site, not the line or product, so nobody can see kWh per unit or act on the biggest intensity offenders for cost or carbon reporting.",
+                    who="Plant Leadership",
+                    how="PI System and IP.21 tags are conformed on Delta Lake and modelled to kWh per unit by line and product, surfaced in Plant Performance and certified AI/BI views for ESG and cost.",
+                    comps=["Plant Performance", "AVEVA PI System", "AspenTech IP.21", "AI/BI", "Delta Lake"],
+                    stories=[
+                        ["How Tata Steel is shifting manufacturing toward sustainability", "https://www.databricks.com/blog/2022/08/02/how-tata-steel-is-shifting-global-manufacturing-and-production-toward-sustainability.html"],
+                    ]),
+                uc("Supplier Risk", "Resilience", "partner", "Single-source and geographic concentration surfaced before a port or plant disruption.",
+                    problem="Single-source parts and geographic concentration only become visible after a port, plant or supplier disruption has already stopped a line and there is no time left to qualify an alternate.",
+                    who="Supply Chain",
+                    how="EDI ASN and SAP supplier data are conformed on Delta Lake, so the Supply Control Tower scores concentration and OTIF risk and Genie One answers which parts are exposed before disruption.",
+                    comps=["Supply Control Tower", "EDI ASN / DESADV", "SAP S/4HANA", "AI/BI", "Genie One"],
+                    stories=[
+                        ["Smarter supply chains with data and AI", "https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management"],
+                    ]),
+                uc("Digital Work Instructions", "Quality", "notebook", "Operator guidance version-controlled and joined to defect outcomes by step.",
+                    problem="Operators build to PDFs and tribal knowledge that drift from the current engineering revision, and there is no link back from a defect to the exact instruction or step that produced it.",
+                    who="Quality & Compliance",
+                    how="Opcenter work instructions and Windchill revisions are governed under Unity Catalog and served through Apps, with AI Functions joining each step to its defect outcome for the line.",
+                    comps=["Siemens Opcenter", "PTC Windchill", "Apps", "Unity Catalog", "AI Functions"]),
+                uc("Inventory Optimisation", "Working capital", "market", "Safety stock and reorder points tuned to actual lead-time variability not policy tables.",
+                    problem="Safety stock and reorder points are set from static policy tables, so the same network carries too much of the wrong stock and still stocks out when lead times actually vary.",
+                    who="Supply Chain",
+                    how="SAP and Oracle SCM demand and lead-time data are conformed on Delta Lake and scored in Model Serving, so the Supply Control Tower tunes safety stock to real variability on AI/BI views.",
+                    comps=["Supply Control Tower", "SAP S/4HANA", "Oracle SCM Cloud", "Model Serving", "AI/BI"],
+                    stories=[
+                        ["Mondelez facilitates model experimentation at enterprise scale", "https://www.databricks.com/customers/mondelez"],
+                        ["Databricks announces Lakehouse for Manufacturing", "https://www.databricks.com/company/newsroom/press-releases/databricks-announces-lakehouse-manufacturing-empowering-worlds"],
+                    ]),
+                uc("New Product Intro", "NPI", "product", "Pilot builds scored on ramp yield and cost before volume cut-over.",
+                    problem="New products ramp on gut feel, with pilot-build yield, cost and process capability trapped in disconnected systems, so volume cut-over happens before anyone knows the line will hold.",
+                    who="Production & Scheduling",
+                    how="Windchill change and Opcenter pilot-build data are conformed on Delta Lake and scored with Model Serving tracked in MLflow, so ramp yield and cost are read in AI/BI before volume cut-over.",
+                    comps=["PTC Windchill", "Siemens Opcenter", "Model Serving", "MLflow", "AI/BI"]),
+            ],
+        ),
+        "sources": {
+            "sap-s4": {"t": "SAP S/4HANA", "u": "https://www.sap.com/products/erp/s4hana.html"},
+            "oracle-scm": {"t": "Oracle SCM Cloud", "u": "https://www.oracle.com/scm/manufacturing/"},
+            "kinaxis": {"t": "Kinaxis Maestro", "u": "https://www.kinaxis.com/"},
+            "opcenter": {"t": "Siemens Opcenter MES", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
+            "factorytalk": {"t": "Rockwell FactoryTalk", "u": "https://www.rockwellautomation.com/en-us/products/software/factorytalk.html"},
+            "aveva-mes": {"t": "AVEVA MES", "u": "https://www.aveva.com/en/products/manufacturing-execution-system/"},
+            "windchill": {"t": "PTC Windchill", "u": "https://www.ptc.com/en/products/windchill"},
+            "mastercontrol": {"t": "MasterControl QMS", "u": "https://www.mastercontrol.com/"},
+            "etq": {"t": "ETQ Reliance", "u": "https://www.etq.com/"},
+            "aveva-pi": {"t": "AVEVA PI System", "u": "https://www.aveva.com/en/products/pi-system/"},
+            "aspen-ip21": {"t": "AspenTech IP.21", "u": "https://www.aspentech.com/en/products/ip21"},
+            "opc-ua": {"t": "OPC Unified Architecture", "u": "https://opcfoundation.org/about/opc-technologies/opc-ua/"},
+            "edi-asn": {"t": "GS1 EDI DESADV", "u": "https://www.gs1.org/standards/edi"},
+            "gs1-epcis": {"t": "GS1 EPCIS", "u": "https://www.gs1.org/standards/epcis"},
+        },
+    },
+}

@@ -1,0 +1,258 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles (never common.TECH_PPL)."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles[:3]},
+    ]
+
+
+INDUSTRIES_BATCH_CHEMICAL_MFG = {
+    'chemical_mfg': {
+        "label": "Chemical Manufacturing",
+        "blurb": "Process manufacturing: batch recipes, plant operations, quality labs, regulatory compliance, and global supply chains for specialty and commodity chemicals.",
+        "medallion": medallion(
+            "Raw historian and LIMS feeds",
+            "DCS tags, lab results, SAP postings and SDS documents landed exactly as received for batch genealogy replay.",
+            "Conformed batches and materials",
+            "Batches, materials, equipment and customers resolved across MES, ERP and LIMS.",
+            "Yield, OEE, compliance",
+            "Contracted products operations and EHS run on: batch yield, OEE, CoA compliance and emissions intensity.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "ERP & Supply", "ic": "erp", "tiles": [
+                    tile("SAP S/4HANA PP-PI", "erp", "Recipes, batch records, inventory and costing.", "sap-pppi"),
+                    tile("Oracle Process Mfg", "erp", "Formula management, lot traceability and planning.", "oracle-pm"),
+                    tile("AspenTech Supply", "sheet", "Planning, scheduling and network optimization.", "aspentech"),
+                ]},
+                {"box": "MES & Historian", "ic": "iot", "tiles": [
+                    tile("AVEVA PI System", "iot", "Historian tags, events and asset framework.", "aveva-pi"),
+                    tile("Honeywell Uniformance", "stream", "DCS data, alarms and batch phase records.", "honeywell"),
+                    tile("Siemens Opcenter PSM", "zplug", "Electronic batch records and equipment logs.", "opcenter-psm"),
+                ]},
+                {"box": "Quality & LIMS", "ic": "gavel", "tiles": [
+                    tile("LabWare LIMS", "gavel", "Sample plans, results and CoA release.", "labware"),
+                    tile("LIMS", "product", "QC testing, stability and method compliance.", "samplemanager"),
+                    tile("Sphera Product Steward", "gavel", "SDS, REACH and hazard classifications.", "sphera"),
+                ]},
+                {"box": "Maintenance", "ic": "zplug", "tiles": [
+                    tile("IBM Maximo", "zplug", "Work orders, PM schedules and spare parts.", "maximo"),
+                    tile("SAP PM", "erp", "Notification, maintenance plans and reliability.", "sap-pm"),
+                ]},
+                {"box": "Logistics", "ic": "stream", "tiles": [
+                    tile("SAP TM", "stream", "Bulk tank scheduling and dangerous goods routing.", "sap-tm"),
+                    tile("ORBCOMM Tank Monitoring", "iot", "Iso tank level and temperature telemetry.", "orbcomm"),
+                ]},
+                fed_group("Corporate Finance Mart", "Transfer pricing and segment P&L marts queried in place under Unity Catalog."),
+            ],
+            "ing": ing_rail([
+                tile("ECHA REACH", "gavel", "Registration dossiers and substance volumes.", "echa"),
+                tile("EPA TRI Reporting", "gavel", "Toxic release inventory thresholds and submissions.", "epa-tri"),
+                tile("ICIS Pricing", "market", "Commodity chemical price assessments by region.", "icis"),
+            ]),
+            "ppl": ppl2([
+                biz("CEO & EHS Council", "Genie One",
+                    "The CEO on margin per ton and capacity utilization; the EHS officer on process-safety incident rate and emissions intensity.",
+                    [["Genie One", "Ask what last month's yield was by plant."], ["AI/BI", "OEE and margin on certified Metric Views."], ["Unity Catalog", "One batch definition across MES and ERP."]],
+                    sub=[
+                        ["CEO", "margin per ton, capacity utilization and the trade between growth and asset risk."],
+                        ["EHS Officer", "the process-safety incident rate, permits and emissions intensity across every plant."],
+                        ["Chief Sustainability Officer", "Scope 1 and 2 intensity and the credibility of what the company reports."],
+                    ],
+                    ucs=["Emissions Tracking", "Energy Optimization", "Regulatory Submissions"]),
+                biz("Plant Operations", "Lakehouse//RT",
+                    "Shift handover, batch execution and abnormal situation management, run on OEE, first-pass yield and deviation count.",
+                    [["Batch Cockpit", "Live phase progress and deviation flags."], ["Lakehouse//RT", "Historian tags at control-room latency."]],
+                    sub=[
+                        ["Plant Manager", "OEE, first-pass yield and hitting the monthly production plan safely."],
+                        ["Shift Supervisor", "batch execution, deviations and a clean handover between crews."],
+                        ["Reliability Engineer", "rotating-equipment uptime and the unplanned trips that break the plan."],
+                    ],
+                    ucs=["Predictive Maintenance", "Golden Batch", "Predictive Quality"]),
+                biz("Process Engineering", "AI/BI",
+                    "Recipe optimization, scale-up and golden batch comparison, judged on yield per batch, energy per ton and off-spec rate.",
+                    [["Golden Batch Analytics", "Deviation from reference trajectories."], ["AI/BI", "Yield and energy per batch on governed tags."]],
+                    sub=[
+                        ["Process Engineer", "yield per batch, energy per ton and closing the gap to the golden batch."],
+                        ["Scale-Up Engineer", "moving lab recipes to plant parameters without off-spec first runs."],
+                        ["Optimization Engineer", "the setpoints that lift yield and cut energy inside the safe envelope."],
+                    ],
+                    ucs=["Golden Batch", "Energy Optimization", "Recipe Scale-Up"]),
+                biz("Quality & Regulatory", "Apps",
+                    "CoA release, stability and regulatory submissions, tracked on CoA compliance, right-first-time release and REACH filing timeliness.",
+                    [["CoA Workbench", "Release decisions with full genealogy."], ["Apps", "Lab review apps on governed LIMS data."]],
+                    sub=[
+                        ["QC Manager", "CoA compliance, right-first-time release and off-spec rate."],
+                        ["Regulatory Affairs", "REACH and TRI filing timeliness and a defensible audit trail."],
+                        ["Product Steward", "SDS accuracy, hazard classification and substance volume limits."],
+                    ],
+                    ucs=["Predictive Quality", "Batch Genealogy", "Regulatory Submissions"]),
+                biz("Supply Chain", "Model Serving",
+                    "Demand allocation, tank scheduling and customer prioritization, measured on on-time-in-full, margin per ton and contract-fill rate.",
+                    [["Allocation Optimizer", "Scarce product ranked by margin and contract."], ["Model Serving", "Demand forecasts in the planning path."]],
+                    sub=[
+                        ["S&OP Planner", "allocating finite capacity to the highest-margin, contracted demand."],
+                        ["Logistics Manager", "tank levels, dangerous-goods routing and rail and vessel windows."],
+                        ["Customer Service", "on-time-in-full and contract-fill promises to key accounts."],
+                    ],
+                    ucs=["Demand Allocation", "Tank Scheduling", "Batch Genealogy"]),
+            ], [
+                biz("Data Engineers", "Lakeflow",
+                    "Land DCS historian tags, LIMS results, SAP postings and SDS documents; own Bronze to Silver and the pager when the batch and yield tables stall.",
+                    [["Lakeflow Connect", "Managed connectors for ERP, MES and LIMS sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on historian and lab feeds."], ["Lakewatch", "Freshness on the batch and yield tables the control room reads."]],
+                    sub=[
+                        ["OT & Historian Eng", "landing DCS and PI tags at control-room latency without dropping events."],
+                        ["ERP & LIMS Integration", "conforming SAP postings, batch records and lab results into one model."],
+                        ["Pipeline Reliability", "the pager when the batch, yield and CoA tables stall before a shift."],
+                    ],
+                    ucs=["Batch Genealogy", "Predictive Quality", "Emissions Tracking"]),
+                biz("Data Scientists", "MLflow",
+                    "Golden-batch, predictive-quality, energy-optimisation and predictive-maintenance models, and whether they still hold across a recipe scale-up.",
+                    [["Feature Store", "Batch and asset features read identically in training and serving."], ["MLflow", "Every quality and RUL model tracked for audit and reproduction."], ["Model Serving", "Quality and setpoint models scored in the control path."]],
+                    sub=[
+                        ["Process Data Scientist", "golden-batch, predictive-quality and energy models that hold on scale-up."],
+                        ["Reliability Data Scientist", "remaining-life models for pumps, agitators and compressors."],
+                        ["MLOps Engineer", "every quality and RUL model tracked, reproduced and safely re-served."],
+                    ],
+                    ucs=["Golden Batch", "Predictive Maintenance", "Recipe Scale-Up"]),
+                biz("App Developers", "Apps",
+                    "Ship the batch cockpit, golden batch analytics, CoA workbench and allocation optimizer apps operations and quality work in, next to governed batch data.",
+                    [["Apps", "Control-room and lab screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for release and allocation state."], ["Agent Bricks", "Agents that draft setpoints and work orders against governed tools."]],
+                    sub=[
+                        ["Control-Room App Dev", "the Batch Cockpit and setpoint screens operators run a shift from."],
+                        ["Quality App Dev", "the CoA Workbench and lab-review screens release decisions are made in."],
+                        ["Agent & Lakebase Dev", "release and allocation state, and agents that draft work orders."],
+                    ],
+                    ucs=["Predictive Quality", "Batch Genealogy", "Demand Allocation"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                    tile("Tableau / Spotfire", "chart", "Operations and quality dashboards on serverless SQL."),
+                    tile("Microsoft Teams", "chat", "Genie in Teams for batch status in plant channels."),
+                    tile("Notebooks & IDEs", "notebook", "Process engineering notebooks on historian data."),
+                ]},
+                {"box": "Customers & Partners", "ic": "partner", "tiles": [
+                    tile("CoA Portal", "api", "Certificates of analysis delivered to customer portals.", "labware"),
+                    tile("Vendor ASN", "zplug", "Raw material ASNs and COA from suppliers.", "sap-pppi"),
+                    tile("Tank Telemetry Share", "iot", "Iso tank levels shared to logistics partners.", "orbcomm"),
+                ]},
+                {"box": "Operational Writeback", "ic": "opdb", "tiles": [
+                    tile("Setpoint Advisor", "gauge", "Optimized setpoints pushed to DCS within guardrails."),
+                    tile("Batch Hold/Release", "gavel", "Quality holds propagated to MES and warehouse.", "opcenter-psm"),
+                    tile("Maintenance Work Orders", "zplug", "Predicted failures raised in Maximo.", "maximo"),
+                ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                    tile("REACH Submissions", "gavel", "Volume and exposure reports filed to ECHA.", "echa"),
+                    tile("EPA TRI Filings", "share", "Release quantities reported from governed emissions.", "epa-tri"),
+                ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                    tile("Data Products", "product", "Batch genealogy products in Unity Catalog Domains."),
+                    tile("Sharing Recipients", "share", "Customers and auditors via Delta Sharing."),
+                ]},
+            ]),
+        },
+        "top": top_band(
+            [app("Batch Cockpit", "Live execution", "gauge", "Phase progress, deviations and predicted end times across reactors."),
+             app("Golden Batch Analytics", "Process dev", "iot", "Trajectories compared to reference batches for yield and quality."),
+             app("CoA Workbench", "Quality release", "gavel", "Release decisions with full material genealogy and stability."),
+             app("Allocation Optimizer", "Scarce supply", "market", "Limited production ranked by margin, contract and strategic value.")],
+            [uc("Predictive Quality", "Quality", "gavel", "Off-spec predicted from in-process tags before batch completion.",
+                problem="Off-spec is only found when the lab tests the finished batch, so a bad run is discovered hours after the deviation and the whole batch is scrapped or reworked at full cost.",
+                who="Quality & Regulatory",
+                how="In-process historian tags land in Bronze, conform to batch-and-phase records, and feed quality models scored in Model Serving so the Batch Cockpit flags off-spec before the run completes.",
+                comps=["Batch Cockpit", "AVEVA PI System", "Model Serving", "MLflow", "Feature Store"],
+                stories=[
+                    ["Corning streamlines data with Databricks Lakeflow Jobs", "https://www.databricks.com/customers/corning"],
+                    ["Chevron Phillips Chemical tackles GenAI with Databricks", "https://www.databricks.com/customers/chevron-phillips-chemical"],
+                ]),
+             uc("Golden Batch", "Process", "iot", "Optimal trajectories identified and enforced on new runs.",
+                problem="Two operators run the same recipe and get different yields, yet the best batch's trajectory lives in tribal memory, so no run can be held against what good actually looked like.",
+                who="Process Engineering",
+                how="Historian trajectories conform to golden-batch references on Delta Lake, and deviation from the best profile is scored and shown in Golden Batch Analytics so operators steer the run in flight.",
+                comps=["Golden Batch Analytics", "AVEVA PI System", "Model Serving", "Delta Lake", "AI/BI"],
+                stories=[
+                    ["Chevron Phillips Chemical tackles GenAI with Databricks", "https://www.databricks.com/customers/chevron-phillips-chemical"],
+                ]),
+             uc("Energy Optimization", "Sustainability", "chart", "Steam and power consumption minimized per ton produced.",
+                problem="Steam and power are the biggest cost after feedstock, yet usage is trended per site weeks later, so nobody sees which units and setpoints drive energy per ton while the batch still runs.",
+                who="Process Engineering",
+                how="Utility and process tags conform alongside batch data, and AI Functions and models in Golden Batch Analytics rank the setpoints that cut energy per ton without pushing the batch off spec.",
+                comps=["Golden Batch Analytics", "Honeywell Uniformance", "Model Serving", "AI Functions", "AI/BI"],
+                stories=[
+                    ["Databricks and Shell collaborate to simplify industrial time series analytics on the Lakehouse", "https://www.databricks.com/blog/developing-time-series-lakehouse-shell"],
+                ]),
+             uc("Predictive Maintenance", "Reliability", "zplug", "Pump and agitator failures predicted before unplanned downtime.",
+                problem="Pumps, agitators and compressors fail without warning, and an unplanned trip on a continuous line cascades into lost batches and emergency repairs costlier than any planned fix.",
+                who="Plant Operations",
+                how="Vibration and process tags from the historian conform to asset records and feed remaining-life models in Model Serving, so predicted failures raise work orders in IBM Maximo before the trip.",
+                comps=["IBM Maximo", "AVEVA PI System", "Model Serving", "MLflow", "Lakehouse//RT"],
+                stories=[
+                    ["Databricks and Shell collaborate to simplify industrial time series analytics on the Lakehouse", "https://www.databricks.com/blog/developing-time-series-lakehouse-shell"],
+                ]),
+             uc("Batch Genealogy", "Traceability", "product", "Full lineage from raw lots through finished goods.",
+                problem="When a recall or complaint hits, tracing a finished lot back through intermediates, raw lots and equipment means stitching MES, ERP and lab exports by hand, and one answer can take days.",
+                who="Quality & Regulatory",
+                how="Batch records, material moves and lab results land and resolve to common batch, material and equipment keys under Unity Catalog, so the CoA Workbench shows full forward-and-back lineage at once.",
+                comps=["CoA Workbench", "Siemens Opcenter PSM", "SAP S/4HANA PP-PI", "Unity Catalog", "Delta Lake"],
+                stories=[
+                    ["How DuPont achieved 11x latency reduction and 4x cost reduction with Photon", "https://www.databricks.com/blog/how-dupont-achieved-11x-latency-reduction-and-4x-cost-reduction-photon"],
+                ]),
+             uc("Emissions Tracking", "EHS", "gavel", "Scope 1 and 2 intensity by plant and product.",
+                problem="Scope 1 and 2 emissions are assembled each quarter from spreadsheets and utility bills, so intensity by plant and product is an estimate that lands too late to change how a batch is run.",
+                who="CEO & EHS Council",
+                how="Energy and process data conform with emissions factors on Delta Lake and are processed with Apache Spark under Unity Catalog, giving auditable Scope 1 and 2 intensity by plant and product in AI/BI.",
+                comps=["AVEVA PI System", "Apache Spark", "Delta Lake", "Unity Catalog", "AI/BI"],
+                stories=[
+                    ["How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale", "https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale"],
+                ]),
+             uc("Demand Allocation", "Supply Chain", "sheet", "Finite capacity allocated to highest-value orders.",
+                problem="When capacity is tight, scarce product goes to whoever shouts loudest, so low-margin spot orders consume tonnes a contracted customer needed and margin leaks on every call.",
+                who="Supply Chain",
+                how="Orders, inventory and plan data conform from ERP and planning, and demand and margin models in the Allocation Optimizer rank scarce product by contract and value for the planner to commit.",
+                comps=["Allocation Optimizer", "SAP S/4HANA PP-PI", "AspenTech Supply", "Model Serving", "AI/BI"],
+                stories=[
+                    ["Corning streamlines data with Databricks Lakeflow Jobs", "https://www.databricks.com/customers/corning"],
+                ]),
+             uc("Tank Scheduling", "Logistics", "stream", "Bulk movements scheduled against rail and vessel windows.",
+                problem="Bulk product moves against narrow rail and vessel windows, but tank levels, plans and transport slots sit in separate systems, so a missed window means demurrage or a tank running dry.",
+                who="Supply Chain",
+                how="Tank telemetry and transport plans conform to production schedules on Delta Lake, and models scored in Lakehouse//RT sequence bulk movements against live rail and vessel windows for the planner.",
+                comps=["SAP TM", "ORBCOMM Tank Monitoring", "Model Serving", "Lakehouse//RT", "AI/BI"]),
+             uc("Regulatory Submissions", "Compliance", "share", "REACH and TRI filings from governed operational data.",
+                problem="REACH volumes and TRI release figures are compiled by hand from many plant and lab systems near each deadline, so filings become fire drills and one wrong number risks a compliance finding.",
+                who="Quality & Regulatory",
+                how="Volume, exposure and release data conform from operational systems into governed data products under Unity Catalog, so REACH and TRI submissions are generated from one auditable source of record.",
+                comps=["ECHA REACH", "EPA TRI Reporting", "Sphera Product Steward", "Unity Catalog", "Data Products"]),
+             uc("Recipe Scale-Up", "R&D", "product", "Lab recipes translated to plant parameters with risk guards.",
+                problem="A recipe that works in the lab behaves differently at plant scale, and with lab and plant data apart, scale-up is trial and error that burns weeks of reactor time and off-spec material.",
+                who="Process Engineering",
+                how="Lab and plant historian data conform to common material and equipment keys, and models in Golden Batch Analytics turn lab recipes into plant setpoints with risk guards before the first run.",
+                comps=["Golden Batch Analytics", "LabWare LIMS", "AVEVA PI System", "MLflow", "Model Serving"])],
+        ),
+        "sources": {
+            "sap-pppi": {"t": "SAP PP-PI", "u": "https://www.sap.com/products/scm/process-industries.html"},
+            "oracle-pm": {"t": "Oracle Process Manufacturing", "u": "https://www.oracle.com/scm/manufacturing/"},
+            "aspentech": {"t": "Aspen Technology", "u": "https://www.aspentech.com/"},
+            "aveva-pi": {"t": "AVEVA PI System", "u": "https://www.aveva.com/en/products/pi-system/"},
+            "honeywell": {"t": "Honeywell Forge", "u": "https://www.honeywell.com/us/en/products/automation"},
+            "opcenter-psm": {"t": "Siemens Opcenter PSM", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
+            "labware": {"t": "LabWare LIMS", "u": "https://www.labware.com/"},
+            "samplemanager": {"t": "Thermo SampleManager", "u": "https://www.thermofisher.com/samplemanager"},
+            "sphera": {"t": "Sphera", "u": "https://sphera.com/"},
+            "maximo": {"t": "IBM Maximo", "u": "https://www.ibm.com/products/maximo"},
+            "sap-pm": {"t": "SAP Plant Maintenance", "u": "https://www.sap.com/products/scm/asset-management.html"},
+            "sap-tm": {"t": "SAP Transportation Management", "u": "https://www.sap.com/products/scm/transportation-logistics.html"},
+            "orbcomm": {"t": "ORBCOMM", "u": "https://www.orbcomm.com/"},
+            "echa": {"t": "ECHA REACH", "u": "https://echa.europa.eu/regulations/reach"},
+            "epa-tri": {"t": "EPA TRI", "u": "https://www.epa.gov/toxics-release-inventory-tri-program"},
+            "icis": {"t": "ICIS", "u": "https://www.icis.com/"},
+        },
+    },
+}

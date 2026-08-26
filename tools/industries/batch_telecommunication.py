@@ -1,0 +1,253 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles (never common.TECH_PPL)."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles[:3]},
+    ]
+
+
+INDUSTRIES_BATCH_TELECOMMUNICATION = {
+    'telecommunication': {
+        "label": "Telecommunications",
+        "blurb": "Mobile and fixed operators: network inventory and performance, customer billing and care, field service, fraud and revenue assurance, and 5G service orchestration.",
+        "medallion": medallion(
+            "Raw network and BSS feeds",
+            "CDR and usage records, probe and SNMP metrics, CRM interactions, work orders and billing cycles, landed exactly as received so a dropped call or a disputed charge can always be replayed.",
+            "Conformed subscriber, session",
+            "Subscribers, devices, cells and service instances resolved into single conformed entities across BSS, OSS and CRM, with session records stitched to one journey.",
+            "Churn, ARPU, network KPI",
+            "Contracted products commercial and network teams run on: churn and ARPU by segment, dropped-call rate, mean time to repair, fraud loss and NPS drivers.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "BSS & Billing", "ic": "erp", "tiles": [
+                    tile("Amdocs CES", "erp", "Customer, product and billing: subscriptions, invoices, payments and dunning.", "amdocs-ces"),
+                    tile("Netcracker BSS", "market", "Order management, product catalog and revenue management for converged offers.", "netcracker"),
+                    tile("CSG Singleview", "chart", "Mediation, rating and billing for high-volume prepaid and postpaid.", "csg"),
+                ]},
+                {"box": "OSS & Inventory", "ic": "db", "tiles": [
+                    tile("Ericsson ENM", "stream", "Radio access network configuration, alarms and performance counters.", "ericsson-enm"),
+                    tile("Nokia NetAct", "iot", "Multi-vendor OSS fault, configuration and performance for transport and RAN.", "nokia-netact"),
+                    tile("Cisco Crosswork", "api", "IP/MPLS transport inventory, topology and service paths.", "cisco-crosswork"),
+                ]},
+                {"box": "Customer & Care", "ic": "custlake", "tiles": [
+                    tile("Salesforce Service Cloud", "partner", "Cases, omni-channel interactions and knowledge articles.", "sf-service"),
+                    tile("Genesys Cloud CX", "chat", "Contact centre queues, IVR paths and agent handle times.", "genesys"),
+                    tile("Medallia Experience", "observ", "NPS, CES and verbatim feedback tied to subscriber journeys.", "medallia"),
+                ]},
+                {"box": "Field Service", "ic": "people", "tiles": [
+                    tile("ServiceMax FSM", "apps", "Technician dispatch, truck rolls, parts and SLA compliance.", "servicemax"),
+                    tile("ClickSoftware WFM", "sheet", "Field workforce scheduling and capacity for fibre and tower work.", "clicksoftware"),
+                    tile("Geotab Fleet", "iot", "Van location, job duration and fuel for field operations.", "geotab"),
+                ]},
+                {"box": "Fraud & Assurance", "ic": "gavel", "tiles": [
+                    tile("Subex Revenue Assurance", "gavel", "Leakage detection across rating, interconnect and roaming.", "subex"),
+                    tile("Mobileum Fraud", "partner", "SIM swap, IRSF and subscription fraud scored in near real time.", "mobileum"),
+                    tile("WeDo RAID", "chart", "Revenue, asset and usage integrity dashboards for finance.", "wedo"),
+                ]},
+                fed_group("MVNO Partner Marts", "Wholesale usage and settlement marts queried in place under Unity Catalog."),
+            ],
+            "ing": ing_rail([
+                tile("GSMA TAP Roaming", "stream", "TAP files and roaming usage from partner operators parsed on arrival.", "gsma-tap"),
+                tile("TM Forum Open APIs", "api", "TMF Open API event streams for order and trouble-ticket lifecycle.", "tmforum"),
+                tile("RAN PM File Exchange", "zplug", "Vendor performance management files from multi-vendor RAN estates.", "ericsson-enm"),
+            ]),
+            "ppl": ppl2([
+                biz("CEO & CTO Office", "Genie One", "The CEO on ARPU and churn; the CTO on network availability and capex efficiency, trading coverage build against the subscribers it retains.",
+                    [["Genie One", "Ask what last month's churn cost without analyst delay."], ["AI/BI", "ARPU and NPS on certified Metric Views."], ["Unity Catalog", "One subscriber definition across BSS and CRM."]],
+                    sub=[
+                        ["CEO", "ARPU, churn and the return on every pound of coverage capex."],
+                        ["CTO", "network availability, 5G rollout pace and capex efficiency."],
+                        ["Strategy & Transformation", "the data and AI foundation behind converged fixed and mobile offers."],
+                    ],
+                    ucs=["Capacity Forecasting", "5G Slice Orchestration", "Energy at Cell Sites", "Churn Prediction"]),
+                biz("Network Operations", "Lakehouse//RT", "NOC engineers on alarms, cell performance and outage restoration, grouping faults to root cause and customer impact before a truck rolls.",
+                    [["NOC War Room", "Live alarms, customer impact and truck rolls on one screen."], ["Lakehouse//RT", "Probe and alarm state at network latency."]],
+                    sub=[
+                        ["NOC Lead", "alarm-to-restoration time and the customer impact behind every outage."],
+                        ["RAN & Transport Planning", "cell and transport capacity against traffic growth and coverage gaps."],
+                        ["Field Operations", "truck-roll SLA, technician capacity and parts availability."],
+                    ],
+                    ucs=["Network Fault Correlation", "Capacity Forecasting", "QoS & Dropped Calls", "Field SLA Management"]),
+                biz("Commercial & Marketing", "CustomerLake", "Product owners on offer uptake, upsell and retention campaigns, scoring next-best-offer per subscriber before the contract renewal window.",
+                    [["Offer Management", "Propensity-scored upsell before renewal."], ["CustomerLake", "Segments without copying profiles into a separate CDP."]],
+                    sub=[
+                        ["Segment & Offer Owners", "next-best-offer, upsell and the renewal save rate per segment."],
+                        ["Retention Marketing", "churn drivers and the campaigns that hold high-value subscribers."],
+                        ["Enterprise & B2B", "5G and connectivity contracts and the SLAs behind them."],
+                    ],
+                    ucs=["Churn Prediction", "Offer Personalization", "5G Slice Orchestration"]),
+                biz("Customer Care", "Apps", "Care leaders on first-contact resolution, handle time and complaint drivers, putting subscriber and network context beside every ticket.",
+                    [["Care Agent Desktop", "Subscriber context and next-best-action beside the ticket."], ["Apps", "Care tools hosted next to governed BSS data."]],
+                    sub=[
+                        ["Care Operations", "first-contact resolution, handle time and complaint backlog."],
+                        ["Complaint & Quality", "the network and billing causes behind repeat complaints and NPS."],
+                        ["Digital Care", "self-service deflection and the app experience beside the ticket."],
+                    ],
+                    ucs=["QoS & Dropped Calls", "Churn Prediction", "Offer Personalization"]),
+                biz("Revenue Assurance", "AI/BI", "Finance and fraud teams on leakage, disputes and roaming settlement, catching SIM-swap and IRSF loss before it clears interconnect.",
+                    [["AI/BI", "Leakage and fraud loss on certified views."], ["Genie One", "Ask which roaming partners exceed dispute thresholds."]],
+                    sub=[
+                        ["Fraud Management", "SIM-swap, IRSF and subscription fraud loss before it clears."],
+                        ["Revenue Assurance", "leakage across rating, mediation and interconnect."],
+                        ["Roaming & Interconnect Settlement", "TAP discrepancies and partner dispute exposure."],
+                    ],
+                    ucs=["Fraud Detection", "Roaming Disputes", "Churn Prediction"]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land CDR and usage records, probe and SNMP metrics, CRM interactions and billing cycles; own Bronze to Silver and the pager when a churn table stalls.",
+                    [["Lakeflow Connect", "Managed connectors for BSS, OSS and CRM sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on CDR and probe feeds."], ["Lakewatch", "Freshness on the churn tables commercial reads each morning."]],
+                    sub=[
+                        ["BSS/OSS Ingestion", "CDR, usage, probe and SNMP feeds landed Bronze to Silver."],
+                        ["Pipeline Reliability", "freshness and expectations on the churn and network KPI tables."],
+                        ["Streaming", "alarm and session streams landed at network latency."],
+                    ],
+                    ucs=["Network Fault Correlation", "Capacity Forecasting", "Churn Prediction"]),
+                biz("Data Scientists", "MLflow", "Churn, fault-correlation, fraud-scoring and capacity-forecast models, and whether they still hold as network load and offer mix shift.",
+                    [["Feature Store", "Subscriber and network features read identically in training and serving."], ["MLflow", "Every churn and fraud experiment tracked for audit."], ["Model Serving", "Churn and fraud models scored in the operational path."]],
+                    sub=[
+                        ["Churn & Propensity", "retention, next-best-offer and lifetime-value models."],
+                        ["Network ML", "fault-correlation, capacity and QoS forecasting models."],
+                        ["Fraud Modelling", "SIM-swap, IRSF and subscription-fraud scoring."],
+                    ],
+                    ucs=["Churn Prediction", "Fraud Detection", "Capacity Forecasting"]),
+                biz("App Developers", "Apps", "Ship the NOC War Room, Care Agent Desktop and Churn Prevention apps network and care teams work in, next to governed BSS and probe data.",
+                    [["Apps", "Care and NOC screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for ticket and offer state writes."], ["Agent Bricks", "Agents that draft next-best-action against governed tools."]],
+                    sub=[
+                        ["NOC & Field Apps", "the NOC War Room and Field Dispatch Console engineers work in."],
+                        ["Care & Retention Apps", "the Care Agent Desktop and Churn Prevention Hub."],
+                        ["Agents & Writeback", "next-best-action agents and governed writes to BSS and work orders."],
+                    ],
+                    ucs=["Network Fault Correlation", "QoS & Dropped Calls", "Offer Personalization", "Field SLA Management"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                    tile("Tableau / Power BI", "chart", "Network and commercial dashboards on serverless SQL."),
+                    tile("Microsoft Teams", "chat", "Genie in Teams for outage impact and churn questions in the NOC channel."),
+                    tile("Notebooks & IDEs", "notebook", "Network analytics notebooks against governed probe and CDR data."),
+                ]},
+                {"box": "Partner & Wholesale", "ic": "partner", "tiles": [
+                    tile("Roaming Settlement API", "api", "Usage and dispute status shared to partner operators over Delta Sharing.", "gsma-tap"),
+                    tile("MVNO Usage Portal", "share", "Wholesale usage and rating detail delivered to MVNO partners."),
+                    tile("Tower Co SLA Feed", "globe", "Site availability and maintenance windows shared to tower companies."),
+                ]},
+                {"box": "Operational Writeback", "ic": "opdb", "tiles": [
+                    tile("BSS Order Provisioning", "erp", "Service orders and product changes written back to order management.", "amdocs-ces"),
+                    tile("Field Work Orders", "apps", "Truck rolls and parts reservations dispatched to technician apps.", "servicemax"),
+                    tile("Policy & Charging Rules", "stream", "Throttling and offer rules pushed to policy control functions."),
+                ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                    tile("Regulatory Quality Reports", "gavel", "Call completion and coverage metrics filed to the regulator."),
+                    tile("Lawful Intercept Audit", "share", "Compliance evidence from governed access logs."),
+                ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                    tile("Data Products", "product", "Network and subscriber products in Unity Catalog Domains."),
+                    tile("Sharing Recipients", "share", "Partners reading live usage via Delta Sharing."),
+                ]},
+            ]),
+        },
+        "top": top_band(
+            [app("NOC War Room", "Outage management", "gauge", "Live alarms, subscriber impact and restoration progress on Databricks Apps over Lakebase."),
+             app("Care Agent Desktop", "Subscriber context", "custlake", "Billing, network and case history beside the ticket for first-contact resolution."),
+             app("Churn Prevention Hub", "Retention offers", "market", "Propensity-scored offers and save scripts before contract expiry."),
+             app("Field Dispatch Console", "Truck rolls", "people", "Technician capacity, parts and SLA risk for fibre and RAN maintenance.")],
+            [uc("Churn Prediction", "Retention", "custlake", "Churn risk scored by usage, care and network quality signals.",
+                problem="Subscribers leave after dropped calls or a billing dispute, but usage, care and network signals sit in separate systems, so churn is seen only once the number has already ported out.",
+                who="Commercial & Marketing",
+                how="Usage, care and network-quality features are engineered in Feature Store and scored in Model Serving, surfacing save offers in the Churn Prevention Hub before the renewal window closes.",
+                comps=["Churn Prevention Hub", "Feature Store", "Model Serving", "CustomerLake", "MLflow"],
+                stories=[
+                    ["How to predict the likelihood of each telco customer churning", "https://www.databricks.com/blog/2021/02/24/solution-accelerator-telco-customer-churn-predictor.html"],
+                    ["Graph analytics for telco customer churn prediction", "https://www.databricks.com/solutions/accelerators/graph-analytics-telco-customer-churn-prediction"],
+                ]),
+             uc("Network Fault Correlation", "NOC", "stream", "Alarms grouped to root cause and customer impact before truck roll.",
+                problem="Radio, transport and core alarms flood the NOC by the thousand during an outage, and engineers correlate them by hand, so a single root-cause fault hides behind a wall of symptom alerts.",
+                who="Network Operations",
+                how="Alarm and performance streams land in Lakehouse//RT and are grouped to a root cause and customer impact, surfaced on the NOC War Room before a technician is dispatched.",
+                comps=["NOC War Room", "Lakehouse//RT", "Ericsson ENM", "Delta Lake", "AI Functions"],
+                stories=[
+                    ["Telco Network Analytics Solution Accelerator", "https://www.databricks.com/solutions/accelerators/telco-network-analytics"],
+                ]),
+             uc("Capacity Forecasting", "Planning", "chart", "Cell and transport capacity forecast against traffic growth.",
+                problem="Cell and transport capacity is planned off spreadsheets and last quarter's peaks, so congestion is found after subscribers feel the slowdown and capex lands in the wrong sites.",
+                who="Network Operations",
+                how="Traffic, session and topology history is conformed on Delta Lake and forecast with models tracked in MLflow, so planners size cell and transport capacity in AI/BI against projected growth.",
+                comps=["Lakehouse//RT", "MLflow", "AI/BI", "Cisco Crosswork", "Delta Lake"],
+                stories=[
+                    ["T-Mobile expands its cell tower network with Databricks", "https://www.databricks.com/customers/t-mobile"],
+                    ["Telco Network Analytics Solution Accelerator", "https://www.databricks.com/solutions/accelerators/telco-network-analytics"],
+                ]),
+             uc("Fraud Detection", "Revenue", "gavel", "SIM swap, IRSF and subscription fraud flagged before settlement.",
+                problem="SIM-swap, IRSF and subscription fraud move faster than nightly rules, so loss clears through interconnect and roaming settlement before a static rules engine ever flags the pattern.",
+                who="Revenue Assurance",
+                how="CDR, usage and device signals are scored in real time through Model Serving on Lakehouse//RT, with flagged accounts raised to revenue-assurance and care before the charge settles.",
+                comps=["Mobileum Fraud", "Model Serving", "Lakehouse//RT", "MLflow", "AI Functions"],
+                stories=[
+                    ["AT&T cuts fraud with real-time AI on Databricks", "https://www.databricks.com/customers/att"],
+                    ["Securing the future: AT&T uses generative AI to transform fraud protection", "https://www.databricks.com/blog/securing-future-att-uses-generative-ai-transform-fraud-protection"],
+                ]),
+             uc("QoS & Dropped Calls", "Quality", "iot", "Radio and core KPIs tied to subscriber complaints and NPS.",
+                problem="A subscriber complains about dropped calls while the network team sees only cell KPIs, so care and engineering argue over whose data is right rather than tying it to the metrics behind it.",
+                who="Customer Care",
+                how="Radio and core KPIs are stitched to subscriber sessions and complaints under Unity Catalog and surfaced beside the ticket in the Care Agent Desktop, so care sees the network cause on first contact.",
+                comps=["Care Agent Desktop", "Unity Catalog", "Genesys Cloud CX", "Delta Lake", "AI/BI"],
+                stories=[
+                    ["Introducing the Data + AI Platform for Communications", "https://www.databricks.com/blog/introducing-data-intelligence-platform-communications"],
+                ]),
+             uc("Offer Personalization", "Marketing", "market", "Next-best-offer scored per subscriber at renewal and in-app.",
+                problem="Offers are pushed to broad segments from a copied profile store, so the message misses the subscriber's real usage and device context and upsell lands as spam at the wrong moment.",
+                who="Commercial & Marketing",
+                how="Next-best-offer is scored per subscriber in Model Serving against CustomerLake features and delivered through the Churn Prevention Hub at renewal and in-app, without copying profiles into a CDP.",
+                comps=["Churn Prevention Hub", "CustomerLake", "Model Serving", "Feature Store", "AI Functions"]),
+             uc("Roaming Disputes", "Wholesale", "partner", "TAP discrepancies reconciled before partner settlement.",
+                problem="Roaming usage arrives as TAP files from dozens of partner operators, and gaps between what was recorded and what is billed surface weeks later in a dispute costly to reconcile by hand.",
+                who="Revenue Assurance",
+                how="TAP and usage records land through the ingestion feeds and are reconciled on Delta Lake under Unity Catalog, so disputes are caught and settled with partners before interconnect clears.",
+                comps=["GSMA TAP Roaming", "Delta Lake", "Unity Catalog", "AI/BI", "Subex Revenue Assurance"]),
+             uc("Field SLA Management", "Operations", "apps", "Truck roll SLA risk predicted from parts and technician availability.",
+                problem="Truck rolls for fibre and RAN work miss SLA windows when parts, skills and travel are planned in disconnected tools, and the breach shows only after the customer credit is owed.",
+                who="Network Operations",
+                how="Work-order, parts and technician-availability data is scored for SLA risk in Model Serving and surfaced in the Field Dispatch Console, so dispatch reprioritises before the window is missed.",
+                comps=["Field Dispatch Console", "ServiceMax FSM", "Model Serving", "Lakebase", "AI/BI"]),
+             uc("5G Slice Orchestration", "5G", "api", "Slice SLA monitored against enterprise customer contracts.",
+                problem="Enterprise 5G slices carry contractual SLAs, but slice performance lives in the OSS while the contract lives in the BSS, so a breach is argued after the fact instead of caught as it happens.",
+                who="CEO & CTO Office",
+                how="Slice KPIs from the RAN and core are conformed on Lakehouse//RT and monitored against enterprise contract terms in AI/BI, so an SLA risk raises an alert before the customer notices.",
+                comps=["Lakehouse//RT", "Ericsson ENM", "AI/BI", "Unity Catalog", "Model Serving"],
+                stories=[
+                    ["T-Mobile builds the largest and fastest 5G network on Databricks", "https://www.databricks.com/customers/t-mobile"],
+                    ["Introducing the Data + AI Platform for Communications", "https://www.databricks.com/blog/introducing-data-intelligence-platform-communications"],
+                ]),
+             uc("Energy at Cell Sites", "Sustainability", "chart", "Site power consumption optimised against traffic load.",
+                problem="Cell-site energy is a top operating cost, but power draw, traffic load and site telemetry sit apart, so sites run full power through low-traffic hours and the waste is invisible on the bill.",
+                who="CEO & CTO Office",
+                how="Site power and traffic telemetry are conformed on Delta Lake and modelled in Model Serving to schedule power against load, with savings tracked in AI/BI for the sustainability target.",
+                comps=["Lakehouse//RT", "Model Serving", "Delta Lake", "AI/BI", "Data Products"])],
+        ),
+        "sources": {
+            "amdocs-ces": {"t": "Amdocs CES", "u": "https://www.amdocs.com/solutions/digital-business/"},
+            "netcracker": {"t": "Netcracker BSS", "u": "https://www.netcracker.com/"},
+            "csg": {"t": "CSG Singleview", "u": "https://www.csgi.com/products/singleview/"},
+            "ericsson-enm": {"t": "Ericsson ENM", "u": "https://www.ericsson.com/en/ran/ran-automation-and-management"},
+            "nokia-netact": {"t": "Nokia NetAct", "u": "https://www.nokia.com/networks/solutions/netact/"},
+            "cisco-crosswork": {"t": "Cisco Crosswork", "u": "https://www.cisco.com/c/en/us/products/cloud-systems-management/crosswork-network-automation/index.html"},
+            "sf-service": {"t": "Salesforce Service Cloud", "u": "https://www.salesforce.com/service/"},
+            "genesys": {"t": "Genesys Cloud CX", "u": "https://www.genesys.com/"},
+            "medallia": {"t": "Medallia", "u": "https://www.medallia.com/"},
+            "servicemax": {"t": "ServiceMax", "u": "https://www.servicemax.com/"},
+            "clicksoftware": {"t": "ClickSoftware", "u": "https://www.clicksoftware.com/"},
+            "geotab": {"t": "Geotab", "u": "https://www.geotab.com/"},
+            "subex": {"t": "Subex revenue assurance", "u": "https://www.subex.com/"},
+            "mobileum": {"t": "Mobileum fraud management", "u": "https://www.mobileum.com/"},
+            "wedo": {"t": "WeDo RAID", "u": "https://www.wedotechnologies.com/"},
+            "gsma-tap": {"t": "GSMA TAP roaming", "u": "https://www.gsma.com/"},
+            "tmforum": {"t": "TM Forum Open APIs", "u": "https://www.tmforum.org/"},
+        },
+    },
+}

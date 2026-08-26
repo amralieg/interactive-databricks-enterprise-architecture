@@ -1,0 +1,241 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl_rail2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles instead of shared TECH_PPL."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles},
+    ]
+
+
+INDUSTRIES_BATCH_OIL_GAS = {
+    'oil_gas': {
+        "label": "Oil & Gas",
+        "blurb": "Upstream production, midstream logistics and downstream refining: reservoir and facility telemetry, trading, and regulatory emissions reporting.",
+        "medallion": medallion(
+            "Raw field and market",
+            "SCADA tags, well test results, LIMS assays, pipeline SCADA and deal capture tickets, landed exactly as received so a barrel or a pressure reading can always be replayed as it stood.",
+            "Conformed well, cargo",
+            "Wells, facilities, pipelines and cargoes resolved into single conformed entities across production, operations and commercial systems, with allocation balances reconciled and nomination schedules stitched to one logistics record.",
+            "Production, margin, loss",
+            "Contracted products operations and trading run on: net production and uptime, unit lifting cost, crack spread margin and hydrocarbon loss rates.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "Production & SCADA", "ic": "iot", "tiles": [
+                        tile("AVEVA PI System", "iot", "Separator pressures, flow rates and compressor tags from upstream and midstream historians.", "aveva-pi"),
+                        tile("Schlumberger OFM", "stream", "Well tests, decline curves and reservoir models the subsurface team updates.", "slb-ofm"),
+                        tile("Honeywell Experion", "gauge", "DCS alarms, setpoints and batch sequences from refining units.", "honeywell-exp"),
+                    ]},
+                {"box": "Midstream & Logistics", "ic": "stream", "tiles": [
+                        tile("Quorum PGAS", "erp", "Pipeline nominations, allocations and imbalance statements.", "quorum-pgas"),
+                        tile("OpenText VIM", "sheet", "Vessel scheduling, terminal inventory and marine demurrage events.", "opentext-vim"),
+                        tile("Kpler Cargo Tracking", "globe", "Tanker positions, port calls and cargo lineage for export marketing.", "kpler"),
+                    ]},
+                {"box": "Commercial & Trading", "ic": "market", "tiles": [
+                        tile("ION Openlink Endur", "market", "Physical deals, hedges and MtM for crude and products desks.", "ion-endur"),
+                        tile("SAP IS-Oil", "erp", "Joint-venture allocations, production accounting and tax royalty postings.", "sap-is-oil"),
+                        tile("Platts Price Assess", "chart", "Benchmark curves and differential indices the marketing desk marks to.", "platts"),
+                    ]},
+                {"box": "Safety & Environment", "ic": "gavel", "tiles": [
+                        tile("Sphera Risk Mgmt", "gavel", "Process safety, MOC and incident investigations tied to facilities.", "sphera"),
+                        tile("Enablon EHS", "observ", "Emissions events, flare logs and regulatory permit limits.", "enablon"),
+                        tile("FLIR Optical Gas Img", "iot", "Leak detection surveys and repair verification imagery."),
+                    ]},
+                fed_group("Corporate Treasury Mart", "Hedge effectiveness and working-capital marts queried in place under Unity Catalog."),
+            ],
+            "ing": ing_rail([
+                tile("EPA GHGRP Templates", "gavel", "Greenhouse gas reporting layouts validated on ingest before filing windows.", "epa-ghgrp"),
+                tile("AIS Vessel Tracks", "globe", "Marine AIS positions normalised for demurrage and cargo reconciliation.", "kpler"),
+                tile("Weather & Ocean Data", "stream", "Storm and swell feeds for offshore production and marine scheduling."),
+            ]),
+            "ppl": ppl_rail2([
+                biz("Corporate & Asset Leaders", "Genie One", "The CEO on net production and cash margin; the CFO on hedge exposure and unit lifting cost when crude and product benchmarks move.", [["Genie One", "Ask what yesterday's net production was by asset without waiting on operations reporting."], ["AI/BI", "Production, cost and margin on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"production\" means one thing across SCADA and accounting."]],
+                    sub=[
+                        ["CEO", "net production, cash margin and the trade between growth and the energy transition."],
+                        ["CFO & Treasury", "unit lifting cost, hedge exposure and working capital as crude and product benchmarks move."],
+                        ["Chief Operating Officer", "asset uptime, hydrocarbon loss and the HSE and compliance record across the portfolio."],
+                    ],
+                    ucs=["JV Allocation", "Trading Optimisation", "Emissions Reporting"]),
+                biz("Upstream Operations", "Lakehouse//RT", "Field superintendents on well uptime, deferment volume and artificial lift when alarms spike, protecting net production and hydrocarbon loss rate.", [["Production Control", "Deferment pareto and well ranking before the morning call."], ["Lakehouse//RT", "Live SCADA state at the latency a trip occurs at."], ["AI/BI", "Uptime and loss on governed definitions."]],
+                    sub=[
+                        ["Field Superintendent", "well uptime, deferment volume and the morning production call."],
+                        ["Production Engineer", "artificial lift, decline and the interventions that recover barrels."],
+                        ["Subsurface & Reservoir", "well tests and reservoir models reconciled to actual production."],
+                    ],
+                    ucs=["Well Performance", "Facility Uptime", "Reserves Reconciliation", "Corrosion Monitoring"]),
+                biz("Midstream & Terminals", "AI/BI", "Pipeline controllers on nominations, linepack and imbalance when schedules slip, watching hydrocarbon loss and marine demurrage exposure.", [["Logistics Console", "Cargo and linepack positions before nomination deadlines."], ["AI/BI", "Loss and imbalance on certified Metric Views."], ["Genie One", "Ask which terminal is constraining export this week."]],
+                    sub=[
+                        ["Pipeline Controller", "nominations, linepack and imbalance before gate close."],
+                        ["Terminal Operations", "vessel slots, tank inventory and marine demurrage exposure."],
+                        ["Integrity Engineer", "corrosion, thickness and the inspection intervals on pipelines and terminals."],
+                    ],
+                    ucs=["Pipeline Optimisation", "Cargo Scheduling", "Corrosion Monitoring"]),
+                biz("Trading & Marketing", "Model Serving", "Crude and products desks on deal capture, exposure and cargo optimisation, marking physical and paper books to crack-spread margin.", [["Trading Workbench", "Physical and paper positions marked consistently."], ["Model Serving", "Optimisation models scored on live nominations."], ["Unity Catalog", "One cargo definition across ops and finance."]],
+                    sub=[
+                        ["Crude & Products Traders", "physical and paper positions marked to crack-spread margin."],
+                        ["Risk & Middle Office", "exposure limits, MtM and hedge effectiveness across the book."],
+                        ["Cargo Marketing", "cargo optimisation and the benchmark differentials the desk marks to."],
+                    ],
+                    ucs=["Trading Optimisation", "Cargo Scheduling", "Pipeline Optimisation"]),
+                biz("HSE & Compliance", "Unity Catalog", "Process safety and environmental teams on emissions, permits and incident trends, tracked on TRIR and flare volumes before regulator inspections.", [["HSE Dashboard", "Flare and leak trends before regulator inspections."], ["Unity Catalog", "Lineage from sensor to regulatory filing."], ["AI/BI", "TRIR and emissions on governed definitions."]],
+                    sub=[
+                        ["Process Safety", "MOC, incident trends and the barriers behind a safe envelope."],
+                        ["Environmental & Emissions", "flare, vent and greenhouse filings from governed sensor lineage."],
+                        ["Regulatory Compliance", "permit limits and the evidence trail before regulator inspections."],
+                    ],
+                    ucs=["Leak Detection", "Emissions Reporting", "Corrosion Monitoring"]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land the SCADA, well test, LIMS assay and deal-capture feeds; own the Bronze to Silver path and the pager when a field pipeline breaks.", [["Lakeflow Connect", "Managed connectors for historian, ETRM and accounting sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on SCADA and allocation feeds."], ["Lakewatch", "Freshness on the production and margin tables operations reads."]],
+                    sub=[
+                        ["Historian & SCADA Eng", "high-volume tag ingestion from PI and DCS into governed tables."],
+                        ["Pipeline Reliability", "the Bronze to Silver path and the pager when a field feed breaks."],
+                        ["ETRM & Accounting Eng", "deal-capture, allocation and royalty feeds landed for finance and trading."],
+                    ],
+                    ucs=["Well Performance", "Pipeline Optimisation", "Emissions Reporting"]),
+                biz("Data Scientists", "MLflow", "Well-decline, facility-uptime, cargo-optimisation and leak-detection models, and whether they still hold six months after deployment across assets.", [["Feature Store", "Historian and test features read identically in training and serving."], ["MLflow", "Every decline and uptime run tracked for audit and reproduction."], ["Model Serving", "Optimisation and failure models scored in the operational path."]],
+                    sub=[
+                        ["Production DS", "well-decline, lift and facility-uptime models against historian data."],
+                        ["Optimisation DS", "cargo, linepack and trading optimisation across live nominations."],
+                        ["Reliability & HSE DS", "leak-detection and equipment-failure models and whether they still hold."],
+                    ],
+                    ucs=["Facility Uptime", "Leak Detection", "Trading Optimisation", "Well Performance"]),
+                biz("App Developers", "Apps", "Ship the production control, logistics and trading applications field and desk teams work in, hosted next to governed asset data.", [["Apps", "Operational screens with no separate web tier to run or secure."], ["Lakebase", "Serverless Postgres for nomination state and governed writes."], ["Agent Bricks", "Agents that draft a deferment response against governed tools."]],
+                    sub=[
+                        ["Operations App Dev", "production control and logistics screens field and desk teams work in."],
+                        ["Trading App Dev", "the exposure and cargo surfaces the commercial desk marks books on."],
+                        ["Writeback & Integration", "nomination and setpoint writeback into DCS and pipeline systems."],
+                    ],
+                    ucs=["Pipeline Optimisation", "Cargo Scheduling", "Trading Optimisation"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                        tile("Tableau / Qlik / ThoughtSpot", "chart", "External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end."),
+                        tile("Microsoft Teams", "chat", "Genie in Teams for governed answers and field updates in the channel operations already works in (Beta)."),
+                        tile("Notebooks & IDEs", "notebook", "Notebooks, VS Code and JetBrains against governed data and Genie Code."),
+                    ]},
+                {"box": "Operations Writeback", "ic": "opdb", "tiles": [
+                        tile("DCS Setpoint Push", "stream", "Approved operating targets written back within safe envelopes.", "honeywell-exp"),
+                        tile("Nomination Updates", "erp", "Revised pipeline and vessel nominations posted before gate close.", "quorum-pgas"),
+                        tile("Work Permit System", "gavel", "Maintenance permits raised from predicted equipment risk.", "sphera"),
+                    ]},
+                {"box": "Customers & Partners", "ic": "partner", "tiles": [
+                        tile("Cargo Assay API", "api", "Quality certificates served to traders and refiners from governed lab lineage.", "slb-ofm"),
+                        tile("JV Partner Sharing", "share", "Production and cost allocations shared to non-operated partners over Delta Sharing.", "sap-is-oil"),
+                        tile("Terminal Operator Feed", "globe", "Inventory positions exchanged without nightly spreadsheet reconciliation.", "opentext-vim"),
+                    ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                        tile("GHG & Emissions Filing", "gavel", "Regulatory greenhouse submissions produced from governed sensor and flare data.", "epa-ghgrp"),
+                        tile("Production Tax Royalty", "share", "Royalty and severance filings from contracted Gold products.", "enablon"),
+                    ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Sharing Recipients", "share", "JV partners, regulators and traders reading live tables with no copy."),
+                    ]},
+            ]),
+        },
+        "top": top_band(
+            [
+                app("Production Control", "Deferment live", "gauge", "Well uptime, deferment pareto and lift setpoints on Databricks Apps over Lakebase."),
+                app("Logistics Console", "Cargo schedule", "globe", "Nominations, linepack and vessel positions before export windows close."),
+                app("Trading Workbench", "Exposure view", "market", "Physical and paper positions marked to benchmark on one surface."),
+                app("HSE Dashboard", "Emissions live", "gavel", "Flare, leak and permit exceedances before inspections and board review."),
+            ],
+            [
+                uc("Well Performance", "Upstream", "iot", "Decline and artificial-lift optimisation when downhole conditions shift.",
+                    problem="Declining wells and lift problems show up in daily reports long after production is lost, and downhole signals sit in historians nobody joins to the well test and reservoir picture.",
+                    who="Upstream Operations",
+                    how="Separator and downhole tags land in Lakehouse//RT beside well tests, then decline and lift models scored in Model Serving surface the intervention on the Production Control screen.",
+                    comps=["Production Control", "AVEVA PI System", "Schlumberger OFM", "Lakehouse//RT", "Model Serving"],
+                    stories=[
+                        ["Devon Energy reimagines analytics and ML for oil & gas exploration", "https://www.databricks.com/customers/devon-energy"],
+                        ["ARC Resources optimises drilling performance with real-time data", "https://www.databricks.com/blog/2022/05/24/arc-uses-a-lakehouse-architecture-for-real-time-data-insights-that-optimize-drilling-performance-and-lower-carbon-emissions.html"],
+                    ]),
+                uc("Facility Uptime", "Reliability", "gauge", "Compressor and separator trips predicted before production is deferred.",
+                    problem="A compressor or separator trip defers production for hours, yet failures are found after the unit stops rather than predicted from the sensor drift that preceded them.",
+                    who="Upstream Operations",
+                    how="Historian tags stream into Lakehouse//RT and feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Production Control screen.",
+                    comps=["Production Control", "AVEVA PI System", "Model Serving", "MLflow", "Lakehouse//RT"],
+                    stories=[
+                        ["Databricks and Shell: industrial time series analytics on the Lakehouse", "https://www.databricks.com/blog/developing-time-series-lakehouse-shell"],
+                        ["Building ML models for predictive maintenance in oil & gas", "https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html"],
+                    ]),
+                uc("Pipeline Optimisation", "Midstream", "stream", "Linepack and nomination schedules tuned to minimise imbalance penalties.",
+                    problem="Nominations, linepack and actual flow drift apart across a pipeline day, so imbalances and penalties are discovered after gate close when there is no time left to rebalance.",
+                    who="Midstream & Terminals",
+                    how="Pipeline SCADA and nomination feeds land in Lakehouse//RT, optimisation models scored in Model Serving rebalance linepack, and controllers act from the Logistics Console on certified AI/BI views.",
+                    comps=["Logistics Console", "Quorum PGAS", "Model Serving", "Lakehouse//RT", "AI/BI"],
+                    stories=[
+                        ["Pipeline Flow Monitoring on the Databricks Platform", "https://www.databricks.com/blog/pipeline-flow-monitoring"],
+                    ]),
+                uc("Cargo Scheduling", "Logistics", "globe", "Vessel and terminal slots aligned to production and demurrage exposure.",
+                    problem="Vessel positions, terminal inventory and production plans live in separate systems, so cargo slots slip and demurrage runs up before anyone sees the whole export picture.",
+                    who="Midstream & Terminals",
+                    how="Cargo tracks and terminal feeds conform on Delta Lake, optimisation models scored in Model Serving align slots, and schedulers work the plan from the Logistics Console.",
+                    comps=["Logistics Console", "Kpler Cargo Tracking", "OpenText VIM", "Model Serving", "AI/BI"]),
+                uc("Trading Optimisation", "Commercial", "market", "Physical and hedge books reconciled before exposure limits breach.",
+                    problem="Physical deals, paper hedges and benchmark curves are marked in different tools, so desks see exposure late and a limit breach surfaces only after the position has moved.",
+                    who="Trading & Marketing",
+                    how="Deal capture and price feeds conform under Unity Catalog, optimisation and MtM models scored in Model Serving mark books consistently, and desks work exposure from the Trading Workbench.",
+                    comps=["Trading Workbench", "ION Openlink Endur", "Platts Price Assess", "Model Serving", "Unity Catalog"]),
+                uc("Leak Detection", "HSE", "observ", "Optical gas imaging and sensor anomalies triaged to repair work orders.",
+                    problem="Leaks are caught on periodic survey rounds, and the optical-gas and mass-balance signals that would flag a release early sit unlinked from the repair workflow.",
+                    who="HSE & Compliance",
+                    how="Imaging and sensor anomalies feed vision and AI Functions models scored in Model Serving on Lakehouse//RT, and detections become repair work orders on the HSE Dashboard.",
+                    comps=["HSE Dashboard", "FLIR Optical Gas Img", "AI Functions", "Model Serving", "Lakehouse//RT"],
+                    stories=[
+                        ["Pipeline Flow Monitoring detects leaks as small as 0.01% of throughput", "https://www.databricks.com/blog/pipeline-flow-monitoring"],
+                    ]),
+                uc("Emissions Reporting", "Regulatory", "gavel", "Flare and vent volumes filed from governed historian lineage.",
+                    problem="Regulatory greenhouse filings are stitched from historian extracts and spreadsheets, so flare and vent volumes are hard to trace from sensor to submission when a regulator asks.",
+                    who="HSE & Compliance",
+                    how="Flare and emissions events conform on Delta Lake against EPA GHGRP layouts under Unity Catalog, giving one auditable lineage from sensor to filing surfaced on the HSE Dashboard.",
+                    comps=["HSE Dashboard", "EPA GHGRP Templates", "Enablon EHS", "Unity Catalog", "Delta Lake"],
+                    stories=[
+                        ["Repsol drives sustainability efforts with Databricks", "https://www.databricks.com/customers/repsol"],
+                        ["Data and AI in action across the energy industry", "https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry"],
+                    ]),
+                uc("Reserves Reconciliation", "Subsurface", "sheet", "Production and test data reconciled to reservoir models for booking.",
+                    problem="Production actuals, well tests and reservoir models are reconciled by hand at booking time, so reserves estimates lag the field and the audit trail behind a booking is thin.",
+                    who="Upstream Operations",
+                    how="Well test and accounting data conform on Delta Lake under Unity Catalog against subsurface models, and reconciled balances surface for the subsurface team on the Production Control screen.",
+                    comps=["Production Control", "Schlumberger OFM", "SAP IS-Oil", "Delta Lake", "Unity Catalog"],
+                    stories=[
+                        ["Devon Energy processes a full well in hours across geophysical and seismic data", "https://www.databricks.com/customers/devon-energy"],
+                    ]),
+                uc("Corrosion Monitoring", "Integrity", "stream", "Thickness and coupon data scored against inspection intervals.",
+                    problem="Thickness readings and coupon results arrive on inspection cycles, so integrity risk is judged against a fixed interval rather than the actual corrosion rate the data shows.",
+                    who="Midstream & Terminals",
+                    how="Inspection and historian data feed corrosion-rate models tracked in MLflow and scored in Model Serving, so risk-based intervals and permits are raised from the HSE Dashboard.",
+                    comps=["HSE Dashboard", "Sphera Risk Mgmt", "AVEVA PI System", "Model Serving", "MLflow"],
+                    stories=[
+                        ["Predictive maintenance on sensor and maintenance-record data in oil & gas", "https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html"],
+                    ]),
+                uc("JV Allocation", "Finance", "erp", "Joint-venture splits validated before partner statements post.",
+                    problem="Joint-venture splits are assembled from production accounting exports and reconciled in spreadsheets, so partner statements post late and disputes surface after the numbers are out.",
+                    who="Corporate & Asset Leaders",
+                    how="Production accounting and treasury data conform on Delta Lake under Unity Catalog, and validated allocations feed AI/BI so splits are checked before partner statements post.",
+                    comps=["SAP IS-Oil", "Corporate Treasury Mart", "Unity Catalog", "Delta Lake", "AI/BI"]),
+            ],
+        ),
+        "sources": {
+            "aveva-pi": {"t": "AVEVA PI System", "u": "https://www.aveva.com/en/products/pi-system/"},
+            "slb-ofm": {"t": "Schlumberger OFM", "u": "https://www.slb.com/"},
+            "honeywell-exp": {"t": "Honeywell Experion PKS", "u": "https://process.honeywell.com/us/en/products/control-and-supervision/experion-pks"},
+            "quorum-pgas": {"t": "Quorum PGAS", "u": "https://www.quorumsoftware.com/solutions/midstream/"},
+            "opentext-vim": {"t": "OpenText Vessel Information Management", "u": "https://www.opentext.com/products/vessel-information-management"},
+            "kpler": {"t": "Kpler", "u": "https://www.kpler.com/"},
+            "ion-endur": {"t": "ION Openlink Endur", "u": "https://iongroup.com/commodities/"},
+            "sap-is-oil": {"t": "SAP IS-Oil", "u": "https://www.sap.com/industries/oil-gas.html"},
+            "platts": {"t": "S&P Global Platts", "u": "https://www.spglobal.com/commodityinsights/en/products-services/energy"},
+            "sphera": {"t": "Sphera risk management", "u": "https://sphera.com/operational-risk-management-software/"},
+            "enablon": {"t": "Wolters Kluwer Enablon", "u": "https://www.wolterskluwer.com/en/solutions/enablon"},
+            "epa-ghgrp": {"t": "EPA GHGRP", "u": "https://www.epa.gov/ghgreporting"},
+        },
+    },
+}

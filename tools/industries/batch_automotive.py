@@ -1,0 +1,263 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles (never common.TECH_PPL)."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles[:3]},
+    ]
+
+
+INDUSTRIES_BATCH_AUTOMOTIVE = {
+    'automotive': {
+        "label": "Automotive",
+        "blurb": "Vehicle design, manufacturing, dealer networks, connected services, and aftersales across OEMs, tier suppliers, and mobility fleets.",
+        "medallion": medallion(
+            "Raw plant and vehicle feeds",
+            "MES, telematics, dealer DMS and warranty claims landed exactly as received so a VIN lifecycle can be replayed.",
+            "Conformed vehicles and parts",
+            "VINs, BOMs, dealers and service events resolved into single entities across engineering, plant and retail systems.",
+            "Quality, throughput, loyalty",
+            "Contracted products operations and sales run on: plant OEE, defect PPM, days supply and service retention.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "Engineering & PLM", "ic": "product", "tiles": [
+                    tile("Siemens Teamcenter", "product", "EBOM, change orders and variant configuration through SOP.", "teamcenter"),
+                    tile("Dassault 3DEXPERIENCE", "product", "CAD, simulation and manufacturing process definitions.", "3dexperience"),
+                    tile("PTC Windchill", "product", "Part masters, effectivity and supplier packages.", "windchill"),
+                ]},
+                {"box": "Manufacturing MES", "ic": "iot", "tiles": [
+                    tile("Siemens Opcenter", "iot", "Line sequencing, torque traces, andon events by station.", "opcenter"),
+                    tile("Rockwell FactoryTalk", "iot", "PLC tags, quality checks and downtime reason codes.", "factorytalk"),
+                    tile("Bosch Nexeed", "stream", "Tier-1 JIT sequencing and logistics for assembly plants.", "nexeed"),
+                ]},
+                {"box": "Dealer & Retail", "ic": "market", "tiles": [
+                    tile("CDK Global DMS", "erp", "Dealer inventory, deals, F&I and service ROs.", "cdk"),
+                    tile("Reynolds ERA", "erp", "Retail, parts and service transactions across dealer groups.", "reynolds"),
+                    tile("VinSolutions CRM", "custlake", "Leads, appointments and sold-not-reported tracking.", "vinsolutions"),
+                ]},
+                {"box": "Connected Vehicle", "ic": "stream", "tiles": [
+                    tile("OEM Telematics Gateway", "iot", "CAN signals, GPS and remote diagnostics from connected fleets.", "telematics"),
+                    tile("HERE HD Maps", "globe", "Lane-level map tiles for ADAS and navigation features.", "here-maps"),
+                    tile("Aptiv Smart Vehicle", "zplug", "Sensor fusion and software-defined feature telemetry.", "aptiv"),
+                ]},
+                {"box": "Aftersales & Parts", "ic": "zplug", "tiles": [
+                    tile("SAP Aftermarket", "erp", "Parts catalog, supersession and dealer ordering.", "sap-aftermarket"),
+                    tile("Mitchell Repair", "product", "Labor guides, TSBs and repair procedures.", "mitchell"),
+                ]},
+                fed_group("Finance & Warranty Mart", "Warranty accrual and revenue recognition marts queried in place under Unity Catalog."),
+            ],
+            "ing": ing_rail([
+                tile("JD Power IQS/SSI", "chart", "Initial quality and sales satisfaction benchmarks by segment.", "jdpower"),
+                tile("Polk Registration", "market", "Vehicle registration and conquest data by geography.", "polk"),
+                tile("UNECE WP.29 R155", "gavel", "Cybersecurity and software update compliance telemetry.", "unece-r155"),
+            ]),
+            "ppl": ppl2([
+                biz("CEO & Mfg COO", "Genie One",
+                    "The CEO on market share and program ROI; the COO on plant OEE, first-time-through quality and defect PPM against the launch curve by line.",
+                    [["Genie One", "Ask what last month's plant OEE was by line."], ["AI/BI", "Quality and throughput on certified Metric Views."], ["Unity Catalog", "One VIN definition across plant and dealer."]],
+                    sub=[
+                        ["CEO", "market share, program ROI and the trade between growth and plant capacity."],
+                        ["Manufacturing COO", "plant OEE, first-time-through quality and defect PPM against the launch curve."],
+                        ["Chief Strategy Officer", "the EV transition, software revenue and where the vehicle portfolio is headed."],
+                    ],
+                    ucs=["Predictive Quality", "Launch Curve Tracking", "Supplier PPM", "EV Battery Health"]),
+                biz("Manufacturing", "Lakehouse//RT",
+                    "Line balancing, andon response and launch curve tracking, run on OEE, cycle time and bottleneck-station losses against takt.",
+                    [["Plant Cockpit", "Live OEE and bottleneck stations on the floor."], ["Lakehouse//RT", "Torque and vision checks at line latency."]],
+                    sub=[
+                        ["Plant Manager", "line OEE, andon response and hitting the daily build-to-plan."],
+                        ["Production Engineering", "takt balance, station cycle time and bottleneck losses on the line."],
+                        ["Launch / Program Manager", "the SOP ramp and closing quality gaps against the launch curve."],
+                    ],
+                    ucs=["Predictive Quality", "Launch Curve Tracking", "Supplier PPM"]),
+                biz("Quality Engineering", "AI/BI",
+                    "Defect pareto, supplier PPM and containment across plants, tracked on warranty cost per vehicle, scrap rate and time-to-containment.",
+                    [["Quality Command", "Emerging defect trends before field campaigns."], ["AI/BI", "PPM and scrap on governed inspection data."]],
+                    sub=[
+                        ["Quality Director", "warranty cost per vehicle, field campaigns and time-to-containment."],
+                        ["Supplier Quality", "incoming PPM and containment across the tier-1 supply base."],
+                        ["Field Quality", "emerging defect clusters and the recall or OTA fix that follows."],
+                    ],
+                    ucs=["Predictive Quality", "Supplier PPM", "Warranty Recovery", "OTA Campaign Mgmt"]),
+                biz("Sales & Marketing", "Model Serving",
+                    "Incentive planning, conquest targeting and digital lead scoring, judged on incentive spend per unit, conquest rate and margin.",
+                    [["Incentive Optimizer", "Program spend against margin guardrails."], ["Model Serving", "Lead scores in the CRM routing path."]],
+                    sub=[
+                        ["CMO", "conquest rate, brand demand and incentive spend per unit."],
+                        ["Incentive Planning", "program spend against margin and residual guardrails."],
+                        ["Digital Marketing", "lead scoring, conquest targeting and the dealer handoff."],
+                    ],
+                    ucs=["Dealer Inventory Opt", "Conquest Marketing", "Connected Diagnostics"]),
+                biz("Aftersales", "Apps",
+                    "Service retention, parts availability and warranty recovery, measured on retention rate, parts fill rate and chargeback recovery.",
+                    [["Service Advisor App", "Next-best service offers on governed vehicle history."], ["Apps", "Dealer tools hosted next to governed data."]],
+                    sub=[
+                        ["Service Operations", "service retention, fix-first-visit and dealer capacity."],
+                        ["Parts & Supply", "parts fill rate and days supply across DCs and dealers."],
+                        ["Warranty Management", "chargeback recovery and warranty cost against accrual."],
+                    ],
+                    ucs=["Warranty Recovery", "Parts Forecasting", "Connected Diagnostics", "EV Battery Health"]),
+            ], [
+                biz("Data Engineers", "Lakeflow",
+                    "Land MES torque traces, telematics CAN signals, dealer DMS and warranty claims; own Bronze to Silver and the pager when the OEE tables stall.",
+                    [["Lakeflow Connect", "Managed connectors for MES, ERP and dealer DMS sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on line and telematics feeds."], ["Lakewatch", "Freshness on the OEE and quality tables the plant reads each shift."]],
+                    sub=[
+                        ["Streaming / Plant Data", "MES torque traces and andon events at line latency."],
+                        ["Telematics Data", "CAN signals and remote diagnostics off the connected fleet."],
+                        ["Dealer & Warranty Data", "DMS, warranty claims and the finance mart feeds."],
+                    ],
+                    ucs=["Predictive Quality", "Connected Diagnostics", "Warranty Recovery"]),
+                biz("Data Scientists", "MLflow",
+                    "Predictive-quality, remaining-useful-life, lead-scoring and incentive models, and whether they still hold across a model-year changeover.",
+                    [["Feature Store", "VIN and station features read identically in training and serving."], ["MLflow", "Every quality and RUL model tracked for audit and reproduction."], ["Model Serving", "Quality and lead models scored in the line and CRM path."]],
+                    sub=[
+                        ["Quality & Reliability ML", "predictive-quality and remaining-useful-life models by station and VIN."],
+                        ["Connected-Vehicle ML", "fault prediction and battery state-of-health from telemetry."],
+                        ["Commercial ML", "lead scoring, conquest and incentive optimisation models."],
+                    ],
+                    ucs=["Predictive Quality", "Connected Diagnostics", "EV Battery Health", "Conquest Marketing"]),
+                biz("App Developers", "Apps",
+                    "Ship the plant cockpit, quality command, incentive optimizer and service advisor apps operations and dealers work in, next to governed VIN data.",
+                    [["Apps", "Plant and dealer screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for line and service-advisor state."], ["Agent Bricks", "Agents that draft containment and work orders against governed tools."]],
+                    sub=[
+                        ["Plant Apps", "the Plant Cockpit and Quality Command screens on the floor."],
+                        ["Dealer & Service Apps", "the Service Advisor and incentive tools dealers work in."],
+                        ["Agent & Workflow", "agents drafting containment and work orders on governed data."],
+                    ],
+                    ucs=["Predictive Quality", "Warranty Recovery", "Dealer Inventory Opt", "Connected Diagnostics"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                    tile("Tableau / Power BI", "chart", "Plant and regional sales dashboards on serverless SQL."),
+                    tile("Microsoft Teams", "chat", "Genie in Teams for quality and inventory in plant channels."),
+                    tile("Notebooks & IDEs", "notebook", "Engineering notebooks against governed BOM and telemetry."),
+                ]},
+                {"box": "Dealer & Partners", "ic": "partner", "tiles": [
+                    tile("Dealer Inventory Feed", "api", "Days supply and allocation pushed to DMS nightly.", "cdk"),
+                    tile("OTA Update Channel", "iot", "Software campaigns delivered to connected VINs.", "telematics"),
+                    tile("Supplier Portal", "zplug", "ASN and quality alerts shared with tier-1 suppliers.", "nexeed"),
+                ]},
+                {"box": "Operational Writeback", "ic": "opdb", "tiles": [
+                    tile("Line Sequencing", "stream", "Re-sequenced build orders sent to MES after disruption."),
+                    tile("Recall Campaign List", "gavel", "Affected VINs pushed to dealer service systems."),
+                    tile("Parts Allocation", "product", "Scarce parts prioritized to high-value ROs.", "sap-aftermarket"),
+                ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                    tile("NHTSA Reporting", "gavel", "Safety defects and recall filings from governed case data."),
+                    tile("EU CO2 Fleet Targets", "share", "Fleet emissions reported to regulators.", "unece-r155"),
+                ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                    tile("Data Products", "product", "Vehicle and quality products in Unity Catalog Domains."),
+                    tile("Sharing Recipients", "share", "Suppliers and finance partners via Delta Sharing."),
+                ]},
+            ]),
+        },
+        "top": top_band(
+            [app("Plant Cockpit", "Line OEE", "gauge", "Live throughput, andon state and bottleneck stations across assembly lines."),
+             app("Quality Command", "Defect intelligence", "gavel", "Emerging defect clusters flagged before field campaigns are required."),
+             app("Incentive Optimizer", "Program planning", "market", "Regional incentive spend modeled against margin and conquest targets."),
+             app("Service Advisor App", "Aftersales", "custlake", "Next-best service and retention offers on governed vehicle history.")],
+            [uc("Predictive Quality", "Manufacturing", "iot", "Torque and vision anomalies predicted before vehicles leave the station.",
+                problem="Defects are caught at final inspection or in the field, long after the station that caused them, so scrap, rework and warranty cost are locked in before anyone sees the pattern.",
+                who="Manufacturing",
+                how="Torque and vision checks stream into Lakehouse//RT; station features in Feature Store feed Model Serving models that flag suspect builds on the Plant Cockpit before the station releases.",
+                comps=["Plant Cockpit", "Lakehouse//RT", "Model Serving", "Feature Store", "Siemens Opcenter"],
+                stories=[
+                    ["Toyota uses Zerobus Ingest for real-time factory data", "https://www.databricks.com/customers/toyota/lakeflow-connect"],
+                    ["Predictive quality starts where defect detection stops", "https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops"],
+                ]),
+             uc("Launch Curve Tracking", "Program", "sheet", "Build and quality ramp against SOP targets by week.",
+                problem="A new-model launch must hit build rate and quality targets week over week, but ramp data is scattered across MES, quality and program spreadsheets, so gaps surface too late to correct.",
+                who="Manufacturing",
+                how="Build, quality and station data are conformed on Delta Lake under Unity Catalog and tracked on the Plant Cockpit and AI/BI against SOP targets, so program teams see the ramp by week.",
+                comps=["Plant Cockpit", "AI/BI", "Unity Catalog", "Siemens Opcenter", "Delta Lake"],
+                stories=[
+                    ["Automotive giant turns data into business value with Databricks", "https://www.databricks.com/blog/automotive-giant-turns-data-business-value-databricks"],
+                ]),
+             uc("Connected Diagnostics", "Telematics", "stream", "Remote fault prediction triggering proactive service offers.",
+                problem="Faults are discovered when a warning light comes on or the vehicle is towed in, and the telemetry that would have predicted the failure sits unused in the connected-vehicle stream.",
+                who="Aftersales",
+                how="CAN signals and remote diagnostics land in Lakehouse//RT; fault models tracked in MLflow and served through Model Serving raise proactive service offers in the Service Advisor App.",
+                comps=["Service Advisor App", "OEM Telematics Gateway", "Lakehouse//RT", "Model Serving", "MLflow"],
+                stories=[
+                    ["Rivian improves vehicle health and performance with Databricks", "https://www.databricks.com/customers/rivian"],
+                ]),
+             uc("Warranty Recovery", "Aftersales", "erp", "Supplier chargebacks matched to field failure modes.",
+                problem="Warranty spend is written off as a cost of doing business because linking a field failure to the responsible supplier lot and claim is manual, so recoverable chargebacks are never pursued.",
+                who="Aftersales",
+                how="Warranty claims, parts and field failures are conformed under Unity Catalog and analysed in Quality Command and AI/BI, matching failure modes to supplier lots so chargebacks are recovered.",
+                comps=["Quality Command", "Finance & Warranty Mart", "AI/BI", "Unity Catalog", "SAP Aftermarket"]),
+             uc("Dealer Inventory Opt", "Retail", "market", "Allocation and days supply tuned by market demand.",
+                problem="Vehicles pile up on some dealer lots while hot configurations sell out elsewhere, because allocation runs on stale days-supply numbers rather than live market demand by region.",
+                who="Sales & Marketing",
+                how="DMS inventory and registration demand are conformed on Delta Lake and scored in Model Serving, so allocation and days-supply targets are tuned by market and pushed back to dealer systems.",
+                comps=["CDK Global DMS", "Model Serving", "AI/BI", "Polk Registration", "Delta Lake"],
+                stories=[
+                    ["Al-Futtaim becomes customer-centric with Databricks", "https://www.databricks.com/customers/al-futtaim"],
+                ]),
+             uc("OTA Campaign Mgmt", "Software", "api", "Feature rollouts and recalls delivered over the air.",
+                problem="Software features and safety fixes must reach the right VINs over the air, but eligibility, version state and results live in systems that disagree, so rollouts stall or misfire.",
+                who="Quality Engineering",
+                how="VIN, version and telematics state are conformed under Unity Catalog and scored in Model Serving, so campaigns target eligible VINs and results are tracked against R155 compliance.",
+                comps=["OEM Telematics Gateway", "Unity Catalog", "Model Serving", "UNECE WP.29 R155", "Aptiv Smart Vehicle"]),
+             uc("Supplier PPM", "Quality", "zplug", "Incoming quality scored and ranked across the supply base.",
+                problem="Incoming quality varies lot by lot, but supplier defect data is buried in inspection systems, so problem suppliers are ranked on gut feel long after bad parts reach the line.",
+                who="Quality Engineering",
+                how="Inspection, containment and line-defect data are conformed under Unity Catalog and scored in Quality Command and Model Serving, ranking supplier PPM so problem lots are caught early.",
+                comps=["Quality Command", "Bosch Nexeed", "Model Serving", "AI/BI", "Unity Catalog"],
+                stories=[
+                    ["Predictive quality starts where defect detection stops", "https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops"],
+                ]),
+             uc("Conquest Marketing", "Sales", "custlake", "Competitive owners targeted with governed registration data.",
+                problem="Winning a competitor's owner means knowing who is in-market and what they drive, but registration, CRM and campaign data sit apart, so campaigns spray broad and waste incentive budget.",
+                who="Sales & Marketing",
+                how="Registration and CRM data are conformed on Delta Lake and scored with AI Functions and Model Serving in the Incentive Optimizer, targeting competitive owners with the right offer.",
+                comps=["Incentive Optimizer", "Polk Registration", "VinSolutions CRM", "Model Serving", "AI Functions"],
+                stories=[
+                    ["Porsche Holding unifies customer data with Databricks", "https://www.databricks.com/customers/porsche/lakeflow-connect"],
+                ]),
+             uc("Parts Forecasting", "Aftersales", "product", "Dealer and DC parts stock against failure curves.",
+                problem="Dealers stock out of the parts customers actually need while capital sits in slow movers, because parts planning ignores the failure curves and field signals that predict real demand.",
+                who="Aftersales",
+                how="Failure, telematics and parts data are conformed on Delta Lake and scored in Model Serving with runs tracked in MLflow, positioning dealer and DC stock against predicted failure curves.",
+                comps=["Service Advisor App", "SAP Aftermarket", "Model Serving", "MLflow", "OEM Telematics Gateway"],
+                stories=[
+                    ["Volvo Group increases inventory visibility with Databricks", "https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines"],
+                ]),
+             uc("EV Battery Health", "Mobility", "iot", "State of health scored for resale and fleet redeployment.",
+                problem="An EV's residual value and second-life potential hinge on battery state of health, but that signal is locked in raw telemetry, so resale and fleet redeployment decisions are made blind.",
+                who="Aftersales",
+                how="Battery telemetry streams into Lakehouse//RT; state-of-health models tracked in MLflow and served through Model Serving score each pack for resale, warranty and fleet redeployment.",
+                comps=["OEM Telematics Gateway", "Model Serving", "Lakehouse//RT", "MLflow", "Feature Store"],
+                stories=[
+                    ["Mercedes-Benz transforms the car experience with Databricks", "https://www.databricks.com/customers/mercedes-benz"],
+                ])],
+        ),
+        "sources": {
+            "teamcenter": {"t": "Siemens Teamcenter", "u": "https://plm.sw.siemens.com/en-US/teamcenter/"},
+            "3dexperience": {"t": "Dassault 3DEXPERIENCE", "u": "https://www.3ds.com/3dexperience"},
+            "windchill": {"t": "PTC Windchill", "u": "https://www.ptc.com/en/products/windchill"},
+            "opcenter": {"t": "Siemens Opcenter", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
+            "factorytalk": {"t": "Rockwell FactoryTalk", "u": "https://www.rockwellautomation.com/en-us/products/software/factorytalk.html"},
+            "nexeed": {"t": "Bosch Nexeed", "u": "https://www.bosch-connected-industry.com/"},
+            "cdk": {"t": "CDK Global", "u": "https://www.cdkglobal.com/"},
+            "reynolds": {"t": "Reynolds and Reynolds", "u": "https://www.reyrey.com/"},
+            "vinsolutions": {"t": "VinSolutions", "u": "https://www.vinsolutions.com/"},
+            "telematics": {"t": "Connected vehicle telematics", "u": "https://www.sae.org/standards/content/j3016_202104/"},
+            "here-maps": {"t": "HERE Technologies", "u": "https://www.here.com/platform"},
+            "aptiv": {"t": "Aptiv", "u": "https://www.aptiv.com/"},
+            "sap-aftermarket": {"t": "SAP Automotive", "u": "https://www.sap.com/industries/automotive.html"},
+            "mitchell": {"t": "Mitchell International", "u": "https://www.mitchell.com/"},
+            "jdpower": {"t": "J.D. Power", "u": "https://www.jdpower.com/business/automotive"},
+            "polk": {"t": "S&P Global Mobility Polk", "u": "https://www.spglobal.com/mobility/"},
+            "unece-r155": {"t": "UNECE WP.29 R155", "u": "https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security"},
+        },
+    },
+}

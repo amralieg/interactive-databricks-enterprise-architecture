@@ -1,0 +1,255 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles (never common.TECH_PPL)."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles[:3]},
+    ]
+
+
+INDUSTRIES_BATCH_STAFFING_HR = {
+    'staffing_hr': {
+        "label": "Staffing & HR",
+        "blurb": "Staffing firms and HR service providers: candidate sourcing, placement lifecycle, vendor management systems, payroll and compliance, and workforce analytics across clients and geographies.",
+        "medallion": medallion(
+            "Raw HR and placement feeds",
+            "ATS applications, VMS requisitions, timecards, payroll runs and compliance documents, landed exactly as received so a placement margin or a credential can always be replayed.",
+            "Conformed worker, req, client",
+            "Candidates, requisitions, placements and time entries resolved into single conformed entities across ATS, VMS and payroll, with assignment dates stitched to one engagement.",
+            "Fill rate, margin, compliance",
+            "Contracted products sales and finance run on: time-to-fill, gross margin by client, credential expiry risk, overtime and bill-pay spread by skill.",
+        ),
+        "rails": {
+            "src": [
+                {"box": "ATS & Recruiting", "ic": "erp", "tiles": [
+                    tile("Bullhorn ATS/CRM", "erp", "Candidate records, submissions, interviews and placement history for staffing firms.", "bullhorn"),
+                    tile("Workday Recruiting", "people", "Requisitions, offers and onboarding for corporate HR and RPO programs.", "workday-rec"),
+                    tile("Greenhouse", "sheet", "Structured hiring pipelines, scorecards and DEI reporting for enterprise clients.", "greenhouse"),
+                ]},
+                {"box": "VMS & Contingent", "ic": "market", "tiles": [
+                    tile("Beeline VMS", "market", "Client requisitions, rate cards, approvals and supplier scorecards.", "beeline"),
+                    tile("SAP Fieldglass", "partner", "Contingent workforce procurement, statements of work and compliance tracking.", "fieldglass"),
+                    tile("Magnit VMS", "api", "MSP-managed programs: spend, tenure limits and conversion tracking.", "magnit"),
+                ]},
+                {"box": "Payroll & Time", "ic": "chart", "tiles": [
+                    tile("ADP Workforce Now", "erp", "Payroll, tax and benefits for placed workers across jurisdictions.", "adp"),
+                    tile("UKG Pro WFM", "people", "Time and attendance, scheduling and accruals for hourly placements.", "ukg-pro"),
+                    tile("Deel Global Payroll", "globe", "Contractor payments and compliance in international staffing programs.", "deel"),
+                ]},
+                {"box": "Credentialing", "ic": "gavel", "tiles": [
+                    tile("Symplr Credentialing", "gavel", "Licence verification, expirations and privileging for healthcare staffing.", "symplr"),
+                    tile("Checkr Background", "partner", "Criminal, employment and education checks with adverse action workflow.", "checkr"),
+                    tile("Everify I-9", "gavel", "Employment eligibility verification and audit trail for US placements.", "everify"),
+                ]},
+                {"box": "Learning & Skills", "ic": "product", "tiles": [
+                    tile("Cornerstone LMS", "product", "Client-mandated training completion and skills certifications.", "cornerstone"),
+                    tile("LinkedIn Talent Insights", "chart", "Labour market supply, demand and skill adjacency by geography.", "linkedin-ti"),
+                ]},
+                fed_group("Client HRIS Marts", "Client employee and cost centre marts queried in place under Unity Catalog."),
+            ],
+            "ing": ing_rail([
+                tile("Indeed Job Feed", "api", "Job postings and application funnel metrics ingested for sourcing analytics.", "indeed"),
+                tile("Lightcast Labour Market", "chart", "Occupation demand, wage benchmarks and skills taxonomy updates.", "lightcast"),
+                tile("State Licence Boards", "gavel", "Professional licence status files consumed for credential monitoring.", "symplr"),
+            ]),
+            "ppl": ppl2([
+                biz("CEO & Growth Office", "Genie One", "The CEO on gross margin and client concentration; the COO on fill rate, redeployment and the compliance exposure sitting in open placements.",
+                    [["Genie One", "Ask what last quarter's margin by client was without analyst delay."], ["AI/BI", "Fill rate and spread on certified Metric Views."], ["Unity Catalog", "One placement definition across ATS and payroll."]],
+                    sub=[
+                        ["Chief Executive", "gross margin, client concentration and the bets that grow the book without eroding spread."],
+                        ["Chief Operating Officer", "fill rate, redeployment and the compliance exposure sitting in open placements."],
+                        ["Growth & Strategy", "which client segments and skills to expand into against where the market is moving."],
+                    ],
+                    ucs=["Client Profitability", "Time-to-Fill", "Attrition Prediction", "Rate Benchmarking"]),
+                biz("Recruiting & Sales", "Model Serving", "Recruiters and account managers on req pipelines, submittal quality and rate negotiations, defending time-to-fill and interview velocity.",
+                    [["Recruiter Workbench", "Open reqs, submittal quality and interview velocity."], ["Model Serving", "Candidate match scores in the submission path."]],
+                    sub=[
+                        ["Recruiters", "submittal quality, interview velocity and getting a strong candidate to the client first."],
+                        ["Account Managers", "open reqs by client, rate negotiations and defending time-to-fill on the account."],
+                        ["Sourcing", "building candidate pipelines against scarce skills before the req even opens."],
+                    ],
+                    ucs=["Candidate Matching", "Time-to-Fill", "Rate Benchmarking", "Skills Taxonomy"]),
+                biz("Workforce Operations", "Lakehouse//RT", "Schedulers on shift coverage, overtime creep and credential gaps that would block a worker from starting the client assignment on time.",
+                    [["Coverage Console", "Open shifts and credential expiry on one screen."], ["Lakehouse//RT", "Timecard and credential state at shift latency."]],
+                    sub=[
+                        ["Schedulers", "shift coverage, open shifts and credential gaps that would stop a worker starting on time."],
+                        ["Redeployment", "keeping workers on back-to-back assignments and catching flight risk before an end date."],
+                        ["Field Operations", "overtime creep and the on-site issues that break a client's coverage plan."],
+                    ],
+                    ucs=["Overtime Control", "Attrition Prediction", "Credential Monitoring", "Candidate Matching"]),
+                biz("Payroll & Finance", "AI/BI", "Payroll and billing teams on bill-pay spread, accrual accuracy and client invoicing, chasing margin leakage that hides in missed approvals.",
+                    [["AI/BI", "Margin and leakage on certified views."], ["Genie One", "Ask which clients are below target spread this month."]],
+                    sub=[
+                        ["Payroll Operations", "accurate pay runs, timecard approvals and accruals across jurisdictions."],
+                        ["Billing & Invoicing", "bill-pay spread, client invoicing and the leakage hiding in missed approvals."],
+                        ["Finance & Margin", "gross margin by client, rebates and chargebacks against target spread."],
+                    ],
+                    ucs=["Payroll Leakage", "Client Profitability", "Overtime Control", "Rate Benchmarking"]),
+                biz("Compliance & Risk", "Lakeflow", "Compliance officers on credential expirations, tenure limits and audit response, keeping every placement defensible under client and law.",
+                    [["Compliance Dashboard", "Credential and I-9 status by placement."], ["Lakeflow", "ATS, VMS and payroll feeds conformed for audit."]],
+                    sub=[
+                        ["Compliance Officers", "credential expirations, tenure limits and keeping every placement defensible."],
+                        ["Background & Screening", "background checks, adverse-action workflow and I-9 eligibility on time."],
+                        ["Audit & Reporting", "EEO, OFCCP and client DEI reporting that stands up to an audit."],
+                    ],
+                    ucs=["Credential Monitoring", "DEI Hiring Analytics"]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land ATS submittals, VMS requisitions, timecards and payroll runs; own Bronze to Silver and the pager when a fill-rate or margin table breaks.",
+                    [["Lakeflow Connect", "Managed connectors for ATS, VMS and payroll sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on placement and timecard feeds."], ["Lakewatch", "Freshness on the margin tables finance reads each morning."]],
+                    sub=[
+                        ["Ingestion Engineers", "managed connectors for ATS, VMS and payroll and the Bronze landing zone."],
+                        ["Pipeline Engineers", "Silver conforming of worker, req and placement and the expectations that guard them."],
+                        ["Platform Reliability", "freshness and the pager when a fill-rate or margin table breaks before finance reads it."],
+                    ],
+                    ucs=["Time-to-Fill", "Payroll Leakage", "Credential Monitoring"]),
+                biz("Data Scientists", "MLflow", "Candidate-match, time-to-fill, attrition and rate-benchmark models, and whether they still hold as skills demand and client mix shift.",
+                    [["Feature Store", "Candidate and req features read identically in training and serving."], ["MLflow", "Every match and attrition experiment tracked for audit."], ["Model Serving", "Match and attrition models scored in the submission path."]],
+                    sub=[
+                        ["ML Engineers", "candidate-match, attrition and rate models in both training and serving."],
+                        ["Analytics Science", "time-to-fill decomposition and the margin drivers behind the metrics."],
+                        ["MLOps", "tracking every match and attrition experiment for audit as skills demand shifts."],
+                    ],
+                    ucs=["Candidate Matching", "Attrition Prediction", "Rate Benchmarking", "Skills Taxonomy"]),
+                biz("App Developers", "Apps", "Ship the Recruiter Workbench, Coverage Console and Margin Analyzer apps recruiting and finance work in, next to governed placement data.",
+                    [["Apps", "Recruiting screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for shift and credential state writes."], ["Agent Bricks", "Agents that draft submittals against governed tools."]],
+                    sub=[
+                        ["Workbench Developers", "the Recruiter Workbench and Coverage Console recruiting and ops live in."],
+                        ["Margin & Compliance Apps", "the Margin Analyzer and Compliance Dashboard finance and risk run on."],
+                        ["Agent Developers", "agents that draft submittals and renewal tasks against governed tools."],
+                    ],
+                    ucs=["Candidate Matching", "Overtime Control", "Credential Monitoring", "Payroll Leakage"]),
+            ]),
+            "cons": cons_rail([
+                {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
+                    tile("Tableau / Power BI", "chart", "Client and recruiter dashboards on serverless SQL."),
+                    tile("Microsoft Teams", "chat", "Genie in Teams for fill rate and margin questions in the sales channel."),
+                    tile("Notebooks & IDEs", "notebook", "Workforce analytics notebooks against governed placement data."),
+                ]},
+                {"box": "Client & Supplier", "ic": "partner", "tiles": [
+                    tile("VMS Requisition API", "api", "Submittals and rate confirmations exchanged with client VMS platforms.", "beeline"),
+                    tile("Client Billing Portal", "share", "Invoice backup and timesheet detail shared over Delta Sharing."),
+                    tile("Supplier Scorecards", "globe", "Fill rate and quality metrics returned to MSP programs.", "magnit"),
+                ]},
+                {"box": "Operational Writeback", "ic": "opdb", "tiles": [
+                    tile("ATS Status Updates", "erp", "Interview and offer status written back to Bullhorn.", "bullhorn"),
+                    tile("Shift Offers", "apps", "Open shift notifications pushed to worker mobile apps."),
+                    tile("Credential Renewals", "gavel", "Renewal tasks dispatched before expiry blocks placement.", "symplr"),
+                ]},
+                {"box": "Regulatory & Reporting", "ic": "gavel", "tiles": [
+                    tile("EEO & OFCCP Reports", "gavel", "Hiring diversity metrics filed from governed ATS data.", "greenhouse"),
+                    tile("Pay Equity Analysis", "share", "Compensation parity evidence for client audits."),
+                ]},
+                {"box": "Published Products", "ic": "product", "tiles": [
+                    tile("Data Products", "product", "Workforce analytics products in Unity Catalog Domains."),
+                    tile("Sharing Recipients", "share", "Clients reading live fill and spend metrics via Delta Sharing."),
+                ]},
+            ]),
+        },
+        "top": top_band(
+            [app("Recruiter Workbench", "Req pipeline", "people", "Open requisitions, submittal quality and interview velocity for each recruiter pod."),
+             app("Coverage Console", "Shift staffing", "gauge", "Open shifts, credential gaps and overtime risk before the client shift starts."),
+             app("Margin Analyzer", "Bill-pay spread", "market", "Gross margin and leakage by client, skill and geography on governed payroll data."),
+             app("Compliance Dashboard", "Credential status", "gavel", "Licence, background and I-9 status by placement with renewal workflows.")],
+            [uc("Candidate Matching", "Recruiting", "people", "Skills and availability scored against open reqs before submittal.",
+                problem="Recruiters read resumes and reqs by hand across the ATS and job boards, so strong candidates sit unseen while low-fit submittals burn the client's screening time and the req ages.",
+                who="Recruiting & Sales",
+                how="ATS, VMS and job-board data land through Lakeflow and conform on Delta Lake; match models in Model Serving score skills and availability against open reqs inside the Recruiter Workbench.",
+                comps=["Recruiter Workbench", "Model Serving", "Bullhorn ATS/CRM", "Feature Store", "Delta Lake"],
+                stories=[
+                    ["How DXC built a GenAI workforce agent on Lakebase", "https://www.databricks.com/customers/dxc/lakebase"],
+                    ["104 Corporation personalizes talent acquisition to improve hiring", "https://www.databricks.com/customers/104-corporation"],
+                ]),
+             uc("Time-to-Fill", "Operations", "chart", "Req ageing decomposed by client approval, sourcing and interview stages.",
+                problem="Reqs age for reasons buried across client approvals, sourcing and interview loops, so managers argue over anecdotes instead of seeing where each requisition actually stalls.",
+                who="Recruiting & Sales",
+                how="Requisition events from the ATS and VMS conform under Unity Catalog and decompose into stage-level metrics in AI/BI, so time-to-fill breaks out by client, stage and recruiter on certified views.",
+                comps=["Recruiter Workbench", "Beeline VMS", "Unity Catalog", "AI/BI", "Genie One"],
+                stories=[
+                    ["LA County cuts hiring bottlenecks with a unified lakehouse", "https://www.databricks.com/customers/la-county"],
+                ]),
+             uc("Credential Monitoring", "Compliance", "gavel", "Expiring licences flagged before they block placement or shift.",
+                problem="Licences, background checks and I-9s expire quietly across thousands of active placements, and one lapsed credential can pull a worker off a client shift or void a healthcare contract.",
+                who="Compliance & Risk",
+                how="Credential and licence-board feeds land through Lakeflow and conform under Unity Catalog; expiry rules surface on the Compliance Dashboard so renewals dispatch before a placement is blocked.",
+                comps=["Compliance Dashboard", "Symplr Credentialing", "State Licence Boards", "Lakeflow", "Unity Catalog"],
+                stories=[
+                    ["BAYADA builds an AI-ready platform for compliance monitoring", "https://www.databricks.com/customers/bayada"],
+                ]),
+             uc("Overtime Control", "Workforce", "stream", "Overtime hours predicted and capped against client rules.",
+                problem="Overtime accrues shift by shift against client-specific rules, and by the time it lands on the invoice the margin on the assignment is already gone and hard to claw back.",
+                who="Workforce Operations",
+                how="Timecard and schedule data stream into Lakehouse//RT and feed overtime-forecast models in Model Serving, so the Coverage Console flags at-risk shifts before the hours are worked.",
+                comps=["Coverage Console", "UKG Pro WFM", "Lakehouse//RT", "Model Serving", "AI/BI"]),
+             uc("Payroll Leakage", "Finance", "erp", "Bill-pay mismatches and missed timecard approvals surfaced before close.",
+                problem="Bill-pay spread leaks through missed timecard approvals, wrong rate cards and off-cycle adjustments, and the gap only surfaces after payroll has run and the client has been invoiced.",
+                who="Payroll & Finance",
+                how="Payroll, timecard and VMS rate data conform on Delta Lake and reconcile in the Margin Analyzer, with AI/BI surfacing bill-pay mismatches before the pay run closes.",
+                comps=["Margin Analyzer", "ADP Workforce Now", "Delta Lake", "AI/BI", "Unity Catalog"],
+                stories=[
+                    ["BAYADA validates complex payroll on a governed lakehouse", "https://www.databricks.com/customers/bayada"],
+                ]),
+             uc("Client Profitability", "Finance", "market", "Gross margin by client account including rebates and chargebacks.",
+                problem="Gross margin by client hides behind rebates, chargebacks and spread that live in different systems, so account teams renew low-margin clients without ever seeing the true number.",
+                who="Payroll & Finance",
+                how="Payroll, billing and placement data conform under Unity Catalog into certified margin metrics in the Margin Analyzer, so profitability by client and skill is one governed number in AI/BI.",
+                comps=["Margin Analyzer", "Unity Catalog", "AI/BI", "ADP Workforce Now", "Genie One"]),
+             uc("Attrition Prediction", "Retention", "custlake", "Assignment completion and extension likelihood scored per worker.",
+                problem="Contract workers churn or decline extensions with little warning, leaving the client short mid-assignment and forcing a rushed, expensive backfill that the recruiter absorbs.",
+                who="Workforce Operations",
+                how="Assignment, timecard and engagement features build in Feature Store and score through attrition models in Model Serving, with runs tracked in MLflow so redeployment is planned before a worker leaves.",
+                comps=["Coverage Console", "Feature Store", "Model Serving", "MLflow", "Lakehouse//RT"],
+                stories=[
+                    ["Addressing HR's widening capacity gap with AI", "https://www.databricks.com/blog/addressing-hrs-widening-capacity-gap-ai"],
+                ]),
+             uc("Rate Benchmarking", "Pricing", "chart", "Bill rates compared to market benchmarks by skill and metro.",
+                problem="Bill and pay rates are set from stale spreadsheets and gut feel, so recruiters lose deals by overpricing scarce skills and leave margin on the table where the market has already moved.",
+                who="Recruiting & Sales",
+                how="Internal placement rates join external market benchmarks under Unity Catalog and serve in AI/BI, so recruiters see market spread by skill and metro inside the Recruiter Workbench.",
+                comps=["Recruiter Workbench", "Lightcast Labour Market", "LinkedIn Talent Insights", "Unity Catalog", "AI/BI"],
+                stories=[
+                    ["Crafting a data-driven talent intelligence strategy", "https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare"],
+                ]),
+             uc("DEI Hiring Analytics", "Compliance", "gavel", "Pipeline diversity metrics for client and regulatory reporting.",
+                problem="Diversity metrics for client and regulatory reporting are stitched together by hand from ATS exports, so pipeline gaps and reporting errors surface only when an audit is already underway.",
+                who="Compliance & Risk",
+                how="ATS pipeline data conforms under Unity Catalog into governed diversity metrics in AI/BI, so EEO and client DEI reports run from the same certified data behind the Compliance Dashboard.",
+                comps=["Compliance Dashboard", "Greenhouse", "Unity Catalog", "AI/BI", "Data Products"],
+                stories=[
+                    ["LA County democratizes hiring data to compete for diverse talent", "https://www.databricks.com/customers/la-county"],
+                ]),
+             uc("Skills Taxonomy", "Talent", "product", "Skills inferred from placements and training for future req matching.",
+                problem="Skills live as free text in resumes, LMS records and placement notes, so the same capability is named a dozen ways and no two systems agree on what a worker can actually do.",
+                who="Recruiting & Sales",
+                how="Placement, training and resume text normalize with AI Functions into a governed skills taxonomy under Unity Catalog, feeding candidate features in Feature Store for future req matching.",
+                comps=["AI Functions", "Unity Catalog", "Feature Store", "Cornerstone LMS", "Delta Lake"],
+                stories=[
+                    ["DXC scales a competency agent across 130,000 consultants", "https://www.databricks.com/customers/dxc/lakebase"],
+                    ["Crafting a data-driven talent intelligence strategy", "https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare"],
+                ])],
+        ),
+        "sources": {
+            "bullhorn": {"t": "Bullhorn ATS/CRM", "u": "https://www.bullhorn.com/"},
+            "workday-rec": {"t": "Workday Recruiting", "u": "https://www.workday.com/en-us/products/talent-management/talent-acquisition.html"},
+            "greenhouse": {"t": "Greenhouse", "u": "https://www.greenhouse.com/"},
+            "beeline": {"t": "Beeline VMS", "u": "https://www.beeline.com/"},
+            "fieldglass": {"t": "SAP Fieldglass", "u": "https://www.sap.com/products/spend-management/fieldglass-vms.html"},
+            "magnit": {"t": "Magnit VMS", "u": "https://magnitglobal.com/"},
+            "adp": {"t": "ADP Workforce Now", "u": "https://www.adp.com/what-we-offer/products/adp-workforce-now.aspx"},
+            "ukg-pro": {"t": "UKG Pro", "u": "https://www.ukg.com/solutions/human-capital-management"},
+            "deel": {"t": "Deel global payroll", "u": "https://www.deel.com/"},
+            "symplr": {"t": "Symplr credentialing", "u": "https://www.symplr.com/"},
+            "checkr": {"t": "Checkr", "u": "https://checkr.com/"},
+            "everify": {"t": "E-Verify", "u": "https://www.e-verify.gov/"},
+            "cornerstone": {"t": "Cornerstone LMS", "u": "https://www.cornerstoneondemand.com/"},
+            "linkedin-ti": {"t": "LinkedIn Talent Insights", "u": "https://business.linkedin.com/talent-solutions/talent-insights"},
+            "indeed": {"t": "Indeed", "u": "https://www.indeed.com/hire"},
+            "lightcast": {"t": "Lightcast labour market data", "u": "https://lightcast.io/"},
+        },
+    },
+}
