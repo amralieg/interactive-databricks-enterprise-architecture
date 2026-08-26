@@ -1040,6 +1040,7 @@
      made the platform read as fragments instead of one block. */
   .plat-body .plat-stack { justify-content:flex-start; }
   .plat-stack > .band { flex:0 0 auto; }
+  .plat-top .plat-stack > .band.b-work { flex:1 1 auto; min-height:0; }
   .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; align-items:flex-start; }
   .arm > .band { flex:0 0 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
@@ -1314,7 +1315,15 @@
     font-size:16px; font-weight:800; letter-spacing:-.015em; line-height:1.15; }
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
-  .band.b-work .side-col { gap:8px; }
+  .band.b-work .band-body { flex:1 1 auto; justify-content:space-between; gap:10px; min-height:0; }
+  /* The Genie panel is as tall as its stacked 108px side chips, so its four
+     text columns must stretch to that height and centre their content, or the
+     panel keeps a dead void under the descriptions and beside the chips. */
+  .band.b-work .band-row.mixed { flex:1 1 auto; align-items:stretch; min-height:0; }
+  .band.b-work .panel { align-items:stretch; }
+  .band.b-work .panel-cols { align-items:stretch; }
+  .band.b-work .panel-cols .pcol { justify-content:center; }
+  .band.b-work .side-col { gap:8px; justify-content:space-between; }
   .band.b-work .side-col .schip {
     width:108px; height:108px; flex:0 0 108px;
     flex-direction:column; align-items:center; justify-content:center;
