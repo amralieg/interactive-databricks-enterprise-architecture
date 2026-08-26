@@ -1126,7 +1126,7 @@
     /* One tile column per box. The two boxes already sit side by side, so pairing
        the tiles as well splits one arm four ways and every label clipped. */
     body.shape-h90 .rail.ing .rtiles, body.shape-h90 .rail.ppl .rtiles {
-      grid-template-columns:minmax(0,1fr); }
+      grid-template-columns:minmax(0,1fr); grid-auto-rows:1fr; align-content:stretch; }
     /* ONE hand-over per pocket, up into the bar above it, the same single arrow
        every other shape gives it. It used to hand over up AND down, which is two
        arrows saying one thing: a reader cannot act on the difference between
@@ -1508,6 +1508,8 @@
     align-content:start; }
   .hband.top .cloud-body { grid-auto-rows:1fr; align-items:stretch; }
   .hband.top .ctile { height:100%; align-items:flex-start; }
+  .cloudwrap .cloud-body { grid-auto-rows:1fr; align-items:stretch; align-content:stretch; }
+  .cloudwrap .ctile { height:100%; align-items:flex-start; }
   .cloud-sec + .cloud-sec { border-left:1px dashed var(--line); padding-left:13px; }
 
   /* A fixed column count keeps the last row balanced instead of leaving an orphan. */
@@ -1531,24 +1533,24 @@
   .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line);
     --cloud-bg:var(--g-plum-bg); --cloud-ink:var(--g-plum-ink); margin-bottom:0; }
   body[class*="pal-"] .hband.top { --cloud-tile:var(--g-plum-tile); --cloud-tbd:var(--g-plum-bd); }
-  /* Each horizontal-band tile carries its own zone hue so Apps, Use Cases,
-     Cloud Services and Integrations read as distinct chips on every board. */
-  .hband .ct-h-teal  { --cloud-tile:var(--g-teal-tile);  --cloud-tbd:var(--g-teal-bd);  --cloud-accent:var(--g-teal-line); }
-  .hband .ct-h-blue  { --cloud-tile:var(--g-blue-tile);  --cloud-tbd:var(--g-blue-bd);  --cloud-accent:var(--g-blue-line); }
-  .hband .ct-h-violet { --cloud-tile:var(--g-violet-tile); --cloud-tbd:var(--g-violet-bd); --cloud-accent:var(--g-violet-line); }
-  .hband .ct-h-coral { --cloud-tile:var(--g-coral-tile); --cloud-tbd:var(--g-coral-bd); --cloud-accent:var(--g-coral-line); }
-  .hband .ct-h-amber { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); --cloud-accent:var(--g-amber-line); }
-  .hband .ct-h-green { --cloud-tile:var(--g-green-tile); --cloud-tbd:var(--g-green-bd); --cloud-accent:var(--g-green-line); }
-  .hband .ct-h-rose  { --cloud-tile:var(--g-rose-tile);  --cloud-tbd:var(--g-rose-bd);  --cloud-accent:var(--g-rose-line); }
-  .hband .ct-h-plum  { --cloud-tile:var(--g-plum-tile);  --cloud-tbd:var(--g-plum-bd);  --cloud-accent:var(--g-plum-line); }
-  .hband .ct-h-teal  .ct-sub { color:var(--g-teal-ink); }
-  .hband .ct-h-blue  .ct-sub { color:var(--g-blue-ink); }
-  .hband .ct-h-violet .ct-sub { color:var(--g-violet-ink); }
-  .hband .ct-h-coral .ct-sub { color:var(--g-coral-ink); }
-  .hband .ct-h-amber .ct-sub { color:var(--g-amber-ink); }
-  .hband .ct-h-green .ct-sub { color:var(--g-green-ink); }
-  .hband .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
-  .hband .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
+  /* Top band only: each tile carries its own zone hue. The bottom cloud band keeps
+     one amber wash; only the row height grows to fill the band. */
+  .hband.top .ct-h-teal  { --cloud-tile:var(--g-teal-tile);  --cloud-tbd:var(--g-teal-bd);  --cloud-accent:var(--g-teal-line); }
+  .hband.top .ct-h-blue  { --cloud-tile:var(--g-blue-tile);  --cloud-tbd:var(--g-blue-bd);  --cloud-accent:var(--g-blue-line); }
+  .hband.top .ct-h-violet { --cloud-tile:var(--g-violet-tile); --cloud-tbd:var(--g-violet-bd); --cloud-accent:var(--g-violet-line); }
+  .hband.top .ct-h-coral { --cloud-tile:var(--g-coral-tile); --cloud-tbd:var(--g-coral-bd); --cloud-accent:var(--g-coral-line); }
+  .hband.top .ct-h-amber { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); --cloud-accent:var(--g-amber-line); }
+  .hband.top .ct-h-green { --cloud-tile:var(--g-green-tile); --cloud-tbd:var(--g-green-bd); --cloud-accent:var(--g-green-line); }
+  .hband.top .ct-h-rose  { --cloud-tile:var(--g-rose-tile);  --cloud-tbd:var(--g-rose-bd);  --cloud-accent:var(--g-rose-line); }
+  .hband.top .ct-h-plum  { --cloud-tile:var(--g-plum-tile);  --cloud-tbd:var(--g-plum-bd);  --cloud-accent:var(--g-plum-line); }
+  .hband.top .ct-h-teal  .ct-sub { color:var(--g-teal-ink); }
+  .hband.top .ct-h-blue  .ct-sub { color:var(--g-blue-ink); }
+  .hband.top .ct-h-violet .ct-sub { color:var(--g-violet-ink); }
+  .hband.top .ct-h-coral .ct-sub { color:var(--g-coral-ink); }
+  .hband.top .ct-h-amber .ct-sub { color:var(--g-amber-ink); }
+  .hband.top .ct-h-green .ct-sub { color:var(--g-green-ink); }
+  .hband.top .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
+  .hband.top .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
   .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
     --cloud-bg:var(--g-amber-bg); --cloud-ink:var(--g-amber-ink); }
   body[class*="pal-"] .cloudwrap { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); }
@@ -3061,8 +3063,8 @@ const INDUSTRIES = {
             cite:["ndc"] },
         ]},
       ],
-      /* Seven business teams on Z; in h90 Cargo and Crew swap in for Network and
-         Loyalty so the pocket stays at eight tiles and overflows at four per box. */
+      /* Seven business teams and three technical roles. h90 only reflows tiles into
+         the second box; the same people appear on every shape. */
       ppl:[
         { box:"Business", ic:"zbrief", tiles:[
           { n:"Executive Team", mark:"Genie One",
@@ -3086,18 +3088,11 @@ const INDUSTRIES = {
               ["Continuous Pricing & NDC", "Offers priced per shopping request rather than against a filed fare ladder."],
               ["Model Serving", "Demand and willingness-to-pay models scored inside the offer path."],
             ] },
-          { n:"Network Planning", mark:"AI/BI", skipH90:true,
+          { n:"Network Planning", mark:"AI/BI",
             long:"Which routes are flown, at what frequency and with which aircraft, season by season, against slots and maintenance windows.",
             uses:[
               ["Network & Fleet Planning", "Route and fleet scenarios scored on profitability rather than load factor alone."],
               ["AI/BI", "Route profitability, RASK and CASK on the same definitions the executive team reads."],
-            ] },
-          { n:"Cargo & Mail", mark:"Lakeflow", h90:true,
-            long:"Cargo sales and handling on capacity, yield and ULD build-up; mail and integrator contracts reconciled against flown weight and revenue.",
-            uses:[
-              ["Cargo Revenue & Yield", "Capacity and yield by route and commodity on the same flight facts as passenger revenue."],
-              ["Lakeflow", "CargoSpot, messaging and warehouse feeds conformed for load planning."],
-              ["AI/BI", "Cargo contribution and mail yield on certified Metric Views."],
             ] },
           { n:"Operations Control", mark:"Lakehouse//RT",
             long:"Duty managers in the operations control centre on a disrupted day; ground and ramp teams on turnaround and baggage milestones; customer operations on IROPS rebooking and compensation.",
@@ -3107,18 +3102,11 @@ const INDUSTRIES = {
               ["IROPS Recovery", "Passenger reaccommodation options costed before agents start dialling."],
               ["Lakehouse//RT", "Live operational state at the latency a turnaround moves at."],
             ] },
-          { n:"Loyalty & Ancillary", mark:"CustomerLake", skipH90:true,
+          { n:"Loyalty & Ancillary", mark:"CustomerLake",
             long:"Tier economics, partner earn and the merchandising of seats, bags and lounge access.",
             uses:[
               ["Loyalty & Ancillary", "Personalised offers scored per passenger against the profile the loyalty estate holds."],
               ["CustomerLake", "Segments and activations without copying profiles into a separate CDP."],
-            ] },
-          { n:"Crew & Rostering", mark:"Lakebase", h90:true,
-            long:"Crew planners and rostering controllers on pairing legality, standby cover and disruption recovery when a rotation breaks.",
-            uses:[
-              ["Crew Pairing & Rostering", "Pairings and rosters rebuilt against flight time limitation rules before publish."],
-              ["Lakebase", "Standby calls and roster writes at transactional latency."],
-              ["Lakehouse//RT", "Live disruption state feeding the roster the duty manager is working."],
             ] },
           { n:"Engineering & MRO", mark:"Lakeflow",
             long:"Engineering and maintenance planning on predicted removals, tail health and AMOS work orders raised against the aircraft the airline already flies.",
@@ -3583,20 +3571,12 @@ function providerTiles(key){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
   return (p && Array.isArray(p[key])) ? p[key] : [];
 }
-/* In h90 each pocket is two boxes side by side; four tiles is the per-box cap.
-   Overflow spills into the next box; swaps keep the tile count at eight. */
-const H90_TILE_CAP = 4;
-function railGroupTiles(g){
-  const h90 = document.body.classList.contains("shape-h90");
-  return g.tiles.filter(t => {
-    if(t.h90 && !h90) return false;
-    if(t.skipH90 && h90) return false;
-    return true;
-  });
-}
+/* In h90 each pocket is two boxes side by side; five tiles is the per-box cap.
+   Overflow spills into the next box without changing which tiles exist. */
+const H90_TILE_CAP = 5;
 function railGroupEntries(g){
   const extra = g.from ? providerTiles(g.from) : [];
-  const own = railGroupTiles(g).map(tile => ({ tile, arr: g.tiles, cloudy: false }));
+  const own = g.tiles.map(tile => ({ tile, arr: g.tiles, cloudy: false }));
   const cloud = extra.map(tile => ({ tile, arr: extra, cloudy: true }));
   return g.tail ? cloud.concat(own) : own.concat(cloud);
 }
@@ -3705,7 +3685,9 @@ function renderHBand(target, zone, chip, secs){
     body.style.gridTemplateColumns = `repeat(${ncol}, minmax(0,1fr))`;
     s.sets.forEach(arr=> arr.forEach(tile=>{
       const b = document.createElement("button");
-      b.className = "ctile ct-h-" + indHue[hueN++ % indHue.length];
+      b.className = "ctile";
+      if(target.id === "topband")
+        b.classList.add("ct-h-" + indHue[hueN++ % indHue.length]);
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(tile.n)}</span>` +
         (tile.s ? `<span class="ct-sub">${esc(tile.s)}</span>` : "") + `</span>`;
