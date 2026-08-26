@@ -55,7 +55,7 @@ INDUSTRIES_BATCH3 = {
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
                         tile("Tableau / Qlik / ThoughtSpot", "chart", "External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end."),
-                        tile("Microsoft Teams", "chat", "Genie in Teams for Unity Catalog-governed answers from the lakehouse and andon updates in the channel the plant already works in (Beta)."),
+                        tile("Microsoft Teams", "chat", "Genie in Teams for Unity Catalog-governed answers from the lakehouse and floor andon updates in the channel the plant already works in (Beta)."),
                         tile("Notebooks & IDEs", "notebook", "Notebooks, VS Code and JetBrains against governed data and Genie Code."),
                     ]},
                 {"box": "Plant & ERP", "ic": "opdb", "tiles": [

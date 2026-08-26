@@ -663,7 +663,7 @@ INDUSTRIES_BATCH1 = {
                     tile("PTC Windchill", "product", "Part masters, effectivity and supplier packages.", "windchill"),
                 ]},
                 {"box": "Manufacturing MES", "ic": "iot", "tiles": [
-                    tile("Siemens Opcenter", "iot", "Line sequencing, torque traces and andon events by station.", "opcenter"),
+                    tile("Siemens Opcenter", "iot", "Line sequencing, torque traces, andon events by station.", "opcenter"),
                     tile("Rockwell FactoryTalk", "iot", "PLC tags, quality checks and downtime reason codes.", "factorytalk"),
                     tile("Bosch Nexeed", "stream", "Tier-1 JIT sequencing and logistics for assembly plants.", "nexeed"),
                 ]},
