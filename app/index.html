@@ -972,6 +972,21 @@
   .rtiles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px; align-items:stretch; }
   /* the pockets are one arm wide, so their tiles stack rather than pair up */
   .rail.ing .rtiles, .rail.ppl .rtiles { grid-template-columns:minmax(0,1fr); }
+  /* The pockets are a fixed grid row; on the Z family stretch the last group so
+     a thin Technical box does not leave empty fill below it. h90 is excluded:
+     both boxes sit side by side and overflow already caps row height. */
+  body:not(.shape-h90) .pocket.ppl > .rail,
+  body:not(.shape-h90) .pocket.ing > .rail {
+    flex:1; min-height:0; display:flex; flex-direction:column; }
+  body:not(.shape-h90) .pocket.ppl .rgroup:last-child,
+  body:not(.shape-h90) .pocket.ing .rgroup:last-child {
+    flex:1; min-height:0; display:flex; flex-direction:column; }
+  body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtiles,
+  body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtiles {
+    flex:1; display:flex; flex-direction:column; gap:4px; }
+  body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtile,
+  body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtile {
+    flex:1; min-height:28px; }
   /* Each pocket group reads as its own box wherever the two sit side by side.
      --zone-tile and --zone-bd only exist once a palette class is on the body, so
      both carry a fallback or the boxes lose their edges on the default theme. */
@@ -988,10 +1003,10 @@
   /* a tile supplied by the active cloud provider, not by the static model */
   .rtile.cloudy { border-left-color:var(--g-amber-line); }
   .rtile:hover { border-color:var(--brand); box-shadow:var(--shadow); transform:translateX(1px); }
-  .rtile .ic { width:13px; height:13px; flex:0 0 auto; color:var(--rail-accent); }
-  .rail.ing  .rtile .ic { color:var(--g-teal-ink); }
-  .rail.ppl  .rtile .ic { color:var(--g-violet-ink); }
-  .rtile.cloudy .ic { color:var(--g-amber-ink); }
+  .rtile .ic, .rtile svg.mark { width:13px; height:13px; flex:0 0 auto; color:var(--rail-accent); }
+  .rail.ing  .rtile .ic, .rail.ing  .rtile svg.mark { color:var(--g-teal-ink); }
+  .rail.ppl  .rtile .ic, .rail.ppl  .rtile svg.mark { color:var(--g-violet-ink); }
+  .rtile.cloudy .ic, .rtile.cloudy svg.mark { color:var(--g-amber-ink); }
   .rtile .t-name { font-size:11px; font-weight:650; line-height:1.2; min-width:0; }
   /* ---------- platform (Z shape) ---------- */
   /* Two elements draw one box. The corners that meet are square and the shared
@@ -1112,6 +1127,9 @@
        which is what buys the height back. */
     body.shape-h90 .rail.ing, body.shape-h90 .rail.ppl {
       flex-direction:row; flex-wrap:wrap; align-items:flex-start; gap:12px; }
+    body.shape-h90 .rail.ppl .t-name, body.shape-h90 .rail.ing .t-name,
+    body.shape-h90 .rail.src .t-name {
+      white-space:normal; line-height:1.15; }
     /* Two boxes per row, wrapping to a second row beyond that. `flex:1 1 0` gave
        every group an equal share of one row, which is right for the two the
        generic board has and wrong the moment there are more: an industry People
@@ -2293,7 +2311,8 @@ function markSvg(name, cls){
   return `<svg class="mark ${cls||''}" viewBox="0 0 48 48" fill="none" aria-hidden="true">${g}</svg>`;
 }
 function titleIcon(t, cls){
-  return markSvg(t && t.n, cls) || svg((t && t.ic) || "dot", cls);
+  const m = t && (t.mark || t.n);
+  return markSvg(m, cls) || svg((t && t.ic) || "dot", cls);
 }
 /* Tiles keep their `st` release stage below. It renders in the detail panel and
    deliberately NOT on the canvas: a badge on every tile dates the drawing, but
@@ -2601,21 +2620,21 @@ const ARCH = {
        "Revenue & Pricing" fits. Two-line names in this pocket are not free. */
     ppl: { id:"ppl", name:"Teams", groups:[
       { box:"Business", ic:"zbrief", tiles:[
-        { n:"Executives", ic:"chart",
+        { n:"Executives", mark:"Genie One",
           long:"The leadership accountable for growth, margin, cost to serve and the risk position. They read the platform rather than build on it, so what matters to them is that a number means the same thing in every meeting it is quoted in.",
           uses:[
             ["Genie One", "Ask for last week's margin or cost to serve in plain language, in Slack or Teams, and see the query behind the answer."],
             ["AI/BI", "Executive dashboards built on certified Metric Views, so the number quoted upstairs is the number the team reports."],
             ["Unity Catalog", "Certification and the business glossary, so every headline metric has one owner and one definition."],
           ] },
-        { n:"Business Teams", ic:"people",
+        { n:"Business Teams", mark:"Genie",
           long:"Finance, marketing, sales, service and operations. The largest population on the platform, with no SQL between them and the answer, and the group most exposed to a wrong number.",
           uses:[
             ["Genie One", "Ask questions in Slack, Teams or on mobile and follow up in the same thread, on data they are permitted to see."],
             ["AI/BI", "Self-service dashboards they filter and drill themselves rather than raising a ticket for."],
             ["Excel Add-in", "The same governed tables inside the spreadsheet they already work in, with write-back where it is allowed."],
           ] },
-        { n:"Risk & Compliance", ic:"gavel",
+        { n:"Risk & Compliance", mark:"Unity Catalog",
           long:"Risk, audit, data protection and the regulatory reporting function. They are not asking the platform for insight so much as for evidence: who touched what, where a number came from, and whether the control actually held.",
           uses:[
             ["Unity Catalog", "Lineage, audit and access history behind a control, on the same catalogue the business reads."],
@@ -2625,7 +2644,7 @@ const ARCH = {
       ]},
       /* Ordered from the data's own path: engineered, modelled, analysed, then built on. */
       { box:"Technical", ic:"code", tiles:[
-        { n:"Data Engineers", ic:"lakeflow",
+        { n:"Data Engineers", mark:"Lakeflow",
           long:"The team that owns ingestion and the Bronze to Silver path, and carries the pager for it. Everything else on this rail depends on their tables being correct and on time.",
           uses:[
             ["Lakeflow Connect", "Managed connectors for SaaS and database sources, instead of a hand-written extract per system."],
@@ -2633,7 +2652,7 @@ const ARCH = {
             ["Genie ZeroOps", "Failures triaged and explained, and routine tuning handled without a ticket."],
             ["Lakewatch", "Freshness and quality monitored on the tables they publish, so they hear about a break before the business does."],
           ] },
-        { n:"Data Scientists", ic:"model",
+        { n:"Data Scientists", mark:"MLflow",
           long:"The team building the forecasting, propensity, risk and pricing models, and the one accountable for whether a model still holds six months after it shipped.",
           uses:[
             ["Notebooks & IDEs", "Python, R and Scala against governed tables, in the workspace or in VS Code."],
@@ -2641,21 +2660,21 @@ const ARCH = {
             ["MLflow", "Every run, parameter and metric tracked, so a production model can still be explained later."],
             ["Model Serving", "Models published as endpoints the apps and agents call, with no separate serving stack to own."],
           ] },
-        { n:"Data Analysts", ic:"chart",
+        { n:"Data Analysts", mark:"AI/BI",
           long:"The team that answers what the business cannot answer for itself, and usually the first to notice that a definition has drifted.",
           uses:[
             ["SQL Warehouses", "Serverless SQL over Silver and Gold, under the same permissions the dashboards run on."],
             ["AI/BI", "Dashboards published for the business teams, built on Metric Views rather than on a private query."],
             ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
           ] },
-        { n:"Analytics Engineers", ic:"etl",
+        { n:"Analytics Engineers", mark:"Unity Catalog",
           long:"The layer between engineering and analysis. They model raw tables into tested, documented marts and own what the business words actually mean.",
           uses:[
             ["dbt & External Engines", "Existing dbt projects running on Databricks SQL, keeping their tests and their lineage."],
             ["Unity Catalog", "Metric Views and the business glossary, so revenue is defined once and every tool reads that definition."],
             ["Lakeflow", "Declarative transformations where the model belongs in the pipeline rather than in a downstream tool."],
           ] },
-        { n:"App Developers", ic:"dev",
+        { n:"App Developers", mark:"Apps",
           long:"The team building the applications and agents the business works in, rather than another dashboard for it to read.",
           uses:[
             ["Apps", "Applications hosted next to the data, with no separate web tier to run or secure."],
@@ -2697,7 +2716,7 @@ const ARCH = {
         { n:"3rd-Party SaaS Apps", s:"CRM, ERP, ITSM", ic:"saas",
           long:"Packaged applications that both feed the platform and consume its outputs, connected through Lakeflow Connect inbound and Reverse ETL outbound." },
         { n:"3rd-Party Marketplaces", ic:"share", long:"External data and model marketplaces your products are listed on, and third-party listings consumed back into the lakehouse, exchanged over Open Sharing with no copy." },
-        { n:"Composable CDPs", ic:"custlake", long:"Customer data platforms that compose on top of the lakehouse instead of holding their own copy: Hightouch, Census, RudderStack and similar read governed profiles and segments in place and activate them to campaign and service channels, so the warehouse stays the single source of customer truth. The Databricks-native path for the same job is CustomerLake." },
+        { n:"3rd Party CDPs", ic:"custlake", long:"Customer data platforms that compose on top of the lakehouse instead of holding their own copy: Hightouch, Census, RudderStack and similar read governed profiles and segments in place and activate them to campaign and service channels, so the warehouse stays the single source of customer truth. The Databricks-native path for the same job is CustomerLake." },
       ]},
       { box:"Operational Systems", ic:"opdb", tiles:[
         { n:"ERP & Core Systems", ic:"db", long:"Decisions and scores written back into the systems of record that run the business." },
@@ -3046,7 +3065,7 @@ const INDUSTRIES = {
          a row the platform beside it has to grow to match: see the note on `ppl`. */
       ing:[
         { box:"Cloud ETL", ic:"etl", from:"ingest", tiles:[] },
-        { box:"Messaging", ic:"zplug", tiles:[
+        { box:"3rd Party", ic:"zplug", tiles:[
           { n:"SITA Type-B Messaging", ic:"stream", long:"The teletype-era message bus the industry still runs on: PNL, ADL, MVT and LDM messages parsed on arrival and landed as structured events.",
             cite:["sita-typeb"] },
           { n:"A-CDM Message Bus", ic:"stream", long:"Airport Collaborative Decision Making milestones exchanged with the airport operator, the shared clock for turnaround performance.",
@@ -3055,32 +3074,45 @@ const INDUSTRIES = {
             cite:["ndc"] },
         ]},
       ],
-      /* Eight tiles is the measured capacity: two groups, Business and Technical.
-         Industry titles go on the Business tiles; every technical role is one
-         combined tile so the pocket never grows past the reference height. */
+      /* Seven business teams on Z; in h90 Cargo and Crew swap in for Network and
+         Loyalty so the pocket stays at eight tiles and overflows at four per box. */
       ppl:[
         { box:"Business", ic:"zbrief", tiles:[
-          { n:"Executive Team", ic:"chart",
-            long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the CFO on cash, hedging and unit cost; the Chief Commercial Officer on pricing, distribution, loyalty and ancillary revenue; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record.",
+          { n:"Executive Team", mark:"Genie One",
+            long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record.",
             uses:[
               ["Genie One", "Ask what yesterday's operation cost, or what a route made last month, without booking analyst time."],
               ["AI/BI", "Network profitability, load factor and on-time performance on one certified set of Metric Views."],
               ["Unity Catalog", "Certification and the business glossary, so \"on time\" means one thing across the airline."],
             ] },
-          { n:"Revenue & Pricing", ic:"market",
+          { n:"Finance & Treasury", mark:"AI/BI",
+            long:"The CFO on cash, hedging and unit cost; treasury on fuel and FX exposure; controllership on close and audit.",
+            uses:[
+              ["AI/BI", "Unit cost, CASK and cash metrics on certified Metric Views the board and regulators read."],
+              ["Genie One", "Ask how hedging moved margin last month without waiting on a finance analyst."],
+              ["Unity Catalog", "One definition of revenue and cost across finance and commercial."],
+            ] },
+          { n:"Revenue & Pricing", mark:"Model Serving",
             long:"Revenue management analysts setting bid prices and fare class availability, and pricing teams filing and matching fares against ATPCO rules and the NDC offer catalogue.",
             uses:[
               ["RM Analyst Workbench", "The forecast, override history and revenue at risk on a flight before a bid price is touched."],
               ["Continuous Pricing & NDC", "Offers priced per shopping request rather than against a filed fare ladder."],
               ["Model Serving", "Demand and willingness-to-pay models scored inside the offer path."],
             ] },
-          { n:"Network Planning", ic:"globe",
+          { n:"Network Planning", mark:"AI/BI", skipH90:true,
             long:"Which routes are flown, at what frequency and with which aircraft, season by season, against slots and maintenance windows.",
             uses:[
               ["Network & Fleet Planning", "Route and fleet scenarios scored on profitability rather than load factor alone."],
               ["AI/BI", "Route profitability, RASK and CASK on the same definitions the executive team reads."],
             ] },
-          { n:"Operations Control", ic:"gauge",
+          { n:"Cargo & Mail", mark:"Lakeflow", h90:true,
+            long:"Cargo sales and handling on capacity, yield and ULD build-up; mail and integrator contracts reconciled against flown weight and revenue.",
+            uses:[
+              ["Cargo Revenue & Yield", "Capacity and yield by route and commodity on the same flight facts as passenger revenue."],
+              ["Lakeflow", "CargoSpot, messaging and warehouse feeds conformed for load planning."],
+              ["AI/BI", "Cargo contribution and mail yield on certified Metric Views."],
+            ] },
+          { n:"Operations Control", mark:"Lakehouse//RT",
             long:"Duty managers in the operations control centre on a disrupted day; ground and ramp teams on turnaround and baggage milestones; customer operations on IROPS rebooking and compensation.",
             uses:[
               ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers together."],
@@ -3088,16 +3120,30 @@ const INDUSTRIES = {
               ["IROPS Recovery", "Passenger reaccommodation options costed before agents start dialling."],
               ["Lakehouse//RT", "Live operational state at the latency a turnaround moves at."],
             ] },
-          { n:"Loyalty & Ancillary", ic:"custlake",
+          { n:"Loyalty & Ancillary", mark:"CustomerLake", skipH90:true,
             long:"Tier economics, partner earn and the merchandising of seats, bags and lounge access.",
             uses:[
               ["Loyalty & Ancillary", "Personalised offers scored per passenger against the profile the loyalty estate holds."],
               ["CustomerLake", "Segments and activations without copying profiles into a separate CDP."],
             ] },
+          { n:"Crew & Rostering", mark:"Lakebase", h90:true,
+            long:"Crew planners and rostering controllers on pairing legality, standby cover and disruption recovery when a rotation breaks.",
+            uses:[
+              ["Crew Pairing & Rostering", "Pairings and rosters rebuilt against flight time limitation rules before publish."],
+              ["Lakebase", "Standby calls and roster writes at transactional latency."],
+              ["Lakehouse//RT", "Live disruption state feeding the roster the duty manager is working."],
+            ] },
+          { n:"Engineering & MRO", mark:"Lakeflow",
+            long:"Engineering and maintenance planning on predicted removals, tail health and AMOS work orders raised against the aircraft the airline already flies.",
+            uses:[
+              ["AMOS Work Orders", "Predicted component removals raised as maintenance work orders against the tail."],
+              ["Lakeflow", "Aircraft, component and flight-hour feeds conformed for engineering analytics."],
+              ["MLflow", "Remaining-useful-life models tracked for audit and reproduction."],
+            ] },
         ]},
         { box:"Technical", ic:"code", tiles:[
-          { n:"Data & App Teams", ic:"lakeflow",
-            long:"Data Engineers land the PSS, movement, crew and engineering feeds; Data Scientists build demand, disruption and maintenance models; Data Analysts answer commercial and operations questions the business cannot answer for itself; App Developers build the OCC, turnaround, crew and engineering applications the airline works in.",
+          { n:"Data & App Teams", mark:"Lakeflow",
+            long:"Data Engineers, Data Scientists, Data Analysts and App Developers: land the PSS, movement, crew and engineering feeds; build demand, disruption and maintenance models; answer commercial and operations questions; ship the OCC, turnaround, crew and engineering applications the airline works in.",
             uses:[
               ["Lakeflow Connect", "Managed connectors for the PSS, ERP and SaaS sources."],
               ["Feature Store", "Features defined once and read identically in training and serving."],
@@ -3541,31 +3587,68 @@ function providerTiles(key){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
   return (p && Array.isArray(p[key])) ? p[key] : [];
 }
+/* In h90 each pocket is two boxes side by side; four tiles is the per-box cap.
+   Overflow spills into the next box; swaps keep the tile count at eight. */
+const H90_TILE_CAP = 4;
+function railGroupTiles(g){
+  const h90 = document.body.classList.contains("shape-h90");
+  return g.tiles.filter(t => {
+    if(t.h90 && !h90) return false;
+    if(t.skipH90 && h90) return false;
+    return true;
+  });
+}
+function railGroupEntries(g){
+  const extra = g.from ? providerTiles(g.from) : [];
+  const own = railGroupTiles(g).map(tile => ({ tile, arr: g.tiles, cloudy: false }));
+  const cloud = extra.map(tile => ({ tile, arr: extra, cloudy: true }));
+  return g.tail ? cloud.concat(own) : own.concat(cloud);
+}
+function h90RailSlots(groups){
+  if(!document.body.classList.contains("shape-h90")) return null;
+  const slots = groups.map(g => ({
+    box: g.box, ic: g.ic, tail: g.tail, from: g.from,
+    tiles: g.tiles, entries: [], slotIdx: 0
+  }));
+  groups.forEach((g, gi) => {
+    const entries = railGroupEntries(g);
+    let si = gi;
+    entries.forEach(e => {
+      while(si < slots.length && slots[si].entries.length >= H90_TILE_CAP) si++;
+      if(si >= slots.length) slots[slots.length - 1].entries.push(e);
+      else slots[si].entries.push(e);
+    });
+  });
+  return slots;
+}
 function renderRail(rail, target){
-  rail.groups.forEach(g=>{
-    const extra = g.from ? providerTiles(g.from) : [];
-    if(!g.tiles.length && !extra.length) return;
+  const h90 = (rail.id === "ing" || rail.id === "ppl") ? h90RailSlots(rail.groups) : null;
+  const slots = h90 || rail.groups.map(g => ({
+    box: g.box, ic: g.ic, tail: g.tail, from: g.from,
+    tiles: g.tiles, entries: railGroupEntries(g)
+  }));
+  slots.forEach((slot, gi) => {
+    if(!slot.entries.length) return;
     const wrap = document.createElement("div");
     wrap.className = "rgroup";
     const t = document.createElement("div");
     t.className = "rgroup-t";
-    t.innerHTML = (g.ic ? svg(g.ic,"rg-ic") : "") + `<span class="rg-label">${esc(g.box)}</span>`;
+    t.innerHTML = (slot.ic ? svg(slot.ic,"rg-ic") : "") +
+      `<span class="rg-label">${esc(slot.box)}</span>`;
     wrap.appendChild(t);
     const box = document.createElement("div");
     box.className = "rtiles";
-    const paint = (tile, arr)=>{
+    slot.entries.forEach(({ tile, arr, cloudy }) => {
       const b = document.createElement("button");
-      b.className = "rtile" + (arr === extra ? " cloudy" : "");
+      b.className = "rtile" + (cloudy ? " cloudy" : "");
       b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(tile.n)}</span>`;
       reg(b, tile, arr, rail.name);
       box.appendChild(b);
-    };
-    /* `tail` groups list the provider's own tiles first and keep their static ones
-       at the end, which is where a catch-all like Federation › Other belongs */
-    if(g.tail) extra.forEach(tile=> paint(tile, extra));
-    g.tiles.forEach(tile=> paint(tile, g.tiles));
-    if(!g.tail) extra.forEach(tile=> paint(tile, extra));
-    addBtn(g.tiles, rail.name, box, true);
+    });
+    if(!h90) addBtn(slot.tiles, rail.name, box, true);
+    else if(gi < rail.groups.length &&
+      (rail.groups[gi].tiles.length || rail.groups[gi].from))
+      addBtn(rail.groups[gi].tiles, rail.name, box, true);
     wrap.appendChild(box);
     target.appendChild(wrap);
   });
@@ -3968,7 +4051,7 @@ const LINKS = {
   "Notebooks & IDEs": { dbx:"dev-tools/databricks-connect/", note:"Databricks Connect replaces the local Spark session so code runs remotely; the client Python minor version must match the cluster runtime or the session fails to start." },
   "Operational APIs": { dbx:"dev-tools/sql-execution-tutorial/", site:"https://www.databricks.com/product/lakebase", blog:"https://www.databricks.com/blog/2023/03/07/databricks-sql-statement-execution-api-announcing-public-preview.html", note:"The Statement Execution API runs on a SQL warehouse and carries result-size and wait-timeout limits, so high-QPS low-latency app serving usually needs Lakebase instead." },
   "Reverse ETL": { url:"https://hightouch.com/docs/sources/databricks", dbx:"partners/reverse-etl/hightouch/", site:"https://hightouch.com/", blog:"https://www.databricks.com/blog/2022/04/01/using-hightouch-for-reverse-etl-with-databricks.html", note:"Sync frequency is bounded by the destination SaaS API rate limits rather than by Databricks compute, so very frequent syncs hit the CRM or ad platform first." },
-  "Composable CDPs": { url:"https://hightouch.com/blog/composable-cdp", site:"https://www.databricks.com/discover/enterprise-data-platform/cdp", blog:"https://www.databricks.com/blog/building-complete-and-composable-cdp-lakehouse", note:"Databricks ships no packaged CDP; identity resolution, audience building and activation come from partner tools reading lakehouse tables you have to model yourself." },
+  "3rd Party CDPs": { url:"https://hightouch.com/blog/composable-cdp", site:"https://www.databricks.com/discover/enterprise-data-platform/cdp", blog:"https://www.databricks.com/blog/building-complete-and-composable-cdp-lakehouse", note:"Databricks ships no packaged CDP; identity resolution, audience building and activation come from partner tools reading lakehouse tables you have to model yourself." },
   "3rd-Party Marketplaces": { url:"https://docs.aws.amazon.com/data-exchange/latest/userguide/what-is.html", dbx:"marketplace/get-started-consumer-open/", blog:"https://www.databricks.com/blog/announcing-new-opensharing-and-marketplace-capabilities-ai-era", note:"External marketplaces normally deliver a physical copy into your own storage, whereas consuming from Databricks on a non-Databricks platform is limited to tabular data." },
   "Marketplace Listings": { dbx:"marketplace/create-listing/", site:"https://marketplace.databricks.com/", blog:"https://www.databricks.com/blog/announcing-apps-databricks-marketplace", note:"Public listings require approval through the Databricks Data Partner Program and a Premium-or-above account; volumes, models and notebooks reach only Unity Catalog recipients." },
   "Sharing Recipients": { url:"https://opensharing.io/", dbx:"opensharing/create-recipient/", site:"https://www.databricks.com/product/opensharing", blog:"https://www.databricks.com/blog/introducing-opensharing-next-evolution-delta-sharing-agentic-era", note:"Databricks-to-Databricks recipients use a sharing identifier, while other platforms need bearer-token credentials or OIDC federation." },
