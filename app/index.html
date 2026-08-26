@@ -2971,7 +2971,7 @@ const INDUSTRY_CATALOG = [
   ["advertising","Advertising"], ["aerospace_space","Aerospace & Space"],
   ["agriculture","Agriculture"], ["agtech","AgTech"], ["airlines","Airlines"],
   ["apparel_fashion","Apparel & Fashion"], ["automotive","Automotive"], ["banking","Banking"],
-  ["capital_markets","Capital Markets"], ["casinos_gaming","Casinos & Resorts"],
+  ["capital_markets","Capital Markets"],
   ["chemical_mfg","Chemical Manufacturing"], ["clinical_trials","Clinical Trials"],
   ["construction","Construction"], ["consumer_goods","Consumer Goods"],
   ["crypto_digital_assets","Crypto & Digital Assets"], ["cybersecurity","Cybersecurity"],
@@ -4464,142 +4464,6 @@ const INDUSTRIES = {
       "morningstar":{ t:"Morningstar Direct", u:"https://www.morningstar.com/products/direct" },
       "mifid2":{ t:"MiFID II (ESMA)", u:"https://en.wikipedia.org/wiki/Markets_in_Financial_Instruments_Directive_2014" },
       "cat":{ t:"Consolidated Audit Trail (CAT)", u:"https://www.catnmsplan.com/" }
-    }
-  },
-  casinos_gaming: {
-    label:"Casinos & Resorts",
-    blurb:"Casino resorts and integrated gaming operators: slot and table floor operations, player loyalty and host development, hotel and F&B, sportsbook and iGaming, and AML and responsible-gaming compliance.",
-    medallion:{
-      Bronze:{ s:"Raw gaming and property feeds", long:"Slot machine SAS and G2S meters, table-game ratings, PMS folios and F&B checks, sportsbook and iGaming bet feeds, loyalty transactions and cage entries, landed exactly as received so a jackpot, a rating or a marker can always be replayed as it stood." },
-      Silver:{ s:"Conformed player, trip, property", long:"Patrons, trips and gaming sessions resolved into single conformed entities across the casino floor, hotel, F&B and online estates, with loyalty accounts, hotel guests and online wallets matched to one player and theoretical and actual win reconciled per session." },
-      Gold:{ s:"Theo win, ADT, reinvestment", long:"Contracted products the property runs on: theoretical and actual win and hold by area, average daily theoretical and worth by player, reinvestment and comp ratios, RevPAR and occupancy, and Title 31 and responsible-gaming exposure." },
-    },
-    rails:{
-      src:[
-        { box:"Casino Management", ic:"erp", tiles:[
-            { n:"IGT Advantage", ic:"erp", long:"The casino management system of record: slot and table player tracking, floor accounting, jackpots and bonusing, and the source of carded play and theoretical win.", cite:["igt-advantage"] },
-            { n:"Aristocrat Oasis 360", ic:"erp", long:"The Bally-lineage casino management and player-tracking system, the incumbent floor system where IGT is not, feeding the same rating and win entities.", cite:["oasis"] },
-            { n:"Konami SYNKROS", ic:"product", long:"Casino management and loyalty platform for slot and table tracking, promotions and bonusing across the floor.", cite:["synkros"] },
-            { n:"Everi CashClub", ic:"product", long:"Cage, kiosk and cashless-wallet system: ticket redemption, funds access and the cashless play the floor increasingly runs on.", cite:["everi"] }
-        ] },
-        { box:"Hotel & F&B", ic:"custlake", tiles:[
-            { n:"Agilysys Stay/LMS", ic:"erp", long:"The property management system for casino resorts: reservations, folios, comps and group blocks, the system of record for the hotel side of the trip.", cite:["agilysys"] },
-            { n:"Oracle OPERA PMS", ic:"erp", long:"Hospitality property management for rooms, rates and guest profiles, the incumbent PMS where OPERA is the resort standard.", cite:["opera"] },
-            { n:"Agilysys InfoGenesis", ic:"product", long:"Point of sale for restaurants, bars and retail across the property, the source of F&B checks and non-gaming spend.", cite:["agilysys"] },
-            { n:"Oracle Simphony POS", ic:"product", long:"Enterprise restaurant point of sale for outlets and banqueting, feeding the same F&B and non-gaming revenue entities.", cite:["simphony"] }
-        ] },
-        { box:"Sportsbook & iGaming", ic:"market", tiles:[
-            { n:"Kambi Sportsbook", ic:"market", long:"Sportsbook platform for odds, risk management and bet settlement across retail and online, the trading engine behind the book.", cite:["kambi"] },
-            { n:"OpenBet Platform", ic:"product", long:"Sports-betting engine for bet capture, pricing and settlement at scale, the incumbent platform where OpenBet runs the book.", cite:["openbet"] },
-            { n:"IGT PlayDigital", ic:"product", long:"Online casino and iGaming platform: game content, player wallet and remote game server for the digital estate.", cite:["igt-playdigital"] },
-            { n:"L&W OpenGaming", ic:"product", long:"Light & Wonder's content aggregation and remote game server distributing casino games across online operators.", cite:["lnw-opengaming"] }
-        ] },
-        { box:"Loyalty & Marketing", ic:"partner", tiles:[
-            { n:"Player Loyalty/CRM", ic:"custlake", long:"Tier status, points, earn-and-burn and offer history, the profile every host action and reinvestment decision is scored against." },
-            { n:"SF Marketing Cloud", ic:"crm", long:"Campaign orchestration, journeys and email across the player base, executing the offers and communications the property sends.", cite:["sfmc"] },
-            { n:"Host Management", ic:"people", long:"Host books, contacts and trip planning for premium and VIP players, the source of relationship and reinvestment activity." },
-            { n:"Web & App Clickstream", ic:"observ", long:"Search, browse and session events from the property's web and mobile app, joined to play for online engagement analysis." }
-        ] },
-        { box:"Cage, Credit & Comp.", ic:"gavel", tiles:[
-            { n:"Cage & Credit", ic:"db", long:"Cage transactions, markers, front-money and credit lines, the ledger Title 31 aggregation and AML monitoring run against." },
-            { n:"Title 31 / FinCEN", ic:"gavel", long:"Currency-transaction and suspicious-activity reporting under the Bank Secrecy Act, the regulatory obligation the gaming day is measured against.", cite:["fincen"] },
-            { n:"Surveillance / SDS", ic:"iot", long:"Surveillance and incident systems: game protection, exclusions and integrity events joined to play for investigation." }
-        ] },
-        { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
-            { n:"Casino Accounting", ic:"fed", long:"Revenue-audit, general-ledger and gaming-tax marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited win." }
-        ] }
-      ],
-      ing:[
-        { box:"Cloud ETL", ic:"etl", from:"ingest", tiles:[
-
-        ] },
-        { box:"3rd Party", ic:"zplug", tiles:[
-            { n:"Slot Floor SAS/G2S", ic:"iot", long:"Streaming meter, handle-pull and event messages from the slot floor over the SAS and G2S protocols, the ground truth for coin-in, win and machine state." },
-            { n:"Sportsbook Bet Stream", ic:"stream", long:"Real-time bet, odds and settlement events from the sportsbook and iGaming platforms, the live feed liability and trading are managed against." },
-            { n:"TCS Table Radar", ic:"iot", long:"RFID chip and table-monitoring events from the pit, giving table games the ratings and drop accuracy slots have had for years.", cite:["tcsjohnhuxley"] }
-        ] }
-      ],
-      ppl:[
-        { box:"Business", ic:"zbrief", tiles:[
-            { n:"Property Execs", mark:"Genie One", long:"The CEO and property president on total gaming and non-gaming revenue and EBITDA; the CFO on cash, credit and the cost of reinvestment; the general manager on floor performance, hotel occupancy and the guest experience across the property.", uses:[["Genie One", "Ask what the floor won last night or what a segment is worth this month without booking analyst time."], ["AI/BI", "Gaming win, ADT, RevPAR and reinvestment on one certified set of Metric Views."], ["Unity Catalog", "Certification and the business glossary, so \"theo win\" and \"worth\" mean one thing across the property."]], sub:[{ n:"CEO / President", cares:"total gaming and non-gaming revenue, EBITDA and the property story." }, { n:"CFO & Finance", cares:"cash, credit exposure and the cost of reinvestment." }, { n:"General Manager", cares:"floor performance, occupancy and the guest experience." }], ucs:["Hotel Yield & RevPAR", "Slot Floor Analytics", "Player 360"] },
-            { n:"Casino Ops", mark:"Lakehouse//RT", long:"Slot operations managers on floor mix, denomination and performance by bank; table games on hold, game protection and dealer productivity; the sportsbook and surveillance teams on live risk, limits and integrity across the floor and online.", uses:[["Floor Performance", "Slot and table performance by machine and pit at the latency the floor moves at."], ["Lakehouse//RT", "Live meter, rating and bet state joined as the session unfolds."], ["Model Serving", "Slot-placement, hold and risk models scored in the operational path."]], sub:[{ n:"Slot Operations", cares:"floor mix, denomination and performance by bank." }, { n:"Table Games", cares:"hold, game protection and dealer productivity." }, { n:"Sportsbook & Surveillance", cares:"live risk, limits and floor integrity." }], ucs:["Slot Floor Analytics", "Sportsbook Trading", "Fraud & Bonus Abuse"] },
-            { n:"Player Dev", mark:"Model Serving", long:"Casino hosts managing their book of premium and VIP players; player-development analysts on trip planning, reinvestment and reactivation; the loyalty team on tier economics, earn-and-burn and the worth of every carded player.", uses:[["Host Cockpit", "Each host's book with worth, trip pace and next-best action on Lakebase."], ["Model Serving", "Worth, churn and offer-response models scored per player."], ["CustomerLake", "The player profile activated across gaming, hotel and online without a separate CDP."]], sub:[{ n:"Casino Hosts", cares:"the book of premium and VIP players and their trips." }, { n:"Player Development", cares:"trip planning, reinvestment and reactivation." }, { n:"Loyalty & Rewards", cares:"tier economics, earn-and-burn and carded worth." }], ucs:["Host & Player Dev", "Player 360", "Reinvestment & Comps"] },
-            { n:"Marketing", mark:"AI/BI", long:"The CMO and database-marketing team on segmentation and campaign lift; the reinvestment and offer team on comp mail, free play and the cost of every offer; the digital and iGaming marketers on acquisition, cross-sell and online lifetime value.", uses:[["AI/BI", "Segment worth, offer cost and campaign lift on certified Metric Views."], ["Reinvestment Studio", "Offer and free-play decisions costed against predicted response."], ["Model Serving", "Response, cross-sell and churn propensity scored per player."]], sub:[{ n:"Database Marketing", cares:"segmentation, campaign design and measured lift." }, { n:"Reinvestment & Offers", cares:"comp mail, free play and offer economics." }, { n:"Digital & iGaming", cares:"acquisition, cross-sell and online lifetime value." }], ucs:["Reinvestment & Comps", "Player 360", "iGaming Offers"] },
-            { n:"Compliance", mark:"Unity Catalog", long:"The compliance officer on Title 31 currency reporting and SAR filing; the AML team on structuring, source-of-funds and sanctions screening; the responsible-gaming team on markers of harm, self-exclusion and duty-of-care intervention.", uses:[["AML Watchtower", "CTR and SAR candidates and RG risk flags on one governed screen."], ["Unity Catalog", "One governed, auditable definition of a reportable event across the estate."], ["AI Functions", "Marker notes, KYC documents and alerts parsed and classified at scale."]], sub:[{ n:"Compliance Officer", cares:"Title 31 currency reporting and SAR filing." }, { n:"AML & KYC", cares:"structuring, source-of-funds and sanctions screening." }, { n:"Responsible Gaming", cares:"markers of harm, self-exclusion and intervention." }], ucs:["AML & Title 31", "Responsible Gaming", "Fraud & Bonus Abuse"] }
-        ] },
-        { box:"Technical", ic:"code", tiles:[
-            { n:"Gaming Data Eng", mark:"Lakeflow", long:"Land the slot SAS and G2S meters, table ratings, PMS and POS folios, sportsbook and iGaming feeds and loyalty transactions; own the Bronze to Silver path and the pager when the floor and reinvestment tables stall.", uses:[["Lakeflow Connect", "Managed connectors for the CMS, PMS, POS and loyalty cores."], ["Lakeflow Designer", "Declarative pipelines with expectations on meter, rating and bet feeds."], ["Lakewatch", "Freshness on the floor and marketing tables hosts and analysts read each morning."]] },
-            { n:"Casino ML", mark:"MLflow", long:"Worth, churn, offer-response, slot-placement and responsible-gaming risk models built from carded play, ratings and online behaviour; whether they still hold as the floor mix and player base shift.", uses:[["Feature Store", "Player, session and rating features read identically in training and serving."], ["MLflow", "Every worth and risk model tracked for audit and reproduction."], ["Model Serving", "Worth, response and risk models scored inside the operational path."]] },
-            { n:"App Developers", mark:"Apps", long:"Ship the host, floor, reinvestment and compliance applications the property works in, hosted next to governed data with writes back into the CMS, PMS and loyalty systems.", uses:[["Apps", "Host, floor and compliance screens with no separate web tier to run or secure."], ["Lakebase", "Serverless Postgres for host actions, offer state and case notes with governed writes."], ["Agent Bricks", "Agents that draft a host offer or a SAR narrative against governed tools."]] }
-        ] }
-      ],
-      cons:[
-        { box:"BI & Productivity", ic:"chart", from:"bi", tiles:[
-            { n:"Tableau / Power BI", ic:"chart", long:"Floor, marketing and finance dashboards against serverless SQL with Unity Catalog permissions enforced end to end." },
-            { n:"Microsoft Teams", ic:"chat", long:"Genie in Teams for governed answers on win, worth and reinvestment in the channel the property already works in (Beta)." },
-            { n:"Notebooks & IDEs", ic:"notebook", long:"Analyst and data-science notebooks and IDEs against governed player, floor and online data." }
-        ] },
-        { box:"Distribution & Partners", ic:"partner", tiles:[
-            { n:"Sportsbook Partners", ic:"api", long:"Odds, risk and settlement exchanged with the sportsbook and iGaming platform providers over governed APIs.", cite:["kambi"] },
-            { n:"Affiliate Networks", ic:"partner", long:"Acquisition, referral and revenue-share data reconciled with affiliate and media partners for the online business." },
-            { n:"Data Sharing", ic:"share", long:"Exposure, performance and audience segments shared to partners and jurisdictions over Delta Sharing rather than file exchange." }
-        ] },
-        { box:"Operational Writeback", ic:"opdb", tiles:[
-            { n:"CMS Offer Writeback", ic:"erp", long:"Free play, comps and reinvestment decisions written back into the casino management system so the offer reaches the player's card.", cite:["igt-advantage"] },
-            { n:"PMS & Kiosk Offers", ic:"db", long:"Room offers and rates written into the property management system and to the kiosk so the answer reaches check-in and the floor.", cite:["opera"] },
-            { n:"Player App Push", ic:"apps", long:"Personalised offers, RG nudges and event invites pushed to the mobile app and reels the player actually carries." }
-        ] },
-        { box:"Regulatory & Reporting", ic:"gavel", tiles:[
-            { n:"Gaming Board & MICS", ic:"gavel", long:"Regulatory, MICS and revenue-audit submissions to the gaming control board produced from the same governed tables the property runs on." },
-            { n:"Title 31 Reporting", ic:"sheet", long:"CTR, SAR and 8300 filings to FinCEN filed from contracted Gold products with a full audit trail.", cite:["fincen"] }
-        ] },
-        { box:"Published Products", ic:"product", tiles:[
-            { n:"Data Products", ic:"product", long:"Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing." },
-            { n:"Sharing Recipients", ic:"share", long:"Partners, auditors and jurisdictions reading live tables with no copy and no egress duplication." }
-        ] },
-        { box:"Agent Harnesses", ic:"agents", tiles:[
-            { n:"Omnigent", ic:"omni", s:"Databricks, open source", long:"Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.", caps:["Build", "Deploy", "Optimize", "Govern"], rel:["Agent Bricks", "Unity Gateway"] },
-            { n:"Claude Code", ic:"code", s:"3rd-party harness", long:"Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity Gateway." },
-            { n:"OpenAI Codex", ic:"code", s:"3rd-party harness", long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
-            { n:"Any MCP Harness", ic:"mcp", s:"Cursor, IDEs, frameworks", long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity Gateway registry." }
-        ] }
-      ]
-    },
-    top:[
-      { title:"Apps", ic:"apps", span:3, cols:2, tiles:[
-        { n:"Host Cockpit", s:"Player development", ic:"gauge", long:"The screen a casino host runs their book from: each player's worth, trip pace, offer history and next-best action, with reinvestment room and RG flags in one view, on Databricks Apps over Lakebase." },
-        { n:"Floor Performance", s:"Slot & table ops", ic:"market", long:"Live slot and table performance by machine, bank and pit against theoretical, so operations move underperforming units and rebalance the floor on evidence rather than instinct." },
-        { n:"Reinvestment Studio", s:"Offers & comps", ic:"chart", long:"Where database marketing sizes comp mail, free play and offers against predicted response and worth, so reinvestment is spent on the players who return it." },
-        { n:"AML Watchtower", s:"Compliance & RG", ic:"gavel", long:"CTR and SAR candidates, structuring alerts and responsible-gaming risk flags ranked with the play and cage evidence that supports them, so compliance works the strongest cases first." }
-      ]},
-      { title:"Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
-        { n:"Player 360", s:"Single patron view", ic:"custlake", long:"One governed view of the patron across slot and table play, hotel, F&B, loyalty and online, so worth, segment and next offer are based on the whole relationship, not one system's slice.", problem:"Player data sits in the casino management system, the PMS, the POS, the loyalty engine and the online wallet; stitched by hand, worth is understated, VIPs are missed and every team markets to a different version of the same patron.", who:"Marketing", how:"Slot, table, hotel, F&B and online feeds are matched to one patron through CustomerLake without a separate CDP; worth and segment are scored in Model Serving and surfaced in AI/BI and the Host Cockpit.", comps:["Host Cockpit", "CustomerLake", "Model Serving", "IGT Advantage", "AI/BI"], stories:[{ t:"SciPlay unifies player data to lift retention", u:"https://www.databricks.com/customers/sciplay" }, { t:"Bally's scales real-time gaming intelligence", u:"https://www.databricks.com/customers/ballys" }] },
-        { n:"Slot Floor Analytics", s:"Floor optimisation", ic:"market", long:"Slot and table performance by machine, denomination and pit against theoretical win, so the floor mix, placement and par are set on evidence and underperforming units are moved before a quarter is lost.", problem:"Floor decisions ride on gut and stale reports; without meter-level performance against theoretical, poor performers hold prime space while winners sit in corners, and the mix drifts from what the players actually play.", who:"Casino Ops", how:"SAS and G2S meters and table ratings land through Lakeflow into the lakehouse; performance against theoretical is modelled in Model Serving and explored in AI/BI and the Floor Performance app.", comps:["Floor Performance", "Slot Floor SAS/G2S", "AI/BI", "Aristocrat Oasis 360", "Model Serving"], stories:[{ t:"The Rank Group improves player experience on Lakeflow", u:"https://www.databricks.com/customers/the-rank-group-plc/lakeflow-jobs" }] },
-        { n:"Reinvestment & Comps", s:"Offer economics", ic:"chart", long:"Sizing comp mail, free play and offers against each player's predicted response and worth, so reinvestment lands on the players who return it instead of the same mass drop to everyone.", problem:"Reinvestment is the property's largest discretionary spend, yet offers go out on tier and gut; over-mailed to some and under to others, free play is given away where it changes nothing and withheld where it would have brought a trip.", who:"Marketing", how:"Carded play and response history are conformed in the lakehouse; response and worth models score each offer through Model Serving, and the Reinvestment Studio costs the drop before it is mailed.", comps:["Reinvestment Studio", "CustomerLake", "Model Serving", "Konami SYNKROS", "AI/BI"], stories:[{ t:"Tabcorp personalises offers and saves $1.75M", u:"https://www.databricks.com/customers/tabcorp" }] },
-        { n:"Host & Player Dev", s:"VIP hosting", ic:"people", long:"Giving each host a live book of their players with worth, trip pace and next-best action, so premium and VIP relationships are worked proactively rather than reconstructed from yesterday's reports.", problem:"Hosts fly blind between systems: a VIP's slowing trip pace or a reactivation window is invisible until the play is already gone, and the host learns worth from a spreadsheet a day late.", who:"Player Dev", how:"Player worth, trip-pace and churn signals are scored in Model Serving and served into the Host Cockpit on Lakebase, with Genie One answering ad-hoc questions on a player's history.", comps:["Host Cockpit", "CustomerLake", "Model Serving", "Genie One", "Lakebase"] },
-        { n:"Responsible Gaming", s:"Duty of care", ic:"zshield", long:"Detecting markers of harm from play, deposit and session behaviour and delivering the right intervention at the right time, to protect players and meet a growing duty-of-care obligation.", problem:"Signals of harm are spread across gaming, deposit and session data and surface too late; without scoring behaviour continuously, at-risk players are identified after the damage and regulators after the fact.", who:"Compliance", how:"Play, deposit and session feeds stream into Lakehouse//RT; risk models score markers of harm in Model Serving and AI Functions classifies interactions, driving governed interventions from the AML Watchtower under Unity Catalog.", comps:["AML Watchtower", "Model Serving", "Lakehouse//RT", "AI Functions", "Unity Catalog"], stories:[{ t:"Responsible Gaming Solution Accelerator", u:"https://www.databricks.com/solutions/accelerators/responsible-gaming" }, { t:"Tabcorp advances safer gambling with real-time data", u:"https://www.databricks.com/customers/tabcorp" }] },
-        { n:"AML & Title 31", s:"Financial crime", ic:"gavel", long:"Aggregating cage, marker and wallet activity to identify currency-transaction reports, structuring and suspicious activity, so Title 31 filing is complete, timely and defensible.", problem:"Title 31 aggregation spans the cage, slots, tables and online wallet across a gaming day; done by hand it misses structuring and multi-station patterns, and a late or missed SAR is a regulatory exposure.", who:"Compliance", how:"Cage, marker and wallet activity are conformed in the lakehouse; aggregation and structuring models score CTR and SAR candidates in Model Serving, and AI Functions drafts narratives from marker and KYC notes for the AML Watchtower.", comps:["AML Watchtower", "Cage & Credit", "AI Functions", "Model Serving", "Unity Catalog"] },
-        { n:"Sportsbook Trading", s:"Risk & pricing", ic:"market", long:"Pricing markets, managing liability and personalising the sportsbook in real time, so odds, limits and content respond to the book and the player as the bets come in.", problem:"Bets and market moves arrive faster than batch pipelines can answer; without real-time liability and player data, prices lag, sharp action goes unmanaged and content is the same for every customer.", who:"Casino Ops", how:"The bet and odds stream lands in Lakehouse//RT; pricing, liability and personalisation models score each request through Model Serving behind the sportsbook platform, with AI/BI on the trading position.", comps:["Kambi Sportsbook", "Lakehouse//RT", "Model Serving", "Sportsbook Bet Stream", "AI/BI"], stories:[{ t:"Sportsbet builds a real-time personalization engine", u:"https://www.databricks.com/customers/sportsbet" }, { t:"Kaizen Gaming ports sportsbook personalization in days", u:"https://www.databricks.com/customers/kaizen-gaming" }] },
-        { n:"iGaming Offers", s:"Online personalisation", ic:"custlake", long:"Personalising game recommendations, bonuses and content across the online casino and app, scored per player against behaviour the online estate already holds.", problem:"Online players see the same lobby, the same bonus and the same games; the behavioural signal needed to personalise the experience exists behind the iGaming platform, unused, while acquisition cost keeps rising.", who:"Marketing", how:"Online session and wager behaviour is activated through CustomerLake; recommendation and bonus-response models score each player in Model Serving with AI Search over the game catalogue, served from Lakehouse//RT into the app.", comps:["IGT PlayDigital", "CustomerLake", "Model Serving", "AI Search", "Lakehouse//RT"], stories:[{ t:"Kaizen Gaming delivers real-time AI to players", u:"https://www.databricks.com/customers/kaizen-gaming" }, { t:"SciPlay launches games 75% faster with the lakehouse", u:"https://www.databricks.com/customers/sciplay" }] },
-        { n:"Hotel Yield & RevPAR", s:"Resort revenue", ic:"sheet", long:"Setting room rates and comp-room allocation against gaming worth, so the room is priced on the whole relationship and RevPAR is optimised for the property, not just the hotel.", problem:"The hotel prices rooms in isolation from the casino, so a comp room is given to a low-worth guest while a high-worth player pays rack or books elsewhere, and RevPAR is optimised against the wrong objective.", who:"Property Execs", how:"PMS occupancy and rate data are conformed with gaming worth in the lakehouse; yield and comp-allocation are modelled in Model Serving and explored in AI/BI, with Genie One answering rate and occupancy questions.", comps:["Oracle OPERA PMS", "AI/BI", "Model Serving", "Agilysys Stay/LMS", "Genie One"] },
-        { n:"Fraud & Bonus Abuse", s:"Integrity", ic:"gavel", long:"Detecting collusion, chip-dumping, bonus abuse and payment fraud across the floor and online, so integrity threats are caught as they happen rather than found in the monthly reconciliation.", problem:"Fraud crosses the floor and the online estate: bonus abuse, chip-dumping and payment fraud hide in high-frequency play and deposit data that batch reconciliation only surfaces after the money is gone.", who:"Compliance", how:"Floor, wallet and payment feeds land in Lakehouse//RT; anomaly and collusion models built on Feature Store score activity in Model Serving and flag cases in the AML Watchtower.", comps:["AML Watchtower", "Model Serving", "Lakehouse//RT", "IGT PlayDigital", "Feature Store"], stories:[{ t:"Bally's supports fraud detection and compliance", u:"https://www.databricks.com/customers/ballys" }] }
-      ]}
-    ],
-    sources:{
-      "igt-advantage":{ t:"IGT Advantage casino management", u:"https://en.wikipedia.org/wiki/International_Game_Technology" },
-      "oasis":{ t:"Bally / Aristocrat Oasis 360", u:"https://en.wikipedia.org/wiki/Bally_Technologies" },
-      "synkros":{ t:"Konami SYNKROS casino management", u:"https://www.konamigaming.com/systems/synkros/" },
-      "everi":{ t:"Everi cashless and cage", u:"https://www.everi.com" },
-      "agilysys":{ t:"Agilysys hospitality software", u:"https://www.agilysys.com/" },
-      "opera":{ t:"Oracle OPERA property management", u:"https://www.oracle.com/hospitality/hotel-property-management/" },
-      "simphony":{ t:"Oracle Simphony POS (MICROS)", u:"https://en.wikipedia.org/wiki/MICROS_Systems" },
-      "kambi":{ t:"Kambi sportsbook platform", u:"https://www.kambi.com/" },
-      "openbet":{ t:"OpenBet sports-betting engine", u:"https://www.openbet.com/" },
-      "igt-playdigital":{ t:"IGT PlayDigital iGaming", u:"https://www.igt.com/products-and-services/igaming" },
-      "lnw-opengaming":{ t:"Light & Wonder OpenGaming", u:"https://www.opengaming.com/" },
-      "sfmc":{ t:"Salesforce Marketing Cloud", u:"https://www.salesforce.com/products/marketing-cloud/overview/" },
-      "fincen":{ t:"FinCEN Title 31 / BSA reporting", u:"https://www.fincen.gov/" },
-      "tcsjohnhuxley":{ t:"TCS John Huxley table systems", u:"https://www.tcsjohnhuxley.com/" }
     }
   },
   chemical_mfg: {
@@ -13800,10 +13664,8 @@ function creditText(){
    printed page cannot open the Industry, Cloud and Style menus to find out. */
 function coverMeta(){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
-  const s = shapeDef();
   return [ARCH.industry !== "generic" ? industryLabel(ARCH.industry) : "Standard reference architecture",
-    (p && p.label) || ARCH.cloud.provider,
-    (s && s.label ? s.label : "") + " layout"].filter(Boolean).join(" \u00b7 ");
+    (p && p.label) || ARCH.cloud.provider].filter(Boolean).join(" \u00b7 ");
 }
 /* The cover's link rows, shared by the PDF and the deck so the two covers cannot
    drift. First the living version of this exact board, then the data model the
@@ -13890,6 +13752,60 @@ const expBg    = ()=> paletteHex("--bg", "#ffffff");
 const expInk   = ()=> paletteHex("--ink", "#1b1f24");
 const expMuted = ()=> paletteHex("--muted", "#5c6672");
 const expBrand = ()=> paletteHex("--brand", "#ff3621");
+/* A softer ink for card fills and hairlines: ink mixed toward the background,
+   so it reads on both the light and the dark palette. */
+const expLine  = ()=> mixHex(expInk(), expBg(), 0.86);
+
+/* ---------- narrative slides: use cases + closing ----------
+   After the board, the deck and the PDF both gain a "Use Cases" section break,
+   one slide per use case carrying the same detail the on-screen drawer shows
+   (problem, who benefits, how it is built, the components it uses, and any
+   customer stories as live links), and a closing slide. The PPTX and PDF
+   writers share the data and the palette here so the two cannot drift. */
+function useCaseTiles(){
+  const secs = (ARCH.top && ARCH.top.secs) || [];
+  const uc = secs.find(s=> s && s.title === "Use Cases");
+  return (uc && Array.isArray(uc.tiles)) ? uc.tiles.filter(t=> t && t.n) : [];
+}
+/* The closing slide's two links: the platform's own site, and the living board
+   this deck was exported from (the same URL the cover carries). */
+function closingLinks(){
+  return [
+    { label:"Explore the Databricks Data Intelligence Platform", url:"https://www.databricks.com" },
+    { label:"Open the live architecture", url:liveUrl() },
+  ];
+}
+/* Six role colours for the section-card headers. Taken from the deck theme's own
+   accents so they match the board, and they read on both palettes, so they are
+   fixed rather than pulled live; only the card BODY is mixed toward the current
+   background (deckTint) so the fill lands on-theme in light and in dark. */
+const DECK_ROLES = ["2272B4","00A972","B36311","FF3621","7A5CB8","1CA0B8"];
+function hex2(v){ return String(v).replace("#",""); }
+function mixHex(a, b, t){
+  a = hex2(a); b = hex2(b);
+  const ch = i=> Math.round(parseInt(a.substr(i*2,2),16)*(1-t) + parseInt(b.substr(i*2,2),16)*t);
+  return [0,1,2].map(i=> ch(i).toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+function deckTint(role){
+  const dark = document.body.classList.contains("theme-dark");
+  return mixHex(role, dark ? expBg() : "FFFFFF", dark ? 0.80 : 0.90);
+}
+/* Ink that stays legible on a role-coloured header bar: white on the darker
+   accents, near-black on the two lighter ones. */
+function onRoleInk(role){
+  role = hex2(role);
+  const lum = (parseInt(role.substr(0,2),16)*0.299 + parseInt(role.substr(2,2),16)*0.587 +
+    parseInt(role.substr(4,2),16)*0.114) / 255;
+  return lum > 0.62 ? "1B1F24" : "FFFFFF";
+}
+/* The industry this deck is about, for slide titles and running headers. */
+function deckIndustry(){
+  return ARCH.industry !== "generic" ? industryLabel(ARCH.industry) : "Every Industry";
+}
+function deckRunHeader(){
+  return (ARCH.industry !== "generic" ? industryLabel(ARCH.industry).toUpperCase() + " \u00b7 " : "") +
+    "DATABRICKS";
+}
 async function boardCanvas(scale, phase){
   const { w, h, svg } = boardSvgMarkup(phase);
   const img = new Image();
@@ -14675,12 +14591,13 @@ async function exportGif(){
   dlBtn.title = DL_BTN_TITLE;
   dlBlob(blob, dlName("gif"));
 }
-/* One text run in its own box, positioned in EMU. The cover is a handful of
-   lines of type and nothing else, so it is built from these rather than from the
-   DOM walker the board slide uses. */
-function pptxCoverText(id, x, y, w, h, size, bold, colour, s, link){
+/* One text run in its own box, positioned in EMU. The cover and the narrative
+   slides are type in boxes rather than a DOM walk, so both are built from this.
+   `algn` is l/ctr/r, `anchor` is t/ctr/b; a link makes the run a hyperlink. */
+function pptxTextEx(id, x, y, w, h, size, bold, colour, s, link, algn, anchor, italic){
   const rPr = '<a:rPr lang="en-US" sz="' + Math.round(size * 100) + '" b="' + (bold ? 1 : 0) +
-    '"><a:solidFill><a:srgbClr val="' + colour.replace("#", "").toUpperCase() + '"/></a:solidFill>' +
+    '" i="' + (italic ? 1 : 0) + '"><a:solidFill><a:srgbClr val="' + hex2(colour).toUpperCase() +
+    '"/></a:solidFill>' +
     (link ? '<a:hlinkClick xmlns:r="' + PPTX_NS.r + '" r:id="' + link + '"/>' : "") +
     '<a:latin typeface="' + PPT_FONT + '"/></a:rPr>';
   return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="t' + id + '"/>' +
@@ -14688,9 +14605,25 @@ function pptxCoverText(id, x, y, w, h, size, bold, colour, s, link){
     '<a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
     '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
-    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t">' +
-    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="l"/><a:r>' + rPr +
-    "<a:t>" + xmlEsc(s) + "</a:t></a:r></a:p></p:txBody></p:sp>";
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="' +
+    (anchor || "t") + '"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="' +
+    (algn || "l") + '"/><a:r>' + rPr + "<a:t>" + xmlEsc(s) + "</a:t></a:r></a:p></p:txBody></p:sp>";
+}
+function pptxCoverText(id, x, y, w, h, size, bold, colour, s, link){
+  return pptxTextEx(id, x, y, w, h, size, bold, colour, s, link, "l", "t", false);
+}
+/* A filled rectangle, optionally round-cornered (radius in EMU), for brand bars,
+   kicker tabs, card headers and pills across the cover and narrative slides. */
+function pptxFillRect(id, x, y, w, h, hex, radiusEmu){
+  const geom = radiusEmu > 0
+    ? '<a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val ' +
+      Math.min(50000, Math.round(radiusEmu)) + '"/></a:avLst></a:prstGeom>'
+    : '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
+  return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="r' + id + '"/><p:cNvSpPr/><p:nvPr/>' +
+    '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' + geom +
+    '<a:solidFill><a:srgbClr val="' + hex2(hex).toUpperCase() + '"/></a:solidFill>' +
+    '<a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>';
 }
 /* Slide 1: what this is, which variant, and a live link back to the board it
    came from. A deck outlives the picture in it; the URL does not go stale. */
@@ -14766,6 +14699,162 @@ function pptxCoverSlide(){
   slide.body = parts.join("");
   return slide;
 }
+/* ---------- narrative slides: section break, one per use case, closing ----------
+   Built from boxes in EMU, theme-aware like the cover, and styled to match the
+   reference deck: an eyebrow and a running header, a title with a brand rule, and
+   filled tinted cards. Paragraph heights are estimated from a canvas measurement
+   so stacked blocks do not overlap once PowerPoint rewraps them. */
+function pptxNarrativeSlides(){
+  const SW = PPT_SW, SH = PPT_SH, PTU = 12700;
+  const M = Math.round(SW * 0.062), W = SW - M * 2;
+  const ink = expInk(), mut = expMuted(), brand = expBrand();
+  const ind = deckIndustry(), runHdr = deckRunHeader();
+  const tiles = useCaseTiles();
+  const slides = [];
+  const estRows = (text, sizePt, boxWpt)=>
+    Math.max(1, Math.ceil(pdfTextW(String(text || ""), sizePt) / (boxWpt * 0.99)));
+  const estH = (text, sizePt, boxWpt)=> estRows(text, sizePt, boxWpt) * sizePt * 1.3;
+  /* eyebrow (top-left, brand), running header (top-right, muted) and the footer
+     credit + running header, shared by every narrative slide */
+  const chrome = (parts, ref, eyebrow)=>{
+    parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), Math.round(W * 0.6),
+      Math.round(16 * PTU), 11, true, brand, eyebrow, null, "l", "t"));
+    parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), W,
+      Math.round(16 * PTU), 11, true, mut, runHdr, null, "r", "t"));
+    const fy = Math.round(SH - M - 13 * PTU);
+    parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, creditText(), null, "l", "t"));
+    parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, runHdr, null, "r", "t"));
+  };
+  const titleBlock = (parts, ref, y, title, sub)=>{
+    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * PTU), 26, true, ink, title, null, "l", "t"));
+    let ny = y + Math.round(34 * PTU);
+    if(sub){
+      parts.push(pptxTextEx(ref.id++, M, ny, W, Math.round(20 * PTU), 13, false, mut, sub, null, "l", "t"));
+      ny += Math.round(20 * PTU);
+    }
+    parts.push(pptxFillRect(ref.id++, M, ny + Math.round(2 * PTU), Math.round(W * 0.09), Math.round(4 * PTU), brand));
+    return ny + Math.round(16 * PTU);
+  };
+
+  /* --- section break: "Use Cases" --- */
+  const section = ()=>{
+    const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, "SECTION");
+    let y = Math.round(SH * 0.34);
+    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(60 * PTU), 46, true, brand, "Use Cases", null, "l", "t"));
+    y += Math.round(64 * PTU);
+    parts.push(pptxFillRect(ref.id++, M, y, Math.round(W * 0.12), Math.round(5 * PTU), brand));
+    y += Math.round(20 * PTU);
+    const n = tiles.length;
+    const sub = n + " use case" + (n === 1 ? "" : "s") + " for " + ind +
+      ": the problem each solves, who benefits, how it is built, and the components it uses.";
+    parts.push(pptxTextEx(ref.id++, M, y, Math.round(W * 0.82), Math.round(50 * PTU), 15, false, mut, sub, null, "l", "t"));
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  /* --- one slide per use case, mirroring the drawer --- */
+  const ucSlide = (t, i)=>{
+    const ref = { id:2 }, parts = [];
+    const stories = (t.stories || []).slice(0, 4);
+    const slide = { media:[], hlinks: stories.map(s=> s.u) };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, "USE CASE " + (i + 1) + " OF " + tiles.length);
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "");
+    /* two columns: reasoning on the left, who / architecture / stories on the right */
+    const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
+    const label = (parts, x, y, w, s, colour)=>{
+      parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(14 * PTU), 10, true, colour || brand,
+        String(s).toUpperCase(), null, "l", "t"));
+      return y + Math.round(15 * PTU);
+    };
+    const para = (parts, x, y, w, s, sizePt, colour)=>{
+      const wpt = w / PTU, hpt = estH(s, sizePt, wpt);
+      parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(hpt * PTU), sizePt, false, colour || ink, s, null, "l", "t"));
+      return y + Math.round((hpt + 7) * PTU);
+    };
+    /* left column */
+    let ly = topY;
+    if(t.long){ ly = label(parts, M, ly, colW, "What it is"); ly = para(parts, M, ly, colW, t.long, 11.5, ink); }
+    if(t.problem){ ly = label(parts, M, ly, colW, "The problem it solves"); ly = para(parts, M, ly, colW, t.problem, 11.5, ink); }
+    if(t.how){ ly = label(parts, M, ly, colW, "How it is built"); ly = para(parts, M, ly, colW, t.how, 11.5, ink); }
+    /* right column */
+    let ry = topY;
+    if(t.who){
+      ry = label(parts, rx, ry, rW, "Who benefits");
+      const wpt = pdfTextW(t.who, 11) + 20;
+      const pw = Math.min(rW, wpt * PTU);
+      parts.push(pptxFillRect(ref.id++, rx, ry, pw, Math.round(21 * PTU), deckTint(brand), 50000));
+      parts.push(pptxTextEx(ref.id++, rx, ry, pw, Math.round(21 * PTU), 11, true, mixHex(brand, ink, 0.25), t.who, null, "ctr", "ctr"));
+      ry += Math.round(31 * PTU);
+    }
+    if(t.comps && t.comps.length){
+      ry = label(parts, rx, ry, rW, "Architecture it uses");
+      const hPt = 20, gapPt = 6;
+      let px = rx, py = ry;
+      t.comps.forEach((c, ci)=>{
+        const wPt = pdfTextW(c, 10) + 18, wEmu = Math.min(rW, wPt * PTU);
+        if(px > rx && (px - rx + wEmu) > rW){ px = rx; py += Math.round((hPt + gapPt) * PTU); }
+        const role = DECK_ROLES[ci % DECK_ROLES.length];
+        parts.push(pptxFillRect(ref.id++, px, py, wEmu, Math.round(hPt * PTU), deckTint(role), 50000));
+        parts.push(pptxTextEx(ref.id++, px, py, wEmu, Math.round(hPt * PTU), 10, true, mixHex(role, ink, 0.28), c, null, "ctr", "ctr"));
+        px += wEmu + Math.round(gapPt * PTU);
+      });
+      ry = py + Math.round((hPt + 12) * PTU);
+    }
+    if(stories.length){
+      ry = label(parts, rx, ry, rW, "Customer stories");
+      stories.forEach((s, si)=>{
+        parts.push(pptxFillRect(ref.id++, rx, ry + Math.round(3 * PTU), Math.round(9 * PTU), Math.round(9 * PTU), brand));
+        const tx = rx + Math.round(16 * PTU), tw = rW - Math.round(16 * PTU);
+        const hpt = estH(s.t, 11, tw / PTU);
+        parts.push(pptxTextEx(ref.id++, tx, ry, tw, Math.round(hpt * PTU), 11, true, expBrand(), s.t,
+          pptxSlideRel(slide, "link", si), "l", "t"));
+        ry += Math.round((hpt + 8) * PTU);
+      });
+    }
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  /* --- closing --- */
+  const closing = ()=>{
+    const ref = { id:2 }, parts = [];
+    const links = closingLinks();
+    const slide = { media:[], hlinks: links.map(r=> r.url) };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, "IN SUMMARY");
+    let y = Math.round(SH * 0.28);
+    const kickW = pdfTextW("DATABRICKS DATA INTELLIGENCE PLATFORM", 11) * PTU + Math.round(26 * PTU);
+    parts.push(pptxFillRect(ref.id++, M, y, kickW, Math.round(21 * PTU), brand));
+    parts.push(pptxTextEx(ref.id++, M + Math.round(13 * PTU), y + Math.round(4 * PTU),
+      kickW - Math.round(20 * PTU), Math.round(15 * PTU), 11, true, "FFFFFF",
+      "DATABRICKS DATA INTELLIGENCE PLATFORM", null, "l", "t"));
+    y += Math.round(38 * PTU);
+    const title = "Databricks Data Intelligence Platform for " + ind;
+    const rows = pdfTextW(title, 30) > (W / PTU - 12) ? 2 : 1;
+    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * rows * PTU), 30, true, ink, title, null, "l", "t"));
+    y += Math.round((34 * rows + 6) * PTU);
+    parts.push(pptxFillRect(ref.id++, M, y, Math.round(W * 0.12), Math.round(4 * PTU), brand));
+    y += Math.round(26 * PTU);
+    links.forEach((row, i)=>{
+      parts.push(pptxFillRect(ref.id++, M, y + Math.round(3 * PTU), Math.round(10 * PTU), Math.round(10 * PTU), brand));
+      parts.push(pptxTextEx(ref.id++, M + Math.round(18 * PTU), y, W - Math.round(18 * PTU),
+        Math.round(21 * PTU), 14, true, brand, row.label, pptxSlideRel(slide, "link", i), "l", "t"));
+      y += Math.round(26 * PTU);
+    });
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  if(tiles.length){
+    slides.push(section());
+    tiles.forEach((t, i)=> slides.push(ucSlide(t, i)));
+  }
+  slides.push(closing());
+  return slides;
+}
 /* The board slide is assembled from the live DOM: one shape per box, one text box
    per run, one connector per arrow, and a picture only where the artwork is a
    glyph or an official project logo. */
@@ -14827,7 +14916,7 @@ async function exportPptx(){
     '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
   board.body = parts.join("");
-  return zipStore(pptxParts([pptxCoverSlide(), board], title));
+  return zipStore(pptxParts([pptxCoverSlide(), board].concat(pptxNarrativeSlides()), title));
 }
 /* A copy of this page with the live state frozen in, so the download opens with
    the same edits and cloud provider the user is looking at. */
@@ -14901,92 +14990,195 @@ async function boardPdfBlob(){
   if(!img) return null;
   const PW = 842, PH = 595, M = 14;                        /* A4 landscape, points */
   const TB = 26;                          /* title strip, points, above the board */
-  const k = Math.min((PW - M*2) / w, (PH - M*2 - TB) / h);
-  const dw = w * k, dh = h * k, dx = (PW - dw) / 2;
-  const dy = M + (PH - M*2 - TB - dh) / 2;
+  const NM = 54;                          /* margin on the narrative pages, points */
   const enc = new TextEncoder();
   /* the page is painted in the live background before anything else, so a dark
      export is dark to the paper edge instead of a dark board floating on white */
   const rg = hex=>{ const h = hex.replace("#", "");
     return [0,2,4].map(i=> (parseInt(h.slice(i, i+2), 16) / 255).toFixed(3)).join(" "); };
-  const ink = rg(expInk()), mut = rg(expMuted()), brand = rg(expBrand());
+  const ink = rg(expInk()), mut = rg(expMuted()), brand = rg(expBrand()), bgc = rg(expBg());
   /* /F1 bold, /F2 regular. `y` is a baseline, and PDF y grows upward. */
   const txt = (font, size, colour, x, y, s)=>
     "BT /" + font + " " + size + " Tf " + colour + " rg " +
     x.toFixed(2) + " " + y.toFixed(2) + " Td (" + pdfStr(s) + ") Tj ET\n";
+  const rectF = (colour, x, y, ww, hh)=>
+    colour + " rg " + x.toFixed(2) + " " + y.toFixed(2) + " " + ww.toFixed(2) + " " + hh.toFixed(2) + " re f\n";
+  const linkAnnot = (x1, y1, x2, y2, url)=>
+    "<</Type/Annot/Subtype/Link/Border[0 0 0]/Rect[" + x1.toFixed(2) + " " + y1.toFixed(2) + " " +
+    x2.toFixed(2) + " " + y2.toFixed(2) + "]/A<</Type/Action/S/URI/URI(" + pdfStr(url) + ")>>>>";
+  /* eyebrow + running header at the top, credit + running header at the foot,
+     and a brand bar down the left edge: the chrome every narrative page shares */
+  const chrome = (c, eyebrow)=>{
+    c.push(rectF(bgc, 0, 0, PW, PH));
+    c.push(rectF(brand, 0, 0, 10, PH));
+    c.push(txt("F1", 9, brand, NM, PH - 42, String(eyebrow).toUpperCase()));
+    const rh = deckRunHeader();
+    c.push(txt("F1", 9, mut, PW - NM - pdfTextW(rh, 9), PH - 42, rh));
+    const cred = creditText();
+    c.push(txt("F2", 8, mut, NM, 26, cred));
+    c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
+  };
+  const titleBlock = (c, cur, title, sub)=>{
+    c.push(txt("F1", 20, ink, NM, cur - 20, title)); cur -= 28;
+    if(sub){ c.push(txt("F2", 11, mut, NM, cur - 11, sub)); cur -= 18; }
+    c.push(rectF(brand, NM, cur - 2, 86, 3)); return cur - 16;
+  };
 
-  /* ---- page 1: the cover ---- */
-  const CM = 60;                                     /* cover margin, points */
-  const links = coverLinks();
-  const cover = [];
-  const annots = [];
-  const lava = brand;                            /* the Databricks brand accent */
-  cover.push(rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n");
-  /* a full-height brand bar down the left edge turns a plain page into a cover */
-  cover.push(lava + " rg 0 0 14 " + PH + " re f\n");
-  let y = PH - 150;
-  /* the kicker rides in a filled brand tab, white on lava, so the cover opens on
-     colour rather than a line of grey type */
-  const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM";
-  const kw = pdfTextW(kick, 10) + 26;
-  cover.push(lava + " rg " + CM + " " + (y - 6).toFixed(2) + " " + kw.toFixed(2) + " 23 re f\n");
-  cover.push(txt("F1", 10, "1 1 1", CM + 13, y, kick));
-  y -= 50;
-  /* the title wraps rather than running off the page on the longer cloud names */
-  const tls = pdfWrap(docTitle(), 28, PW - CM * 2 - 20);
-  tls.forEach((ln, i)=>{ if(i) y -= 33; cover.push(txt("F1", 28, ink, CM, y, ln)); });
-  /* a short thick brand rule under the title: a deliberate accent, not a divider */
-  y -= 16;
-  cover.push(lava + " rg " + CM + " " + y.toFixed(2) + " 120 4 re f\n");
-  y -= 26;
-  cover.push(txt("F2", 12, mut, CM, y, coverMeta()));
-  const sub = ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 12, PW - CM * 2 - 20).slice(0, 2) : [];
-  sub.forEach(line=>{ y -= 18; cover.push(txt("F2", 12, mut, CM, y, line)); });
-  y -= 44;
-  /* each link is a brand marker plus its label as the hyperlink, and no raw URL
-     on the page: the label text is what the reader clicks */
-  links.forEach(row=>{
-    cover.push(lava + " rg " + CM + " " + (y - 1).toFixed(2) + " 9 9 re f\n");
-    const lx = CM + 20;
-    cover.push(txt("F1", 13, ink, lx, y, row.label));
-    const lw = pdfTextW(row.label, 13);
-    cover.push(lava + " RG 0.9 w " + lx.toFixed(2) + " " + (y - 3).toFixed(2) + " m " +
-      (lx + lw).toFixed(2) + " " + (y - 3).toFixed(2) + " l S\n");
-    annots.push("<</Type/Annot/Subtype/Link/Border[0 0 0]/Rect[" +
-      lx.toFixed(2) + " " + (y - 5).toFixed(2) + " " +
-      (lx + lw + 2).toFixed(2) + " " + (y + 13).toFixed(2) +
-      "]/A<</Type/Action/S/URI/URI(" + pdfStr(row.url) + ")>>>>");
-    y -= 34;
-  });
-  const cred = creditText();
-  cover.push(txt("F2", 9, mut, PW - CM - pdfTextW(cred, 9), CM, cred));
-  const coverStream = enc.encode(cover.join(""));
+  /* ---- page: cover ---- */
+  const coverPage = ()=>{
+    const c = [], annots = [], CM = 60, links = coverLinks();
+    c.push(rectF(bgc, 0, 0, PW, PH));
+    c.push(rectF(brand, 0, 0, 14, PH));
+    let y = PH - 150;
+    const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM", kw = pdfTextW(kick, 10) + 26;
+    c.push(rectF(brand, CM, y - 6, kw, 23));
+    c.push(txt("F1", 10, "1 1 1", CM + 13, y, kick));
+    y -= 50;
+    pdfWrap(docTitle(), 28, PW - CM * 2 - 20).forEach((ln, i)=>{ if(i) y -= 33; c.push(txt("F1", 28, ink, CM, y, ln)); });
+    y -= 16; c.push(rectF(brand, CM, y, 120, 4)); y -= 26;
+    c.push(txt("F2", 12, mut, CM, y, coverMeta()));
+    (ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 12, PW - CM * 2 - 20).slice(0, 2) : [])
+      .forEach(line=>{ y -= 18; c.push(txt("F2", 12, mut, CM, y, line)); });
+    y -= 44;
+    links.forEach(row=>{
+      c.push(rectF(brand, CM, y - 1, 9, 9));
+      const lx = CM + 20; c.push(txt("F1", 13, ink, lx, y, row.label));
+      const lw = pdfTextW(row.label, 13);
+      c.push(brand + " RG 0.9 w " + lx.toFixed(2) + " " + (y - 3).toFixed(2) + " m " +
+        (lx + lw).toFixed(2) + " " + (y - 3).toFixed(2) + " l S\n");
+      annots.push(linkAnnot(lx, y - 5, lx + lw + 2, y + 13, row.url));
+      y -= 34;
+    });
+    const cred = creditText();
+    c.push(txt("F2", 9, mut, PW - CM - pdfTextW(cred, 9), CM, cred));
+    return { content:c.join(""), annots, usesImage:false };
+  };
 
-  /* ---- page 2: the board as it stands ---- */
-  const content = enc.encode(
-    rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n" +
-    "q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " +
-    dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n" +
-    txt("F1", 14, ink, M, PH - M - 14, docTitle()));
+  /* ---- page: the board as it stands ---- */
+  const boardPage = ()=>{
+    const k = Math.min((PW - M * 2) / w, (PH - M * 2 - TB) / h);
+    const dw = w * k, dh = h * k, dx = (PW - dw) / 2, dy = M + (PH - M * 2 - TB - dh) / 2;
+    const c = rectF(bgc, 0, 0, PW, PH) +
+      "q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " + dx.toFixed(2) + " " + dy.toFixed(2) +
+      " cm /Im0 Do Q\n" + txt("F1", 14, ink, M, PH - M - 14, docTitle());
+    return { content:c, annots:[], usesImage:true };
+  };
+
+  /* ---- page: "Use Cases" section break ---- */
+  const sectionPage = ()=>{
+    const c = []; chrome(c, "Section");
+    let y = PH - 210;
+    c.push(txt("F1", 40, brand, NM, y, "Use Cases")); y -= 34;
+    c.push(rectF(brand, NM, y, 120, 4)); y -= 26;
+    const n = useCaseTiles().length;
+    const sub = n + " use case" + (n === 1 ? "" : "s") + " for " + deckIndustry() +
+      ": the problem each solves, who benefits, how it is built, and the components it uses.";
+    pdfWrap(sub, 12, PW - NM * 2 - 40).forEach(l=>{ c.push(txt("F2", 12, mut, NM, y - 12, l)); y -= 17; });
+    return { content:c.join(""), annots:[], usesImage:false };
+  };
+
+  /* ---- page: one per use case, mirroring the drawer ---- */
+  const ucPage = (t, i, total)=>{
+    const c = [], annots = []; chrome(c, "Use Case " + (i + 1) + " of " + total);
+    const cur = titleBlock(c, PH - 70, t.n, t.s || t.desc || "");
+    const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
+    const label = (x, cy, s)=>{ c.push(txt("F1", 8, brand, x, cy - 8, String(s).toUpperCase())); return cy - 12; };
+    const para = (x, cy, maxW, s, size)=>{
+      pdfWrap(s, size, maxW).forEach(ln=>{ c.push(txt("F2", size, ink, x, cy - size, ln)); cy -= size * 1.34; });
+      return cy - 6;
+    };
+    let ly = cur;
+    if(t.long){ ly = label(NM, ly, "What it is"); ly = para(NM, ly, colW, t.long, 10); }
+    if(t.problem){ ly = label(NM, ly, "The problem it solves"); ly = para(NM, ly, colW, t.problem, 10); }
+    if(t.how){ ly = label(NM, ly, "How it is built"); ly = para(NM, ly, colW, t.how, 10); }
+    let ry = cur;
+    if(t.who){
+      ry = label(rx, ry, "Who benefits");
+      const pw = Math.min(rW, pdfTextW(t.who, 10) + 16);
+      c.push(rectF(rg(deckTint(expBrand())), rx, ry - 16, pw, 17));
+      c.push(txt("F1", 10, rg(mixHex(expBrand(), expInk(), 0.25)), rx + 8, ry - 12, t.who));
+      ry -= 28;
+    }
+    if(t.comps && t.comps.length){
+      ry = label(rx, ry, "Architecture it uses");
+      let pxp = rx, cy = ry;
+      t.comps.forEach((cm, ci)=>{
+        const wpt = pdfTextW(cm, 9) + 14;
+        if(pxp > rx && (pxp - rx + wpt) > rW){ pxp = rx; cy -= 21; }
+        const role = DECK_ROLES[ci % DECK_ROLES.length];
+        c.push(rectF(rg(deckTint(role)), pxp, cy - 15, wpt, 16));
+        c.push(txt("F1", 9, rg(mixHex(role, expInk(), 0.28)), pxp + 7, cy - 11, cm));
+        pxp += wpt + 6;
+      });
+      ry = cy - 26;
+    }
+    if(t.stories && t.stories.length){
+      ry = label(rx, ry, "Customer stories");
+      t.stories.slice(0, 4).forEach(s=>{
+        c.push(rectF(brand, rx, ry - 8, 8, 8));
+        const lines = pdfWrap(s.t, 10, rW - 16); let ly2 = ry, maxw = 0;
+        lines.forEach(ln=>{ c.push(txt("F1", 10, brand, rx + 14, ly2 - 10, ln)); maxw = Math.max(maxw, pdfTextW(ln, 10)); ly2 -= 13; });
+        annots.push(linkAnnot(rx + 14, ly2, rx + 14 + Math.min(rW - 16, maxw), ry, s.u));
+        ry = ly2 - 8;
+      });
+    }
+    return { content:c.join(""), annots, usesImage:false };
+  };
+
+  /* ---- page: closing ---- */
+  const closingPage = ()=>{
+    const c = [], annots = [], links = closingLinks();
+    chrome(c, "In Summary");
+    let y = PH - 170;
+    const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM", kw = pdfTextW(kick, 10) + 26;
+    c.push(rectF(brand, NM, y - 6, kw, 23)); c.push(txt("F1", 10, "1 1 1", NM + 13, y, kick)); y -= 44;
+    const title = "Databricks Data Intelligence Platform for " + deckIndustry();
+    pdfWrap(title, 26, PW - NM * 2 - 20).forEach((ln, i)=>{ if(i) y -= 31; c.push(txt("F1", 26, ink, NM, y, ln)); });
+    y -= 16; c.push(rectF(brand, NM, y, 120, 4)); y -= 30;
+    links.forEach(row=>{
+      c.push(rectF(brand, NM, y - 1, 9, 9));
+      const lx = NM + 20; c.push(txt("F1", 13, brand, lx, y, row.label));
+      const lw = pdfTextW(row.label, 13);
+      c.push(brand + " RG 0.9 w " + lx.toFixed(2) + " " + (y - 3).toFixed(2) + " m " +
+        (lx + lw).toFixed(2) + " " + (y - 3).toFixed(2) + " l S\n");
+      annots.push(linkAnnot(lx, y - 5, lx + lw + 2, y + 13, row.url));
+      y -= 30;
+    });
+    return { content:c.join(""), annots, usesImage:false };
+  };
+
+  /* the page order: cover, board, then the use-case narrative, then the close */
+  const tiles = useCaseTiles();
+  const pages = [coverPage(), boardPage()];
+  if(tiles.length){ pages.push(sectionPage()); tiles.forEach((t, i)=> pages.push(ucPage(t, i, tiles.length))); }
+  pages.push(closingPage());
+
+  /* Fixed objects 1..6 (catalog, pages, info, two fonts, the board image), then
+     two objects per page (the page and its content stream). Page N is object
+     7+2N and its content is 8+2N, so the image and fonts keep stable numbers
+     however many use-case pages sit in between. */
+  const nPages = pages.length;
+  const pageNums = pages.map((p, i)=> 7 + i * 2);
   const objs = [
     enc.encode("<</Type/Catalog/Pages 2 0 R>>"),
-    enc.encode("<</Type/Pages/Kids[3 0 R 4 0 R]/Count 2>>"),
-    /* Annotations are written inline: they are read once, by the viewer, and a
-       numbered object each would only lengthen the table. */
-    enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH +
-      "]/Resources<</Font<</F1 9 0 R/F2 10 0 R>>>>/Contents 5 0 R" +
-      (annots.length ? "/Annots[" + annots.join("") + "]" : "") + ">>"),
-    enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH +
-      "]/Resources<</XObject<</Im0 6 0 R>>/Font<</F1 9 0 R/F2 10 0 R>>>>/Contents 7 0 R>>"),
-    { dict:"<</Length " + coverStream.length + ">>", stream:coverStream },
-    { dict:"<</Type/XObject/Subtype/Image/Width " + w + "/Height " + h +
-      "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>",
-      stream:img },
-    { dict:"<</Length " + content.length + ">>", stream:content },
+    enc.encode("<</Type/Pages/Kids[" + pageNums.map(n=> n + " 0 R").join(" ") + "]/Count " + nPages + ">>"),
     enc.encode("<</Title (" + pdfStr(docTitle()) + ")/Producer (Databricks Reference Architecture)>>"),
     enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>"),
     enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>"),
+    { dict:"<</Type/XObject/Subtype/Image/Width " + w + "/Height " + h +
+      "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>", stream:img },
   ];
+  pages.forEach((p, i)=>{
+    const cs = enc.encode(p.content);
+    const res = p.usesImage
+      ? "/Resources<</XObject<</Im0 6 0 R>>/Font<</F1 4 0 R/F2 5 0 R>>>>"
+      : "/Resources<</Font<</F1 4 0 R/F2 5 0 R>>>>";
+    const annots = p.annots && p.annots.length ? "/Annots[" + p.annots.join("") + "]" : "";
+    objs.push(enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH + "]" +
+      res + "/Contents " + (8 + i * 2) + " 0 R" + annots + ">>"));
+    objs.push({ dict:"<</Length " + cs.length + ">>", stream:cs });
+  });
+
   const parts = [], offs = [];
   let len = 0;
   const push = (u8)=>{ parts.push(u8); len += u8.length; };
@@ -15001,7 +15193,7 @@ async function boardPdfBlob(){
   const xref = len;
   let x = "xref\n0 " + (objs.length+1) + "\n0000000000 65535 f \n";
   offs.forEach(o=> x += String(o).padStart(10, "0") + " 00000 n \n");
-  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info 8 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
+  x += "trailer\n<</Size " + (objs.length+1) + "/Root 1 0 R/Info 3 0 R>>\nstartxref\n" + xref + "\n%%EOF\n";
   push(enc.encode(x));
   return new Blob(parts, {type:"application/pdf"});
 }

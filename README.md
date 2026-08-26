@@ -31,13 +31,18 @@ IDEA is the same architecture as a live document:
   party in the middle.
 - **Release stage is a filter.** Show GA only for a procurement conversation, or
   add Beta and the previews for a roadmap one.
-- **Industry is a switch too.** Forty industries, each one specialising the
+- **Industry is a switch too.** Sixty-three industries, each one specialising the
   sources, ingestion, teams, apps, use cases and consumers, with the medallion
-  layers pointing at that industry's own data model.
+  layers pointing at that industry's own data model. Every use case and every
+  team is a story you can open: click a use case for the problem it solves, who
+  benefits, how it is built, the components it uses and the customer stories that
+  prove it; click a team for its sub-personas and the use cases they care about.
 - **It exports, and the export points back.** PDF and PowerPoint open on a cover
   carrying the title and a link to the exact live board the file was made from,
-  with the architecture on the second page. Plus PNG, an animated GIF that keeps
-  the flow moving, and a standalone HTML copy.
+  the architecture next, then a *Use Cases* section: one slide per use case
+  carrying the same detail the on-screen drawer shows, and a closing slide that
+  links back to the platform and the live board. Plus PNG, an animated GIF that
+  keeps the flow moving, and a standalone HTML copy.
 
 ![IDEA in dark theme](docs/screenshot-dark.png)
 
@@ -76,7 +81,7 @@ on the diagram itself.
 
 | Control | What it does |
 |---|---|
-| **Industry** | Forty industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
+| **Industry** | Sixty-three industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
 | **Dark / Light** | Follows the operating system by default, and remembers an explicit choice. Downloads follow whatever is on screen |
 | **Palette** | Thirteen colour schemes in three groups |
@@ -94,12 +99,23 @@ Every one of those choices is also a URL parameter, so a board can be linked to
 in the state it was read in: `?industry=airlines&cloud=aws&shape=h90&pal=nordic&theme=light&platform=1`.
 That is the link the PDF and PowerPoint covers carry.
 
-### Industry: forty models, and the same board size for each
+### Industry: sixty-three models, and the same board size for each
 
-The industry list is the
+The industry list follows the
 [Databricks Industry Data Models](https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/data-models)
-catalogue. Picking one rewrites the four zones outside the platform, and the
-medallion layers start pointing at that industry's own folder in the repository.
+catalogue and extends it: airlines is the reference, and sixty-two more are
+authored to the same depth, spanning finance, healthcare and life sciences,
+public sector, manufacturing and energy, retail and consumer, media, technology,
+professional services and more. Picking one rewrites the four zones outside the
+platform, and the medallion layers start pointing at that industry's own folder
+in the repository.
+
+Every industry is written to the same schema as the airlines reference: real,
+current vendor systems in the sources and ingestion, teams broken into
+sub-personas, four apps and ten use cases, and each use case carrying a problem
+statement, its beneficiary, how it is built, the architecture components it
+touches, and links to matching Databricks customer stories. Use cases with a
+story sort ahead of those without, so the board leads with proof.
 
 An industry board is held to the reference board's height, which matters more
 than it sounds: the board is scaled to fit, so one industry carrying a few more
@@ -177,8 +193,8 @@ reading is the honest one in front of a customer.
 
 | Format | What you get |
 |---|---|
-| **PDF** | Two A4 landscape pages: a cover with the title, the industry and cloud, the sentence the board leads with, and clickable links to the exact live board and to the industry's data model; then the architecture, vector text, in the current theme and palette |
-| **PowerPoint** | The same two, as a cover slide and a board slide. The board is native shapes, text boxes and connectors, editable in PowerPoint. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not |
+| **PDF** | A cover with the title, the industry and cloud, the sentence the board leads with, and clickable links to the exact live board and to the industry's data model; then the architecture, vector text, in the current theme and palette; then a *Use Cases* section break and one page per use case carrying its problem, beneficiary, build, components and story links; then a closing page linking to the platform and the live board. All in the theme on screen, light or dark |
+| **PowerPoint** | The same pages, as native slides: a cover, a board slide of editable shapes, text boxes and connectors, the *Use Cases* section break, a slide per use case, and a closing slide. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not. The deck follows the theme on screen, so a dark board exports a dark deck |
 | **PNG** | 2x raster of the current view |
 | **GIF** | A looping animation, 1400px wide, twelve frames, that keeps the travelling dashes and the platform ring moving. Roughly 200 KB, because only the moving pixels are stored per frame, in the palette and theme on screen |
 | **HTML** | A standalone copy of the page with your current choices baked in, which opens anywhere with no server |
@@ -209,10 +225,16 @@ Click any box.
 | **Related** | The boxes it touches, which highlight on the diagram and are one click away |
 
 A Teams tile reads a little differently, because a team is not a product: the
-panel names the team, says what it is accountable for, and then lists the
-platform surfaces it actually works in with one line each on what it uses them
-for. Those surface names are clickable, so the panel is a route into the diagram
-rather than a description beside it.
+panel names the team, says what it is accountable for, lists its sub-personas and
+what each one cares about, and then lists the platform surfaces it actually works
+in with one line each on what it uses them for, alongside the use cases the team
+is interested in. Those surface and use-case names are clickable, so the panel is
+a route into the diagram rather than a description beside it.
+
+A use case tile carries its own story: the problem it solves, who benefits (a
+team from the diagram, clickable), how it is built, the architecture components
+it uses (each clickable), and links to Databricks customer stories where they
+exist. On every board the use cases that have a story are shown first.
 
 The three medallion layers open the data model for the industry on screen, so on
 an airline board that is the
@@ -342,6 +364,11 @@ tools/
   heightgate.py            fails a board that is taller than the reference, clipped, or wrapped
   probe.py                 runs a JS probe against the board and prints what it measured
   shot.py                  regenerates the screenshots and montages in docs/
+  validate_industries.py   checks every industry's structure, citations and live URLs
+  verify_click.py          checks every use-case and team reference resolves to a real box
+  inject_industries.py     injects the per-industry definitions into index.html
+  common.py                shared helpers the industry definitions are written with
+  industries/              one file per industry (batch_<id>.py), authored to the reference schema
 ```
 
 ---
@@ -361,10 +388,13 @@ being editable.
 
 **Exports are written by hand.** The PDF, PowerPoint and GIF writers are in the
 file: object tables and cross-reference offsets for the PDF, the parts and
-relationships of an Office package for the PPTX, both including the cover and its
-clickable links. Pulling in a library for each format would be more code than the
-formats need, and would put the exports behind a network fetch that a workspace
-with no internet egress would fail on.
+relationships of an Office package for the PPTX, both carrying the cover, the
+board, a slide or page per use case and a closing slide, with clickable links
+throughout. The narrative pages are laid out from the same use-case data the
+on-screen drawer reads, so the deck and the drawer cannot drift, and both pick up
+the live theme so the export is light or dark to match. Pulling in a library for
+each format would be more code than the formats need, and would put the exports
+behind a network fetch that a workspace with no internet egress would fail on.
 
 **Colours are solved, not chosen.** `tools/palgen.py` takes a hue recipe per
 zone and walks lightness until every foreground clears WCAG AA against the
