@@ -2880,42 +2880,39 @@ const INDUSTRIES = {
           { n:"Revenue Accounting", ic:"fed", long:"Revenue accounting and proration marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers." },
         ]},
       ],
+      /* Two groups and three static tiles, which is the reference board's budget for
+         this pocket. The pocket is a single narrow column, so every row it gains is
+         a row the platform beside it has to grow to match: see the note on `ppl`. */
       ing:[
         { box:"Cloud ETL", ic:"etl", from:"ingest", tiles:[] },
-        { box:"Industry Messaging", ic:"zplug", tiles:[
+        { box:"Messaging", ic:"zplug", tiles:[
           { n:"SITA Type-B Messaging", ic:"stream", long:"The teletype-era message bus the industry still runs on: PNL, ADL, MVT and LDM messages parsed on arrival and landed as structured events.",
             cite:["sita-typeb"] },
           { n:"A-CDM Message Bus", ic:"stream", long:"Airport Collaborative Decision Making milestones exchanged with the airport operator, the shared clock for turnaround performance.",
             cite:["acdm"] },
-          { n:"IATA NDC / ONE Order APIs", ic:"api", long:"Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic.",
+          { n:"IATA NDC / ONE Order APIs", ic:"api", long:"Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic. Managed ELT connectors and existing Kafka or MSK topics carrying movement, baggage and sensor events land here too, and are drawn generically on the reference board.",
             cite:["ndc"] },
         ]},
-        { box:"3rd Party", ic:"etl", tiles:[
-          { n:"Managed ELT", ic:"etl", long:"Third-party managed connectors landing SaaS and database sources not yet covered by Lakeflow Connect." },
-          { n:"Streaming Brokers", ic:"stream", long:"Kafka and MSK topics already carrying movement, baggage and sensor events, consumed by Lakeflow streaming pipelines." },
-        ]},
       ],
+      /* Two groups and seven tiles, matching the reference board, and held there
+         deliberately. This pocket is one narrow column in the corner of the Z, and the
+         platform block beside it grows to whatever height the pocket needs: at four
+         groups and thirteen tiles it drove the board from 1126 design px to 1677 and
+         took the fitted scale from 0.819 to 0.550, which shrank every label on the
+         diagram by a third. Roles that used to have a tile of their own are named in
+         the detail text of the tile that absorbed them, so the drawer still carries
+         them. Adding a row here costs the whole diagram, so consolidate instead. */
       ppl:[
-        { box:"Executive", ic:"zbrief", tiles:[
-          { n:"CEO", ic:"chart", long:"Network profitability, fleet commitments and the trade between growth and margin." },
-          { n:"Chief Commercial Officer", ic:"market", long:"Pricing, distribution, loyalty and ancillary revenue across every market the airline sells in." },
-          { n:"Chief Operating Officer", ic:"gauge", long:"On-time performance, disruption cost and the safety and compliance record of the operation." },
-        ]},
-        { box:"Commercial", ic:"market", tiles:[
-          { n:"Revenue Management Analysts", ic:"market", long:"Set bid prices and fare class availability by market and departure date, and judge the forecast the optimiser is working from." },
+        { box:"Business", ic:"zbrief", tiles:[
+          { n:"Executive Team", ic:"chart", long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the Chief Commercial Officer on pricing, distribution, loyalty and ancillary revenue; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record." },
+          { n:"Revenue Management", ic:"market", long:"Analysts setting bid prices and fare class availability by market and departure date, judging the forecast the optimiser is working from." },
           { n:"Network Planners", ic:"sheet", long:"Decide which routes are flown, at what frequency and with which aircraft, season by season." },
-          { n:"Loyalty & Ancillary Managers", ic:"custlake", long:"Own tier economics, partner earn and the merchandising of seats, bags and lounge access." },
+          { n:"Loyalty & Ancillary", ic:"custlake", long:"Own tier economics, partner earn and the merchandising of seats, bags and lounge access." },
         ]},
-        { box:"Operations", ic:"people", tiles:[
-          { n:"OCC Duty Managers", ic:"gauge", long:"Run the operations control centre: hold or cancel, swap tails, protect connections and own the recovery plan on a disrupted day." },
-          { n:"Ground & Ramp Teams", ic:"people", long:"Turn the aircraft: loading, fuelling, pushback and the milestone reporting the turnaround clock is built on." },
-          { n:"Crew Scheduling", ic:"people", long:"Keep rosters legal and covered, calling standbys and reassigning pairings as the day moves." },
+        { box:"Operations", ic:"code", tiles:[
+          { n:"OCC & Ground Ops", ic:"gauge", long:"Duty managers running the operations control centre: hold or cancel, swap tails, protect connections and own the recovery plan on a disrupted day. With them the ground and ramp teams turning the aircraft (loading, fuelling, pushback and the milestone reporting the turnaround clock is built on) and crew scheduling keeping rosters legal and covered, calling standbys and reassigning pairings as the day moves." },
           { n:"Line & Base Engineering", ic:"dev", long:"Clear defects, plan component removals and decide whether an aircraft departs or goes AOG." },
-        ]},
-        { box:"Technical", ic:"code", tiles:[
-          { n:"Technical Engineering", ic:"lakeflow", long:"Data engineering, analytics engineering and platform teams building the pipelines, models and semantics the rest of the airline reads. Collapsed into one tile so the operational roles above have room." },
-          { n:"Data Scientists", ic:"model", long:"Build the forecasting, propensity and predictive maintenance models on governed features, tracked in MLflow." },
-          { n:"App Developers", ic:"dev", long:"Build the OCC, turnaround and crew-facing applications on Databricks Apps and Agent Bricks." },
+          { n:"Data & App Teams", ic:"lakeflow", long:"Data engineering, analytics engineering and platform teams building the pipelines, models and semantics the rest of the airline reads; data scientists building the forecasting, propensity and predictive maintenance models on governed features tracked in MLflow; and application developers building the OCC, turnaround and crew-facing applications on Databricks Apps and Agent Bricks." },
         ]},
       ],
       cons:[
@@ -4520,7 +4517,7 @@ function paintIndustryMenu(){
       'placeholder="Filter industries" value="' + indFilter.replace(/"/g, "&quot;") + '">' +
     '<div class="ind-list">' +
       '<button data-ind="generic" class="' + (cur === "generic" ? "on" : "") +
-        '"><span>Generic (no industry)</span></button>' +
+        '"><span>Standard Reference Architecture</span></button>' +
       (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
     "</div>" +
     '<div class="dl-note">Replaces Sources, Ingestion, People, Consumers and the ' +
