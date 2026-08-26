@@ -318,6 +318,18 @@ the app serves one static file, and its service principal reads nothing.
 4. When it finishes it prints a link. The app also appears under
    **Compute -> Apps -> idea**.
 
+Run All launches the install as a **tagged Databricks job**, prints the run URL,
+waits for it, then surfaces the app link. The job carries `dbx_idea_installer_*`
+tags (`app`, `kind`, `version`, `status`), so its serverless spend is
+attributable in `system.billing.usage`, the same pattern the vibe-modelling
+agent installer uses. If the running identity cannot create a job, the notebook
+deploys inline instead, so the install still works, just untagged.
+
+A Databricks App has no custom-tag field of its own, so the app's own ongoing
+serverless spend is attributed through a **serverless usage policy**: set widget
+4 to a policy id and the installer attaches it on create, and its tags flow to
+`system.billing.usage`.
+
 Widgets, if you want to change something:
 
 | Widget | Default | What it does |
@@ -325,6 +337,7 @@ Widgets, if you want to change something:
 | `01_app_name` | `idea` | Name of the Databricks App. Lowercase letters, digits and dashes |
 | `02_source` | Beside this notebook | Where the app files come from. Leave it alone when running from a Git folder |
 | `03_github_repo` | this repo | Only read when `02_source` is *Download from GitHub* |
+| `04_usage_policy_id` | empty | Optional serverless usage policy id to attribute the app's spend. Blank skips it |
 
 Choose **Download from GitHub** if you imported only the notebook rather than
 cloning the repository. It pulls the archive over HTTPS and writes the `app/`
