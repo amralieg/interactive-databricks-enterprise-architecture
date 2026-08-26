@@ -12363,7 +12363,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 15;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 16;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -12383,7 +12383,11 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    at two apps with a third Agent Harnesses section, and a People pocket whose
    tiles carried no `uses`. Restoring a v12 board would put the harnesses back
    above the platform and drop the drawer's "What they use" list, which is exactly
-   the stale-board confusion the bump exists to prevent.
+   the stale-board confusion the bump exists to prevent. v15 was the generic
+   board before its use-case tiles carried `problem`/`who`/`how`/`comps`/`stories`
+   and its People tiles carried `sub`/`ucs`: restoring one passes the shape check
+   but strips the click-through detail from the drawer and every exported slide,
+   the same stale-board confusion, so it is discarded rather than half-applied.
    Restoring any of them renders empty columns or throws, so anything that fails
    this check is discarded rather than half-applied.
 
