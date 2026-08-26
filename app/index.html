@@ -977,16 +977,19 @@
      both boxes sit side by side and overflow already caps row height. */
   body:not(.shape-h90) .pocket.ppl > .rail,
   body:not(.shape-h90) .pocket.ing > .rail {
-    flex:1; min-height:0; display:flex; flex-direction:column; }
+    flex:1 1 0; min-height:0; display:flex; flex-direction:column; }
+  body:not(.shape-h90) .pocket.ppl .rgroup:first-child,
+  body:not(.shape-h90) .pocket.ing .rgroup:first-child {
+    flex:0 0 auto; }
   body:not(.shape-h90) .pocket.ppl .rgroup:last-child,
   body:not(.shape-h90) .pocket.ing .rgroup:last-child {
-    flex:1; min-height:0; display:flex; flex-direction:column; }
+    flex:1 1 0; min-height:0; display:flex; flex-direction:column; }
   body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtiles,
   body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtiles {
-    flex:1; display:flex; flex-direction:column; gap:4px; }
+    flex:1 1 0; min-height:0; display:flex; flex-direction:column; gap:4px; }
   body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtile,
   body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtile {
-    flex:1; min-height:28px; }
+    flex:1 1 0; min-height:28px; }
   /* Each pocket group reads as its own box wherever the two sit side by side.
      --zone-tile and --zone-bd only exist once a palette class is on the body, so
      both carry a fallback or the boxes lose their edges on the default theme. */
@@ -3731,7 +3734,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 14;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 15;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -6775,7 +6778,14 @@ function seedFromUrl(){
   if(ind && (ind === "generic" || INDUSTRIES[ind])){ applyIndustry(ind, false); return true; }
   return false;
 }
-if(!seedFromUrl()) build();
+if(!seedFromUrl()){
+  /* A saved industry id must not pin stale rails from an older template: refresh
+     the industry overlay on load so new teams land without clearing band edits. */
+  if(ARCH.industry && ARCH.industry !== "generic" && INDUSTRIES[ARCH.industry])
+    applyIndustry(ARCH.industry, false);
+  else
+    build();
+}
 fitBoard();
 restoreActiveTab();
 </script>
