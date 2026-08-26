@@ -52,6 +52,28 @@ window.addEventListener('load', function(){
         out.industries[iid] = rep;
       });
 
+      // generic Standard Reference Architecture board (not in the industry catalog,
+      // but the board a user sees before selecting one) gets the same audit.
+      applyIndustry('generic', false);
+      (function(){
+        var rep = { who: [], comp: [], uc: [], order: true, stories: [] };
+        var ucSec = (ARCH.top.secs || []).find(function(s){ return s.title === 'Use Cases'; });
+        var tiles = ucSec ? ucSec.tiles : [];
+        var flags = tiles.map(function(t){ return (t.stories && t.stories.length) ? 1 : 0; });
+        for (var i = 1; i < flags.length; i++){ if (flags[i-1] < flags[i]){ rep.order = false; break; } }
+        tiles.forEach(function(t){
+          if (t.who && !resolveAtom(t.who)) rep.who.push(t.n + ' -> ' + t.who);
+          (t.comps || []).forEach(function(c){ if (!resolveAtom(c)) rep.comp.push(t.n + ' -> ' + c); });
+          (t.stories || []).forEach(function(s){ rep.stories.push(s.u); });
+        });
+        var pplRail = ARCH.rails && ARCH.rails.ppl;
+        var ppl = pplRail ? (Array.isArray(pplRail) ? pplRail : (pplRail.groups || [])) : [];
+        ppl.forEach(function(g){ (g.tiles || []).forEach(function(t){
+          (t.ucs || []).forEach(function(u){ if (!nameIndex[u]) rep.uc.push(t.n + ' -> ' + u); });
+        }); });
+        out.industries.generic = rep;
+      })();
+
       // airlines drawer render assertions
       applyIndustry('airlines', false);
       function body(name){ var id = nameIndex[name]; if (!id) return ''; openDetail(id); return document.getElementById('d-body').innerHTML; }

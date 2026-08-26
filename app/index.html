@@ -666,9 +666,12 @@
   /* The title grows inside the head's existing 34px box rather than making the
      box taller: the three column heads share one grid row, so any extra height
      here pushes the platform's body out of line with the rails beside it. */
-  .plat-head { background:var(--plat-accent); gap:11px; font-size:21px; letter-spacing:.03em;
+  .plat-head { background:var(--plat-accent); gap:16px; font-size:21px; letter-spacing:.03em;
     padding:4px 16px; }
-  .ph-mark { width:23px; height:23px; flex:0 0 auto; }
+  /* Sole owner of the mark's size and its distance from the title. 20px reads as
+     a peer of the caps without crowding them, and the 16px flex gap above keeps
+     clear air between the glyph and the "D" at every fit scale. */
+  .ph-mark { width:20px; height:20px; flex:0 0 auto; margin-right:0; }
   /* The pockets are sub-zones of the middle row, so they take a smaller type than
      the full-height columns. The BOX is the same height as a column heading
      though: the four zone headings read as one family, and a shorter pocket
@@ -688,7 +691,12 @@
      right margin it could not want: the flex centring then centred glyph-plus-
      margin, leaving the glyph 3.5px left of the middle of its button. */
   .colhead > svg, .pockhead svg { flex:0 0 auto; }
-  .colhead > svg { width:16px; height:16px; margin-right:7px; }
+  /* The platform head's own mark is sized by .ph-mark alone (below). It used to
+     be caught here too, so two rules fought over its width and the effective gap
+     to the title was whatever won; that read as the glyph touching the "D" at
+     some scales. Scope this to non-mark colhead icons so the mark owns its size
+     and its separation. */
+  .colhead > svg:not(.ph-mark) { width:16px; height:16px; margin-right:7px; }
   .pockhead svg { width:13px; height:13px; margin-right:5px; }
   .bl-ic { flex:0 0 auto; width:17px; height:17px; margin:1px 7px 0 0; color:var(--brand); }
   .cl-ic { flex:0 0 auto; width:17px; height:17px; margin:0 7px 0 0; color:var(--brand); }
@@ -1920,6 +1928,40 @@
   @media (max-width:560px) {
     .fmt-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
   }
+
+  /* ── First-visit guided tour ──────────────────────────────────────────────
+     A spotlight walk-through of the board, ported from the model-viewer tour.
+     The hole is one element whose huge outer box-shadow dims the whole page
+     while the ring stays bright, so there is no separate backdrop to keep in
+     sync. The popover is positioned in script relative to the highlighted
+     element. Colours come from the theme tokens, so it follows light/dark and
+     every palette without its own overrides. */
+  .tour-hole{position:fixed;border-radius:12px;pointer-events:none;z-index:6000;
+    box-shadow:0 0 0 3px var(--brand),0 0 0 9999px rgba(3,7,12,.58);
+    transition:top .25s cubic-bezier(.4,0,.2,1),left .25s cubic-bezier(.4,0,.2,1),
+      width .25s cubic-bezier(.4,0,.2,1),height .25s cubic-bezier(.4,0,.2,1)}
+  .tour-catch{position:fixed;inset:0;z-index:5999}
+  .tour-pop{position:fixed;z-index:6001;width:316px;max-width:calc(100vw - 24px);
+    background:var(--card);color:var(--ink);border:1px solid var(--line-strong);
+    border-radius:14px;box-shadow:var(--shadow-xl);padding:15px 16px 11px;
+    transition:top .22s cubic-bezier(.4,0,.2,1),left .22s cubic-bezier(.4,0,.2,1)}
+  .tour-pop h4{margin:0 0 6px;font-size:14.5px;font-weight:750;color:var(--ink)}
+  .tour-pop p{margin:0 0 13px;font-size:12.5px;line-height:1.55;color:var(--muted)}
+  .tour-pop kbd{background:var(--well);border:1px solid var(--line-strong);border-radius:5px;
+    padding:0 5px;font-size:11px;font-family:inherit}
+  .tour-row{display:flex;align-items:center;gap:8px}
+  .tour-step{font-size:11px;color:var(--faint);margin-right:auto;letter-spacing:.03em;
+    font-variant-numeric:tabular-nums}
+  .tour-skip{background:transparent;border:0;color:var(--faint);cursor:pointer;
+    font:inherit;font-size:12px;padding:6px 4px}
+  .tour-skip:hover{color:var(--muted)}
+  .tour-btn{font:inherit;font-size:12.5px;font-weight:650;cursor:pointer;
+    border-radius:8px;padding:6px 13px;border:1px solid var(--line-strong);
+    background:var(--card);color:var(--ink)}
+  .tour-btn:hover{border-color:var(--brand);color:var(--brand)}
+  .tour-btn.accent{background:var(--brand);border-color:var(--brand);color:var(--on-accent)}
+  .tour-btn.accent:hover{filter:brightness(1.05);color:var(--on-accent)}
+  @media print { .tour-hole,.tour-catch,.tour-pop{display:none !important;} }
 </style>
 </head>
 <body>
@@ -1991,6 +2033,7 @@
         <b>Platform only</b>. HTML stays interactive.</div>
     </div>
   </div>
+  <button class="hbtn" id="tour-btn" type="button" title="Take a guided tour of the board"><span aria-hidden="true">◎</span> Tour</button>
   </div>
 </header>
 
@@ -2622,21 +2665,39 @@ const ARCH = {
             ["Genie One", "Ask for last week's margin or cost to serve in plain language, in Slack or Teams, and see the query behind the answer."],
             ["AI/BI", "Executive dashboards built on certified Metric Views, so the number quoted upstairs is the number the team reports."],
             ["Unity Catalog", "Certification and the business glossary, so every headline metric has one owner and one definition."],
-          ] },
+          ],
+          sub:[
+            { n:"CEO & COO", cares:"growth, margin and cost to serve reading the same in every meeting they are quoted in." },
+            { n:"CFO & Finance", cares:"one certified number behind the forecast and the board pack." },
+            { n:"Chief Risk Officer", cares:"the risk position and whether a control actually held." }
+          ],
+          ucs:["Demand Forecasting","Regulatory Reporting","Customer Segmentation"] },
         { n:"Business Teams", mark:"Genie",
           long:"Finance, marketing, sales, service and operations. The largest population on the platform, with no SQL between them and the answer, and the group most exposed to a wrong number.",
           uses:[
             ["Genie One", "Ask questions in Slack, Teams or on mobile and follow up in the same thread, on data they are permitted to see."],
             ["AI/BI", "Self-service dashboards they filter and drill themselves rather than raising a ticket for."],
             ["Excel Add-in", "The same governed tables inside the spreadsheet they already work in, with write-back where it is allowed."],
-          ] },
+          ],
+          sub:[
+            { n:"Marketing & Sales", cares:"segments, propensity and the next best action per customer." },
+            { n:"Service & Operations", cares:"the exception queue and the action taken on live data, not last night's extract." },
+            { n:"Finance & Planning", cares:"self-service numbers they filter themselves rather than raising a ticket for." }
+          ],
+          ucs:["Customer Segmentation","Personalisation","Customer Service Agents"] },
         { n:"Risk & Compliance", mark:"Unity Catalog",
           long:"Risk, audit, data protection and the regulatory reporting function. They are not asking the platform for insight so much as for evidence: who touched what, where a number came from, and whether the control actually held.",
           uses:[
             ["Unity Catalog", "Lineage, audit and access history behind a control, on the same catalogue the business reads."],
             ["Unity Gateway", "Policy and spend limits on the models and agents, so an automated decision has an owner and a ceiling."],
             ["AI/BI", "Regulatory and risk reporting on certified Metric Views instead of a workbook rebuilt every quarter."],
-          ] },
+          ],
+          sub:[
+            { n:"Risk & Audit", cares:"lineage and access history behind every control, on the catalogue the business reads." },
+            { n:"Data Protection", cares:"who can see which data, and where a number actually came from." },
+            { n:"Regulatory Reporting", cares:"submissions that trace back to source without a spreadsheet trail." }
+          ],
+          ucs:["Fraud & Financial Crime","Regulatory Reporting","Document Intelligence"] },
       ]},
       /* Ordered from the data's own path: engineered, modelled, analysed, then built on. */
       { box:"Technical", ic:"code", tiles:[
@@ -2647,7 +2708,13 @@ const ARCH = {
             ["Lakeflow Designer", "Declarative pipelines with expectations, so a quality rule lives in the pipeline rather than in a downstream check."],
             ["Genie ZeroOps", "Failures triaged and explained, and routine tuning handled without a ticket."],
             ["Lakewatch", "Freshness and quality monitored on the tables they publish, so they hear about a break before the business does."],
-          ] },
+          ],
+          sub:[
+            { n:"Ingestion Engineers", cares:"managed connectors instead of a hand-written extract per source." },
+            { n:"Pipeline Engineers", cares:"Bronze-to-Silver reliability and expectations living in the pipeline." },
+            { n:"Platform On-call", cares:"the pager when a published table stalls before the business reads it." }
+          ],
+          ucs:["Supply Chain Visibility","Demand Forecasting","Fraud & Financial Crime"] },
         { n:"Data Scientists", mark:"MLflow",
           long:"The team building the forecasting, propensity, risk and pricing models, and the one accountable for whether a model still holds six months after it shipped.",
           uses:[
@@ -2655,21 +2722,39 @@ const ARCH = {
             ["Feature Store", "Features defined once and read identically in training and in serving, which is where most drift starts."],
             ["MLflow", "Every run, parameter and metric tracked, so a production model can still be explained later."],
             ["Model Serving", "Models published as endpoints the apps and agents call, with no separate serving stack to own."],
-          ] },
+          ],
+          sub:[
+            { n:"ML Engineers", cares:"features that read identically in training and in serving, where drift starts." },
+            { n:"Applied Scientists", cares:"the forecasting, propensity, risk and pricing models that must still hold." },
+            { n:"MLOps", cares:"every run tracked so a production model can be explained six months later." }
+          ],
+          ucs:["Churn & Retention","Predictive Maintenance","Personalisation"] },
         { n:"Data Analysts", mark:"AI/BI",
           long:"The team that answers what the business cannot answer for itself, and usually the first to notice that a definition has drifted.",
           uses:[
             ["SQL Warehouses", "Serverless SQL over Silver and Gold, under the same permissions the dashboards run on."],
             ["AI/BI", "Dashboards published for the business teams, built on Metric Views rather than on a private query."],
             ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
-          ] },
+          ],
+          sub:[
+            { n:"BI Analysts", cares:"dashboards built on certified Metric Views, not a private query." },
+            { n:"Business Analysts", cares:"the question the business cannot answer for itself." },
+            { n:"Reporting", cares:"being the first to notice a definition has quietly drifted." }
+          ],
+          ucs:["Demand Forecasting","Customer Segmentation","Regulatory Reporting"] },
         { n:"Analytics Engineers", mark:"Unity Catalog",
           long:"The layer between engineering and analysis. They model raw tables into tested, documented marts and own what the business words actually mean.",
           uses:[
             ["dbt & External Engines", "Existing dbt projects running on Databricks SQL, keeping their tests and their lineage."],
             ["Unity Catalog", "Metric Views and the business glossary, so revenue is defined once and every tool reads that definition."],
             ["Lakeflow", "Declarative transformations where the model belongs in the pipeline rather than in a downstream tool."],
-          ] },
+          ],
+          sub:[
+            { n:"Data Modellers", cares:"raw tables shaped into tested, documented marts." },
+            { n:"Metrics Owners", cares:"one definition of revenue every tool reads." },
+            { n:"dbt Developers", cares:"existing dbt projects keeping their tests and lineage on Databricks." }
+          ],
+          ucs:["Regulatory Reporting","Demand Forecasting","Supply Chain Visibility"] },
         { n:"App Developers", mark:"Apps",
           long:"The team building the applications and agents the business works in, rather than another dashboard for it to read.",
           uses:[
@@ -2677,7 +2762,13 @@ const ARCH = {
             ["Lakebase", "Serverless Postgres for the single-row reads and writes an application needs, on the same governed data."],
             ["Agent Bricks", "Agents built, evaluated and deployed against governed tools instead of a private prompt."],
             ["Agentic Dev", "Genie Code and the agent surfaces they build with, inside the workspace."],
-          ] },
+          ],
+          sub:[
+            { n:"Full-stack Developers", cares:"apps hosted next to the data with no separate web tier to secure." },
+            { n:"Agent Builders", cares:"agents built and evaluated against governed tools, not a private prompt." },
+            { n:"Integration Engineers", cares:"single-row reads and writes on Lakebase over the same governed data." }
+          ],
+          ucs:["Personalisation","Customer Service Agents","Document Intelligence"] },
       ]},
     ]},
 
@@ -2774,25 +2865,104 @@ const ARCH = {
       ]},
       { title:"Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
         { n:"Customer Segmentation", s:"Customer 360", ic:"custlake",
-          long:"Unified customer profiles built on the lakehouse, segmented and activated through CustomerLake without copying data into a separate CDP." },
+          long:"Unified customer profiles built on the lakehouse, segmented and activated through CustomerLake without copying data into a separate CDP.",
+          problem:"Customer data is split across CRM, commerce, service and loyalty systems, so every team segments off a partial copy and the same customer is treated three different ways.",
+          who:"Business Teams",
+          how:"Identity is resolved on governed tables with CustomerLake, segments are scored in Model Serving, and audiences are pushed to activation channels through Reverse ETL rather than a separate CDP.",
+          comps:["CustomerLake","Unity Catalog","Model Serving","AI/BI","Reverse ETL"],
+          stories:[
+            { t:"Conde Nast unifies data for personalised experiences", u:"https://www.databricks.com/customers/conde_nast" },
+            { t:"Publicis Groupe delivers real-time personalised campaigns", u:"https://www.databricks.com/customers/publicis-groupe" }
+          ] },
         { n:"Churn & Retention", s:"Predictive", ic:"chart",
-          long:"Propensity and churn models trained on governed features, served as endpoints and pushed back into the channels that act on them." },
+          long:"Propensity and churn models trained on governed features, served as endpoints and pushed back into the channels that act on them.",
+          problem:"Churn shows up in the renewal number when it is too late to act, while the leading signals sit unjoined across product, billing and service history.",
+          who:"Data Scientists",
+          how:"Features are defined once in Feature Store, propensity and churn models are tracked in MLflow and served from Model Serving, and at-risk cohorts are activated through CustomerLake.",
+          comps:["Feature Store","MLflow","Model Serving","CustomerLake","AI/BI"],
+          stories:[
+            { t:"HOMER lifts engagement and cuts churn with Databricks", u:"https://www.databricks.com/customers/homer" },
+            { t:"SEGA Europe changes the game in player retention", u:"https://www.databricks.com/customers/sega" }
+          ] },
         { n:"Fraud & Financial Crime", s:"Real time", ic:"gavel",
-          long:"Streaming detection on Zerobus or Lakeflow streaming pipelines, with Lakehouse//RT for millisecond-latency lookups and full lineage for investigators." },
+          long:"Streaming detection on Zerobus or Lakeflow streaming pipelines, with Lakehouse//RT for millisecond-latency lookups and full lineage for investigators.",
+          problem:"Fraud has to be caught in the authorisation path in milliseconds, but rules-only screening blocks good customers, misses new patterns and leaves investigators without lineage.",
+          who:"Risk & Compliance",
+          how:"Events stream through Zerobus into Lakehouse//RT, per-entity features are scored by Model Serving before capture, and every decision keeps full lineage in Unity Catalog for the investigator.",
+          comps:["Zerobus","Lakehouse//RT","Model Serving","Feature Store","Unity Catalog"],
+          stories:[
+            { t:"Real-time fraud detection with Spark Real-Time Mode and Lakebase", u:"https://www.databricks.com/blog/how-build-real-time-fraud-detection-using-spark-real-time-mode-and-lakebase" },
+            { t:"Block prevents fraud and payment risk in real time", u:"https://www.databricks.com/customers/block/lakeflow-declarative-pipelines" }
+          ] },
         { n:"Demand Forecasting", s:"Planning", ic:"market",
-          long:"Hierarchical forecasting across products, locations and channels, reading conformed Silver tables and publishing Gold planning products." },
+          long:"Hierarchical forecasting across products, locations and channels, reading conformed Silver tables and publishing Gold planning products.",
+          problem:"Demand is planned from aggregate history in legacy tools, so promotions, seasonality and capacity limits are missed and the plan is stale before it is even agreed.",
+          who:"Business Teams",
+          how:"Conformed Silver tables feed hierarchical forecasts engineered in Feature Store and scored in Model Serving, then published as Gold planning products read in AI/BI.",
+          comps:["Feature Store","Model Serving","MLflow","AI/BI","Data Products"],
+          stories:[
+            { t:"Build fine-grained demand forecasts at scale", u:"https://www.databricks.com/solutions/accelerators/demand-forecasting" },
+            { t:"Suntory Beverage and Food accelerates decisions with Databricks", u:"https://www.databricks.com/customers/suntorybeveragefood" }
+          ] },
         { n:"Personalisation", s:"Recommendations", ic:"model",
-          long:"Retrieval and ranking over governed data via AI Search and Model Serving, served to customer-facing apps at low latency." },
+          long:"Retrieval and ranking over governed data via AI Search and Model Serving, served to customer-facing apps at low latency.",
+          problem:"Recommendations run on stale batch exports and a separate serving stack, so the offer misses the moment and the model the science team trained is not the one in production.",
+          who:"App Developers",
+          how:"Retrieval and ranking run over governed data with AI Search and Model Serving, served to customer-facing apps on Lakebase at low latency, with features shared from Feature Store.",
+          comps:["AI Search","Model Serving","Feature Store","Apps","Lakebase"],
+          stories:[
+            { t:"Eurowings personalises search with AI Search and Model Serving", u:"https://www.databricks.com/customers/eurowings" },
+            { t:"Conde Nast powers personalised experiences with Databricks", u:"https://www.databricks.com/customers/conde_nast" }
+          ] },
         { n:"Customer Service Agents", s:"Agentic", ic:"agents",
-          long:"Genie Agents and Agent Bricks agents grounded in documents, tickets and transactions, taking action in business tools rather than only answering." },
+          long:"Genie Agents and Agent Bricks agents grounded in documents, tickets and transactions, taking action in business tools rather than only answering.",
+          problem:"Support volume scales with the customer base and the answers already live in docs and past tickets, but agents re-solve the same questions by hand every day.",
+          who:"Business Teams",
+          how:"Documents, tickets and transactions are governed in Unity Catalog and served to Agent Bricks agents with AI Functions and Model Serving, taking action in business tools under Unity Gateway.",
+          comps:["Agent Bricks","AI Functions","Model Serving","Unity Gateway","Genie"],
+          stories:[
+            { t:"Lumen reaches 35% ticket deflection with GenAI", u:"https://www.databricks.com/customers/lumen-technologies" },
+            { t:"Lippert improves customer support with Agent Bricks", u:"https://www.databricks.com/customers/lippert" }
+          ] },
         { n:"Document Intelligence", s:"Unstructured", ic:"docs",
-          long:"Contracts, claims, statements and correspondence parsed into governed tables with AI Functions and Agent Bricks, so the value locked in unstructured files joins the same models and dashboards the structured estate feeds." },
+          long:"Contracts, claims, statements and correspondence parsed into governed tables with AI Functions and Agent Bricks, so the value locked in unstructured files joins the same models and dashboards the structured estate feeds.",
+          problem:"Contracts, claims and statements hold the value but sit as PDFs outside the warehouse, so the answers locked in them never join the models and dashboards the structured estate feeds.",
+          who:"Business Teams",
+          how:"Documents are parsed into governed tables with AI Functions and Agent Bricks, landed on Delta Lake under Unity Catalog, and joined to the rest of the estate for Model Serving and AI/BI.",
+          comps:["AI Functions","Agent Bricks","Unity Catalog","Delta Lake","Model Serving"],
+          stories:[
+            { t:"Cracking complex contracts with GenAI on Databricks", u:"https://www.databricks.com/blog/cracking-complex-contracts-genai-azure-databricks" },
+            { t:"EY-Parthenon turns unstructured M&A data into strategy", u:"https://www.databricks.com/customers/ey-parthenon" }
+          ] },
         { n:"Predictive Maintenance", s:"Asset health", ic:"gauge",
-          long:"Sensor and telemetry history joined to work orders and parts, predicting the failure early enough to plan the intervention rather than absorb the outage." },
+          long:"Sensor and telemetry history joined to work orders and parts, predicting the failure early enough to plan the intervention rather than absorb the outage.",
+          problem:"Assets are maintained on a calendar, so a failure discovered in service cancels the plan and cascades, while the condition signal that could have warned sat unread in telemetry.",
+          who:"Business Teams",
+          how:"Sensor and telemetry history joins work orders in Lakehouse//RT; remaining-useful-life models tracked in MLflow score in Model Serving so a removal becomes a planned intervention read in AI/BI.",
+          comps:["Lakehouse//RT","Feature Store","MLflow","Model Serving","AI/BI"],
+          stories:[
+            { t:"Rolls-Royce keeps its engines running on Databricks", u:"https://www.databricks.com/customers/rolls-royce" },
+            { t:"Predictive maintenance on the Databricks Lakehouse", u:"https://www.databricks.com/blog/what-is-predictive-maintenance" }
+          ] },
         { n:"Supply Chain Visibility", s:"End to end", ic:"stream",
-          long:"Suppliers, inventory positions, shipments and demand signals conformed into one view, with simulation on top of it so a disruption can be answered rather than only reported." },
+          long:"Suppliers, inventory positions, shipments and demand signals conformed into one view, with simulation on top of it so a disruption can be answered rather than only reported.",
+          problem:"Suppliers, inventory, shipments and demand live in different systems, so a disruption is reported after it lands instead of being answered while there is still time to move.",
+          who:"Business Teams",
+          how:"Feeds conform through Lakeflow onto Delta Lake into one governed view; scenarios are simulated in Model Serving and shared as Data Products read in AI/BI.",
+          comps:["Lakeflow","Delta Lake","Model Serving","AI/BI","Data Products"],
+          stories:[
+            { t:"Supply chain and distribution optimization on Databricks", u:"https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization" },
+            { t:"UPL optimizes supply chain operations with demand forecasting", u:"https://www.databricks.com/customers/upl" }
+          ] },
         { n:"Regulatory Reporting", s:"Risk & compliance", ic:"gavel",
-          long:"Regulatory and risk submissions produced from governed tables with lineage back to source, so a challenge from a regulator is answered from the platform rather than from a spreadsheet trail." },
+          long:"Regulatory and risk submissions produced from governed tables with lineage back to source, so a challenge from a regulator is answered from the platform rather than from a spreadsheet trail.",
+          problem:"Regulatory and risk submissions are stitched from dozens of systems each cycle, so reconciliation is manual, lineage is hard to prove and one restatement can trigger a finding.",
+          who:"Risk & Compliance",
+          how:"Risk and finance data conform into governed Gold tables under Unity Catalog with full lineage, and returns are assembled from certified definitions and published as Data Products read in AI/BI.",
+          comps:["Unity Catalog","Delta Lake","AI/BI","Data Products","Genie One"],
+          stories:[
+            { t:"BCBS 239 compliance in the age of AI (ABN AMRO)", u:"https://www.databricks.com/blog/bcbs-239-compliance-age-ai-turning-regulatory-burden-strategic-advantage" }
+          ] },
       ]},
     ],
   },
@@ -15651,6 +15821,172 @@ restoreActiveTab();
 
 
 <script>
+/* ── First-visit guided tour ────────────────────────────────────────────────
+   A vanilla port of the model-viewer tour: a moving spotlight (one element whose
+   outer box-shadow dims the page) with a popover that walks the reader through
+   the board. It opens once on a first visit and is replayable from the ◎ Tour
+   button. Targets are resolved by selector at each step; a target that is not on
+   screen in the current shape or in Platform-only view is skipped rather than
+   left blank. getBoundingClientRect reads the post-transform geometry, so the
+   spotlight lands on the element as the reader actually sees it, at any fit. */
+(function(){
+  const KEY = "dbx-arch-tour-v1";
+  const lsGet = k => { try { return localStorage.getItem(k); } catch(_) { return null; } };
+  const lsSet = (k,v) => { try { localStorage.setItem(k,v); } catch(_) {} };
+
+  const STEPS = [
+    { sel:"#ind-btn", place:"bottom", title:"Switch industry",
+      body:"Start here. Pick any of 63 industries and everything around the platform respecialises at once: the sources, ingestion, teams, apps, use cases and consumers. Press <kbd>\u2318K</kbd> or <kbd>Ctrl&nbsp;K</kbd> to search them fast." },
+    { sel:"#plat-top", place:"bottom", title:"Apps and use cases",
+      body:"What the platform is used for. Click any use case to open its full story: the problem it solves, who benefits, how it is built, the components it uses, and real Databricks customer stories with links." },
+    { sel:".pocket.ppl", place:"left", title:"The teams",
+      body:"Who works on the platform. Click a team to see the personas inside it, what each one cares about, and the use cases they own. Every chip in the drawer is a link into the rest of the board." },
+    { sel:"#platform", place:"top", title:"The platform core",
+      body:"This is the Databricks Data Intelligence Platform. It stays the same in every industry; only the world around it changes. Click any product for detail." },
+    { sel:"#plat-max", place:"bottom", title:"Zoom into the platform",
+      body:"Present the platform on its own: this hides the sources, consumers, apps band and cloud services. Click again to bring the full board back." },
+    { sel:"#cloud-seg", place:"bottom", title:"Your cloud",
+      body:"Switch the cloud services band between Azure, AWS and GCP. Federation sources, native ingest and the BI tools follow the choice." },
+    { sel:".col.src", place:"right", title:"Sources and consumers",
+      body:"Where data comes from is on the left; where governed answers go is on the right: BI tools, APIs, published data products, partners and operational systems." },
+    { sel:"#shape-btn", place:"bottom", title:"Shape, palette and stage",
+      body:"Draw the platform as a Z, an I-beam and other shapes, recolour it to a palette that suits your screen or projector, and filter which release stages the platform shows." },
+    { sel:"#dl-btn", place:"bottom", title:"Take it with you",
+      body:"Export the current view as a multi-page PDF or PowerPoint (a cover, the board, a slide per use case and closing links), or as a PNG, an animated GIF, or interactive HTML. Downloads follow the theme on screen." },
+  ];
+
+  let idx = 0, dir = 1, open = false;
+  let catcher = null, hole = null, pop = null;
+  const PAD = 6, GAP = 14;
+
+  function rectOf(sel){
+    const n = document.querySelector(sel);
+    if(!n) return null;
+    const b = n.getBoundingClientRect();
+    if(b.width === 0 && b.height === 0) return null;
+    return b;
+  }
+
+  function build(){
+    catcher = document.createElement("div");
+    catcher.className = "tour-catch";
+    catcher.addEventListener("click", () => stop());
+    hole = document.createElement("div");
+    hole.className = "tour-hole";
+    pop = document.createElement("div");
+    pop.className = "tour-pop";
+    pop.addEventListener("click", e => e.stopPropagation());
+    document.body.append(catcher, hole, pop);
+    window.addEventListener("keydown", onKey, true);
+    window.addEventListener("resize", reflow);
+    window.addEventListener("scroll", reflow, true);
+  }
+
+  function teardown(){
+    [catcher, hole, pop].forEach(n => n && n.remove());
+    catcher = hole = pop = null;
+    window.removeEventListener("keydown", onKey, true);
+    window.removeEventListener("resize", reflow);
+    window.removeEventListener("scroll", reflow, true);
+  }
+
+  function onKey(e){
+    if(!open) return;
+    if(e.key === "Escape"){ e.preventDefault(); stop(); }
+    else if(e.key === "ArrowRight" || e.key === "Enter"){ e.preventDefault(); go(1); }
+    else if(e.key === "ArrowLeft"){ e.preventDefault(); go(-1); }
+  }
+
+  function reflow(){ if(open) render(); }
+
+  function go(d){
+    dir = d;
+    const ni = idx + d;
+    if(ni < 0) return;
+    if(ni >= STEPS.length){ stop(); return; }
+    idx = ni;
+    render();
+  }
+
+  function render(){
+    const step = STEPS[idx];
+    if(!step){ stop(); return; }
+    const r = rectOf(step.sel);
+    if(!r){
+      const ni = idx + dir;
+      if(ni < 0 || ni >= STEPS.length){ stop(); return; }
+      idx = ni; render(); return;
+    }
+    const H = { left:r.left - PAD, top:r.top - PAD, width:r.width + 2*PAD, height:r.height + 2*PAD };
+    Object.assign(hole.style, { left:H.left+"px", top:H.top+"px", width:H.width+"px", height:H.height+"px" });
+
+    const last = idx === STEPS.length - 1;
+    pop.innerHTML = "";
+    const h4 = document.createElement("h4"); h4.textContent = step.title;
+    const p = document.createElement("p"); p.innerHTML = step.body;
+    const row = document.createElement("div"); row.className = "tour-row";
+    const st = document.createElement("span"); st.className = "tour-step"; st.textContent = (idx+1) + " / " + STEPS.length;
+    const skip = document.createElement("button"); skip.className = "tour-skip"; skip.type = "button"; skip.textContent = "Skip"; skip.addEventListener("click", () => stop());
+    row.append(st, skip);
+    if(idx > 0){
+      const back = document.createElement("button"); back.className = "tour-btn"; back.type = "button"; back.textContent = "Back"; back.addEventListener("click", () => go(-1));
+      row.append(back);
+    }
+    const next = document.createElement("button"); next.className = "tour-btn accent"; next.type = "button"; next.textContent = last ? "Done" : "Next"; next.addEventListener("click", () => go(1));
+    row.append(next);
+    pop.append(h4, p, row);
+    position(H, step.place || "bottom");
+  }
+
+  function position(H, place){
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const PW = pop.offsetWidth || 316, ph = pop.offsetHeight || 160;
+    let left, top;
+    if(place === "right"){ left = H.left + H.width + GAP; top = H.top; if(left + PW > vw - 8) place = "bottom"; }
+    else if(place === "left"){ left = H.left - GAP - PW; top = H.top; if(left < 8) place = "bottom"; }
+    if(place === "bottom"){
+      left = H.left + H.width/2 - PW/2;
+      top = H.top + H.height + GAP;
+      if(top + ph > vh - 8 && H.top - GAP - ph > 8) top = H.top - GAP - ph;
+    } else if(place === "top"){
+      left = H.left + H.width/2 - PW/2;
+      top = H.top - GAP - ph;
+      if(top < 8) top = H.top + H.height + GAP;
+    }
+    left = Math.max(8, Math.min(left, vw - PW - 8));
+    top = Math.max(8, Math.min(top, vh - ph - 8));
+    pop.style.left = left + "px";
+    pop.style.top = top + "px";
+  }
+
+  function start(){
+    if(open) return;
+    /* Platform-only view hides most targets; leave it, and let the missing-target
+       skip carry the tour through the controls that are still on screen. */
+    idx = 0; dir = 1; open = true;
+    build();
+    render();
+  }
+
+  function stop(){
+    if(!open) return;
+    open = false;
+    teardown();
+    lsSet(KEY, "1");
+  }
+
+  const btn = document.getElementById("tour-btn");
+  if(btn) btn.addEventListener("click", start);
+  window.__startArchTour = start;
+
+  function maybeAuto(){
+    if(lsGet(KEY)) return;
+    /* One shot, after the board has fitted and settled. */
+    setTimeout(start, 900);
+  }
+  if(document.readyState === "complete") maybeAuto();
+  else window.addEventListener("load", maybeAuto);
+})();
 </script>
 </body>
 </html>
