@@ -14776,9 +14776,9 @@ function pptxNarrativeSlides(){
     };
     /* left column */
     let ly = topY;
-    if(t.long){ ly = label(parts, M, ly, colW, "What it is"); ly = para(parts, M, ly, colW, t.long, 11.5, ink); }
-    if(t.problem){ ly = label(parts, M, ly, colW, "The problem it solves"); ly = para(parts, M, ly, colW, t.problem, 11.5, ink); }
-    if(t.how){ ly = label(parts, M, ly, colW, "How it is built"); ly = para(parts, M, ly, colW, t.how, 11.5, ink); }
+    if(t.long){ ly = label(parts, M, ly, colW, "What it is"); ly = para(parts, M, ly, colW, t.long, 14, ink); }
+    if(t.problem){ ly = label(parts, M, ly, colW, "The problem it solves"); ly = para(parts, M, ly, colW, t.problem, 14, ink); }
+    if(t.how){ ly = label(parts, M, ly, colW, "How it is built"); ly = para(parts, M, ly, colW, t.how, 14, ink); }
     /* right column */
     let ry = topY;
     if(t.who){
@@ -15088,9 +15088,9 @@ async function boardPdfBlob(){
       return cy - 6;
     };
     let ly = cur;
-    if(t.long){ ly = label(NM, ly, "What it is"); ly = para(NM, ly, colW, t.long, 10); }
-    if(t.problem){ ly = label(NM, ly, "The problem it solves"); ly = para(NM, ly, colW, t.problem, 10); }
-    if(t.how){ ly = label(NM, ly, "How it is built"); ly = para(NM, ly, colW, t.how, 10); }
+    if(t.long){ ly = label(NM, ly, "What it is"); ly = para(NM, ly, colW, t.long, 14); }
+    if(t.problem){ ly = label(NM, ly, "The problem it solves"); ly = para(NM, ly, colW, t.problem, 14); }
+    if(t.how){ ly = label(NM, ly, "How it is built"); ly = para(NM, ly, colW, t.how, 14); }
     let ry = cur;
     if(t.who){
       ry = label(rx, ry, "Who benefits");
