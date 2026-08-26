@@ -74,10 +74,10 @@ def ing_rail(third_party_tiles):
     ]
 
 
-def ppl_rail(business_tiles):
+def ppl_rail(business_tiles, technical_tiles=None):
     return [
         {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
-        {"box": "Technical", "ic": "code", "tiles": TECH_PPL},
+        {"box": "Technical", "ic": "code", "tiles": technical_tiles or TECH_PPL},
     ]
 
 
@@ -119,13 +119,29 @@ def tile(n, ic, long, cite=None, s=None):
     return t
 
 
-def biz(n, mark, long, uses):
-    return {"n": n, "mark": mark, "long": long, "uses": uses}
+def biz(n, mark, long, uses, sub=None, ucs=None):
+    t = {"n": n, "mark": mark, "long": long, "uses": uses}
+    if sub:
+        t["sub"] = [{"n": p[0], "cares": p[1]} for p in sub]
+    if ucs:
+        t["ucs"] = ucs
+    return t
 
 
 def app(n, s, ic, long):
     return {"n": n, "s": s, "ic": ic, "long": long}
 
 
-def uc(n, s, ic, long):
-    return {"n": n, "s": s, "ic": ic, "long": long}
+def uc(n, s, ic, long, problem=None, who=None, how=None, comps=None, stories=None):
+    t = {"n": n, "s": s, "ic": ic, "long": long}
+    if problem:
+        t["problem"] = problem
+    if who:
+        t["who"] = who
+    if how:
+        t["how"] = how
+    if comps:
+        t["comps"] = comps
+    if stories:
+        t["stories"] = [{"t": s[0], "u": s[1]} for s in stories]
+    return t

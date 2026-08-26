@@ -39,6 +39,15 @@ def emit_tile(tile: dict, indent: str, ppl: bool = False) -> str:
     if tile.get("rel"):
         rel = ", ".join(js_str(r) for r in tile["rel"])
         parts.append(f'rel:[{rel}]')
+    if tile.get("sub"):
+        sub = ", ".join(
+            "{ n:%s, cares:%s }" % (js_str(p["n"]), js_str(p["cares"]))
+            for p in tile["sub"]
+        )
+        parts.append(f'sub:[{sub}]')
+    if tile.get("ucs"):
+        ucs = ", ".join(js_str(u) for u in tile["ucs"])
+        parts.append(f'ucs:[{ucs}]')
     inner = ", ".join(parts)
     return f"{indent}{{ {inner} }}"
 
@@ -68,6 +77,30 @@ def emit_rails(rails: dict) -> str:
     return "\n".join(lines)
 
 
+def emit_top_tile(t: dict) -> str:
+    parts = [
+        f'n:{js_str(t["n"])}',
+        f's:{js_str(t["s"])}',
+        f'ic:{js_str(t["ic"])}',
+        f'long:{js_str(t["long"])}',
+    ]
+    if t.get("problem"):
+        parts.append(f'problem:{js_str(t["problem"])}')
+    if t.get("who"):
+        parts.append(f'who:{js_str(t["who"])}')
+    if t.get("how"):
+        parts.append(f'how:{js_str(t["how"])}')
+    if t.get("comps"):
+        comps = ", ".join(js_str(c) for c in t["comps"])
+        parts.append(f'comps:[{comps}]')
+    if t.get("stories"):
+        st = ", ".join(
+            "{ t:%s, u:%s }" % (js_str(s["t"]), js_str(s["u"])) for s in t["stories"]
+        )
+        parts.append(f'stories:[{st}]')
+    return "{ " + ", ".join(parts) + " }"
+
+
 def emit_top(top: list) -> str:
     lines = ["    top:["]
     for si, sec in enumerate(top):
@@ -77,10 +110,7 @@ def emit_top(top: list) -> str:
         )
         for ti, t in enumerate(sec["tiles"]):
             comma = "," if ti < len(sec["tiles"]) - 1 else ""
-            lines.append(
-                f'        {{ n:{js_str(t["n"])}, s:{js_str(t["s"])}, '
-                f'ic:{js_str(t["ic"])}, long:{js_str(t["long"])} }}{comma}'
-            )
+            lines.append("        " + emit_top_tile(t) + comma)
         lines.append("      ]}," if si == 0 else "      ]}")
     lines.append("    ],")
     return "\n".join(lines)
@@ -138,9 +168,15 @@ def main():
     if m_begin < 0 or m_end < 0:
         sys.exit("Could not find INDUSTRIES block markers in app/index.html")
 
-    airlines_block = text[m_begin:m_end].rstrip()
-    if not airlines_block.endswith(","):
-        airlines_block += ","
+    # airlines is the hand-authored reference and the only entry preserved
+    # verbatim. Everything between its closing brace and the object's closing
+    # `};` is regenerated from the batch files on every run, so re-injecting is
+    # idempotent instead of appending the batches again (which previously
+    # tripled the industry list and ballooned index.html to 21k lines).
+    a_close = text.find("\n  },\n", m_begin)
+    if a_close < 0 or a_close >= m_end:
+        sys.exit("Could not find end of the airlines reference block")
+    airlines_block = text[m_begin : a_close + len("\n  },")]
 
     extra = load_batches()
     if not extra:
@@ -148,8 +184,7 @@ def main():
         return 1
 
     emitted = "\n".join(emit_industry(iid, ind) for iid, ind in sorted(extra.items()))
-    new_block = airlines_block + "\n" + emitted.rstrip(",") + "\n"
-    new_text = text[:m_begin] + new_block + text[m_end:]
+    new_text = text[:m_begin] + airlines_block + "\n" + emitted + text[m_end:]
     APP.write_text(new_text, encoding="utf-8")
     print(f"Injected {len(extra)} industries into {APP}")
     return 0

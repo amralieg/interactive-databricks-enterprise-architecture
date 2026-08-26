@@ -2,7 +2,16 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, ppl_rail, tile, top_band, uc
+from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+
+
+def ppl2(business_tiles, tech_tiles):
+    """People rail with per-industry Technical roles (never common.TECH_PPL)."""
+    return [
+        {"box": "Business", "ic": "zbrief", "tiles": business_tiles[:5]},
+        {"box": "Technical", "ic": "code", "tiles": tech_tiles[:3]},
+    ]
+
 
 INDUSTRIES_BATCH4 = {
     "semiconductors": {
@@ -49,17 +58,24 @@ INDUSTRIES_BATCH4 = {
                 tile("SECS/GEM Message Bus", "api", "Equipment host communication for remote commands, trace reports and alarms.", "secs-gem"),
                 tile("OSAT Test File Exchange", "zplug", "STDF parametric files from outsourced assembly and test partners.", "stdf"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on capacity utilisation and margin; the COO on cycle time, yield and fab excursion cost.",
+            "ppl": ppl2([
+                biz("CEO & Fab Strategy", "Genie One", "The CEO on capacity utilisation and margin; the COO on cycle time, yield ramp and the cost of a fab excursion by product and layer.",
                     [["Genie One", "Ask what yesterday's fab output cost without booking analyst time."], ["AI/BI", "Yield, cycle time and OEE on certified Metric Views."], ["Unity Catalog", "Certification so yield means one thing across the enterprise."]]),
-                biz("Fab Operations", "Lakehouse//RT", "Fab managers on WIP, tool availability and lot disposition through each critical layer.",
+                biz("Fab Operations", "Lakehouse//RT", "Fab managers on WIP position, tool availability and lot disposition through each critical layer, defending cycle time and wafer starts.",
                     [["Fab Control Tower", "Live WIP and bottleneck tools on Databricks Apps over Lakebase."], ["Lakehouse//RT", "Equipment and lot state at fab-line latency."]]),
-                biz("Yield Engineering", "Model Serving", "Yield engineers on defect pareto, spatial signatures and experiments that recover margin.",
+                biz("Yield Engineering", "Model Serving", "Yield engineers on defect pareto, spatial signatures and the designed experiments that recover margin before a lot is dispositioned.",
                     [["Yield Workbench", "Bin maps and excursion history before disposition is signed."], ["Model Serving", "Defect classification and yield prediction on incoming lots."]]),
-                biz("Supply Chain", "AI/BI", "Materials planners on lead times, allocation and single-source substrate risk.",
+                biz("Supply Chain", "AI/BI", "Materials planners on substrate lead times, wafer allocation and single-source risk, trading inventory cost against line-down risk.",
                     [["AI/BI", "Inventory, consumption and supplier OTIF on certified Metric Views."], ["Genie One", "Ask which lots are at risk from a supplier delay."]]),
-                biz("Quality & Reliability", "Lakeflow", "Quality teams on customer returns, FA correlation and qualification change controls.",
+                biz("Quality & Reliability", "Lakeflow", "Quality teams on customer returns, failure-analysis correlation and qualification change controls tied back to the fab lot and test bin.",
                     [["FA Correlation Lab", "Returns tied to fab lot, test bin and assembly trace."], ["Lakeflow", "Test, MES and returns feeds conformed for quality analytics."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land SECS/GEM tool events, MES lot history, ATE parametric dumps and ERP feeds; own Bronze to Silver and the pager when a yield pipeline stalls.",
+                    [["Lakeflow Connect", "Managed connectors for MES, ERP and equipment host sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on SECS/GEM and test feeds."], ["Lakewatch", "Freshness on the yield tables engineering reads each shift."]]),
+                biz("Data Scientists", "MLflow", "Defect-classification, yield-prediction, chamber-matching and test-optimisation models, and whether they still hold as processes and nodes shift.",
+                    [["Feature Store", "Wafer and tool features read identically in training and serving."], ["MLflow", "Every excursion experiment tracked for audit and reproduction."], ["Model Serving", "Defect and yield models scored on incoming lots."]]),
+                biz("App Developers", "Apps", "Ship the Fab Control Tower, Yield Workbench and Chamber Match apps engineering runs the line from, hosted next to governed MES and test data.",
+                    [["Apps", "Fab screens with no separate web tier to run or secure."], ["Lakebase", "Serverless Postgres for hold state and disposition writes."], ["Agent Bricks", "Agents that draft dispositions against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -105,15 +121,15 @@ INDUSTRIES_BATCH4 = {
         ),
         "sources": {
             "applied-e3": {"t": "Applied Materials E3 MES", "u": "https://www.appliedmaterials.com/us/en/products/e3.html"},
-            "camstar": {"t": "Camstar Semiconductor Suite", "u": "https://www.siemens.com/global/en/products/automation/topic-areas/manufacturing-operations-management/camstar.html"},
-            "brooks-pfab": {"t": "Brooks Automation PFAB", "u": "https://www.brooks.com/products/automation-systems"},
+            "camstar": {"t": "Camstar Semiconductor Suite", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
+            "brooks-pfab": {"t": "Brooks Automation PFAB", "u": "https://www.brooks.com/"},
             "synopsys-fusion": {"t": "Synopsys Fusion Design Platform", "u": "https://www.synopsys.com/implementation-and-signoff.html"},
             "cadence-virtuoso": {"t": "Cadence Virtuoso", "u": "https://www.cadence.com/en_US/home/tools/custom-ic-analog-rf-design/virtuoso-studio.html"},
-            "calibre": {"t": "Siemens Calibre", "u": "https://www.siemens.com/global/en/products/automation/topic-areas/ic/ic-design/calibre.html"},
+            "calibre": {"t": "Siemens Calibre", "u": "https://eda.sw.siemens.com/en-US/ic/calibre-design/"},
             "teradyne": {"t": "Teradyne UltraFLEX", "u": "https://www.teradyne.com/products/test-systems/ultraflex/"},
             "pdf-exensio": {"t": "PDF Solutions Exensio", "u": "https://www.pdf.com/exensio"},
-            "kla-5d": {"t": "KLA 5D Analyzer", "u": "https://www.kla.com/products/process-control/analytics"},
-            "secs-gem": {"t": "SECS/GEM equipment interface", "u": "https://www.semi.org/en/products-services/standards/secs-gem"},
+            "kla-5d": {"t": "KLA 5D Analyzer", "u": "https://www.kla.com/"},
+            "secs-gem": {"t": "SECS/GEM equipment interface", "u": "https://www.semi.org/en/standards"},
             "asml-yieldstar": {"t": "ASML YieldStar metrology", "u": "https://www.asml.com/en/products/metrology-and-inspection-systems"},
             "lam-analytics": {"t": "Lam Research equipment analytics", "u": "https://www.lamresearch.com/"},
             "sap-s4": {"t": "SAP S/4HANA", "u": "https://www.sap.com/products/erp/s4hana.html"},
@@ -137,7 +153,7 @@ INDUSTRIES_BATCH4 = {
             "src": [
                 {"box": "Terminal Operating", "ic": "erp", "tiles": [
                     tile("Navis N4 TOS", "erp", "Terminal operating system: vessel plans, yard slots, crane dispatch and gate transactions.", "navis-n4"),
-                    tile("COSMOS TOS", "db", "Container yard inventory, equipment control and rail loading for multi-modal terminals.", "cosmos-tos"),
+                    tile("CyberLogitec OPUS", "db", "Container yard inventory, equipment control and rail loading for multi-modal terminals.", "cyberlogitec"),
                     tile("SAP TM for Ports", "sheet", "Landside transport orders, appointment scheduling and carrier billing.", "sap-tm"),
                 ]},
                 {"box": "Vessel & Traffic", "ic": "stream", "tiles": [
@@ -166,17 +182,24 @@ INDUSTRIES_BATCH4 = {
                 tile("Port Authority AIS Feed", "api", "Real-time berth occupancy and pilot boarding events from the port authority.", "pcs"),
                 tile("Customs Single Window", "gavel", "Government clearance status and inspection results consumed inbound.", "descartes-customs"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The port director on throughput and revenue; the COO on berth productivity and truck queues.",
+            "ppl": ppl2([
+                biz("Port Director Office", "Genie One", "The port director on throughput and revenue per call; the COO on berth productivity, truck queues and the terminal's demurrage exposure.",
                     [["Genie One", "Ask what yesterday's vessel productivity cost without analyst delay."], ["AI/BI", "Crane rate and dwell on certified Metric Views."], ["Unity Catalog", "One definition of dwell across terminal and finance."]]),
-                biz("Terminal Operations", "Lakehouse//RT", "Berth planners and shift managers on crane allocation, yard density and vessel cut-off.",
+                biz("Terminal Operations", "Lakehouse//RT", "Berth planners and shift managers on crane allocation, yard density and vessel cut-off, defending crane moves per hour on the stow plan.",
                     [["Berth Planner", "Live berth and crane plan against AIS ETA and yard capacity."], ["Lakehouse//RT", "Gate and crane state at terminal-line latency."]]),
-                biz("Commercial & Tariffs", "AI/BI", "Tariff managers on contract compliance, rebates and storage revenue leakage.",
+                biz("Commercial & Tariffs", "AI/BI", "Tariff managers on contract compliance, rebate accuracy and storage revenue leakage where free-dwell days slip past the billed clock.",
                     [["AI/BI", "Handling revenue and demurrage on certified views."], ["Genie One", "Ask which customers exceed free dwell this week."]]),
-                biz("Landside Logistics", "Model Serving", "Truck appointment and rail planners on gate queues and intermodal handoff.",
+                biz("Landside Logistics", "Model Serving", "Truck appointment and rail planners on gate queues and intermodal handoff, matching slots to yard density before demurrage accrues.",
                     [["Gate Optimizer", "Appointment slots scored against yard density and cut-off."], ["Model Serving", "Dwell prediction models before demurrage accrues."]]),
-                biz("Customs & Security", "Lakeflow", "Compliance teams on holds, inspections and dangerous goods declarations.",
+                biz("Customs & Security", "Lakeflow", "Compliance teams on customs holds, inspection outcomes and dangerous-goods declarations validated against stow position and segregation.",
                     [["Customs Hold Console", "Declaration status and inspection outcomes in one governed view."], ["Lakeflow", "PCS and customs feeds conformed for compliance analytics."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land TOS moves, AIS position reports, PCS messages and customs feeds; own Bronze to Silver and the pager when a dwell or crane table breaks.",
+                    [["Lakeflow Connect", "Managed connectors for TOS, PCS and carrier sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on AIS and gate feeds."], ["Lakewatch", "Freshness on the dwell tables the berth desk reads each shift."]]),
+                biz("Data Scientists", "MLflow", "Dwell-prediction, vessel-ETA, crane-sequencing and gate-turnaround models, and whether they still hold as schedules and yard density shift.",
+                    [["Feature Store", "Vessel and yard features read identically in training and serving."], ["MLflow", "Every ETA and dwell experiment tracked for audit."], ["Model Serving", "Dwell and ETA models scored on approaching calls."]]),
+                biz("App Developers", "Apps", "Ship the Berth Planner, Gate Optimizer and Yard Density apps terminal teams work in, hosted next to governed TOS and AIS data.",
+                    [["Apps", "Terminal screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for appointment and dispatch writes."], ["Agent Bricks", "Agents that draft crane sequences against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -222,12 +245,12 @@ INDUSTRIES_BATCH4 = {
         ),
         "sources": {
             "navis-n4": {"t": "Navis N4 terminal operating system", "u": "https://www.navis.com/products/navis-n4"},
-            "cosmos-tos": {"t": "COSMOS TOS", "u": "https://www.cosmos-solutions.com/"},
+            "cyberlogitec": {"t": "CyberLogitec OPUS Terminal", "u": "https://www.cyberlogitec.com/"},
             "sap-tm": {"t": "SAP Transportation Management", "u": "https://www.sap.com/products/scm/transportation-logistics.html"},
             "pcs": {"t": "Port community systems", "u": "https://www.ipcsa.international/"},
             "ais": {"t": "Automatic Identification System", "u": "https://www.imo.org/en/OurWork/Safety/Pages/AIS.aspx"},
             "marinetraffic": {"t": "MarineTraffic", "u": "https://www.marinetraffic.com/"},
-            "descartes-customs": {"t": "Descartes customs compliance", "u": "https://www.descartes.com/solutions/customs-compliance"},
+            "descartes-customs": {"t": "Descartes customs compliance", "u": "https://www.descartes.com/"},
             "cargowise": {"t": "CargoWise One", "u": "https://www.cargowise.com/"},
             "inttra": {"t": "INTTRA eBL platform", "u": "https://www.inttra.com/"},
             "kalmar-tv": {"t": "Kalmar Terminal Vision", "u": "https://www.kalmarglobal.com/"},
@@ -278,15 +301,22 @@ INDUSTRIES_BATCH4 = {
                 tile("Social Listening APIs", "observ", "Brand mention and sentiment feeds for sponsorship and crisis monitoring."),
                 tile("Rights Holder Metadata", "zplug", "Media rights windows and blackout rules from league partners.", "stats-perform"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "CEO on revenue per fan; COO on game-day throughput and safety.",
+            "ppl": ppl2([
+                biz("Ownership & Executive", "Genie One", "The CEO on revenue per fan and matchday P&L; the COO on ingress throughput, concessions flow and the safety record across the venue.",
                     [["Genie One", "Last home stand yield without analyst delay."], ["AI/BI", "Attendance and sponsorship ROI on Metric Views."]]),
-                biz("Ticketing & Pricing", "Model Serving", "Pricing analysts on dynamic tiers and secondary market pressure.",
+                biz("Ticketing & Pricing", "Model Serving", "Pricing analysts on dynamic seat tiers, secondary-market pressure and sell-through pace against the demand curve before and during on-sale.",
                     [["Pricing Workbench", "Demand forecast before on-sale."], ["Model Serving", "Price models in the on-sale path."]]),
-                biz("Fan Engagement", "CustomerLake", "CRM teams on membership, churn and personalised offers.",
+                biz("Fan Engagement", "CustomerLake", "CRM teams on membership growth, churn before renewal and personalised offers scored on spend stitched across ticketing and concessions.",
                     [["Fan 360 Console", "Spend stitched across ticketing and concessions."], ["CustomerLake", "Segments without a separate CDP."]]),
-                biz("Game-Day Ops", "Lakehouse//RT", "Venue managers and medical staff on ingress, queues, load and incidents.",
+                biz("Game-Day Ops", "Lakehouse//RT", "Venue managers and medical staff on ingress flow, queue times, player load and incidents, moving crews before a bottleneck becomes a delay.",
                     [["Game-Day Command", "Live scans and queue times on one screen."], ["Load Management Hub", "Player workload before selection."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land ticketing scans, POS folios, wearable tracking and CRM feeds; own Bronze to Silver and the pager when a game-day attendance table stalls.",
+                    [["Lakeflow Connect", "Managed connectors for ticketing, CRM and POS sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on scan and tracking feeds."], ["Lakewatch", "Freshness on the attendance tables commercial reads on game day."]]),
+                biz("Data Scientists", "MLflow", "Dynamic-pricing, fan-churn, injury-risk and highlight-selection models, and whether they still hold as rosters, opponents and demand shift.",
+                    [["Feature Store", "Fan and athlete features read identically in training and serving."], ["MLflow", "Every pricing and load experiment tracked for audit."], ["Model Serving", "Price and risk models scored in the on-sale and coaching path."]]),
+                biz("App Developers", "Apps", "Ship the Game-Day Command, Pricing Workbench and Fan 360 apps commercial and venue teams work in, next to governed ticketing data.",
+                    [["Apps", "Venue screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for offer and incident state writes."], ["Agent Bricks", "Agents that draft offers against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -331,20 +361,18 @@ INDUSTRIES_BATCH4 = {
              uc("Merchandise Forecast", "Retail", "erp", "Event-level merch demand forecast tied to opponent and promotion.")],
         ),
         "sources": {
-            "ticketmaster": {"t": "Ticketmaster Archtics", "u": "https://business.ticketmaster.com/archtics/"},
-            "sf-sports": {"t": "Salesforce Sports Cloud", "u": "https://www.salesforce.com/sports/"},
+            "ticketmaster": {"t": "Ticketmaster Archtics", "u": "https://business.ticketmaster.com/"},
+            "sf-sports": {"t": "Salesforce Sports Cloud", "u": "https://www.salesforce.com/"},
             "seatgeek": {"t": "SeatGeek Enterprise", "u": "https://seatgeek.com/enterprise"},
             "venuenext": {"t": "VenueNext", "u": "https://www.venuenext.com/"},
             "genetec": {"t": "Genetec Security Center", "u": "https://www.genetec.com/"},
             "ukg": {"t": "UKG workforce management", "u": "https://www.ukg.com/"},
             "grabyo": {"t": "Grabyo", "u": "https://about.grabyo.com/"},
             "deltatre": {"t": "Deltatre OTT", "u": "https://www.deltatre.com/"},
-            "nielsen-sports": {"t": "Nielsen Sports", "u": "https://www.nielsen.com/solutions/sports/"},
+            "nielsen-sports": {"t": "Nielsen Sports", "u": "https://www.nielsen.com/"},
             "sponsorunited": {"t": "SponsorUnited", "u": "https://www.sponsorunited.com/"},
             "trade-desk": {"t": "The Trade Desk", "u": "https://www.thetradedesk.com/"},
-            "oracle-pos": {"t": "Oracle MICROS POS", "u": "https://www.oracle.com/food-beverage/pos/"},
             "catapult": {"t": "Catapult Sports", "u": "https://www.catapult.com/"},
-            "kitman": {"t": "Kitman Labs", "u": "https://www.kitmanlabs.com/"},
             "second-spectrum": {"t": "Second Spectrum", "u": "https://www.secondspectrum.com/"},
             "stats-perform": {"t": "Stats Perform", "u": "https://www.statsperform.com/"},
         },
@@ -393,17 +421,24 @@ INDUSTRIES_BATCH4 = {
                 tile("Lightcast Labour Market", "chart", "Occupation demand, wage benchmarks and skills taxonomy updates.", "lightcast"),
                 tile("State Licence Boards", "gavel", "Professional licence status files consumed for credential monitoring.", "symplr"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on gross margin and client concentration; the COO on fill rate and compliance exposure.",
+            "ppl": ppl2([
+                biz("CEO & Growth Office", "Genie One", "The CEO on gross margin and client concentration; the COO on fill rate, redeployment and the compliance exposure sitting in open placements.",
                     [["Genie One", "Ask what last quarter's margin by client was without analyst delay."], ["AI/BI", "Fill rate and spread on certified Metric Views."], ["Unity Catalog", "One placement definition across ATS and payroll."]]),
-                biz("Recruiting & Sales", "Model Serving", "Recruiters and account managers on req pipelines, submittals and rate negotiations.",
+                biz("Recruiting & Sales", "Model Serving", "Recruiters and account managers on req pipelines, submittal quality and rate negotiations, defending time-to-fill and interview velocity.",
                     [["Recruiter Workbench", "Open reqs, submittal quality and interview velocity."], ["Model Serving", "Candidate match scores in the submission path."]]),
-                biz("Workforce Operations", "Lakehouse//RT", "Schedulers on shift coverage, overtime and credential gaps before start date.",
+                biz("Workforce Operations", "Lakehouse//RT", "Schedulers on shift coverage, overtime creep and credential gaps that would block a worker from starting the client assignment on time.",
                     [["Coverage Console", "Open shifts and credential expiry on one screen."], ["Lakehouse//RT", "Timecard and credential state at shift latency."]]),
-                biz("Payroll & Finance", "AI/BI", "Payroll and billing teams on bill-pay spread, accruals and client invoicing.",
+                biz("Payroll & Finance", "AI/BI", "Payroll and billing teams on bill-pay spread, accrual accuracy and client invoicing, chasing margin leakage that hides in missed approvals.",
                     [["AI/BI", "Margin and leakage on certified views."], ["Genie One", "Ask which clients are below target spread this month."]]),
-                biz("Compliance & Risk", "Lakeflow", "Compliance officers on credential expirations, tenure limits and audit response.",
+                biz("Compliance & Risk", "Lakeflow", "Compliance officers on credential expirations, tenure limits and audit response, keeping every placement defensible under client and law.",
                     [["Compliance Dashboard", "Credential and I-9 status by placement."], ["Lakeflow", "ATS, VMS and payroll feeds conformed for audit."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land ATS submittals, VMS requisitions, timecards and payroll runs; own Bronze to Silver and the pager when a fill-rate or margin table breaks.",
+                    [["Lakeflow Connect", "Managed connectors for ATS, VMS and payroll sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on placement and timecard feeds."], ["Lakewatch", "Freshness on the margin tables finance reads each morning."]]),
+                biz("Data Scientists", "MLflow", "Candidate-match, time-to-fill, attrition and rate-benchmark models, and whether they still hold as skills demand and client mix shift.",
+                    [["Feature Store", "Candidate and req features read identically in training and serving."], ["MLflow", "Every match and attrition experiment tracked for audit."], ["Model Serving", "Match and attrition models scored in the submission path."]]),
+                biz("App Developers", "Apps", "Ship the Recruiter Workbench, Coverage Console and Margin Analyzer apps recruiting and finance work in, next to governed placement data.",
+                    [["Apps", "Recruiting screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for shift and credential state writes."], ["Agent Bricks", "Agents that draft submittals against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -449,7 +484,7 @@ INDUSTRIES_BATCH4 = {
         ),
         "sources": {
             "bullhorn": {"t": "Bullhorn ATS/CRM", "u": "https://www.bullhorn.com/"},
-            "workday-rec": {"t": "Workday Recruiting", "u": "https://www.workday.com/en-us/products/talent-management/recruiting.html"},
+            "workday-rec": {"t": "Workday Recruiting", "u": "https://www.workday.com/en-us/products/talent-management/talent-acquisition.html"},
             "greenhouse": {"t": "Greenhouse", "u": "https://www.greenhouse.com/"},
             "beeline": {"t": "Beeline VMS", "u": "https://www.beeline.com/"},
             "fieldglass": {"t": "SAP Fieldglass", "u": "https://www.sap.com/products/spend-management/fieldglass-vms.html"},
@@ -511,17 +546,24 @@ INDUSTRIES_BATCH4 = {
                 tile("TM Forum Open APIs", "api", "TMF Open API event streams for order and trouble-ticket lifecycle.", "tmforum"),
                 tile("RAN PM File Exchange", "zplug", "Vendor performance management files from multi-vendor RAN estates.", "ericsson-enm"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on ARPU and churn; the CTO on network availability and capex efficiency.",
+            "ppl": ppl2([
+                biz("CEO & CTO Office", "Genie One", "The CEO on ARPU and churn; the CTO on network availability and capex efficiency, trading coverage build against the subscribers it retains.",
                     [["Genie One", "Ask what last month's churn cost without analyst delay."], ["AI/BI", "ARPU and NPS on certified Metric Views."], ["Unity Catalog", "One subscriber definition across BSS and CRM."]]),
-                biz("Network Operations", "Lakehouse//RT", "NOC engineers on alarms, cell performance and outage restoration.",
+                biz("Network Operations", "Lakehouse//RT", "NOC engineers on alarms, cell performance and outage restoration, grouping faults to root cause and customer impact before a truck rolls.",
                     [["NOC War Room", "Live alarms, customer impact and truck rolls on one screen."], ["Lakehouse//RT", "Probe and alarm state at network latency."]]),
-                biz("Commercial & Marketing", "CustomerLake", "Product owners on offer uptake, upsell and retention campaigns.",
+                biz("Commercial & Marketing", "CustomerLake", "Product owners on offer uptake, upsell and retention campaigns, scoring next-best-offer per subscriber before the contract renewal window.",
                     [["Offer Management", "Propensity-scored upsell before renewal."], ["CustomerLake", "Segments without copying profiles into a separate CDP."]]),
-                biz("Customer Care", "Apps", "Care leaders on FCR, handle time and complaint drivers.",
+                biz("Customer Care", "Apps", "Care leaders on first-contact resolution, handle time and complaint drivers, putting subscriber and network context beside every ticket.",
                     [["Care Agent Desktop", "Subscriber context and next-best-action beside the ticket."], ["Apps", "Care tools hosted next to governed BSS data."]]),
-                biz("Revenue Assurance", "AI/BI", "Finance and fraud teams on leakage, disputes and roaming settlement.",
+                biz("Revenue Assurance", "AI/BI", "Finance and fraud teams on leakage, disputes and roaming settlement, catching SIM-swap and IRSF loss before it clears interconnect.",
                     [["AI/BI", "Leakage and fraud loss on certified views."], ["Genie One", "Ask which roaming partners exceed dispute thresholds."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land CDR and usage records, probe and SNMP metrics, CRM interactions and billing cycles; own Bronze to Silver and the pager when a churn table stalls.",
+                    [["Lakeflow Connect", "Managed connectors for BSS, OSS and CRM sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on CDR and probe feeds."], ["Lakewatch", "Freshness on the churn tables commercial reads each morning."]]),
+                biz("Data Scientists", "MLflow", "Churn, fault-correlation, fraud-scoring and capacity-forecast models, and whether they still hold as network load and offer mix shift.",
+                    [["Feature Store", "Subscriber and network features read identically in training and serving."], ["MLflow", "Every churn and fraud experiment tracked for audit."], ["Model Serving", "Churn and fraud models scored in the operational path."]]),
+                biz("App Developers", "Apps", "Ship the NOC War Room, Care Agent Desktop and Churn Prevention apps network and care teams work in, next to governed BSS and probe data.",
+                    [["Apps", "Care and NOC screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for ticket and offer state writes."], ["Agent Bricks", "Agents that draft next-best-action against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -629,17 +671,24 @@ INDUSTRIES_BATCH4 = {
                 tile("FMCSA SAFER Feed", "gavel", "Carrier safety and authority status for onboarding checks.", "fmcsa"),
                 tile("Fuel Index APIs", "market", "Weekly fuel surcharge indices consumed for rating updates.", "transporeon"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on margin per load; the COO on OTIF and fleet utilisation.",
+            "ppl": ppl2([
+                biz("CEO & Network Office", "Genie One", "The CEO on margin per load; the COO on OTIF and fleet utilisation, trading empty miles and detention against the contracted service.",
                     [["Genie One", "Ask what last week's lane margin was without analyst delay."], ["AI/BI", "OTIF and cost per mile on certified Metric Views."], ["Unity Catalog", "One shipment definition across TMS and WMS."]]),
-                biz("Transportation Ops", "Lakehouse//RT", "Dispatchers on tender acceptance, in-transit exceptions and appointment compliance.",
+                biz("Transportation Ops", "Lakehouse//RT", "Dispatchers on tender acceptance, in-transit exceptions and appointment compliance, moving loads before ETA risk becomes a detention charge.",
                     [["Control Tower", "Live shipments, ETA risk and detention exposure on one map."], ["Lakehouse//RT", "ELD and TMS state at dispatch latency."]]),
-                biz("Warehouse Ops", "Apps", "DC managers on pick rate, labour and outbound cut-off.",
+                biz("Warehouse Ops", "Apps", "DC managers on pick rate, labour balance and outbound cut-off, releasing waves so the dock clears before the carrier appointment closes.",
                     [["Warehouse Pulse", "Pick waves, dock doors and labour plan against cut-off."], ["Apps", "Floor apps hosted next to governed WMS data."]]),
-                biz("Commercial & Pricing", "Model Serving", "Pricing analysts on lane rates, accessorials and shipper contracts.",
+                biz("Commercial & Pricing", "Model Serving", "Pricing analysts on lane rates, accessorials and shipper contracts, scoring spot versus contract margin before a load is tendered.",
                     [["Rate Engine Workbench", "Contract and spot rates before tender."], ["Model Serving", "Dynamic pricing models in the bid path."]]),
-                biz("Finance & Claims", "AI/BI", "Freight audit, detention claims and fuel surcharge reconciliation.",
+                biz("Finance & Claims", "AI/BI", "Freight audit and claims teams on detention, fuel surcharge recovery and accrual variance, matching each invoice to contract and POD.",
                     [["AI/BI", "Accrual variance and audit findings on certified views."], ["Genie One", "Ask which carriers exceed detention thresholds."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land TMS orders, WMS moves, ELD logs and carrier EDI; own Bronze to Silver and the pager when an OTIF or cost-per-mile table breaks.",
+                    [["Lakeflow Connect", "Managed connectors for TMS, WMS and telematics sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on EDI and ELD feeds."], ["Lakewatch", "Freshness on the OTIF tables the control tower reads through the day."]]),
+                biz("Data Scientists", "MLflow", "Predictive-ETA, route-optimisation, dynamic-pricing and carrier-scoring models, and whether they still hold as lanes and fuel indices shift.",
+                    [["Feature Store", "Shipment and lane features read identically in training and serving."], ["MLflow", "Every ETA and pricing experiment tracked for audit."], ["Model Serving", "ETA and pricing models scored in the dispatch and bid path."]]),
+                biz("App Developers", "Apps", "Ship the Control Tower, Warehouse Pulse and Rate Engine apps operations and pricing teams work in, next to governed TMS and WMS data.",
+                    [["Apps", "Operations screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for appointment and wave state writes."], ["Agent Bricks", "Agents that draft tender responses against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -686,7 +735,7 @@ INDUSTRIES_BATCH4 = {
         "sources": {
             "oracle-otm": {"t": "Oracle Transportation Management", "u": "https://www.oracle.com/scm/logistics/transportation-management/"},
             "blue-yonder-tms": {"t": "Blue Yonder TMS", "u": "https://blueyonder.com/solutions/transportation-management"},
-            "mercurygate": {"t": "MercuryGate TMS", "u": "https://www.mercurygate.com/"},
+            "mercurygate": {"t": "MercuryGate TMS", "u": "https://mercurygate.com/"},
             "manhattan-wms": {"t": "Manhattan Active WMS", "u": "https://www.manh.com/solutions/warehouse-management"},
             "sap-ewm": {"t": "SAP Extended Warehouse Management", "u": "https://www.sap.com/products/scm/extended-warehouse-management.html"},
             "korber-wms": {"t": "Körber WMS", "u": "https://www.koerber-supplychain.com/"},
@@ -745,17 +794,24 @@ INDUSTRIES_BATCH4 = {
                 tile("GDS Booking Messages", "stream", "Amadeus and Sabre hotel booking notifications parsed on arrival.", "amadeus-ihotelier"),
                 tile("Review Aggregator APIs", "observ", "TripAdvisor and Google review feeds for reputation monitoring.", "medallia-guest"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on RevPAR and GOP; the COO on guest satisfaction and labour productivity.",
+            "ppl": ppl2([
+                biz("CEO & Brand Office", "Genie One", "The CEO on RevPAR and gross operating profit; the COO on guest satisfaction and labour productivity across the property portfolio.",
                     [["Genie One", "Ask what last weekend's RevPAR was without analyst delay."], ["AI/BI", "RevPAR and occupancy on certified Metric Views."], ["Unity Catalog", "One room night definition across PMS and finance."]]),
-                biz("Revenue Management", "Model Serving", "Revenue managers on price ladders, overrides and group displacement.",
+                biz("Revenue Management", "Model Serving", "Revenue managers on price ladders, overrides and group displacement, defending ADR and occupancy against the compset before rates publish.",
                     [["RMS Workbench", "Forecast, compset and recommendation history before override."], ["Model Serving", "Pricing models scored in the distribution path."]]),
-                biz("Front Office & Ops", "Lakehouse//RT", "GMs and front office on arrivals, housekeeping and service recovery.",
+                biz("Front Office & Ops", "Lakehouse//RT", "GMs and front office on arrivals, housekeeping turn and service recovery, clearing rooms and VIP flags before the guest reaches the desk.",
                     [["Property Command", "Arrivals, VIP flags and housekeeping status on one screen."], ["Lakehouse//RT", "Room and task state at front-desk latency."]]),
-                biz("Sales & Groups", "AI/BI", "Sales directors on group blocks, catering revenue and conversion.",
+                biz("Sales & Groups", "AI/BI", "Sales directors on group blocks, catering revenue and conversion, watching pickup pace and wash against the block before the cutoff date.",
                     [["AI/BI", "Group pace and wash on certified views."], ["Genie One", "Ask which groups are below pickup pace."]]),
-                biz("Marketing & Loyalty", "CustomerLake", "CRM teams on campaigns, tier economics and personalisation.",
+                biz("Marketing & Loyalty", "CustomerLake", "CRM teams on campaigns, tier economics and personalisation, scoring offer propensity and tier migration across the guest portfolio.",
                     [["Loyalty Console", "Offer propensity and tier migration by segment."], ["CustomerLake", "Guest profiles without copying into a separate CDP."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land PMS reservations, CRS availability, POS folios and loyalty transactions; own Bronze to Silver and the pager when a RevPAR table stalls.",
+                    [["Lakeflow Connect", "Managed connectors for PMS, CRS and loyalty sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on reservation and folio feeds."], ["Lakewatch", "Freshness on the RevPAR tables the revenue meeting reads."]]),
+                biz("Data Scientists", "MLflow", "Demand-forecast, dynamic-pricing, personalisation and group-displacement models, and whether they still hold as compset and channel mix shift.",
+                    [["Feature Store", "Guest and rate features read identically in training and serving."], ["MLflow", "Every forecast and pricing experiment tracked for audit."], ["Model Serving", "Pricing and offer models scored in the distribution path."]]),
+                biz("App Developers", "Apps", "Ship the Property Command, RMS Workbench and Loyalty Console apps revenue and front-office teams work in, next to governed PMS data.",
+                    [["Apps", "Property screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for arrival and offer state writes."], ["Agent Bricks", "Agents that draft rate moves against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -800,11 +856,11 @@ INDUSTRIES_BATCH4 = {
              uc("Owner Reporting", "Finance", "erp", "Owner statements and STR index position from governed night audit.")],
         ),
         "sources": {
-            "opera-cloud": {"t": "Oracle OPERA Cloud", "u": "https://www.oracle.com/industries/hospitality/opera-cloud/"},
+            "opera-cloud": {"t": "Oracle OPERA Cloud", "u": "https://www.oracle.com/hospitality/hotel-property-management/"},
             "mews": {"t": "Mews PMS", "u": "https://www.mews.com/"},
-            "infor-hms": {"t": "Infor HMS", "u": "https://www.infor.com/products/hospitality"},
+            "infor-hms": {"t": "Infor HMS", "u": "https://www.infor.com/industries/hospitality"},
             "amadeus-ihotelier": {"t": "Amadeus iHotelier", "u": "https://amadeus.com/en/industries/hotels"},
-            "sabre-synxis": {"t": "Sabre SynXis", "u": "https://www.sabrehospitality.com/synxis-central-reservations/"},
+            "sabre-synxis": {"t": "Sabre SynXis", "u": "https://www.sabrehospitality.com/"},
             "siteminder": {"t": "SiteMinder", "u": "https://www.siteminder.com/"},
             "ideas-rms": {"t": "IDeaS G3 RMS", "u": "https://ideas.com/"},
             "duetto": {"t": "Duetto", "u": "https://www.duettocloud.com/"},
@@ -861,17 +917,24 @@ INDUSTRIES_BATCH4 = {
                 tile("State Diversion Reports", "api", "Mandatory recycling reporting files consumed for municipal contracts.", "wastebits"),
                 tile("Recycling Market Indices", "market", "Commodity bale price indices for MRF revenue planning.", "machinex"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The CEO on margin per ton and contract renewal; the COO on route productivity and safety.",
+            "ppl": ppl2([
+                biz("CEO & Ops Office", "Genie One", "The CEO on margin per ton and contract renewal; the COO on route productivity, missed stops and the collection fleet's safety record.",
                     [["Genie One", "Ask what last month's diversion rate was without analyst delay."], ["AI/BI", "Cost per ton and missed stops on certified Metric Views."], ["Unity Catalog", "One ton definition across scale and billing."]]),
-                biz("Collection Operations", "Lakehouse//RT", "Dispatchers on route completion, missed stops and contamination callbacks.",
+                biz("Collection Ops", "Lakehouse//RT", "Dispatchers on route completion, missed stops and contamination callbacks, re-sequencing trucks before a service gap becomes a credit.",
                     [["Dispatch Console", "Live trucks, stops and exceptions on one map."], ["Lakehouse//RT", "GPS and lift events at route latency."]]),
-                biz("Disposal & MRF", "Apps", "Landfill and MRF managers on airspace, throughput and commodity revenue.",
+                biz("Disposal & MRF", "Apps", "Landfill and MRF managers on remaining airspace, throughput and commodity revenue, balancing inbound tons against permitted daily capacity.",
                     [["Scalehouse Dashboard", "Inbound tons, diversion and bale inventory in real time."], ["Apps", "Site apps hosted next to governed scale data."]]),
-                biz("Commercial Sales", "AI/BI", "Account managers on pricing, service changes and churn risk.",
+                biz("Commercial Sales", "AI/BI", "Account managers on pricing, service changes and churn risk, protecting margin per customer segment before a contract comes up for renewal.",
                     [["AI/BI", "Revenue and margin by customer segment on certified views."], ["Genie One", "Ask which accounts are below target margin."]]),
-                biz("Sustainability", "Lakeflow", "ESG teams on diversion, circularity and municipal reporting.",
+                biz("Sustainability", "Lakeflow", "ESG teams on diversion rate, circularity and municipal reporting, proving material flows by customer and site against franchise commitments.",
                     [["Diversion Registry", "Material flows and diversion evidence by customer and site."], ["Lakeflow", "Scale and route feeds conformed for ESG analytics."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land route completion events, scale tickets, GPS and lift sensor reads; own Bronze to Silver and the pager when a cost-per-ton table breaks.",
+                    [["Lakeflow Connect", "Managed connectors for billing, dispatch and scale sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on route and scale feeds."], ["Lakewatch", "Freshness on the diversion tables operations reads each morning."]]),
+                biz("Data Scientists", "MLflow", "Missed-stop, contamination-detection, churn and commodity-revenue models, and whether they still hold as routes and bale indices shift.",
+                    [["Feature Store", "Route and customer features read identically in training and serving."], ["MLflow", "Every routing and churn experiment tracked for audit."], ["Model Serving", "Missed-stop and churn models scored in the dispatch path."]]),
+                biz("App Developers", "Apps", "Ship the Dispatch Console, Scalehouse Dashboard and Diversion Registry apps operations and ESG teams work in, next to governed scale data.",
+                    [["Apps", "Site and dispatch screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for stop and ticket state writes."], ["Agent Bricks", "Agents that draft route changes against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -920,11 +983,11 @@ INDUSTRIES_BATCH4 = {
             "routeware": {"t": "Routeware", "u": "https://www.routeware.com/"},
             "sf-service": {"t": "Salesforce Service Cloud", "u": "https://www.salesforce.com/service/"},
             "routesmart": {"t": "RouteSmart", "u": "https://www.routesmart.com/"},
-            "amcs-dispatch": {"t": "AMCS Dispatch", "u": "https://www.amcsgroup.com/solutions/transport-management/"},
+            "amcs-dispatch": {"t": "AMCS Dispatch", "u": "https://www.amcsgroup.com/"},
             "rubicon": {"t": "Rubicon", "u": "https://www.rubicon.com/"},
             "geotab": {"t": "Geotab", "u": "https://www.geotab.com/"},
             "motive": {"t": "Motive", "u": "https://gomotive.com/"},
-            "scalehouse": {"t": "Scalehouse software", "u": "https://www.amcsgroup.com/solutions/landfill-management/"},
+            "scalehouse": {"t": "Scalehouse software", "u": "https://www.amcsgroup.com/"},
             "landfill-gas": {"t": "Landfill gas monitoring", "u": "https://www.epa.gov/lmop"},
             "machinex": {"t": "Machinex MRF", "u": "https://www.machinexrecycling.com/"},
             "enablon": {"t": "Enablon EHS", "u": "https://www.wolterskluwer.com/en/solutions/enablon"},
@@ -976,17 +1039,24 @@ INDUSTRIES_BATCH4 = {
                 tile("NOAA Hydrology API", "stream", "River flow and drought indices for source water planning.", "noaa"),
                 tile("Weather Forecast API", "observ", "Demand and infiltration forecasting inputs from meteorological services.", "noaa"),
             ]),
-            "ppl": ppl_rail([
-                biz("Executive Team", "Genie One", "The general manager on cost per gallon and capital plan; the COO on NRW and outage response.",
+            "ppl": ppl2([
+                biz("GM & Executive Office", "Genie One", "The general manager on cost per gallon and the capital plan; the COO on non-revenue water and the response time on a distribution outage.",
                     [["Genie One", "Ask what last month's NRW was without analyst delay."], ["AI/BI", "Pressure and quality KPIs on certified Metric Views."], ["Unity Catalog", "One consumption definition across AMI and billing."]]),
-                biz("Distribution Ops", "Lakehouse//RT", "Control room operators on pressure, storage and pump scheduling.",
+                biz("Distribution Ops", "Lakehouse//RT", "Control room operators on pressure, storage and pump scheduling, holding pressure zones in compliance while trimming energy at the pumps.",
                     [["Network Control Center", "Live SCADA, AMI leak flags and crew dispatch on one screen."], ["Lakehouse//RT", "Telemetry at control-room latency."]]),
-                biz("Customer Operations", "CustomerLake", "Call centre and field service on outages, high bills and leak investigations.",
+                biz("Customer Operations", "CustomerLake", "Call centre and field service on outages, high-bill disputes and leak investigations, giving agents restoration ETA and account context.",
                     [["Customer Impact Console", "Outage map, estimated restoration and high-bill triage."], ["CustomerLake", "Account context without copying into a separate CRM."]]),
-                biz("Asset Management", "AI/BI", "Engineers on main replacement prioritisation, pump health and capex planning.",
+                biz("Asset Management", "AI/BI", "Engineers on main-replacement priority, pump health and capex planning, ranking mains on break risk, age and soil against renewal budget.",
                     [["AI/BI", "Asset risk and remaining life on certified views."], ["Genie One", "Ask which mains exceed break rate thresholds."]]),
-                biz("Water Quality", "Lakeflow", "Quality teams on sample results, exceedances and public notification.",
+                biz("Water Quality", "Lakeflow", "Quality teams on sample results, regulatory exceedances and public notification, tying lab and sensor data to limits before a deadline.",
                     [["Quality Compliance Hub", "Lab results against limits with notification workflows."], ["Lakeflow", "SCADA, lab and AMI feeds conformed for quality analytics."]]),
+            ], [
+                biz("Data Engineers", "Lakeflow", "Land SCADA historian tags, AMI interval reads, work orders and lab results; own Bronze to Silver and the pager when an NRW table stalls.",
+                    [["Lakeflow Connect", "Managed connectors for CIS, SCADA and AMI sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on meter and telemetry feeds."], ["Lakewatch", "Freshness on the NRW tables the control room reads each shift."]]),
+                biz("Data Scientists", "MLflow", "Leak-detection, demand-forecast, main-break and pump-optimisation models, and whether they still hold as weather and network state shift.",
+                    [["Feature Store", "Meter and asset features read identically in training and serving."], ["MLflow", "Every leak and break-risk experiment tracked for audit."], ["Model Serving", "Leak and demand models scored in the operational path."]]),
+                biz("App Developers", "Apps", "Ship the Network Control Center, Customer Impact and Quality Compliance apps control-room and quality teams work in, next to governed SCADA data.",
+                    [["Apps", "Control-room screens with no separate web tier to secure."], ["Lakebase", "Serverless Postgres for work order and notification state writes."], ["Agent Bricks", "Agents that draft pump setpoints against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [
@@ -1031,9 +1101,9 @@ INDUSTRIES_BATCH4 = {
              uc("Drought Contingency", "Resilience", "globe", "Stage restrictions and supply alternatives modeled against source levels.")],
         ),
         "sources": {
-            "oracle-c2m": {"t": "Oracle Utilities C2M", "u": "https://www.oracle.com/industries/utilities/customer-experience/"},
+            "oracle-c2m": {"t": "Oracle Utilities C2M", "u": "https://www.oracle.com/industries/utilities/"},
             "sap-isu": {"t": "SAP for Utilities", "u": "https://www.sap.com/industries/utilities.html"},
-            "vertexone": {"t": "VertexOne", "u": "https://www.vertexone.com/"},
+            "vertexone": {"t": "VertexOne", "u": "https://vertexone.net/"},
             "aveva-pi": {"t": "AVEVA PI System", "u": "https://www.aveva.com/en/products/pi-system/"},
             "ignition": {"t": "Ignition SCADA", "u": "https://inductiveautomation.com/"},
             "schneider-eco": {"t": "Schneider EcoStruxure", "u": "https://www.se.com/ww/en/work/solutions/system/s1/ecostruxure/"},
@@ -1045,7 +1115,7 @@ INDUSTRIES_BATCH4 = {
             "cityworks": {"t": "Cityworks AMS", "u": "https://www.cityworks.com/"},
             "hach-wims": {"t": "Hach WIMS", "u": "https://www.hach.com/"},
             "kisters": {"t": "KISTERS WISKI", "u": "https://www.kisters.net/"},
-            "epa-sdwis": {"t": "EPA SDWIS", "u": "https://www.epa.gov/ground-water-and-drinking-water/drinking-water-data-and-reports"},
+            "epa-sdwis": {"t": "EPA SDWIS", "u": "https://www.epa.gov/ground-water-and-drinking-water"},
             "noaa": {"t": "NOAA National Weather Service", "u": "https://www.weather.gov/"},
         },
     },
