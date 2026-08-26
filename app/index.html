@@ -1032,23 +1032,16 @@
      motion freezes the dashes rather than hiding the box */
   @media (prefers-reduced-motion:reduce) { .zring path { animation:none; } }
   /* each block is [arm | stack] or [stack | arm]; the arm is the overhang */
-  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:8px; }
+  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; }
   /* The bands ABSORB the row's slack, they do not stand apart in it. The pocket
      beside this bar is what sets the row height, so there is always a few dozen
      px more than the bands need, and space-between put every one of them into the
      two gaps: three bands floating far apart inside one outline, which is what
      made the platform read as fragments instead of one block. */
-  .plat-top > .plat-stack, .plat-body > .plat-stack, .plat-waist > .plat-stack {
-    flex:1 1 auto; min-height:0; }
   .plat-body .plat-stack { justify-content:flex-start; }
   .plat-stack > .band { flex:0 0 auto; }
-  /* balanceHalves() may pad a half taller than its content; only the last band in
-     each half absorbs that slack. Inner rows stay content-sized so nothing leaves
-     a white void inside a panel or a stretched empty card in an arm. */
-  .plat-top .plat-stack > .band.b-work { flex:1 1 auto; min-height:0; }
-  .plat-body .plat-stack > .band.b-infra { flex:1 1 auto; min-height:0; }
-  .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; }
-  .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
+  .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; align-items:flex-start; }
+  .arm > .band { flex:0 0 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
   .arm .band-lbl .bl-name { font-size:12.5px; }
 
@@ -1321,25 +1314,11 @@
     font-size:16px; font-weight:800; letter-spacing:-.015em; line-height:1.15; }
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
-  .plat-stack .band-body { justify-content:flex-start; gap:8px; }
-  .band.b-work { flex:1 1 auto; min-height:0; }
-  .band.b-work .band-body { flex:1 1 auto; min-height:0; gap:10px; justify-content:flex-start; }
-  .band.b-work .band-row.mixed { flex:0 0 auto; align-items:flex-start; gap:10px; }
-  .band.b-work .band-row.mixed > .panel { flex:2.4 1 0; min-width:0; align-self:stretch; }
-  .band.b-work .panel { align-items:flex-start; gap:10px; padding:10px 11px; }
-  .band.b-work .panel-cols { flex:1 1 auto; align-items:stretch; gap:10px; }
-  .band.b-work .pcol { flex:1 1 0; gap:8px; justify-content:flex-start; padding:8px 6px; }
-  .band.b-work .side-col {
-    flex:0 0 108px; width:108px; gap:8px; align-self:flex-start;
-    display:flex; flex-direction:column; }
+  .band.b-work .side-col { gap:8px; }
   .band.b-work .side-col .schip {
     width:108px; height:108px; flex:0 0 108px;
     flex-direction:column; align-items:center; justify-content:center;
     padding:8px 6px; font-size:11px; line-height:1.15; box-sizing:border-box; }
-  .band.b-work .band-row.mixed > .plaincol {
-    align-self:stretch; display:flex; flex-direction:column; justify-content:flex-start; gap:8px; }
-  .band.b-work .band-foot { flex:0 0 auto; margin-top:auto; }
-  .band.b-infra .band-body { flex:1 1 auto; min-height:0; justify-content:flex-start; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* a card row on fixed columns instead of shared flex width, so a card can name
      the column it belongs under; the column count is set per row in script */
@@ -1577,7 +1556,7 @@
   .hband.top .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
   .hband.top .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
   .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
-    --cloud-bg:var(--g-amber-bg); --cloud-ink:var(--g-amber-ink); }
+    --cloud-bg:var(--card); --cloud-ink:var(--ink); }
   body[class*="pal-"] .cloudwrap { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); }
   /* both horizontal bands are inset to the Z's own width: the columns either side
      of the platform are Sources and Consumers, and neither band belongs over them */

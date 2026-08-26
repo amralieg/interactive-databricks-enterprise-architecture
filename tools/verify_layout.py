@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Capture airlines Z board and assert layout void budgets before ship."""
+"""Capture airlines Z in LIGHT mode and assert layout void budgets before ship."""
 import json, os, subprocess, sys, tempfile, shutil
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,19 +8,20 @@ from probe import run as probe_run
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 APP = os.path.join(ROOT, "app", "index.html")
-OUT = os.path.join(ROOT, "docs", "verify-airlines-z.png")
+OUT = os.path.join(ROOT, "docs", "verify-airlines-z-light.png")
 
 LIMITS = {
-  "fitH": 1700,
-  "panelVoidBelowCols": 12,
-  "mixedVoidBelow": 44,
-  "ingestCardHMax": 72,
-  "bodyBandGapMax": 8,
+  "fitH": 1650,
+  "contentToFoot": 24,
+  "armVoid": 8,
+  "infraH": 220,
+  "infraVoid": 12,
 }
 
 def shoot():
     html = open(APP, encoding="utf-8").read()
-    setup = ("applyIndustry('airlines', false); applyShape('z', false); fitBoard();"
+    setup = ("document.body.classList.remove('theme-dark');"
+             "applyIndustry('airlines', false); applyShape('z', false); fitBoard();"
              "document.querySelectorAll('.tip,.drawer.open').forEach(function(e){"
              "e.classList.remove('open')});")
     boot = ("<script>window.addEventListener('load',function(){setTimeout(function(){"
@@ -43,19 +44,17 @@ if __name__ == "__main__":
     fails = []
     if data["fitH"] > LIMITS["fitH"]:
         fails.append("fitH %d > %d" % (data["fitH"], LIMITS["fitH"]))
-    if data["panelVoidBelowCols"] > LIMITS["panelVoidBelowCols"]:
-        fails.append("panelVoidBelowCols %d" % data["panelVoidBelowCols"])
-    if data["mixedVoidBelow"] > LIMITS["mixedVoidBelow"]:
-        fails.append("mixedVoidBelow %d" % data["mixedVoidBelow"])
-    for c in data["ingestCards"]:
-        if c["h"] > LIMITS["ingestCardHMax"]:
-            fails.append("ingest %s h=%d" % (c["n"], c["h"]))
-    for b in data["bodyBands"]:
-        if b["gapIn"] > LIMITS["bodyBandGapMax"]:
-            fails.append("band %s gapIn=%d" % (b["id"], b["gapIn"]))
+    if data["contentToFoot"] > LIMITS["contentToFoot"]:
+        fails.append("contentToFoot %d > %d" % (data["contentToFoot"], LIMITS["contentToFoot"]))
+    if data["armVoid"] > LIMITS["armVoid"]:
+        fails.append("armVoid %d > %d" % (data["armVoid"], LIMITS["armVoid"]))
+    if data["infraH"] > LIMITS["infraH"]:
+        fails.append("infraH %d > %d" % (data["infraH"], LIMITS["infraH"]))
+    if data["infraVoid"] > LIMITS["infraVoid"]:
+        fails.append("infraVoid %d > %d" % (data["infraVoid"], LIMITS["infraVoid"]))
     print(json.dumps(data, indent=2))
     shoot()
     if fails:
         print("FAIL:", ", ".join(fails), file=sys.stderr)
         sys.exit(1)
-    print("PASS layout verify")
+    print("PASS layout verify (light mode)")
