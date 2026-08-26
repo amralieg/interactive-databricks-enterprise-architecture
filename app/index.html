@@ -972,24 +972,6 @@
   .rtiles { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px; align-items:stretch; }
   /* the pockets are one arm wide, so their tiles stack rather than pair up */
   .rail.ing .rtiles, .rail.ppl .rtiles { grid-template-columns:minmax(0,1fr); }
-  /* The pockets are a fixed grid row; on the Z family stretch the last group so
-     a thin Technical box does not leave empty fill below it. h90 is excluded:
-     both boxes sit side by side and overflow already caps row height. */
-  body:not(.shape-h90) .pocket.ppl > .rail,
-  body:not(.shape-h90) .pocket.ing > .rail {
-    flex:1 1 0; min-height:0; display:flex; flex-direction:column; }
-  body:not(.shape-h90) .pocket.ppl .rgroup:first-child,
-  body:not(.shape-h90) .pocket.ing .rgroup:first-child {
-    flex:0 0 auto; }
-  body:not(.shape-h90) .pocket.ppl .rgroup:last-child,
-  body:not(.shape-h90) .pocket.ing .rgroup:last-child {
-    flex:1 1 0; min-height:0; display:flex; flex-direction:column; }
-  body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtiles,
-  body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtiles {
-    flex:1 1 0; min-height:0; display:flex; flex-direction:column; gap:4px; }
-  body:not(.shape-h90) .pocket.ppl .rgroup:last-child .rtile,
-  body:not(.shape-h90) .pocket.ing .rgroup:last-child .rtile {
-    flex:1 1 0; min-height:28px; }
   /* Each pocket group reads as its own box wherever the two sit side by side.
      --zone-tile and --zone-bd only exist once a palette class is on the body, so
      both carry a fallback or the boxes lose their edges on the default theme. */
@@ -1519,9 +1501,12 @@
      two sections size their rows independently and the second row sits higher
      in the narrower column than in the wide one. Stretching the sections and
      giving every row the same height is what lines the tiles up across them. */
-  .hband.top .cloud-cols { align-items:stretch; }
-  .hband.top .cloud-sec { flex:1 1 0; }
-  .hband.top .cloud-body { flex:1 1 auto; grid-auto-rows:1fr; align-items:stretch; }
+  .hband.top .cloud-cols, .cloudwrap .cloud-cols { align-items:stretch; }
+  .hband.top .cloud-sec, .cloudwrap .cloud-sec { flex:1 1 0; min-width:0;
+    display:flex; flex-direction:column; }
+  .hband.top .cloud-body, .cloudwrap .cloud-body { flex:1 1 auto;
+    align-content:start; }
+  .hband.top .cloud-body { grid-auto-rows:1fr; align-items:stretch; }
   .hband.top .ctile { height:100%; align-items:flex-start; }
   .cloud-sec + .cloud-sec { border-left:1px dashed var(--line); padding-left:13px; }
 
@@ -1546,25 +1531,24 @@
   .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line);
     --cloud-bg:var(--g-plum-bg); --cloud-ink:var(--g-plum-ink); margin-bottom:0; }
   body[class*="pal-"] .hband.top { --cloud-tile:var(--g-plum-tile); --cloud-tbd:var(--g-plum-bd); }
-  /* On an industry board the top band is where the variation lives, so each tile
-     carries its own zone hue instead of one shared plum wash. The class is set in
-     renderHBand and only when ARCH.industry is not generic. */
-  body.ind-active .hband.top .ct-h-teal  { --cloud-tile:var(--g-teal-tile);  --cloud-tbd:var(--g-teal-bd);  --cloud-accent:var(--g-teal-line); }
-  body.ind-active .hband.top .ct-h-blue  { --cloud-tile:var(--g-blue-tile);  --cloud-tbd:var(--g-blue-bd);  --cloud-accent:var(--g-blue-line); }
-  body.ind-active .hband.top .ct-h-violet { --cloud-tile:var(--g-violet-tile); --cloud-tbd:var(--g-violet-bd); --cloud-accent:var(--g-violet-line); }
-  body.ind-active .hband.top .ct-h-coral { --cloud-tile:var(--g-coral-tile); --cloud-tbd:var(--g-coral-bd); --cloud-accent:var(--g-coral-line); }
-  body.ind-active .hband.top .ct-h-amber { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); --cloud-accent:var(--g-amber-line); }
-  body.ind-active .hband.top .ct-h-green { --cloud-tile:var(--g-green-tile); --cloud-tbd:var(--g-green-bd); --cloud-accent:var(--g-green-line); }
-  body.ind-active .hband.top .ct-h-rose  { --cloud-tile:var(--g-rose-tile);  --cloud-tbd:var(--g-rose-bd);  --cloud-accent:var(--g-rose-line); }
-  body.ind-active .hband.top .ct-h-plum  { --cloud-tile:var(--g-plum-tile);  --cloud-tbd:var(--g-plum-bd);  --cloud-accent:var(--g-plum-line); }
-  body.ind-active .hband.top .ct-h-teal  .ct-sub { color:var(--g-teal-ink); }
-  body.ind-active .hband.top .ct-h-blue  .ct-sub { color:var(--g-blue-ink); }
-  body.ind-active .hband.top .ct-h-violet .ct-sub { color:var(--g-violet-ink); }
-  body.ind-active .hband.top .ct-h-coral .ct-sub { color:var(--g-coral-ink); }
-  body.ind-active .hband.top .ct-h-amber .ct-sub { color:var(--g-amber-ink); }
-  body.ind-active .hband.top .ct-h-green .ct-sub { color:var(--g-green-ink); }
-  body.ind-active .hband.top .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
-  body.ind-active .hband.top .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
+  /* Each horizontal-band tile carries its own zone hue so Apps, Use Cases,
+     Cloud Services and Integrations read as distinct chips on every board. */
+  .hband .ct-h-teal  { --cloud-tile:var(--g-teal-tile);  --cloud-tbd:var(--g-teal-bd);  --cloud-accent:var(--g-teal-line); }
+  .hband .ct-h-blue  { --cloud-tile:var(--g-blue-tile);  --cloud-tbd:var(--g-blue-bd);  --cloud-accent:var(--g-blue-line); }
+  .hband .ct-h-violet { --cloud-tile:var(--g-violet-tile); --cloud-tbd:var(--g-violet-bd); --cloud-accent:var(--g-violet-line); }
+  .hband .ct-h-coral { --cloud-tile:var(--g-coral-tile); --cloud-tbd:var(--g-coral-bd); --cloud-accent:var(--g-coral-line); }
+  .hband .ct-h-amber { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); --cloud-accent:var(--g-amber-line); }
+  .hband .ct-h-green { --cloud-tile:var(--g-green-tile); --cloud-tbd:var(--g-green-bd); --cloud-accent:var(--g-green-line); }
+  .hband .ct-h-rose  { --cloud-tile:var(--g-rose-tile);  --cloud-tbd:var(--g-rose-bd);  --cloud-accent:var(--g-rose-line); }
+  .hband .ct-h-plum  { --cloud-tile:var(--g-plum-tile);  --cloud-tbd:var(--g-plum-bd);  --cloud-accent:var(--g-plum-line); }
+  .hband .ct-h-teal  .ct-sub { color:var(--g-teal-ink); }
+  .hband .ct-h-blue  .ct-sub { color:var(--g-blue-ink); }
+  .hband .ct-h-violet .ct-sub { color:var(--g-violet-ink); }
+  .hband .ct-h-coral .ct-sub { color:var(--g-coral-ink); }
+  .hband .ct-h-amber .ct-sub { color:var(--g-amber-ink); }
+  .hband .ct-h-green .ct-sub { color:var(--g-green-ink); }
+  .hband .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
+  .hband .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
   .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
     --cloud-bg:var(--g-amber-bg); --cloud-ink:var(--g-amber-ink); }
   body[class*="pal-"] .cloudwrap { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); }
@@ -3145,15 +3129,24 @@ const INDUSTRIES = {
             ] },
         ]},
         { box:"Technical", ic:"code", tiles:[
-          { n:"Data & App Teams", mark:"Lakeflow",
-            long:"Data Engineers, Data Scientists, Data Analysts and App Developers: land the PSS, movement, crew and engineering feeds; build demand, disruption and maintenance models; answer commercial and operations questions; ship the OCC, turnaround, crew and engineering applications the airline works in.",
+          { n:"Data Engineers", mark:"Lakeflow",
+            long:"Land the PSS, movement, crew, cargo and engineering feeds; own the Bronze to Silver path and the pager when a pipeline breaks.",
             uses:[
               ["Lakeflow Connect", "Managed connectors for the PSS, ERP and SaaS sources."],
+              ["Lakeflow Designer", "Declarative pipelines with expectations on movement and booking feeds."],
+              ["Lakewatch", "Freshness on the tables the OCC and revenue teams read every morning."],
+            ] },
+          { n:"Data Scientists", mark:"MLflow",
+            long:"Demand, willingness-to-pay, disruption recovery and remaining-useful-life models, and whether they still hold six months after deployment.",
+            uses:[
               ["Feature Store", "Features defined once and read identically in training and serving."],
-              ["MLflow", "Every model run tracked for audit and reproduction."],
-              ["SQL Warehouses", "Serverless SQL over conformed operational and commercial tables."],
-              ["AI/BI", "Punctuality, baggage and revenue dashboards the airline reads every morning."],
-              ["Apps", "Operational screens hosted next to the data, with no separate web tier."],
+              ["MLflow", "Every run tracked for audit and reproduction."],
+              ["Model Serving", "Bid price, recovery and maintenance models scored in the operational path."],
+            ] },
+          { n:"App Developers", mark:"Apps",
+            long:"Ship the OCC, turnaround, crew and engineering applications the airline works in, hosted next to governed data.",
+            uses:[
+              ["Apps", "Operational screens with no separate web tier to run or secure."],
               ["Lakebase", "Serverless Postgres for recovery decisions and roster writes."],
               ["Agent Bricks", "Agents that draft a recovery plan or work order against governed tools."],
             ] },
@@ -3673,6 +3666,18 @@ function renderRail(rail, target){
 /* One renderer draws both horizontal bands: same markup, same stylesheet, same
    tile behaviour. `secs` is a list of { title, span, sets } where each set is a
    live array, so edit mode writes back into whichever array owns the tile. */
+function hbCols(total, preferred, max){
+  if(preferred) return preferred;
+  max = Math.min(max || 4, total);
+  let best = 1, bestScore = Infinity;
+  for(let c = 1; c <= max; c++){
+    const orphan = total % c ? c - (total % c) : 0;
+    const rows = Math.ceil(total / c);
+    const score = orphan * 1000 + rows * 10 + Math.max(0, c - 4) * 3;
+    if(score < bestScore){ bestScore = score; best = c; }
+  }
+  return best;
+}
 function renderHBand(target, zone, chip, secs){
   const indHue = ["teal","blue","violet","coral","amber","green","rose","plum"];
   let hueN = 0;
@@ -3696,15 +3701,11 @@ function renderHBand(target, zone, chip, secs){
     const body = document.createElement("div");
     body.className = "cloud-body";
     const total = s.sets.reduce((n,a)=> n + a.length, 0);
-    /* an explicit count wins: the top band's three sections are sized to read as
-       left / middle / right, which a per-section heuristic cannot know */
-    const ncol = s.cols || Math.min(Math.ceil(total/2) || 1, 4);
+    const ncol = hbCols(total, s.cols, target.id === "topband" ? 5 : 4);
     body.style.gridTemplateColumns = `repeat(${ncol}, minmax(0,1fr))`;
     s.sets.forEach(arr=> arr.forEach(tile=>{
       const b = document.createElement("button");
-      b.className = "ctile";
-      if(ARCH.industry !== "generic" && target.classList.contains("top"))
-        b.classList.add("ct-h-" + indHue[hueN++ % indHue.length]);
+      b.className = "ctile ct-h-" + indHue[hueN++ % indHue.length];
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(tile.n)}</span>` +
         (tile.s ? `<span class="ct-sub">${esc(tile.s)}</span>` : "") + `</span>`;
