@@ -1001,7 +1001,7 @@
      corners sit — erase past them and the outline breaks open. */
   .plat-top, .plat-waist, .plat-body { border:2px solid var(--brand); background:var(--plat-fill);
     padding:7px; gap:7px; }
-  .plat-top, .plat-body { display:flex; }
+  .plat-top, .plat-body { display:flex; align-items:stretch; }
   /* Declared here rather than with the grid placement above, because THIS is
      the rule the waist would otherwise inherit display:flex from, and a waist
      that is 14px of padding instead of nothing breaks the seam between the two
@@ -1032,15 +1032,22 @@
      motion freezes the dashes rather than hiding the box */
   @media (prefers-reduced-motion:reduce) { .zring path { animation:none; } }
   /* each block is [arm | stack] or [stack | arm]; the arm is the overhang */
-  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; }
+  .plat-stack { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:10px; }
   /* The bands ABSORB the row's slack, they do not stand apart in it. The pocket
      beside this bar is what sets the row height, so there is always a few dozen
      px more than the bands need, and space-between put every one of them into the
      two gaps: three bands floating far apart inside one outline, which is what
      made the platform read as fragments instead of one block. */
+  .plat-top > .plat-stack, .plat-body > .plat-stack, .plat-waist > .plat-stack {
+    flex:1 1 auto; min-height:0; justify-content:stretch; }
   .plat-body .plat-stack { justify-content:stretch; }
   .plat-stack > .band { flex:0 0 auto; }
-  .plat-body .plat-stack > .band { flex:1 1 auto; }
+  .plat-body .plat-stack > .band { flex:1 1 auto; min-height:0; }
+  /* balanceHalves() pads the shorter platform half to match the taller one; the
+     last band in the upper half absorbs that slack so Agentic Work fills the
+     void above Unified Governance instead of leaving bare fill under it. */
+  .plat-top .plat-stack > .band.b-apps { flex:0 0 auto; }
+  .plat-top .plat-stack > .band.b-work { flex:1 1 auto; min-height:0; }
   .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; }
   .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
@@ -1315,6 +1322,16 @@
     font-size:16px; font-weight:800; letter-spacing:-.015em; line-height:1.15; }
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
+  .plat-stack .band-body { justify-content:flex-start; gap:10px; }
+  .band.b-work .band-body { flex:1 1 auto; min-height:0; gap:12px; }
+  .band.b-work .band-row.mixed { flex:1 1 auto; align-items:stretch; gap:10px; }
+  .band.b-work .band-row.mixed > .panel { align-self:stretch; }
+  .band.b-work .panel { align-items:stretch; gap:10px; padding:10px 11px; }
+  .band.b-work .panel-cols { align-items:stretch; gap:10px; }
+  .band.b-work .pcol { gap:6px; justify-content:center; }
+  .band.b-work .side-col { gap:8px; justify-content:space-between; flex:1 1 auto; }
+  .band.b-work .band-row.mixed > .plaincol { gap:6px; }
+  .band.b-work .band-foot { flex:0 0 auto; margin-top:auto; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* a card row on fixed columns instead of shared flex width, so a card can name
      the column it belongs under; the column count is set per row in script */
