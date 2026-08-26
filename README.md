@@ -41,16 +41,16 @@ IDEA is the same architecture as a live document:
 ## What it shows
 
 Sources on the left, the platform through the middle, consumers on the right,
-with the people who use it and the cloud it runs on wrapped around the outside.
+with the teams who use it and the cloud it runs on wrapped around the outside.
 
 | Zone | What sits there |
 |---|---|
 | **Sources** | Structured, semi-structured, unstructured, streaming and IoT, external and partner data, and federation sources reached without copying |
 | **Cloud and 3rd-party ingestion** | The cloud's own ETL services, and third-party ELT and streaming brokers that land data alongside the platform's native ingestion |
 | **Platform** | Ingest, Agentic Apps, Agentic Work, Unified Governance, Agentic Data, Open Infrastructure and the medallion layers, drawn as one outline traced by a moving ring |
-| **People** | The business and technical roles the platform is built for |
-| **Consumers** | BI and productivity tools, MCP and APIs, published data products, partners and platforms, and operational systems |
-| **Apps, use cases and agent harnesses** | What the platform is used for, industry-neutral by design |
+| **Teams** | The business and technical teams the platform is built for. A tile is a team, never a job title, and the roles inside it and the surfaces they touch are in the side panel |
+| **Consumers** | BI and productivity tools, MCP and APIs, published data products, partners and platforms, operational systems, and the agent harnesses that arrive from outside |
+| **Apps and use cases** | What the platform is used for: four apps and ten use cases on every board, industry-neutral by default |
 | **Cloud services and integrations** | The account's own storage, compute, key vault, catalog, identity and observability services |
 
 ### How to read it
@@ -66,17 +66,19 @@ with the people who use it and the cloud it runs on wrapped around the outside.
 
 ## The controls
 
-Seven controls, left to right, sitting in the header above the diagram.
+Seven controls, left to right, sitting in the header above the diagram, plus one
+on the diagram itself.
 
 | Control | What it does |
 |---|---|
+| **Industry** | Specialises everything outside the platform for one industry: sources, ingestion, teams, apps, use cases and consumers. Searchable. The platform itself and the cloud services band do not change |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
 | **Dark / Light** | Follows the operating system by default, and remembers an explicit choice. Downloads follow whatever is on screen |
 | **Palette** | Thirteen colour schemes in three groups |
 | **Style** | Five platform shapes |
-| **Platform** | Zooms into the platform on its own: hides sources, consumers, the apps band and the cloud services. Exports respect it |
 | **Stage** | Filters the platform box by release stage |
 | **Download** | PDF, PowerPoint, PNG, GIF, HTML |
+| **Zoom** (on the platform heading, not the toolbar) | Zooms into the platform on its own: hides sources, consumers, the apps band and the cloud services. Click again to restore. Exports respect it, and the button itself never appears in one |
 
 Everything that acts on a diagram goes inert on a tab that has no diagram yet,
 so the toolbar cannot be used against nothing. Dark/Light and Cloud stay live,

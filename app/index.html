@@ -678,8 +678,13 @@
   /* every heading carries a mark, the way the platform bar carries the
      Databricks one: the glyph inherits the heading's own colour, so one rule
      covers the white-on-tint zone bars and the dark-on-white band labels */
-  .colhead svg, .pockhead svg { flex:0 0 auto; }
-  .colhead svg { width:16px; height:16px; margin-right:7px; }
+  /* Direct children only. These two rules dress the mark that LEADS a heading, and
+     the gap they add belongs between that mark and the label. A heading may also
+     hold a button whose own glyph is an svg, and matching that one gave it a 7px
+     right margin it could not want: the flex centring then centred glyph-plus-
+     margin, leaving the glyph 3.5px left of the middle of its button. */
+  .colhead > svg, .pockhead svg { flex:0 0 auto; }
+  .colhead > svg { width:16px; height:16px; margin-right:7px; }
   .pockhead svg { width:13px; height:13px; margin-right:5px; }
   .bl-ic { flex:0 0 auto; width:17px; height:17px; margin:1px 7px 0 0; color:var(--brand); }
   .cl-ic { flex:0 0 auto; width:17px; height:17px; margin:0 7px 0 0; color:var(--brand); }
@@ -1759,6 +1764,12 @@
   .d-close { position:absolute; top:14px; right:16px; border:none; background:var(--well); width:29px; height:29px;
     border-radius:8px; cursor:pointer; font-size:15px; color:var(--muted); }
   .d-refbox { background:var(--brand-wash); border:1px solid var(--brand-soft); border-radius:9px; padding:9px 12px; }
+  /* No bullet glyph: the leading chip already marks where each row starts, and a
+     disc in front of it read as a second, competing marker. */
+  .d-uses { list-style:none; margin:0; padding:0; }
+  .d-uses li { margin:0 0 9px; line-height:1.5; }
+  .d-uses .chip { margin:0 6px 0 0; vertical-align:baseline; }
+  .d-uses b { color:var(--ink); }
   .ed-field { margin-bottom:15px; }
   .ed-field label { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin-bottom:5px; font-weight:800; }
   .ed-field input, .ed-field textarea { width:100%; font:inherit; font-size:13.5px; border:1px solid var(--line);
@@ -1888,7 +1899,7 @@
   <!-- Industry leads the toolbar, ahead of the cloud switch: it decides what the
        whole board is about, where the cloud switch only decides one band. -->
   <div class="pal-wrap" id="ind-wrap">
-    <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, people, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Industry</span></button>
+    <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, teams, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Industry</span></button>
     <div class="pal-menu ind-menu" id="ind-menu"></div>
   </div>
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
@@ -1925,7 +1936,7 @@
   <div class="ref-card">
     <h3 id="ref-name"></h3>
     <p id="ref-blurb"></p>
-    <div class="ref-legend">Highlighted <b>■</b> components are used by this solution, across the platform, the <b>Apps, Use Cases and Agent Harnesses</b> band, the <b>Sources</b>, <b>Cloud &amp; 3rd-Party Ingestion</b>, <b>People</b> and <b>Consumers</b> boxes and the <b>Cloud Services &amp; Integrations</b> band. Hover a highlight for how it is used; click for full detail.</div>
+    <div class="ref-legend">Highlighted <b>■</b> components are used by this solution, across the platform, the <b>Apps and Use Cases</b> band, the <b>Sources</b>, <b>Cloud &amp; 3rd-Party Ingestion</b>, <b>Teams</b> and <b>Consumers</b> boxes and the <b>Cloud Services &amp; Integrations</b> band. Hover a highlight for how it is used; click for full detail.</div>
   </div>
 </div>
 
@@ -1977,7 +1988,7 @@
       <span class="flow down ingdown"></span>
     </div>
     <div class="pocket ppl">
-      <div class="pockhead" data-ic="people">People</div>
+      <div class="pockhead" data-ic="people">Teams</div>
       <aside class="rail ppl" id="rail-ppl"></aside>
       <!-- people carry their questions up into the apps, harnesses and use cases -->
       <span class="flow up pplup"></span>
@@ -2511,21 +2522,74 @@ const ARCH = {
       ]},
     ]},
 
-    /* The pocket above the Z's right arm: the people who ask the questions. Split
+    /* The pocket above the Z's right arm: the teams who ask the questions. Split
        into who consumes an answer and who builds the thing that produces it, since
-       the two groups meet the platform through completely different surfaces. */
-    ppl: { id:"ppl", name:"People", groups:[
+       the two groups meet the platform through completely different surfaces.
+
+       A tile names a TEAM, never a job title, and the roles inside it are spelled
+       out in the drawer instead. That is a height decision as much as an editorial
+       one: this pocket is a single narrow column, the platform block beside it
+       grows to whatever height the pocket needs, and the whole board is then
+       scaled down to fit. So a row added here is paid for by every label on the
+       diagram. `uses` carries the half of the detail that matters most and read
+       worst as prose: which surface of the platform the team actually touches. */
+    ppl: { id:"ppl", name:"Teams", groups:[
       { box:"Business", ic:"zbrief", tiles:[
-        { n:"Executives", ic:"chart", long:"Leadership consuming governed AI/BI dashboards and Genie summaries." },
-        { n:"Business Teams", ic:"people", long:"Business users working through Genie One in Slack, Teams and mobile. No SQL required." },
+        { n:"Executives", ic:"chart",
+          long:"The leadership accountable for growth, margin, cost to serve and the risk position. They read the platform rather than build on it, so what matters to them is that a number means the same thing in every meeting it is quoted in.",
+          uses:[
+            ["Genie One", "Ask for last week's margin or cost to serve in plain language, in Slack or Teams, and see the query behind the answer."],
+            ["AI/BI", "Executive dashboards built on certified Metric Views, so the number quoted upstairs is the number the team reports."],
+            ["Unity Catalog", "Certification and the business glossary, so every headline metric has one owner and one definition."],
+          ] },
+        { n:"Business Teams", ic:"people",
+          long:"Finance, marketing, sales, service and operations. The largest population on the platform, with no SQL between them and the answer, and the group most exposed to a wrong number.",
+          uses:[
+            ["Genie One", "Ask questions in Slack, Teams or on mobile and follow up in the same thread, on data they are permitted to see."],
+            ["AI/BI", "Self-service dashboards they filter and drill themselves rather than raising a ticket for."],
+            ["Excel Add-in", "The same governed tables inside the spreadsheet they already work in, with write-back where it is allowed."],
+          ] },
       ]},
       /* Ordered from the data's own path: engineered, modelled, analysed, then built on. */
       { box:"Technical", ic:"code", tiles:[
-        { n:"Data Engineers", ic:"lakeflow", long:"Engineers building and operating the pipelines: Lakeflow Designer, Spark Declarative Pipelines, Jobs and Genie ZeroOps." },
-        { n:"Data Scientists", ic:"model", long:"Scientists in notebooks and MLflow, training and evaluating models on governed features and tracking every run." },
-        { n:"Data Analysts", ic:"chart", long:"Analysts querying governed tables in the SQL editor, in AI/BI dashboards and through Genie, without writing pipelines." },
-        { n:"Analytics Engineers", ic:"etl", long:"The layer between engineering and analysis: modelling raw tables into tested, documented and contracted marts, typically with dbt or Lakeflow declarative pipelines, and owning the semantics in Unity Catalog Metric Views and the business glossary." },
-        { n:"App Developers", ic:"dev", long:"Engineers building on Agentic Dev, Agent Bricks and Databricks Apps." },
+        { n:"Data Engineers", ic:"lakeflow",
+          long:"The team that owns ingestion and the Bronze to Silver path, and carries the pager for it. Everything else on this rail depends on their tables being correct and on time.",
+          uses:[
+            ["Lakeflow Connect", "Managed connectors for SaaS and database sources, instead of a hand-written extract per system."],
+            ["Lakeflow Designer", "Declarative pipelines with expectations, so a quality rule lives in the pipeline rather than in a downstream check."],
+            ["Genie ZeroOps", "Failures triaged and explained, and routine tuning handled without a ticket."],
+            ["Lakewatch", "Freshness and quality monitored on the tables they publish, so they hear about a break before the business does."],
+          ] },
+        { n:"Data Scientists", ic:"model",
+          long:"The team building the forecasting, propensity, risk and pricing models, and the one accountable for whether a model still holds six months after it shipped.",
+          uses:[
+            ["Notebooks & IDEs", "Python, R and Scala against governed tables, in the workspace or in VS Code."],
+            ["Feature Store", "Features defined once and read identically in training and in serving, which is where most drift starts."],
+            ["MLflow", "Every run, parameter and metric tracked, so a production model can still be explained later."],
+            ["Model Serving", "Models published as endpoints the apps and agents call, with no separate serving stack to own."],
+          ] },
+        { n:"Data Analysts", ic:"chart",
+          long:"The team that answers what the business cannot answer for itself, and usually the first to notice that a definition has drifted.",
+          uses:[
+            ["SQL Warehouses", "Serverless SQL over Silver and Gold, under the same permissions the dashboards run on."],
+            ["AI/BI", "Dashboards published for the business teams, built on Metric Views rather than on a private query."],
+            ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
+          ] },
+        { n:"Analytics Engineers", ic:"etl",
+          long:"The layer between engineering and analysis. They model raw tables into tested, documented marts and own what the business words actually mean.",
+          uses:[
+            ["dbt & External Engines", "Existing dbt projects running on Databricks SQL, keeping their tests and their lineage."],
+            ["Unity Catalog", "Metric Views and the business glossary, so revenue is defined once and every tool reads that definition."],
+            ["Lakeflow", "Declarative transformations where the model belongs in the pipeline rather than in a downstream tool."],
+          ] },
+        { n:"App Developers", ic:"dev",
+          long:"The team building the applications and agents the business works in, rather than another dashboard for it to read.",
+          uses:[
+            ["Apps", "Applications hosted next to the data, with no separate web tier to run or secure."],
+            ["Lakebase", "Serverless Postgres for the single-row reads and writes an application needs, on the same governed data."],
+            ["Agent Bricks", "Agents built, evaluated and deployed against governed tools instead of a private prompt."],
+            ["Agentic Dev", "Genie Code and the agent surfaces they build with, inside the workspace."],
+          ] },
       ]},
     ]},
 
@@ -2538,8 +2602,8 @@ const ARCH = {
         { n:"Teams & M365 Copilot", ic:"chat", long:"Tag Genie in a Teams thread for Unity Catalog-governed answers from the lakehouse (Beta)." },
         { n:"Notebooks & IDEs", ic:"notebook", long:"Notebooks, VS Code and JetBrains against governed data and Genie Code." },
       ]},
-      /* Applications moved up into the Apps, Use Cases and Agent Harnesses band, so what
-         leaves the platform on this path is agents and machine interfaces. */
+      /* Applications moved up into the Apps and Use Cases band, so what leaves the
+         platform on this path is agents and machine interfaces. */
       { box:"MCPs and APIs", ic:"mcp", tiles:[
         { n:"External Agents (MCP)", ic:"mcp", long:"Third-party and vendor agents connecting through the MCP server registry, governed by Unity Gateway." },
         { n:"Operational APIs", ic:"api", long:"Low-latency APIs and model endpoints serving decisions back into operational systems." },
@@ -2566,34 +2630,61 @@ const ARCH = {
         { n:"ERP & Core Systems", ic:"db", long:"Decisions and scores written back into the systems of record that run the business." },
         { n:"Activation Channels", ic:"reverse", long:"Campaign, service and commerce channels activated from governed segments." },
       ]},
+      /* Harnesses sit on this rail rather than in the band above it. They are not
+         something the business builds, they are another client arriving at the
+         platform from outside and leaving through the same governed door as a BI
+         tool or a sharing recipient. Keeping them here also leaves the top band to
+         say one thing: what the platform is used for. Last group on the rail, in
+         this board and in every industry board, so the rail reads the same way
+         whichever industry is selected. */
+      { box:"Agent Harnesses", ic:"agents", tiles:[
+        { n:"Omnigent", s:"Databricks, open source", ic:"omni",
+          long:"Open-source meta-harness that sits above existing agent frameworks (LangGraph, CrewAI and others), enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
+          caps:["Build","Deploy","Optimize","Govern"], rel:["Agent Bricks","Unity Gateway"] },
+        { n:"Claude Code", s:"3rd-party harness", ic:"code",
+          long:"Anthropic's coding harness working against the platform through MCP. Its spend, routing and policy are governed by Unity Gateway like any other agent." },
+        { n:"OpenAI Codex", s:"3rd-party harness", ic:"code",
+          long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
+        { n:"Any MCP Harness", s:"Cursor, IDEs, frameworks", ic:"mcp",
+          long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP. The MCP server registry in Unity Gateway is the single place a new one is admitted, scoped and traced." },
+      ]},
     ]},
 
   },
 
-  /* ---------------- apps, harnesses and use cases (top band) ----------------
+  /* --------------------- apps and use cases (top band) ---------------------
      What the platform is used FOR. It sits above the platform because everything
      here is a consumer of the platform, not a part of it: the applications people
-     work in, the agent harnesses that drive the platform, and the use cases the
-     whole architecture exists to deliver. Use cases are deliberately generic —
-     this is the reference architecture, so no industry is assumed. */
+     work in, and the use cases the whole architecture exists to deliver.
+
+     The shape of this band is fixed across every board: four apps, ten use cases.
+     Fixed because it is the band a reader compares between industries, and a
+     section that changes width or row count between boards reads as a different
+     diagram rather than the same diagram specialised. Ten is also the honest
+     limit: past ten, a use-case list stops being a claim about what matters and
+     becomes a catalogue. Agent harnesses used to sit here and now sit on the
+     Consumers rail, where the other outside clients of the platform live. */
   top: {
-    name:"Apps, Use Cases and Agent Harnesses", ic:"zapps",
+    name:"Apps and Use Cases", ic:"zapps",
     sub:"What the platform is used for. Generic by design: an industry view specialises this band.",
-    /* Use cases sit in the middle because they are the point; the apps people work
-       in are on the left and the harnesses that drive the platform on the right. */
+    /* Use cases take the larger half because they are the point; the apps the
+       business builds to work in take the smaller one. */
     secs:[
-      /* Two tiles, one column, so the section is as tall as its neighbours while
-         taking a fifth of the band instead of a third. Partner Portals and
-         3rd-Party SaaS Apps left for the Consumers rail: both are things outside
-         the business reading what the platform publishes, which is that rail's
-         job, and what stays here is what the business builds for itself. */
-      { title:"Apps", ic:"apps", span:2, cols:1, tiles:[
+      /* Partner Portals and 3rd-Party SaaS Apps left for the Consumers rail: both
+         are things outside the business reading what the platform publishes,
+         which is that rail's job. What stays here is what the business builds
+         for itself, in the four shapes it usually builds. */
+      { title:"Apps", ic:"apps", span:3, cols:2, tiles:[
         { n:"Business Apps", s:"Built in-house", ic:"apps",
           long:"Line-of-business applications your teams build on Databricks Apps over Lakebase, reading governed data and calling platform endpoints rather than holding their own copy." },
         { n:"Embedded Analytics", s:"In-product dashboards", ic:"aibi",
           long:"Dashboards and metrics surfaced inside your own product or portal, served by SQL warehouses with end-user permissions enforced by Unity Catalog." },
+        { n:"Operations Consoles", s:"Run the day", ic:"gauge",
+          long:"The screen an operations, service or control team runs the working day from: current state, the exception queue and the action taken, on live data rather than on last night's extract. Built on Databricks Apps with Lakebase behind it for the writes." },
+        { n:"Internal Copilots", s:"Agent assistants", ic:"agents",
+          long:"Assistants for staff rather than for customers: the agent a case handler, planner or engineer asks before deciding, grounded in the organisation's own documents and tables through Agent Bricks and governed by Unity Gateway." },
       ]},
-      { title:"Use Cases", ic:"ztarget", span:6, cols:3, tiles:[
+      { title:"Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
         { n:"Customer Segmentation", s:"Customer 360", ic:"custlake",
           long:"Unified customer profiles built on the lakehouse, segmented and activated through CustomerLake without copying data into a separate CDP." },
         { n:"Churn & Retention", s:"Predictive", ic:"chart",
@@ -2606,17 +2697,14 @@ const ARCH = {
           long:"Retrieval and ranking over governed data via AI Search and Model Serving, served to customer-facing apps at low latency." },
         { n:"Customer Service Agents", s:"Agentic", ic:"agents",
           long:"Genie Agents and Agent Bricks agents grounded in documents, tickets and transactions, taking action in business tools rather than only answering." },
-      ]},
-      { title:"Agent Harnesses", ic:"agents", span:3, cols:2, tiles:[
-        { n:"Omnigent", s:"Databricks, open source", ic:"omni",
-          long:"Open-source meta-harness that sits above existing agent frameworks (LangGraph, CrewAI and others), enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
-          caps:["Build","Deploy","Optimize","Govern"], rel:["Agent Bricks","Unity Gateway"] },
-        { n:"Claude Code", s:"3rd-party harness", ic:"code",
-          long:"Anthropic's coding harness working against the platform through MCP. Its spend, routing and policy are governed by Unity Gateway like any other agent." },
-        { n:"OpenAI Codex", s:"3rd-party harness", ic:"code",
-          long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
-        { n:"Any MCP Harness", s:"Cursor, IDEs, frameworks", ic:"mcp",
-          long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP. The MCP server registry in Unity Gateway is the single place a new one is admitted, scoped and traced." },
+        { n:"Document Intelligence", s:"Unstructured", ic:"docs",
+          long:"Contracts, claims, statements and correspondence parsed into governed tables with AI Functions and Agent Bricks, so the value locked in unstructured files joins the same models and dashboards the structured estate feeds." },
+        { n:"Predictive Maintenance", s:"Asset health", ic:"gauge",
+          long:"Sensor and telemetry history joined to work orders and parts, predicting the failure early enough to plan the intervention rather than absorb the outage." },
+        { n:"Supply Chain Visibility", s:"End to end", ic:"stream",
+          long:"Suppliers, inventory positions, shipments and demand signals conformed into one view, with simulation on top of it so a disruption can be answered rather than only reported." },
+        { n:"Regulatory Reporting", s:"Risk & compliance", ic:"gavel",
+          long:"Regulatory and risk submissions produced from governed tables with lineage back to source, so a challenge from a regulator is answered from the platform rather than from a spreadsheet trail." },
       ]},
     ],
   },
@@ -2903,16 +2991,69 @@ const INDUSTRIES = {
          the detail text of the tile that absorbed them, so the drawer still carries
          them. Adding a row here costs the whole diagram, so consolidate instead. */
       ppl:[
+        /* Business tiles are industry-specific and technical tiles are not. An
+           airline's commercial and operations teams look nothing like a bank's, but
+           its data engineers meet the platform through the same four surfaces, so
+           the Technical group keeps the reference board's names. That is what makes
+           two industry boards comparable: only the half that genuinely differs
+           differs. */
         { box:"Business", ic:"zbrief", tiles:[
-          { n:"Executive Team", ic:"chart", long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the Chief Commercial Officer on pricing, distribution, loyalty and ancillary revenue; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record." },
-          { n:"Revenue Management", ic:"market", long:"Analysts setting bid prices and fare class availability by market and departure date, judging the forecast the optimiser is working from." },
-          { n:"Network Planners", ic:"sheet", long:"Decide which routes are flown, at what frequency and with which aircraft, season by season." },
-          { n:"Loyalty & Ancillary", ic:"custlake", long:"Own tier economics, partner earn and the merchandising of seats, bags and lounge access." },
+          { n:"Executive Team", ic:"chart",
+            long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the Chief Commercial Officer on pricing, distribution, loyalty and ancillary revenue; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record.",
+            uses:[
+              ["Genie One", "Ask what yesterday's operation cost, or what a route made last month, without booking analyst time."],
+              ["AI/BI", "Network profitability, load factor and on-time performance on one certified set of Metric Views, so commercial and operations quote the same number."],
+              ["Unity Catalog", "Certification and the business glossary, so \"on time\" means one thing across the airline."],
+            ] },
+          { n:"Commercial Teams", ic:"market",
+            long:"Revenue management analysts setting bid prices and fare class availability by market and departure date; network planners deciding which routes are flown, at what frequency and with which aircraft; and the loyalty and ancillary teams owning tier economics, partner earn and the merchandising of seats, bags and lounge access.",
+            uses:[
+              ["RM Analyst Workbench", "The forecast, the override history and the revenue at risk on a flight, before a bid price is touched."],
+              ["Model Serving", "Demand and willingness-to-pay models scored per shopping request behind continuous pricing."],
+              ["AI/BI", "Route and market performance, and look-to-book and abandonment from clickstream joined to bookings."],
+              ["Genie", "A question about one market or one departure date, answered without a report request."],
+            ] },
+          { n:"Operations Teams", ic:"gauge",
+            long:"Duty managers in the operations control centre deciding whether to hold or cancel, swap tails and protect connections; the ground and ramp teams turning the aircraft and reporting the milestones the turnaround clock is built on; crew scheduling keeping rosters legal and covered; and line and base engineering clearing defects and deciding whether an aircraft departs or goes AOG.",
+            uses:[
+              ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers together on a disrupted day."],
+              ["Turnaround Manager", "Live turnaround state against the A-CDM clock, flagging the stands that will miss target off-block."],
+              ["AOG Watchtower", "Predicted component removals by tail, so a change is planned at a base overnight rather than found at a gate."],
+              ["Lakehouse//RT", "The live operational state those screens read, at the latency a turnaround actually moves at."],
+            ] },
         ]},
-        { box:"Operations", ic:"code", tiles:[
-          { n:"OCC & Ground Ops", ic:"gauge", long:"Duty managers running the operations control centre: hold or cancel, swap tails, protect connections and own the recovery plan on a disrupted day. With them the ground and ramp teams turning the aircraft (loading, fuelling, pushback and the milestone reporting the turnaround clock is built on) and crew scheduling keeping rosters legal and covered, calling standbys and reassigning pairings as the day moves." },
-          { n:"Line & Base Engineering", ic:"dev", long:"Clear defects, plan component removals and decide whether an aircraft departs or goes AOG." },
-          { n:"Data & App Teams", ic:"lakeflow", long:"Data engineering, analytics engineering and platform teams building the pipelines, models and semantics the rest of the airline reads; data scientists building the forecasting, propensity and predictive maintenance models on governed features tracked in MLflow; and application developers building the OCC, turnaround and crew-facing applications on Databricks Apps and Agent Bricks." },
+        { box:"Technical", ic:"code", tiles:[
+          { n:"Data Engineers", ic:"lakeflow",
+            long:"The team landing the PSS, movement, crew, engineering and settlement feeds, and the one on call when the overnight messages do not arrive. Everything the commercial and operations teams see rests on their tables being right and on time.",
+            uses:[
+              ["Lakeflow Connect", "Managed connectors for the PSS, ERP and SaaS sources instead of a hand-written extract per system."],
+              ["SITA Type-B Messaging", "Type-B and A-CDM traffic parsed on arrival and landed as structured events rather than files."],
+              ["Lakeflow Designer", "Declarative pipelines with expectations, so a malformed LDM is caught in the pipeline and not in a dashboard."],
+              ["Lakewatch", "Freshness and quality on the published tables, so a missing feed is known before the morning brief."],
+            ] },
+          { n:"Data Scientists", ic:"model",
+            long:"The team building the demand, disruption, fuel burn and component-failure models, and the one accountable for whether a model still holds a season later.",
+            uses:[
+              ["Feature Store", "Features defined once and read identically in training and in serving."],
+              ["MLflow", "Every run tracked, so the model behind a pricing or a maintenance decision can be explained to an auditor."],
+              ["Model Serving", "Models published as endpoints the offer engine and the OCC screens call."],
+              ["Notebooks & IDEs", "Python against governed QAR, booking and movement history."],
+            ] },
+          { n:"Data Analysts", ic:"chart",
+            long:"The team answering what the commercial and operations teams cannot answer for themselves, and usually the first to notice that a definition has drifted.",
+            uses:[
+              ["SQL Warehouses", "Serverless SQL over the conformed operational and commercial tables."],
+              ["AI/BI", "The punctuality, baggage and revenue dashboards the business reads every morning."],
+              ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
+            ] },
+          { n:"App Developers", ic:"dev",
+            long:"The team building the OCC, turnaround, crew and engineering applications the airline works in, rather than another dashboard for it to read.",
+            uses:[
+              ["Apps", "Those screens hosted next to the data, with no separate web tier to run or secure."],
+              ["Lakebase", "Serverless Postgres for the writes they make: an accepted recovery option, a reassigned pairing."],
+              ["Agent Bricks", "Agents that draft a recovery plan or a work order against governed tools."],
+              ["Unity Gateway", "One place where model spend, routing and policy for those agents are governed."],
+            ] },
         ]},
       ],
       cons:[
@@ -2943,6 +3084,20 @@ const INDUSTRIES = {
           { n:"Data Products", ic:"product", long:"Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing." },
           { n:"Sharing Recipients", ic:"share", long:"Lessors, maintenance partners and alliance members reading live tables with no copy and no egress duplication." },
         ]},
+        /* Same group, same position, same four tiles as the reference board: a
+           harness is not an airline thing, and an industry board should differ
+           only where the industry differs. */
+        { box:"Agent Harnesses", ic:"agents", tiles:[
+          { n:"Omnigent", s:"Databricks, open source", ic:"omni",
+            long:"Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
+            caps:["Build","Deploy","Optimize","Govern"], rel:["Agent Bricks","Unity Gateway"] },
+          { n:"Claude Code", s:"3rd-party harness", ic:"code",
+            long:"Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity Gateway." },
+          { n:"OpenAI Codex", s:"3rd-party harness", ic:"code",
+            long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
+          { n:"Any MCP Harness", s:"Cursor, IDEs, frameworks", ic:"mcp",
+            long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity Gateway registry." },
+        ]},
       ],
     },
     top:[
@@ -2956,30 +3111,30 @@ const INDUSTRIES = {
         { n:"AOG Watchtower", s:"Fleet health", ic:"iot",
           long:"Component health and predicted removals by tail, so engineering plans the change at a base overnight instead of discovering it at a gate." },
       ]},
-      { title:"Use Cases", ic:"ztarget", span:5, cols:3, tiles:[
+      /* Ten, same as the reference board, and ordered by what the airline would
+         defend in a board paper: the cost of a disrupted day first, then revenue,
+         then the resource plans, then cost and service. */
+      { title:"Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
         { n:"IROPS Recovery", s:"Disruption", ic:"gauge",
           long:"Recovering aircraft, crew and passengers together after weather, ATC or technical disruption, optimising total cost of the day rather than any single resource." },
         { n:"Continuous Pricing & NDC", s:"Revenue", ic:"market",
           long:"Moving from filed fare classes to continuous price points served through NDC offers, scored per shopping request against demand and remaining capacity." },
+        { n:"Network & Fleet Planning", s:"Capacity", ic:"sheet",
+          long:"Which routes are flown, at what frequency and with which aircraft, evaluated on profitability per departure rather than on route revenue alone, season by season." },
         { n:"Crew Pairing & Rostering", s:"Planning", ic:"people",
           long:"Building legal, low-cost pairings and rosters under flight time limitations, and repairing them when the operation moves." },
         { n:"Predictive Maintenance", s:"Engineering", ic:"iot",
           long:"Predicting component removal from sensor, QAR and defect history so an AOG becomes a planned base visit." },
         { n:"Fuel Burn & Tankering", s:"Cost & emissions", ic:"chart",
           long:"Route, load and tankering decisions that cut fuel burn and the emissions reported under CORSIA and EU ETS." },
+        { n:"Turnaround & OTP", s:"Punctuality", ic:"stream",
+          long:"On-time performance attacked at the stand: milestone-level turnaround data against the A-CDM clock, so the delay is predicted and moved rather than explained afterwards." },
         { n:"Baggage Mishandling", s:"Service", ic:"partner",
           long:"Predicting which connections will lose a bag from the connection time, the stand pair and the handler, and intervening before the flight departs." },
-      ]},
-      { title:"Agent Harnesses", ic:"agents", span:3, cols:2, tiles:[
-        { n:"Omnigent", s:"Databricks, open source", ic:"omni",
-          long:"Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
-          caps:["Build","Deploy","Optimize","Govern"], rel:["Agent Bricks","Unity Gateway"] },
-        { n:"Claude Code", s:"3rd-party harness", ic:"code",
-          long:"Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity Gateway." },
-        { n:"OpenAI Codex", s:"3rd-party harness", ic:"code",
-          long:"OpenAI's coding harness connected over MCP, governed at runtime by Unity Gateway rather than trusted by configuration." },
-        { n:"Any MCP Harness", s:"Cursor, IDEs, frameworks", ic:"mcp",
-          long:"Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity Gateway registry." },
+        { n:"Loyalty & Ancillary", s:"Personalisation", ic:"custlake",
+          long:"Tier economics, partner earn and the merchandising of seats, bags and lounge access, scored per passenger against the profile the loyalty estate already holds." },
+        { n:"Cargo Yield", s:"Freight revenue", ic:"product",
+          long:"Capacity, air waybill and ULD build-up data joined to the passenger schedule, so belly capacity is sold at the right price instead of released late." },
       ]},
     ],
     sources:{
@@ -3433,7 +3588,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 12;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 13;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -3447,9 +3602,13 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    People pocket (no Data Engineers, "Developers", "Partners & Regulators"), v7
    kept Partners & Platforms inside the People pocket and had no Business /
    Technical split, v8 named the bottom band "Cloud Services & External
-   Integrations" and would restore that title over the current one, v9 labelled
+   Integrations" and would restore that title over the current one,    v9 labelled
    the Agentic Dev side chip "Flow" and would restore that over "Lakeflow
-   Designer" for anyone who had already opened the page.
+   Designer" for anyone who had already opened the page, and v12 had the top band
+   at two apps with a third Agent Harnesses section, and a People pocket whose
+   tiles carried no `uses`. Restoring a v12 board would put the harnesses back
+   above the platform and drop the drawer's "What they use" list, which is exactly
+   the stale-board confusion the bump exists to prevent.
    Restoring any of them renders empty columns or throws, so anything that fails
    this check is discarded rather than half-applied.
 
@@ -3870,6 +4029,22 @@ function openDetail(id){
       activeRef.map[t.n].map(x=>`<li>${esc(x)}</li>`).join("") + `</ul></div>`;
   }
   html += `<h4>What it is</h4><p>${esc(t.long || "No description yet.")}</p>`;
+  /* A team tile answers two different questions, and running them together as one
+     paragraph made the second one unreadable: who these people are, and which
+     surface of the platform they actually touch. `uses` carries the second as
+     [surface, what they do with it] pairs. The surface becomes a live chip
+     wherever it names a real tile, so the reader can walk from a team straight to
+     the product it depends on, and the existing .chip[data-go] wiring below
+     picks those up with no extra handler. */
+  if(t.uses && t.uses.length){
+    html += `<h4>What they use</h4><ul class="d-uses">` + t.uses.map(u=>{
+      const s = Array.isArray(u) ? u[0] : u, txt = Array.isArray(u) ? (u[1] || "") : "";
+      const to = nameIndex[s];
+      const head = to ? `<span class="chip" data-go="${to}">${esc(s)}</span>`
+                      : `<b>${esc(s)}</b>`;
+      return `<li>${head} ${esc(txt)}</li>`;
+    }).join("") + `</ul>`;
+  }
   const L = LINKS[t.n];
   if(L && L.note) html += `<h4>Worth knowing</h4><p class="d-note">${esc(L.note)}</p>`;
   const caps = [].concat(t.caps||[], t.caps2||[]);
@@ -4520,7 +4695,7 @@ function paintIndustryMenu(){
         '"><span>Standard Reference Architecture</span></button>' +
       (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
     "</div>" +
-    '<div class="dl-note">Replaces Sources, Ingestion, People, Consumers and the ' +
+    '<div class="dl-note">Replaces Sources, Ingestion, Teams, Consumers and the ' +
       'Apps and Use Cases band, and relabels the medallion stages. The platform ' +
       'itself and the cloud services band do not change.</div>';
 
