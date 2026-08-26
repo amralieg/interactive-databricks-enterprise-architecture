@@ -1397,9 +1397,10 @@
      this row alone and the stages would centre on a box 100px narrower than the
      tiles they belong under. Taking it out of flow lets the row share the tiles'
      box, which is what puts the three stages under their own column. */
-  .band-row.medallion { position:relative; }
-  .band-row.medallion .oi-lbl { position:absolute; left:0; top:50%;
-    transform:translateY(-50%); max-width:96px; }
+  .band-row.medallion { display:flex; align-items:center; gap:12px; flex-wrap:nowrap; }
+  .band-row.medallion .oi-lbl { position:static; transform:none; flex:0 0 100px;
+    max-width:100px; }
+  .band-row.medallion .medal { flex:1 1 auto; min-width:0; }
   .fmt-grid { flex:1 1 auto; min-width:0; display:grid; gap:6px; }
   /* one sixth of the row is narrower than an uppercase name plus a status pill,
      and a centred flex row overflows both sides when that happens. Stacking the
@@ -1524,6 +1525,25 @@
   .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line);
     --cloud-bg:var(--g-plum-bg); --cloud-ink:var(--g-plum-ink); margin-bottom:0; }
   body[class*="pal-"] .hband.top { --cloud-tile:var(--g-plum-tile); --cloud-tbd:var(--g-plum-bd); }
+  /* On an industry board the top band is where the variation lives, so each tile
+     carries its own zone hue instead of one shared plum wash. The class is set in
+     renderHBand and only when ARCH.industry is not generic. */
+  body.ind-active .hband.top .ct-h-teal  { --cloud-tile:var(--g-teal-tile);  --cloud-tbd:var(--g-teal-bd);  --cloud-accent:var(--g-teal-line); }
+  body.ind-active .hband.top .ct-h-blue  { --cloud-tile:var(--g-blue-tile);  --cloud-tbd:var(--g-blue-bd);  --cloud-accent:var(--g-blue-line); }
+  body.ind-active .hband.top .ct-h-violet { --cloud-tile:var(--g-violet-tile); --cloud-tbd:var(--g-violet-bd); --cloud-accent:var(--g-violet-line); }
+  body.ind-active .hband.top .ct-h-coral { --cloud-tile:var(--g-coral-tile); --cloud-tbd:var(--g-coral-bd); --cloud-accent:var(--g-coral-line); }
+  body.ind-active .hband.top .ct-h-amber { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); --cloud-accent:var(--g-amber-line); }
+  body.ind-active .hband.top .ct-h-green { --cloud-tile:var(--g-green-tile); --cloud-tbd:var(--g-green-bd); --cloud-accent:var(--g-green-line); }
+  body.ind-active .hband.top .ct-h-rose  { --cloud-tile:var(--g-rose-tile);  --cloud-tbd:var(--g-rose-bd);  --cloud-accent:var(--g-rose-line); }
+  body.ind-active .hband.top .ct-h-plum  { --cloud-tile:var(--g-plum-tile);  --cloud-tbd:var(--g-plum-bd);  --cloud-accent:var(--g-plum-line); }
+  body.ind-active .hband.top .ct-h-teal  .ct-sub { color:var(--g-teal-ink); }
+  body.ind-active .hband.top .ct-h-blue  .ct-sub { color:var(--g-blue-ink); }
+  body.ind-active .hband.top .ct-h-violet .ct-sub { color:var(--g-violet-ink); }
+  body.ind-active .hband.top .ct-h-coral .ct-sub { color:var(--g-coral-ink); }
+  body.ind-active .hband.top .ct-h-amber .ct-sub { color:var(--g-amber-ink); }
+  body.ind-active .hband.top .ct-h-green .ct-sub { color:var(--g-green-ink); }
+  body.ind-active .hband.top .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
+  body.ind-active .hband.top .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
   .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
     --cloud-bg:var(--g-amber-bg); --cloud-ink:var(--g-amber-ink); }
   body[class*="pal-"] .cloudwrap { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); }
@@ -2579,7 +2599,7 @@ const ARCH = {
        of text at 11px/650. "Revenue Management" needs 122 and wrapped to two
        lines, which cost the airlines board 14px and 1.2% of every label on it;
        "Revenue & Pricing" fits. Two-line names in this pocket are not free. */
-    ppl: { id:"ppl", name:"People", groups:[
+    ppl: { id:"ppl", name:"Teams", groups:[
       { box:"Business", ic:"zbrief", tiles:[
         { n:"Executives", ic:"chart",
           long:"The leadership accountable for growth, margin, cost to serve and the risk position. They read the platform rather than build on it, so what matters to them is that a number means the same thing in every meeting it is quoted in.",
@@ -3035,43 +3055,23 @@ const INDUSTRIES = {
             cite:["ndc"] },
         ]},
       ],
-      /* Industry-specific role names, not generic "Business Teams". Each tile is
-         one function the airline actually has; Technical is capped at three so
-         the pocket does not swallow the platform. Names stay short: this pocket
-         is one narrow column and a two-line label costs the whole diagram height. */
+      /* Eight tiles is the measured capacity: two groups, Business and Technical.
+         Industry titles go on the Business tiles; every technical role is one
+         combined tile so the pocket never grows past the reference height. */
       ppl:[
-        { box:"Executive", ic:"zbrief", tiles:[
-          { n:"CEO", ic:"chart",
-            long:"Network profitability, fleet commitments and the trade between growth and margin.",
+        { box:"Business", ic:"zbrief", tiles:[
+          { n:"Executive Team", ic:"chart",
+            long:"The CEO on network profitability, fleet commitments and the trade between growth and margin; the CFO on cash, hedging and unit cost; the Chief Commercial Officer on pricing, distribution, loyalty and ancillary revenue; the Chief Operating Officer on on-time performance, disruption cost and the safety and compliance record.",
             uses:[
               ["Genie One", "Ask what yesterday's operation cost, or what a route made last month, without booking analyst time."],
               ["AI/BI", "Network profitability, load factor and on-time performance on one certified set of Metric Views."],
               ["Unity Catalog", "Certification and the business glossary, so \"on time\" means one thing across the airline."],
             ] },
-          { n:"CFO", ic:"chart",
-            long:"Cash, hedging, unit cost and the audited numbers the board signs off.",
-            uses:[
-              ["AI/BI", "RASK, CASK and cash metrics on certified definitions, not a spreadsheet rebuilt every month."],
-              ["Unity Catalog", "Lineage and certification on the revenue and cost products finance reports."],
-            ] },
-          { n:"Chief Commercial Officer", ic:"market",
-            long:"Pricing, distribution, loyalty and ancillary revenue across every market the airline sells in.",
-            uses:[
-              ["RM Analyst Workbench", "Forecast, override history and revenue at risk before a bid price moves."],
-              ["Continuous Pricing & NDC", "Offers priced per shopping request rather than against a filed fare ladder."],
-            ] },
-          { n:"Chief Operating Officer", ic:"gauge",
-            long:"On-time performance, disruption cost and the safety and compliance record of the operation.",
-            uses:[
-              ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers on a disrupted day."],
-              ["Turnaround Manager", "Live turnaround state against the A-CDM clock."],
-            ] },
-        ]},
-        { box:"Commercial", ic:"market", tiles:[
-          { n:"Revenue Management", ic:"market",
-            long:"Analysts setting bid prices and fare class availability by market and departure date, and judging the forecast the optimiser works from.",
+          { n:"Revenue & Pricing", ic:"market",
+            long:"Revenue management analysts setting bid prices and fare class availability, and pricing teams filing and matching fares against ATPCO rules and the NDC offer catalogue.",
             uses:[
               ["RM Analyst Workbench", "The forecast, override history and revenue at risk on a flight before a bid price is touched."],
+              ["Continuous Pricing & NDC", "Offers priced per shopping request rather than against a filed fare ladder."],
               ["Model Serving", "Demand and willingness-to-pay models scored inside the offer path."],
             ] },
           { n:"Network Planning", ic:"globe",
@@ -3080,88 +3080,30 @@ const INDUSTRIES = {
               ["Network & Fleet Planning", "Route and fleet scenarios scored on profitability rather than load factor alone."],
               ["AI/BI", "Route profitability, RASK and CASK on the same definitions the executive team reads."],
             ] },
+          { n:"Operations Control", ic:"gauge",
+            long:"Duty managers in the operations control centre on a disrupted day; ground and ramp teams on turnaround and baggage milestones; customer operations on IROPS rebooking and compensation.",
+            uses:[
+              ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers together."],
+              ["Turnaround Manager", "Stand-side milestones flagged before target off-block is missed."],
+              ["IROPS Recovery", "Passenger reaccommodation options costed before agents start dialling."],
+              ["Lakehouse//RT", "Live operational state at the latency a turnaround moves at."],
+            ] },
           { n:"Loyalty & Ancillary", ic:"custlake",
             long:"Tier economics, partner earn and the merchandising of seats, bags and lounge access.",
             uses:[
               ["Loyalty & Ancillary", "Personalised offers scored per passenger against the profile the loyalty estate holds."],
               ["CustomerLake", "Segments and activations without copying profiles into a separate CDP."],
             ] },
-          { n:"Pricing & Filing", ic:"sheet",
-            long:"Filing and matching fares against ATPCO rules and the NDC offer catalogue the channels shop against.",
-            uses:[
-              ["Continuous Pricing & NDC", "Published and dynamic offers kept consistent with the filed rule set."],
-              ["Unity Catalog", "One definition of fare class, rule and surcharge across filing and analytics."],
-            ] },
-        ]},
-        { box:"Operations", ic:"people", tiles:[
-          { n:"Operations Control", ic:"gauge",
-            long:"Duty managers in the operations control centre deciding hold or cancel, tail swaps and connection protection on a disrupted day.",
-            uses:[
-              ["OCC Recovery Cockpit", "Recovery options costed across aircraft, crew and passengers together."],
-              ["Lakehouse//RT", "Live operational state at the latency a turnaround moves at."],
-            ] },
-          { n:"Ground Operations", ic:"people",
-            long:"Ramp, turnaround and baggage: the milestones the A-CDM clock is built on and the handlers who report them.",
-            uses:[
-              ["Turnaround Manager", "Stand-side milestones flagged before target off-block is missed."],
-              ["Baggage Mishandling", "Connections at risk of a mishandle flagged before departure."],
-            ] },
-          { n:"Flight Dispatch", ic:"stream",
-            long:"Release, fuel load, alternates and ATC constraints for every departure.",
-            uses:[
-              ["Fuel Burn & Tankering", "Tankering and load decisions scored on cost and emissions."],
-              ["Genie", "Weather, NOTAM and delay context for one flight without opening five systems."],
-            ] },
-          { n:"Crew Scheduling", ic:"people",
-            long:"Pairings, rosters, legality and standby cover when the day moves.",
-            uses:[
-              ["Crew Pairing & Rostering", "Legal pairings built and repaired under flight time limitations."],
-              ["Crew & Ground Mobile", "Roster changes and standby calls pushed to the devices crew carry."],
-            ] },
-          { n:"Line Maintenance", ic:"dev",
-            long:"Defect clearance, component removal and the call on whether an aircraft departs or goes AOG.",
-            uses:[
-              ["AOG Watchtower", "Predicted removals by tail so engineering plans an overnight change."],
-              ["Predictive Maintenance", "Sensor and defect history scored before the gate call."],
-            ] },
-          { n:"Cargo Operations", ic:"product",
-            long:"ULD build-up, capacity release and belly freight sold against the passenger schedule.",
-            uses:[
-              ["Cargo Yield", "Capacity and yield joined to the schedule so belly space is not released late."],
-              ["CHAMP Cargospot", "Air waybill and build-up state read from the same conformed flight leg."],
-            ] },
-          { n:"Airport Operations", ic:"globe",
-            long:"Stand and gate allocation, A-CDM milestones and the airport interface for every turn.",
-            uses:[
-              ["Turnaround & OTP", "Milestone-level turnaround data against the shared A-CDM clock."],
-              ["Airport A-CDM Partners", "Milestones exchanged with the airport operator and ground handlers."],
-            ] },
-          { n:"Customer Operations", ic:"chat",
-            long:"Irregular operations, rebooking, compensation and the contact centre on a disrupted day.",
-            uses:[
-              ["IROPS Recovery", "Passenger reaccommodation options costed before agents start dialling."],
-              ["Genie One", "Agents querying passenger and itinerary state in plain language."],
-            ] },
         ]},
         { box:"Technical", ic:"code", tiles:[
-          { n:"Data Engineering & Scientists", ic:"lakeflow",
-            long:"Engineering lands the PSS, movement, crew and engineering feeds; scientists build the demand, disruption and maintenance models on top. Both depend on the same conformed tables being right and on time.",
+          { n:"Data & App Teams", ic:"lakeflow",
+            long:"Data Engineers land the PSS, movement, crew and engineering feeds; Data Scientists build demand, disruption and maintenance models; Data Analysts answer commercial and operations questions the business cannot answer for itself; App Developers build the OCC, turnaround, crew and engineering applications the airline works in.",
             uses:[
               ["Lakeflow Connect", "Managed connectors for the PSS, ERP and SaaS sources."],
-              ["SITA Type-B Messaging", "Type-B and A-CDM traffic parsed on arrival and landed as structured events."],
               ["Feature Store", "Features defined once and read identically in training and serving."],
               ["MLflow", "Every model run tracked for audit and reproduction."],
-            ] },
-          { n:"Analysts", ic:"chart",
-            long:"Commercial and operations questions the business cannot answer for itself, and usually the first to spot a definition that has drifted.",
-            uses:[
               ["SQL Warehouses", "Serverless SQL over conformed operational and commercial tables."],
               ["AI/BI", "Punctuality, baggage and revenue dashboards the airline reads every morning."],
-              ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
-            ] },
-          { n:"App Developers", ic:"dev",
-            long:"OCC, turnaround, crew and engineering applications the airline works in, built on Databricks Apps and Lakebase.",
-            uses:[
               ["Apps", "Operational screens hosted next to the data, with no separate web tier."],
               ["Lakebase", "Serverless Postgres for recovery decisions and roster writes."],
               ["Agent Bricks", "Agents that draft a recovery plan or work order against governed tools."],
@@ -3336,6 +3278,7 @@ function applyIndustry(id, remember){
   if(activeRef){ clearReference(); refBanner.classList.remove("show"); }
 
   if(remember) persistCustom();
+  document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   build();
   paintIndustryMenu();
   syncIndustryBtn();
@@ -3645,6 +3588,8 @@ function renderRail(rail, target){
    tile behaviour. `secs` is a list of { title, span, sets } where each set is a
    live array, so edit mode writes back into whichever array owns the tile. */
 function renderHBand(target, zone, chip, secs){
+  const indHue = ["teal","blue","violet","coral","amber","green","rose","plum"];
+  let hueN = 0;
   target.innerHTML = "";
   const lbl = document.createElement("div");
   lbl.className = "cloud-lbl";
@@ -3672,6 +3617,8 @@ function renderHBand(target, zone, chip, secs){
     s.sets.forEach(arr=> arr.forEach(tile=>{
       const b = document.createElement("button");
       b.className = "ctile";
+      if(ARCH.industry !== "generic" && target.classList.contains("top"))
+        b.classList.add("ct-h-" + indHue[hueN++ % indHue.length]);
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(tile.n)}</span>` +
         (tile.s ? `<span class="ct-sub">${esc(tile.s)}</span>` : "") + `</span>`;
@@ -3701,7 +3648,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 13;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 14;  /* bump whenever the shape of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -3884,6 +3831,7 @@ function build(){
   /* the filter is a property of the view, not of the model, so it is re-applied
      to the fresh DOM here rather than at each of build()'s callers */
   applyStageFilter();
+  document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
 }
 
 /* ==================================================================
@@ -4120,7 +4068,8 @@ function modelUrl(id){
 function modelLinks(){
   const id = ARCH.industry, own = id !== "generic";
   return `<h4>Data model</h4><div class="d-links">` + linkRow(modelUrl(id),
-    own ? industryLabel(id) + " Industry Data Model" : "Databricks Industry Data Models",
+    own ? "Open " + industryLabel(id) + " Industry Data Model"
+                 : "Databricks Industry Data Models",
     own ? "github.com, entities and columns per layer" : "github.com, forty industry models") +
     `</div>`;
 }
