@@ -1001,7 +1001,7 @@
      corners sit — erase past them and the outline breaks open. */
   .plat-top, .plat-waist, .plat-body { border:2px solid var(--brand); background:var(--plat-fill);
     padding:7px; gap:7px; }
-  .plat-top, .plat-body { display:flex; align-items:stretch; }
+  .plat-top, .plat-body { display:flex; }
   /* Declared here rather than with the grid placement above, because THIS is
      the rule the waist would otherwise inherit display:flex from, and a waist
      that is 14px of padding instead of nothing breaks the seam between the two
@@ -1038,11 +1038,11 @@
      px more than the bands need, and space-between put every one of them into the
      two gaps: three bands floating far apart inside one outline, which is what
      made the platform read as fragments instead of one block. */
-  .plat-body .plat-stack { justify-content:flex-start; }
+  .plat-body .plat-stack { justify-content:stretch; }
   .plat-stack > .band { flex:0 0 auto; }
-  .plat-top .plat-stack > .band.b-work { flex:1 1 auto; min-height:0; }
-  .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; align-items:flex-start; }
-  .arm > .band { flex:0 0 auto; flex-direction:column; gap:6px; padding:7px 8px; }
+  .plat-body .plat-stack > .band { flex:1 1 auto; }
+  .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; }
+  .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
   .arm .band-lbl .bl-name { font-size:12.5px; }
 
@@ -1282,13 +1282,13 @@
   .arm .band-lbl .bl-sub { font-size:10px; margin-top:2px; }
   /* the cards share the arm's height rather than stacking at the top and leaving
      a column of empty fill under them */
-  .arm .band-body { justify-content:flex-start; gap:8px; }
+  .arm .band-body { justify-content:stretch; }
   /* stretch, not centre: a column of shrink-to-fit cards puts every icon at a
      different x, which reads as a zig-zag down the arm instead of a column.
      Centring the card contents then puts the icons of the taller Serve cards on
      the same axis as their text block. */
-  .arm .band-row.cards { flex-direction:column; gap:8px; flex:0 0 auto; align-items:stretch; }
-  .arm .band-row.cards > * { flex:0 0 auto; }
+  .arm .band-row.cards { flex-direction:column; gap:5px; flex:1 1 auto; align-items:stretch; }
+  .arm .band-row.cards > * { flex:1 1 auto; }
   .arm .pcard { padding:5px 7px; align-items:center; }
   .arm .pcard .p-name { font-size:13px; }
   .arm .pcard .p-sub { font-size:10.5px; }
@@ -1315,19 +1315,6 @@
     font-size:16px; font-weight:800; letter-spacing:-.015em; line-height:1.15; }
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
-  .band.b-work .band-body { flex:1 1 auto; justify-content:space-between; gap:10px; min-height:0; }
-  /* The Genie panel is as tall as its stacked 108px side chips, so its four
-     text columns must stretch to that height and centre their content, or the
-     panel keeps a dead void under the descriptions and beside the chips. */
-  .band.b-work .band-row.mixed { flex:1 1 auto; align-items:stretch; min-height:0; }
-  .band.b-work .panel { align-items:stretch; }
-  .band.b-work .panel-cols { align-items:stretch; }
-  .band.b-work .panel-cols .pcol { justify-content:center; }
-  .band.b-work .side-col { gap:8px; justify-content:space-between; }
-  .band.b-work .side-col .schip {
-    width:108px; height:108px; flex:0 0 108px;
-    flex-direction:column; align-items:center; justify-content:center;
-    padding:8px 6px; font-size:11px; line-height:1.15; box-sizing:border-box; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* a card row on fixed columns instead of shared flex width, so a card can name
      the column it belongs under; the column count is set per row in script */
@@ -1565,7 +1552,7 @@
   .hband.top .ct-h-rose  .ct-sub { color:var(--g-rose-ink); }
   .hband.top .ct-h-plum  .ct-sub { color:var(--g-plum-ink); }
   .cloudwrap { --cloud-accent:var(--g-amber-line); --cloud-bd:var(--g-amber-line);
-    --cloud-bg:var(--card); --cloud-ink:var(--ink); }
+    --cloud-bg:var(--g-amber-bg); --cloud-ink:var(--g-amber-ink); }
   body[class*="pal-"] .cloudwrap { --cloud-tile:var(--g-amber-tile); --cloud-tbd:var(--g-amber-bd); }
   /* both horizontal bands are inset to the Z's own width: the columns either side
      of the platform are Sources and Consumers, and neither band belongs over them */
