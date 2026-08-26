@@ -1304,6 +1304,9 @@
   .band-lbl .bl-sub { font-size:11px; color:var(--muted); line-height:1.35; margin-top:5px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
+  /* a card row on fixed columns instead of shared flex width, so a card can name
+     the column it belongs under; the column count is set per row in script */
+  .band-row.cards.gridrow { display:grid; }
 
   /* product card */
   .pcard { display:flex; align-items:flex-start; gap:7px; text-align:left; font:inherit;
@@ -1672,25 +1675,15 @@
 
   /* ---------- builder: what a user-made tab shows before it has a diagram ---- */
   .builder { display:none; max-width:var(--designw); margin:0 auto; padding:0 20px; }
-  /* centred in whatever height the board would have taken, which is set on the
-     element by fitLayout for the same reason the board's scale is */
-  .builder.show { display:flex; align-items:center; justify-content:center; }
+  /* Top of the height the board would have taken, centred across it. Vertically
+     centred, the message floated in the middle of an empty page with nothing to
+     anchor it; at the top it reads as the answer to the tab you just opened. */
+  .builder.show { display:flex; align-items:flex-start; justify-content:center; }
   .builder-card { width:100%; max-width:640px; border:1px solid var(--line); border-radius:16px;
-    background:var(--card); padding:22px; box-shadow:var(--shadow); }
-  #bld-text { display:block; width:100%; box-sizing:border-box; font:inherit; font-size:13.5px;
-    line-height:1.55; color:var(--ink); border:1px solid var(--line); border-radius:11px;
-    background:var(--card); padding:12px 14px; resize:vertical; }
-  #bld-text::placeholder { color:var(--muted); }
-  #bld-text:focus { outline:none; border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-wash); }
-  .bld-row { display:flex; justify-content:center; margin:14px 0; }
-  .bld-go { display:block; width:100%; font:inherit; font-size:13.5px; font-weight:750;
-    color:var(--on-accent); background:var(--brand); border:none; border-radius:11px; padding:11px 14px;
-    cursor:pointer; transition:.12s; }
-  .bld-go:hover:not(:disabled) { filter:brightness(1.06); }
-  /* disabled until there is something to build from, so the button never looks
-     like it did nothing */
-  .bld-go:disabled { background:var(--well); color:var(--faint); cursor:not-allowed; }
-  .bld-note { margin-top:11px; font-size:11.5px; line-height:1.5; color:var(--muted); min-height:1em; }
+    background:var(--card); padding:22px; box-shadow:var(--shadow); margin-top:28px;
+    text-align:center; }
+  .bld-soon { font-size:19px; font-weight:800; letter-spacing:-.01em; color:var(--brand); }
+  .bld-sub { margin-top:9px; font-size:12.5px; line-height:1.6; color:var(--muted); }
   body.tab-alt .board { display:none !important; }
   /* Platform, Stage, Style and Download belong to the toolbar, not to one tab: they hold
      their place on the tab line everywhere. A builder tab has no diagram for
@@ -1892,6 +1885,12 @@
   </div>
 
   <div class="htools">
+  <!-- Industry leads the toolbar, ahead of the cloud switch: it decides what the
+       whole board is about, where the cloud switch only decides one band. -->
+  <div class="pal-wrap" id="ind-wrap">
+    <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, people, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Industry</span></button>
+    <div class="pal-menu ind-menu" id="ind-menu"></div>
+  </div>
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
   <button class="hbtn" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl">Dark</span></button>
   <div class="pal-wrap" id="pal-wrap">
@@ -1901,10 +1900,6 @@
   <div class="pal-wrap" id="shape-wrap">
     <button class="hbtn" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span> Style</button>
     <div class="pal-menu" id="shape-menu"></div>
-  </div>
-  <div class="pal-wrap" id="ind-wrap">
-    <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, people, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Industry</span></button>
-    <div class="pal-menu ind-menu" id="ind-menu"></div>
   </div>
   <div class="pal-wrap" id="stage-wrap">
     <button class="hbtn" id="stage-btn" title="Choose which release stages the platform box shows">◑ <span id="stage-lbl">Stage</span></button>
@@ -1934,17 +1929,16 @@
   </div>
 </div>
 
-<!-- what a user-made tab shows until it has a diagram: describe the architecture,
-     pick the cloud, build. The cloud selector is a .seg like the header's and is
-     painted by the same paintSeg, so the two never disagree. -->
+<!-- A new tab has nowhere to get a diagram from yet, so it says so and offers
+     nothing. The description box and Build button that used to stand here only
+     ever reached a mock that answered "no model is connected", which reads as a
+     broken feature rather than an unbuilt one. -->
 <div class="builder" id="builder">
   <div class="builder-card">
-    <textarea id="bld-text" rows="7" placeholder="Describe your customer, their use cases, source systems, consumers and anything else that should shape the architecture"></textarea>
-    <div class="bld-row">
-      <div class="seg" id="bld-seg"></div>
-    </div>
-    <button class="bld-go" id="bld-go" disabled>Build Architecture Diagram</button>
-    <div class="bld-note" id="bld-note"></div>
+    <div class="bld-soon">Coming Soon</div>
+    <div class="bld-sub">Describing a customer in words and having this architecture
+      drawn for them is not implemented yet. The Reference Architecture tab is live:
+      pick an industry, a cloud, a shape and a palette there, and download it.</div>
   </div>
 </div>
 
@@ -2185,7 +2179,6 @@ const PRODUCT_MARKS = {
   "Notebooks & IDEs": "<g transform=\"translate(2 2) scale(2.75)\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M3 1.75C3 1.34 3.34 1 3.75 1L14.25 1C14.66 1 15 1.34 15 1.75L15 14.25C15 14.66 14.66 15 14.25 15L3.75 15C3.34 15 3 14.66 3 14.25L3 12.5H1V11H3L3 8.75H1L1 7.25H3L3 5H1L1 3.5L3 3.5L3 1.75ZM4.5 2.5L4.5 13.5H6L6 2.5L4.5 2.5ZM7.5 2.5L7.5 13.5L13.5 13.5L13.5 2.5L7.5 2.5Z\" fill=\"currentColor\"/></g>",
   "Open Sharing": "<g transform=\"translate(2 2) scale(0.4583)\"><path d=\"M15.74 74.37C16.96 74.37 18.11 74.75 19.14 75.46L31.94 62.66C28.29 58.69 26.24 53.5 26.24 48C26.24 47.23 26.3 46.4 26.37 45.63C26.62 43.39 28.1 41.54 30.27 40.77C30.91 40.51 31.62 40.45 32.26 40.45C33.79 40.45 35.26 41.02 36.42 42.18C37.76 43.52 38.4 45.25 38.21 47.04C37.89 49.98 38.91 52.86 40.96 54.98L39.62 56.32C37.12 53.82 35.9 50.37 36.29 46.85C36.42 45.7 35.97 44.48 35.07 43.52C33.98 42.43 32.38 42.05 30.91 42.56C29.44 43.07 28.48 44.29 28.29 45.82C28.22 46.53 28.16 47.3 28.16 48C28.16 53.25 30.21 58.24 33.92 61.95L34.62 62.66L27.39 69.95C33.02 75.2 40.26 78.08 48 78.08C54.4 78.08 60.48 76.1 65.6 72.38L66.75 73.92C61.31 77.89 54.78 79.94 48.06 79.94C39.81 79.94 32.06 76.86 26.11 71.23L20.54 76.8C21.25 77.76 21.63 78.98 21.63 80.19C21.63 81.79 20.99 83.26 19.9 84.35C18.82 85.44 17.34 86.08 15.74 86.08C14.14 86.08 12.67 85.44 11.58 84.35C9.28 82.05 9.28 78.34 11.58 76.03C12.74 74.94 14.27 74.37 15.74 74.37ZM12.99 83.01C13.76 83.78 14.72 84.16 15.81 84.16C16.9 84.16 17.86 83.78 18.62 83.01C19.39 82.24 19.78 81.28 19.78 80.19C19.78 79.1 19.33 78.21 18.56 77.44C17.02 75.9 14.53 75.9 12.99 77.44C11.46 78.98 11.46 81.47 12.99 83.01Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.6\" vector-effect=\"non-scaling-stroke\" stroke-linejoin=\"round\"/><path d=\"M76.8 20.54L64 33.34C67.71 37.38 69.7 42.56 69.7 48C69.7 49.15 69.63 50.3 69.44 51.46C69.12 53.5 67.65 55.17 65.66 55.87C63.68 56.51 61.5 56 60.03 54.53L59.33 53.76C58.11 52.54 57.54 50.88 57.73 49.09C58.05 46.08 57.02 43.2 54.91 41.09L56.32 39.68C58.88 42.24 60.1 45.7 59.71 49.28C59.58 50.5 59.97 51.58 60.74 52.42L61.44 53.12C62.4 54.08 63.81 54.46 65.15 54.02C66.5 53.57 67.39 52.54 67.58 51.14C67.78 50.11 67.84 49.09 67.84 48C67.84 42.69 65.79 37.76 62.02 33.98L61.31 33.28L68.61 25.98C62.98 20.8 55.74 17.92 48 17.92C41.6 17.92 35.52 19.9 30.34 23.62L29.18 22.08C34.69 18.11 41.15 16 47.94 16C56.19 16 63.94 19.07 69.89 24.7L75.39 19.2C74.69 18.24 74.3 17.02 74.3 15.81C74.3 14.21 74.94 12.74 76.03 11.65C77.18 10.5 78.66 9.92 80.19 9.92C81.73 9.92 83.2 10.5 84.35 11.65C86.66 13.95 86.66 17.66 84.35 19.97C82.3 22.02 79.1 22.21 76.8 20.54ZM83.01 12.99C81.47 11.46 78.98 11.46 77.44 12.99C76.67 13.76 76.29 14.72 76.29 15.81C76.29 16.9 76.67 17.86 77.44 18.62C78.21 19.39 79.23 19.78 80.26 19.78C81.28 19.78 82.3 19.39 83.07 18.62C84.54 17.02 84.54 14.53 83.01 12.99Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.6\" vector-effect=\"non-scaling-stroke\" stroke-linejoin=\"round\"/><path d=\"M62.66 64C58.69 67.71 53.5 69.76 48 69.76C47.17 69.76 46.34 69.7 45.5 69.63C43.26 69.38 41.41 67.9 40.64 65.73C39.87 63.55 40.45 61.25 42.05 59.65L42.3 59.39C43.52 58.18 45.18 57.6 46.98 57.79C49.98 58.11 52.86 57.09 54.98 54.98L56.32 56.32C53.76 58.88 50.3 60.1 46.72 59.71C45.5 59.58 44.42 59.97 43.58 60.74L43.33 60.99C42.24 62.08 41.86 63.62 42.37 65.09C42.88 66.56 44.1 67.52 45.63 67.71C46.4 67.78 47.17 67.84 47.94 67.84C53.25 67.84 58.18 65.79 61.95 62.02L62.66 61.31L69.95 68.61C75.2 62.98 78.08 55.74 78.08 48C78.08 41.6 76.1 35.52 72.38 30.34L73.92 29.18C77.89 34.69 80 41.15 80 47.94C80 56.19 76.93 63.94 71.3 69.89L76.8 75.39C77.76 74.69 78.98 74.3 80.19 74.3C81.79 74.3 83.26 74.94 84.35 76.03C85.44 77.12 86.08 78.59 86.08 80.19C86.08 81.79 85.44 83.26 84.35 84.35C82.05 86.66 78.34 86.66 76.03 84.35C73.98 82.3 73.79 79.1 75.39 76.8L62.66 64ZM77.44 83.01C78.98 84.54 81.47 84.54 83.01 83.01C83.78 82.24 84.16 81.28 84.16 80.19C84.16 79.1 83.78 78.14 83.01 77.38C82.24 76.61 81.28 76.22 80.19 76.22C79.1 76.22 78.14 76.61 77.38 77.38C75.9 78.98 75.9 81.47 77.44 83.01Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.6\" vector-effect=\"non-scaling-stroke\" stroke-linejoin=\"round\"/><path d=\"M33.34 31.94C37.38 28.22 42.56 26.24 48 26.24C48.83 26.24 49.6 26.3 50.43 26.37C52.67 26.62 54.53 28.1 55.3 30.27C56.06 32.45 55.55 34.75 53.89 36.42L53.63 36.67C52.42 37.89 50.75 38.4 48.96 38.27C46.02 37.95 43.07 38.98 41.02 41.09L39.68 39.68C42.18 37.18 45.7 35.9 49.22 36.29C50.43 36.42 51.52 36.03 52.29 35.26L52.54 35.01C53.63 33.92 54.02 32.38 53.5 30.85C52.99 29.38 51.78 28.42 50.24 28.22C49.54 28.16 48.77 28.1 48.06 28.1C42.75 28.1 37.76 30.14 34.05 33.92L33.28 34.69L25.98 27.39C20.8 33.02 17.86 40.26 17.86 48C17.86 54.34 19.84 60.48 23.55 65.6L22.02 66.75C18.05 61.25 16 54.78 16 48.06C16 39.81 19.07 32.06 24.7 26.11L19.2 20.61C16.9 22.27 13.7 22.08 11.65 19.97C9.34 17.66 9.34 13.95 11.65 11.65C12.8 10.5 14.27 9.92 15.81 9.92C17.34 9.92 18.82 10.5 19.97 11.65C22.02 13.7 22.21 16.9 20.61 19.2L33.34 31.94ZM18.56 12.99C17.02 11.46 14.53 11.46 12.99 12.99C11.46 14.53 11.46 17.02 12.99 18.56C13.76 19.33 14.78 19.71 15.81 19.71C16.83 19.71 17.86 19.33 18.62 18.56C20.1 17.02 20.1 14.53 18.56 12.99Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.6\" vector-effect=\"non-scaling-stroke\" stroke-linejoin=\"round\"/></g>",
   "SQL Warehouses": "<g transform=\"translate(2 2) scale(2.75)\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1 1.75C1 1.34 1.34 1 1.75 1L14.25 1C14.66 1 15 1.34 15 1.75L15 9H13.5L13.5 7L2.5 7L2.5 13.5H8V15H1.75C1.34 15 1 14.66 1 14.25L1 1.75ZM13.5 2.5V5.5L2.5 5.5L2.5 2.5L13.5 2.5Z\" fill=\"currentColor\"/><path d=\"M11.43 8.01L8.43 11.51C8.24 11.73 8.2 12.05 8.32 12.31C8.44 12.58 8.71 12.75 9 12.75H12.37L10.43 15.01L11.57 15.99L14.57 12.49C14.76 12.27 14.8 11.95 14.68 11.69C14.56 11.42 14.29 11.25 14 11.25H10.63L12.57 8.99L11.43 8.01Z\" fill=\"currentColor\"/></g>",
-  "System Tables": "<g transform=\"translate(2 2) scale(2.75)\"><g clip-path=\"url(#system-tables-clip0_2009_1333)\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8 12.52C5.03 12.52 2.5 10.64 1.54 8.01C2.5 5.38 5.03 3.5 8 3.5C10.97 3.5 13.5 5.38 14.46 8.01C13.5 10.64 10.97 12.52 8 12.52ZM8 2C4.28 2 1.12 4.42 0.03 7.78C-0.02 7.93 -0.02 8.09 0.03 8.24C1.12 11.6 4.28 14.02 8 14.02C11.72 14.02 14.88 11.6 15.97 8.24C16.02 8.09 16.02 7.93 15.97 7.78C14.88 4.42 11.72 2 8 2ZM6.5 8C6.5 7.17 7.17 6.5 8 6.5C8.83 6.5 9.5 7.17 9.5 8C9.5 8.83 8.83 9.5 8 9.5C7.17 9.5 6.5 8.83 6.5 8ZM8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5Z\" fill=\"currentColor\"/></g><defs><clipPath id=\"system-tables-clip0_2009_1333\"><rect width=\"16\" height=\"16\" fill=\"currentColor\" fill-opacity=\"0.62\"/></clipPath></defs></g>",
   "Unity Catalog": "<g transform=\"translate(2 2) scale(0.7097)\"><path d=\"M30.92 22.43L23.51 26.72V35.28L30.92 39.57L38.34 35.28V26.72L30.92 22.43Z\" fill=\"currentColor\"/><path d=\"M46.55 21.99H55.08L50.79 14.58L46.55 21.99Z\" fill=\"currentColor\"/><path d=\"M46.55 40.06L50.84 47.46L55.13 40.06H46.55Z\" fill=\"currentColor\"/><path d=\"M26.64 56.43H35.17L30.88 49.02L26.64 56.43Z\" fill=\"currentColor\"/><path d=\"M6.72 40.06L11.01 47.46L15.3 40.06H6.72Z\" fill=\"currentColor\"/><path d=\"M6.72 21.99H15.25L10.97 14.58L6.72 21.99Z\" fill=\"currentColor\"/><path d=\"M26.64 5.57L30.93 12.98L35.21 5.57H26.64Z\" fill=\"currentColor\"/><path d=\"M39.05 7.04L34.09 15.61L42.67 20.56L47.62 11.99L39.05 7.04Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M55.75 26.05H45.84V35.95H55.75V26.05Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M42.67 41.48L34.09 46.44L39.05 55L47.62 50.05L42.67 41.48Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M19.14 41.48L14.18 50.05L22.75 55L27.71 46.44L19.14 41.48Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M15.97 26.05H6.05V35.95H15.97V26.05Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M22.75 7.04L14.18 11.99L19.14 20.56L27.71 15.61L22.75 7.04Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/></g>",
   "Unity Catalog OSS": "<g transform=\"translate(2 2) scale(0.7097)\"><path d=\"M30.92 22.43L23.51 26.72V35.28L30.92 39.57L38.34 35.28V26.72L30.92 22.43Z\" fill=\"currentColor\"/><path d=\"M46.55 21.99H55.08L50.79 14.58L46.55 21.99Z\" fill=\"currentColor\"/><path d=\"M46.55 40.06L50.84 47.46L55.13 40.06H46.55Z\" fill=\"currentColor\"/><path d=\"M26.64 56.43H35.17L30.88 49.02L26.64 56.43Z\" fill=\"currentColor\"/><path d=\"M6.72 40.06L11.01 47.46L15.3 40.06H6.72Z\" fill=\"currentColor\"/><path d=\"M6.72 21.99H15.25L10.97 14.58L6.72 21.99Z\" fill=\"currentColor\"/><path d=\"M26.64 5.57L30.93 12.98L35.21 5.57H26.64Z\" fill=\"currentColor\"/><path d=\"M39.05 7.04L34.09 15.61L42.67 20.56L47.62 11.99L39.05 7.04Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M55.75 26.05H45.84V35.95H55.75V26.05Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M42.67 41.48L34.09 46.44L39.05 55L47.62 50.05L42.67 41.48Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M19.14 41.48L14.18 50.05L22.75 55L27.71 46.44L19.14 41.48Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M15.97 26.05H6.05V35.95H15.97V26.05Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/><path d=\"M22.75 7.04L14.18 11.99L19.14 20.56L27.71 15.61L22.75 7.04Z\" fill=\"currentColor\" fill-opacity=\"0.62\"/></g>",
   "Unity Gateway": "<g transform=\"translate(2 2) scale(0.4583)\"><path d=\"M42.13 48.19L40.78 49.55L46.28 55.04L60.28 41.05L59.83 40.41C58.16 37.92 55.76 36.01 52.95 34.95C50.14 33.89 47.07 33.74 44.17 34.52C41.27 35.3 38.68 36.96 36.78 39.28C34.87 41.6 33.74 44.45 33.54 47.45L25.22 47.45C23.42 47.41 21.62 47.73 19.95 48.39C18.27 49.06 16.74 50.05 15.46 51.31C14.17 52.57 13.14 54.07 12.45 55.73C11.75 57.4 11.39 59.18 11.39 60.98C11.39 62.78 11.75 64.57 12.45 66.23C13.14 67.89 14.17 69.4 15.46 70.66C16.74 71.92 18.27 72.91 19.95 73.57C21.62 74.23 23.42 74.55 25.22 74.51L80.64 74.51L76.16 78.99L77.52 80.35L84.32 73.55L77.52 66.76L76.16 68.06L80.64 72.54L25.21 72.54C23.66 72.58 22.12 72.31 20.68 71.74C19.24 71.17 17.93 70.32 16.82 69.24C15.71 68.16 14.83 66.87 14.23 65.44C13.63 64.01 13.32 62.48 13.32 60.93C13.32 59.38 13.63 57.85 14.23 56.42C14.83 55 15.71 53.7 16.82 52.62C17.93 51.54 19.24 50.69 20.68 50.12C22.12 49.56 23.66 49.28 25.21 49.32L33.53 49.32C33.76 52.97 35.37 56.39 38.04 58.89C40.7 61.39 44.22 62.78 47.88 62.78C51.53 62.78 55.05 61.39 57.71 58.89C60.38 56.39 61.99 52.97 62.22 49.32L70.4 49.32C72.2 49.36 73.99 49.04 75.67 48.37C77.35 47.71 78.87 46.72 80.16 45.46C81.45 44.2 82.47 42.69 83.17 41.03C83.87 39.37 84.23 37.59 84.23 35.79C84.23 33.98 83.87 32.2 83.17 30.54C82.47 28.88 81.45 27.37 80.16 26.11C78.87 24.85 77.35 23.86 75.67 23.2C73.99 22.53 72.2 22.21 70.4 22.25L26.68 22.25C26.43 20.35 25.47 18.62 24 17.4C22.52 16.18 20.63 15.57 18.72 15.7C16.81 15.82 15.02 16.66 13.71 18.06C12.4 19.46 11.67 21.3 11.67 23.21C11.67 25.13 12.4 26.97 13.71 28.37C15.02 29.76 16.81 30.61 18.72 30.73C20.63 30.85 22.52 30.24 24 29.02C25.47 27.81 26.43 26.07 26.68 24.17L70.4 24.17C71.95 24.14 73.49 24.41 74.93 24.98C76.37 25.54 77.68 26.39 78.79 27.48C79.9 28.56 80.78 29.85 81.38 31.28C81.98 32.7 82.29 34.24 82.29 35.79C82.29 37.33 81.98 38.87 81.38 40.29C80.78 41.72 79.9 43.01 78.79 44.09C77.68 45.18 76.37 46.03 74.93 46.59C73.49 47.16 71.95 47.43 70.4 47.4L60.33 47.4L60.33 48.36C60.33 51.31 59.29 54.16 57.38 56.41C55.47 58.66 52.82 60.16 49.91 60.64C47 61.12 44.01 60.55 41.48 59.04C38.95 57.52 37.04 55.15 36.1 52.35C35.15 49.56 35.23 46.52 36.31 43.78C37.4 41.03 39.43 38.76 42.03 37.38C44.63 35.99 47.65 35.57 50.53 36.2C53.41 36.82 55.98 38.46 57.77 40.8L46.25 52.32L42.13 48.19ZM19.2 28.84C18.09 28.84 17.01 28.52 16.08 27.9C15.16 27.28 14.44 26.41 14.02 25.38C13.59 24.35 13.48 23.23 13.7 22.14C13.91 21.05 14.45 20.05 15.23 19.26C16.02 18.48 17.02 17.94 18.11 17.73C19.19 17.51 20.32 17.62 21.35 18.05C22.37 18.47 23.25 19.19 23.87 20.11C24.48 21.04 24.81 22.12 24.81 23.23C24.81 24.72 24.22 26.15 23.17 27.2C22.12 28.25 20.69 28.84 19.2 28.84Z\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"0.6\" vector-effect=\"non-scaling-stroke\" stroke-linejoin=\"round\"/></g>",
@@ -2290,6 +2283,14 @@ const ARCH = {
           long:"A read-only serverless warehouse type for low-latency, high-concurrency serving, powered by the Reyden engine. It answers SELECT queries in about 10 ms on smaller datasets and under 100 ms on larger ones, holding sub-100 ms at 12,000 queries per second and tens of thousands of concurrent users and agents. It reads governed Delta and Iceberg managed tables, materialized views, streaming tables and metric views directly in Unity Catalog, so operational analytics, customer-facing apps and agent serving no longer need a separate real-time database with its own CDC pipelines and permissions.",
           caps2:["Reyden engine","SELECT only","10-100 ms","12k QPS at sub-100 ms"],
           rel:["Lakehouse","Unity Catalog","Delta Lake","Apache Iceberg"] },
+        /* Second appearance of the Agentic Data card. It earns a place here
+           because an application reading Postgres is a governed path out of the
+           platform exactly as a dashboard reading a warehouse is, and the arm is
+           where a reader looks for what serves them. `alias` leaves the name
+           pointing at the card in Agentic Data that owns the product. */
+        { n:"Lakebase", s:"Operational reads", ic:"lakebase", st:"GA", alias:true,
+          long:"Serverless Postgres serving the applications and agents that need single-row reads and writes at transactional latency, on the same governed data the analytical estate reads. Unity Catalog governs analytical access while Postgres GRANT governs the transactional path.",
+          rel:["Apps","LTAP","Lakehouse//RT"] },
         { n:"Model Serving", s:"Real-time endpoints", ic:"model", st:"GA",
           long:"Managed endpoints for models and agents, scaled to zero when idle, traced through MLflow and governed by Unity Gateway.",
           rel:["Unity Gateway","MLflow"] },
@@ -2375,33 +2376,38 @@ const ARCH = {
         { n:"Unity Gateway", ic:"gateway", st:"GA", caps:["Models","Security","Cost Optimization"],
           long:"Runtime governance for all AI, including agents running on other vendors' platforms and third-party coding tools: spend caps per employee and per agent, smart routing with fallback, contextual security policies, an MCP server registry and agent tracing via MLflow.",
           rel:["Agent Bricks","Omnigent","Unity Catalog"] },
-        { n:"System Tables", ic:"observ", st:"GA", caps:["Billing","Audit","Lineage","Usage"],
-          long:"Built-in analytical tables that expose billing, audit, lineage, node timelines and job history as governed Delta tables, so chargeback, access review and platform observability are SQL over the lakehouse rather than exported logs.",
-          rel:["Unity Catalog","Lakehouse"] },
       ]} ]},
 
     /* ---------------------------- Agentic Data ---------------------------- */
+    /* Read as a shape on a three-by-two grid, not as two lists: Lakeflow lands
+       data on the left, Lakebase serves it operationally on the right, and the
+       two services that put AI on top of the engines sit under the engine each
+       one belongs to, Feature Store under Lakeflow and AI Functions under
+       Lakebase. Lakehouse holds the whole centre column because both columns
+       meet in it.
+
+       It spans the two rows rather than taking a third row of its own for a
+       measurable reason: the two platform bars are kept level, so every pixel
+       added to this block is added to the one above it too. A third row costs 54
+       design pixels here, 108 on the board, and 7.4% off the type size of every
+       label in the diagram. Spanning puts Lakehouse in the same visual centre
+       for nothing. */
     { id:"data", name:"Agentic Data", ic:"lakehouse", sub:"Unified, real-time data foundation", tone:"blue", inline:true, blk:"bot",
-      rows:[ { kind:"cards", items:[
-        { n:"Lakeflow", ic:"lakeflow", st:"GA", caps:["Ingest","Streaming","ETL"],
+      rows:[ { kind:"cards", grid:3, items:[
+        { n:"Lakeflow", col:1, row:1, ic:"lakeflow", st:"GA", caps:["Ingest","Streaming","ETL"],
           long:"Unified ingestion and ETL. DAIS 2026: 100+ connectors including community-built, Zerobus push ingestion (Kafka-wire-compatible, 10+ GB/s per table, sub-5-second latency), Spark Declarative Pipelines with real-time mode down to 5 ms, and Jobs with 50+ external integrations.",
           rel:["Lakeflow Designer","Genie ZeroOps","Event Streams"] },
-        { n:"Lakehouse", ic:"lakehouse", st:"GA", caps:["SQL Data Warehousing"],
+        { n:"Lakehouse", col:2, row:"1 / span 2", ic:"lakehouse", st:"GA", caps:["SQL Data Warehousing"],
           long:"Serverless SQL warehousing on open formats with the medallion architecture. DAIS 2026 added Lakehouse//RT, a new warehouse type for millisecond-latency analytics directly on Delta and Iceberg, powered by the new Reyden engine (Beta).",
           caps2:["Medallion: bronze / silver / gold"],
           rel:["Unity Catalog","Lakehouse//RT","AI/BI","Delta Lake","Apache Iceberg"] },
-        { n:"Lakebase", ic:"lakebase", st:"GA", caps:["Serverless Postgres"],
+        { n:"Lakebase", col:3, row:1, ic:"lakebase", st:"GA", caps:["Serverless Postgres"],
           long:"Serverless Postgres fused to the lakehouse for operational workloads. DAIS 2026 added cross-cloud and cross-region disaster recovery, git-style sub-second branching, autonomous operations, and Lakebase Search: hybrid vector plus full-text retrieval in Postgres with 32x compression and 1B+ vector indexes (Beta).",
           rel:["Apps","LTAP"] },
-      ]},
-        /* Second tier of the same band: the two services that put AI on top of
-           the three engines above. They sit on their own row because five cards
-           across this column clips the longest product name. */
-        { kind:"cards", items:[
-        { n:"Feature Store", ic:"storage", st:"GA", caps:["Batch + online serving"],
+        { n:"Feature Store", col:1, row:2, ic:"storage", st:"GA", caps:["Batch + online serving"],
           long:"Feature tables registered in Unity Catalog, retrieved in batch for training and served at low latency online, so one definition feeds both and training/serving skew disappears.",
           rel:["Unity Catalog","Model Serving","Lakebase"] },
-        { n:"AI Functions", ic:"code", st:"GA", caps:["Models called from SQL"],
+        { n:"AI Functions", col:3, row:2, ic:"code", st:"GA", caps:["Models called from SQL"],
           long:"SQL functions such as ai_query, ai_classify and ai_extract that call foundation models inside a query, so batch inference and text enrichment run where the data already sits, under the same permissions.",
           rel:["Lakehouse","Model Serving","Unity Gateway"] },
       ]} ]},
@@ -2549,6 +2555,10 @@ const ARCH = {
          platform publishes, which is the same path as the groups above them. */
       { box:"Partners & Platforms", ic:"globe", tiles:[
         { n:"Data Partners", ic:"partner", long:"Partners consuming governed products over Open Sharing, Marketplace or Clean Rooms." },
+        { n:"Partner Portals", s:"External-facing", ic:"globe",
+          long:"Partner, supplier and customer portals served by Databricks Apps, reading the same governed products as internal users instead of a private extract." },
+        { n:"3rd-Party SaaS Apps", s:"CRM, ERP, ITSM", ic:"saas",
+          long:"Packaged applications that both feed the platform and consume its outputs, connected through Lakeflow Connect inbound and Reverse ETL outbound." },
         { n:"3rd-Party Marketplaces", ic:"share", long:"External data and model marketplaces your products are listed on, and third-party listings consumed back into the lakehouse, exchanged over Open Sharing with no copy." },
         { n:"Composable CDPs", ic:"custlake", long:"Customer data platforms that compose on top of the lakehouse instead of holding their own copy: Hightouch, Census, RudderStack and similar read governed profiles and segments in place and activate them to campaign and service channels, so the warehouse stays the single source of customer truth. The Databricks-native path for the same job is CustomerLake." },
       ]},
@@ -2572,17 +2582,18 @@ const ARCH = {
     /* Use cases sit in the middle because they are the point; the apps people work
        in are on the left and the harnesses that drive the platform on the right. */
     secs:[
-      { title:"Apps", ic:"apps", span:3, cols:2, tiles:[
+      /* Two tiles, one column, so the section is as tall as its neighbours while
+         taking a fifth of the band instead of a third. Partner Portals and
+         3rd-Party SaaS Apps left for the Consumers rail: both are things outside
+         the business reading what the platform publishes, which is that rail's
+         job, and what stays here is what the business builds for itself. */
+      { title:"Apps", ic:"apps", span:2, cols:1, tiles:[
         { n:"Business Apps", s:"Built in-house", ic:"apps",
           long:"Line-of-business applications your teams build on Databricks Apps over Lakebase, reading governed data and calling platform endpoints rather than holding their own copy." },
-        { n:"Partner Portals", s:"External-facing", ic:"globe",
-          long:"Partner, supplier and customer portals served by Databricks Apps, reading the same governed products as internal users instead of a private extract." },
-        { n:"3rd-Party SaaS Apps", s:"CRM, ERP, ITSM", ic:"saas",
-          long:"Packaged applications that both feed the platform and consume its outputs, connected through Lakeflow Connect inbound and Reverse ETL outbound." },
         { n:"Embedded Analytics", s:"In-product dashboards", ic:"aibi",
           long:"Dashboards and metrics surfaced inside your own product or portal, served by SQL warehouses with end-user permissions enforced by Unity Catalog." },
       ]},
-      { title:"Use Cases", ic:"ztarget", span:5, cols:3, tiles:[
+      { title:"Use Cases", ic:"ztarget", span:6, cols:3, tiles:[
         { n:"Customer Segmentation", s:"Customer 360", ic:"custlake",
           long:"Unified customer profiles built on the lakehouse, segmented and activated through CustomerLake without copying data into a separate CDP." },
         { n:"Churn & Retention", s:"Predictive", ic:"chart",
@@ -3090,7 +3101,11 @@ function reg(el, tile, arr, sectionName){
   const sk = stageKey(tile.st);
   if(sk) el.dataset.stage = sk;
   byId[id] = { tile, arr, section:sectionName, el };
-  nameIndex[tile.n] = id;
+  /* A product shown in two places declares `alias` on the second appearance, so
+     the name keeps pointing at the card that owns it. Without this the later
+     registration silently wins and every Related chip, reference overlay and
+     solution highlight for that name jumps to the wrong band. */
+  if(!tile.alias) nameIndex[tile.n] = id;
   if(tile.role) roleIndex["cloud:" + tile.role] = id;
   return id;
 }
@@ -3270,7 +3285,19 @@ function renderBand(band, target){
     const r = document.createElement("div");
     r.className = "band-row " + row.kind;
     if(row.kind === "cards"){
-      row.items.forEach(t=> r.appendChild(productCard(t, row.items, band.name, true)));
+      /* `grid` turns the row from "share the width between whatever is here"
+         into fixed columns, so a card can name the column it wants and stay
+         under the card above it however many cards each row holds. */
+      if(row.grid){
+        r.classList.add("gridrow");
+        r.style.gridTemplateColumns = `repeat(${row.grid}, minmax(0,1fr))`;
+      }
+      row.items.forEach(t=>{
+        const c = productCard(t, row.items, band.name, true);
+        if(row.grid && t.col) c.style.gridColumn = String(t.col);
+        if(row.grid && t.row) c.style.gridRow = String(t.row);
+        r.appendChild(c);
+      });
       addBtn(row.items, band.name, r);
     } else { /* mixed: panels + plain columns */
       row.items.forEach(it=>{
@@ -3520,8 +3547,8 @@ function platHalf(host, sides){
 /* The band that reads as the platform's spine, so the crossbar of the H says
    something instead of being a void between the two pockets. Safe now that each
    pocket sits in its own arm column: while they spanned the whole waist span at
-   half width each, anything routed here rendered UNDERNEATH them and Governance,
-   both Unity cards and System Tables were invisible on the board. */
+   half width each, anything routed here rendered UNDERNEATH them, and every card
+   in Governance was invisible on the board. */
 const WAIST_BANDS = ["gov"];
 
 /* One arm band as two, split down the middle of its cards. Each half is a
@@ -3737,7 +3764,6 @@ const LINKS = {
   "Personalisation": { site:"https://www.databricks.com/solutions/accelerators/recommendation-engines", blog:"https://www.databricks.com/blog/2023/01/06/products-we-think-you-might-generating-personalized-recommendations.html", note:"Model choice depends on the situation: content-based or LLM approaches cover cold-start items, while collaborative filtering needs sufficient interaction history." },
   "Customer Service Agents": { dbx:"generative-ai/agent-bricks/knowledge-assistant/", site:"https://www.databricks.com/product/artificial-intelligence/agent-bricks", blog:"https://www.databricks.com/blog/agent-bricks-governed-enterprise-agent-platform", note:"Agents inherit the caller identity through on-behalf-of tokens, so retrieval is already filtered to what that user may read and no separate ACL layer is needed." },
   "Embedded Analytics": { dbx:"dashboards/share/embedding/external-embed/", site:"https://www.databricks.com/product/business-intelligence", blog:"https://www.databricks.com/blog/how-embed-databricks-aibi-dashboards-customer-facing-applications", note:"Only published dashboards can be embedded; external viewers authenticate via a service principal, and with shared data permissions the publisher grants apply instead." },
-  "System Tables": { doc:"admin/system-tables/", blog:"https://www.databricks.com/blog/how-databricks-system-tables-help-data-engineers-achieve-advanced-observability", note:"Free retention is 365 days per table and several schemas are still Public Preview and must be enabled before they appear. Audit and lineage are regional while billable usage is global, so an account spanning regions needs a query per region." },
   "Feature Store": { doc:"machine-learning/feature-store/", site:"https://www.databricks.com/product/feature-store", blog:"https://www.databricks.com/blog/how-databricks-feature-store-serves-features-sub-second-freshness", note:"Point-in-time joins and lineage come from registering feature tables in Unity Catalog; online serving is a separate provisioned surface, so a feature is only low-latency once it is published to it." },
   "AI Functions": { doc:"large-language-models/ai-functions", site:"https://www.databricks.com/product/databricks-sql", blog:"https://www.databricks.com/blog/introducing-serverless-batch-inference", note:"Calls are billed as model inference on top of warehouse compute, and throughput is bounded by the endpoint behind the function, so large batch jobs need a provisioned or batch endpoint rather than pay-per-token." },
   "Agent Mode": { doc:"genie-agents/concepts", site:"https://www.databricks.com/product/genie/agents", blog:"https://www.databricks.com/blog/introducing-genie-agent-mode", note:"Generally available since July 2026, renamed from Research Agent. The mode itself is GA but the Agent mode APIs are still Beta, and outside the Americas, Europe, Australia, New Zealand and Japan it runs only where cross-Geo processing is enabled." },
@@ -4079,13 +4105,12 @@ function clearReference(){ activeRef = null; clearRefPaint(); }
 const tabsEl   = document.getElementById("tabs");
 const tabAddEl = document.getElementById("tab-add");
 const builderEl = document.getElementById("builder");
-const bldText = document.getElementById("bld-text");
-const bldGo   = document.getElementById("bld-go");
-const bldNote = document.getElementById("bld-note");
-/* id -> { name, text }. The cloud is deliberately NOT per tab: there is one
-   selector in the header and one in the builder, both showing the same global
-   choice. A remembered per-tab cloud would silently change the cloud (and so the
-   reference board) just by switching tabs, which is the worse surprise. */
+/* id -> { name, text }. `text` is the description a generator would work from.
+   Nothing writes it while the builder says Coming Soon, but it stays in the
+   record and in storage: it costs one empty string per tab and saves a schema
+   version when generation arrives. The cloud is deliberately NOT per tab: a
+   remembered per-tab cloud would silently change the cloud (and so the reference
+   board) just by switching tabs, which is the worse surprise. */
 const customTabs = new Map();
 let tabSeq = 0;
 
@@ -4100,11 +4125,11 @@ function activeTabEl(){ return tabsEl.querySelector(".tab.active"); }
    unreachable. Any open dropdown is closed on the way in, otherwise a menu
    would be left floating over a disabled button. */
 const TOOL_BTNS = [
-  ["ind-btn",   "ind-wrap",   "Build this architecture first, then specialise it for an industry"],
-  ["stage-btn", "stage-wrap", "Build this architecture first, then filter it by release stage"],
-  ["shape-btn", "shape-wrap", "Build this architecture first, then choose a shape for it"],
-  ["pal-btn",   "pal-wrap",   "Build this architecture first, then recolour it"],
-  ["dl-btn",    "dl-wrap",    "Build this architecture first, then download it"],
+  ["ind-btn",   "ind-wrap",   "No diagram in this tab to specialise for an industry"],
+  ["stage-btn", "stage-wrap", "No diagram in this tab to filter by release stage"],
+  ["shape-btn", "shape-wrap", "No diagram in this tab to give a shape to"],
+  ["pal-btn",   "pal-wrap",   "No diagram in this tab to recolour"],
+  ["dl-btn",    "dl-wrap",    "No diagram in this tab to download"],
 ];
 function syncToolbar(inert){
   TOOL_BTNS.forEach(([id, wrapId, busyTitle])=>{
@@ -4128,10 +4153,6 @@ function selectTab(tab){
   syncToolbar(!!custom);
   if(custom){
     refBanner.classList.remove("show");
-    /* each tab keeps its own draft, so switching away and back does not lose it */
-    bldText.value = custom.text;
-    syncBuildBtn();
-    bldText.focus();
   } else if(activeRef){
     refBanner.classList.add("show");
   }
@@ -4142,39 +4163,10 @@ function selectTab(tab){
   persistTabs();
 }
 
-function syncBuildBtn(){
-  bldGo.disabled = !bldText.value.trim();
-}
-bldText.oninput = ()=>{
-  const t = activeTabEl(), rec = t && customTabs.get(t.dataset.tab);
-  if(rec) rec.text = bldText.value;
-  bldNote.textContent = "";
-  syncBuildBtn();
-  persistTabs();
-};
-/* THE HOOK. Generation is a mock: this is the one place to plug an LLM call in.
-   It is handed everything the model needs and everything it has to write back,
-   so nothing else in this file has to change when it is wired up. */
-async function buildFromDescription(req){
-  /* req = { description, cloud, tabId, tabName }
-     To wire this up: call the model, turn its answer into the same shape as
-     ARCH (bands / rails / top / cloud), assign it, then call build() and
-     fitBoard(). Report progress and failures through req.say(). */
-  req.say("Mock only: no model is connected. A generator plugged in here would read "
-    + "this description and the " + ARCH.cloud.providers[req.cloud].label
-    + " selection, then lay the diagram out in this tab.");
-}
-bldGo.onclick = ()=>{
-  const t = activeTabEl(), rec = t && customTabs.get(t.dataset.tab);
-  bldNote.textContent = "Working\u2026";
-  buildFromDescription({
-    description: bldText.value.trim(),
-    cloud: ARCH.cloud.provider,
-    tabId: t && t.dataset.tab,
-    tabName: rec && rec.name,
-    say: msg => { bldNote.textContent = msg; },
-  }).catch(err => { bldNote.textContent = "Could not build: " + err.message; });
-};
+/* WHERE GENERATION GOES. A tab holds a name and a description; turning the
+   description into a diagram means producing the same shape as ARCH (bands /
+   rails / top / cloud), assigning it, then calling build() and fitBoard().
+   Until that exists the tab says Coming Soon and offers no input to fill in. */
 
 /* renaming: double-click the label, Enter or blur commits, Escape reverts */
 function startRename(tab, nameEl){
@@ -4315,8 +4307,8 @@ function restoreActiveTab(){
 /* ==================================================================
    7. CLOUD PROVIDER SWITCH + STATUS TOGGLE
    ================================================================== */
-/* One painter for every .seg on the page: the header's and the builder's. Two
-   copies of this loop would be two things to keep in step. */
+/* One painter for every .seg on the page. Written as a loop rather than against
+   the one selector in the header so a second one costs no code. */
 function paintSeg(){
   document.querySelectorAll(".seg").forEach(seg=>{
     seg.innerHTML = "";
