@@ -1439,19 +1439,19 @@
      unrelated stores rather than one progression. */
   .medal { flex:1 1 auto; min-width:0; display:flex; align-items:center;
     justify-content:center; gap:4px; flex-wrap:nowrap; }
-  /* One horizontal line per stage: glyph, name and caption read left to right,
-     so Bronze, Silver and Gold sit on a single row under the open formats. */
-  .mstage { flex:0 1 auto; min-width:0; position:relative; display:flex; flex-direction:row;
-    align-items:center; justify-content:flex-start; gap:6px; text-align:left; font:inherit;
-    border:0; background:transparent; border-radius:9px; padding:4px 8px;
+  /* One stacked column per stage: the layer name on top, the cylinder in the
+     middle, the caption beneath, so Bronze, Silver and Gold each read
+     top-to-bottom under the open formats. */
+  .mstage { flex:0 1 auto; min-width:0; position:relative; display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-start; gap:3px; text-align:center; font:inherit;
+    border:0; background:transparent; border-radius:9px; padding:5px 10px;
     cursor:pointer; transition:.12s; }
   .mstage:hover { background:var(--card); box-shadow:var(--shadow); transform:translateY(-1px); }
-  .mstage svg { display:block; width:26px; height:26px; flex:0 0 auto; stroke-width:1.5; }
+  .mstage svg { display:block; width:30px; height:30px; flex:0 0 auto; stroke-width:1.5; }
   .mstage .ms-n { display:block; font-size:11px; font-weight:850; letter-spacing:.06em;
     text-transform:uppercase; line-height:1.1; white-space:nowrap; flex:0 0 auto; }
-  .mstage .ms-s { display:block; font-size:9.5px; line-height:1.2; color:var(--muted);
-    font-weight:600; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    max-width:11rem; }
+  .mstage .ms-s { display:block; font-size:9.5px; line-height:1.25; color:var(--muted);
+    font-weight:600; min-width:0; white-space:normal; text-align:center; max-width:10rem; }
   /* the layer's colour lives on the glyph and its name, nowhere else */
   .m-bronze svg, .m-bronze .ms-n { color:var(--m-bronze); }
   .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
@@ -3489,9 +3489,9 @@ function infraRow(row, section){
       if(i) st.insertAdjacentHTML("beforeend", `<span class="medal-arrow"></span>`);
       const b = document.createElement("button");
       b.className = "mstage m-" + s.n.toLowerCase();
-      /* name above the store, caption under it, the way the layers are drawn
-         everywhere else */
-      b.innerHTML = svg(s.ic,"") + `<span class="ms-n">${esc(s.n)}</span>` +
+      /* name above the store, caption under it: the layer name reads first, the
+         cylinder sits in the middle, and the description closes the stage */
+      b.innerHTML = `<span class="ms-n">${esc(s.n)}</span>` + svg(s.ic,"") +
         (s.s ? `<span class="ms-s">${esc(s.s)}</span>` : "");
       reg(b, s, row.stages, section);
       st.appendChild(b);
@@ -6072,35 +6072,54 @@ function pptxCoverSlide(){
   const links = coverLinks();
   const slide = { media:[], hlinks:links.map(r=> r.url) };
   const ink = expInk(), mut = expMuted(), brand = expBrand();
-  let id = 2, y = Math.round(SH * 0.22);
+  let id = 2, y = Math.round(SH * 0.20);
   const parts = [];
+  const lava = brand;                            /* the Databricks brand accent */
+  const rectXml = (rx, ry, rw, rh, hex)=>{
+    const rid = id++;
+    return '<p:sp><p:nvSpPr><p:cNvPr id="' + rid + '" name="r' + rid + '"/>' +
+      '<p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm>' +
+      '<a:off x="' + Math.round(rx) + '" y="' + Math.round(ry) + '"/>' +
+      '<a:ext cx="' + Math.round(rw) + '" cy="' + Math.round(rh) + '"/></a:xfrm>' +
+      '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="' +
+      hex.replace("#", "").toUpperCase() + '"/></a:solidFill><a:ln><a:noFill/></a:ln>' +
+      '</p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>';
+  };
   const line = (size, bold, colour, s, link, rows)=>{
     const h = Math.round(size * 1.5 * (rows || 1) * PT);
     parts.push(pptxCoverText(id++, M, y, W, h, size, bold, colour, s, link));
     y += h;
   };
-  line(13, false, mut, "Databricks Data Intelligence Platform");
-  y += Math.round(6 * PT);
-  line(33, true, ink, docTitle());
+  /* a full-height brand bar down the left edge is the cover's colour anchor */
+  parts.push(rectXml(0, 0, Math.round(SW * 0.014), SH, lava));
+  /* the kicker rides in a filled brand tab, white on lava, so the cover opens on
+     colour rather than a line of grey type */
+  const kickH = Math.round(21 * PT), kickW = Math.round(W * 0.46);
+  parts.push(rectXml(M, y, kickW, kickH, lava));
+  parts.push(pptxCoverText(id++, M + Math.round(9 * PT), y + Math.round(5 * PT),
+    kickW - Math.round(18 * PT), kickH - Math.round(8 * PT), 11, true, "#ffffff",
+    "DATABRICKS DATA INTELLIGENCE PLATFORM"));
+  y += kickH + Math.round(16 * PT);
+  /* one row unless the title is wide enough to wrap, so a short title sits tight
+     above the rule instead of leaving the gap a fixed two-row box would open */
+  const titleRows = pdfTextW(docTitle(), 32) > (W / PT - 24) ? 2 : 1;
+  line(32, true, ink, docTitle(), null, titleRows);
   y += Math.round(4 * PT);
+  /* a short thick brand rule under the title: a deliberate accent, not a divider */
+  parts.push(rectXml(M, y, Math.round(W * 0.15), Math.round(4 * PT), lava));
+  y += Math.round(20 * PT);
   line(14, false, mut, coverMeta());
   /* the same sentence the board carries above the top band, so the cover says what
      this architecture is for and not only which industry it belongs to */
-  if(ARCH.top && ARCH.top.sub) line(14, false, mut, ARCH.top.sub, null, 2);
-  y += Math.round(10 * PT);
-  parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="rule"/>' +
-    '<p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr>' +
-    '<a:xfrm><a:off x="' + M + '" y="' + y + '"/>' +
-    '<a:ext cx="' + W + '" cy="' + Math.round(0.7 * PT) + '"/></a:xfrm>' +
-    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="' +
-    mut.replace("#", "").toUpperCase() + '"><a:alpha val="45000"/></a:srgbClr>' +
-    "</a:solidFill><a:ln><a:noFill/></a:ln></p:spPr>" +
-    "<p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>");
-  y += Math.round(18 * PT);
+  if(ARCH.top && ARCH.top.sub) line(13, false, mut, ARCH.top.sub, null, 2);
+  y += Math.round(22 * PT);
+  /* each link is a brand marker plus its label as the hyperlink, and no raw URL
+     on the slide: the label text is what the reader clicks */
   links.forEach((row, i)=>{
-    line(11, true, mut, row.label);
-    line(14, false, brand, row.url, pptxSlideRel(slide, "link", i));
-    y += Math.round(10 * PT);
+    parts.push(rectXml(M, y + Math.round(3 * PT), Math.round(10 * PT), Math.round(10 * PT), lava));
+    parts.push(pptxCoverText(id++, M + Math.round(18 * PT), y, W - Math.round(18 * PT),
+      Math.round(21 * PT), 14, true, lava, row.label, pptxSlideRel(slide, "link", i)));
+    y += Math.round(24 * PT);
   });
   /* bottom right, the same corner it sits in on the canvas */
   parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="credit"/>' +
@@ -6267,35 +6286,47 @@ async function boardPdfBlob(){
     x.toFixed(2) + " " + y.toFixed(2) + " Td (" + pdfStr(s) + ") Tj ET\n";
 
   /* ---- page 1: the cover ---- */
-  const CM = 54;                                     /* cover margin, points */
+  const CM = 60;                                     /* cover margin, points */
   const links = coverLinks();
   const cover = [];
   const annots = [];
+  const lava = brand;                            /* the Databricks brand accent */
   cover.push(rg(expBg()) + " rg 0 0 " + PW + " " + PH + " re f\n");
-  let y = PH - 132;
-  cover.push(txt("F2", 11, mut, CM, y, "Databricks Data Intelligence Platform"));
-  y -= 40;
-  cover.push(txt("F1", 27, ink, CM, y, docTitle()));
+  /* a full-height brand bar down the left edge turns a plain page into a cover */
+  cover.push(lava + " rg 0 0 14 " + PH + " re f\n");
+  let y = PH - 150;
+  /* the kicker rides in a filled brand tab, white on lava, so the cover opens on
+     colour rather than a line of grey type */
+  const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM";
+  const kw = pdfTextW(kick, 10) + 26;
+  cover.push(lava + " rg " + CM + " " + (y - 6).toFixed(2) + " " + kw.toFixed(2) + " 23 re f\n");
+  cover.push(txt("F1", 10, "1 1 1", CM + 13, y, kick));
+  y -= 50;
+  /* the title wraps rather than running off the page on the longer cloud names */
+  const tls = pdfWrap(docTitle(), 28, PW - CM * 2 - 20);
+  tls.forEach((ln, i)=>{ if(i) y -= 33; cover.push(txt("F1", 28, ink, CM, y, ln)); });
+  /* a short thick brand rule under the title: a deliberate accent, not a divider */
+  y -= 16;
+  cover.push(lava + " rg " + CM + " " + y.toFixed(2) + " 120 4 re f\n");
   y -= 26;
-  cover.push(txt("F2", 11.5, mut, CM, y, coverMeta()));
-  const sub = ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 11.5, PW - CM * 2).slice(0, 2) : [];
-  sub.forEach(line=>{ y -= 17; cover.push(txt("F2", 11.5, mut, CM, y, line)); });
-  y -= 26;
-  cover.push(mut + " RG 0.7 w " + CM + " " + y.toFixed(2) + " m " +
-    (PW - CM) + " " + y.toFixed(2) + " l S\n");
+  cover.push(txt("F2", 12, mut, CM, y, coverMeta()));
+  const sub = ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 12, PW - CM * 2 - 20).slice(0, 2) : [];
+  sub.forEach(line=>{ y -= 18; cover.push(txt("F2", 12, mut, CM, y, line)); });
+  y -= 44;
+  /* each link is a brand marker plus its label as the hyperlink, and no raw URL
+     on the page: the label text is what the reader clicks */
   links.forEach(row=>{
-    y -= 30;
-    cover.push(txt("F1", 9, mut, CM, y, row.label));
-    y -= 17;
-    cover.push(txt("F2", 11.5, brand, CM, y, row.url));
-    /* The rectangle is sized from the measured string rather than the column so
-       the hand cursor appears over the URL and not over the empty half of the
-       page beside it. */
-    const lw = pdfTextW(row.url, 11.5);
+    cover.push(lava + " rg " + CM + " " + (y - 1).toFixed(2) + " 9 9 re f\n");
+    const lx = CM + 20;
+    cover.push(txt("F1", 13, ink, lx, y, row.label));
+    const lw = pdfTextW(row.label, 13);
+    cover.push(lava + " RG 0.9 w " + lx.toFixed(2) + " " + (y - 3).toFixed(2) + " m " +
+      (lx + lw).toFixed(2) + " " + (y - 3).toFixed(2) + " l S\n");
     annots.push("<</Type/Annot/Subtype/Link/Border[0 0 0]/Rect[" +
-      (CM - 2).toFixed(2) + " " + (y - 4).toFixed(2) + " " +
-      (CM + lw + 2).toFixed(2) + " " + (y + 12).toFixed(2) +
+      lx.toFixed(2) + " " + (y - 5).toFixed(2) + " " +
+      (lx + lw + 2).toFixed(2) + " " + (y + 13).toFixed(2) +
       "]/A<</Type/Action/S/URI/URI(" + pdfStr(row.url) + ")>>>>");
+    y -= 34;
   });
   const cred = creditText();
   cover.push(txt("F2", 9, mut, PW - CM - pdfTextW(cred, 9), CM, cred));
