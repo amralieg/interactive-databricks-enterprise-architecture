@@ -29,12 +29,12 @@ INDUSTRIES_BATCH_OIL_GAS = {
             "src": [
                 {"box": "Production & SCADA", "ic": "iot", "tiles": [
                         tile("AVEVA PI System", "iot", "Separator pressures, flow rates and compressor tags from upstream and midstream historians.", "aveva-pi"),
-                        tile("Schlumberger OFM", "stream", "Well tests, decline curves and reservoir models the subsurface team updates.", "slb-ofm"),
+                        tile("SLB OFM", "stream", "Well tests, decline curves and reservoir models the subsurface team updates.", "slb-ofm"),
                         tile("Honeywell Experion", "gauge", "DCS alarms, setpoints and batch sequences from refining units.", "honeywell-exp"),
                     ]},
                 {"box": "Midstream & Logistics", "ic": "stream", "tiles": [
                         tile("Quorum PGAS", "erp", "Pipeline nominations, allocations and imbalance statements.", "quorum-pgas"),
-                        tile("OpenText VIM", "sheet", "Vessel scheduling, terminal inventory and marine demurrage events.", "opentext-vim"),
+                        tile("Veson IMOS", "sheet", "Marine chartering, voyage scheduling and demurrage tracking for cargo movements and terminal calls.", "opentext-vim"),
                         tile("Kpler Cargo Tracking", "globe", "Tanker positions, port calls and cargo lineage for export marketing.", "kpler"),
                     ]},
                 {"box": "Commercial & Trading", "ic": "market", "tiles": [
@@ -151,7 +151,7 @@ INDUSTRIES_BATCH_OIL_GAS = {
                     problem="Declining wells and lift problems show up in daily reports long after production is lost, and downhole signals sit in historians nobody joins to the well test and reservoir picture.",
                     who="Upstream Operations",
                     how="Separator and downhole tags land in Lakehouse//RT beside well tests, then decline and lift models scored in Model Serving surface the intervention on the Production Control screen.",
-                    comps=["Production Control", "AVEVA PI System", "Schlumberger OFM", "Lakehouse//RT", "Model Serving"],
+                    comps=["Production Control", "AVEVA PI System", "SLB OFM", "Lakehouse//RT", "Model Serving"],
                     stories=[
                         ["Devon Energy reimagines analytics and ML for oil & gas exploration", "https://www.databricks.com/customers/devon-energy"],
                         ["ARC Resources optimises drilling performance with real-time data", "https://www.databricks.com/blog/2022/05/24/arc-uses-a-lakehouse-architecture-for-real-time-data-insights-that-optimize-drilling-performance-and-lower-carbon-emissions.html"],
@@ -177,7 +177,7 @@ INDUSTRIES_BATCH_OIL_GAS = {
                     problem="Vessel positions, terminal inventory and production plans live in separate systems, so cargo slots slip and demurrage runs up before anyone sees the whole export picture.",
                     who="Midstream & Terminals",
                     how="Cargo tracks and terminal feeds conform on Delta Lake, optimisation models scored in Model Serving align slots, and schedulers work the plan from the Logistics Console.",
-                    comps=["Logistics Console", "Kpler Cargo Tracking", "OpenText VIM", "Model Serving", "AI/BI"]),
+                    comps=["Logistics Console", "Kpler Cargo Tracking", "Veson IMOS", "Model Serving", "AI/BI"]),
                 uc("Trading Optimisation", "Commercial", "market", "Physical and hedge books reconciled before exposure limits breach.",
                     problem="Physical deals, paper hedges and benchmark curves are marked in different tools, so desks see exposure late and a limit breach surfaces only after the position has moved.",
                     who="Trading & Marketing",
@@ -204,7 +204,7 @@ INDUSTRIES_BATCH_OIL_GAS = {
                     problem="Production actuals, well tests and reservoir models are reconciled by hand at booking time, so reserves estimates lag the field and the audit trail behind a booking is thin.",
                     who="Upstream Operations",
                     how="Well test and accounting data conform on Delta Lake under Unity Catalog against subsurface models, and reconciled balances surface for the subsurface team on the Production Control screen.",
-                    comps=["Production Control", "Schlumberger OFM", "SAP IS-Oil", "Delta Lake", "Unity Catalog"],
+                    comps=["Production Control", "SLB OFM", "SAP IS-Oil", "Delta Lake", "Unity Catalog"],
                     stories=[
                         ["Devon Energy processes a full well in hours across geophysical and seismic data", "https://www.databricks.com/customers/devon-energy"],
                     ]),
@@ -225,10 +225,10 @@ INDUSTRIES_BATCH_OIL_GAS = {
         ),
         "sources": {
             "aveva-pi": {"t": "AVEVA PI System", "u": "https://www.aveva.com/en/products/pi-system/"},
-            "slb-ofm": {"t": "Schlumberger OFM", "u": "https://www.slb.com/"},
+            "slb-ofm": {"t": "SLB OFM", "u": "https://www.slb.com/"},
             "honeywell-exp": {"t": "Honeywell Experion PKS", "u": "https://process.honeywell.com/us/en/products/control-and-supervision/experion-pks"},
             "quorum-pgas": {"t": "Quorum PGAS", "u": "https://www.quorumsoftware.com/solutions/midstream/"},
-            "opentext-vim": {"t": "OpenText Vessel Information Management", "u": "https://www.opentext.com/products/vessel-information-management"},
+            "opentext-vim": {"t": "Veson IMOS", "u": "https://veson.com/imos/"},
             "kpler": {"t": "Kpler", "u": "https://www.kpler.com/"},
             "ion-endur": {"t": "ION Openlink Endur", "u": "https://iongroup.com/commodities/"},
             "sap-is-oil": {"t": "SAP IS-Oil", "u": "https://www.sap.com/industries/oil-gas.html"},

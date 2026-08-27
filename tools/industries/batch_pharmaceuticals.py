@@ -33,7 +33,7 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                         tile("Oracle Clinical One", "db", "Unified clinical data hub for trials across modalities and regions.", "oracle-clinical"),
                     ]},
                 {"box": "GxP Manufacturing", "ic": "stream", "tiles": [
-                        tile("Siemens Opcenter Pharma", "stream", "Electronic batch records, dispensing and equipment logs from GMP suites.", "opcenter-pharma"),
+                        tile("Werum PAS-X", "stream", "Electronic batch records, weighing and dispensing, and review by exception across GMP suites.", "opcenter-pharma"),
                         tile("Rockwell PharmaSuite", "iot", "Packaging line events, serialization and line clearance records.", "pharmasuite"),
                         tile("SAP S/4HANA PP", "erp", "Production orders, material consumption and co-product yields.", "sap-s4"),
                     ]},
@@ -176,7 +176,7 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                     problem="When a quality hold hits, tracing raw-material lots to finished doses across MES, LIMS and ERP takes days of manual reconciliation, and every hour the batch sits is cost and supply risk.",
                     who="Mfg & Supply",
                     how="Batch records, LIMS results and material moves are conformed on Delta Lake under Unity Catalog, so genealogy from raw lot to finished dose resolves in minutes in the Batch Release Cockpit.",
-                    comps=["Batch Release Cockpit", "Siemens Opcenter Pharma", "LabWare LIMS", "SAP S/4HANA PP", "Unity Catalog", "Delta Lake"],
+                    comps=["Batch Release Cockpit", "Werum PAS-X", "LabWare LIMS", "SAP S/4HANA PP", "Unity Catalog", "Delta Lake"],
                     stories=[
                         ["Managing recalls with barcode traceability in the data lakehouse", "https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake"],
                         ["How TetraScience accelerates biopharma with production-ready data", "https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence"],
@@ -185,7 +185,7 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                     problem="Batch yield swings with process parameters nobody can correlate in time, so investigations run weeks after a low-yield lot and the same loss repeats on the next campaign.",
                     who="Mfg & Supply",
                     how="Historian and LIMS history feed yield models in Feature Store and Model Serving, with runs tracked in MLflow, so process parameters are scored against yield before the next batch runs.",
-                    comps=["Batch Release Cockpit", "Siemens Opcenter Pharma", "LabWare LIMS", "Feature Store", "Model Serving", "MLflow"],
+                    comps=["Batch Release Cockpit", "Werum PAS-X", "LabWare LIMS", "Feature Store", "Model Serving", "MLflow"],
                     stories=[
                         ["Smart Manufacturing Command Center by Tredence and Databricks", "https://www.databricks.com/company/partners/consulting-and-si/partner-solutions/tredence-smart-manufacturing-command-center"],
                         ["Agents for production lines: trusted decisions in real time", "https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time"],
@@ -240,7 +240,7 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
             "medidata-rave": {"t": "Medidata Rave EDC", "u": "https://www.medidata.com/en/clinical-trial-products/clinical-data-management/"},
             "veeva-ctms": {"t": "Veeva Vault CTMS", "u": "https://www.veeva.com/products/vault-ctms/"},
             "oracle-clinical": {"t": "Oracle Clinical One", "u": "https://www.oracle.com/life-sciences/clinical-trials/"},
-            "opcenter-pharma": {"t": "Siemens Opcenter Pharma", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
+            "opcenter-pharma": {"t": "Körber Werum PAS-X MES", "u": "https://www.koerber-pharma.com/en/solutions/software/werum-pas-x-mes-suite"},
             "pharmasuite": {"t": "Rockwell PharmaSuite", "u": "https://www.rockwellautomation.com/en-us/industries/life-sciences.html"},
             "sap-s4": {"t": "SAP S/4HANA", "u": "https://www.sap.com/products/erp/s4hana.html"},
             "labware": {"t": "LabWare LIMS", "u": "https://www.labware.com/"},

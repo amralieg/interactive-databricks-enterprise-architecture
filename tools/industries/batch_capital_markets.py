@@ -96,7 +96,7 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "murex",
                         ),
                         tile(
-                            "Calypso (Adenza)",
+                            "Nasdaq Calypso",
                             "gauge",
                             "Capital-markets and treasury platform for derivatives pricing, collateral and risk on the sell side.",
                             "calypso",
@@ -292,6 +292,11 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             ["MLflow", "Backtests and models versioned, tracked and reproducible for audit."],
                             ["Feature Store", "Factor and signal libraries shared across research and production."],
                         ],
+                        sub=[
+                            ["Signal Developers", "research notebooks turned into production signals the desk trades on."],
+                            ["Backtest Engineers", "reproducible backtests and versioned models for audit."],
+                            ["Quant Library Owners", "the factor and pricing libraries PMs and the desk run against."],
+                        ],
                     ),
                     biz(
                         "Market Data Engineers",
@@ -302,15 +307,25 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             ["Lakeflow Designer", "Declarative pipelines with expectations on price and reference feeds."],
                             ["Lakewatch", "Freshness on the tick and reference tables the desks open at the bell."],
                         ],
+                        sub=[
+                            ["Ingestion Engineers", "Bloomberg, LSEG and ICE feeds and FIX order flow landed on time."],
+                            ["Pipeline Engineers", "Bronze-to-Silver conforming and expectations on price and reference feeds."],
+                            ["Platform Reliability", "freshness of the tick and reference tables the desks open at the bell."],
+                        ],
                     ),
                     biz(
                         "Risk Systems Engineers",
                         "Model Serving",
-                        "Wire Murex and Calypso valuations, Monte Carlo VaR and stress engines into governed pipelines so risk numbers are timely, explainable and reproducible.",
+                        "Wire Murex and Nasdaq Calypso valuations, Monte Carlo VaR and stress engines into governed pipelines so risk numbers are timely, explainable and reproducible.",
                         [
                             ["Model Serving", "VaR, stress and pricing models scored on demand at book scale."],
                             ["Apache Spark", "Distributed Monte Carlo and revaluation across the full position set."],
                             ["Unity Catalog", "Lineage from raw feed to reported risk number for the regulator."],
+                        ],
+                        sub=[
+                            ["Risk Platform Engineers", "pricing and valuation engines wired into governed pipelines."],
+                            ["Compute Engineers", "distributed Monte Carlo VaR and revaluation across the full position set."],
+                            ["Model Ops", "risk numbers timely, explainable and reproducible for the regulator."],
                         ],
                     ),
                 ],
@@ -478,7 +493,7 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                     "VaR, stress, sensitivities and counterparty exposure across every book, re-run intraday instead of waiting for an overnight batch that is stale by the open.",
                     problem="Risk is aggregated overnight in engines that cannot be re-run intraday, so a shock is seen the next morning and limit breaches are explained after the loss.",
                     who="Risk Management",
-                    how="Murex and Calypso valuations and position feeds are conformed to Gold; VaR, stress and counterparty models are scored in Model Serving and read in the Risk Cockpit and AI/BI.",
+                    how="Murex and Nasdaq Calypso valuations and position feeds are conformed to Gold; VaR, stress and counterparty models are scored in Model Serving and read in the Risk Cockpit and AI/BI.",
                     comps=["Risk Cockpit", "Murex MX.3", "Model Serving", "MSCI Barra", "AI/BI"],
                     stories=[
                         ["S&P Global unifies data intelligence", "https://www.databricks.com/customers/sp-global"],
@@ -592,7 +607,7 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
             "ice-data": {"t": "ICE Data Services", "u": "https://www.ice.com/market-data"},
             "factset": {"t": "FactSet", "u": "https://www.factset.com/"},
             "murex": {"t": "Murex MX.3", "u": "https://www.murex.com/"},
-            "calypso": {"t": "Calypso (Adenza/Nasdaq)", "u": "https://en.wikipedia.org/wiki/Calypso_Technology"},
+            "calypso": {"t": "Nasdaq Calypso (Adenza)", "u": "https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/middle-office-trading-risk"},
             "msci-barra": {"t": "MSCI Barra factor models", "u": "https://www.msci.com/our-solutions/analytics/multi-asset-class-factor-models"},
             "numerix": {"t": "Numerix analytics", "u": "https://www.numerix.com/"},
             "dtcc": {"t": "DTCC clearing and settlement", "u": "https://www.dtcc.com/"},

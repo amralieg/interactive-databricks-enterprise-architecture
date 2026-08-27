@@ -33,7 +33,7 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                     "tiles": [
                         tile("John Deere Operations Center", "iot", "Machine telemetry, as-applied maps and field boundaries from connected equipment.", "john-deere"),
                         tile("Climate FieldView", "iot", "Planting, spraying and harvest layers with hybrid performance by field.", "climate-fieldview"),
-                        tile("Granular FMIS", "sheet", "Field plans, input applications and profitability by acre.", "granular"),
+                        tile("Traction Ag", "sheet", "Field plans, input tracking and profit and loss by field for growers.", "granular"),
                     ],
                 },
                 {
@@ -42,7 +42,7 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                     "tiles": [
                         tile("SAP S/4HANA Agribusiness", "erp", "Grain contracts, settlements and inventory across elevators and processing.", "sap-agri"),
                         tile("Oracle Food & Beverage", "erp", "Procurement, production and lot traceability for processors.", "oracle-fb"),
-                        tile("Bushel ERP", "erp", "Co-op accounting, patronage and grain accounting.", "bushel"),
+                        tile("Agvance (SSI)", "erp", "Co-op grain accounting, patronage and settlements for ag retailers.", "agvance"),
                     ],
                 },
                 {
@@ -50,7 +50,7 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                     "ic": "market",
                     "tiles": [
                         tile("CME Group Futures", "market", "Corn, soybean and wheat futures, options and settlement prices.", "cme"),
-                        tile("DTN Prophet", "market", "Cash bids, basis and local elevator prices by location.", "dtn"),
+                        tile("DTN ProphetX", "market", "Cash bids, basis and local elevator prices by location.", "dtn"),
                         tile("Barchart cmdty", "chart", "Historical cash and futures curves for hedging analysis.", "barchart"),
                     ],
                 },
@@ -185,7 +185,7 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                 problem="Basis is tracked on spreadsheets against futures and a dozen local bids, so positions and hedge exposure lag the market and a bad basis call quietly erodes margin on every bushel.",
                 who="Grain Merchandising",
                 how="Futures, cash bids and position feeds land in Lakehouse//RT and basis-forecast models scored in Model Serving surface position and exposure in the Merchandising Desk.",
-                comps=["Merchandising Desk", "Lakehouse//RT", "Model Serving", "CME Group Futures", "DTN Prophet"]),
+                comps=["Merchandising Desk", "Lakehouse//RT", "Model Serving", "CME Group Futures", "DTN ProphetX"]),
              uc("Harvest Logistics", "Operations", "stream", "Truck routing and elevator scheduling to minimize wait and shrink.",
                 problem="At harvest, trucks, elevators and dryers are coordinated by phone, so queues build, grain shrinks in the wait and no one sees where the network is bottlenecked until it is too late.",
                 who="Co-op Executive Board",
@@ -213,7 +213,7 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                 problem="Seed and chemical spend is reconciled against plan long after the season, so overspend on an acre or a hybrid is found at close rather than while there is still time to change the order.",
                 who="Finance & Risk",
                 how="Application records, ERP purchases and yield outcomes are conformed on Delta Lake and tracked in AI/BI, so cost per bushel is measured against plan by field, hybrid and input.",
-                comps=["Granular FMIS", "SAP S/4HANA Agribusiness", "Delta Lake", "AI/BI", "Genie One"],
+                comps=["Traction Ag", "SAP S/4HANA Agribusiness", "Delta Lake", "AI/BI", "Genie One"],
                 stories=[["UPL optimizes supply chain operations with demand forecasting", "https://www.databricks.com/customers/upl"],
                          ["FMC optimizes harvests with data and AI", "https://www.databricks.com/customers/fmc-corporation"]]),
              uc("Weather Risk Alerts", "Risk", "stream", "Frost, drought and spray window alerts pushed to operations.",
@@ -226,15 +226,16 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                 problem="Patronage pools are modeled in spreadsheets against provisional volumes, so the board reaches fiscal close without a reliable view of what can be returned to grower-members.",
                 who="Finance & Risk",
                 how="Grain accounting, volume and margin data are conformed on Delta Lake and modeled in AI/BI, so patronage pools and member returns can be scenario-tested before fiscal close.",
-                comps=["Bushel ERP", "Delta Lake", "AI/BI", "Genie One", "Unity Catalog"])],
+                comps=["Agvance (SSI)", "Delta Lake", "AI/BI", "Genie One", "Unity Catalog"])],
         ),
         "sources": {
             "john-deere": {"t": "John Deere Operations Center", "u": "https://www.deere.com/en/technology-products/precision-ag-technology/operations-center/"},
             "climate-fieldview": {"t": "Climate FieldView", "u": "https://www.climate.com/"},
-            "granular": {"t": "Granular", "u": "https://granular.ag/"},
+            "granular": {"t": "Traction Ag", "u": "https://tractionag.com"},
             "sap-agri": {"t": "SAP Agribusiness", "u": "https://www.sap.com/industries/agribusiness.html"},
             "oracle-fb": {"t": "Oracle Food and Beverage", "u": "https://www.oracle.com/food-beverage/"},
             "bushel": {"t": "Bushel", "u": "https://bushelpowered.com/"},
+            "agvance": {"t": "Agvance (SSI)", "u": "https://www.agvance.net"},
             "cme": {"t": "CME Group", "u": "https://www.cmegroup.com/markets/agriculture.html"},
             "dtn": {"t": "DTN", "u": "https://www.dtn.com/"},
             "barchart": {"t": "Barchart", "u": "https://www.barchart.com/cmdty"},

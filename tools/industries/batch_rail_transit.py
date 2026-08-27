@@ -38,7 +38,7 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                 ]},
                 {"box": "Dispatch & Network Ops", "ic": "stream", "tiles": [
                     tile("RailConnect TMS", "stream", "Wabtec transportation management: train sheets, crew calling, waybills and movement authority, the operational backbone of a freight railroad.", cite=["wabtec"]),
-                    tile("Alstom Iconis", "gauge", "Integrated traffic management and control centre: dispatcher decisions, conflict detection and network-wide movement supervision.", cite=["alstom-sig"]),
+                    tile("Alstom Onvia", "gauge", "Integrated traffic management and control centre: dispatcher decisions, conflict detection and network-wide movement supervision.", cite=["alstom-sig"]),
                     tile("AVL / GPS Telemetry", "iot", "Automatic vehicle location and GPS pings from locomotives and transit vehicles, the ground truth for position, speed and run adherence."),
                 ]},
                 {"box": "Fare & Ridership", "ic": "market", "tiles": [
@@ -96,6 +96,7 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                     sub=[
                         ["Rolling-stock engineering", "component lifing and predicted removals across the fleet."],
                         ["Infrastructure & track", "track geometry, structures and wayside asset condition."],
+                        ["Maintenance planning", "depot capacity, spares and the planned-work window against fleet availability."],
                     ],
                     ucs=["Predictive Maintenance", "Track Inspection", "Energy & Traction Opt"]),
                 biz("Revenue & Fares", "AI/BI",
@@ -108,6 +109,7 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                     sub=[
                         ["Revenue & demand", "ridership forecasting, fares and farebox recovery."],
                         ["Fare collection", "AFC integrity, reconciliation and revenue protection."],
+                        ["Commercial planning", "fare policy, concession schemes and origin-destination demand by line."],
                     ],
                     ucs=["Ridership Forecast", "Revenue Protection", "Live Passenger Info"]),
                 biz("Safety & Reg", "Unity Catalog",
@@ -120,6 +122,7 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                     sub=[
                         ["Safety assurance", "precursor analysis on signaling, PTC and near-miss data."],
                         ["Regulatory reporting", "punctuality, safety and emissions submissions to the authority."],
+                        ["Incident investigation", "root-cause analysis and corrective actions after a SPAD or incident."],
                     ],
                     ucs=["Safety Event Analytics", "Track Inspection", "Predictive Maintenance"]),
             ], [

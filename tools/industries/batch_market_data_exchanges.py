@@ -295,6 +295,11 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             ["Auto Loader", "Continuous ingestion of multicast and file feeds into Bronze with schema evolution."],
                             ["Lakewatch", "Freshness on the tick and reference tables every desk and subscriber depends on."],
                         ],
+                        sub=[
+                            ["Ingestion Engineers", "ITCH and OUCH multicast, OPRA and consolidated-tape feeds captured off the wire on time."],
+                            ["Pipeline Engineers", "depth and trade tables conformed with expectations on every tick feed."],
+                            ["Platform Reliability", "freshness of the tick and reference tables every desk and subscriber depends on."],
+                        ],
                     ),
                     biz(
                         "Index Quants",
@@ -305,6 +310,11 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             ["MLflow", "Every index calculation, restatement and backtest versioned and reproducible for audit."],
                             ["Model Serving", "Index levels and rebalance impact computed in the live calculation path."],
                         ],
+                        sub=[
+                            ["Calculation Engineers", "index methodology turned into production calculation and rebalancing."],
+                            ["Backtest Engineers", "index restatements and backtests versioned and reproducible for audit."],
+                            ["Reference Data Engineers", "constituent, identifier and corporate-actions data conformed for calculation."],
+                        ],
                     ),
                     biz(
                         "App Developers",
@@ -314,6 +324,11 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             ["Apps", "Operational screens with no separate web tier to run or secure."],
                             ["Lakebase", "Serverless Postgres for entitlement, case and index-publication state with governed writes."],
                             ["Agent Bricks", "Agents that draft a surveillance case or a feed-outage summary against governed tools."],
+                        ],
+                        sub=[
+                            ["Full-Stack Engineers", "the market-quality, feed-operations and index screens the venue works in."],
+                            ["Agent Developers", "agents that draft a surveillance case or feed-outage summary on governed tools."],
+                            ["Integration Engineers", "entitlement, case and index-publication writeback into venue systems."],
                         ],
                     ),
                 ],

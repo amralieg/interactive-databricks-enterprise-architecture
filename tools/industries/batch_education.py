@@ -30,7 +30,7 @@ INDUSTRIES_BATCH_EDUCATION = {
                 {"box": "Student Information", "ic": "erp", "tiles": [
                     tile("Ellucian Banner", "erp", "Student information system of record: enrollments, registrations, grades, degree progress and transcript history.", "ellucian-banner"),
                     tile("Workday Student", "erp", "Cloud SIS for academic records, advising holds, program completion and residency rules.", "workday-student"),
-                    tile("Oracle PeopleSoft Campus", "db", "Campus solutions for admissions, records, financials and HR shared across the institution.", "peoplesoft-campus")
+                    tile("PowerSchool SIS", "erp", "Dominant K-12 student information system: enrollments, attendance, grades and state reporting across districts.", "peoplesoft-campus")
                 ]},
                 {"box": "Learning & Content", "ic": "notebook", "tiles": [
                     tile("Canvas LMS", "notebook", "Course shells, assignments, discussion activity and outcome mastery data from the primary learning environment.", "canvas-lms"),
@@ -236,7 +236,7 @@ INDUSTRIES_BATCH_EDUCATION = {
         "sources": {
             "ellucian-banner": {"t": "Ellucian Banner SIS", "u": "https://www.ellucian.com/solutions/ellucian-banner"},
             "workday-student": {"t": "Workday Student", "u": "https://www.workday.com/en-us/products/student.html"},
-            "peoplesoft-campus": {"t": "Oracle PeopleSoft Campus Solutions", "u": "https://docs.oracle.com/en/applications/peoplesoft/campus-solutions/index.html"},
+            "peoplesoft-campus": {"t": "PowerSchool SIS", "u": "https://www.powerschool.com/"},
             "canvas-lms": {"t": "Instructure Canvas LMS", "u": "https://www.instructure.com/canvas"},
             "blackboard": {"t": "Anthology Blackboard Learn", "u": "https://www.anthology.com/products/teaching-and-learning/learning-effectiveness/blackboard"},
             "panopto": {"t": "Panopto video platform", "u": "https://www.panopto.com/"},

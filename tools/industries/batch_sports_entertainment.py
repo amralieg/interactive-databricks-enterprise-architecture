@@ -29,7 +29,7 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
             "src": [
                 {"box": "Ticketing & CRM", "ic": "erp", "tiles": [
                     tile("Ticketmaster Archtics", "erp", "Primary ticketing, seat inventory, pricing and scan data from every event.", "ticketmaster"),
-                    tile("Salesforce Sports Cloud", "custlake", "Fan profiles, membership tiers, service cases and campaign responses.", "sf-sports"),
+                    tile("Salesforce Marketing Cloud", "custlake", "Fan profiles, membership tiers, service cases and campaign responses.", "sf-sports"),
                     tile("SeatGeek Enterprise", "market", "Secondary market listings, transfer activity and dynamic pricing signals.", "seatgeek"),
                 ]},
                 {"box": "Venue Operations", "ic": "stream", "tiles": [
@@ -44,7 +44,7 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
                 ]},
                 {"box": "Sponsorship & Ads", "ic": "market", "tiles": [
                     tile("SponsorUnited", "partner", "Sponsorship inventory, activation tracking and competitive spend intelligence.", "sponsorunited"),
-                    tile("The Trade Desk Sports", "market", "Programmatic inventory across league and team digital properties.", "trade-desk"),
+                    tile("The Trade Desk", "market", "Programmatic inventory across league and team digital properties.", "trade-desk"),
                     tile("UKG Workforce", "people", "Staff scheduling, time and attendance for event and concessions crews.", "ukg"),
                 ]},
                 fed_group("League Data Marts", "Official league statistics and schedule marts queried in place under Unity Catalog."),
@@ -126,7 +126,7 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
                 problem="Membership and season-ticket data sits apart from concessions and app behaviour, so churn is only noticed at renewal when the fan has already decided to walk.",
                 who="Fan Engagement",
                 how="Ticketing, CRM and concessions signals are stitched per fan in CustomerLake, scored for churn in Model Serving and surfaced in the Fan 360 Console before the renewal window opens.",
-                comps=["Fan 360 Console", "Salesforce Sports Cloud", "CustomerLake", "Model Serving", "AI/BI"],
+                comps=["Fan 360 Console", "Salesforce Marketing Cloud", "CustomerLake", "Model Serving", "AI/BI"],
                 stories=[["NRL transforms fan experience with data", "https://www.databricks.com/customers/national-rugby-league"], ["Pumpjack Dataworks builds a fan data refinery on Databricks", "https://www.databricks.com/customers/pumpjack-dataworks"]]),
              uc("Concessions Optimization", "F&B", "product", "Stand staffing and menu mix tuned to expected attendance and weather.",
                 problem="Stand staffing and menu mix are planned off last season's averages, so queues build at some counters while food is wasted at others and per-cap spend suffers on game day.",
@@ -175,7 +175,7 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
         ),
         "sources": {
             "ticketmaster": {"t": "Ticketmaster Archtics", "u": "https://business.ticketmaster.com/"},
-            "sf-sports": {"t": "Salesforce Sports Cloud", "u": "https://www.salesforce.com/"},
+            "sf-sports": {"t": "Salesforce Marketing Cloud", "u": "https://www.salesforce.com/products/marketing-cloud/overview/"},
             "seatgeek": {"t": "SeatGeek Enterprise", "u": "https://seatgeek.com/enterprise"},
             "venuenext": {"t": "VenueNext", "u": "https://www.venuenext.com/"},
             "genetec": {"t": "Genetec Security Center", "u": "https://www.genetec.com/"},

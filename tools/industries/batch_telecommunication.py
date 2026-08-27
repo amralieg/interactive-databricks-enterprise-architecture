@@ -44,7 +44,7 @@ INDUSTRIES_BATCH_TELECOMMUNICATION = {
                 ]},
                 {"box": "Field Service", "ic": "people", "tiles": [
                     tile("ServiceMax FSM", "apps", "Technician dispatch, truck rolls, parts and SLA compliance.", "servicemax"),
-                    tile("ClickSoftware WFM", "sheet", "Field workforce scheduling and capacity for fibre and tower work.", "clicksoftware"),
+                    tile("Salesforce Field Service", "sheet", "Field workforce scheduling and capacity for fibre and tower work.", "clicksoftware"),
                     tile("Geotab Fleet", "iot", "Van location, job duration and fuel for field operations.", "geotab"),
                 ]},
                 {"box": "Fraud & Assurance", "ic": "gavel", "tiles": [
@@ -241,7 +241,7 @@ INDUSTRIES_BATCH_TELECOMMUNICATION = {
             "genesys": {"t": "Genesys Cloud CX", "u": "https://www.genesys.com/"},
             "medallia": {"t": "Medallia", "u": "https://www.medallia.com/"},
             "servicemax": {"t": "ServiceMax", "u": "https://www.servicemax.com/"},
-            "clicksoftware": {"t": "ClickSoftware", "u": "https://www.clicksoftware.com/"},
+            "clicksoftware": {"t": "Salesforce Field Service", "u": "https://www.salesforce.com/service/field-service-management/"},
             "geotab": {"t": "Geotab", "u": "https://www.geotab.com/"},
             "subex": {"t": "Subex revenue assurance", "u": "https://www.subex.com/"},
             "mobileum": {"t": "Mobileum fraud management", "u": "https://www.mobileum.com/"},

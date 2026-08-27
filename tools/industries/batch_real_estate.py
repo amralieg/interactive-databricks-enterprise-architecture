@@ -35,7 +35,7 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
                 {"box": "Leasing & CRM", "ic": "custlake", "tiles": [
                         tile("Salesforce Real Estate", "custlake", "Broker pipelines, tour activity and lease negotiation stages.", "sf-real-estate"),
                         tile("VTS Lease Platform", "partner", "Availabilities, proposals and executed leases for commercial assets.", "vts"),
-                        tile("Buildout Marketing", "market", "Listing collateral, floor plans and marketing performance by asset.", "buildout"),
+                        tile("ARGUS Enterprise", "chart", "Discounted cash flow valuation and hold-sell analysis for commercial assets.", "buildout"),
                     ]},
                 {"box": "Construction & Dev", "ic": "sheet", "tiles": [
                         tile("Procore Project Mgmt", "sheet", "Budgets, schedules, RFIs and daily logs from development sites.", "procore"),
@@ -227,7 +227,7 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
             "sap-rem": {"t": "SAP Real Estate Management", "u": "https://www.sap.com/products/financial-management/real-estate-management.html"},
             "sf-real-estate": {"t": "Salesforce for real estate", "u": "https://www.salesforce.com/solutions/industries/real-estate/"},
             "vts": {"t": "VTS", "u": "https://www.vts.com/"},
-            "buildout": {"t": "Buildout", "u": "https://www.buildout.com/"},
+            "buildout": {"t": "Altus ARGUS Enterprise", "u": "https://www.altusgroup.com/solutions/argus-enterprise/"},
             "procore": {"t": "Procore", "u": "https://www.procore.com/"},
             "aconex": {"t": "Oracle Aconex", "u": "https://www.oracle.com/industries/construction-engineering/aconex/"},
             "costar": {"t": "CoStar", "u": "https://www.costar.com/"},

@@ -40,7 +40,7 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
                 {"box": "Revenue Management", "ic": "chart", "tiles": [
                     tile("IDeaS G3 RMS", "market", "Forecasting, price recommendations and length-of-stay controls.", "ideas-rms"),
                     tile("Duetto GameChanger", "sheet", "Open pricing and segment-level optimisation for casinos and resorts.", "duetto"),
-                    tile("OTA Insight", "observ", "Competitive rate shopping and market demand indices.", "ota-insight"),
+                    tile("Lighthouse", "observ", "Competitive rate shopping and hotel market demand intelligence.", "ota-insight"),
                 ]},
                 {"box": "Guest & Loyalty", "ic": "custlake", "tiles": [
                     tile("Salesforce Loyalty", "custlake", "Tier status, points accrual and partner earn across the portfolio.", "sf-loyalty"),
@@ -160,7 +160,7 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
                  problem="Rates move on fixed BAR ladders set days ahead, so when demand or the compset shifts the price is already wrong and revenue managers chase it with manual overrides.",
                  who="Revenue Management",
                  how="Booking pace, PMS demand and rate-shopping feeds land in Delta Lake, are scored for optimal open pricing in Model Serving, and publish from the RMS Workbench to the channel.",
-                 comps=["RMS Workbench", "IDeaS G3 RMS", "OTA Insight", "Model Serving", "Delta Lake"],
+                 comps=["RMS Workbench", "IDeaS G3 RMS", "Lighthouse", "Model Serving", "Delta Lake"],
                  stories=[
                      ["easyJet modernises airline revenue management on Databricks", "https://www.databricks.com/customers/easyjet/lakebase"],
                      ["Amadeus optimizes travel pricing and personalization", "https://www.databricks.com/customers/amadeus"],
@@ -200,7 +200,7 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
                  problem="Rates and availability drift out of parity across OTAs, metasearch and direct, so the brand loses the buy box, pays avoidable commission and confuses guests comparing prices.",
                  who="Revenue Management",
                  how="Distribution and rate-shopping feeds stream into Lakehouse//RT, where AI Functions flag parity breaks against Delta Lake and alert revenue teams before bookings shift.",
-                 comps=["SiteMinder Channel", "OTA Insight", "Lakehouse//RT", "AI Functions", "Delta Lake"]),
+                 comps=["SiteMinder Channel", "Lighthouse", "Lakehouse//RT", "AI Functions", "Delta Lake"]),
              uc("Group Displacement", "Sales", "sheet", "Group blocks evaluated against transient opportunity cost.",
                  problem="Group blocks are quoted without knowing what transient demand they push out, so sales books low-rate rooms on high-demand dates and displaces revenue the property would have earned.",
                  who="Sales & Groups",
@@ -238,7 +238,7 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
             "siteminder": {"t": "SiteMinder", "u": "https://www.siteminder.com/"},
             "ideas-rms": {"t": "IDeaS G3 RMS", "u": "https://ideas.com/"},
             "duetto": {"t": "Duetto", "u": "https://www.duettocloud.com/"},
-            "ota-insight": {"t": "OTA Insight", "u": "https://www.otainsight.com/"},
+            "ota-insight": {"t": "Lighthouse", "u": "https://www.mylighthouse.com/"},
             "sf-loyalty": {"t": "Salesforce Loyalty Management", "u": "https://www.salesforce.com/products/loyalty-management/"},
             "medallia-guest": {"t": "Medallia for hospitality", "u": "https://www.medallia.com/industries/hospitality/"},
             "sevenrooms": {"t": "SevenRooms", "u": "https://sevenrooms.com/"},

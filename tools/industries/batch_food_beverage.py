@@ -35,7 +35,7 @@ INDUSTRIES_BATCH_FOOD_BEVERAGE = {
                 {"box": "Quality & Safety", "ic": "gavel", "tiles": [
                     tile("Veeva QualityDocs", "gavel", "Specifications, deviations, CAPA and release documentation for food safety programs.", "veeva-quality"),
                     tile("SafetyChain Plant Mgmt", "gauge", "HACCP checks, temperature logs and sanitation records from production shifts.", "safetychain"),
-                    tile("LIMS Lab Results", "db", "Microbiology, allergen and nutritional assay results tied to lot and line.")
+                    tile("LabWare LIMS", "db", "Microbiology, allergen and nutritional assay results tied to lot and line.")
                 ]},
                 {"box": "Supply & Logistics", "ic": "stream", "tiles": [
                     tile("Blue Yonder TMS", "stream", "Inbound raw material and outbound finished goods movements with carrier ETA and temperature probes.", "blue-yonder"),

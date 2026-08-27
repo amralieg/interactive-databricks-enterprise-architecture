@@ -41,7 +41,7 @@ INDUSTRIES_BATCH_PHARMACY_PBM = {
                     "ic": "market",
                     "tiles": [
                         tile("SS&C RxClaim", "market", "PBM claims adjudication: real-time NCPDP claim processing, benefit and formulary application and pharmacy payment.", "rxclaim"),
-                        tile("Gainwell Argus", "market", "Claims adjudication and pharmacy benefit administration processing NCPDP claims where Argus is the core engine.", "argus"),
+                        tile("Gainwell Rx", "market", "State Medicaid pharmacy benefit administration and point-of-sale claim processing for fee-for-service and single-PBM programs.", "argus"),
                         tile("NCPDP Claims", "stream", "Real-time NCPDP Telecommunication D.0 claim and reversal transactions from the pharmacy point of sale, the ground truth for every fill.", "ncpdp"),
                         tile("Surescripts Rx", "api", "E-prescribing, medication history and eligibility across the Surescripts network into the pharmacy and PBM estate.", "surescripts"),
                     ],
@@ -268,7 +268,7 @@ INDUSTRIES_BATCH_PHARMACY_PBM = {
             "willow": {"t": "Epic (Willow pharmacy)", "u": "https://www.epic.com/software/"},
             "frameworkltc": {"t": "SoftWriters FrameworkLTC", "u": "https://www.softwriters.com/"},
             "rxclaim": {"t": "SS&C Health (RxClaim)", "u": "https://www.ssctech.com/"},
-            "argus": {"t": "Gainwell Argus", "u": "https://www.gainwelltechnologies.com/"},
+            "argus": {"t": "Gainwell Rx Medicaid pharmacy", "u": "https://www.gainwelltechnologies.com/solutions/pharmacy-solutions/"},
             "ncpdp": {"t": "NCPDP standards", "u": "https://www.ncpdp.org/"},
             "surescripts": {"t": "Surescripts network", "u": "https://surescripts.com/"},
             "fdb": {"t": "First Databank (FDB)", "u": "https://www.fdbhealth.com/"},

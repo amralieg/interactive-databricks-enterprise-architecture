@@ -139,11 +139,11 @@ INDUSTRIES_BATCH_MEDICAL_DEVICES = {
                     [["Feature Store", "Device, lot and complaint features read identically in training and serving."],
                      ["MLflow", "Every classifier and reliability model tracked for audit and reproduction."],
                      ["Model Serving", "Complaint triage and anomaly models scored in the quality path."]]),
-                biz("Mfg Analyst", "AI/BI",
-                    "SPC, yield and OEE analytics off MES and historian data, and the certified line and process Metric Views the plant runs its shift reviews on.",
-                    [["AI/BI", "Line yield, OEE and process capability on certified Metric Views."],
-                     ["SQL Warehouses", "Shift-review dashboards on serverless warehouses."],
-                     ["Genie One", "Ask which lines missed yield target on last shift."]]),
+                biz("Application Engineers", "Apps",
+                    "Ship the CAPA Command Center, Device Fleet Monitor and Submission Workbench apps quality and service teams work in, hosted next to governed device data.",
+                    [["Apps", "Device-connectivity and complaint-handling screens with no separate web tier to secure."],
+                     ["Lakebase", "Serverless Postgres for CAPA state and disposition writes."],
+                     ["Agent Bricks", "Agents that draft complaint summaries against governed tools."]]),
             ]),
             "cons": cons_rail([
                 {"box": "BI & Productivity", "ic": "chart", "from": "bi", "tiles": [

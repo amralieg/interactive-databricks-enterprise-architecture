@@ -45,7 +45,7 @@ INDUSTRIES_BATCH_CLINICAL_TRIALS = {
                 {"box": "Labs & Imaging", "ic": "stream", "tiles": [
                     tile("LabCorp Central Lab", "stream", "Central lab results with reference ranges by visit.", "labcorp"),
                     tile("Medidata Imaging", "iot", "DICOM reads and lesion measurements for oncology.", "medidata-imaging"),
-                    tile("ERT eCOA", "apps", "Patient-reported outcomes and eDiary entries.", "ert-ecoa"),
+                    tile("Clario eCOA", "apps", "Patient-reported outcomes and eDiary entries.", "ert-ecoa"),
                 ]},
                 {"box": "Regulatory", "ic": "share", "tiles": [
                     tile("Veeva RIM", "share", "Submissions, correspondence and health authority commitments.", "veeva-rim"),
@@ -254,7 +254,7 @@ INDUSTRIES_BATCH_CLINICAL_TRIALS = {
             "who-dd": {"t": "WHO Drug Dictionary", "u": "https://www.who-umc.org/"},
             "labcorp": {"t": "Labcorp Drug Development", "u": "https://www.labcorp.com/"},
             "medidata-imaging": {"t": "Medidata Imaging", "u": "https://www.medidata.com/"},
-            "ert-ecoa": {"t": "ERT eCOA", "u": "https://www.ert.com/solutions/ecoa/"},
+            "ert-ecoa": {"t": "Clario eCOA", "u": "https://clario.com/solutions/ecoa/"},
             "veeva-rim": {"t": "Veeva RIM", "u": "https://www.veeva.com/products/regulatory/"},
             "cdisc": {"t": "CDISC", "u": "https://www.cdisc.org/"},
             "clinicaltrials-gov": {"t": "ClinicalTrials.gov", "u": "https://clinicaltrials.gov/"},

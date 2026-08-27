@@ -35,7 +35,7 @@ INDUSTRIES_BATCH_GENOMICS_BIOTECH = {
                 {"box": "Lab & Sample Mgmt", "ic": "erp", "tiles": [
                     tile("Benchling R&D Cloud", "notebook", "Sample registration, chain of custody and structured experiment records.", "benchling"),
                     tile("LabVantage LIMS", "db", "Clinical and research sample accessioning, aliquots and result release.", "labvantage"),
-                    tile("LIMS", "sheet", "Specimen tracking, storage location and stability across biobank freezers.", "samplemanager")
+                    tile("Thermo SampleManager", "sheet", "Biobank specimen tracking, storage location and stability across sample freezers.", "samplemanager")
                 ]},
                 {"box": "Clinical & Trials", "ic": "people", "tiles": [
                     tile("Medidata Rave EDC", "gavel", "Electronic case report forms, visit schedules and protocol deviations.", "medidata-rave"),

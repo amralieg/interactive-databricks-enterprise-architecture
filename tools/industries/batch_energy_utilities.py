@@ -33,7 +33,7 @@ INDUSTRIES_BATCH_ENERGY_UTILITIES = {
                     tile("Sensus FlexNet", "stream", "RF mesh AMI reads and endpoint alarms for water and electric deployments on FlexNet.", "sensus")
                 ]},
                 {"box": "SCADA & Grid Ops", "ic": "stream", "tiles": [
-                    tile("OSIsoft PI Historian", "db", "Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.", "osisoft-pi"),
+                    tile("AVEVA PI Historian", "db", "Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.", "osisoft-pi"),
                     tile("GE Vernova ADMS", "gauge", "Distribution management: fault location, switching orders and restoration state for the control centre.", "ge-adms"),
                     tile("ABB Ellipse EAM", "erp", "Enterprise asset management: work orders, inspections and equipment condition for grid plant.", "abb-ellipse")
                 ]},
@@ -188,7 +188,7 @@ INDUSTRIES_BATCH_ENERGY_UTILITIES = {
                     problem="End-of-line voltage and capacitor state sit in SCADA historians, so conservation voltage reduction is run conservatively and the energy savings on the table are never actually captured.",
                     who="Grid Operations",
                     how="PI historian analogs stream into Lakehouse//RT and CVR set-points are scored in Model Serving, written back as capacitor and regulator steps through ADMS switching orders for operator approval.",
-                    comps=["OSIsoft PI Historian", "Model Serving", "Lakehouse//RT", "ADMS Switching Orders", "AI/BI"],
+                    comps=["AVEVA PI Historian", "Model Serving", "Lakehouse//RT", "ADMS Switching Orders", "AI/BI"],
                     stories=[
                         ["Unlocking the future of energy with smart meter innovation (Southern Company)", "https://www.databricks.com/blog/unlocking-future-energy-smart-meter-innovation"],
                     ]),

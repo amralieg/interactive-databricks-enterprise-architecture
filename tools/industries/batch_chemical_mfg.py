@@ -39,7 +39,7 @@ INDUSTRIES_BATCH_CHEMICAL_MFG = {
                 ]},
                 {"box": "Quality & LIMS", "ic": "gavel", "tiles": [
                     tile("LabWare LIMS", "gavel", "Sample plans, results and CoA release.", "labware"),
-                    tile("LIMS", "product", "QC testing, stability and method compliance.", "samplemanager"),
+                    tile("Thermo SampleManager", "product", "QC testing, stability and method compliance.", "samplemanager"),
                     tile("Sphera Product Steward", "gavel", "SDS, REACH and hazard classifications.", "sphera"),
                 ]},
                 {"box": "Maintenance", "ic": "zplug", "tiles": [
@@ -244,7 +244,7 @@ INDUSTRIES_BATCH_CHEMICAL_MFG = {
             "honeywell": {"t": "Honeywell Forge", "u": "https://www.honeywell.com/us/en/products/automation"},
             "opcenter-psm": {"t": "Siemens Opcenter PSM", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
             "labware": {"t": "LabWare LIMS", "u": "https://www.labware.com/"},
-            "samplemanager": {"t": "Thermo SampleManager", "u": "https://www.thermofisher.com/samplemanager"},
+            "samplemanager": {"t": "Thermo SampleManager LIMS", "u": "https://www.thermofisher.com/us/en/home/digital-solutions/lab-informatics/lab-information-management-systems-lims/solutions/samplemanager.html"},
             "sphera": {"t": "Sphera", "u": "https://sphera.com/"},
             "maximo": {"t": "IBM Maximo", "u": "https://www.ibm.com/products/maximo"},
             "sap-pm": {"t": "SAP Plant Maintenance", "u": "https://www.sap.com/products/scm/asset-management.html"},

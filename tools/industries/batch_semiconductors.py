@@ -30,7 +30,7 @@ INDUSTRIES_BATCH_SEMICONDUCTORS = {
                 {"box": "Fab & MES", "ic": "erp", "tiles": [
                     tile("Applied E3 MES", "erp", "Manufacturing execution for wafer fabs: lot tracking, recipe management, equipment dispatch and hold/release.", "applied-e3"),
                     tile("Camstar Semiconductor", "sheet", "MES routings, BOMs, component traceability and quality holds against each lot.", "camstar"),
-                    tile("Brooks PFAB", "db", "Fab automation and material control: carrier tracking, reticle management and tool loading state.", "brooks-pfab"),
+                    tile("camLine LineWorks", "db", "Fab APC, FDC and SPC with equipment integration: run-to-run control and tool health across the wafer line.", "brooks-pfab"),
                 ]},
                 {"box": "Design & IP", "ic": "sheet", "tiles": [
                     tile("Synopsys Fusion Design", "sheet", "RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.", "synopsys-fusion"),
@@ -185,7 +185,7 @@ INDUSTRIES_BATCH_SEMICONDUCTORS = {
         "sources": {
             "applied-e3": {"t": "Applied Materials E3 MES", "u": "https://www.appliedmaterials.com/us/en/products/e3.html"},
             "camstar": {"t": "Camstar Semiconductor Suite", "u": "https://plm.sw.siemens.com/en-US/opcenter/"},
-            "brooks-pfab": {"t": "Brooks Automation PFAB", "u": "https://www.brooks.com/"},
+            "brooks-pfab": {"t": "camLine LineWorks (Elisa IndustrIQ)", "u": "https://www.elisaindustriq.com/camline/products"},
             "synopsys-fusion": {"t": "Synopsys Fusion Design Platform", "u": "https://www.synopsys.com/implementation-and-signoff.html"},
             "cadence-virtuoso": {"t": "Cadence Virtuoso", "u": "https://www.cadence.com/en_US/home/tools/custom-ic-analog-rf-design/virtuoso-studio.html"},
             "calibre": {"t": "Siemens Calibre", "u": "https://eda.sw.siemens.com/en-US/ic/calibre-design/"},

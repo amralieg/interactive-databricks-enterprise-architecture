@@ -33,7 +33,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                     tile("Primavera P6", "sheet", "Master schedules, critical path and earned value.", "primavera"),
                 ]},
                 {"box": "ERP & Job Cost", "ic": "erp", "tiles": [
-                    tile("Viewpoint Vista", "erp", "Job cost, AP, payroll and equipment billing.", "viewpoint"),
+                    tile("Trimble Viewpoint Vista", "erp", "Job cost, AP, payroll and equipment billing.", "viewpoint"),
                     tile("Sage 300 CRE", "erp", "Project accounting, change orders and WIP.", "sage-cre"),
                     tile("Oracle Aconex", "share", "Document control and transmittals.", "aconex"),
                 ]},
@@ -44,7 +44,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                 ]},
                 {"box": "Field & Equipment", "ic": "iot", "tiles": [
                     tile("Samsara Fleet", "iot", "Equipment location, utilization and DVIR.", "samsara"),
-                    tile("United Rentals Telematics", "stream", "Rental fleet hours and geofence alerts.", "united-rentals"),
+                    tile("United Rentals Total Control", "stream", "Rental fleet hours, utilization and geofence alerts.", "united-rentals"),
                     tile("OpenSpace", "iot", "360 site capture with progress and safety analytics.", "openspace"),
                 ]},
                 {"box": "Safety & Quality", "ic": "gavel", "tiles": [
@@ -55,7 +55,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
             ],
             "ing": ing_rail([
                 tile("Dodge Construction Network", "market", "Bid opportunities and project leads by geography.", "dodge"),
-                tile("RSMeans Cost Data", "chart", "Unit cost benchmarks for estimating validation.", "rsmeans"),
+                tile("IFC / COBie / BCF", "chart", "openBIM model, asset and issue exchange (buildingSMART) parsed on arrival for coordination.", "rsmeans"),
                 tile("OSHA Incident Data", "gavel", "Industry injury rates for safety benchmarking.", "osha"),
             ]),
             "ppl": ppl2([
@@ -168,7 +168,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                 problem="CPI and SPI live in the scheduler while actual cost sits in the ERP, so earned value is rebuilt by hand in spreadsheets and is stale the moment the job moves.",
                 who="Project Managers",
                 how="ERP job cost and P6 progress land through Lakeflow and conform on Delta Lake under Unity Catalog, so Project Command serves one certified CPI and SPI per job.",
-                comps=["Project Command", "Viewpoint Vista", "Primavera P6", "Lakeflow", "Unity Catalog", "Delta Lake"],
+                comps=["Project Command", "Trimble Viewpoint Vista", "Primavera P6", "Lakeflow", "Unity Catalog", "Delta Lake"],
                 stories=[
                     ["Hanwha builds an integrated data system for smarter decision making", "https://www.databricks.com/customers/hanwha-corporation"],
                 ]),
@@ -178,7 +178,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                 how="Procore COs and Sage job cost conform under Unity Catalog and Project Command tracks each pending and approved CO against forecast margin before it is signed.",
                 comps=["Project Command", "Procore", "Sage 300 CRE", "Unity Catalog", "AI/BI", "Delta Lake"],
                 stories=[
-                    ["Introducing Genie Code", "https://www.databricks.com/blog/introducing-genie-code"],
+                    ["Hanwha builds an integrated data system for smarter decision making", "https://www.databricks.com/customers/hanwha-corporation"],
                 ]),
              uc("Labor Productivity", "Field", "people", "Units per labor hour benchmarked by trade and job.",
                 problem="Daily production and labor hours are logged on paper and in field apps, so units per labor hour by trade is only known weeks later at cost close, too late to correct.",
@@ -192,7 +192,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                 problem="Owned and rented assets scatter across yards and jobsites, so idle machines keep billing while another site waits, and no one can see true utilization by asset.",
                 who="Field Superintendents",
                 how="Samsara and rental telematics stream into Lakehouse//RT and are joined to jobsite geofences on Delta Lake, ranking assets by idle time and cost in the Field Daily Log.",
-                comps=["Field Daily Log", "Samsara Fleet", "United Rentals Telematics", "Lakehouse//RT", "Delta Lake", "AI/BI"],
+                comps=["Field Daily Log", "Samsara Fleet", "United Rentals Total Control", "Lakehouse//RT", "Delta Lake", "AI/BI"],
                 stories=[
                     ["Maximizing equipment utilization through geospatial analytics", "https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics"],
                     ["Trackunit eliminates construction downtime on Databricks", "https://www.databricks.com/customers/trackunit"],
@@ -216,7 +216,7 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                 problem="Work-in-progress and cost at completion are assembled manually from ERP and field data at month-end, so revenue and margin are known too late to steer the job.",
                 who="GC President & COO",
                 how="ERP job cost and field production conform through Lakeflow on Delta Lake, and forecast-at-completion models in Model Serving publish WIP to AI/BI before close.",
-                comps=["Viewpoint Vista", "Sage 300 CRE", "Lakeflow", "Model Serving", "AI/BI", "Delta Lake"],
+                comps=["Trimble Viewpoint Vista", "Sage 300 CRE", "Lakeflow", "Model Serving", "AI/BI", "Delta Lake"],
                 stories=[
                     ["Hanwha builds an integrated data system for smarter decision making", "https://www.databricks.com/customers/hanwha-corporation"],
                 ]),
@@ -242,19 +242,19 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
             "procore": {"t": "Procore", "u": "https://www.procore.com/"},
             "autodesk-build": {"t": "Autodesk Build", "u": "https://construction.autodesk.com/products/autodesk-build/"},
             "primavera": {"t": "Oracle Primavera P6", "u": "https://www.oracle.com/construction-engineering/primavera-p6/"},
-            "viewpoint": {"t": "Viewpoint Vista", "u": "https://www.viewpoint.com/solutions/vista"},
+            "viewpoint": {"t": "Trimble Viewpoint Vista", "u": "https://www.viewpoint.com/solutions/vista"},
             "sage-cre": {"t": "Sage 300 Construction", "u": "https://www.sage.com/en-us/industry/construction/"},
             "aconex": {"t": "Oracle Aconex", "u": "https://www.oracle.com/construction-engineering/aconex/"},
             "revit": {"t": "Autodesk Revit", "u": "https://www.autodesk.com/products/revit/"},
             "navisworks": {"t": "Autodesk Navisworks", "u": "https://www.autodesk.com/products/navisworks/"},
             "itwin": {"t": "Bentley iTwin", "u": "https://www.bentley.com/software/itwin/"},
             "samsara": {"t": "Samsara", "u": "https://www.samsara.com/"},
-            "united-rentals": {"t": "United Rentals", "u": "https://www.unitedrentals.com/"},
+            "united-rentals": {"t": "United Rentals Total Control", "u": "https://www.unitedrentals.com/services/online-services/total-control"},
             "openspace": {"t": "OpenSpace", "u": "https://www.openspace.ai/"},
             "isnetworld": {"t": "ISNetworld", "u": "https://www.isnetworld.com/"},
             "hammertech": {"t": "HammerTech", "u": "https://www.hammertech.com/"},
             "dodge": {"t": "Dodge Construction Network", "u": "https://www.construction.com/"},
-            "rsmeans": {"t": "RSMeans", "u": "https://www.rsmeans.com/"},
+            "rsmeans": {"t": "buildingSMART openBIM (IFC/COBie/BCF)", "u": "https://www.buildingsmart.org/"},
             "osha": {"t": "OSHA", "u": "https://www.osha.gov/"},
         },
     },

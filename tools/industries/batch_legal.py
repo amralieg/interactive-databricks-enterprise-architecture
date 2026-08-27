@@ -35,17 +35,17 @@ INDUSTRIES_BATCH_LEGAL = {
                 {"box": "Practice & Billing", "ic": "erp", "tiles": [
                     tile("Elite 3E", "erp", "Time entries, disbursements, WIP and matter accounting for large firms.", "elite-3e"),
                     tile("Aderant Expert", "market", "Billing, collections and financial reporting across practice groups.", "aderant"),
-                    tile("Clio Manage", "apps", "Matter intake, calendaring and trust accounting for mid-market firms.", "clio")
+                    tile("Intapp", "apps", "Client and matter intake, conflicts clearance, time capture and risk management across the firm.", "clio")
                 ]},
                 {"box": "E-Discovery", "ic": "gavel", "tiles": [
                     tile("RelativityOne", "gavel", "Processing, review, analytics and production for litigation and investigations.", "relativity"),
                     tile("Everlaw", "partner", "Collaborative review, storybuilder and deposition preparation workflows.", "everlaw"),
                     tile("PACER Court Records", "api", "Federal docket filings, orders and party events from public court systems.", "pacer")
                 ]},
-                {"box": "Contracts", "ic": "sheet", "tiles": [
-                    tile("Ironclad CLM", "product", "Contract intake, negotiation workflow and obligation tracking.", "ironclad"),
-                    tile("Thomson Reuters Westlaw", "globe", "Case law, statutes and citator research with usage telemetry.", "westlaw"),
-                    tile("LexisNexis Guidance", "notebook", "Practice notes, checklists and standard clauses referenced at drafting.", "lexis")
+                {"box": "Contracts & Research", "ic": "sheet", "tiles": [
+                    tile("Ironclad CLM", "product", "Contract lifecycle management: intake, negotiation workflow and obligation tracking.", "ironclad"),
+                    tile("Thomson Reuters Westlaw", "globe", "Legal research corpus: case law, statutes and citator research with usage telemetry.", "westlaw"),
+                    tile("LexisNexis Guidance", "notebook", "Legal knowledge: practice notes, checklists and standard clauses referenced at drafting.", "lexis")
                 ]},
                 fed_group(
                     "Client ERP Contract Mart",
@@ -213,7 +213,7 @@ INDUSTRIES_BATCH_LEGAL = {
             "purview": {"t": "Microsoft Purview", "u": "https://learn.microsoft.com/en-us/purview/"},
             "elite-3e": {"t": "Elite 3E", "u": "https://www.elite.com/products/3e/"},
             "aderant": {"t": "Aderant Expert", "u": "https://www.aderant.com/products/expert/"},
-            "clio": {"t": "Clio Manage", "u": "https://www.clio.com/"},
+            "clio": {"t": "Intapp", "u": "https://www.intapp.com/legal/"},
             "relativity": {"t": "RelativityOne", "u": "https://www.relativity.com/"},
             "everlaw": {"t": "Everlaw", "u": "https://www.everlaw.com/"},
             "pacer": {"t": "PACER court records", "u": "https://pacer.uscourts.gov/"},

@@ -35,7 +35,7 @@ INDUSTRIES_BATCH_HEALTHCARE = {
                 {"box": "Revenue Cycle", "ic": "market", "tiles": [
                     tile("R1 RCM Platform", "market", "Charge capture, claims scrubbing, denials and patient collections workflow.", "r1-rcm"),
                     tile("Waystar Claims", "api", "Eligibility, prior auth status and remittance advice across payers.", "waystar"),
-                    tile("3M CodeAssist", "gavel", "CDI queries, DRG grouping and coding compliance suggestions.", "3m-codeassist")
+                    tile("3M 360 Encompass", "gavel", "Computer-assisted coding, CDI queries and DRG grouping across the inpatient record.", "3m-codeassist")
                 ]},
                 {"box": "Imaging & Devices", "ic": "iot", "tiles": [
                     tile("Philips IntelliSpace", "stream", "Radiology worklists, study metadata and dose metrics from imaging PACS.", "philips-pacs"),
@@ -196,7 +196,7 @@ INDUSTRIES_BATCH_HEALTHCARE = {
                     problem="What clinicians document and what gets billed drift apart, so severity is understated, quality scores suffer and coders chase queries long after the patient has gone home.",
                     who="Revenue Cycle",
                     how="Clinical and coding data are joined under AI Functions and governed tables, and the Denial Prevention Workbench raises documentation queries where clinical truth and billed severity diverge.",
-                    comps=["Denial Prevention Workbench", "3M CodeAssist", "Epic Caboodle", "AI Functions", "Agent Bricks"]),
+                    comps=["Denial Prevention Workbench", "3M 360 Encompass", "Epic Caboodle", "AI Functions", "Agent Bricks"]),
                 uc("Imaging Utilisation", "Ancillary", "stream", "Appropriate use and turnaround analysed by modality and site.",
                     problem="Imaging is ordered, read and billed across disconnected PACS and departmental systems, so nobody sees appropriate-use patterns, modality turnaround or where scans are duplicated.",
                     who="Clinical Operations",
@@ -222,7 +222,7 @@ INDUSTRIES_BATCH_HEALTHCARE = {
             "meditech": {"t": "Meditech Expanse", "u": "https://ehr.meditech.com/"},
             "r1-rcm": {"t": "R1 RCM revenue cycle", "u": "https://www.r1rcm.com/"},
             "waystar": {"t": "Waystar healthcare payments", "u": "https://www.waystar.com/"},
-            "3m-codeassist": {"t": "3M CodeAssist CDI", "u": "https://www.3m.com/3M/en_US/health-information-systems-us/"},
+            "3m-codeassist": {"t": "3M 360 Encompass (Solventum)", "u": "https://www.solventum.com/"},
             "philips-pacs": {"t": "Philips IntelliSpace PACS", "u": "https://www.philips.com/healthcare"},
             "capsule": {"t": "Capsule medical device integration", "u": "https://www.capsuletech.com/"},
             "masimo": {"t": "Masimo Patient SafetyNet", "u": "https://www.masimo.com/"},

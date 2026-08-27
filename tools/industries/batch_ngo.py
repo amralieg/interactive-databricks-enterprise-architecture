@@ -28,7 +28,7 @@ INDUSTRIES_BATCH_NGO = {
         "rails": {
             "src": [
                 {"box": "CRM & Fundraising", "ic": "custlake", "tiles": [
-                        tile("Salesforce Nonprofit", "custlake", "Donor profiles, campaigns, pledges and recurring gifts from the CRM fundraisers work in.", "sf-nonprofit"),
+                        tile("Salesforce Nonprofit Cloud", "custlake", "Donor profiles, campaigns, pledges and recurring gifts from the CRM fundraisers work in.", "sf-nonprofit"),
                         tile("Blackbaud Raiser's Edge", "people", "Major-gift pipelines, events and acknowledgment history for development teams.", "blackbaud-re"),
                         tile("Classy Donation Pages", "partner", "Peer-to-peer and crowdfunding transactions with UTM and appeal codes.", "classy"),
                     ]},
@@ -43,16 +43,16 @@ INDUSTRIES_BATCH_NGO = {
                         tile("DevResults M&E", "chart", "Indicator frameworks, results chains and portfolio dashboards for program teams.", "devresults"),
                     ]},
                 {"box": "Logistics & HR", "ic": "stream", "tiles": [
-                        tile("Humanitarian Logistics", "stream", "Warehouse stock, in-kind donations and dispatch to distribution points.", "logistics-cluster"),
+                        tile("RITA (Logistics Cluster)", "stream", "WFP and Logistics Cluster relief-item tracking: warehouse stock and dispatch to distribution points.", "logistics-cluster"),
                         tile("Workday HCM", "people", "Staff roster, payroll and duty-of-care records across country offices.", "workday"),
-                        tile("Duty of Care Tracking", "gavel", "Travel approvals, incident reports and security check-ins for field staff."),
+                        tile("International SOS", "gavel", "Travel risk approvals, incident reports and security check-ins for field staff."),
                     ]},
                 fed_group("UN Agency Data Mart", "OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog."),
             ],
             "ing": ing_rail([
                 tile("Guidestar / Candid", "partner", "Charity registry and 990 filings consumed inbound for due diligence on partners.", "candid"),
                 tile("OFAC Sanctions Lists", "gavel", "Watchlist updates parsed on arrival for donor and vendor screening.", "ofac"),
-                tile("OpenWeather Field", "globe", "Forecast and hazard feeds for anticipatory action triggers in field programs.", "openweather"),
+                tile("IATI d-portal / HXL (HDX)", "globe", "Aid-flow (IATI) and 3W activity data on HDX parsed on arrival for coordination and targeting.", "openweather"),
             ]),
             "ppl": ppl_rail2([
                 biz("Executive Directors", "Genie One", "The CEO on funds raised and program reach; the CFO on restricted-fund compliance and audit readiness when a major institutional grant closes out.", [["Genie One", "Ask what unrestricted reserves are after last quarter's campaigns without waiting on finance."], ["AI/BI", "Fundraising, program cost and compliance on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"restricted\" means one thing across CRM and ERP."]], sub=[["CEO & Board", "funds raised, program reach and whether the mission is moving for the money spent."], ["CFO & Finance", "restricted-fund compliance, reserves and a clean audit when a major grant closes out."], ["Country Directors", "portfolio delivery and cost per outcome across programs and geographies."]], ucs=["Cost per Outcome", "Program Outcomes", "Grant Compliance", "Donor Churn"]),
@@ -103,7 +103,7 @@ INDUSTRIES_BATCH_NGO = {
                     problem="Major-gift and upgrade potential is buried in years of gifts, events and email history, so gift officers chase warm names by instinct and the best prospects go unworked before the ask.",
                     who="Development & Marketing",
                     how="Engagement and giving history are engineered in Feature Store and scored through Model Serving, surfacing ranked prospects into the Donor Journey Hub before the ask.",
-                    comps=["Donor Journey Hub", "Model Serving", "Feature Store", "Salesforce Nonprofit", "MLflow"],
+                    comps=["Donor Journey Hub", "Model Serving", "Feature Store", "Salesforce Nonprofit Cloud", "MLflow"],
                     stories=[
                         ["MissionWired drives strong donor campaigns through predictive data", "https://www.databricks.com/customers/missionwired"],
                     ]),
@@ -142,7 +142,7 @@ INDUSTRIES_BATCH_NGO = {
                     problem="When a crisis breaks, stock, staff and cash are mobilised from spreadsheets and phone calls, so the response lags the need and pre-positioning decisions are made blind.",
                     who="Field Operations",
                     how="Hazard, logistics and roster feeds land in Lakehouse//RT and drive anticipatory-action triggers in the Field Ops Console, scaling supply and staffing before peaks hit.",
-                    comps=["Field Ops Console", "Lakehouse//RT", "OpenWeather Field", "Humanitarian Logistics", "Model Serving"],
+                    comps=["Field Ops Console", "Lakehouse//RT", "IATI d-portal / HXL (HDX)", "RITA (Logistics Cluster)", "Model Serving"],
                     stories=[
                         ["Zipline delivers critical medical supplies with data and AI", "https://www.databricks.com/customers/zipline"],
                     ]),
@@ -150,10 +150,7 @@ INDUSTRIES_BATCH_NGO = {
                     problem="Every gift and vendor must clear watchlists, yet manual name matching against sanctions lists is slow and error-prone, leaving the organisation exposed on the matches it misses.",
                     who="Grants & Compliance",
                     how="Donor and vendor records are matched against parsed OFAC lists with AI Functions under Unity Catalog, resolving hits on every gift with a lineage trail for audit.",
-                    comps=["OFAC Sanctions Lists", "AI Functions", "Unity Catalog", "Salesforce Nonprofit", "Model Serving"],
-                    stories=[
-                        ["Modern BSA/AML compliance on Databricks", "https://www.databricks.com/blog/modern-bsaaml-compliance-databricks"],
-                    ]),
+                    comps=["OFAC Sanctions Lists", "AI Functions", "Unity Catalog", "Salesforce Nonprofit Cloud", "Model Serving"]),
                 uc("Cost per Outcome", "Efficiency", "sheet", "Program economics compared across interventions and geographies.",
                     problem="Comparing what an outcome costs across programs and countries means reconciling incompatible budgets and indicators by hand, so leadership debates anecdotes instead of unit economics.",
                     who="Executive Directors",
@@ -187,11 +184,11 @@ INDUSTRIES_BATCH_NGO = {
             "commcare": {"t": "CommCare", "u": "https://www.commcare.org/"},
             "kobo": {"t": "KoBoToolbox", "u": "https://www.kobotoolbox.org/"},
             "devresults": {"t": "DevResults", "u": "https://www.devresults.com/"},
-            "logistics-cluster": {"t": "Humanitarian Logistics Cluster", "u": "https://logcluster.org/"},
+            "logistics-cluster": {"t": "Logistics Cluster (RITA)", "u": "https://rita.logcluster.org/"},
             "workday": {"t": "Workday HCM", "u": "https://www.workday.com/en-us/products/human-capital-management/overview.html"},
             "candid": {"t": "Candid", "u": "https://candid.org/"},
             "ofac": {"t": "US Treasury OFAC sanctions", "u": "https://ofac.treasury.gov/"},
-            "openweather": {"t": "OpenWeather API", "u": "https://openweathermap.org/api"},
+            "openweather": {"t": "IATI Standard / HDX (HXL)", "u": "https://iatistandard.org"},
         },
     },
 }

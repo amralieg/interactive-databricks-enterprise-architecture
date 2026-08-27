@@ -29,13 +29,13 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
             "src": [
                 {"box": "Core Admin & Claims", "ic": "erp", "tiles": [
                     tile("Facets Core Admin", "erp", "Membership, benefits, premium billing and claims adjudication for commercial and government lines.", "facets"),
-                    tile("HealthEdge Source", "db", "Enrollment, pricing and payment integrity for Medicare Advantage and Exchange plans.", "healthedge"),
+                    tile("HealthEdge Source", "db", "Claims pricing, reimbursement and payment integrity for Medicare Advantage and Exchange plans.", "healthedge"),
                     tile("Cotiviti Payment Integrity", "market", "Pre- and post-pay edits, DRG validation and recovery findings on paid claims.", "cotiviti")
                 ]},
                 {"box": "Clinical & UM", "ic": "people", "tiles": [
                     tile("Epic Payer Platform", "custlake", "Prior authorization, care management notes and member clinical summaries from provider connectivity.", "epic-payer"),
                     tile("NaviNet Prior Auth", "api", "Authorization requests, determinations and appeal status exchanged with provider portals.", "navinet"),
-                    tile("Change Healthcare Clinical", "stream", "Lab, imaging and ADT feeds supplementing claims with clinical context.", "change-healthcare")
+                    tile("Optum (Change Healthcare)", "stream", "Lab, imaging and ADT feeds supplementing claims with clinical context.", "change-healthcare")
                 ]},
                 {"box": "Pharmacy & Network", "ic": "product", "tiles": [
                     tile("CVS Caremark PBM", "market", "Pharmacy claims, formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.", ["caremark", "mmit", "accredo"]),
@@ -238,7 +238,7 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
             "cotiviti": {"t": "Cotiviti payment integrity", "u": "https://www.cotiviti.com/solutions/payment-accuracy"},
             "epic-payer": {"t": "Epic Payer Platform", "u": "https://www.epic.com/software/payer-platform"},
             "navinet": {"t": "NaviNet prior authorization", "u": "https://www.navinet.net/"},
-            "change-healthcare": {"t": "Change Healthcare clinical connectivity", "u": "https://www.changehealthcare.com/"},
+            "change-healthcare": {"t": "Optum (Change Healthcare) clinical connectivity", "u": "https://business.optum.com/en/changehealthcare.html"},
             "caremark": {"t": "CVS Caremark pharmacy benefits", "u": "https://www.caremark.com/"},
             "accredo": {"t": "Accredo specialty pharmacy", "u": "https://www.accredo.com/"},
             "mmit": {"t": "MMIT formulary access", "u": "https://www.mmitnetwork.com/"},

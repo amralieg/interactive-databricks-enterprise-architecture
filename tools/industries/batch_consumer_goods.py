@@ -30,12 +30,12 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
                 {"box": "ERP & Manufacturing", "ic": "erp", "tiles": [
                     tile("SAP IBP / S/4", "erp", "Demand, supply and production planning with financials.", "sap-ibp"),
                     tile("Oracle JD Edwards", "erp", "Batch manufacturing, lot trace and DSD routes.", "jde"),
-                    tile("Kinaxis RapidResponse", "sheet", "Concurrent planning and scenario simulation.", "kinaxis"),
+                    tile("Kinaxis Maestro", "sheet", "Concurrent planning and scenario simulation.", "kinaxis"),
                 ]},
                 {"box": "Retail & Syndicated", "ic": "market", "tiles": [
                     tile("NielsenIQ Connect", "market", "Syndicated scan and market share by category.", "nielseniq"),
                     tile("Circana Liquid Data", "chart", "Omni-channel consumption and household panels.", "circana"),
-                    tile("IRI Market Advantage", "market", "Promo decomposition and competitive tracking.", "iri"),
+                    tile("Circana Market Advantage", "market", "Promo decomposition and competitive tracking.", "iri"),
                 ]},
                 {"box": "Trade Promotion", "ic": "partner", "tiles": [
                     tile("SAP TPM", "partner", "Promo planning, accruals and settlement.", "sap-tpm"),
@@ -44,7 +44,7 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
                 ]},
                 {"box": "Field & DSD", "ic": "stream", "tiles": [
                     tile("Salesforce Consumer Goods", "custlake", "Retail visits, audits and perfect store scores.", "sf-cg"),
-                    tile("HighJump WMS", "stream", "Warehouse picking and DSD route sequencing.", "highjump"),
+                    tile("Körber WMS", "stream", "Warehouse picking and DSD route sequencing.", "highjump"),
                     tile("o9 Demand Planning", "sheet", "Statistical and ML forecasts by SKU-region.", "o9"),
                 ]},
                 {"box": "E-commerce", "ic": "apps", "tiles": [
@@ -195,7 +195,7 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
                 problem="When a SKU goes short, allocation is decided in a hurried call and the biggest customer wins, so scarce stock rarely lands where service, margin and strategic accounts matter most.",
                 who="Supply Chain",
                 how="Inventory, orders and demand feed Lakehouse//RT and optimization models in Model Serving, and the Supply Command app releases allocation to priority banners with state held in Lakebase.",
-                comps=["Supply Command", "Kinaxis RapidResponse", "Lakehouse//RT", "Model Serving", "Lakebase"],
+                comps=["Supply Command", "Kinaxis Maestro", "Lakehouse//RT", "Model Serving", "Lakebase"],
                 stories=[
                     ["Mondelēz facilitates model experimentation at enterprise scale", "https://www.databricks.com/customers/mondelez"],
                     ["Unilever transforms with AI", "https://www.databricks.com/customers/unilever"],
@@ -248,7 +248,7 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
         "sources": {
             "sap-ibp": {"t": "SAP IBP", "u": "https://www.sap.com/products/scm/integrated-business-planning.html"},
             "jde": {"t": "Oracle JD Edwards", "u": "https://www.oracle.com/applications/"},
-            "kinaxis": {"t": "Kinaxis", "u": "https://www.kinaxis.com/"},
+            "kinaxis": {"t": "Kinaxis Maestro", "u": "https://www.kinaxis.com/"},
             "nielseniq": {"t": "NielsenIQ", "u": "https://nielseniq.com/"},
             "circana": {"t": "Circana", "u": "https://www.circana.com/"},
             "iri": {"t": "Circana Market Advantage", "u": "https://www.circana.com/"},
@@ -256,7 +256,7 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
             "vistex": {"t": "Vistex", "u": "https://www.vistex.com/"},
             "blacksmith": {"t": "Blacksmith Applications", "u": "https://www.blacksmithapplications.com/"},
             "sf-cg": {"t": "Salesforce Consumer Goods Cloud", "u": "https://www.salesforce.com/consumer-goods/"},
-            "highjump": {"t": "Körber HighJump", "u": "https://koerber-supplychain.com/"},
+            "highjump": {"t": "Körber WMS", "u": "https://koerber-supplychain.com/"},
             "o9": {"t": "o9 Solutions", "u": "https://o9solutions.com/"},
             "amazon-vc": {"t": "Amazon Vendor Central", "u": "https://vendorcentral.amazon.com/"},
             "instacart": {"t": "Instacart", "u": "https://www.instacart.com/company/business"},

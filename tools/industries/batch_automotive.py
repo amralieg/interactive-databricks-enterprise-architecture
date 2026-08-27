@@ -56,7 +56,7 @@ INDUSTRIES_BATCH_AUTOMOTIVE = {
             "ing": ing_rail([
                 tile("JD Power IQS/SSI", "chart", "Initial quality and sales satisfaction benchmarks by segment.", "jdpower"),
                 tile("Polk Registration", "market", "Vehicle registration and conquest data by geography.", "polk"),
-                tile("UNECE WP.29 R155", "gavel", "Cybersecurity and software update compliance telemetry.", "unece-r155"),
+                tile("MQTT / DDS Telematics", "iot", "CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events."),
             ]),
             "ppl": ppl2([
                 biz("CEO & Mfg COO", "Genie One",
