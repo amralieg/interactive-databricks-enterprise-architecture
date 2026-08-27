@@ -782,11 +782,18 @@
   /* The shaft runs from this pocket's own outline to the arrow head, and the head
      lands on the platform's outline: --zo at the near end, --zo + the 8px head at
      the far end, which is why both offsets are written off --pgap. */
+  /* Connector packet: one bright emerald dot with a soft halo glides along each
+     solid wire, so the diagram reads as live data flow rather than static boxes.
+     The dot is an inline SVG (feGaussianBlur halo + bright core) so it keeps its
+     glow in the rasterised GIF/PDF export; the wire underneath is a faint,
+     lane-hued line. The same symmetric dot serves every direction. */
+  :root{ --flowdot:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22h%22%20x%3D%22-120%25%22%20y%3D%22-120%25%22%20width%3D%22340%25%22%20height%3D%22340%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%222.4%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%226.2%22%20fill%3D%22%2339D98C%22%20filter%3D%22url%28%23h%29%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%224.1%22%20fill%3D%22%235ff2a6%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%228%22%20r%3D%222.4%22%20fill%3D%22%23C6FFE2%22%2F%3E%3C%2Fsvg%3E"); }
   .pocket.ing::before, .pocket.ppl::before { content:""; position:absolute; left:50%;
     margin-left:-7px; width:14px; height:calc(var(--pgap) - var(--zo) * 2 - 8px);
+    --cwire:color-mix(in srgb, var(--flow-neutral) 48%, transparent);
     background:
-      radial-gradient(circle, var(--flow-neutral) 0 2.9px, color-mix(in srgb, var(--flow-neutral) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
-      linear-gradient(var(--flow-neutral), var(--flow-neutral)) center 0 / 3px 100% no-repeat;
+      var(--flowdot) center 0% / 16px 16px no-repeat,
+      linear-gradient(var(--cwire), var(--cwire)) center 0 / 3px 100% no-repeat;
     animation:flowdashv 1.5s linear infinite; }
   .pocket.ing::after, .pocket.ppl::after { content:""; position:absolute; left:50%;
     margin-left:-6px; border:6px solid transparent; }
@@ -798,24 +805,24 @@
     animation-name:flowdashu; }
   .pocket.ing::after  { top:calc(var(--pgap) * -1 + var(--zo));
     border-bottom:8px solid var(--flow-neutral); border-top:0; }
-  /* people ask: the dashes leave the pocket and the head lands on the serving
-     arm below, mirroring the ingestion pocket's climb into the ingest arm */
+  /* teams receive: the dot climbs the serving arm up into the pocket and the head
+     lands on the pocket, so the flow reads inbound to the teams that consume it */
   .pocket.ppl::before { bottom:calc(var(--pgap) * -1 + var(--zo) + 8px);
-    background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
-      linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat; }
-  .pocket.ppl::after  { bottom:calc(var(--pgap) * -1 + var(--zo));
-    border-top:8px solid var(--g-violet-line); border-bottom:0; }
-  /* a solid connector with a single travelling dot: the wire is a continuous
-     solid line and one glowing circle glides source to head on top of it, so the
-     diagram reads as live data flow rather than as static boxes. Two background
-     layers per shaft: the dot (radial-gradient, single no-repeat, animated by
+    --cwire:color-mix(in srgb, var(--g-violet-line) 48%, transparent);
+    animation-name:flowdashu; }
+  .pocket.ppl::after  { bottom:calc(var(--zo) * -1);
+    border-bottom:8px solid var(--g-violet-line); border-top:0; }
+  /* a solid connector carrying a glowing dot: the wire is a continuous solid
+     (faint, lane-hued) line and one bright emerald dot with a halo glides source
+     to head on top of it, so the diagram reads as live data flow rather than as
+     static boxes. Two background layers per shaft: the dot SVG (animated by
      percentage) over the wire (solid). */
   .flow { display:block; width:100%; height:14px; position:relative; }
   .flow::before { content:""; position:absolute; left:0; right:9px; top:0; height:14px;
+    --cwire:color-mix(in srgb, var(--flow-neutral) 48%, transparent);
     background:
-      radial-gradient(circle, var(--flow-neutral) 0 2.9px, color-mix(in srgb, var(--flow-neutral) 55%, transparent) 2.9px 4.6px, transparent 5.3px) 0% center / 11px 14px no-repeat,
-      linear-gradient(var(--flow-neutral), var(--flow-neutral)) 0 center / 100% 3px no-repeat;
+      var(--flowdot) 0% center / 16px 16px no-repeat,
+      linear-gradient(var(--cwire), var(--cwire)) 0 center / 100% 3px no-repeat;
     animation:flowdash 1.5s linear infinite; }
   .flow::after { content:""; position:absolute; right:0; top:0;
     border:7px solid transparent; border-left:10px solid var(--flow-neutral); border-right:0; }
@@ -823,9 +830,10 @@
      connector rotated, in the cloud band's own accent so the hand-off reads */
   .flow.down { width:14px; height:26px; }
   .flow.down::before { left:0; right:auto; top:0; bottom:9px; width:14px; height:auto;
+    --cwire:color-mix(in srgb, var(--g-amber-line) 48%, transparent);
     background:
-      radial-gradient(circle, var(--g-amber-line) 0 2.9px, color-mix(in srgb, var(--g-amber-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
-      linear-gradient(var(--g-amber-line), var(--g-amber-line)) center 0 / 3px 100% no-repeat;
+      var(--flowdot) center 0% / 16px 16px no-repeat,
+      linear-gradient(var(--cwire), var(--cwire)) center 0 / 3px 100% no-repeat;
     animation-name:flowdashv; }
   .flow.down::after { right:auto; left:0; top:auto; bottom:0;
     border:7px solid transparent; border-top:10px solid var(--g-amber-line); border-bottom:0; }
@@ -837,18 +845,20 @@
   /* and pointing up, into the apps, harnesses and use cases band */
   .flow.up { width:14px; height:26px; }
   .flow.up::before { left:0; right:auto; top:9px; bottom:0; width:14px; height:auto;
+    --cwire:color-mix(in srgb, var(--g-violet-line) 48%, transparent);
     background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
-      linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat;
+      var(--flowdot) center 0% / 16px 16px no-repeat,
+      linear-gradient(var(--cwire), var(--cwire)) center 0 / 3px 100% no-repeat;
     animation-name:flowdashu; }
   .flow.up::after { right:auto; left:0; top:0; border:7px solid transparent;
     border-bottom:10px solid var(--g-violet-line); border-top:0; }
-  /* every connector on the people pocket carries their accent, and every one of
-     them points away from the pocket: people are the actors here, so nothing
-     flows back into them */
-  .flow.ppl::before { background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) 0% center / 11px 14px no-repeat,
-      linear-gradient(var(--g-violet-line), var(--g-violet-line)) 0 center / 100% 3px no-repeat; }
+  /* every connector on the Teams pocket carries their accent, and every one of
+     them points INTO the pocket: teams are the beneficiaries here, so the data
+     and insight flow inbound to them. The shafts are mirrored with a scale
+     transform so the dot travels toward the pocket and the head lands on it,
+     which also mirrors correctly in the rasterised export. */
+  .flow.ppl { transform:scaleX(-1); }
+  .flow.ppl::before { --cwire:color-mix(in srgb, var(--g-violet-line) 48%, transparent); }
   .flow.ppl::after { border-left-color:var(--g-violet-line); }
   .flow.left.ppl::after { border-right-color:var(--g-violet-line); }
   @keyframes flowdash  { from { background-position:0% center, 0 center; }   to { background-position:100% center, 0 center; } }
@@ -865,8 +875,8 @@
      that travels up on screen also travels up in the file. */
   .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 100%) center, 0 center; }
   .flow.left::before { background-position:calc((1 - var(--dash-t,0)) * 100%) center, 0 center; }
-  .flow.down::before, .pocket.ppl::before { background-position:center calc(var(--dash-t,0) * 100%), center 0; }
-  .flow.up::before, .pocket.ing::before { background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
+  .flow.down::before { background-position:center calc(var(--dash-t,0) * 100%), center 0; }
+  .flow.up::before, .pocket.ing::before, .pocket.ppl::before { background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
   @media (prefers-reduced-motion:reduce) { .flow::before, .medal-arrow::before { animation:none; } }
   /* Export freeze. The intro animations reveal with opacity and clip-path, and a
      DOM walk that runs mid-animation reads those transient values as the truth:
@@ -890,7 +900,7 @@
      clearance from the height of the strip it sat in, so it was right only for
      as long as those four numbers kept agreeing with where the pocket actually
      was. Hanging it off the pocket makes both true by construction. */
-  .pocket > .flow.up.pplup { position:absolute; left:50%; transform:translateX(-50%);
+  .pocket > .flow.up.pplup { position:absolute; left:50%; transform:translateX(-50%) scaleY(-1);
     bottom:calc(100% + var(--zo)); }
   /* their path into the platform, drawn in the notch gap beside the pocket, from
      the pocket's outline to the platform's rather than under both of them */
@@ -1165,6 +1175,13 @@
     body.shape-h90 .pocket.ing::after, body.shape-h90 .pocket.ppl::after {
       top:calc(var(--pgapv) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
+    /* Teams (people) receive inbound in this shape too: the dot drops toward the
+       pocket and the head lands on it, the reverse of the ingest pocket's climb. */
+    body.shape-h90 .pocket.ppl::before { animation-name:flowdashv;
+      background-position:center calc(var(--dash-t,0) * 100%), center 0; }
+    body.shape-h90 .pocket.ppl::after { top:auto;
+      bottom:calc(100% + var(--zo)); border-top-width:8px; border-top-style:solid;
+      border-top-color:var(--g-violet-line); border-bottom:0; }
     body.shape-h90 .flow.ingtuck,
     body.shape-h90 .flow.left.ppl.tuck { display:none; }
     /* The pocket is in the middle of the platform in this shape, not at its
@@ -1253,6 +1270,22 @@
     body.ul-bot .pocket.ing::after, body.ur-bot .pocket.ppl::after {
       bottom:calc(var(--pgap) * -1 + var(--zo)); top:auto;
       border-top-width:8px; border-top-style:solid; border-bottom:0; }
+    /* Teams (people) pocket receives inbound: unlike the ingest pocket, its dot
+       climbs toward the pocket and its head lands ON the pocket, so the flow reads
+       as data and insight arriving at the teams that consume it. These reverse the
+       ppl half of the shared rules above without disturbing the ingest pocket. */
+    body.ur-top .pocket.ppl::before { animation-name:flowdashv;
+      background-position:center calc(var(--dash-t,0) * 100%), center 0; }
+    body.ur-top .pocket.ppl::after {
+      top:calc(var(--zo) * -1); bottom:auto;
+      border-top-width:8px; border-top-style:solid; border-top-color:var(--g-violet-line);
+      border-bottom:0; }
+    body.ur-bot .pocket.ppl::before { animation-name:flowdashu;
+      background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
+    body.ur-bot .pocket.ppl::after {
+      bottom:calc(var(--zo) * -1); top:auto;
+      border-bottom-width:8px; border-bottom-style:solid; border-bottom-color:var(--g-violet-line);
+      border-top:0; }
 
     /* Row 2 connectors take the upper block's hand-over line, row 3 the lower
        block's. Which gutter lands in which row is exactly what the style
@@ -1484,11 +1517,12 @@
   .m-bronze svg, .m-bronze .ms-n { color:var(--m-bronze); }
   .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
   .m-gold   svg, .m-gold   .ms-n { color:var(--m-gold); }
-  .medal-arrow { flex:0 0 52px; align-self:center; height:12px; position:relative; }
+  .medal-arrow { flex:0 0 82px; align-self:center; height:12px; position:relative; }
   .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:0; height:12px;
+    --cwire:color-mix(in srgb, var(--flow-medal) 55%, transparent);
     background:
-      radial-gradient(circle, var(--flow-medal) 0 2.6px, color-mix(in srgb, var(--flow-medal) 55%, transparent) 2.6px 4.2px, transparent 4.8px) 0% center / 11px 12px no-repeat,
-      linear-gradient(var(--flow-medal), var(--flow-medal)) 0 center / 100% 2px no-repeat;
+      var(--flowdot) 0% center / 16px 16px no-repeat,
+      linear-gradient(var(--cwire), var(--cwire)) 0 center / 100% 2px no-repeat;
     animation:flowdash 1.5s linear infinite; }
   .medal-arrow::after { content:""; position:absolute; right:0; top:2px;
     border:4px solid transparent; border-left:6px solid var(--flow-medal); border-right:0; }
@@ -2063,7 +2097,7 @@
   <div class="ref-card">
     <h3 id="ref-name"></h3>
     <p id="ref-blurb"></p>
-    <div class="ref-legend">Highlighted <b>■</b> components are used by this solution, across the platform, the <b>Apps and Use Cases</b> band, the <b>Sources</b>, <b>Cloud &amp; 3rd-Party Ingestion</b>, <b>People</b> and <b>Consumers</b> boxes and the <b>Cloud Services &amp; Integrations</b> band. Hover a highlight for how it is used; click for full detail.</div>
+    <div class="ref-legend">Highlighted <b>■</b> components are used by this solution, across the platform, the <b>Apps and Use Cases</b> band, the <b>Sources</b>, <b>Cloud &amp; 3rd-Party Ingestion</b>, <b>Teams</b> and <b>Consumers</b> boxes and the <b>Cloud Services &amp; Integrations</b> band. Hover a highlight for how it is used; click for full detail.</div>
   </div>
 </div>
 
@@ -2115,7 +2149,7 @@
       <span class="flow down ingdown"></span>
     </div>
     <div class="pocket ppl">
-      <div class="pockhead" data-ic="people">People</div>
+      <div class="pockhead" data-ic="people">Teams</div>
       <aside class="rail ppl" id="rail-ppl"></aside>
       <!-- people carry their questions up into the apps, harnesses and use cases -->
       <span class="flow up pplup"></span>
@@ -13573,7 +13607,7 @@ function paintIndustryMenu(){
         '"><span>Standard Reference Architecture</span></button>' +
       (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
     "</div>" +
-    '<div class="dl-note">Replaces Sources, Ingestion, People, Consumers and the ' +
+    '<div class="dl-note">Replaces Sources, Ingestion, Teams, Consumers and the ' +
       'Apps and Use Cases band, and relabels the medallion stages. The platform ' +
       'itself and the cloud services band do not change.</div>';
 
@@ -14434,10 +14468,20 @@ function collectBoardInner(){
 
   const flowShape = (el, r)=>{
     const cl = el.classList;
-    const dir = cl.contains("down") ? "down" : cl.contains("up") ? "up"
+    let dir = cl.contains("down") ? "down" : cl.contains("up") ? "up"
               : cl.contains("left") ? "left" : "right";
+    /* colour follows the connector's lane (its class), which does not change when
+       a connector is mirrored to point inbound; geometry follows the actual
+       drawn direction, so a scaleX/scaleY(-1) reversal is honoured in the export */
     const col = cl.contains("ppl") && (dir === "left" || dir === "right")
       ? FLOW_COLOUR.ppl : FLOW_COLOUR[dir];
+    const tf = getComputedStyle(el).transform;
+    if(tf && tf !== "none"){
+      const m = tf.match(/matrix\(([^)]+)\)/);
+      if(m){ const p = m[1].split(",").map(parseFloat);
+        if(p[0] < 0) dir = dir === "left" ? "right" : dir === "right" ? "left" : dir;
+        if(p[3] < 0) dir = dir === "up" ? "down" : dir === "down" ? "up" : dir; }
+    }
     /* the stroke runs down the middle of the track and the head eats the last
        9px, so the arrow is the full span with a head on the pointing end */
     const b = rel(r);
