@@ -783,9 +783,11 @@
      lands on the platform's outline: --zo at the near end, --zo + the 8px head at
      the far end, which is why both offsets are written off --pgap. */
   .pocket.ing::before, .pocket.ppl::before { content:""; position:absolute; left:50%;
-    margin-left:-1.5px; width:3px; height:calc(var(--pgap) - var(--zo) * 2 - 8px);
-    background:repeating-linear-gradient(180deg,var(--flow-neutral) 0 7px,transparent 7px 13px);
-    background-size:3px 13px; animation:flowdashv .9s linear infinite; }
+    margin-left:-7px; width:14px; height:calc(var(--pgap) - var(--zo) * 2 - 8px);
+    background:
+      radial-gradient(circle, var(--flow-neutral) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      linear-gradient(var(--flow-neutral), var(--flow-neutral)) center 0 / 3px 100% no-repeat;
+    animation:flowdashv .9s linear infinite; }
   .pocket.ing::after, .pocket.ppl::after { content:""; position:absolute; left:50%;
     margin-left:-6px; border:6px solid transparent; }
   /* This one climbs INTO the ingest arm, so its dashes have to travel up. It
@@ -799,24 +801,31 @@
   /* people ask: the dashes leave the pocket and the head lands on the serving
      arm below, mirroring the ingestion pocket's climb into the ingest arm */
   .pocket.ppl::before { bottom:calc(var(--pgap) * -1 + var(--zo) + 8px);
-    background:repeating-linear-gradient(180deg,var(--g-violet-line) 0 7px,transparent 7px 13px);
-    background-size:3px 13px; }
+    background:
+      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat; }
   .pocket.ppl::after  { bottom:calc(var(--pgap) * -1 + var(--zo));
     border-top:8px solid var(--g-violet-line); border-bottom:0; }
-  /* a moving-dash connector: the dashes travel from source to target, so the
-     diagram reads as flow rather than as static boxes */
+  /* a solid connector with a travelling bead: the wire is a continuous solid
+     line and a small circle runs source to target on top of it, so the diagram
+     reads as live data flow rather than as static boxes. Two background layers
+     per shaft: the bead (radial-gradient, animated) over the wire (solid). */
   .flow { display:block; width:100%; height:14px; position:relative; }
-  .flow::before { content:""; position:absolute; left:0; right:9px; top:5px; height:3px;
-    background:repeating-linear-gradient(90deg, var(--flow-neutral) 0 7px, transparent 7px 13px);
-    background-size:13px 3px; animation:flowdash .9s linear infinite; }
+  .flow::before { content:""; position:absolute; left:0; right:9px; top:0; height:14px;
+    background:
+      radial-gradient(circle, var(--flow-neutral) 0 2.5px, transparent 2.9px) 0 center / 18px 14px repeat-x,
+      linear-gradient(var(--flow-neutral), var(--flow-neutral)) 0 center / 100% 3px no-repeat;
+    animation:flowdash .9s linear infinite; }
   .flow::after { content:""; position:absolute; right:0; top:0;
     border:7px solid transparent; border-left:10px solid var(--flow-neutral); border-right:0; }
   /* the platform hands the open copy of the data down to cloud storage: same
      connector rotated, in the cloud band's own accent so the hand-off reads */
   .flow.down { width:14px; height:26px; }
-  .flow.down::before { left:5px; right:auto; top:0; bottom:9px; width:3px; height:auto;
-    background:repeating-linear-gradient(180deg, var(--g-amber-line) 0 7px, transparent 7px 13px);
-    background-size:3px 13px; animation-name:flowdashv; }
+  .flow.down::before { left:0; right:auto; top:0; bottom:9px; width:14px; height:auto;
+    background:
+      radial-gradient(circle, var(--g-amber-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      linear-gradient(var(--g-amber-line), var(--g-amber-line)) center 0 / 3px 100% no-repeat;
+    animation-name:flowdashv; }
   .flow.down::after { right:auto; left:0; top:auto; bottom:0;
     border:7px solid transparent; border-top:10px solid var(--g-amber-line); border-bottom:0; }
   /* the same connector pointing back: Consumers to the people who asked, and the
@@ -826,22 +835,25 @@
     border-right:10px solid var(--flow-neutral); border-left:0; }
   /* and pointing up, into the apps, harnesses and use cases band */
   .flow.up { width:14px; height:26px; }
-  .flow.up::before { left:5px; right:auto; top:9px; bottom:0; width:3px; height:auto;
-    background:repeating-linear-gradient(180deg, var(--g-violet-line) 0 7px, transparent 7px 13px);
-    background-size:3px 13px; animation-name:flowdashu; }
+  .flow.up::before { left:0; right:auto; top:9px; bottom:0; width:14px; height:auto;
+    background:
+      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat;
+    animation-name:flowdashu; }
   .flow.up::after { right:auto; left:0; top:0; border:7px solid transparent;
     border-bottom:10px solid var(--g-violet-line); border-top:0; }
   /* every connector on the people pocket carries their accent, and every one of
      them points away from the pocket: people are the actors here, so nothing
      flows back into them */
-  .flow.ppl::before { background:repeating-linear-gradient(90deg, var(--g-violet-line) 0 7px, transparent 7px 13px);
-    background-size:13px 3px; }
+  .flow.ppl::before { background:
+      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) 0 center / 18px 14px repeat-x,
+      linear-gradient(var(--g-violet-line), var(--g-violet-line)) 0 center / 100% 3px no-repeat; }
   .flow.ppl::after { border-left-color:var(--g-violet-line); }
   .flow.left.ppl::after { border-right-color:var(--g-violet-line); }
-  @keyframes flowdash  { to { background-position:13px 0; } }
-  @keyframes flowdashv { to { background-position:0 13px; } }
-  @keyframes flowdashl { to { background-position:-13px 0; } }
-  @keyframes flowdashu { to { background-position:0 -13px; } }
+  @keyframes flowdash  { to { background-position:18px center, 0 center; } }
+  @keyframes flowdashv { to { background-position:center 18px, center 0; } }
+  @keyframes flowdashl { to { background-position:-18px center, 0 center; } }
+  @keyframes flowdashu { to { background-position:center -18px, center 0; } }
   /* Phase hooks for the animated GIF. A raster export freezes every animation,
      so a frame grabbed at t=0.4 would show the dashes exactly where t=0 left
      them. These declarations reproduce each keyframe's travel from --dash-t, a
@@ -850,10 +862,10 @@
      live because a running animation outranks a normal declaration, and they
      mirror the animation-name assignments above one for one, so a connector
      that travels up on screen also travels up in the file. */
-  .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 13px) 0; }
-  .flow.left::before { background-position:calc(var(--dash-t,0) * -13px) 0; }
-  .flow.down::before, .pocket.ppl::before { background-position:0 calc(var(--dash-t,0) * 13px); }
-  .flow.up::before, .pocket.ing::before { background-position:0 calc(var(--dash-t,0) * -13px); }
+  .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 18px) center, 0 center; }
+  .flow.left::before { background-position:calc(var(--dash-t,0) * -18px) center, 0 center; }
+  .flow.down::before, .pocket.ppl::before { background-position:center calc(var(--dash-t,0) * 18px), center 0; }
+  .flow.up::before, .pocket.ing::before { background-position:center calc(var(--dash-t,0) * -18px), center 0; }
   @media (prefers-reduced-motion:reduce) { .flow::before, .medal-arrow::before { animation:none; } }
   /* Export freeze. The intro animations reveal with opacity and clip-path, and a
      DOM walk that runs mid-animation reads those transient values as the truth:
@@ -1148,7 +1160,7 @@
        them because there is no difference. */
     body.shape-h90 .pocket.ing::before, body.shape-h90 .pocket.ppl::before {
       top:calc(var(--pgapv) * -1 + var(--zo) + 8px); bottom:auto;
-      animation-name:flowdashu; background-position:0 calc(var(--dash-t,0) * -13px); }
+      animation-name:flowdashu; background-position:center calc(var(--dash-t,0) * -18px), center 0; }
     body.shape-h90 .pocket.ing::after, body.shape-h90 .pocket.ppl::after {
       top:calc(var(--pgapv) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
@@ -1230,13 +1242,13 @@
        survive: a border shorthand here would reset them to currentColor. */
     body.ul-top .pocket.ing::before, body.ur-top .pocket.ppl::before {
       top:calc(var(--pgap) * -1 + var(--zo) + 8px); bottom:auto;
-      animation-name:flowdashu; background-position:0 calc(var(--dash-t,0) * -13px); }
+      animation-name:flowdashu; background-position:center calc(var(--dash-t,0) * -18px), center 0; }
     body.ul-top .pocket.ing::after, body.ur-top .pocket.ppl::after {
       top:calc(var(--pgap) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
     body.ul-bot .pocket.ing::before, body.ur-bot .pocket.ppl::before {
       bottom:calc(var(--pgap) * -1 + var(--zo) + 8px); top:auto;
-      animation-name:flowdashv; background-position:0 calc(var(--dash-t,0) * 13px); }
+      animation-name:flowdashv; background-position:center calc(var(--dash-t,0) * 18px), center 0; }
     body.ul-bot .pocket.ing::after, body.ur-bot .pocket.ppl::after {
       bottom:calc(var(--pgap) * -1 + var(--zo)); top:auto;
       border-top-width:8px; border-top-style:solid; border-bottom:0; }
@@ -1472,9 +1484,11 @@
   .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
   .m-gold   svg, .m-gold   .ms-n { color:var(--m-gold); }
   .medal-arrow { flex:0 0 30px; align-self:center; height:12px; position:relative; }
-  .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:5px; height:2px;
-    background:repeating-linear-gradient(90deg,var(--flow-medal) 0 7px,transparent 7px 13px);
-    background-size:13px 2px; animation:flowdash .9s linear infinite; }
+  .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:0; height:12px;
+    background:
+      radial-gradient(circle, var(--flow-medal) 0 2.2px, transparent 2.6px) 0 center / 18px 12px repeat-x,
+      linear-gradient(var(--flow-medal), var(--flow-medal)) 0 center / 100% 2px no-repeat;
+    animation:flowdash .9s linear infinite; }
   .medal-arrow::after { content:""; position:absolute; right:0; top:2px;
     border:4px solid transparent; border-left:6px solid var(--flow-medal); border-right:0; }
   /* Transparent, not --card. The vendor marks are inline SVG and so carry no
@@ -14508,13 +14522,15 @@ function collectBoardInner(){
       });
     });
 
-    /* pseudo-element decoration: a dashed shaft plus its triangle head become one
-       native arrow, a solid strip becomes a rect. .flow and .medal-arrow already
-       have purpose-built geometry, so they are skipped here to avoid doubling. */
+    /* pseudo-element decoration: a connector shaft (a solid wire carrying a
+       travelling bead) plus its triangle head become one native solid arrow, a
+       solid strip becomes a rect. .flow and .medal-arrow already have
+       purpose-built geometry, so they are skipped here to avoid doubling. */
     if(!el.classList.contains("flow") && !el.classList.contains("medal-arrow")){
       const shaft = pseudoBox(el, "::before", fitK), head = pseudoBox(el, "::after", fitK);
-      const dashed = shaft && /repeating-linear-gradient/.test(shaft.cs.backgroundImage);
-      if(dashed && head){
+      const isConn = shaft && head && headColour(head.cs) &&
+        /gradient/.test(String(shaft.cs.backgroundImage));
+      if(isConn){
         const col = headColour(head.cs) ||
           (String(shaft.cs.backgroundImage).match(/rgba?\([^)]+\)/) || [])[0];
         const hex = col && col.charAt(0) !== "r" ? col : (cssRgb(col) || {}).hex;
@@ -14530,11 +14546,9 @@ function collectBoardInner(){
           a1 = { x:left ? shaft.x + shaft.w : shaft.x, y:sc.y };
           a2 = { x:left ? head.x : head.x + head.w, y:sc.y };
         }
-        const rb = { x:Math.min(a1.x, a2.x), y:Math.min(a1.y, a2.y) };
         const rel1 = rel({ left:a1.x, top:a1.y }), rel2 = rel({ left:a2.x, top:a2.y });
         shapes.push({ t:"arrow", a1:{ x:rel1.x, y:rel1.y }, a2:{ x:rel2.x, y:rel2.y },
-          col:hex || "7D8794", w:Math.max(shaft.w, shaft.h) === shaft.h ? shaft.w : shaft.h,
-          dash:"dash" });
+          col:hex || "7D8794", w:3 });
       }else if(shaft && cssRgb(shaft.cs.backgroundColor) &&
                cssRgb(shaft.cs.backgroundColor).a > .05 && shaft.w > 1 && shaft.h > 1){
         const sb = rel({ left:shaft.x, top:shaft.y, width:shaft.w, height:shaft.h });
