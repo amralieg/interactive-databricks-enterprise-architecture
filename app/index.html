@@ -785,9 +785,9 @@
   .pocket.ing::before, .pocket.ppl::before { content:""; position:absolute; left:50%;
     margin-left:-7px; width:14px; height:calc(var(--pgap) - var(--zo) * 2 - 8px);
     background:
-      radial-gradient(circle, var(--flow-neutral) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      radial-gradient(circle, var(--flow-neutral) 0 2.9px, color-mix(in srgb, var(--flow-neutral) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
       linear-gradient(var(--flow-neutral), var(--flow-neutral)) center 0 / 3px 100% no-repeat;
-    animation:flowdashv .9s linear infinite; }
+    animation:flowdashv 1.5s linear infinite; }
   .pocket.ing::after, .pocket.ppl::after { content:""; position:absolute; left:50%;
     margin-left:-6px; border:6px solid transparent; }
   /* This one climbs INTO the ingest arm, so its dashes have to travel up. It
@@ -802,20 +802,21 @@
      arm below, mirroring the ingestion pocket's climb into the ingest arm */
   .pocket.ppl::before { bottom:calc(var(--pgap) * -1 + var(--zo) + 8px);
     background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
       linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat; }
   .pocket.ppl::after  { bottom:calc(var(--pgap) * -1 + var(--zo));
     border-top:8px solid var(--g-violet-line); border-bottom:0; }
-  /* a solid connector with a travelling bead: the wire is a continuous solid
-     line and a small circle runs source to target on top of it, so the diagram
-     reads as live data flow rather than as static boxes. Two background layers
-     per shaft: the bead (radial-gradient, animated) over the wire (solid). */
+  /* a solid connector with a single travelling dot: the wire is a continuous
+     solid line and one glowing circle glides source to head on top of it, so the
+     diagram reads as live data flow rather than as static boxes. Two background
+     layers per shaft: the dot (radial-gradient, single no-repeat, animated by
+     percentage) over the wire (solid). */
   .flow { display:block; width:100%; height:14px; position:relative; }
   .flow::before { content:""; position:absolute; left:0; right:9px; top:0; height:14px;
     background:
-      radial-gradient(circle, var(--flow-neutral) 0 2.5px, transparent 2.9px) 0 center / 18px 14px repeat-x,
+      radial-gradient(circle, var(--flow-neutral) 0 2.9px, color-mix(in srgb, var(--flow-neutral) 55%, transparent) 2.9px 4.6px, transparent 5.3px) 0% center / 11px 14px no-repeat,
       linear-gradient(var(--flow-neutral), var(--flow-neutral)) 0 center / 100% 3px no-repeat;
-    animation:flowdash .9s linear infinite; }
+    animation:flowdash 1.5s linear infinite; }
   .flow::after { content:""; position:absolute; right:0; top:0;
     border:7px solid transparent; border-left:10px solid var(--flow-neutral); border-right:0; }
   /* the platform hands the open copy of the data down to cloud storage: same
@@ -823,7 +824,7 @@
   .flow.down { width:14px; height:26px; }
   .flow.down::before { left:0; right:auto; top:0; bottom:9px; width:14px; height:auto;
     background:
-      radial-gradient(circle, var(--g-amber-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      radial-gradient(circle, var(--g-amber-line) 0 2.9px, color-mix(in srgb, var(--g-amber-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
       linear-gradient(var(--g-amber-line), var(--g-amber-line)) center 0 / 3px 100% no-repeat;
     animation-name:flowdashv; }
   .flow.down::after { right:auto; left:0; top:auto; bottom:0;
@@ -837,7 +838,7 @@
   .flow.up { width:14px; height:26px; }
   .flow.up::before { left:0; right:auto; top:9px; bottom:0; width:14px; height:auto;
     background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) center 0 / 14px 18px repeat-y,
+      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) center 0% / 14px 11px no-repeat,
       linear-gradient(var(--g-violet-line), var(--g-violet-line)) center 0 / 3px 100% no-repeat;
     animation-name:flowdashu; }
   .flow.up::after { right:auto; left:0; top:0; border:7px solid transparent;
@@ -846,14 +847,14 @@
      them points away from the pocket: people are the actors here, so nothing
      flows back into them */
   .flow.ppl::before { background:
-      radial-gradient(circle, var(--g-violet-line) 0 2.5px, transparent 2.9px) 0 center / 18px 14px repeat-x,
+      radial-gradient(circle, var(--g-violet-line) 0 2.9px, color-mix(in srgb, var(--g-violet-line) 55%, transparent) 2.9px 4.6px, transparent 5.3px) 0% center / 11px 14px no-repeat,
       linear-gradient(var(--g-violet-line), var(--g-violet-line)) 0 center / 100% 3px no-repeat; }
   .flow.ppl::after { border-left-color:var(--g-violet-line); }
   .flow.left.ppl::after { border-right-color:var(--g-violet-line); }
-  @keyframes flowdash  { to { background-position:18px center, 0 center; } }
-  @keyframes flowdashv { to { background-position:center 18px, center 0; } }
-  @keyframes flowdashl { to { background-position:-18px center, 0 center; } }
-  @keyframes flowdashu { to { background-position:center -18px, center 0; } }
+  @keyframes flowdash  { from { background-position:0% center, 0 center; }   to { background-position:100% center, 0 center; } }
+  @keyframes flowdashv { from { background-position:center 0%, center 0; }   to { background-position:center 100%, center 0; } }
+  @keyframes flowdashl { from { background-position:100% center, 0 center; } to { background-position:0% center, 0 center; } }
+  @keyframes flowdashu { from { background-position:center 100%, center 0; } to { background-position:center 0%, center 0; } }
   /* Phase hooks for the animated GIF. A raster export freezes every animation,
      so a frame grabbed at t=0.4 would show the dashes exactly where t=0 left
      them. These declarations reproduce each keyframe's travel from --dash-t, a
@@ -862,10 +863,10 @@
      live because a running animation outranks a normal declaration, and they
      mirror the animation-name assignments above one for one, so a connector
      that travels up on screen also travels up in the file. */
-  .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 18px) center, 0 center; }
-  .flow.left::before { background-position:calc(var(--dash-t,0) * -18px) center, 0 center; }
-  .flow.down::before, .pocket.ppl::before { background-position:center calc(var(--dash-t,0) * 18px), center 0; }
-  .flow.up::before, .pocket.ing::before { background-position:center calc(var(--dash-t,0) * -18px), center 0; }
+  .flow::before, .medal-arrow::before { background-position:calc(var(--dash-t,0) * 100%) center, 0 center; }
+  .flow.left::before { background-position:calc((1 - var(--dash-t,0)) * 100%) center, 0 center; }
+  .flow.down::before, .pocket.ppl::before { background-position:center calc(var(--dash-t,0) * 100%), center 0; }
+  .flow.up::before, .pocket.ing::before { background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
   @media (prefers-reduced-motion:reduce) { .flow::before, .medal-arrow::before { animation:none; } }
   /* Export freeze. The intro animations reveal with opacity and clip-path, and a
      DOM walk that runs mid-animation reads those transient values as the truth:
@@ -1160,7 +1161,7 @@
        them because there is no difference. */
     body.shape-h90 .pocket.ing::before, body.shape-h90 .pocket.ppl::before {
       top:calc(var(--pgapv) * -1 + var(--zo) + 8px); bottom:auto;
-      animation-name:flowdashu; background-position:center calc(var(--dash-t,0) * -18px), center 0; }
+      animation-name:flowdashu; background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
     body.shape-h90 .pocket.ing::after, body.shape-h90 .pocket.ppl::after {
       top:calc(var(--pgapv) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
@@ -1242,13 +1243,13 @@
        survive: a border shorthand here would reset them to currentColor. */
     body.ul-top .pocket.ing::before, body.ur-top .pocket.ppl::before {
       top:calc(var(--pgap) * -1 + var(--zo) + 8px); bottom:auto;
-      animation-name:flowdashu; background-position:center calc(var(--dash-t,0) * -18px), center 0; }
+      animation-name:flowdashu; background-position:center calc((1 - var(--dash-t,0)) * 100%), center 0; }
     body.ul-top .pocket.ing::after, body.ur-top .pocket.ppl::after {
       top:calc(var(--pgap) * -1 + var(--zo)); bottom:auto;
       border-bottom-width:8px; border-bottom-style:solid; border-top:0; }
     body.ul-bot .pocket.ing::before, body.ur-bot .pocket.ppl::before {
       bottom:calc(var(--pgap) * -1 + var(--zo) + 8px); top:auto;
-      animation-name:flowdashv; background-position:center calc(var(--dash-t,0) * 18px), center 0; }
+      animation-name:flowdashv; background-position:center calc(var(--dash-t,0) * 100%), center 0; }
     body.ul-bot .pocket.ing::after, body.ur-bot .pocket.ppl::after {
       bottom:calc(var(--pgap) * -1 + var(--zo)); top:auto;
       border-top-width:8px; border-top-style:solid; border-bottom:0; }
@@ -1483,14 +1484,20 @@
   .m-bronze svg, .m-bronze .ms-n { color:var(--m-bronze); }
   .m-silver svg, .m-silver .ms-n { color:var(--m-silver); }
   .m-gold   svg, .m-gold   .ms-n { color:var(--m-gold); }
-  .medal-arrow { flex:0 0 30px; align-self:center; height:12px; position:relative; }
+  .medal-arrow { flex:0 0 52px; align-self:center; height:12px; position:relative; }
   .medal-arrow::before { content:""; position:absolute; left:0; right:7px; top:0; height:12px;
     background:
-      radial-gradient(circle, var(--flow-medal) 0 2.2px, transparent 2.6px) 0 center / 18px 12px repeat-x,
+      radial-gradient(circle, var(--flow-medal) 0 2.6px, color-mix(in srgb, var(--flow-medal) 55%, transparent) 2.6px 4.2px, transparent 4.8px) 0% center / 11px 12px no-repeat,
       linear-gradient(var(--flow-medal), var(--flow-medal)) 0 center / 100% 2px no-repeat;
-    animation:flowdash .9s linear infinite; }
+    animation:flowdash 1.5s linear infinite; }
   .medal-arrow::after { content:""; position:absolute; right:0; top:2px;
     border:4px solid transparent; border-left:6px solid var(--flow-medal); border-right:0; }
+  /* Phase hook, restated after the base rule above: that rule's background
+     shorthand resets background-position, so the shared hook up by the keyframes
+     is overridden here and the medallion dot would freeze in the exported GIF.
+     Repeating it after the base rule lets --dash-t drive the dot in raster
+     frames while the live animation still outranks it on screen. */
+  .medal-arrow::before { background-position:calc(var(--dash-t,0) * 100%) center, 0 center; }
   /* Transparent, not --card. The vendor marks are inline SVG and so carry no
      background of their own, but a card behind them put a hard white block on
      the band, which is what made the logo row look like a set of pasted opaque
