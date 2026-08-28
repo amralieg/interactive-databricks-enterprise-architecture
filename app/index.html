@@ -13688,10 +13688,19 @@ function migrateStored(s){
   s.schema = SCHEMA;
   return s;
 }
+function platformTileCount(bands){
+  let n = 0;
+  (bands || []).forEach(b => (b.rows || []).forEach(r => {
+    if(Array.isArray(r.items)) n += r.items.length;
+    if(Array.isArray(r.stages)) n += r.stages.length;
+  }));
+  return n;
+}
 function storedStateUsable(s){
   if(!s || s.schema !== SCHEMA) return false;
   if(s.industry != null && typeof s.industry !== "string") return false;
   if(!Array.isArray(s.bands) || !s.bands.length) return false;
+  if(platformTileCount(s.bands) < platformTileCount(BASE.bands) * 0.6) return false;
   if(!s.rails || RAIL_IDS.some(id=> !s.rails[id] || !Array.isArray(s.rails[id].groups))) return false;
   if(!s.top || !Array.isArray(s.top.secs) || !s.top.secs.every(x=> Array.isArray(x.tiles))) return false;
   if(!s.cloud || !Array.isArray(s.cloud.extras)) return false;
