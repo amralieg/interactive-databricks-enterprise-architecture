@@ -13593,7 +13593,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 25;  /* bump whenever the shape of a persisted branch changes */
+const SCHEMA = 26;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -13629,7 +13629,13 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    band now leads with Genie Agents beside Business Use Cases and the apps have
    dropped to the rail, so restoring a v23 board would put Apps back above the
    platform and the Genie box back on the rail, the same stale-board confusion,
-   so it is discarded rather than half-applied.
+   so it is discarded rather than half-applied. v25 baked the model-provider tile
+   as "Anthropic" and carried source tiles without what/users/dataOut enrichment;
+   restoring one repaints the bare "Anthropic" tile over the current
+   "Anthropic/OpenAI" and drops the enrichment drawer, the same stale-board
+   confusion (this bump exists precisely because that stale tile survived a
+   content-only edit that did not change shape), so it is discarded rather than
+   half-applied.
    Restoring any of them renders empty columns or throws, so anything that fails
    this check is discarded rather than half-applied.
 
