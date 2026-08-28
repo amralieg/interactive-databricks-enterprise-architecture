@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,47 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "market",
                             "State Street's investment management system: orders, allocations, compliance rules and positions, the buy-side system of record for the order lifecycle.",
                             "charles-river",
+                            cat="Investment Management System (OMS)",
+                            what="State Street's buy-side investment and order management system: the system of record for the order lifecycle, allocations, compliance rules and positions.",
+                            users="Portfolio managers, buy-side traders and investment operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-40 GB/day positions + orders", "End-of-day batch"),
+                                stream=flow(["semi-structured"], "hundreds of order events/sec", "Continuous CDC (near real-time)")),
                         ),
                         tile(
                             "BlackRock Aladdin",
                             "erp",
                             "Portfolio, order and risk platform holding positions, exposures and the book of record across the investment process.",
                             "aladdin",
+                            cat="Portfolio & Risk Management Platform",
+                            what="Holds positions, exposures and the book of record across the investment process, combining portfolio management, order flow and risk in one platform.",
+                            users="Portfolio managers, risk teams and investment operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day positions + exposures", "Daily + intraday snapshots"),
+                                stream=flow(["semi-structured"], "hundreds of position events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Bloomberg AIM",
                             "market",
                             "Buy-side order and investment management, trade capture and compliance feeding executions and positions into the estate.",
                             "bloomberg-aim",
+                            cat="Buy-Side Order Management System",
+                            what="Bloomberg's Asset & Investment Manager: buy-side order and investment management, trade capture and compliance feeding executions and positions into the estate.",
+                            users="Buy-side traders, portfolio managers and compliance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day positions", "End-of-day batch"),
+                                stream=flow(["semi-structured"], "hundreds of order/execution events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "FlexTrade EMS",
                             "stream",
                             "Multi-asset execution management: smart order routing, algo wheels and venue connectivity, the source of the child-order and fill stream.",
                             "flextrade",
+                            cat="Execution Management System (EMS)",
+                            what="Multi-asset execution management with smart order routing, algo wheels and venue connectivity, the source of the child-order and fill stream.",
+                            users="Execution traders and desk heads.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k child orders + fills/sec at peak", "Continuous (sub-second)")),
                         ),
                     ],
                 },
@@ -65,23 +91,44 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "market",
                             "Consolidated real-time market-data feed: prices, quotes and corporate actions across venues and asset classes.",
                             "bloomberg-bpipe",
+                            cat="Consolidated Market Data Feed",
+                            what="Bloomberg's consolidated real-time market-data feed carrying prices, quotes and corporate actions across venues and asset classes.",
+                            users="Trading desks, quant research and market-data engineering.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "50k-500k ticks/sec at peak", "Continuous streaming")),
                         ),
                         tile(
                             "LSEG Refinitiv",
                             "market",
                             "Real-time and historical pricing, tick history, fundamentals and reference data feeding valuation and analytics.",
                             "refinitiv",
+                            cat="Market Data & Analytics Platform",
+                            what="Real-time and historical pricing, tick history, fundamentals and reference data feeding valuation and analytics.",
+                            users="Trading desks, quant research and valuation teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "TB-scale tick history", "Daily history loads"),
+                                stream=flow(["semi-structured"], "10k-100k ticks/sec", "Continuous streaming")),
                         ),
                         tile(
                             "ICE Data Services",
                             "market",
                             "Evaluated pricing, reference data and end-of-day feeds for fixed income and cross-asset valuation.",
                             "ice-data",
+                            cat="Evaluated Pricing & Reference Data",
+                            what="Evaluated pricing, reference data and end-of-day feeds for fixed income and cross-asset valuation.",
+                            users="Valuation, fixed-income desks and risk teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day evaluated prices", "End-of-day + intraday snaps")),
                         ),
                         tile(
                             "Security Master",
                             "db",
                             "The golden instrument and issuer record: identifiers, terms and corporate actions every position and trade resolves against.",
+                            cat="Security Master / Reference Data",
+                            what="The golden instrument and issuer record holding identifiers, terms and corporate actions that every position and trade resolves against.",
+                            users="Reference-data engineers, operations and every downstream desk.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of reference + corporate actions", "Daily refresh + intraday updates")),
                         ),
                     ],
                 },
@@ -94,24 +141,45 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "gauge",
                             "Cross-asset trading, valuation and risk platform: pricing, sensitivities and limit state for the trading book.",
                             "murex",
+                            cat="Cross-Asset Trading & Risk Platform",
+                            what="Cross-asset trading, valuation and risk platform providing pricing, sensitivities and limit state for the trading book.",
+                            users="Market risk, the trading desk and product control.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day positions + sensitivities", "Daily + scenario runs")),
                         ),
                         tile(
                             "Nasdaq Calypso",
                             "gauge",
                             "Capital-markets and treasury platform for derivatives pricing, collateral and risk on the sell side.",
                             "calypso",
+                            cat="Capital Markets Trading & Risk Platform",
+                            what="Capital-markets and treasury platform for derivatives pricing, collateral and risk on the sell side.",
+                            users="Sell-side trading, collateral management and risk.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-15 GB/day valuations + collateral", "Daily + intraday runs"),
+                                stream=flow(["semi-structured"], "tens of trade events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "MSCI Barra",
                             "chart",
                             "Multi-asset factor models and risk analytics: factor exposures, attribution and portfolio risk decomposition.",
                             "msci-barra",
+                            cat="Factor Risk Model Library",
+                            what="Multi-asset factor models and risk analytics: factor exposures, attribution and portfolio risk decomposition.",
+                            users="Quant research, risk and portfolio managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of factor exposures + models", "Daily / monthly refresh")),
                         ),
                         tile(
                             "Numerix",
                             "market",
                             "Derivatives pricing and analytics library for structured products, curves and Monte Carlo valuation.",
                             "numerix",
+                            cat="Derivatives Pricing & Analytics Library",
+                            what="Derivatives pricing and analytics library for structured products, curves and Monte Carlo valuation.",
+                            users="Quant developers, structuring and valuation teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of curves + valuations", "On demand + end-of-day")),
                         ),
                     ],
                 },
@@ -124,23 +192,44 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "partner",
                             "Central clearing, settlement and trade-confirmation infrastructure: matched trades, affirmations and settlement status.",
                             "dtcc",
+                            cat="Clearing & Settlement Utility",
+                            what="Central clearing, settlement and trade-confirmation infrastructure carrying matched trades, affirmations and settlement status.",
+                            users="Post-trade operations, settlements and clearing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-25 GB/day confirms + settlement", "Multiple settlement cycles daily"),
+                                stream=flow(["semi-structured"], "tens of status events/sec", "Continuous status flow")),
                         ),
                         tile(
                             "SWIFT Network",
                             "stream",
                             "Interbank messaging for settlement, confirmations and custody instructions across counterparties and agents.",
                             "swift",
+                            cat="Interbank Messaging Network",
+                            what="Interbank messaging for settlement, confirmations and custody instructions across counterparties and agents.",
+                            users="Settlements, custody operations and treasury.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens-hundreds of messages/sec", "Continuous message flow")),
                         ),
                         tile(
                             "FIX Gateways",
                             "api",
                             "The FIX order and execution message bus with venues, brokers and counterparties, the ground truth for orders and fills.",
                             "fix",
+                            cat="Order Routing Protocol Gateway",
+                            what="The FIX order and execution message bus with venues, brokers and counterparties, the ground truth for orders and fills.",
+                            users="Execution traders, desk operations and market-data engineering.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k order/exec messages/sec at peak", "Continuous (sub-second)")),
                         ),
                         tile(
                             "Custodian Feeds",
                             "db",
                             "Position, cash and settlement records from the custodian, reconciled against the internal book of record.",
+                            cat="Custodian Book of Record",
+                            what="Position, cash and settlement records from the custodian, reconciled against the internal book of record.",
+                            users="Investment operations, reconciliation and fund accounting.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day positions + cash", "Daily custodian files")),
                         ),
                     ],
                 },
@@ -153,30 +242,55 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             "chart",
                             "Fundamentals, estimates, ownership and analytics feeding research, screening and portfolio analysis.",
                             "factset",
+                            cat="Financial Data & Analytics Platform",
+                            what="Fundamentals, estimates, ownership and analytics feeding research, screening and portfolio analysis.",
+                            users="Research analysts, quant research and portfolio managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day fundamentals + estimates", "Daily feed")),
                         ),
                         tile(
                             "MSCI ESG Ratings",
                             "gavel",
                             "ESG ratings, controversies and carbon metrics scored against issuers for sustainable-investing mandates.",
                             "msci-esg",
+                            cat="ESG Ratings Provider",
+                            what="ESG ratings, controversies and carbon metrics scored against issuers for sustainable-investing mandates.",
+                            users="ESG research, portfolio managers and client reporting.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "GBs of ratings + controversies", "Monthly + on-demand")),
                         ),
                         tile(
                             "Sustainalytics",
                             "gavel",
                             "Morningstar Sustainalytics ESG risk ratings and controversy research joined to holdings for mandate screening.",
                             "sustainalytics",
+                            cat="ESG Ratings Provider",
+                            what="Morningstar Sustainalytics ESG risk ratings and controversy research joined to holdings for mandate screening.",
+                            users="ESG research, compliance and portfolio managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of ESG risk ratings", "Monthly refresh")),
                         ),
                         tile(
                             "Morningstar Direct",
                             "chart",
                             "Fund, index and managed-investment data with performance and holdings for cross-fund analysis and reporting.",
                             "morningstar",
+                            cat="Investment Research & Data Platform",
+                            what="Fund, index and managed-investment data with performance and holdings for cross-fund analysis and reporting.",
+                            users="Research, product and client reporting teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-3 GB/day fund + holdings data", "Daily feed")),
                         ),
                     ],
                 },
                 fed_group(
                     "Investment BoR (IBOR)",
                     "Portfolio accounting and the investment book of record left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited positions.",
+                    cat="Investment Book of Record (IBOR)",
+                    what="Portfolio accounting and the investment book of record kept in the incumbent system and queried in place, giving one audited view of positions and cash.",
+                    users="Investment operations, fund accounting and finance.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical positions", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -186,16 +300,31 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                         "stream",
                         "Streaming FIX order, execution and market-data sessions parsed on arrival and landed as structured events.",
                         "fix",
+                        cat="FIX Messaging Feed",
+                        what="Streaming FIX order, execution and market-data sessions parsed on arrival and landed as structured events.",
+                        users="Market-data engineering and execution operations.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "1-10k messages/sec at peak", "Continuous (sub-second)")),
                     ),
                     tile(
                         "Market Data Bus",
                         "stream",
                         "Existing Kafka and multicast market-data topics carrying ticks, quotes and reference updates land here and are drawn generically on the reference board.",
+                        cat="Streaming Market Data Bus",
+                        what="Existing Kafka and multicast market-data topics carrying ticks, quotes and reference updates consumed into the lakehouse.",
+                        users="Market-data engineering and quant research.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "50k-500k ticks/sec at peak", "Continuous streaming")),
                     ),
                     tile(
                         "Vendor Data APIs",
                         "api",
                         "Bloomberg, LSEG and FactSet request/response and file APIs consumed inbound through managed ELT connectors.",
+                        cat="Market Data Vendor API",
+                        what="Bloomberg, LSEG and FactSet request/response and file APIs consumed inbound through managed ELT connectors.",
+                        users="Market-data engineering and research.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily + on-demand pulls")),
                     ),
                 ]
             ),
@@ -428,7 +557,59 @@ INDUSTRIES_BATCH_CAPITAL_MARKETS = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Portfolio & Performance", "Ask about returns, attribution and exposure across every book in plain language.",
+                          feeds=["BlackRock Aladdin", "Security Master", "MSCI Barra", "Conformed trades, positions, instruments"],
+                          teams=["CIO & Portfolio Mgmt", "Portfolio managers", "Quant Research"],
+                          questions=[
+                              "What did each book return last quarter, and what drove attribution?",
+                              "What is our current factor exposure across the whole portfolio?",
+                              "Which positions contribute most to tracking error against mandate?",
+                              "How has allocation shifted across asset classes this year?",
+                              "Which holdings breach a concentration or mandate limit?"]),
+                    genie("Execution & TCA", "Explore slippage, venue performance and transaction cost against benchmark.",
+                          feeds=["FIX Gateways", "FlexTrade EMS", "Bloomberg B-PIPE", "P&L, risk, TCA, exposure"],
+                          teams=["Trading Desks", "Execution traders", "Desk heads"],
+                          questions=[
+                              "What was our implementation shortfall by desk this week?",
+                              "Which venues delivered the best fill quality for large orders?",
+                              "How does slippage compare against arrival-price benchmark by asset class?",
+                              "Which algos are underperforming on market impact right now?",
+                              "Where are we paying the most in spread by symbol?"]),
+                    genie("Market & Credit Risk", "Ask about VaR, stress, sensitivities and counterparty exposure across books.",
+                          feeds=["Murex MX.3", "Nasdaq Calypso", "MSCI Barra", "P&L, risk, TCA, exposure"],
+                          teams=["Risk Management", "Chief Risk Officer", "Market risk"],
+                          questions=[
+                              "What is our firm-wide VaR today, and the trend this month?",
+                              "How does the book behave under a rates +200bp stress scenario?",
+                              "Which counterparties carry the largest exposure right now?",
+                              "Which books are closest to a limit breach?",
+                              "What are our largest factor sensitivities across the portfolio?"]),
+                    genie("Trade Surveillance", "Investigate manipulation, spoofing and completeness across orders and trades.",
+                          feeds=["FIX Gateways", "DTCC", "Conformed trades, positions, instruments"],
+                          teams=["Compliance & Surveil", "Surveillance", "Regulatory reporting"],
+                          questions=[
+                              "Which traders showed spoofing-like order patterns this week?",
+                              "What was a given trader's activity around this price move?",
+                              "Which alert types have the worst false-positive rate?",
+                              "How many surveillance cases are open past their SLA?",
+                              "Is our order and trade data complete for the reporting period?"]),
+                ],
+                dashboards=[
+                    dashboard("P&L & Attribution", "Return, attribution and exposure across every book on certified Metric Views.",
+                              kpis=["Total return", "Attribution", "Tracking error", "Book P&L", "Exposure by factor"],
+                              teams=["CIO & Portfolio Mgmt", "Trading Desks", "Portfolio managers"]),
+                    dashboard("Firm Risk & Exposure", "VaR, stress, limit usage and counterparty exposure across the firm.",
+                              kpis=["VaR", "Stress loss", "Limit utilization", "Counterparty exposure", "Sensitivities"],
+                              teams=["Risk Management", "Chief Risk Officer", "Credit risk"]),
+                    dashboard("Execution Quality (TCA)", "Slippage, venue performance and market impact against benchmark.",
+                              kpis=["Implementation shortfall", "Slippage vs benchmark", "Venue fill rate", "Market impact", "Spread capture"],
+                              teams=["Trading Desks", "Execution traders", "Desk heads"]),
+                    dashboard("Surveillance & Regulatory", "Alert quality, case backlog and regulatory reporting timeliness.",
+                              kpis=["Alert volume", "False-positive rate", "Case backlog", "Report timeliness", "Reporting completeness"],
+                              teams=["Compliance & Surveil", "Surveillance", "Regulatory reporting"]),
+                ],
             ),
         },
         "top": top_band(

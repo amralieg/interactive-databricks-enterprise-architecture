@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,114 @@ INDUSTRIES_BATCH_NGO = {
         "rails": {
             "src": [
                 {"box": "CRM & Fundraising", "ic": "custlake", "tiles": [
-                        tile("Salesforce Nonprofit Cloud", "custlake", "Donor profiles, campaigns, pledges and recurring gifts from the CRM fundraisers work in.", "sf-nonprofit"),
-                        tile("Blackbaud Raiser's Edge", "people", "Major-gift pipelines, events and acknowledgment history for development teams.", "blackbaud-re"),
-                        tile("Classy Donation Pages", "partner", "Peer-to-peer and crowdfunding transactions with UTM and appeal codes.", "classy"),
+                        tile("Salesforce Nonprofit Cloud", "custlake", "Donor profiles, campaigns, pledges and recurring gifts from the CRM fundraisers work in.", "sf-nonprofit",
+                             cat="Nonprofit CRM / Fundraising",
+                             what="Holds donor profiles, campaigns, pledges and recurring gifts as the CRM fundraisers and development teams work in.",
+                             users="Development, digital fundraising and donor care teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of gift and engagement events/sec", "Continuous CDC"))),
+                        tile("Blackbaud Raiser's Edge", "people", "Major-gift pipelines, events and acknowledgment history for development teams.", "blackbaud-re",
+                             cat="Fundraising / Donor Management",
+                             what="Manages major-gift pipelines, events and acknowledgment history for development teams.",
+                             users="Major gifts, events and donor stewardship teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch"))),
+                        tile("Classy Donation Pages", "partner", "Peer-to-peer and crowdfunding transactions with UTM and appeal codes.", "classy",
+                             cat="Online Giving Platform",
+                             what="Processes peer-to-peer and crowdfunding donations and carries UTM and appeal codes for campaign attribution.",
+                             users="Digital fundraising and campaign analytics teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of transactions/hour at peak", "Continuous (API / webhook)"))),
                     ]},
                 {"box": "Grants & Finance", "ic": "erp", "tiles": [
-                        tile("Blackbaud Financial Edge", "erp", "Restricted and unrestricted funds, allocations and grant drawdowns.", "blackbaud-fe"),
-                        tile("Fluxx Grantmaker", "sheet", "Sub-grant applications, awards and milestone reporting to institutional donors.", "fluxx"),
-                        tile("SAP Public Sector", "erp", "Project accounting, procurement and audit-ready financial close for large NGOs.", "sap-public"),
+                        tile("Blackbaud Financial Edge", "erp", "Restricted and unrestricted funds, allocations and grant drawdowns.", "blackbaud-fe",
+                             cat="Fund Accounting System",
+                             what="Fund accounting system of record for restricted and unrestricted funds, allocations and grant drawdowns.",
+                             users="Finance, fund accounting and grant compliance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Nightly batch + close cycles"))),
+                        tile("Fluxx Grantmaker", "sheet", "Sub-grant applications, awards and milestone reporting to institutional donors.", "fluxx",
+                             cat="Grants Management System",
+                             what="Manages sub-grant applications, awards and milestone reporting to and from institutional donors.",
+                             users="Grant managers, program teams and compliance staff.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Daily + reporting cycles"))),
+                        tile("SAP Public Sector", "erp", "Project accounting, procurement and audit-ready financial close for large NGOs.", "sap-public",
+                             cat="ERP / Financials Suite",
+                             what="Runs project accounting, procurement and audit-ready financial close for large NGOs.",
+                             users="Finance, procurement and controllership teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + monthly close"))),
                     ]},
                 {"box": "Program & Field M&E", "ic": "globe", "tiles": [
-                        tile("CommCare Mobile", "api", "Field surveys, case management and visit logs from community health and protection programs.", "commcare"),
-                        tile("KoBoToolbox", "notebook", "Rapid assessments and baseline surveys deployed in low-connectivity settings.", "kobo"),
-                        tile("DevResults M&E", "chart", "Indicator frameworks, results chains and portfolio dashboards for program teams.", "devresults"),
+                        tile("CommCare Mobile", "api", "Field surveys, case management and visit logs from community health and protection programs.", "commcare",
+                             cat="Field Case Management / Mobile Data",
+                             what="Captures field surveys, case management and visit logs from community health and protection programs, often offline-first.",
+                             users="Field workers, program officers and M&E advisors.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.2-2 GB/day", "Sync on connectivity (batched)"),
+                                 stream=flow(["semi-structured"], "tens of submissions/min at peak", "Continuous when online"))),
+                        tile("KoBoToolbox", "notebook", "Rapid assessments and baseline surveys deployed in low-connectivity settings.", "kobo",
+                             cat="Mobile Survey / Data Collection",
+                             what="Collects rapid assessments and baseline surveys in low-connectivity field settings for program teams.",
+                             users="M&E advisors, assessment teams and field enumerators.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.1-1 GB/day", "Sync on connectivity (batched)"))),
+                        tile("DevResults M&E", "chart", "Indicator frameworks, results chains and portfolio dashboards for program teams.", "devresults",
+                             cat="Monitoring & Evaluation (M&E) System",
+                             what="Holds indicator frameworks, results chains and portfolio dashboards program teams manage outcomes against.",
+                             users="M&E advisors, program directors and country teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.2-1 GB/day", "Daily + reporting cycles"))),
                     ]},
                 {"box": "Logistics & HR", "ic": "stream", "tiles": [
-                        tile("RITA (Logistics Cluster)", "stream", "WFP and Logistics Cluster relief-item tracking: warehouse stock and dispatch to distribution points.", "logistics-cluster"),
-                        tile("Workday HCM", "people", "Staff roster, payroll and duty-of-care records across country offices.", "workday"),
-                        tile("International SOS", "gavel", "Travel risk approvals, incident reports and security check-ins for field staff."),
+                        tile("RITA (Logistics Cluster)", "stream", "WFP and Logistics Cluster relief-item tracking: warehouse stock and dispatch to distribution points.", "logistics-cluster",
+                             cat="Humanitarian Logistics / Supply Chain",
+                             what="Tracks relief-item warehouse stock and dispatch to distribution points across the humanitarian supply chain.",
+                             users="Logistics, supply chain and field operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.2-1 GB/day", "Daily + surge cadence"),
+                                 stream=flow(["semi-structured"], "dispatch events during surges", "Continuous during response"))),
+                        tile("Workday HCM", "people", "Staff roster, payroll and duty-of-care records across country offices.", "workday",
+                             cat="HCM / Payroll Suite",
+                             what="Holds the staff roster, payroll and duty-of-care records across country offices.",
+                             users="Human resources, payroll and security/duty-of-care teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch + payroll cycles"))),
+                        tile("International SOS", "gavel", "Travel risk approvals, incident reports and security check-ins for field staff.",
+                             cat="Travel Risk & Security Platform",
+                             what="Manages travel risk approvals, incident reports and security check-ins for field staff duty of care.",
+                             users="Security, duty-of-care and country management teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "check-in and incident events", "Continuous (event-driven)"))),
                     ]},
-                fed_group("UN Agency Data Mart", "OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog."),
+                fed_group("UN Agency Data Mart", "OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog.",
+                          cat="Partner Data Warehouse / Marts",
+                          what="OCHA and cluster reference datasets kept at partner agencies and queried in place through federation instead of being copied.",
+                          users="Program, coordination and M&E analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured", "semi-structured"], "GB-scale reference marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Guidestar / Candid", "partner", "Charity registry and 990 filings consumed inbound for due diligence on partners.", "candid"),
-                tile("OFAC Sanctions Lists", "gavel", "Watchlist updates parsed on arrival for donor and vendor screening.", "ofac"),
-                tile("IATI d-portal / HXL (HDX)", "globe", "Aid-flow (IATI) and 3W activity data on HDX parsed on arrival for coordination and targeting.", "openweather"),
+                tile("Guidestar / Candid", "partner", "Charity registry and 990 filings consumed inbound for due diligence on partners.", "candid",
+                     cat="Charity Registry / Nonprofit Data",
+                     what="Provides charity registry profiles and 990 filings consumed inbound for due diligence on partners and grantees.",
+                     users="Grants compliance, partnerships and due-diligence teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs reference", "Periodic + on-demand API"))),
+                tile("OFAC Sanctions Lists", "gavel", "Watchlist updates parsed on arrival for donor and vendor screening.", "ofac",
+                     cat="Sanctions & Watchlist Provider",
+                     what="Publishes sanctions and watchlist updates parsed on arrival for donor, vendor and partner screening.",
+                     users="Compliance, sub-grantee risk and finance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs per update", "Daily + on-change"))),
+                tile("IATI d-portal / HXL (HDX)", "globe", "Aid-flow (IATI) and 3W activity data on HDX parsed on arrival for coordination and targeting.", "openweather",
+                     cat="Aid-Flow & Coordination Data",
+                     what="Carries aid-flow (IATI) and 3W (who-does-what-where) activity data on HDX parsed on arrival for coordination and targeting.",
+                     users="Program coordination, M&E and targeting teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GB-scale activity data", "Periodic + on-demand"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Executive Directors", "Genie One", "The CEO on funds raised and program reach; the CFO on restricted-fund compliance and audit readiness when a major institutional grant closes out.", [["Genie One", "Ask what unrestricted reserves are after last quarter's campaigns without waiting on finance."], ["AI/BI", "Fundraising, program cost and compliance on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"restricted\" means one thing across CRM and ERP."]], sub=[["CEO & Board", "funds raised, program reach and whether the mission is moving for the money spent."], ["CFO & Finance", "restricted-fund compliance, reserves and a clean audit when a major grant closes out."], ["Country Directors", "portfolio delivery and cost per outcome across programs and geographies."]], ucs=["Cost per Outcome", "Program Outcomes", "Grant Compliance", "Donor Churn"]),
@@ -89,6 +175,56 @@ INDUSTRIES_BATCH_NGO = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Funders, partners and auditors reading live tables with no copy and no egress duplication."),
                     ]},
+            ], genie_spaces=[
+                genie("Donor & Fundraising", "Ask about funds raised, retention and campaign performance across donors in plain language.",
+                      feeds=["Salesforce Nonprofit Cloud", "Blackbaud Raiser's Edge", "Classy Donation Pages", "Reach, cost, compliance"],
+                      teams=["Development & Marketing", "Executive Directors", "Major Gifts"],
+                      questions=[
+                          "What did we raise this quarter versus last, by campaign and channel?",
+                          "Which major-gift prospects are ready for an ask now?",
+                          "What is our donor retention rate and how is it trending?",
+                          "Which lapsed donors are the best win-back candidates?",
+                          "What is cost per dollar raised by acquisition channel?"]),
+                genie("Program & M&E", "Explore indicator progress, beneficiary reach and cost per outcome across the portfolio.",
+                      feeds=["DevResults M&E", "CommCare Mobile", "KoBoToolbox", "Conformed donor, grant"],
+                      teams=["Programs & M&E", "Executive Directors", "M&E Advisors"],
+                      questions=[
+                          "Which sites missed their targets last month and by how much?",
+                          "What is cost per outcome by program and geography?",
+                          "How complete is field survey data across active projects?",
+                          "Which cohorts are falling behind on program outcomes?",
+                          "What is beneficiary reach this quarter versus plan?"]),
+                genie("Grants & Compliance", "Answer questions on grant spend, restricted-fund exceptions and reporting deadlines.",
+                      feeds=["Fluxx Grantmaker", "Blackbaud Financial Edge", "SAP Public Sector", "Reach, cost, compliance"],
+                      teams=["Grants & Compliance", "Executive Directors", "Compliance & Audit"],
+                      questions=[
+                          "Which grants are near closeout or reporting deadlines?",
+                          "Where is spend running ahead of or behind budget by award?",
+                          "What is our compliance exception rate across active grants?",
+                          "Which restricted funds are at risk of misallocation?",
+                          "Which sub-grantees are behind on milestone reporting?"]),
+                genie("Field & Logistics", "Ask about stock positions, dispatch and duty of care during emergency responses.",
+                      feeds=["RITA (Logistics Cluster)", "Workday HCM", "IATI d-portal / HXL (HDX)", "Conformed donor, grant"],
+                      teams=["Field Operations", "Logistics & Supply", "Security & Duty of Care"],
+                      questions=[
+                          "What is current relief-item stock by warehouse and item?",
+                          "Which distribution points are short of supply right now?",
+                          "How many field staff have outstanding security check-ins?",
+                          "What is dispatch lead time during the current response?",
+                          "Where is need concentrating based on the latest activity data?"]),
+            ], dashboards=[
+                dashboard("Fundraising Performance", "Funds raised, donor retention and cost per dollar raised across campaigns and channels.",
+                          kpis=["Funds raised", "Donor retention", "Cost per dollar raised", "Average gift", "Lapsed rate"],
+                          teams=["Development & Marketing", "Executive Directors", "Donor Care"]),
+                dashboard("Program Outcomes", "Indicator attainment, beneficiary reach and cost per outcome by program and geography.",
+                          kpis=["Indicator attainment", "Beneficiary reach", "Cost per outcome", "Data completeness", "On-track programs"],
+                          teams=["Programs & M&E", "Executive Directors", "M&E Advisors"]),
+                dashboard("Grant Compliance", "Spend against budget, restricted-fund exceptions and reporting deadline status.",
+                          kpis=["Spend vs budget", "Compliance exception rate", "Reporting on-time rate", "Restricted-fund balance", "Sub-grantee risk"],
+                          teams=["Grants & Compliance", "Compliance & Audit", "Executive Directors"]),
+                dashboard("Field Operations", "Stock positions, distribution reach, dispatch lead time and duty-of-care status during surges.",
+                          kpis=["Stock on hand", "Distribution reach", "Dispatch lead time", "Open check-ins", "Volunteer coverage"],
+                          teams=["Field Operations", "Logistics & Supply", "Security & Duty of Care"]),
             ]),
         },
         "top": top_band(

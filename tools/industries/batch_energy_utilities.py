@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,121 @@ INDUSTRIES_BATCH_ENERGY_UTILITIES = {
         "rails": {
             "src": [
                 {"box": "Metering & AMI", "ic": "iot", "tiles": [
-                    tile("Itron OpenWay", "iot", "Advanced metering infrastructure interval reads, voltage events and remote connect/disconnect commands.", "itron"),
-                    tile("Landis+Gyr Gridstream", "iot", "Head-end collection, meter events and power-quality alarms from the AMI estate.", "landis-gyr"),
-                    tile("Sensus FlexNet", "stream", "RF mesh AMI reads and endpoint alarms for water and electric deployments on FlexNet.", "sensus")
+                    tile("Itron OpenWay", "iot", "Advanced metering infrastructure interval reads, voltage events and remote connect/disconnect commands.", "itron",
+                         cat="AMI Head-End System",
+                         what="Collects interval meter reads, voltage events and remote connect/disconnect commands from the electric AMI estate.",
+                         users="Metering operations, revenue protection and grid analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "50-200 GB/day interval reads", "Hourly / daily meter reads"),
+                             stream=flow(["semi-structured"], "1-10k events/sec at peak", "Continuous meter events"))),
+                    tile("Landis+Gyr Gridstream", "iot", "Head-end collection, meter events and power-quality alarms from the AMI estate.", "landis-gyr",
+                         cat="AMI Head-End System",
+                         what="Head-end collection of meter reads, events and power-quality alarms across the Gridstream AMI network.",
+                         users="Metering operations, power-quality and distribution engineering teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "30-120 GB/day", "Hourly / daily reads"),
+                             stream=flow(["semi-structured"], "1-8k events/sec", "Continuous alarms + events"))),
+                    tile("Sensus FlexNet", "stream", "RF mesh AMI reads and endpoint alarms for water and electric deployments on FlexNet.", "sensus",
+                         cat="AMI Meter Data Management (MDMS)",
+                         what="RF-mesh AMI reads and endpoint alarms for electric and water endpoints, feeding meter data management and settlement.",
+                         users="Metering operations, revenue protection and billing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-60 GB/day", "Hourly reads"),
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous endpoint alarms"))),
                 ]},
                 {"box": "SCADA & Grid Ops", "ic": "stream", "tiles": [
-                    tile("AVEVA PI Historian", "db", "Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.", "osisoft-pi"),
-                    tile("GE Vernova ADMS", "gauge", "Distribution management: fault location, switching orders and restoration state for the control centre.", "ge-adms"),
-                    tile("ABB Ellipse EAM", "erp", "Enterprise asset management: work orders, inspections and equipment condition for grid plant.", "abb-ellipse")
+                    tile("AVEVA PI Historian", "db", "Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.", "osisoft-pi",
+                         cat="Process/Time-Series Historian",
+                         what="Stores substation analogs, breaker operations and equipment alarms at SCADA sampling rates as the grid time-series system of record.",
+                         users="Control-centre operators, protection engineers and grid analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-100 GB/day tag history", "Hourly aggregates"),
+                             stream=flow(["semi-structured"], "10-100k samples/sec", "Continuous (sub-second)"))),
+                    tile("GE Vernova ADMS", "gauge", "Distribution management: fault location, switching orders and restoration state for the control centre.", "ge-adms",
+                         cat="Advanced Distribution Management (ADMS)",
+                         what="Runs distribution operations: fault location, switching orders and restoration state that the control centre acts on.",
+                         users="Control-centre operators, distribution operations and storm coordinators.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (near real-time)"))),
+                    tile("ABB Ellipse EAM", "erp", "Enterprise asset management: work orders, inspections and equipment condition for grid plant.", "abb-ellipse",
+                         cat="Enterprise Asset Management (EAM)",
+                         what="Manages work orders, inspections and equipment condition for grid plant across the asset base.",
+                         users="Reliability engineering, maintenance planning and asset management.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Nightly batch"))),
                 ]},
                 {"box": "Customer & Billing", "ic": "erp", "tiles": [
-                    tile("SAP IS-U", "erp", "Utility customer master, rate schedules, billing determinants and payment history.", "sap-isu"),
-                    tile("Oracle Utilities CCB", "db", "Customer care and billing for meter-to-cash, rate cases and collections workflows.", "oracle-ccb"),
-                    tile("Kubra Payment Portal", "partner", "Customer self-service payments, paperless billing enrolment and outage notifications.", "kubra")
+                    tile("SAP IS-U", "erp", "Utility customer master, rate schedules, billing determinants and payment history.", "sap-isu",
+                         cat="Utility Customer Information System (CIS)",
+                         what="Holds the customer master, rate schedules, billing determinants and payment history for the meter-to-cash process.",
+                         users="Billing operations, credit and collections and Finance.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch + billing cycles"))),
+                    tile("Oracle Utilities CCB", "db", "Customer care and billing for meter-to-cash, rate cases and collections workflows.", "oracle-ccb",
+                         cat="Customer Care & Billing (CC&B)",
+                         what="Runs customer care and billing for meter-to-cash, rate application and collections workflows.",
+                         users="Contact centre, billing analysts and credit & collections teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch + billing cycles"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("Kubra Payment Portal", "partner", "Customer self-service payments, paperless billing enrolment and outage notifications.", "kubra",
+                         cat="Customer Engagement & Payments Platform",
+                         what="Handles customer self-service payments, paperless-billing enrolment and outage notifications across channels.",
+                         users="Customer operations, digital channels and billing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                             stream=flow(["semi-structured"], "100s of events/sec at peak", "Continuous (payments + notifications)"))),
                 ]},
                 {"box": "GIS & Outage Mgmt", "ic": "globe", "tiles": [
-                    tile("Esri ArcGIS Utility", "globe", "Network model, service territory and asset locations the field and planning teams navigate by.", "esri-utility"),
-                    tile("Milsoft OMS", "gauge", "Outage management: trouble tickets, crew dispatch and ETR communicated to customers.", "milsoft-oms"),
-                    tile("Weather & DER Telemetry", "iot", "Forecast feeds and behind-the-meter solar and battery inverter telemetry for net load planning.")
+                    tile("Esri ArcGIS Utility", "globe", "Network model, service territory and asset locations the field and planning teams navigate by.", "esri-utility",
+                         cat="Geographic Information System (GIS)",
+                         what="Holds the electric network model, service territory and asset locations the field and planning teams navigate and analyse by.",
+                         users="Distribution planning, GIS/asset data and field engineering teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "5-30 GB network model", "Daily / weekly model syncs"))),
+                    tile("Milsoft OMS", "gauge", "Outage management: trouble tickets, crew dispatch and ETR communicated to customers.", "milsoft-oms",
+                         cat="Outage Management System (OMS)",
+                         what="Manages outage trouble tickets, crew dispatch and estimated restoration times communicated to customers.",
+                         users="Control-centre operators, storm coordinators and customer operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day (higher on storm days)", "Continuous during events"),
+                             stream=flow(["semi-structured"], "100s-1000s of events/sec on storm days", "Continuous (event-driven)"))),
+                    tile("Weather & DER Telemetry", "iot", "Forecast feeds and behind-the-meter solar and battery inverter telemetry for net load planning.",
+                         cat="DER & Weather Telemetry Feed",
+                         what="Forecast feeds plus behind-the-meter solar and battery inverter telemetry used for net-load planning and DER coordination.",
+                         users="Distribution planning, DER operations and forecasting teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k readings/sec", "Continuous inverter telemetry"))),
                 ]},
                 fed_group(
                     "Regulatory Cost Accounting",
                     "FERC and state jurisdictional cost ledgers left where they are and queried in place under Unity Catalog.",
+                    cat="Enterprise Data Warehouse",
+                    what="FERC and state jurisdictional cost-of-service ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.",
+                    users="Regulatory affairs, rate design and cost-of-service teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical ledgers", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("Green Button Connect", "api", "Customer-authorised interval usage from retailers and neighbouring utilities via Green Button standards.", "green-button"),
-                tile("IEEE 2030.5 SEP2", "stream", "Smart Energy Profile demand-response events and thermostat enrollments parsed on arrival.", "ieee-2030"),
-                tile("Weather Data Services", "globe", "Forecast and actual temperature feeds consumed inbound for load forecasting models.")
+                tile("Green Button Connect", "api", "Customer-authorised interval usage from retailers and neighbouring utilities via Green Button standards.", "green-button",
+                     cat="Customer Usage Data Exchange",
+                     what="Customer-authorised interval usage exchanged with retailers and neighbouring utilities under the Green Button standard.",
+                     users="Customer analytics, energy-efficiency programs and digital teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "0.5-3 GB/day", "Daily + on-demand exports"))),
+                tile("IEEE 2030.5 SEP2", "stream", "Smart Energy Profile demand-response events and thermostat enrollments parsed on arrival.", "ieee-2030",
+                     cat="DER Control & Demand-Response Protocol",
+                     what="Smart Energy Profile demand-response events and thermostat/DER enrollments parsed on arrival for grid-edge coordination.",
+                     users="DER operations, demand-response program and grid-edge teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (event-driven)"))),
+                tile("Weather Data Services", "globe", "Forecast and actual temperature feeds consumed inbound for load forecasting models.",
+                     cat="Weather & Climate Data Provider",
+                     what="Forecast and actual temperature and weather feeds consumed inbound as the exogenous driver for load-forecasting models.",
+                     users="Load forecasting, grid operations and planning teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day gridded forecasts", "Multiple forecast cycles daily"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & COO", "Genie One", "The CEO on SAIDI reliability, rate-case outcomes and the capital plan; the COO on storm-response cost and how fast the last customer was restored.",
@@ -148,6 +238,56 @@ INDUSTRIES_BATCH_ENERGY_UTILITIES = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Municipalities, regulators and research partners reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Grid Reliability & Outages", "Ask about outages, restoration, SAIDI and feeder state in plain language.",
+                      feeds=["Milsoft OMS", "AVEVA PI Historian", "GE Vernova ADMS", "SAIDI, losses, collections"],
+                      teams=["Grid Operations", "CEO & COO", "Storm Coordinators"],
+                      questions=[
+                          "What was SAIDI by district yesterday?",
+                          "How many customers are currently out and what is the estimated restoration time?",
+                          "Which feeders have the worst momentary interruption counts this month?",
+                          "Where are crews staged relative to the open outages right now?",
+                          "How does this storm's restoration pace compare to the last major event?"]),
+                genie("Customer & Revenue", "Explore billing, high-bill complaints, collections and non-technical loss.",
+                      feeds=["SAP IS-U", "Oracle Utilities CCB", "Itron OpenWay", "Conformed meter, premise"],
+                      teams=["Customer Operations", "Credit & Collections", "Revenue Protection"],
+                      questions=[
+                          "Which premises drove yesterday's high-bill complaint spike?",
+                          "What is our collections effectiveness by segment this month?",
+                          "Which accounts show AMI tamper or theft signals right now?",
+                          "How much unbilled usage are we carrying across the estate?",
+                          "What is first-call resolution in the contact centre this week?"]),
+                genie("Asset Health & Capital", "Answer questions on asset condition, failure risk and replacement priority.",
+                      feeds=["ABB Ellipse EAM", "Esri ArcGIS Utility", "AVEVA PI Historian", "Conformed meter, premise"],
+                      teams=["Asset Management", "Reliability Engineering", "Capital Programs"],
+                      questions=[
+                          "Which transformers are at highest failure risk this quarter?",
+                          "Where is vegetation grow-in risk concentrated across the network?",
+                          "Which feeder classes have the largest work-order backlog?",
+                          "What is remaining life on our aging conductor segments?",
+                          "Which replacement candidates give the most reliability improvement per dollar?"]),
+                genie("Load & DER", "Ask about demand forecasts, DER output and net load across the territory.",
+                      feeds=["Weather Data Services", "Weather & DER Telemetry", "IEEE 2030.5 SEP2", "Itron OpenWay"],
+                      teams=["Grid Operations", "Distribution Planners", "Regulatory & Rates"],
+                      questions=[
+                          "What is the weather-adjusted load forecast for tomorrow's peak?",
+                          "How much behind-the-meter solar is offsetting load by feeder right now?",
+                          "Which feeders are approaching hosting-capacity limits?",
+                          "What was demand-response dispatch performance in the last event?",
+                          "How is electrification changing peak load year over year?"]),
+            ], dashboards=[
+                dashboard("Reliability & Storm", "SAIDI, SAIFI, restoration and crew performance on certified operations Metric Views.",
+                          kpis=["SAIDI", "SAIFI", "Customers out", "Estimated restoration time", "Crew utilization"],
+                          teams=["Grid Operations", "CEO & COO", "Storm Coordinators"]),
+                dashboard("Customer & Collections", "Complaints, first-call resolution, collections effectiveness and non-technical loss.",
+                          kpis=["High-bill complaints", "First-call resolution", "Collections effectiveness", "Non-technical loss", "Unbilled usage"],
+                          teams=["Customer Operations", "Credit & Collections", "Revenue Protection"]),
+                dashboard("Asset Health & Capital", "Asset condition, failure risk, work-order backlog and replacement priority.",
+                          kpis=["Failure risk score", "Work-order backlog", "Remaining life", "Vegetation risk", "Reliability per capital dollar"],
+                          teams=["Asset Management", "Reliability Engineering", "Capital Programs"]),
+                dashboard("Load & DER", "Demand-forecast accuracy, DER output, hosting capacity and demand-response performance.",
+                          kpis=["Demand forecast accuracy", "Peak load", "DER output", "Hosting capacity headroom", "Demand-response performance"],
+                          teams=["Grid Operations", "Distribution Planners", "Regulatory & Rates"]),
             ]),
         },
         "top": top_band(

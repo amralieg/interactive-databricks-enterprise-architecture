@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -30,58 +33,163 @@ INDUSTRIES_BATCH_WHOLESALE_DISTRIBUTION = {
                     "box": "ERP & Finance",
                     "ic": "erp",
                     "tiles": [
-                        tile("SAP S/4HANA", "erp", "Orders, inventory, procurement and finance for large distributors; the system of record for the order-to-cash and procure-to-pay flow.", "sap"),
-                        tile("Infor Distribution", "erp", "CloudSuite Distribution ERP purpose-built for wholesale distributors: inventory, pricing and warehouse operations.", "infor"),
-                        tile("Epicor Prophet 21", "erp", "Distribution ERP widely run by mid-market wholesalers for order management, inventory and branch operations.", "epicor"),
-                        tile("Oracle NetSuite", "erp", "Cloud ERP for distributors covering order management, inventory, procurement and financials.", "netsuite"),
+                        tile("SAP S/4HANA", "erp", "Orders, inventory, procurement and finance for large distributors; the system of record for the order-to-cash and procure-to-pay flow.", "sap",
+                             cat="Enterprise Resource Planning (ERP)",
+                             what="Holds the system-of-record for order-to-cash and procure-to-pay across large distributors, the source of orders, inventory, purchasing and finance.",
+                             users="Finance & Rebates, Supply Chain & Ops and Sales & Commercial teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "20-100 GB/day", "Nightly batch + hourly deltas"),
+                                 stream=flow(["semi-structured"], "hundreds of postings/sec", "Continuous CDC"))),
+                        tile("Infor Distribution", "erp", "CloudSuite Distribution ERP purpose-built for wholesale distributors: inventory, pricing and warehouse operations.", "infor",
+                             cat="Distribution ERP",
+                             what="Purpose-built distribution ERP covering inventory, pricing and warehouse operations for wholesale distributors.",
+                             users="Supply Chain & Ops, Category & Merch and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-40 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("Epicor Prophet 21", "erp", "Distribution ERP widely run by mid-market wholesalers for order management, inventory and branch operations.", "epicor",
+                             cat="Distribution ERP",
+                             what="Mid-market distribution ERP for order management, inventory and branch operations, the operational backbone of many wholesalers.",
+                             users="Supply Chain & Ops, Sales & Commercial and Branch operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-25 GB/day", "Nightly batch"))),
+                        tile("Oracle NetSuite", "erp", "Cloud ERP for distributors covering order management, inventory, procurement and financials.", "netsuite",
+                             cat="Cloud ERP",
+                             what="Cloud ERP covering order management, inventory, procurement and financials for distributors running on a SaaS backbone.",
+                             users="Finance & Rebates, Supply Chain & Ops and Sales & Commercial teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-25 GB/day", "Hourly / nightly sync"))),
                     ],
                 },
                 {
                     "box": "Warehouse (WMS)",
                     "ic": "store",
                     "tiles": [
-                        tile("Manhattan Active WMS", "store", "Warehouse management for picking, putaway, slotting and labour across the DC network, the source of execution events.", "manhattan"),
-                        tile("Blue Yonder WMS", "store", "Warehouse management and fulfilment orchestration across distribution centres and branch stock.", "blueyonder"),
-                        tile("Körber WMS", "store", "Körber Supply Chain warehouse management for wave planning, inventory moves and labour in the DC.", "korber"),
+                        tile("Manhattan Active WMS", "store", "Warehouse management for picking, putaway, slotting and labour across the DC network, the source of execution events.", "manhattan",
+                             cat="Warehouse Management System (WMS)",
+                             what="Runs picking, putaway, slotting and labour across the DC network, the source of execution move events behind fill rate and productivity.",
+                             users="Supply Chain & Ops, Warehouse operations and Data Engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-40 GB/day", "Hourly batch"),
+                                 stream=flow(["semi-structured"], "hundreds of moves/sec at peak", "Continuous move events"))),
+                        tile("Blue Yonder WMS", "store", "Warehouse management and fulfilment orchestration across distribution centres and branch stock.", "blueyonder",
+                             cat="Warehouse Management System (WMS)",
+                             what="Orchestrates warehouse management and fulfilment across distribution centres and branch stock, feeding order and shipment execution state.",
+                             users="Supply Chain & Ops and Warehouse operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-25 GB/day", "Hourly batch + intraday deltas"))),
+                        tile("Körber WMS", "store", "Körber Supply Chain warehouse management for wave planning, inventory moves and labour in the DC.", "korber",
+                             cat="Warehouse Management System (WMS)",
+                             what="Handles wave planning, inventory moves and labour in the DC, emitting the task and move events behind slotting and labour analytics.",
+                             users="Supply Chain & Ops and Warehouse operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-10 GB/day", "Hourly batch"))),
                     ],
                 },
                 {
                     "box": "Transport & Logistics",
                     "ic": "stream",
                     "tiles": [
-                        tile("Oracle OTM", "stream", "Oracle Transportation Management: route planning, carrier selection, freight rating and settlement across the network.", "oracle-otm"),
-                        tile("project44", "iot", "Real-time transportation visibility: in-transit tracking, ETAs and exception alerts across carriers.", "project44"),
-                        tile("FourKites", "iot", "Supply chain visibility platform tracking loads and shipments end to end for proactive exception handling.", "fourkites"),
+                        tile("Oracle OTM", "stream", "Oracle Transportation Management: route planning, carrier selection, freight rating and settlement across the network.", "oracle-otm",
+                             cat="Transportation Management System (TMS)",
+                             what="Plans routes, selects carriers, rates freight and settles across the network, the source of movement and landed-cost data.",
+                             users="Supply Chain & Ops, Transport & logistics and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("project44", "iot", "Real-time transportation visibility: in-transit tracking, ETAs and exception alerts across carriers.", "project44",
+                             cat="Real-Time Transportation Visibility",
+                             what="Provides in-transit tracking, ETAs and exception alerts across carriers, the live status feed behind the OTIF control tower.",
+                             users="Supply Chain & Ops, Transport & logistics and Customer service teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous (API / webhook)"))),
+                        tile("FourKites", "iot", "Supply chain visibility platform tracking loads and shipments end to end for proactive exception handling.", "fourkites",
+                             cat="Real-Time Transportation Visibility",
+                             what="Tracks loads and shipments end to end for proactive exception handling, feeding predictive ETA and dwell into service analytics.",
+                             users="Supply Chain & Ops, Transport & logistics and Warehouse operations teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous (API / webhook)"))),
                     ],
                 },
                 {
                     "box": "EDI & B2B Commerce",
                     "ic": "api",
                     "tiles": [
-                        tile("SPS Commerce EDI", "api", "Retail and distribution EDI network carrying purchase orders, ASNs and invoices between trading partners.", "sps"),
-                        tile("TrueCommerce EDI", "api", "EDI and B2B integration network for order, shipment and invoice documents across the trading community.", "truecommerce"),
-                        tile("SAP Commerce Cloud", "product", "B2B commerce and punchout catalogs: contract pricing, availability and reorder for buyer procurement systems.", "sap-commerce"),
+                        tile("SPS Commerce EDI", "api", "Retail and distribution EDI network carrying purchase orders, ASNs and invoices between trading partners.", "sps",
+                             cat="EDI / B2B Network",
+                             what="Carries purchase orders, ASNs and invoices between trading partners across the retail and distribution community, the B2B document backbone.",
+                             users="Supply Chain & Ops, Category & Merch and Integration Engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Multiple daily batches"),
+                                 stream=flow(["semi-structured"], "tens-hundreds of documents/sec", "Continuous document flow"))),
+                        tile("TrueCommerce EDI", "api", "EDI and B2B integration network for order, shipment and invoice documents across the trading community.", "truecommerce",
+                             cat="EDI / B2B Network",
+                             what="EDI and B2B integration network for order, shipment and invoice documents across the trading community, joined to orders for status and audit.",
+                             users="Supply Chain & Ops, Sales & Commercial and Integration Engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Multiple daily batches"))),
+                        tile("SAP Commerce Cloud", "product", "B2B commerce and punchout catalogs: contract pricing, availability and reorder for buyer procurement systems.", "sap-commerce",
+                             cat="B2B Commerce Platform",
+                             what="Serves B2B commerce and punchout catalogs with contract pricing, availability and reorder to buyer procurement systems, emitting web and order events.",
+                             users="Sales & Commercial, Inside sales & e-commerce and Commercial App Devs.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Hourly sync"),
+                                 stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous clickstream / orders"))),
                     ],
                 },
                 {
                     "box": "Pricing & CRM",
                     "ic": "market",
                     "tiles": [
-                        tile("Vendavo Pricing", "market", "B2B price management and margin optimisation: price guidance, deal scoring and rebate administration.", "vendavo"),
-                        tile("PROS Pricing", "market", "AI-driven price optimisation and CPQ for distribution, feeding willingness-to-pay and quote guidance.", "pros"),
-                        tile("Salesforce Sales Cloud", "crm", "Accounts, opportunities and quotes for field, inside and account-management sales teams.", "salesforce"),
+                        tile("Vendavo Pricing", "market", "B2B price management and margin optimisation: price guidance, deal scoring and rebate administration.", "vendavo",
+                             cat="B2B Price Management",
+                             what="Manages B2B pricing and margin optimisation with price guidance, deal scoring and rebate administration, the source of contract and quote pricing.",
+                             users="Sales & Commercial, Finance & Rebates and Pricing & Demand Sci teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Daily price + rebate refresh"))),
+                        tile("PROS Pricing", "market", "AI-driven price optimisation and CPQ for distribution, feeding willingness-to-pay and quote guidance.", "pros",
+                             cat="Price Optimization & CPQ",
+                             what="Provides AI-driven price optimisation and CPQ, feeding willingness-to-pay and quote guidance into the sales and commerce path.",
+                             users="Sales & Commercial, Pricing & Demand Sci and Inside sales teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Daily + on-demand quote scoring"))),
+                        tile("Salesforce Sales Cloud", "crm", "Accounts, opportunities and quotes for field, inside and account-management sales teams.", "salesforce",
+                             cat="Sales CRM",
+                             what="Holds accounts, opportunities and quotes for field, inside and account-management teams, the relationship view behind churn and cross-sell.",
+                             users="Sales & Commercial, Sales leadership and Account management teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
                     ],
                 },
                 fed_group(
                     "Finance & Rebate Mart",
                     "Rebate, chargeback and margin marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.",
+                    cat="Finance Data Warehouse",
+                    what="Rebate, chargeback and margin marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.",
+                    users="Finance & Rebates, CFO & controllers and Rebate & pricing admin analysts.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
                 [
-                    tile("Dun & Bradstreet", "partner", "Firmographics, corporate hierarchies and credit signals for customer onboarding and credit risk.", "dnb"),
-                    tile("Circana POS", "chart", "Downstream point-of-sale and market data for demand sensing across categories and channels.", "circana"),
-                    tile("DAT Freight Rates", "market", "Spot and contract freight rate benchmarks for carrier negotiation and landed-cost analysis.", "dat"),
+                    tile("Dun & Bradstreet", "partner", "Firmographics, corporate hierarchies and credit signals for customer onboarding and credit risk.", "dnb",
+                         cat="Firmographic & Credit Data",
+                         what="Supplies firmographics, corporate hierarchies and credit signals used to onboard customers and assess credit and counterparty risk.",
+                         users="Finance & Rebates, Credit & AR and Sales & Commercial teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Weekly + on-demand refresh"))),
+                    tile("Circana POS", "chart", "Downstream point-of-sale and market data for demand sensing across categories and channels.", "circana",
+                         cat="POS & Market Data",
+                         what="Provides downstream point-of-sale and market data for demand sensing across categories and channels, feeding forecast and assortment decisions.",
+                         users="Category & Merch, Pricing & Demand Sci and Merchandising teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/week", "Weekly syndicated feed"))),
+                    tile("DAT Freight Rates", "market", "Spot and contract freight rate benchmarks for carrier negotiation and landed-cost analysis.", "dat",
+                         cat="Freight Rate Benchmarks",
+                         what="Publishes spot and contract freight-rate benchmarks used for carrier negotiation and landed-cost analysis.",
+                         users="Supply Chain & Ops, Transport & logistics and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "MBs", "Daily / weekly rate benchmarks"))),
                 ]
             ),
             "ppl": ppl2(
@@ -204,7 +312,59 @@ INDUSTRIES_BATCH_WHOLESALE_DISTRIBUTION = {
                             tile("Sharing Recipients", "share", "Suppliers, carriers and buying groups reading live tables with no copy and no egress duplication."),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Inventory & Fill-Rate", "Ask about stock positions, fill rate and orders at risk of missing OTIF.",
+                          feeds=["SAP S/4HANA", "Manhattan Active WMS", "project44", "Fill-rate, margin, forecast"],
+                          teams=["Supply Chain & Ops", "Demand & supply planning", "Warehouse operations"],
+                          questions=[
+                              "Which SKU-locations are about to stock out on current demand?",
+                              "What is fill rate by customer and branch this week?",
+                              "Which open orders are at risk of missing OTIF today?",
+                              "Where is working capital tied up in slow-moving inventory?",
+                              "Which SKUs are dead stock across the branch network?"]),
+                    genie("Margin & Rebates", "Explore gross-to-net margin, rebate accruals and chargeback exposure.",
+                          feeds=["SAP S/4HANA", "Vendavo Pricing", "Finance & Rebate Mart", "Fill-rate, margin, forecast"],
+                          teams=["Finance & Rebates", "CFO & controllers", "Rebate & pricing admin"],
+                          questions=[
+                              "What is gross-to-net margin by customer and category this month?",
+                              "Which supplier rebate tiers are at risk of being missed this quarter?",
+                              "Which customer chargebacks look invalid and worth disputing?",
+                              "Which customers and SKUs are loss-making after rebates?",
+                              "How much earned rebate is still uncaptured against contract terms?"]),
+                    genie("Sales & Customer Growth", "Answer share-of-wallet, churn and cross-sell questions across the account base.",
+                          feeds=["Salesforce Sales Cloud", "SAP Commerce Cloud", "SAP S/4HANA", "Conformed customer, SKU, order"],
+                          teams=["Sales & Commercial", "Account management", "Inside sales & e-commerce"],
+                          questions=[
+                              "Which accounts are drifting and reducing order frequency?",
+                              "Where is the biggest cross-sell whitespace by account?",
+                              "What is share of wallet on our top 100 customers?",
+                              "Which reps are below target on productivity this quarter?",
+                              "How is the B2B web channel converting versus the branch?"]),
+                    genie("Demand & Supplier Performance", "Ask about SKU-location demand forecasts and supplier lead-time reliability.",
+                          feeds=["Circana POS", "SPS Commerce EDI", "SAP S/4HANA", "Fill-rate, margin, forecast"],
+                          teams=["Category & Merch", "Vendor management", "Demand & supply planning"],
+                          questions=[
+                              "Which SKU-locations have the least accurate forecast right now?",
+                              "Which suppliers are slipping on lead time versus commitment?",
+                              "How does forecast bias vary by category and season?",
+                              "Which suppliers have the worst fill rate on our purchase orders?",
+                              "Where should assortment change based on demand signals?"]),
+                ],
+                dashboards=[
+                    dashboard("Fill-Rate & Service", "Fill rate, OTIF and orders at risk across customers and branches.",
+                              kpis=["Fill rate", "OTIF", "Orders at risk", "Backorder rate", "Perfect order rate"],
+                              teams=["Supply Chain & Ops", "Executive Office", "Demand & supply planning"]),
+                    dashboard("Margin & Rebate Recovery", "Gross-to-net margin, rebate accruals and chargeback exposure.",
+                              kpis=["Gross-to-net margin", "Rebate accrual", "Chargeback exposure", "Margin leakage", "Net profit"],
+                              teams=["Finance & Rebates", "CFO & controllers", "Executive Office"]),
+                    dashboard("Inventory & Working Capital", "Inventory turns, dead stock and working capital by SKU and branch.",
+                              kpis=["Inventory turns", "Days on hand", "Dead stock value", "Working capital", "Stockout rate"],
+                              teams=["Supply Chain & Ops", "Category & Merch", "Finance & Rebates"]),
+                    dashboard("Sales & Customer Health", "Share of wallet, churn risk and cross-sell across the account base.",
+                              kpis=["Share of wallet", "Churn risk", "Cross-sell rate", "Win rate", "Order frequency"],
+                              teams=["Sales & Commercial", "Account management", "Inside sales & e-commerce"]),
+                ],
             ),
         },
         "top": top_band(

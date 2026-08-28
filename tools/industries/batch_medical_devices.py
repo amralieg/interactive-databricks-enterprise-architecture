@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -30,57 +33,175 @@ INDUSTRIES_BATCH_MEDICAL_DEVICES = {
                     "box": "PLM & Engineering",
                     "ic": "dev",
                     "tiles": [
-                        tile("PTC Windchill", "dev", "Product lifecycle management: the system of record for device design, BOMs, change orders and the design history file.", "windchill"),
-                        tile("Siemens Teamcenter", "erp", "PLM for BOM, requirements and change control where Teamcenter is the incumbent design backbone.", "teamcenter"),
-                        tile("Jama Connect", "docs", "Requirements, verification and validation traceability from design inputs to test evidence for regulated products.", "jama"),
+                        tile("PTC Windchill", "dev", "Product lifecycle management: the system of record for device design, BOMs, change orders and the design history file.", "windchill",
+                             cat="Product Lifecycle Management (PLM)",
+                             what="The system of record for device design, BOMs, change orders and the design history file across the product's lifecycle.",
+                             users="Design & systems eng, Verification & validation and Regulatory affairs.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "1-5 GB/day", "Nightly batch + on change order"))),
+                        tile("Siemens Teamcenter", "erp", "PLM for BOM, requirements and change control where Teamcenter is the incumbent design backbone.", "teamcenter",
+                             cat="Product Lifecycle Management (PLM)",
+                             what="PLM for BOM, requirements and change control where Teamcenter is the incumbent design backbone for the device portfolio.",
+                             users="Design & systems eng, Reliability engineering and Supply chain.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "1-5 GB/day", "Nightly batch + on change"))),
+                        tile("Jama Connect", "docs", "Requirements, verification and validation traceability from design inputs to test evidence for regulated products.", "jama",
+                             cat="Requirements Management / ALM",
+                             what="Traces requirements, verification and validation from design inputs to test evidence for regulated products.",
+                             users="Verification & validation, Design & systems eng and Compliance & audit.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.2-1 GB/day", "Nightly sync"))),
                     ],
                 },
                 {
                     "box": "Quality & Reg",
                     "ic": "gavel",
                     "tiles": [
-                        tile("MasterControl QMS", "gavel", "Quality management: document control, training, nonconformances, CAPA and audit trails under 21 CFR Part 11.", "mastercontrol"),
-                        tile("Veeva Vault Quality", "gavel", "Cloud QMS and QualityDocs for complaint, deviation and CAPA workflows across sites.", "veeva"),
-                        tile("TrackWise Digital", "gavel", "Complaint management and CAPA of record: intake, MDR decisioning and adverse-event workflows.", "trackwise"),
-                        tile("ETQ Reliance", "gavel", "Quality and EHS management for nonconformance, supplier quality and CAPA where ETQ is the incumbent.", "etq"),
+                        tile("MasterControl QMS", "gavel", "Quality management: document control, training, nonconformances, CAPA and audit trails under 21 CFR Part 11.", "mastercontrol",
+                             cat="Quality Management System (QMS)",
+                             what="Manages document control, training, nonconformances, CAPA and audit trails under 21 CFR Part 11 across the quality system.",
+                             users="Head of quality, Compliance & audit and Line quality.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "0.5-3 GB/day", "Nightly + event-driven"))),
+                        tile("Veeva Vault Quality", "gavel", "Cloud QMS and QualityDocs for complaint, deviation and CAPA workflows across sites.", "veeva",
+                             cat="Quality Management System (QMS)",
+                             what="Cloud QMS and QualityDocs running complaint, deviation and CAPA workflows and controlled content across sites.",
+                             users="Head of quality, Regulatory affairs and Compliance & audit.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "0.5-2 GB/day", "Nightly + on approval"))),
+                        tile("TrackWise Digital", "gavel", "Complaint management and CAPA of record: intake, MDR decisioning and adverse-event workflows.", "trackwise",
+                             cat="Complaint & CAPA Management (QMS)",
+                             what="The complaint and CAPA system of record: complaint intake, MDR decisioning and adverse-event workflows for the device portfolio.",
+                             users="Post-market surveillance, Head of quality and Regulatory affairs.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "0.5-3 GB/day complaints + narratives", "Hourly / daily intake"))),
+                        tile("ETQ Reliance", "gavel", "Quality and EHS management for nonconformance, supplier quality and CAPA where ETQ is the incumbent.", "etq",
+                             cat="Quality & EHS Management (QMS)",
+                             what="Manages nonconformance, supplier quality and CAPA (and EHS) where ETQ Reliance is the incumbent quality platform.",
+                             users="Line quality, Supply chain and Compliance & audit.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.2-1 GB/day", "Nightly + event-driven"))),
                     ],
                 },
                 {
                     "box": "Manufacturing & MES",
                     "ic": "compute",
                     "tiles": [
-                        tile("Siemens Opcenter MES", "compute", "Manufacturing execution: electronic batch records, work orders, genealogy and in-line quality on the line.", "opcenter"),
-                        tile("Rockwell Plex MES", "compute", "Cloud MES for production tracking, quality and genealogy across discrete device manufacturing.", "plex"),
-                        tile("Tulip Frontline Ops", "apps", "Composable frontline operations and digital work instructions on the manufacturing floor.", "tulip"),
-                        tile("AVEVA PI Historian", "iot", "Process historian: equipment and process time-series that underpins SPC, OEE and anomaly detection.", "avevapi"),
+                        tile("Siemens Opcenter MES", "compute", "Manufacturing execution: electronic batch records, work orders, genealogy and in-line quality on the line.", "opcenter",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Runs electronic batch records, work orders, genealogy and in-line quality on the line, the system of record for how a device was built.",
+                             users="Process & plant eng, Line quality and Supply chain.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "5-30 GB/day", "Per-lot + shift batch"),
+                                 stream=flow(["semi-structured"], "line events at process latency", "Continuous on the line"))),
+                        tile("Rockwell Plex MES", "compute", "Cloud MES for production tracking, quality and genealogy across discrete device manufacturing.", "plex",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Cloud MES for production tracking, quality and genealogy across discrete device manufacturing.",
+                             users="Process & plant eng, Line quality and Supply chain.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-15 GB/day", "Per-lot + shift batch"),
+                                 stream=flow(["semi-structured"], "production events on the line", "Continuous"))),
+                        tile("Tulip Frontline Ops", "apps", "Composable frontline operations and digital work instructions on the manufacturing floor.", "tulip",
+                             cat="Frontline Operations / Digital Work Instructions",
+                             what="Composable frontline operations and digital work instructions on the manufacturing floor, capturing operator steps and station data.",
+                             users="Line quality, Process & plant eng and Application Engineers.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "station events as steps complete", "Continuous during shifts"))),
+                        tile("AVEVA PI Historian", "iot", "Process historian: equipment and process time-series that underpins SPC, OEE and anomaly detection.", "avevapi",
+                             cat="Process Historian (Time-Series)",
+                             what="Process historian holding equipment and process time-series that underpins SPC, OEE and anomaly detection on the line.",
+                             users="Process & plant eng, Quality DS and Reliability engineering.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1000s of tags/sec", "Continuous time-series"))),
                     ],
                 },
                 {
                     "box": "ERP, Service & CRM",
                     "ic": "erp",
                     "tiles": [
-                        tile("SAP S/4HANA", "erp", "The ERP of record for procurement, inventory, production orders and finance across the device business.", "sap"),
-                        tile("ServiceMax", "orch", "Field service management: installed base, service contracts, work orders and parts for the device fleet.", "servicemax"),
-                        tile("Salesforce", "crm", "Commercial CRM for accounts, orders and device utilisation across sales and customer success.", "salesforce"),
-                        tile("LabWare LIMS", "db", "Laboratory information management: test results, specifications and out-of-spec dispositions for release.", "labware"),
+                        tile("SAP S/4HANA", "erp", "The ERP of record for procurement, inventory, production orders and finance across the device business.", "sap",
+                             cat="ERP",
+                             what="The ERP of record for procurement, inventory, production orders and finance across the device business.",
+                             users="Supply chain, Process & plant eng and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-50 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("ServiceMax", "orch", "Field service management: installed base, service contracts, work orders and parts for the device fleet.", "servicemax",
+                             cat="Field Service Management (FSM)",
+                             what="Manages the installed base, service contracts, work orders and parts for the device fleet in the field.",
+                             users="Field service, Customer success and Sales & marketing.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly sync + intraday"))),
+                        tile("Salesforce", "crm", "Commercial CRM for accounts, orders and device utilisation across sales and customer success.", "salesforce",
+                             cat="CRM",
+                             what="Commercial CRM for accounts, orders and device utilisation across sales and customer success.",
+                             users="Sales & marketing, Customer success and Field service.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly sync"),
+                                 stream=flow(["semi-structured"], "engagement events as they occur", "Continuous CDC"))),
+                        tile("LabWare LIMS", "db", "Laboratory information management: test results, specifications and out-of-spec dispositions for release.", "labware",
+                             cat="Laboratory Information Management System (LIMS)",
+                             what="Holds test results, specifications and out-of-spec dispositions that gate device and component release.",
+                             users="Line quality, Process & plant eng and Head of quality.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch + result release"))),
                     ],
                 },
                 {
                     "box": "Regulatory & Telemetry",
                     "ic": "iot",
                     "tiles": [
-                        tile("FDA GUDID / UDI", "gavel", "Unique Device Identification records and the Global UDI Database, the reference for device identity and labelling.", "gudid"),
-                        tile("FDA MAUDE Events", "gavel", "Manufacturer and User Facility Device Experience adverse-event reports, the public post-market safety record.", "maude"),
-                        tile("Device Telemetry", "iot", "Connected-device and IoMT telemetry from the installed base: usage, alarms and sensor streams from every unit."),
-                        tile("HL7 FHIR Feeds", "api", "Interoperability feeds carrying device, observation and outcome resources to and from clinical systems.", "fhir"),
+                        tile("FDA GUDID / UDI", "gavel", "Unique Device Identification records and the Global UDI Database, the reference for device identity and labelling.", "gudid",
+                             cat="Device Identification Registry (UDI)",
+                             what="Unique Device Identification records and the Global UDI Database, the reference for device identity and labelling.",
+                             users="Regulatory affairs, Compliance & audit and Supply chain.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "MBs-GBs (UDI records)", "On registration + periodic sync"))),
+                        tile("FDA MAUDE Events", "gavel", "Manufacturer and User Facility Device Experience adverse-event reports, the public post-market safety record.", "maude",
+                             cat="Public Adverse-Event Database (Devices)",
+                             what="Manufacturer and User Facility Device Experience adverse-event reports, the public post-market safety record used for signal benchmarking.",
+                             users="Post-market surveillance, Medical affairs and Regulatory affairs.",
+                             data_out=data_out(
+                                 batch=flow(["semi-structured"], "GBs (periodic event files)", "Monthly reference releases"))),
+                        tile("Device Telemetry", "iot", "Connected-device and IoMT telemetry from the installed base: usage, alarms and sensor streams from every unit.",
+                             cat="Connected-Device / IoMT Telemetry",
+                             what="Connected-device and IoMT telemetry from the installed base: usage, alarms and sensor streams from every unit in the field.",
+                             users="Telemetry Eng, Field service and Reliability engineering.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10s-100s of GB/day at fleet scale", "Continuous (MQTT / Kafka)"))),
+                        tile("HL7 FHIR Feeds", "api", "Interoperability feeds carrying device, observation and outcome resources to and from clinical systems.", "fhir",
+                             cat="Clinical Interoperability Standard (FHIR)",
+                             what="Interoperability feeds carrying device, observation and outcome resources to and from clinical systems for real-world data.",
+                             users="Clinical Affairs, Medical affairs and Application Engineers.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10s-100s of resources/sec", "Continuous (API / event)"))),
                     ],
                 },
-                fed_group("Complaint & RWE Marts", "Historical complaint, clinical and real-world evidence marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers."),
+                fed_group("Complaint & RWE Marts", "Historical complaint, clinical and real-world evidence marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.",
+                          cat="Complaint & Real-World Evidence Warehouse",
+                          what="Historical complaint, clinical and real-world evidence marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.",
+                          users="Clinical Affairs, Post-market surveillance and Health economics.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("openFDA APIs", "api", "Device classification, recall and adverse-event data ingested from the FDA open data APIs for benchmarking.", "openfda"),
-                tile("EU EUDAMED", "gavel", "European device registration, UDI and vigilance data exchanged with the EUDAMED database under EU MDR.", "eudamed"),
-                tile("Device Events", "stream", "MQTT and Kafka topics carrying connected-device telemetry, alarms and MES events, landed as structured events."),
+                tile("openFDA APIs", "api", "Device classification, recall and adverse-event data ingested from the FDA open data APIs for benchmarking.", "openfda",
+                     cat="Public Device Data API (openFDA)",
+                     what="Device classification, recall and adverse-event data ingested from the FDA open data APIs for benchmarking and signal context.",
+                     users="Post-market surveillance, Regulatory affairs and Quality DS.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs (API extracts)", "Weekly / on-demand pulls"))),
+                tile("EU EUDAMED", "gavel", "European device registration, UDI and vigilance data exchanged with the EUDAMED database under EU MDR.", "eudamed",
+                     cat="EU Device Registration & Vigilance (EUDAMED)",
+                     what="European device registration, UDI and vigilance data exchanged with the EUDAMED database under EU MDR.",
+                     users="Regulatory affairs, Compliance & audit and Post-market surveillance.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs (registration + vigilance)", "On registration + periodic sync"))),
+                tile("Device Events", "stream", "MQTT and Kafka topics carrying connected-device telemetry, alarms and MES events, landed as structured events.",
+                     cat="Device Event Stream (MQTT/Kafka)",
+                     what="MQTT and Kafka topics carrying connected-device telemetry, alarms and MES events, landed as structured events for real-time monitoring.",
+                     users="Telemetry Eng, Field service and Line quality.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "1-10k events/sec at fleet scale", "Continuous (MQTT / Kafka)"))),
             ]),
             "ppl": ppl2([
                 biz("R&D & Engineering", "AI/BI",
@@ -169,6 +290,56 @@ INDUSTRIES_BATCH_MEDICAL_DEVICES = {
                     tile("Data Products", "product", "Published, contracted device and quality products discoverable in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Suppliers, CMOs and registries reading live tables with no copy and no egress duplication."),
                 ]},
+            ], genie_spaces=[
+                genie("Complaints & CAPA", "Ask which products and lots drive complaints and where CAPA is aging, in plain language.",
+                      feeds=["TrackWise Digital", "MasterControl QMS", "FDA MAUDE Events", "Yield, complaint rate, CAPA"],
+                      teams=["Quality & Reg", "Head of quality", "Compliance & audit"],
+                      questions=[
+                          "Which products and lots drive this quarter's complaints?",
+                          "What is the complaint and MDR rate by device family?",
+                          "Which CAPAs are open past their target closure date?",
+                          "Where are complaints repeating across sites and products?",
+                          "How does our complaint rate compare to MAUDE peers?"]),
+                genie("Manufacturing Yield & Quality", "Explore first-pass yield, OEE and nonconformance across the lines.",
+                      feeds=["Siemens Opcenter MES", "AVEVA PI Historian", "LabWare LIMS", "Conformed device, lot, complaint"],
+                      teams=["Manufacturing Ops", "Process & plant eng", "Line quality"],
+                      questions=[
+                          "What is first-pass yield by line and product this week?",
+                          "Which lines have the most downtime and why?",
+                          "Where is process capability drifting toward a limit?",
+                          "Which lots are held by out-of-spec LIMS results?",
+                          "What is the nonconformance rate by station?"]),
+                genie("Connected Device Fleet", "Answer uptime, utilisation and service questions across the installed base.",
+                      feeds=["Device Telemetry", "ServiceMax", "HL7 FHIR Feeds", "Conformed device, lot, complaint"],
+                      teams=["Commercial & Svc", "Field service", "Telemetry Eng"],
+                      questions=[
+                          "Which units are trending toward a field failure?",
+                          "What is installed-base uptime by device and site?",
+                          "Which accounts are below device-utilisation target?",
+                          "How many service calls were unplanned this month?",
+                          "Which consumables need replenishment across the fleet?"]),
+                genie("Post-Market & RWE", "Ask about emerging safety signals and real-world outcomes across complaints and telemetry.",
+                      feeds=["FDA MAUDE Events", "Complaint & RWE Marts", "Device Telemetry", "Yield, complaint rate, CAPA"],
+                      teams=["Clinical Affairs", "Post-market surveillance", "Medical affairs"],
+                      questions=[
+                          "Which device families show an emerging safety signal?",
+                          "What is the real-world failure rate versus the label?",
+                          "Which complaints correlate with telemetry anomalies?",
+                          "How is device performance trending by indication?",
+                          "Which signals are approaching a reportable threshold?"]),
+            ], dashboards=[
+                dashboard("Complaint & CAPA", "Complaint and MDR rates, CAPA cycle time and backlog on certified Metric Views.",
+                          kpis=["Complaint rate", "MDR rate", "CAPA cycle time", "CAPA backlog", "Repeat complaints"],
+                          teams=["Quality & Reg", "Clinical Affairs", "Head of quality"]),
+                dashboard("Manufacturing Yield & OEE", "First-pass yield, OEE and nonconformance across the lines.",
+                          kpis=["First-pass yield", "OEE", "Scrap rate", "Nonconformance rate", "Line downtime"],
+                          teams=["Manufacturing Ops", "Quality & Reg", "Process & plant eng"]),
+                dashboard("Field Service & Reliability", "Installed-base uptime, reliability and service SLAs across the fleet.",
+                          kpis=["Installed-base uptime", "MTBF", "Unplanned service calls", "SLA attainment", "Device utilisation"],
+                          teams=["Commercial & Svc", "R&D & Engineering", "Field service"]),
+                dashboard("Regulatory & Vigilance", "Submission status, UDI coverage and MDR timeliness across regions.",
+                          kpis=["Submission status", "UDI registration coverage", "MDR timeliness", "Recall exposure", "Signal count"],
+                          teams=["Quality & Reg", "Clinical Affairs", "Regulatory affairs"]),
             ]),
         },
         "top": top_band(

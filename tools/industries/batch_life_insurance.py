@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,117 @@ INDUSTRIES_BATCH_LIFE_INSURANCE = {
         "rails": {
             "src": [
                 {"box": "Policy Administration", "ic": "erp", "tiles": [
-                    tile("FINEOS Life", "erp", "Individual and group life policy issuance, servicing, billing and claims on one admin platform.", "fineos"),
-                    tile("Majesco LifePlus", "db", "Policy, billing and claims for life, annuity and supplemental benefits.", "majesco"),
-                    tile("Oracle Insurance Policy", "sheet", "Product configuration, policy transactions and financial integration for carriers.", "oracle-insurance")
+                    tile("FINEOS Life", "erp", "Individual and group life policy issuance, servicing, billing and claims on one admin platform.", "fineos",
+                         cat="Life & Annuity Policy Admin System",
+                         what="System of record for individual and group life issuance, servicing, billing and claims, emitting policy, premium and claim transactions.",
+                         users="Actuarial & Reserving, policy operations and Claims teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "15-60 GB/day", "Nightly batch + intraday deltas"),
+                             stream=flow(["semi-structured"], "tens of transactions/sec", "Continuous CDC"))),
+                    tile("Majesco LifePlus", "db", "Policy, billing and claims for life, annuity and supplemental benefits.", "majesco",
+                         cat="Life & Annuity Policy Admin System",
+                         what="Administers policy, billing and claims for life, annuity and supplemental benefits, feeding the conformed policy and party entities.",
+                         users="Policy operations, Actuarial & Reserving and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Nightly batch"))),
+                    tile("Oracle Insurance Policy", "sheet", "Product configuration, policy transactions and financial integration for carriers.", "oracle-insurance",
+                         cat="Life & Annuity Policy Admin System",
+                         what="Handles product configuration, policy transactions and financial integration for carriers, emitting policy and accounting records.",
+                         users="Product configuration, policy operations and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-25 GB/day", "Nightly batch")))
                 ]},
                 {"box": "New Business & UW", "ic": "people", "tiles": [
-                    tile("Munich Re ALLFINANZ", "partner", "Automated underwriting rules, evidence ordering and risk classification.", "munich-allfinanz"),
-                    tile("ExamOne Lab Results", "stream", "Paramedical exams, labs and APS retrieval tied to application case IDs.", "examone"),
-                    tile("MIB Underwriting Exchange", "gavel", "Industry application history and code hits at point of underwriting.", "mib")
+                    tile("Munich Re ALLFINANZ", "partner", "Automated underwriting rules, evidence ordering and risk classification.", "munich-allfinanz",
+                         cat="Automated Underwriting Engine",
+                         what="Runs automated underwriting rules, evidence ordering and risk classification, emitting risk-class decisions and requirement status.",
+                         users="Underwriting, case underwriters and underwriting-rules teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day decisions", "Daily batch"),
+                             stream=flow(["semi-structured"], "tens of decisions/sec", "Continuous (API at application)"))),
+                    tile("ExamOne Lab Results", "stream", "Paramedical exams, labs and APS retrieval tied to application case IDs.", "examone",
+                         cat="Paramedical & Lab Evidence Provider",
+                         what="Supplies paramedical exams, lab results and attending-physician-statement retrieval tied to application case IDs.",
+                         users="Underwriting, case underwriters and evidence-ordering teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured", "unstructured"], "hundreds of results/hour", "Continuous feed as evidence returns"))),
+                    tile("MIB Underwriting Exchange", "gavel", "Industry application history and code hits at point of underwriting.", "mib",
+                         cat="Industry Underwriting Exchange",
+                         what="Provides industry application history and coded hits checked at point of underwriting to surface prior disclosures and risk signals.",
+                         users="Underwriting, chief underwriters and fraud/anti-selection teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens of lookups/sec", "Continuous (API at application)")))
                 ]},
                 {"box": "Claims & Customer", "ic": "market", "tiles": [
-                    tile("Sedgwick Life Claims", "market", "Death, disability and waiver claims intake, adjudication and payment.", "sedgwick"),
-                    tile("Salesforce Financial Services", "custlake", "Agent and policyholder relationships, service cases and cross-sell opportunities.", "sf-finserv"),
-                    tile("Call Centre Telephony", "chat", "IVR, call recordings and disposition codes joined to policy and claim events.")
+                    tile("Sedgwick Life Claims", "market", "Death, disability and waiver claims intake, adjudication and payment.", "sedgwick",
+                         cat="Claims Administration (TPA)",
+                         what="Third-party claims administration for death, disability and waiver claims intake, adjudication and payment, emitting claim and payment records.",
+                         users="Claims, claims operations and contestable-review teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "2-10 GB/day incl. claim docs", "Daily claims cycle"))),
+                    tile("Salesforce Financial Services", "custlake", "Agent and policyholder relationships, service cases and cross-sell opportunities.", "sf-finserv",
+                         cat="Insurance CRM",
+                         what="Holds agent and policyholder relationships, service cases and cross-sell opportunities, emitting account, case and activity events.",
+                         users="Distribution, agency leadership and sales-enablement teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("Call Centre Telephony", "chat", "IVR, call recordings and disposition codes joined to policy and claim events.",
+                         cat="Contact Center Platform",
+                         what="Captures IVR paths, call recordings and disposition codes joined to policy and claim events for service and quality analysis.",
+                         users="Claims operations, customer service and quality-assurance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured", "unstructured"], "hundreds of calls/hour incl. recordings", "Continuous call stream")))
                 ]},
                 {"box": "Actuarial & Finance", "ic": "chart", "tiles": [
-                    tile("Moody's Analytics AXIS", "chart", "Actuarial models, reserves, capital and asset-liability management projections.", "axis"),
-                    tile("SAP S/4HANA Insurance", "erp", "General ledger, statutory reporting and investment accounting integration.", "sap-insurance"),
-                    tile("Reinsurance Bordereaux", "partner", "Ceded premium, claims and experience reports exchanged with reinsurance partners.")
+                    tile("Moody's Analytics AXIS", "chart", "Actuarial models, reserves, capital and asset-liability management projections.", "axis",
+                         cat="Actuarial Modeling Platform",
+                         what="Runs actuarial models for reserves, capital and asset-liability management projections, producing reserve, capital and ALM results.",
+                         users="Actuarial & Reserving, appointed actuary and Treasury & Investments teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/valuation run", "Monthly / quarterly valuation runs"))),
+                    tile("SAP S/4HANA Insurance", "erp", "General ledger, statutory reporting and investment accounting integration.", "sap-insurance",
+                         cat="Insurance ERP / General Ledger",
+                         what="Provides the general ledger, statutory reporting and investment accounting integration, emitting financial postings and ledger balances.",
+                         users="Finance, financial reporting and Treasury & Investments teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly close + period-end"))),
+                    tile("Reinsurance Bordereaux", "partner", "Ceded premium, claims and experience reports exchanged with reinsurance partners.",
+                         cat="Reinsurance Bordereau Exchange",
+                         what="Carries ceded premium, claims and experience reports exchanged with reinsurance partners for treaty reconciliation and recovery.",
+                         users="Finance, ceded-reinsurance and reserving teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/cycle", "Monthly / quarterly treaty cycle")))
                 ]},
                 fed_group(
                     "MGU Admin Feeds",
                     "Managing general underwriter policy detail left at partners and queried in place under Unity Catalog.",
+                    cat="Delegated Authority Admin System",
+                    what="Managing-general-underwriter policy and bordereau detail kept at partners and queried in place through federation instead of being copied in.",
+                    users="Actuarial & Reserving, delegated-authority and Finance teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale partner marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("ACORD Life Standards", "api", "Application, policy and claims XML messages normalised on ingest for straight-through processing.", "acord"),
-                tile("NAIC Statutory Filings", "gavel", "Annual statement schedules and risk-based capital specifications consumed inbound.", "naic"),
-                tile("Mortality Table Updates", "chart", "Industry mortality and lapse assumptions published by regulators and reinsurers.")
+                tile("ACORD Life Standards", "api", "Application, policy and claims XML messages normalised on ingest for straight-through processing.", "acord",
+                     cat="Insurance Data Standard (ACORD)",
+                     what="Standard application, policy and claims XML messages normalised on ingest to drive straight-through processing across systems.",
+                     users="Data Engineers, Underwriting and integration teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of messages/sec at peak", "Continuous message flow"))),
+                tile("NAIC Statutory Filings", "gavel", "Annual statement schedules and risk-based capital specifications consumed inbound.", "naic",
+                     cat="Regulatory Filing Specification",
+                     what="Inbound annual-statement schedules and risk-based-capital specifications that define the statutory returns finance must produce.",
+                     users="Finance, financial reporting and Actuarial & Reserving teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs (specifications)", "Annual / on release"))),
+                tile("Mortality Table Updates", "chart", "Industry mortality and lapse assumptions published by regulators and reinsurers.",
+                     cat="Actuarial Assumption Reference",
+                     what="Industry mortality and lapse assumption tables published by regulators and reinsurers, consumed as reference for pricing and reserving.",
+                     users="Actuarial & Reserving, experience-studies and pricing teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs (tables)", "Periodic release")))
             ]),
             "ppl": ppl2([
                 biz("CEO & CFO", "Genie One", "The CEO on new-business volume and embedded value; the CFO on statutory reserves, risk-based capital and the expense ratio by product line.",
@@ -148,6 +234,56 @@ INDUSTRIES_BATCH_LIFE_INSURANCE = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Reinsurers, distributors and regulators reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Actuarial & Reserving", "Ask about reserve adequacy, experience versus assumptions and margin by product.",
+                      feeds=["Moody's Analytics AXIS", "FINEOS Life", "Persistency, mortality, margin", "Conformed policy, party"],
+                      teams=["Actuarial & Reserving", "Appointed Actuary", "Experience Studies"],
+                      questions=[
+                          "How does mortality experience compare to pricing assumptions by product?",
+                          "What is the reserve roll-forward and variance since last quarter?",
+                          "Which products show the weakest embedded value this period?",
+                          "How have lapse rates moved against assumption by cohort?",
+                          "What is new business strain by product and distribution channel?"]),
+                genie("Underwriting & New Business", "Explore straight-through-processing rates, evidence bottlenecks and risk classification.",
+                      feeds=["Munich Re ALLFINANZ", "ExamOne Lab Results", "MIB Underwriting Exchange", "Conformed policy, party"],
+                      teams=["Underwriting", "Chief Underwriter", "Case Underwriters"],
+                      questions=[
+                          "What is our straight-through-processing rate this month by product?",
+                          "Which evidence types are the biggest bottleneck to placement?",
+                          "Where are offers expiring before evidence completes?",
+                          "How does risk-class distribution compare to the pricing assumption?",
+                          "Which cases show anti-selection signals from MIB hits?"]),
+                genie("Claims & Integrity", "Answer death, disability and waiver claim questions with fraud and contestability signals.",
+                      feeds=["Sedgwick Life Claims", "Call Centre Telephony", "FINEOS Life"],
+                      teams=["Claims", "Contestable Review", "Claims Fraud & SIU"],
+                      questions=[
+                          "How many claims are open past their payout SLA and why?",
+                          "Which claims fall inside the contestable period and need review?",
+                          "What is average claim cycle time by benefit type?",
+                          "Which claims carry the highest fraud signal before disbursement?",
+                          "What is the trend in disability and waiver claim volume?"]),
+                genie("Distribution & Persistency", "Ask about producer production, block persistency and suitability across the field.",
+                      feeds=["Salesforce Financial Services", "Persistency, mortality, margin", "Conformed policy, party"],
+                      teams=["Distribution", "Agency Leadership", "Suitability & Compliance"],
+                      questions=[
+                          "Which agents drove last month's lapse spike and where?",
+                          "What is block persistency by channel and product?",
+                          "Where is replacement activity concentrated across the field?",
+                          "Which in-force households are the strongest cross-sell candidates?",
+                          "Which producers show suitability outliers this quarter?"]),
+            ], dashboards=[
+                dashboard("Embedded Value & Capital", "Embedded value, new business strain and statutory capital on certified finance Metric Views.",
+                          kpis=["Embedded value", "New business strain", "RBC ratio", "Statutory reserves", "Expense ratio"],
+                          teams=["CEO & CFO", "Actuarial & Reserving", "Treasury & Investments"]),
+                dashboard("Mortality & Persistency", "Mortality, morbidity and lapse experience against pricing assumptions.",
+                          kpis=["Mortality experience", "Lapse rate", "Persistency", "Actual-to-expected ratio", "Morbidity experience"],
+                          teams=["Actuarial & Reserving", "Experience Studies", "Underwriting"]),
+                dashboard("Underwriting Throughput", "Straight-through-processing, cycle time and evidence completeness in new business.",
+                          kpis=["STP rate", "Cycle time", "Evidence completeness", "Placement rate", "Mortality leakage"],
+                          teams=["Underwriting", "Chief Underwriter", "Case Underwriters"]),
+                dashboard("Distribution Performance", "Producer production, persistency, replacements and complaints by agent and channel.",
+                          kpis=["Issued premium", "Persistency by agent", "Replacement rate", "Complaint rate", "Cross-sell rate"],
+                          teams=["Distribution", "Agency Leadership", "Suitability & Compliance"]),
             ]),
         },
         "top": top_band(

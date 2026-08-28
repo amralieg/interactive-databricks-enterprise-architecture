@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,127 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
         "rails": {
             "src": [
                 {"box": "Project Management", "ic": "sheet", "tiles": [
-                    tile("Procore", "sheet", "RFIs, submittals, daily logs and punch lists.", "procore"),
-                    tile("Autodesk Build", "apps", "Issues, checklists and field photos on BIM context.", "autodesk-build"),
-                    tile("Primavera P6", "sheet", "Master schedules, critical path and earned value.", "primavera"),
+                    tile("Procore", "sheet", "RFIs, submittals, daily logs and punch lists.", "procore",
+                         cat="Construction Project Management",
+                         what="Runs RFIs, submittals, daily logs and punch lists across the project, the field system of record for coordination and change.",
+                         users="Project Managers, Project Engineers and Field Superintendents.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous webhook events"))),
+                    tile("Autodesk Build", "apps", "Issues, checklists and field photos on BIM context.", "autodesk-build",
+                         cat="Construction Project Management / Field",
+                         what="Captures issues, checklists and field photos on BIM context, joining quality and progress evidence to the model.",
+                         users="Project Engineers, Field Superintendents and Quality Managers.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "2-10 GB/day incl. photos", "Hourly sync"))),
+                    tile("Primavera P6", "sheet", "Master schedules, critical path and earned value.", "primavera",
+                         cat="Project Scheduling (CPM)",
+                         what="Holds master schedules, critical path and earned value, the schedule baseline SPI and forecast at completion are measured against.",
+                         users="Project Managers, Cost Controllers and Planners.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Weekly + progress-update batch"))),
                 ]},
                 {"box": "ERP & Job Cost", "ic": "erp", "tiles": [
-                    tile("Trimble Viewpoint Vista", "erp", "Job cost, AP, payroll and equipment billing.", "viewpoint"),
-                    tile("Sage 300 CRE", "erp", "Project accounting, change orders and WIP.", "sage-cre"),
-                    tile("Oracle Aconex", "share", "Document control and transmittals.", "aconex"),
+                    tile("Trimble Viewpoint Vista", "erp", "Job cost, AP, payroll and equipment billing.", "viewpoint",
+                         cat="Construction ERP & Job Cost",
+                         what="Holds job cost, AP, payroll and equipment billing, the financial system of record behind WIP and forecast at completion.",
+                         users="GC President & COO, Cost Controllers and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Nightly batch + month-end close"))),
+                    tile("Sage 300 CRE", "erp", "Project accounting, change orders and WIP.", "sage-cre",
+                         cat="Construction ERP & Job Cost",
+                         what="Runs project accounting, change orders and WIP, the source of committed cost and change-order margin impact.",
+                         users="Project Managers, Cost Controllers and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Nightly batch"))),
+                    tile("Oracle Aconex", "share", "Document control and transmittals.", "aconex",
+                         cat="Document Control & Collaboration",
+                         what="Manages document control and transmittals across project parties, the record of drawings, RFIs and submittal correspondence.",
+                         users="Project Engineers, Document controllers and Owners.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "1-5 GB/day incl. documents", "Hourly / daily sync"))),
                 ]},
                 {"box": "BIM & Design", "ic": "product", "tiles": [
-                    tile("Autodesk Revit", "product", "Design models, quantities and clash contexts.", "revit"),
-                    tile("Navisworks", "apps", "4D simulations and clash detection runs.", "navisworks"),
-                    tile("Bentley iTwin", "globe", "Digital twin synchronization for infrastructure.", "itwin"),
+                    tile("Autodesk Revit", "product", "Design models, quantities and clash contexts.", "revit",
+                         cat="BIM Authoring",
+                         what="Authors the design models, quantities and clash context, the source geometry coordination and takeoff are built on.",
+                         users="Project Engineers, BIM coordinators and Design teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs per model revision", "Per model revision"))),
+                    tile("Navisworks", "apps", "4D simulations and clash detection runs.", "navisworks",
+                         cat="BIM Coordination & Clash Detection",
+                         what="Runs 4D simulations and clash detection, producing the clash results ranked against schedule to prevent field rework.",
+                         users="Project Managers, BIM coordinators and Project Engineers.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "100s of MB per run", "Per coordination run"))),
+                    tile("Bentley iTwin", "globe", "Digital twin synchronization for infrastructure.", "itwin",
+                         cat="Digital Twin Platform",
+                         what="Synchronises digital twins for infrastructure assets, aligning design, construction and as-built state over the project lifecycle.",
+                         users="Project Engineers, Owners and Infrastructure design teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs per sync", "Scheduled twin sync"))),
                 ]},
                 {"box": "Field & Equipment", "ic": "iot", "tiles": [
-                    tile("Samsara Fleet", "iot", "Equipment location, utilization and DVIR.", "samsara"),
-                    tile("United Rentals Total Control", "stream", "Rental fleet hours, utilization and geofence alerts.", "united-rentals"),
-                    tile("OpenSpace", "iot", "360 site capture with progress and safety analytics.", "openspace"),
+                    tile("Samsara Fleet", "iot", "Equipment location, utilization and DVIR.", "samsara",
+                         cat="Equipment Telematics",
+                         what="Streams equipment location, utilization and DVIR inspection events from owned machines across jobsites.",
+                         users="Field Superintendents, General Superintendents and Fleet teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of pings/sec across fleet", "Continuous (seconds)"))),
+                    tile("United Rentals Total Control", "stream", "Rental fleet hours, utilization and geofence alerts.", "united-rentals",
+                         cat="Rental Fleet Management",
+                         what="Reports rental fleet hours, utilization and geofence alerts, the source for idle-asset and rental-cost analysis.",
+                         users="Field Superintendents, Equipment managers and Cost Controllers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous geofence / usage events"))),
+                    tile("OpenSpace", "iot", "360 site capture with progress and safety analytics.", "openspace",
+                         cat="Reality Capture & Site Progress",
+                         what="Provides 360 site capture with progress and safety analytics, turning walkthroughs into progress and quality signals.",
+                         users="Field Superintendents, Project Engineers and Safety Managers.",
+                         data_out=data_out(
+                             batch=flow(["unstructured", "semi-structured"], "GBs per capture", "Per site walk (daily/weekly)"))),
                 ]},
                 {"box": "Safety & Quality", "ic": "gavel", "tiles": [
-                    tile("ISNetworld", "gavel", "Contractor prequalification and safety scores.", "isnetworld"),
-                    tile("HammerTech", "gavel", "Site inductions, permits and incident logs.", "hammertech"),
+                    tile("ISNetworld", "gavel", "Contractor prequalification and safety scores.", "isnetworld",
+                         cat="Contractor Prequalification",
+                         what="Holds contractor prequalification and safety scores, the risk basis for subcontractor selection before award.",
+                         users="Estimating, Preconstruction and EHS teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "100s of MB", "Daily + on-demand refresh"))),
+                    tile("HammerTech", "gavel", "Site inductions, permits and incident logs.", "hammertech",
+                         cat="EHS / Safety Management",
+                         what="Captures site inductions, permits, observations and incident logs, the leading-indicator source behind safety analytics.",
+                         users="Safety & Quality, Safety Managers and EHS Directors.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly / daily sync"))),
                 ]},
-                fed_group("Owner Reporting Mart", "Owner KPI and portfolio marts queried in place under Unity Catalog."),
+                fed_group("Owner Reporting Mart", "Owner KPI and portfolio marts queried in place under Unity Catalog.",
+                          cat="Owner Reporting Warehouse",
+                          what="Owner KPI and portfolio marts kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="GC President & COO, Regional VPs and Owner reporting analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Dodge Construction Network", "market", "Bid opportunities and project leads by geography.", "dodge"),
-                tile("IFC / COBie / BCF", "chart", "openBIM model, asset and issue exchange (buildingSMART) parsed on arrival for coordination.", "rsmeans"),
-                tile("OSHA Incident Data", "gavel", "Industry injury rates for safety benchmarking.", "osha"),
+                tile("Dodge Construction Network", "market", "Bid opportunities and project leads by geography.", "dodge",
+                     cat="Construction Market Intelligence",
+                     what="Provides bid opportunities and project leads by geography, the pipeline signal for preconstruction and pursuit decisions.",
+                     users="Estimating, Preconstruction and Bid & Sales teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "100s of MB", "Daily lead feed"))),
+                tile("IFC / COBie / BCF", "chart", "openBIM model, asset and issue exchange (buildingSMART) parsed on arrival for coordination.", "rsmeans",
+                     cat="openBIM Exchange Standard",
+                     what="openBIM model, asset and issue exchange (IFC/COBie/BCF) parsed on arrival to coordinate models and handover data across tools.",
+                     users="Project Engineers, BIM coordinators and Owners.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs per exchange", "Per model exchange"))),
+                tile("OSHA Incident Data", "gavel", "Industry injury rates for safety benchmarking.", "osha",
+                     cat="Safety Benchmark Data",
+                     what="Supplies industry injury and incident rates used to benchmark the firm's TRIR and safety performance.",
+                     users="Safety & Quality, EHS Directors and Executive teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs", "Annual / periodic release"))),
             ]),
             "ppl": ppl2([
                 biz("GC President & COO", "Genie One",
@@ -157,6 +252,56 @@ INDUSTRIES_BATCH_CONSTRUCTION = {
                     tile("Data Products", "product", "Project performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Owners and JV partners via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Job Cost & WIP", "Ask about job margin, earned value and forecast at completion across the portfolio.",
+                      feeds=["Trimble Viewpoint Vista", "Sage 300 CRE", "Primavera P6", "Margin, schedule, safety"],
+                      teams=["Project Managers", "Cost Controllers", "GC President & COO"],
+                      questions=[
+                          "Which jobs are below their forecast margin this month?",
+                          "What is CPI and SPI by job right now?",
+                          "How much change-order exposure is pending but not yet approved?",
+                          "Which jobs have the largest variance to forecast at completion?",
+                          "What is total backlog and projected revenue by region?"]),
+                genie("Field Production & Equipment", "Explore labor productivity, daily production and equipment utilisation.",
+                      feeds=["Procore", "Samsara Fleet", "United Rentals Total Control", "Conformed projects and WBS"],
+                      teams=["Field Superintendents", "General Superintendent", "Site Superintendent"],
+                      questions=[
+                          "What is units per labor hour by trade and job this week?",
+                          "Which equipment is sitting idle while another site waits?",
+                          "Which crews are behind the daily production plan?",
+                          "What is equipment utilisation by asset across active sites?",
+                          "Which trades are on the critical path and slipping?"]),
+                genie("Safety & Quality", "Answer leading-indicator, incident and punch-list questions across sites.",
+                      feeds=["HammerTech", "OSHA Incident Data", "Autodesk Build", "Margin, schedule, safety"],
+                      teams=["Safety & Quality", "EHS Director", "Safety Manager"],
+                      questions=[
+                          "Which sites have rising near-miss rates before TRIR moves?",
+                          "What is our TRIR by region and job type this year?",
+                          "Which inspection and permit items are overdue?",
+                          "Where is punch-list burndown behind at closeout?",
+                          "Which subcontractors have the worst safety observation record?"]),
+                genie("Estimating & Subcontractor Risk", "Ask about bid win rate, unit costs and subcontractor prequalification.",
+                      feeds=["ISNetworld", "Dodge Construction Network", "Trimble Viewpoint Vista", "Conformed projects and WBS"],
+                      teams=["Estimating", "Chief Estimator", "Preconstruction Lead"],
+                      questions=[
+                          "What is our bid win rate by job type and region?",
+                          "Which subcontractors carry the highest default or safety risk?",
+                          "How do our unit costs compare to historical productivity?",
+                          "Which trades have thin coverage on upcoming bids?",
+                          "Where are margins most sensitive on the current pipeline?"]),
+            ], dashboards=[
+                dashboard("WIP & Margin", "Job margin, earned value and forecast at completion across the portfolio.",
+                          kpis=["Job margin", "CPI", "SPI", "Forecast at completion", "Backlog"],
+                          teams=["GC President & COO", "Project Managers", "Cost Controllers"]),
+                dashboard("Field Productivity & Equipment", "Labor productivity, daily production and equipment utilisation.",
+                          kpis=["Units per labor hour", "Production vs plan", "Equipment utilisation", "Idle time", "Rental cost"],
+                          teams=["Field Superintendents", "General Superintendent", "Site Superintendent"]),
+                dashboard("Safety Leading Indicators", "Observations, near-misses and training gaps against TRIR.",
+                          kpis=["TRIR", "Near-miss rate", "Leading-indicator closure", "Permit compliance", "Punch-list burndown"],
+                          teams=["Safety & Quality", "EHS Director", "Safety Manager"]),
+                dashboard("Preconstruction & Bids", "Win rate, unit-cost benchmarks and subcontractor risk before award.",
+                          kpis=["Win rate", "Bid margin", "Unit-cost variance", "Subcontractor risk", "Trade coverage"],
+                          teams=["Estimating", "Chief Estimator", "Preconstruction Lead"]),
             ]),
         },
         "top": top_band(

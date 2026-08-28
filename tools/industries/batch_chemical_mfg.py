@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,120 @@ INDUSTRIES_BATCH_CHEMICAL_MFG = {
         "rails": {
             "src": [
                 {"box": "ERP & Supply", "ic": "erp", "tiles": [
-                    tile("SAP S/4HANA PP-PI", "erp", "Recipes, batch records, inventory and costing.", "sap-pppi"),
-                    tile("Oracle Process Mfg", "erp", "Formula management, lot traceability and planning.", "oracle-pm"),
-                    tile("AspenTech Supply", "sheet", "Planning, scheduling and network optimization.", "aspentech"),
+                    tile("SAP S/4HANA PP-PI", "erp", "Recipes, batch records, inventory and costing.", "sap-pppi",
+                         cat="Process Manufacturing ERP",
+                         what="System of record for process-industry recipes, batch records, inventory and costing across plants.",
+                         users="Production planning, plant controllers and Finance.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Nightly batch + hourly deltas"),
+                             stream=flow(["semi-structured"], "hundreds of postings/sec", "Continuous CDC"))),
+                    tile("Oracle Process Mfg", "erp", "Formula management, lot traceability and planning.", "oracle-pm",
+                         cat="Process Manufacturing ERP",
+                         what="Manages formula (recipe) management, lot traceability and production planning on the Oracle process estate.",
+                         users="Formulation, planning and Lot traceability teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch"))),
+                    tile("AspenTech Supply", "sheet", "Planning, scheduling and network optimization.", "aspentech",
+                         cat="Supply Chain Planning / Optimization",
+                         what="Runs supply planning, scheduling and network optimization across production sites and distribution.",
+                         users="S&OP planners, scheduling and Supply chain leadership.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (plans + scenarios)", "Planning cycles + on-demand"))),
                 ]},
                 {"box": "MES & Historian", "ic": "iot", "tiles": [
-                    tile("AVEVA PI System", "iot", "Historian tags, events and asset framework.", "aveva-pi"),
-                    tile("Honeywell Uniformance", "stream", "DCS data, alarms and batch phase records.", "honeywell"),
-                    tile("Siemens Opcenter PSM", "zplug", "Electronic batch records and equipment logs.", "opcenter-psm"),
+                    tile("AVEVA PI System", "iot", "Historian tags, events and asset framework.", "aveva-pi",
+                         cat="Process/Time-Series Historian",
+                         what="Collects historian tags, events and the asset framework underpinning batch analytics, OEE and reliability.",
+                         users="Process engineering, reliability and Data science.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous historian stream"))),
+                    tile("Honeywell Uniformance", "stream", "DCS data, alarms and batch phase records.", "honeywell",
+                         cat="DCS / Process Historian",
+                         what="Carries DCS process data, alarms and batch phase records from the control system into the estate.",
+                         users="Control room operators, process engineering and Reliability.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-50k tags/sec", "Continuous control-room telemetry"))),
+                    tile("Siemens Opcenter PSM", "zplug", "Electronic batch records and equipment logs.", "opcenter-psm",
+                         cat="Process MES / Electronic Batch Records",
+                         what="Captures electronic batch records and equipment logbooks for process manufacturing sites.",
+                         users="Process operators, Quality and Regulatory affairs.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "2-10 GB/day batch records", "Per-batch + hourly"))),
                 ]},
                 {"box": "Quality & LIMS", "ic": "gavel", "tiles": [
-                    tile("LabWare LIMS", "gavel", "Sample plans, results and CoA release.", "labware"),
-                    tile("Thermo SampleManager", "product", "QC testing, stability and method compliance.", "samplemanager"),
-                    tile("Sphera Product Steward", "gavel", "SDS, REACH and hazard classifications.", "sphera"),
+                    tile("LabWare LIMS", "gavel", "Sample plans, results and CoA release.", "labware",
+                         cat="Laboratory Information Management (LIMS)",
+                         what="Manages sample plans, lab results and certificate-of-analysis (CoA) release against each batch.",
+                         users="QC labs, Quality management and Customer quality.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly / per-sample"))),
+                    tile("Thermo SampleManager", "product", "QC testing, stability and method compliance.", "samplemanager",
+                         cat="Laboratory Information Management (LIMS)",
+                         what="Runs QC testing, stability studies and analytical method compliance across the lab estate.",
+                         users="QC labs, stability teams and Method validation.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (results + stability)", "Hourly / per-test"))),
+                    tile("Sphera Product Steward", "gavel", "SDS, REACH and hazard classifications.", "sphera",
+                         cat="Product Stewardship / EHS Compliance",
+                         what="Manages safety data sheets (SDS), REACH data and hazard classifications for substances and products.",
+                         users="Product stewardship, Regulatory affairs and EHS.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "100s of MB/day", "Daily + on change"))),
                 ]},
                 {"box": "Maintenance", "ic": "zplug", "tiles": [
-                    tile("IBM Maximo", "zplug", "Work orders, PM schedules and spare parts.", "maximo"),
-                    tile("SAP PM", "erp", "Notification, maintenance plans and reliability.", "sap-pm"),
+                    tile("IBM Maximo", "zplug", "Work orders, PM schedules and spare parts.", "maximo",
+                         cat="Enterprise Asset Management (EAM)",
+                         what="Manages maintenance work orders, preventive-maintenance schedules and spare parts against the asset base.",
+                         users="Maintenance planning, reliability and Storeroom teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Nightly + event-driven"))),
+                    tile("SAP PM", "erp", "Notification, maintenance plans and reliability.", "sap-pm",
+                         cat="Plant Maintenance (EAM)",
+                         what="Runs maintenance notifications, plans and reliability against the same asset master inside the ERP.",
+                         users="Maintenance planning, reliability and Plant operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly batch"))),
                 ]},
                 {"box": "Logistics", "ic": "stream", "tiles": [
-                    tile("SAP TM", "stream", "Bulk tank scheduling and dangerous goods routing.", "sap-tm"),
-                    tile("ORBCOMM Tank Monitoring", "iot", "Iso tank level and temperature telemetry.", "orbcomm"),
+                    tile("SAP TM", "stream", "Bulk tank scheduling and dangerous goods routing.", "sap-tm",
+                         cat="Transportation Management (TMS)",
+                         what="Handles bulk tank scheduling, dangerous-goods routing and delivery execution for chemical logistics.",
+                         users="Logistics, dangerous-goods compliance and Customer service.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly + event-driven"))),
+                    tile("ORBCOMM Tank Monitoring", "iot", "Iso tank level and temperature telemetry.", "orbcomm",
+                         cat="IoT Tank Telemetry",
+                         what="Streams iso-tank level, temperature and location telemetry from bulk containers in transit and at customer sites.",
+                         users="Logistics, vendor-managed inventory and Customer service.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s-1000s of readings/sec", "Continuous telemetry"))),
                 ]},
-                fed_group("Corporate Finance Mart", "Transfer pricing and segment P&L marts queried in place under Unity Catalog."),
+                fed_group("Corporate Finance Mart", "Transfer pricing and segment P&L marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Transfer-pricing and segment P&L marts kept in the incumbent warehouse and queried in place through federation instead of copied.",
+                          users="Finance, controlling and Segment reporting.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("ECHA REACH", "gavel", "Registration dossiers and substance volumes.", "echa"),
-                tile("EPA TRI Reporting", "gavel", "Toxic release inventory thresholds and submissions.", "epa-tri"),
-                tile("ICIS Pricing", "market", "Commodity chemical price assessments by region.", "icis"),
+                tile("ECHA REACH", "gavel", "Registration dossiers and substance volumes.", "echa",
+                     cat="Regulatory Reference (REACH)",
+                     what="Provides REACH registration dossiers and substance volume thresholds used for compliance and reporting.",
+                     users="Regulatory affairs, product stewardship and Compliance.",
+                     data_out=data_out(
+                         batch=flow(["structured", "unstructured"], "100s of MB", "Periodic regulatory updates"))),
+                tile("EPA TRI Reporting", "gavel", "Toxic release inventory thresholds and submissions.", "epa-tri",
+                     cat="Environmental Reporting (EPA TRI)",
+                     what="Supplies Toxic Release Inventory thresholds and reference used to compile TRI release submissions.",
+                     users="EHS, Regulatory affairs and Environmental compliance.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "10s of MB", "Annual + periodic reference"))),
+                tile("ICIS Pricing", "market", "Commodity chemical price assessments by region.", "icis",
+                     cat="Commodity Price Benchmarks",
+                     what="Delivers commodity chemical price assessments by region joined to margin and demand for commercial decisions.",
+                     users="Commercial, S&OP and Margin analytics.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "10s of MB/day", "Daily price assessments"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & EHS Council", "Genie One",
@@ -156,6 +245,56 @@ INDUSTRIES_BATCH_CHEMICAL_MFG = {
                     tile("Data Products", "product", "Batch genealogy products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Customers and auditors via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Batch & Yield", "Ask about batch yield, OEE and golden-batch deviation by plant and product in plain language.",
+                      feeds=["AVEVA PI System", "Honeywell Uniformance", "Siemens Opcenter PSM", "Yield, OEE, compliance"],
+                      teams=["Plant Operations", "Process Engineering", "Plant Manager"],
+                      questions=[
+                          "What was batch yield by plant and product last month?",
+                          "Which batches deviated most from the golden-batch trajectory?",
+                          "What is OEE by unit and line this week?",
+                          "Which deviations are open and on which batches?",
+                          "What is energy per ton by product versus target?"]),
+                genie("Quality & Compliance", "Explore CoA release, off-spec and regulatory filing status across the lab estate.",
+                      feeds=["LabWare LIMS", "Thermo SampleManager", "Sphera Product Steward", "Conformed batches and materials"],
+                      teams=["Quality & Regulatory", "QC Manager", "Regulatory Affairs"],
+                      questions=[
+                          "What is right-first-time CoA release rate by product?",
+                          "Which batches are on quality hold and why?",
+                          "What is the off-spec rate trend by plant and grade?",
+                          "Which REACH and TRI filings are approaching their deadline?",
+                          "Which SDS records are out of date for shipped products?"]),
+                genie("Reliability & Maintenance", "Answer asset health, remaining-life and maintenance-cost questions.",
+                      feeds=["IBM Maximo", "AVEVA PI System", "Yield, OEE, compliance"],
+                      teams=["Plant Operations", "Reliability Engineer", "Reliability Data Scientist"],
+                      questions=[
+                          "Which rotating assets are predicted to fail in the next month?",
+                          "What is unplanned downtime by asset class this quarter?",
+                          "Which pumps and agitators drive the most maintenance cost?",
+                          "Which work orders are overdue on critical equipment?",
+                          "What is MTBF trend on the assets that stop the plant?"]),
+                genie("Supply & Allocation", "Ask about demand allocation, tank scheduling and OTIF across the network.",
+                      feeds=["SAP TM", "ORBCOMM Tank Monitoring", "AspenTech Supply", "Yield, OEE, compliance"],
+                      teams=["Supply Chain", "S&OP Planner", "Logistics Manager"],
+                      questions=[
+                          "Which scarce products should be allocated to which contracts first?",
+                          "Which orders are at risk of missing OTIF this week?",
+                          "Which tanks are near empty or overdue for a bulk movement?",
+                          "What is contract-fill rate by key account this month?",
+                          "Where is margin leaking to low-value spot orders under allocation?"]),
+            ], dashboards=[
+                dashboard("Batch & Yield Performance", "Batch yield, OEE and golden-batch deviation on certified Metric Views.",
+                          kpis=["Batch yield", "OEE", "Golden-batch deviation", "Energy per ton", "Deviation count"],
+                          teams=["Plant Operations", "Process Engineering", "Scale-Up Engineer"]),
+                dashboard("Quality & Regulatory", "CoA release, off-spec rate and regulatory filing timeliness.",
+                          kpis=["CoA compliance", "Right-first-time release", "Off-spec rate", "REACH filing timeliness", "SDS accuracy"],
+                          teams=["Quality & Regulatory", "QC Manager", "Product Steward"]),
+                dashboard("Reliability & Maintenance", "Asset MTBF, predicted failures and maintenance cost.",
+                          kpis=["MTBF", "Unplanned downtime", "Maintenance cost", "PM compliance", "Predicted failures"],
+                          teams=["Plant Operations", "Reliability Engineer", "Maintenance Planner"]),
+                dashboard("Supply Chain & OTIF", "Demand allocation, tank scheduling and on-time-in-full performance.",
+                          kpis=["OTIF", "Contract-fill rate", "Margin per ton", "Tank utilization", "Demurrage cost"],
+                          teams=["Supply Chain", "S&OP Planner", "Customer Service"]),
             ]),
         },
         "top": top_band(

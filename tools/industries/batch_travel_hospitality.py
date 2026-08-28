@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,127 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
         "rails": {
             "src": [
                 {"box": "PMS & Operations", "ic": "erp", "tiles": [
-                    tile("Oracle OPERA Cloud", "erp", "Property management: reservations, housekeeping, folios and night audit.", "opera-cloud"),
-                    tile("Mews PMS", "apps", "Cloud PMS for boutique and multi-property groups with open APIs.", "mews"),
-                    tile("Infor HMS", "db", "Hotel operations, group blocks and event catering for full-service properties.", "infor-hms"),
+                    tile("Oracle OPERA Cloud", "erp", "Property management: reservations, housekeeping, folios and night audit.", "opera-cloud",
+                         cat="Property Management System (PMS)",
+                         what="System-of-record for reservations, room inventory, housekeeping status and guest folios, and runs the night-audit cycle that closes each business day.",
+                         users="Front office, Housekeeping, Night audit and Revenue teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Night audit + hourly deltas"),
+                             stream=flow(["semi-structured"], "tens-hundreds of events/sec", "Continuous CDC (reservations, status)"))),
+                    tile("Mews PMS", "apps", "Cloud PMS for boutique and multi-property groups with open APIs.", "mews",
+                         cat="Property Management System (PMS)",
+                         what="Cloud-native PMS for boutique and multi-property groups, exposing reservations, folios and guest profiles over open APIs.",
+                         users="Front office and Operations teams at boutique and independent groups.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous (API / webhook)"))),
+                    tile("Infor HMS", "db", "Hotel operations, group blocks and event catering for full-service properties.", "infor-hms",
+                         cat="Property Management System (PMS)",
+                         what="Full-service hotel operations platform covering reservations, group blocks and event catering for larger properties.",
+                         users="Front office, Group sales and Catering operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-15 GB/day", "Nightly batch + intraday deltas"))),
                 ]},
                 {"box": "CRS & Distribution", "ic": "market", "tiles": [
-                    tile("Amadeus iHotelier", "globe", "Central reservations, rate distribution and channel management.", "amadeus-ihotelier"),
-                    tile("Sabre SynXis", "partner", "CRS, booking engine and GDS connectivity for hotel brands.", "sabre-synxis"),
-                    tile("SiteMinder Channel", "api", "OTA and metasearch connectivity with parity monitoring.", "siteminder"),
+                    tile("Amadeus iHotelier", "globe", "Central reservations, rate distribution and channel management.", "amadeus-ihotelier",
+                         cat="Central Reservation System (CRS)",
+                         what="Holds central availability and rates, distributes them to channels and captures bookings from web, GDS and voice.",
+                         users="Central reservations, Distribution and Revenue management teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of booking msgs/sec at peak", "Continuous (booking notifications)"))),
+                    tile("Sabre SynXis", "partner", "CRS, booking engine and GDS connectivity for hotel brands.", "sabre-synxis",
+                         cat="Central Reservation System (CRS)",
+                         what="Central reservation and booking-engine platform connecting brand websites and GDS to a single availability pool.",
+                         users="Distribution, E-commerce and Brand reservations teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous (reservation events)"))),
+                    tile("SiteMinder Channel", "api", "OTA and metasearch connectivity with parity monitoring.", "siteminder",
+                         cat="Channel Manager",
+                         what="Pushes rates and availability to OTAs and metasearch and pulls bookings back, monitoring rate parity across channels.",
+                         users="Distribution and Revenue management teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of ARI + booking msgs/sec", "Continuous (ARI + bookings)"))),
                 ]},
                 {"box": "Revenue Management", "ic": "chart", "tiles": [
-                    tile("IDeaS G3 RMS", "market", "Forecasting, price recommendations and length-of-stay controls.", "ideas-rms"),
-                    tile("Duetto GameChanger", "sheet", "Open pricing and segment-level optimisation for casinos and resorts.", "duetto"),
-                    tile("Lighthouse", "observ", "Competitive rate shopping and hotel market demand intelligence.", "ota-insight"),
+                    tile("IDeaS G3 RMS", "market", "Forecasting, price recommendations and length-of-stay controls.", "ideas-rms",
+                         cat="Revenue Management System (RMS)",
+                         what="Forecasts demand and recommends optimal rates and length-of-stay controls by segment for each property.",
+                         users="Revenue management and Pricing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day forecasts + recommendations", "Multiple optimisation runs daily"))),
+                    tile("Duetto GameChanger", "sheet", "Open pricing and segment-level optimisation for casinos and resorts.", "duetto",
+                         cat="Revenue Management System (RMS)",
+                         what="Open-pricing revenue platform optimising rate by segment and channel, tuned for casino and resort demand patterns.",
+                         users="Revenue management and Casino marketing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Continuous optimisation cycles"))),
+                    tile("Lighthouse", "observ", "Competitive rate shopping and hotel market demand intelligence.", "ota-insight",
+                         cat="Rate Shopping & Market Intelligence",
+                         what="Shops competitor rates and market demand signals to benchmark the property's price position against the compset.",
+                         users="Revenue management and Commercial strategy teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs of rate + demand data", "Multiple shops daily"))),
                 ]},
                 {"box": "Guest & Loyalty", "ic": "custlake", "tiles": [
-                    tile("Salesforce Loyalty", "custlake", "Tier status, points accrual and partner earn across the portfolio.", "sf-loyalty"),
-                    tile("Medallia Guest", "partner", "Post-stay surveys, sentiment and recovery workflows.", "medallia-guest"),
-                    tile("SevenRooms CRM", "product", "Restaurant reservations and guest preferences for F&B outlets.", "sevenrooms"),
+                    tile("Salesforce Loyalty", "custlake", "Tier status, points accrual and partner earn across the portfolio.", "sf-loyalty",
+                         cat="Loyalty Management Platform",
+                         what="Manages member tiers, points accrual and redemption and partner-earn transactions across the portfolio.",
+                         users="Loyalty, CRM and Marketing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous (accrual events)"))),
+                    tile("Medallia Guest", "partner", "Post-stay surveys, sentiment and recovery workflows.", "medallia-guest",
+                         cat="Guest Experience & Survey Platform",
+                         what="Collects post-stay surveys and sentiment and drives service-recovery workflows tied to the guest and stay.",
+                         users="Guest experience, Front office and Operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs of survey + verbatim text", "Continuous / daily"))),
+                    tile("SevenRooms CRM", "product", "Restaurant reservations and guest preferences for F&B outlets.", "sevenrooms",
+                         cat="Restaurant Reservation & Guest CRM",
+                         what="Manages outlet reservations, waitlists and guest preferences for F&B venues within the property.",
+                         users="F&B operations and Restaurant management teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous (reservation events)"))),
                 ]},
                 {"box": "Spa & Ancillary", "ic": "product", "tiles": [
-                    tile("Book4Time Spa", "apps", "Spa and activity scheduling, therapist utilisation and retail attach.", "book4time"),
-                    tile("Agilysys InfoGenesis", "erp", "Outlet POS for restaurants, bars and room charges to folio.", "agilysys-pos"),
+                    tile("Book4Time Spa", "apps", "Spa and activity scheduling, therapist utilisation and retail attach.", "book4time",
+                         cat="Spa & Activity Management System",
+                         what="Schedules spa, wellness and activity appointments, tracks therapist utilisation and retail attach to the stay.",
+                         users="Spa operations, Wellness and Ancillary revenue teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "sub-GB/day", "Hourly / nightly sync"))),
+                    tile("Agilysys InfoGenesis", "erp", "Outlet POS for restaurants, bars and room charges to folio.", "agilysys-pos",
+                         cat="Food & Beverage POS",
+                         what="Point-of-sale for restaurants, bars and outlets, posting F&B checks and room charges back to the guest folio.",
+                         users="F&B operations, Outlet managers and Front office (room charges).",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of checks/sec at peak", "Continuous (POS transactions)"))),
                 ]},
-                fed_group("Ownership Group Marts", "Owner reporting and STR benchmark marts queried in place under Unity Catalog."),
+                fed_group("Ownership Group Marts", "Owner reporting and STR benchmark marts queried in place under Unity Catalog.",
+                          cat="Owner Reporting Data Warehouse",
+                          what="Owner-reporting and STR benchmark marts kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="Asset management, Owner relations and Finance teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("STR Benchmark Feed", "chart", "Smith Travel Research comp set occupancy and rate benchmarks.", "str"),
-                tile("GDS Booking Messages", "stream", "Amadeus and Sabre hotel booking notifications parsed on arrival.", "amadeus-ihotelier"),
-                tile("Review Aggregator APIs", "observ", "TripAdvisor and Google review feeds for reputation monitoring.", "medallia-guest"),
+                tile("STR Benchmark Feed", "chart", "Smith Travel Research comp set occupancy and rate benchmarks.", "str",
+                     cat="Hotel Benchmarking Data",
+                     what="Provides comp-set occupancy, ADR and RevPAR index benchmarks used to position the property against its competitive market.",
+                     users="Revenue management, Commercial strategy and Owner reporting teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "sub-GB/day", "Weekly + monthly benchmark files"))),
+                tile("GDS Booking Messages", "stream", "Amadeus and Sabre hotel booking notifications parsed on arrival.", "amadeus-ihotelier",
+                     cat="Global Distribution System (GDS)",
+                     what="Carries hotel booking, modification and cancellation notifications from travel-agency GDS channels, parsed on arrival.",
+                     users="Distribution and Central reservations teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of msgs/sec at peak", "Continuous message flow"))),
+                tile("Review Aggregator APIs", "observ", "TripAdvisor and Google review feeds for reputation monitoring.", "medallia-guest",
+                     cat="Online Reputation & Review Data",
+                     what="Aggregates public reviews and ratings from TripAdvisor, Google and OTAs for reputation monitoring and recovery.",
+                     users="Guest experience, Marketing and Front office teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured", "unstructured"], "GBs of review text", "Continuous / daily pulls"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Brand Office", "Genie One", "The CEO on RevPAR and gross operating profit; the COO on guest satisfaction and labour productivity across the property portfolio.",
@@ -149,6 +244,56 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
                     tile("Data Products", "product", "Portfolio performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Owners and brands reading live KPIs via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Revenue & Distribution", "Ask about RevPAR, ADR, pace and channel mix across properties in plain language.",
+                      feeds=["IDeaS G3 RMS", "SiteMinder Channel", "Amadeus iHotelier", "RevPAR, ADR, occupancy"],
+                      teams=["Revenue Management", "Director of Revenue", "Pricing & Distribution"],
+                      questions=[
+                          "What was RevPAR by property and segment last weekend versus the same weekend last year?",
+                          "Which channels are driving the most bookings this week, and at what net ADR?",
+                          "Where is booking pace behind the forecast for the next 30 days?",
+                          "Which properties are out of rate parity against the compset right now?",
+                          "How does length-of-stay mix compare to the same period last year?"]),
+                genie("Guest 360 & Loyalty", "Explore guest profiles, loyalty tiers and stay history across the portfolio.",
+                      feeds=["Salesforce Loyalty", "Oracle OPERA Cloud", "SevenRooms CRM", "Conformed guest, stay, room"],
+                      teams=["Marketing & Loyalty", "CRM & Loyalty", "Guest Marketing"],
+                      questions=[
+                          "What is the total stay value of this guest across every property in the portfolio?",
+                          "Which loyalty members are at risk of tier downgrade before their renewal?",
+                          "Which high-value guests have an upcoming arrival with no upsell offered?",
+                          "What is points liability by tier and how has it moved this quarter?",
+                          "Which guests have strong ancillary attach but no spa booking on their next stay?"]),
+                genie("Property Operations", "Answer questions on arrivals, housekeeping, service recovery and outlet performance.",
+                      feeds=["Oracle OPERA Cloud", "Agilysys InfoGenesis", "Medallia Guest", "Conformed guest, stay, room"],
+                      teams=["Front Office & Ops", "General Manager", "Housekeeping & F&B Ops"],
+                      questions=[
+                          "How many VIP arrivals are due today and are their rooms ready?",
+                          "Which properties have the longest housekeeping turn times this week?",
+                          "What are the top guest-complaint drivers by property this month?",
+                          "How is outlet F&B revenue tracking against covers by daypart?",
+                          "Which detractor surveys are still open past their recovery SLA?"]),
+                genie("Owner & Portfolio", "Ask about owner statements, NOI and STR index position across the estate.",
+                      feeds=["Ownership Group Marts", "STR Benchmark Feed", "RevPAR, ADR, occupancy"],
+                      teams=["CEO & Brand Office", "Brand & Development", "Revenue Management"],
+                      questions=[
+                          "How does each property's RevPAR index compare to its compset this month?",
+                          "What is gross operating profit by property versus budget?",
+                          "Which owned assets are underperforming their STR fair-share?",
+                          "How has ancillary revenue per available room trended this year?",
+                          "What is portfolio occupancy forecast against target for the next quarter?"]),
+            ], dashboards=[
+                dashboard("RevPAR & Occupancy", "Portfolio RevPAR, ADR and occupancy on certified revenue Metric Views.",
+                          kpis=["RevPAR", "ADR", "Occupancy", "RevPAR index", "Booking pace"],
+                          teams=["Revenue Management", "CEO & Brand Office", "Sales & Groups"]),
+                dashboard("Guest Experience & Reputation", "Survey scores, sentiment and recovery throughput across properties.",
+                          kpis=["Guest satisfaction score", "Net promoter score", "Detractor recovery rate", "Review rating", "Response time"],
+                          teams=["Front Office & Ops", "Marketing & Loyalty", "General Manager"]),
+                dashboard("Loyalty & Ancillary", "Loyalty tier movement, points liability and ancillary attach across the stay.",
+                          kpis=["Active members", "Tier migration", "Points liability", "Ancillary attach rate", "Redemption rate"],
+                          teams=["Marketing & Loyalty", "CRM & Loyalty", "Ancillary & Partnerships"]),
+                dashboard("Distribution & Channel", "Channel mix, cost of distribution and parity across OTA, GDS and direct.",
+                          kpis=["Channel mix", "Cost of distribution", "Direct booking share", "Net ADR by channel", "Parity breaches"],
+                          teams=["Revenue Management", "Pricing & Distribution", "CEO & Brand Office"]),
             ]),
         },
         "top": top_band(

@@ -5,7 +5,7 @@ AGENT_HARNESSES = {
     "ic": "agents",
     "tiles": [
         {
-            "n": "Omnigent",
+            "n": "Omnigent OSS",
             "s": "Databricks, open source",
             "ic": "omni",
             "long": "Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.",
@@ -81,17 +81,33 @@ def ppl_rail(business_tiles, technical_tiles=None):
     ]
 
 
-def cons_rail(groups):
-    return groups + [AGENT_HARNESSES]
+def cons_rail(groups, genie_spaces=None, dashboards=None):
+    """Consumers rail = the industry's own consumer groups, then (top 4) Genie
+    Spaces, then (top 4) AI/BI Dashboards, then the shared Agent Harnesses."""
+    out = list(groups)
+    if genie_spaces:
+        out.append({"box": "Genie Spaces", "ic": "genie", "tiles": genie_spaces})
+    if dashboards:
+        out.append({"box": "AI/BI Dashboards", "ic": "aibi", "tiles": dashboards})
+    return out + [AGENT_HARNESSES]
 
 
-def fed_group(tile_name, long):
+def fed_group(tile_name, long, cat=None, what=None, users=None, data_out=None):
+    t = {"n": tile_name, "ic": "fed", "long": long}
+    if cat:
+        t["cat"] = cat
+    if what:
+        t["what"] = what
+    if users:
+        t["users"] = users
+    if data_out:
+        t["dataOut"] = data_out
     return {
         "box": "Federation Sources",
         "ic": "fed",
         "from": "fed",
         "tail": True,
-        "tiles": [{"n": tile_name, "ic": "fed", "long": long}],
+        "tiles": [t],
     }
 
 
@@ -110,13 +126,59 @@ def medallion(bronze_s, bronze_long, silver_s, silver_long, gold_s, gold_long):
     }
 
 
-def tile(n, ic, long, cite=None, s=None):
+def tile(n, ic, long, cite=None, s=None, cat=None, what=None, users=None, data_out=None):
     t = {"n": n, "ic": ic, "long": long}
     if cite:
         t["cite"] = cite if isinstance(cite, list) else [cite]
     if s:
         t["s"] = s
+    if cat:
+        t["cat"] = cat
+    if what:
+        t["what"] = what
+    if users:
+        t["users"] = users
+    if data_out:
+        t["dataOut"] = data_out
     return t
+
+
+DATA_SHAPES = ("structured", "semi-structured", "unstructured")
+
+
+def flow(types, vol, interval):
+    """One lane of a source's output: the data shapes it emits, a typical volume
+    and the cadence it arrives at. `types` is any of DATA_SHAPES."""
+    bad = [x for x in types if x not in DATA_SHAPES]
+    if bad:
+        raise ValueError(f"flow: unknown data shape(s) {bad}; use {DATA_SHAPES}")
+    return {"types": list(types), "vol": vol, "interval": interval}
+
+
+def data_out(batch=None, stream=None):
+    """What a source produces, split into a batch lane and/or a streaming lane.
+    At least one lane must be present; each lane is a flow()."""
+    d = {}
+    if batch:
+        d["batch"] = batch
+    if stream:
+        d["stream"] = stream
+    if not d:
+        raise ValueError("data_out: at least one of batch / stream is required")
+    return d
+
+
+def genie(n, long, feeds, teams, questions):
+    """A Genie space in the Consumers rail: what it does, the data sources it is
+    grounded on, the teams that live in it and the top questions it answers."""
+    return {"n": n, "ic": "genie", "long": long,
+            "feeds": feeds, "teams": teams, "questions": questions}
+
+
+def dashboard(n, long, kpis, teams):
+    """An AI/BI dashboard in the Consumers rail: what it shows, the metrics and
+    KPIs it is built on and the teams that read it."""
+    return {"n": n, "ic": "aibi", "long": long, "kpis": kpis, "teams": teams}
 
 
 def biz(n, mark, long, uses, sub=None, ucs=None):

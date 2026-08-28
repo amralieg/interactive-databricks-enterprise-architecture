@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,114 @@ INDUSTRIES_BATCH_GENOMICS_BIOTECH = {
         "rails": {
             "src": [
                 {"box": "Sequencing & Omics", "ic": "stream", "tiles": [
-                    tile("Illumina BaseSpace", "db", "Run metadata, cluster density and demultiplexed FASTQ from NovaSeq and NextSeq instruments.", "illumina-basespace"),
-                    tile("Oxford Nanopore EPI2ME", "iot", "Long-read basecalls, methylation and structural variant calls from MinION and PromethION.", "nanopore-epi2me"),
-                    tile("10x Genomics Cloud", "api", "Single-cell and spatial gene expression matrices from Chromium and Visium workflows.", "10x-cloud")
+                    tile("Illumina BaseSpace", "db", "Run metadata, cluster density and demultiplexed FASTQ from NovaSeq and NextSeq instruments.", "illumina-basespace",
+                         cat="Sequencing Platform (NGS)",
+                         what="Runs short-read sequencing and emits run metadata, QC metrics and demultiplexed FASTQ from NovaSeq and NextSeq instruments into the analysis pipeline.",
+                         users="Bioinformatics, Pipeline Engineers and Lab Operations.",
+                         data_out=data_out(
+                             batch=flow(["unstructured", "structured"], "0.5-5 TB/run (FASTQ/BAM)", "Per-run on completion (hours)"))),
+                    tile("Oxford Nanopore EPI2ME", "iot", "Long-read basecalls, methylation and structural variant calls from MinION and PromethION.", "nanopore-epi2me",
+                         cat="Long-Read Sequencing Platform",
+                         what="Produces long-read basecalls, methylation and structural-variant calls in real time from MinION and PromethION devices for genome assembly and SV detection.",
+                         users="Bioinformatics, Computational Biologists and Pipeline Engineers.",
+                         data_out=data_out(
+                             batch=flow(["unstructured", "structured"], "0.1-3 TB/run", "Per-run"),
+                             stream=flow(["semi-structured"], "reads as basecalled", "Continuous during run"))),
+                    tile("10x Genomics Cloud", "api", "Single-cell and spatial gene expression matrices from Chromium and Visium workflows.", "10x-cloud",
+                         cat="Single-Cell / Spatial Genomics Platform",
+                         what="Processes Chromium and Visium workflows into single-cell and spatial gene-expression matrices for target discovery and tumour-microenvironment analysis.",
+                         users="Computational Biologists, Single-Cell Analysts and Bioinformatics.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "10-200 GB/run (matrices)", "Per-run"))),
                 ]},
                 {"box": "Lab & Sample Mgmt", "ic": "erp", "tiles": [
-                    tile("Benchling R&D Cloud", "notebook", "Sample registration, chain of custody and structured experiment records.", "benchling"),
-                    tile("LabVantage LIMS", "db", "Clinical and research sample accessioning, aliquots and result release.", "labvantage"),
-                    tile("Thermo SampleManager", "sheet", "Biobank specimen tracking, storage location and stability across sample freezers.", "samplemanager")
+                    tile("Benchling R&D Cloud", "notebook", "Sample registration, chain of custody and structured experiment records.", "benchling",
+                         cat="Electronic Lab Notebook / R&D Platform",
+                         what="Registers samples, records structured experiments and holds chain of custody so bench work and molecular biology data stay linked to a sample identity.",
+                         users="Research scientists, Computational Biologists and Biobank Managers.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Nightly sync + on save"))),
+                    tile("LabVantage LIMS", "db", "Clinical and research sample accessioning, aliquots and result release.", "labvantage",
+                         cat="Laboratory Information Management System (LIMS)",
+                         what="Manages sample accessioning, aliquots, testing workflow and result release across clinical and research labs, the operational spine of the lab.",
+                         users="Lab Operations, Lab Directors and Variant Scientists.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-10 GB/day", "Nightly batch + intraday updates"))),
+                    tile("Thermo SampleManager", "sheet", "Biobank specimen tracking, storage location and stability across sample freezers.", "samplemanager",
+                         cat="Biobank / Sample Management System",
+                         what="Tracks biobank specimens, freezer storage location and stability so aliquot custody and conditions are known from collection through use.",
+                         users="Biobank Managers, Reagent & Inventory Leads and Lab Operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch"))),
                 ]},
                 {"box": "Clinical & Trials", "ic": "people", "tiles": [
-                    tile("Medidata Rave EDC", "gavel", "Electronic case report forms, visit schedules and protocol deviations.", "medidata-rave"),
-                    tile("Veeva Vault CTMS", "partner", "Site activation, enrolment milestones and monitoring visit findings.", "veeva-ctms"),
-                    tile("Flatiron Oncology EHR", "custlake", "De-identified oncology clinical records for real-world evidence cohorts.", "flatiron")
+                    tile("Medidata Rave EDC", "gavel", "Electronic case report forms, visit schedules and protocol deviations.", "medidata-rave",
+                         cat="Electronic Data Capture (EDC)",
+                         what="Captures case report forms, visit schedules and protocol deviations for the trials that consume biomarker and genomic results.",
+                         users="Clinical Operations, Clinical Trial Managers and Site Monitors.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-8 GB/day per study", "Nightly extracts"))),
+                    tile("Veeva Vault CTMS", "partner", "Site activation, enrolment milestones and monitoring visit findings.", "veeva-ctms",
+                         cat="Clinical Trial Management System (CTMS)",
+                         what="Tracks site activation, enrolment milestones and monitoring visit findings so trial operations see enrolment against target by site.",
+                         users="Clinical Operations, Clinical Trial Managers and Patient Recruitment Leads.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Nightly sync"))),
+                    tile("Flatiron Oncology EHR", "custlake", "De-identified oncology clinical records for real-world evidence cohorts.", "flatiron",
+                         cat="Real-World Oncology Data (EHR-derived)",
+                         what="De-identified, curated oncology EHR records used to build real-world-evidence cohorts and link genomic results to treatment outcomes.",
+                         users="CSO & CFO, Computational Biologists and Patient Recruitment Leads.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "10-50 GB per cohort", "Periodic curated refreshes"))),
                 ]},
                 {"box": "Knowledge & Reference", "ic": "globe", "tiles": [
-                    tile("ClinVar & gnomAD", "share", "Public variant pathogenicity and population frequency references for annotation.", "clinvar"),
-                    tile("COSMIC Cancer DB", "db", "Somatic mutation catalogue for oncology biomarker interpretation.", "cosmic"),
-                    tile("Instrument QC Telemetry", "observ", "Sequencer health, reagent lot and calibration drift joined to run outcomes.")
+                    tile("ClinVar & gnomAD", "share", "Public variant pathogenicity and population frequency references for annotation.", "clinvar",
+                         cat="Variant Reference Database",
+                         what="Public references for variant pathogenicity (ClinVar) and population allele frequency (gnomAD) used to annotate and classify called variants.",
+                         users="Bioinformatics, Variant Scientists and Reference Data Curators.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (reference releases)", "Periodic version releases"))),
+                    tile("COSMIC Cancer DB", "db", "Somatic mutation catalogue for oncology biomarker interpretation.", "cosmic",
+                         cat="Somatic Mutation Reference Database",
+                         what="Catalogue of somatic mutations in cancer used to interpret oncology biomarkers and prioritise variants for review.",
+                         users="Bioinformatics, Variant Scientists and Computational Biologists.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (reference releases)", "Periodic version releases"))),
+                    tile("Instrument QC Telemetry", "observ", "Sequencer health, reagent lot and calibration drift joined to run outcomes.",
+                         cat="Sequencer Instrument Telemetry",
+                         what="Streams sequencer health, reagent-lot and calibration-drift signals joined to run outcomes so failing runs are caught before bad calls propagate.",
+                         users="Lab Operations, Pipeline Engineers and Quality Managers.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "continuous instrument metrics", "Continuous during runs"))),
                 ]},
                 fed_group(
                     "CRO Analysis Results",
                     "Contract research organisation variant reports left at partners and queried in place under Unity Catalog.",
-                ),
+                    cat="CRO Bioinformatics Results",
+                    what="Variant and QC analysis results produced by contract research organisations, left at the partner and queried in place through federation rather than copied.",
+                    users="Bioinformatics, Regulatory & Quality and Compliance Leads.",
+                    data_out=data_out(
+                        batch=flow(["structured", "semi-structured"], "TB-scale partner results", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("GA4GH WES/WGS APIs", "api", "Beacon and phenopacket exchange endpoints consumed inbound for federated discovery.", "ga4gh"),
-                tile("HL7 FHIR Genomics", "stream", "Diagnostic report and observation resources normalised on ingest for clinical integration.", "fhir-genomics"),
-                tile("dbGaP Authorised Access", "gavel", "Controlled-access cohort files retrieved under DAC-approved scopes.")
+                tile("GA4GH WES/WGS APIs", "api", "Beacon and phenopacket exchange endpoints consumed inbound for federated discovery.", "ga4gh",
+                     cat="Genomics Data Exchange Standard (GA4GH)",
+                     what="Beacon and phenopacket exchange endpoints consumed inbound for federated variant discovery across institutions without moving patient-level files.",
+                     users="Bioinformatics, Computational Biologists and Compliance Leads.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s of API calls/query", "Continuous (API / federated)"))),
+                tile("HL7 FHIR Genomics", "stream", "Diagnostic report and observation resources normalised on ingest for clinical integration.", "fhir-genomics",
+                     cat="Clinical Interoperability Standard (FHIR Genomics)",
+                     what="Diagnostic-report and observation resources normalised on ingest so genomic results integrate with clinical systems at ordering and reporting.",
+                     users="Bioinformatics, Clinical Operations and App Developers.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "10s-100s of resources/sec", "Continuous (API / event)"))),
+                tile("dbGaP Authorised Access", "gavel", "Controlled-access cohort files retrieved under DAC-approved scopes.",
+                     cat="Controlled-Access Genomic Data Repository",
+                     what="Controlled-access cohort files (genotypes and phenotypes) retrieved under Data Access Committee-approved scopes for research cohorts.",
+                     users="Computational Biologists, Bioinformatics and Compliance Leads.",
+                     data_out=data_out(
+                         batch=flow(["structured", "unstructured"], "100s of GB per cohort", "On approval / periodic pulls"))),
             ]),
             "ppl": ppl2([
                 biz("CSO & CFO", "Genie One", "The CSO on sequencing throughput and biomarker programme progress; the CFO on CRO spend, cost-per-sample and trial enrolment velocity.",
@@ -148,6 +231,56 @@ INDUSTRIES_BATCH_GENOMICS_BIOTECH = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "CROs, pharma partners and consortia reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Variant Interpretation", "Ask about variant classifications, evidence and the VUS queue in plain language.",
+                      feeds=["Illumina BaseSpace", "ClinVar & gnomAD", "COSMIC Cancer DB", "Conformed sample, variant"],
+                      teams=["Bioinformatics", "Variant Scientists", "Computational Biologists"],
+                      questions=[
+                          "How many variants are in the VUS queue awaiting review?",
+                          "Which variants were reclassified since the last reference release?",
+                          "What evidence supports the pathogenic calls signed out this week?",
+                          "Which genes carry the most variants of uncertain significance?",
+                          "How does our classification agree with ClinVar for this variant?"]),
+                genie("Lab Operations & Turnaround", "Explore assay turnaround, sample custody and instrument QC across the lab.",
+                      feeds=["LabVantage LIMS", "Thermo SampleManager", "Instrument QC Telemetry", "Conformed sample, variant"],
+                      teams=["Lab Operations", "Lab Directors", "Biobank Managers"],
+                      questions=[
+                          "What is turnaround time by assay against SLA today?",
+                          "Where are samples stalling between accession and sign-out?",
+                          "Which reagent lots are near expiry or running low?",
+                          "How many samples cleared QC this week without rework?",
+                          "Which instruments are drifting toward a QC failure?"]),
+                genie("Trial Enrolment & Biomarkers", "Answer enrolment, screen-failure and biomarker-matching questions across trials.",
+                      feeds=["Medidata Rave EDC", "Veeva Vault CTMS", "Flatiron Oncology EHR", "Actionable clinical biomarkers"],
+                      teams=["Clinical Operations", "Clinical Trial Managers", "Patient Recruitment Leads"],
+                      questions=[
+                          "How is enrolment tracking to target by site and protocol?",
+                          "What is the biomarker-positive screen-failure rate this month?",
+                          "Which sites are behind on sample-collection SLAs?",
+                          "How many biomarker-positive candidates match open protocols?",
+                          "Which protocols have the highest protocol-deviation rate?"]),
+                genie("Quality & Compliance", "Ask about QC failures, CAPA aging and lineage for CAP, CLIA and FDA audits.",
+                      feeds=["LabVantage LIMS", "Instrument QC Telemetry", "CRO Analysis Results", "Raw sequence and LIMS"],
+                      teams=["Regulatory & Quality", "Quality Managers", "Compliance Leads"],
+                      questions=[
+                          "What is our QC failure rate by assay this quarter?",
+                          "Which CAPAs are open past their target closure date?",
+                          "Can we trace this signed report from FASTQ to release?",
+                          "How did we perform on the last proficiency-testing round?",
+                          "Which pipeline versions produced the reports under audit?"]),
+            ], dashboards=[
+                dashboard("Sequencing Throughput & QC", "Samples through QC, pipeline pass rate and cost per sample on certified Metric Views.",
+                          kpis=["Samples through QC", "Pipeline QC pass rate", "Cost per sample", "Sequencing turnaround", "Rework rate"],
+                          teams=["CSO & CFO", "Lab Operations", "Bioinformatics"]),
+                dashboard("Variant Review & Sign-out", "VUS queue depth, time to sign-out and reclassification across the review workbench.",
+                          kpis=["VUS queue depth", "Time to sign-out", "Reclassification rate", "Evidence-tier coverage", "Cases per curator"],
+                          teams=["Bioinformatics", "Variant Scientists", "Computational Biologists"]),
+                dashboard("Trial Enrolment", "Enrolment against target, biomarker-positive rate and deviations across trials.",
+                          kpis=["Enrolment vs target", "Biomarker-positive rate", "Screen-failure rate", "Sample-collection SLA", "Protocol deviations"],
+                          teams=["Clinical Operations", "CSO & CFO", "Patient Recruitment Leads"]),
+                dashboard("Lab Quality & Accreditation", "QC failure, CAPA aging and proficiency testing for CAP and CLIA readiness.",
+                          kpis=["QC failure rate", "CAPA aging", "Proficiency-testing outcome", "Assay TAT", "Chain-of-custody exceptions"],
+                          teams=["Regulatory & Quality", "Lab Operations", "Quality Managers"]),
             ]),
         },
         "top": top_band(

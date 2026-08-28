@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,130 @@ INDUSTRIES_BATCH_TRANSPORT_SHIPPING = {
         "rails": {
             "src": [
                 {"box": "TMS & Planning", "ic": "erp", "tiles": [
-                    tile("Oracle OTM", "erp", "Transportation planning, tendering, execution and freight payment.", "oracle-otm"),
-                    tile("Blue Yonder TMS", "sheet", "Load building, mode selection and carrier assignment.", "blue-yonder-tms"),
-                    tile("MercuryGate TMS", "market", "Multi-modal rating, routing and carrier scorecards.", "mercurygate"),
+                    tile("Oracle OTM", "erp", "Transportation planning, tendering, execution and freight payment.", "oracle-otm",
+                         cat="Transportation Management System (TMS)",
+                         what="Plans and tenders loads, executes shipments across modes and settles freight, holding the system-of-record for orders, legs and carrier assignments.",
+                         users="Transportation Ops, Dispatch and Carrier Procurement teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "Hourly extracts + nightly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC on tender and status"))),
+                    tile("Blue Yonder TMS", "sheet", "Load building, mode selection and carrier assignment.", "blue-yonder-tms",
+                         cat="Transportation Management System (TMS)",
+                         what="Builds loads, selects mode and assigns carriers against network constraints, feeding planned versus executed movement for consolidation analysis.",
+                         users="Transportation Ops, Linehaul Planning and Commercial & Pricing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch + intraday deltas"))),
+                    tile("MercuryGate TMS", "market", "Multi-modal rating, routing and carrier scorecards.", "mercurygate",
+                         cat="Multi-Modal TMS & Rating",
+                         what="Rates and routes multi-modal freight and maintains carrier scorecards, the basis for spot-versus-contract rating and award decisions.",
+                         users="Commercial & Pricing, Carrier Procurement and Bid & Sales teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Daily rating + scorecard refresh"))),
                 ]},
                 {"box": "WMS & Fulfillment", "ic": "db", "tiles": [
-                    tile("Manhattan Active WMS", "db", "Receiving, putaway, picking and shipping execution.", "manhattan-wms"),
-                    tile("SAP EWM", "erp", "Warehouse management integrated to manufacturing and retail flows.", "sap-ewm"),
-                    tile("Körber WMS", "stream", "High-bay and automated storage execution for 3PL campuses.", "korber-wms"),
+                    tile("Manhattan Active WMS", "db", "Receiving, putaway, picking and shipping execution.", "manhattan-wms",
+                         cat="Warehouse Management System (WMS)",
+                         what="Executes receiving, putaway, picking and shipping on the DC floor and emits the move events behind pick rate, slotting and labour analytics.",
+                         users="Warehouse Ops, DC Managers and Inbound & Slotting teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "hundreds of moves/sec at peak", "Continuous move events"))),
+                    tile("SAP EWM", "erp", "Warehouse management integrated to manufacturing and retail flows.", "sap-ewm",
+                         cat="Warehouse Management System (WMS)",
+                         what="Runs extended warehouse management tied into manufacturing and retail order flows, the source of stock movements and task confirmations.",
+                         users="Warehouse Ops, Inbound & Slotting and Data Engineers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-25 GB/day", "Nightly batch + hourly deltas"))),
+                    tile("Körber WMS", "stream", "High-bay and automated storage execution for 3PL campuses.", "korber-wms",
+                         cat="Warehouse Management System (WMS)",
+                         what="Executes high-bay and automated storage across 3PL campuses, emitting equipment and task telemetry from ASRS and conveyor systems.",
+                         users="Warehouse Ops, Yard & Dock and automation engineering teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous automation telemetry"))),
                 ]},
                 {"box": "Fleet & Telematics", "ic": "iot", "tiles": [
-                    tile("Samsara Fleet", "iot", "GPS, ELD, dashcam and engine diagnostics for owned and leased fleets.", "samsara"),
-                    tile("Geotab Fleet", "stream", "Vehicle location, idle time and maintenance alerts.", "geotab"),
-                    tile("Omnitracs ELD", "partner", "Hours of service, route compliance and driver workflow.", "omnitracs"),
+                    tile("Samsara Fleet", "iot", "GPS, ELD, dashcam and engine diagnostics for owned and leased fleets.", "samsara",
+                         cat="Fleet Telematics & ELD",
+                         what="Streams GPS position, hours-of-service logs, dashcam events and engine diagnostics from the tractor and trailer fleet.",
+                         users="Transportation Ops, Dispatch and Fleet maintenance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k pings/sec across fleet", "Continuous (seconds)"))),
+                    tile("Geotab Fleet", "stream", "Vehicle location, idle time and maintenance alerts.", "geotab",
+                         cat="Fleet Telematics",
+                         what="Reports vehicle location, idle time, harsh-driving events and maintenance alerts from telematics devices across the fleet.",
+                         users="Transportation Ops, Fleet maintenance and Safety teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of pings/sec", "Continuous (seconds)"))),
+                    tile("Omnitracs ELD", "partner", "Hours of service, route compliance and driver workflow.", "omnitracs",
+                         cat="Electronic Logging Device (ELD) / HOS",
+                         what="Captures hours-of-service logs, route compliance and driver workflow events used for HOS compliance and dispatch feasibility.",
+                         users="Transportation Ops, Safety & Compliance and Dispatch teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous (near real-time)"))),
                 ]},
                 {"box": "Carrier & Freight", "ic": "partner", "tiles": [
-                    tile("project44 Visibility", "api", "Real-time shipment tracking across LTL, TL and parcel networks.", "project44"),
-                    tile("FourKites", "globe", "Predictive ETA and exception management for shipper portals.", "fourkites"),
-                    tile("EDI VAN (Cleo)", "stream", "204 tender, 214 status and 210 invoice messages with carriers.", "cleo-edi"),
+                    tile("project44 Visibility", "api", "Real-time shipment tracking across LTL, TL and parcel networks.", "project44",
+                         cat="Real-Time Transportation Visibility",
+                         what="Aggregates carrier tracking across LTL, TL and parcel into real-time shipment position and status events for ETA and exception management.",
+                         users="Transportation Ops, In-Transit Exceptions and Customer service teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-5k status events/sec", "Continuous (API / webhook)"))),
+                    tile("FourKites", "globe", "Predictive ETA and exception management for shipper portals.", "fourkites",
+                         cat="Real-Time Transportation Visibility",
+                         what="Provides predictive ETA and exception signals across the carrier network, fed to shipper portals and control-tower workflows.",
+                         users="Transportation Ops, In-Transit Exceptions and Shipper account teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous (API / webhook)"))),
+                    tile("EDI VAN (Cleo)", "stream", "204 tender, 214 status and 210 invoice messages with carriers.", "cleo-edi",
+                         cat="EDI / B2B Integration Network",
+                         what="Exchanges 204 tender, 214 status and 210 invoice EDI messages with carriers, the trading-partner backbone for tender and settlement.",
+                         users="Transportation Ops, Freight Audit & Pay and Integration Engineers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Multiple daily batches"),
+                             stream=flow(["semi-structured"], "tens-hundreds of messages/sec", "Continuous message flow"))),
                 ]},
                 {"box": "Finance & Claims", "ic": "chart", "tiles": [
-                    tile("SAP TM Settlement", "market", "Freight accruals, audit and payment matched to proof of delivery.", "sap-tm-settle"),
-                    tile("Transporeon", "partner", "Dock appointment, yard management and detention billing.", "transporeon"),
+                    tile("SAP TM Settlement", "market", "Freight accruals, audit and payment matched to proof of delivery.", "sap-tm-settle",
+                         cat="Freight Audit & Payment",
+                         what="Accrues, audits and settles freight against contract rates and proof of delivery, the source of invoice-to-contract variance.",
+                         users="Finance & Claims, Freight Audit & Pay and Detention & Accessorials teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Daily settlement cycles"))),
+                    tile("Transporeon", "partner", "Dock appointment, yard management and detention billing.", "transporeon",
+                         cat="Dock Appointment & Yard Management",
+                         what="Manages dock appointments, yard slotting and detention billing, emitting arrival and departure events that drive the free-time clock.",
+                         users="Warehouse Ops, Yard & Dock and Detention & Accessorials teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous gate / appointment events"))),
                 ]},
-                fed_group("Shipper TMS Marts", "Shipper order and ASN marts queried in place under Unity Catalog."),
+                fed_group("Shipper TMS Marts", "Shipper order and ASN marts queried in place under Unity Catalog.",
+                          cat="Shipper Data Warehouse",
+                          what="Shipper-side order and ASN marts kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="Commercial & Pricing, Shipper account and Finance & Claims analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("EDI X12 214/210", "stream", "Standard shipment status and freight invoice messages parsed on arrival.", "cleo-edi"),
-                tile("FMCSA SAFER Feed", "gavel", "Carrier safety and authority status for onboarding checks.", "fmcsa"),
-                tile("Fuel Index APIs", "market", "Weekly fuel surcharge indices consumed for rating updates.", "transporeon"),
+                tile("EDI X12 214/210", "stream", "Standard shipment status and freight invoice messages parsed on arrival.", "cleo-edi",
+                     cat="EDI Transaction Messages",
+                     what="Standard X12 214 shipment status and 210 freight invoice messages parsed on arrival and joined to shipments for status and audit.",
+                     users="Transportation Ops, Freight Audit & Pay and Integration Engineers.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "tens-hundreds of messages/sec", "Continuous message flow"))),
+                tile("FMCSA SAFER Feed", "gavel", "Carrier safety and authority status for onboarding checks.", "fmcsa",
+                     cat="Carrier Safety & Authority Data",
+                     what="Provides carrier safety ratings, operating authority and insurance status used to vet carriers at onboarding and re-check.",
+                     users="Carrier Procurement, Safety & Compliance and Onboarding teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "100s of MB", "Weekly + on-demand pulls"))),
+                tile("Fuel Index APIs", "market", "Weekly fuel surcharge indices consumed for rating updates.", "transporeon",
+                     cat="Fuel Surcharge Index",
+                     what="Publishes weekly fuel-price indices consumed to update fuel surcharge schedules and landed-cost rating.",
+                     users="Commercial & Pricing, Freight Audit & Pay and Finance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs", "Weekly index refresh"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Network Office", "Genie One", "The CEO on margin per load; the COO on OTIF and fleet utilisation, trading empty miles and detention against the contracted service.",
@@ -117,6 +215,56 @@ INDUSTRIES_BATCH_TRANSPORT_SHIPPING = {
                     tile("Data Products", "product", "Visibility and lane performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Shippers reading live ETA via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Shipment Visibility & ETA", "Ask where a load is, why it is late and which shipments are at ETA risk right now.",
+                      feeds=["project44 Visibility", "FourKites", "Samsara Fleet", "Conformed shipment, leg, asset"],
+                      teams=["Transportation Ops", "Dispatch", "In-Transit Exceptions"],
+                      questions=[
+                          "Which shipments are at risk of missing their delivery appointment today?",
+                          "What is our on-time delivery rate by lane this week versus last?",
+                          "Which loads are currently in a detention or dwell exception?",
+                          "How accurate has our predicted ETA been against actual arrival by carrier?",
+                          "Which customers have the most late shipments this month and why?"]),
+                genie("Carrier Performance & Spend", "Explore carrier OTIF, cost per mile and freight spend across lanes and modes.",
+                      feeds=["MercuryGate TMS", "EDI VAN (Cleo)", "SAP TM Settlement", "OTIF, cost per mile"],
+                      teams=["Commercial & Pricing", "Carrier Procurement", "Finance & Claims"],
+                      questions=[
+                          "Which carriers have the best OTIF and lowest cost per mile on our top lanes?",
+                          "What is our tender acceptance rate by carrier this quarter?",
+                          "Which lanes are running above contract rate on the spot market?",
+                          "How much freight spend goes to accessorials by carrier?",
+                          "Which carriers have the highest claims rate against tendered volume?"]),
+                genie("Warehouse & Yard Operations", "Answer pick rate, dock and yard questions across the DC network.",
+                      feeds=["Manhattan Active WMS", "SAP EWM", "Transporeon", "Conformed shipment, leg, asset"],
+                      teams=["Warehouse Ops", "DC Manager", "Yard & Dock"],
+                      questions=[
+                          "What is pick rate by DC and shift against the outbound cut-off?",
+                          "Which dock doors are the bottleneck for outbound loads today?",
+                          "How long are trailers dwelling in the yard before they are worked?",
+                          "Which waves are behind plan and at risk of missing the carrier appointment?",
+                          "What is labour utilisation versus the planned staffing by DC?"]),
+                genie("Detention & Freight Audit", "Ask about detention exposure, accessorials and invoice-to-contract variance.",
+                      feeds=["Transporeon", "SAP TM Settlement", "EDI X12 214/210", "OTIF, cost per mile"],
+                      teams=["Finance & Claims", "Freight Audit & Pay", "Detention & Accessorials"],
+                      questions=[
+                          "Which shipments are accruing detention past contracted free time right now?",
+                          "How much recoverable detention did we fail to bill last month?",
+                          "Which carriers show the most invoice-to-contract variance?",
+                          "What is our duplicate-charge rate on audited freight bills?",
+                          "How much fuel surcharge did we recover versus the index this quarter?"]),
+            ], dashboards=[
+                dashboard("OTIF & Service Performance", "On-time-in-full, dwell and exception rates across lanes and customers.",
+                          kpis=["OTIF", "On-time %", "Dwell time", "Exception rate", "Appointment compliance"],
+                          teams=["Transportation Ops", "CEO & Network Office", "In-Transit Exceptions"]),
+                dashboard("Cost per Mile & Freight Spend", "Freight spend, cost per mile and accessorials with fuel surcharge recovery.",
+                          kpis=["Cost per mile", "Freight spend", "Accessorial spend", "Empty miles", "Fuel surcharge recovery"],
+                          teams=["Commercial & Pricing", "Finance & Claims", "CEO & Network Office"]),
+                dashboard("Warehouse Productivity", "Pick rate, dock utilisation, labour and yard turns across the DC network.",
+                          kpis=["Pick rate", "Dock utilisation", "Labour hours per unit", "Wave completion", "Yard turns"],
+                          teams=["Warehouse Ops", "DC Manager", "Yard & Dock"]),
+                dashboard("Carrier Scorecards", "Carrier OTIF, tender acceptance, claims and cost variance per lane.",
+                          kpis=["Carrier OTIF", "Tender acceptance", "Claims rate", "Cost variance", "Capacity commitment"],
+                          teams=["Commercial & Pricing", "Carrier Procurement", "Bid & Sales"]),
             ]),
         },
         "top": top_band(

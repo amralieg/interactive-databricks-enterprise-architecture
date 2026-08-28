@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,29 +31,97 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
         "rails": {
             "src": [
                 {"box": "Core Admin & Claims", "ic": "erp", "tiles": [
-                    tile("Facets Core Admin", "erp", "Membership, benefits, premium billing and claims adjudication for commercial and government lines.", "facets"),
-                    tile("HealthEdge Source", "db", "Claims pricing, reimbursement and payment integrity for Medicare Advantage and Exchange plans.", "healthedge"),
-                    tile("Cotiviti Payment Integrity", "market", "Pre- and post-pay edits, DRG validation and recovery findings on paid claims.", "cotiviti")
+                    tile("Facets Core Admin", "erp", "Membership, benefits, premium billing and claims adjudication for commercial and government lines.", "facets",
+                         cat="Payer Core Administration System",
+                         what="System of record for membership, benefits, premium billing and claims adjudication across commercial and government lines, emitting member, enrollment and paid-claim transactions.",
+                         users="Actuarial & Finance, claims operations and enrollment teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "50-200 GB/day", "Nightly adjudication cycle + intraday deltas"),
+                             stream=flow(["semi-structured"], "hundreds of claims/sec at peak", "Continuous CDC"))),
+                    tile("HealthEdge Source", "db", "Claims pricing, reimbursement and payment integrity for Medicare Advantage and Exchange plans.", "healthedge",
+                         cat="Claims Pricing & Payment Engine",
+                         what="Prices claims, applies reimbursement logic and payment integrity for Medicare Advantage and Exchange plans, emitting priced and edited claim lines.",
+                         users="Payment integrity, Actuarial & Finance and claims operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-60 GB/day", "Nightly batch"),
+                             stream=flow(["semi-structured"], "hundreds of claims/sec at peak", "Continuous (pre-pay edits)"))),
+                    tile("Cotiviti Payment Integrity", "market", "Pre- and post-pay edits, DRG validation and recovery findings on paid claims.", "cotiviti",
+                         cat="Payment Integrity Platform",
+                         what="Applies pre- and post-pay edits, DRG validation and recovery findings on claims, emitting edit results and recovery findings.",
+                         users="Fraud & Integrity, payment integrity and recovery teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-25 GB/day findings", "Daily edit + recovery cycle")))
                 ]},
                 {"box": "Clinical & UM", "ic": "people", "tiles": [
-                    tile("Epic Payer Platform", "custlake", "Prior authorization, care management notes and member clinical summaries from provider connectivity.", "epic-payer"),
-                    tile("NaviNet Prior Auth", "api", "Authorization requests, determinations and appeal status exchanged with provider portals.", "navinet"),
-                    tile("Optum (Change Healthcare)", "stream", "Lab, imaging and ADT feeds supplementing claims with clinical context.", "change-healthcare")
+                    tile("Epic Payer Platform", "custlake", "Prior authorization, care management notes and member clinical summaries from provider connectivity.", "epic-payer",
+                         cat="Payer Care Management Platform",
+                         what="Carries prior authorization, care management notes and member clinical summaries from provider connectivity, emitting authorization and clinical-summary records.",
+                         users="Care Management, utilization management and nurse care coordinators.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "5-20 GB/day incl. notes", "Nightly batch"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("NaviNet Prior Auth", "api", "Authorization requests, determinations and appeal status exchanged with provider portals.", "navinet",
+                         cat="Prior Authorization Exchange",
+                         what="Exchanges authorization requests, determinations and appeal status with provider portals, emitting auth request and determination events.",
+                         users="Utilization management, Care Management and provider-relations teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens of requests/sec at peak", "Continuous (portal / API)"))),
+                    tile("Optum (Change Healthcare)", "stream", "Lab, imaging and ADT feeds supplementing claims with clinical context.", "change-healthcare",
+                         cat="Clinical Connectivity Network",
+                         what="Supplies lab, imaging and ADT feeds that supplement claims with clinical context for risk and care use cases.",
+                         users="Care Management, risk-adjustment and clinical-data teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of HL7 msgs/sec at peak", "Continuous HL7/clinical feed")))
                 ]},
                 {"box": "Pharmacy & Network", "ic": "product", "tiles": [
-                    tile("CVS Caremark PBM", "market", "Pharmacy claims, formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.", ["caremark", "mmit", "accredo"]),
-                    tile("Symplr Provider Data", "people", "Credentialing, roster and directory accuracy for network adequacy.", "symplr"),
-                    tile("CMS Encounter Data", "gavel", "Risk adjustment diagnoses and encounter records submitted for Medicare Advantage.", "cms-encounter")
+                    tile("CVS Caremark PBM", "market", "Pharmacy claims, formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.", ["caremark", "mmit", "accredo"],
+                         cat="Pharmacy Benefit Manager (PBM)",
+                         what="Adjudicates pharmacy claims and carries formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.",
+                         users="Actuarial & Finance, pharmacy integrity and clinical-pharmacy teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "Daily pharmacy claims cycle"))),
+                    tile("Symplr Provider Data", "people", "Credentialing, roster and directory accuracy for network adequacy.", "symplr",
+                         cat="Provider Data Management System",
+                         what="Manages credentialing, roster and directory accuracy for network adequacy, emitting provider, roster and credential records.",
+                         users="Provider Relations, provider-data management and compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily roster refresh"))),
+                    tile("CMS Encounter Data", "gavel", "Risk adjustment diagnoses and encounter records submitted for Medicare Advantage.", "cms-encounter",
+                         cat="Risk Adjustment Submission System",
+                         what="Holds risk-adjustment diagnoses and encounter records submitted for Medicare Advantage, emitting encounter and response files.",
+                         users="Actuarial & Finance, risk-adjustment and regulatory teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "5-20 GB/submission", "Submission windows + response files")))
                 ]},
                 fed_group(
                     "TPA Sub-claims",
                     "Third-party administrator claim detail left at TPAs and queried in place under Unity Catalog.",
+                    cat="Third-Party Administrator System",
+                    what="Third-party-administrator claim detail kept at TPAs and queried in place through federation instead of being copied into the payer estate.",
+                    users="Actuarial & Finance, claims operations and Fraud & Integrity teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale TPA marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("X12 EDI Clearinghouse", "stream", "837 institutional and professional claims normalised on ingest through the multi-payer network with companion guide validation.", ["x12-edi", "avality"]),
-                tile("NCQA HEDIS Measures", "gavel", "Measure specification updates consumed inbound before HEDIS season.", "ncqa-hedis"),
-                tile("CMS Risk Model Files", "chart", "HCC coefficients and model software updates for risk adjustment scoring.")
+                tile("X12 EDI Clearinghouse", "stream", "837 institutional and professional claims normalised on ingest through the multi-payer network with companion guide validation.", ["x12-edi", "avality"],
+                     cat="EDI Claims Clearinghouse",
+                     what="Normalises 837 institutional and professional claims on ingest through the multi-payer network with companion-guide validation.",
+                     users="Data Engineers, EDI and claims-operations teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of 837s/sec at peak", "Continuous EDI feed"))),
+                tile("NCQA HEDIS Measures", "gavel", "Measure specification updates consumed inbound before HEDIS season.", "ncqa-hedis",
+                     cat="Quality Measure Specification",
+                     what="Inbound HEDIS measure specification updates that define the quality measures the plan computes each season.",
+                     users="Care Management, quality and Actuarial & Finance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs (specifications)", "Annual / on release"))),
+                tile("CMS Risk Model Files", "chart", "HCC coefficients and model software updates for risk adjustment scoring.",
+                     cat="Risk Adjustment Model Reference",
+                     what="HCC coefficients and risk-model software updates from CMS used to score risk adjustment for Medicare Advantage.",
+                     users="Actuarial & Finance, risk-adjustment and data-science teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs (coefficients)", "Annual model release")))
             ]),
             "ppl": ppl2([
                 biz("CEO & CFO", "Genie One", "The CEO on membership growth and medical loss ratio; the CFO on risk-adjusted revenue, medical trend and reserve adequacy by line of business.",
@@ -143,6 +214,56 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Employers, providers and regulators reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Medical Cost & Trend", "Ask about medical loss ratio, trend drivers and membership by line of business.",
+                      feeds=["Facets Core Admin", "HealthEdge Source", "MLR, risk, quality", "Conformed member, claim"],
+                      teams=["CEO & CFO", "Actuarial & Finance", "Financial Reporting"],
+                      questions=[
+                          "What is our medical loss ratio by line of business this month?",
+                          "Which categories are driving medical trend versus last year?",
+                          "How has membership grown by market and product?",
+                          "What is risk-adjusted revenue per member month by line?",
+                          "Where are IBNR reserves moving against booked estimates?"]),
+                genie("Risk Adjustment", "Explore HCC completeness, suspected gaps and encounter accuracy before submission.",
+                      feeds=["CMS Encounter Data", "Optum (Change Healthcare)", "CMS Risk Model Files", "Conformed member, claim"],
+                      teams=["Actuarial & Finance", "Risk Adjustment Lead", "Chief Actuary"],
+                      questions=[
+                          "Which members have suspected HCCs not yet captured this year?",
+                          "What is our encounter data completeness before the submission window?",
+                          "How does average RAF score compare to last plan year?",
+                          "Which providers have the largest documentation gaps?",
+                          "Where would recapture most improve risk-adjusted revenue?"]),
+                genie("Care & Quality", "Answer rising-risk, gap-in-care and prior-auth questions in plain language.",
+                      feeds=["Epic Payer Platform", "NaviNet Prior Auth", "NCQA HEDIS Measures", "MLR, risk, quality"],
+                      teams=["Care Management", "Nurse Care Coordinators", "Utilization Management"],
+                      questions=[
+                          "Which members are rising-risk and should be outreached this week?",
+                          "What is our HEDIS gap-closure rate by measure before season?",
+                          "Where is prior-auth turnaround exceeding target?",
+                          "Which members have open gaps in care across multiple measures?",
+                          "What is the readmission rate for the managed panel?"]),
+                genie("Payment Integrity & FWA", "Ask about edit yield, recoveries and pharmacy and provider anomalies.",
+                      feeds=["Cotiviti Payment Integrity", "CVS Caremark PBM", "X12 EDI Clearinghouse", "Conformed member, claim"],
+                      teams=["Fraud & Integrity", "Payment Integrity", "Pharmacy Integrity"],
+                      questions=[
+                          "Which providers show the most aberrant billing patterns this quarter?",
+                          "What is pre-pay edit yield versus post-pay recovery by category?",
+                          "Where are duplicate claims concentrated across the book?",
+                          "Which pharmacies show specialty or controlled-substance anomalies?",
+                          "How much FWA savings did we realise this month?"]),
+            ], dashboards=[
+                dashboard("MLR & Medical Trend", "Medical loss ratio, trend and risk-adjusted revenue on certified finance Metric Views.",
+                          kpis=["Medical loss ratio", "Medical trend", "Risk-adjusted revenue", "IBNR reserves", "Membership"],
+                          teams=["CEO & CFO", "Actuarial & Finance", "Financial Reporting"]),
+                dashboard("Risk Adjustment & RAF", "RAF score, HCC recapture and encounter completeness before submission windows.",
+                          kpis=["RAF score", "HCC recapture rate", "Encounter completeness", "Suspected gaps", "Submission accuracy"],
+                          teams=["Actuarial & Finance", "Risk Adjustment Lead", "Chief Actuary"]),
+                dashboard("Quality & Care", "HEDIS, Stars, gap closure and prior-auth turnaround across the managed panel.",
+                          kpis=["HEDIS measure rate", "Star rating", "Gap-closure rate", "Readmission rate", "PA turnaround"],
+                          teams=["Care Management", "Nurse Care Coordinators", "Utilization Management"]),
+                dashboard("Payment Integrity & FWA", "Edit yield, recoveries and FWA savings across medical and pharmacy claims.",
+                          kpis=["Pre-pay edit yield", "Post-pay recovery", "FWA savings", "Duplicate-claim rate", "Pharmacy anomaly rate"],
+                          teams=["Fraud & Integrity", "Payment Integrity", "Pharmacy Integrity"]),
             ]),
         },
         "top": top_band(

@@ -17,6 +17,24 @@ def js_str(s: str) -> str:
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
 
 
+def js_arr(items) -> str:
+    return "[" + ", ".join(js_str(x) for x in items) + "]"
+
+
+def js_flow(f: dict) -> str:
+    return "{ types:%s, vol:%s, interval:%s }" % (
+        js_arr(f.get("types", [])), js_str(f.get("vol", "")), js_str(f.get("interval", "")))
+
+
+def js_data_out(do: dict) -> str:
+    lanes = []
+    if do.get("batch"):
+        lanes.append("batch:" + js_flow(do["batch"]))
+    if do.get("stream"):
+        lanes.append("stream:" + js_flow(do["stream"]))
+    return "{ " + ", ".join(lanes) + " }"
+
+
 def emit_tile(tile: dict, indent: str, ppl: bool = False) -> str:
     parts = [f'n:{js_str(tile["n"])}']
     if not ppl and tile.get("ic"):
@@ -30,6 +48,22 @@ def emit_tile(tile: dict, indent: str, ppl: bool = False) -> str:
     if tile.get("cite"):
         cites = ", ".join(js_str(c) for c in tile["cite"])
         parts.append(f'cite:[{cites}]')
+    if tile.get("cat"):
+        parts.append(f'cat:{js_str(tile["cat"])}')
+    if tile.get("what"):
+        parts.append(f'what:{js_str(tile["what"])}')
+    if tile.get("users"):
+        parts.append(f'users:{js_str(tile["users"])}')
+    if tile.get("dataOut"):
+        parts.append(f'dataOut:{js_data_out(tile["dataOut"])}')
+    if tile.get("feeds"):
+        parts.append(f'feeds:{js_arr(tile["feeds"])}')
+    if tile.get("kpis"):
+        parts.append(f'kpis:{js_arr(tile["kpis"])}')
+    if tile.get("teams"):
+        parts.append(f'teams:{js_arr(tile["teams"])}')
+    if tile.get("questions"):
+        parts.append(f'questions:{js_arr(tile["questions"])}')
     if tile.get("uses"):
         uses = ", ".join(f'[{js_str(u[0])}, {js_str(u[1])}]' for u in tile["uses"])
         parts.append(f'uses:[{uses}]')

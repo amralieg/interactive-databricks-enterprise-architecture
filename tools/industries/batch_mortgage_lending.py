@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,45 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             "erp",
                             "ICE Mortgage Technology Encompass, the dominant loan origination system and the system of record for loan files, borrower data, conditions and the origination workflow from application to closing.",
                             "encompass",
+                            cat="Loan Origination System (LOS)",
+                            what="The dominant loan origination system and the system of record for loan files, borrower data, conditions and the origination workflow from application to closing.",
+                            users="Loan officers, processors and underwriters.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "20-80 GB/day loan files + conditions", "Continuous CDC (near real-time)")),
                         ),
                         tile(
                             "Blend POS",
                             "appbuilder",
                             "Consumer point-of-sale front end capturing the application, document upload and status, and feeding the loan file into the origination system.",
                             "blend",
+                            cat="Mortgage Point-of-Sale (POS)",
+                            what="Consumer point-of-sale front end capturing the application, document upload and status, and feeding the loan file into the origination system.",
+                            users="POS and channel teams, loan officers and borrowers.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "5-20 GB/day applications + docs", "Nightly batch"),
+                                stream=flow(["semi-structured"], "Application + status events", "Continuous (events)")),
                         ),
                         tile(
                             "nCino Mortgage",
                             "product",
                             "nCino Mortgage Suite (SimpleNexus) point-of-sale and origination, capturing borrower intent, disclosures and closing collaboration across the loan team.",
                             "ncino",
+                            cat="Mortgage Point-of-Sale / Origination",
+                            what="Point-of-sale and origination suite capturing borrower intent, disclosures and closing collaboration across the loan team.",
+                            users="Loan officers, processors and POS teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "5-20 GB/day applications + disclosures", "Nightly batch")),
                         ),
                         tile(
                             "MeridianLink LOS",
                             "erp",
                             "Consumer and mortgage loan origination for banks and credit unions, the system of record for applications, decisions and funding on the consumer-lending side.",
                             "meridianlink",
+                            cat="Loan Origination System (LOS)",
+                            what="Consumer and mortgage loan origination for banks and credit unions, the system of record for applications, decisions and funding on the consumer-lending side.",
+                            users="Loan officers, processors and consumer lending teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day applications + decisions", "Nightly batch")),
                         ),
                     ],
                 },
@@ -65,22 +89,42 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             "erp",
                             "The ICE Black Knight MSP servicing system of record: loan boarding, payment processing, escrow administration, investor accounting and default across the servicing book.",
                             "bkmsp",
+                            cat="Mortgage Servicing System",
+                            what="The servicing system of record covering loan boarding, payment processing, escrow administration, investor accounting and default across the servicing book.",
+                            users="Servicing operations, default and investor accounting.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "50-200 GB/day payments + escrow", "Nightly batch + intraday CDC")),
                         ),
                         tile(
                             "Sagent LoanServ",
                             "db",
                             "Sagent's real-time servicing platform for banks and non-banks: payment, escrow and default servicing with a consumer-grade experience.",
                             "sagent",
+                            cat="Mortgage Servicing System",
+                            what="Real-time servicing platform for banks and non-banks covering payment, escrow and default servicing with a consumer-grade experience.",
+                            users="Servicing operations, default and retention.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day payments + escrow", "Continuous CDC (near real-time)")),
                         ),
                         tile(
                             "Servicing Digital",
                             "apps",
                             "Borrower self-service channel for statements, payments, payoff and escrow, the servicing-side customer front end joined to the loan of record.",
+                            cat="Borrower Self-Service Portal",
+                            what="Borrower self-service channel for statements, payments, payoff and escrow, the servicing-side customer front end joined to the loan of record.",
+                            users="Retention, servicing operations and borrowers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Portal + payment events", "Continuous (events)")),
                         ),
                         tile(
                             "Investor Accounting",
                             "sheet",
                             "Investor remittance and loan-level reporting to Fannie Mae, Freddie Mac and Ginnie Mae, cash and accounting against each pool and custodial account.",
+                            cat="Investor Accounting / Remittance",
+                            what="Investor remittance and loan-level reporting to Fannie Mae, Freddie Mac and Ginnie Mae, cash and accounting against each pool and custodial account.",
+                            users="Investor accounting, finance and servicing operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "Remittance + loan-level reporting", "Multiple remittance cycles monthly")),
                         ),
                     ],
                 },
@@ -93,24 +137,44 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             "govcat",
                             "Desktop Underwriter, Fannie Mae's automated underwriting system, returning eligibility and findings against the selling guide for each application.",
                             "du",
+                            cat="Automated Underwriting System (AUS)",
+                            what="Automated underwriting system returning eligibility and findings against the selling guide for each application.",
+                            users="Underwriters, credit policy and processors.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Findings responses", "Continuous (API, per application)")),
                         ),
                         tile(
                             "Freddie Mac LPA",
                             "govcat",
                             "Loan Product Advisor, Freddie Mac's automated underwriting engine, returning risk and eligibility assessments used to make and support the credit decision.",
                             "lpa",
+                            cat="Automated Underwriting System (AUS)",
+                            what="Automated underwriting engine returning risk and eligibility assessments used to make and support the credit decision.",
+                            users="Underwriters, credit policy and processors.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Assessment responses", "Continuous (API, per application)")),
                         ),
                         tile(
                             "Tri-Merge Credit",
                             "identity",
                             "Merged Experian, Equifax and TransUnion credit reports and scores pulled at application and re-pulled before closing, the basis of the credit decision.",
                             "bureaus",
+                            cat="Credit Bureau Data (Tri-Merge)",
+                            what="Merged Experian, Equifax and TransUnion credit reports and scores pulled at application and re-pulled before closing, the basis of the credit decision.",
+                            users="Underwriters, credit risk ML and credit policy.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Credit report + score pulls", "Continuous (API, per pull)")),
                         ),
                         tile(
                             "Income & Asset Verif",
                             "file",
                             "The Work Number and asset-verification services confirming employment, income and deposits so underwriting works from verified rather than stated figures.",
                             "twn",
+                            cat="Income & Asset Verification Service",
+                            what="Employment, income and deposit verification services so underwriting works from verified rather than stated figures.",
+                            users="Underwriters, processors and credit policy.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Verification responses", "Continuous (API, per request)")),
                         ),
                     ],
                 },
@@ -123,24 +187,44 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             "market",
                             "The product and pricing engine returning eligible products and locked rates against investor guidelines and margin, the source of the rate lock.",
                             "ob",
+                            cat="Product & Pricing Engine (PPE)",
+                            what="Product and pricing engine returning eligible products and locked rates against investor guidelines and margin, the source of the rate lock.",
+                            users="Secondary marketing, loan officers and pricing.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "Lock + pricing events", "Continuous (real-time)")),
                         ),
                         tile(
                             "MCT Secondary",
                             "chart",
                             "Mortgage Capital Trading pipeline hedging and best-execution analytics for the secondary desk, sizing loan sales and TBA positions.",
                             "mct",
+                            cat="Secondary / Hedging Platform",
+                            what="Pipeline hedging and best-execution analytics for the secondary desk, sizing loan sales and TBA positions.",
+                            users="Secondary marketing, hedging desk and MSR managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "Hedge positions + best-ex analytics", "Intraday + end-of-day")),
                         ),
                         tile(
                             "GSE Loan Delivery",
                             "partner",
                             "Fannie Mae Loan Delivery and Freddie Mac Loan Selling Advisor: loan delivery, pooling and commitment against agency programs and pricing.",
                             "gse",
+                            cat="GSE Loan Delivery System",
+                            what="Loan delivery, pooling and commitment against agency programs and pricing for Fannie Mae and Freddie Mac.",
+                            users="Secondary marketing, investor delivery and finance.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "Delivery + pool + commitment files", "Multiple delivery cycles daily")),
                         ),
                         tile(
                             "MERS Registry",
                             "govcat",
                             "Mortgage Electronic Registration Systems tracking servicing rights and note ownership as loans and MSRs transfer between parties.",
                             "mers",
+                            cat="Mortgage Registry (MERS)",
+                            what="Electronic registry tracking servicing rights and note ownership as loans and MSRs transfer between parties.",
+                            users="Secondary marketing, servicing operations and MSR managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "MIN + transfer records", "Daily batch")),
                         ),
                     ],
                 },
@@ -152,30 +236,55 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             "Default & Collections",
                             "opdb",
                             "Loss mitigation, collections and foreclosure workflow for delinquent loans, the servicing-side default estate with borrower outreach and workout state.",
+                            cat="Default & Collections System",
+                            what="Loss mitigation, collections and foreclosure workflow for delinquent loans, the servicing-side default estate with borrower outreach and workout state.",
+                            users="Default and loss mitigation, collections and servicing operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "Delinquency + workout state", "Nightly batch")),
                         ),
                         tile(
                             "HMDA / LAR",
                             "gavel",
                             "The Home Mortgage Disclosure Act loan application register: the fields and reporting that expose fair-lending and disparate-impact exposure.",
                             "hmda",
+                            cat="Regulatory Reporting Register (HMDA)",
+                            what="The Home Mortgage Disclosure Act loan application register, the fields and reporting that expose fair-lending and disparate-impact exposure.",
+                            users="Fair lending and compliance, credit policy and legal.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "LAR records", "Periodic (regulatory cycle)")),
                         ),
                         tile(
                             "CoreLogic Property",
                             "globe",
                             "CoreLogic (Cotality) property, valuation and AVM data plus flood and hazard, joined to the collateral behind every loan.",
                             "corelogic",
+                            cat="Property & Valuation Data Provider",
+                            what="Property, valuation and AVM data plus flood and hazard, joined to the collateral behind every loan.",
+                            users="Underwriters, collateral risk and secondary marketing.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "Property + AVM + hazard data", "Daily/weekly updates")),
                         ),
                         tile(
                             "Title & Closing",
                             "docs",
                             "Qualia and ICE closing systems producing title, settlement and closing-disclosure documents at the end of the origination workflow.",
                             "qualia",
+                            cat="Title & Closing Platform",
+                            what="Title, settlement and closing-disclosure documents produced at the end of the origination workflow.",
+                            users="Closing teams, processors and compliance.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "Title + settlement + CD documents", "Nightly batch")),
                         ),
                     ],
                 },
                 fed_group(
                     "Loan & Finance Marts",
                     "Enterprise loan, servicing and general-ledger marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited book of record.",
+                    cat="Loan & Finance Data Mart",
+                    what="Enterprise loan, servicing and general-ledger marts kept in the incumbent warehouses and queried in place, avoiding a second copy of the audited book of record.",
+                    users="Finance, risk and servicing operations.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale loan + GL history", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -185,16 +294,32 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                         "api",
                         "MISMO-standard XML loan data exchanged with investors, insurers and vendors, parsed on arrival and landed as structured events.",
                         "mismo",
+                        cat="Mortgage Data Standard (MISMO)",
+                        what="MISMO-standard XML loan data exchanged with investors, insurers and vendors, parsed on arrival and landed as structured events.",
+                        users="Loan data engineering, secondary marketing and investors.",
+                        data_out=data_out(
+                            batch=flow(["semi-structured"], "MISMO XML loan files", "Multiple batches daily"),
+                            stream=flow(["semi-structured"], "MISMO message events", "Continuous (events)")),
                     ),
                     tile(
                         "Doc & OCR Stream",
                         "docs",
                         "Scanned income, asset and closing documents streamed in for classification and extraction as they arrive at the loan file.",
+                        cat="Document / OCR Stream",
+                        what="Scanned income, asset and closing documents streamed in for classification and extraction as they arrive at the loan file.",
+                        users="Origination, document intelligence and underwriting.",
+                        data_out=data_out(
+                            stream=flow(["unstructured", "semi-structured"], "Document images + extracts", "Continuous (as received)")),
                     ),
                     tile(
                         "Bureau & Vendor APIs",
                         "api",
                         "Credit, verification, pricing and property request/response APIs consumed inbound through managed ELT connectors and existing event topics.",
+                        cat="Bureau & Vendor Streaming API",
+                        what="Credit, verification, pricing and property request/response APIs consumed inbound through managed ELT connectors and existing event topics.",
+                        users="Loan data engineering, underwriting and secondary marketing.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "Vendor API responses", "Continuous (API/events)")),
                     ),
                 ]
             ),
@@ -412,7 +537,59 @@ INDUSTRIES_BATCH_MORTGAGE_LENDING = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Production & Pipeline", "Ask about origination volume, margin and pull-through by channel in plain language.",
+                          feeds=["ICE Encompass LOS", "Optimal Blue PPE", "Margin, delinquency, prepayment risk"],
+                          teams=["Origination", "Production leaders", "Lending Exec"],
+                          questions=[
+                              "What did each channel originate last month?",
+                              "Where has gain-on-sale margin compressed this quarter?",
+                              "What is pull-through by loan officer and product?",
+                              "Which loans are stuck in the pipeline and why?",
+                              "How does cycle time to clear-to-close compare across branches?"]),
+                    genie("Credit & Underwriting", "Ask about credit decisions, findings and conditions across the book in plain language.",
+                          feeds=["Fannie Mae DU", "Tri-Merge Credit", "Conformed loan, borrower, property"],
+                          teams=["Underwriting", "Underwriters", "Credit policy"],
+                          questions=[
+                              "What is our approval rate by product and channel this month?",
+                              "Which conditions most often delay a clear-to-close?",
+                              "How do DU and LPA findings differ on our applications?",
+                              "Where are overlays above the agency systems costing volume?",
+                              "Which applications were denied and for what reason codes?"]),
+                    genie("Servicing & Default", "Ask about delinquency, roll rates and workouts across the servicing book in plain language.",
+                          feeds=["Black Knight MSP", "Default & Collections", "Margin, delinquency, prepayment risk"],
+                          teams=["Servicing Ops", "Default & loss mitigation", "Retention"],
+                          questions=[
+                              "What is delinquency and roll rate by vintage right now?",
+                              "Which loans are most likely to roll to foreclosure this month?",
+                              "What is our cure rate by workout type?",
+                              "Which borrowers are at highest payoff and refinance risk?",
+                              "Where are escrow shortfalls concentrated across the book?"]),
+                    genie("Secondary & MSR", "Ask about the lock pipeline, best execution and MSR valuation in plain language.",
+                          feeds=["MCT Secondary", "Optimal Blue PPE", "Margin, delinquency, prepayment risk"],
+                          teams=["Secondary Desk", "Secondary marketing", "MSR & portfolio"],
+                          questions=[
+                              "What is our current rate-lock pipeline and pull-through?",
+                              "Where is best execution strongest across investors today?",
+                              "What is our hedge position against the pipeline right now?",
+                              "How have prepayment speeds moved on the MSR book?",
+                              "What is the MSR valuation by investor and vintage?"]),
+                ],
+                dashboards=[
+                    dashboard("Production & Margin", "Origination volume, margin and pull-through across channels on certified Metric Views.",
+                              kpis=["Origination volume", "Gain-on-sale margin", "Pull-through", "Cycle time", "Cost per funded loan"],
+                              teams=["Lending Exec", "Origination", "Production leaders"]),
+                    dashboard("Credit & Fair Lending", "Approval, denial and pricing outcomes tested for disparate impact.",
+                              kpis=["Approval rate", "Denial rate", "Disparate impact", "Adverse-action reason codes", "HMDA completeness"],
+                              teams=["Underwriting", "Fair lending & compliance", "Chief Risk Officer"]),
+                    dashboard("Servicing & Delinquency", "Delinquency, roll rate and workout performance across the servicing book.",
+                              kpis=["Delinquency rate", "Roll rate", "Cure rate", "Foreclosure timeline", "Recapture rate"],
+                              teams=["Servicing Ops", "Default & loss mitigation", "Retention"]),
+                    dashboard("Secondary & MSR", "Lock pipeline, best execution and MSR valuation across investors and vintages.",
+                              kpis=["Lock pipeline", "Best execution", "Hedge P&L", "Prepayment speed (CPR)", "MSR valuation"],
+                              teams=["Secondary Desk", "Hedging desk", "MSR & portfolio"]),
+                ],
             ),
         },
         "top": top_band(

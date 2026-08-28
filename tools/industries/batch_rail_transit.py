@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -27,37 +30,141 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
         "rails": {
             "src": [
                 {"box": "Asset & Maintenance", "ic": "erp", "tiles": [
-                    tile("IBM Maximo", "erp", "Enterprise asset management for rolling stock and infrastructure: work orders, component lifing, defect history and maintenance planning against every asset.", cite=["maximo"]),
-                    tile("SAP EAM", "erp", "Plant maintenance and enterprise asset management where SAP is the incumbent, feeding the same asset, work-order and spares entities.", cite=["sap-eam"]),
-                    tile("Bentley AssetWise", "db", "Linear and infrastructure asset management: track, structures and signaling assets, their condition and their inspection and renewal history.", cite=["assetwise"]),
+                    tile("IBM Maximo", "erp", "Enterprise asset management for rolling stock and infrastructure: work orders, component lifing, defect history and maintenance planning against every asset.", cite=["maximo"],
+                         cat="Enterprise Asset Management (EAM)",
+                         what="Holds work orders, component lifing, defect history and maintenance plans against every rolling-stock and infrastructure asset, the system of record for asset condition.",
+                         users="Fleet & Assets, Rolling-stock engineering and Maintenance planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch + hourly work-order deltas"))),
+                    tile("SAP EAM", "erp", "Plant maintenance and enterprise asset management where SAP is the incumbent, feeding the same asset, work-order and spares entities.", cite=["sap-eam"],
+                         cat="Enterprise Asset Management (EAM)",
+                         what="Runs plant maintenance and asset management where SAP is the incumbent, feeding the same asset, work-order and spares entities into the fleet view.",
+                         users="Fleet & Assets, Maintenance planning and Data Engineers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly batch + hourly deltas"))),
+                    tile("Bentley AssetWise", "db", "Linear and infrastructure asset management: track, structures and signaling assets, their condition and their inspection and renewal history.", cite=["assetwise"],
+                         cat="Linear/Infrastructure Asset Management",
+                         what="Manages linear and infrastructure assets, track, structures and signaling, with their condition and inspection and renewal history for renewal planning.",
+                         users="Fleet & Assets, Infrastructure & track and Maintenance planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Daily batch + inspection loads"))),
                 ]},
                 {"box": "Signaling & Control", "ic": "network", "tiles": [
-                    tile("Wabtec I-ETMS PTC", "network", "Interoperable positive train control: on-board and back-office enforcement of movement authority, the source of exceedance and enforcement events.", cite=["ptc"]),
-                    tile("Siemens Trainguard", "network", "CBTC and automatic train control for mass transit, the moving-block signaling basis for headway, throughput and energy-optimised driving.", cite=["trainguard"]),
-                    tile("Alstom Signalling", "iot", "Interlockings, ETCS and wayside signaling, the source of route setting, occupancy and aspect state across the network.", cite=["alstom-sig"]),
+                    tile("Wabtec I-ETMS PTC", "network", "Interoperable positive train control: on-board and back-office enforcement of movement authority, the source of exceedance and enforcement events.", cite=["ptc"],
+                         cat="Positive Train Control (PTC)",
+                         what="Enforces movement authority on-board and in the back office, emitting exceedance and enforcement events that carry the precursors of a serious signaling event.",
+                         users="Safety & Reg, Safety assurance and Network Ops teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous enforcement events"))),
+                    tile("Siemens Trainguard", "network", "CBTC and automatic train control for mass transit, the moving-block signaling basis for headway, throughput and energy-optimised driving.", cite=["trainguard"],
+                         cat="CBTC / Automatic Train Control",
+                         what="Provides moving-block CBTC and automatic train control for mass transit, the basis for headway, throughput and energy-optimised driving.",
+                         users="Network Ops, Dispatchers and Energy & traction teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of state messages/sec", "Continuous (sub-second)"))),
+                    tile("Alstom Signalling", "iot", "Interlockings, ETCS and wayside signaling, the source of route setting, occupancy and aspect state across the network.", cite=["alstom-sig"],
+                         cat="Signaling & Interlocking (ETCS)",
+                         what="Runs interlockings, ETCS and wayside signaling, the source of route setting, track occupancy and aspect state across the network.",
+                         users="Network Ops, Safety assurance and Dispatchers.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous signaling events"))),
                 ]},
                 {"box": "Dispatch & Network Ops", "ic": "stream", "tiles": [
-                    tile("RailConnect TMS", "stream", "Wabtec transportation management: train sheets, crew calling, waybills and movement authority, the operational backbone of a freight railroad.", cite=["wabtec"]),
-                    tile("Alstom Onvia", "gauge", "Integrated traffic management and control centre: dispatcher decisions, conflict detection and network-wide movement supervision.", cite=["alstom-sig"]),
-                    tile("AVL / GPS Telemetry", "iot", "Automatic vehicle location and GPS pings from locomotives and transit vehicles, the ground truth for position, speed and run adherence."),
+                    tile("RailConnect TMS", "stream", "Wabtec transportation management: train sheets, crew calling, waybills and movement authority, the operational backbone of a freight railroad.", cite=["wabtec"],
+                         cat="Rail Transportation Management System",
+                         what="Manages train sheets, crew calling, waybills and movement authority, the operational backbone a freight railroad dispatches from.",
+                         users="Network Ops, Dispatchers and Crew control teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "hundreds of movement events/sec", "Continuous movement events"))),
+                    tile("Alstom Onvia", "gauge", "Integrated traffic management and control centre: dispatcher decisions, conflict detection and network-wide movement supervision.", cite=["alstom-sig"],
+                         cat="Traffic Management System (TMS)",
+                         what="Provides integrated traffic management and control-centre supervision, capturing dispatcher decisions, conflict detection and network-wide movement.",
+                         users="Network Ops, Dispatchers and Passenger information teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous control-centre events"))),
+                    tile("AVL / GPS Telemetry", "iot", "Automatic vehicle location and GPS pings from locomotives and transit vehicles, the ground truth for position, speed and run adherence.",
+                         cat="Vehicle Location (AVL/GPS)",
+                         what="Streams automatic vehicle location and GPS pings from locomotives and transit vehicles, the ground truth for position, speed and run adherence.",
+                         users="Network Ops, Passenger information and Energy & traction teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k pings/sec across fleet", "Continuous (seconds)"))),
                 ]},
                 {"box": "Fare & Ridership", "ic": "market", "tiles": [
-                    tile("Cubic AFC", "market", "Automated fare collection: gates, validators, account-based ticketing and the tap transactions that measure ridership and revenue.", cite=["cubic"]),
-                    tile("INIT", "partner", "Fare collection and CAD/AVL for public transit: ticketing, vehicle location and passenger counting on one integrated estate.", cite=["init"]),
-                    tile("Scheidt & Bachmann", "product", "Fare collection and ticketing systems: validators, ticket vending and the back office that reconciles fares to revenue.", cite=["scheidt"]),
+                    tile("Cubic AFC", "market", "Automated fare collection: gates, validators, account-based ticketing and the tap transactions that measure ridership and revenue.", cite=["cubic"],
+                         cat="Automated Fare Collection (AFC)",
+                         what="Runs gates, validators and account-based ticketing, the tap transactions that measure ridership and revenue across the network.",
+                         users="Revenue & Fares, Fare collection and Commercial planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Hourly reconciliation batch"),
+                             stream=flow(["semi-structured"], "hundreds-thousands of taps/sec at peak", "Continuous tap events"))),
+                    tile("INIT", "partner", "Fare collection and CAD/AVL for public transit: ticketing, vehicle location and passenger counting on one integrated estate.", cite=["init"],
+                         cat="Fare Collection & CAD/AVL",
+                         what="Integrates fare collection with CAD/AVL and automatic passenger counting on one estate, joining ticketing to vehicle location and loads.",
+                         users="Revenue & Fares, Fare collection and Network Ops teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous validation events"))),
+                    tile("Scheidt & Bachmann", "product", "Fare collection and ticketing systems: validators, ticket vending and the back office that reconciles fares to revenue.", cite=["scheidt"],
+                         cat="Fare Collection & Ticketing",
+                         what="Provides validators, ticket vending and the back office that reconciles fares to revenue, a source for revenue-protection analysis.",
+                         users="Revenue & Fares, Fare collection and Revenue protection teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily reconciliation batch"))),
                 ]},
                 {"box": "Scheduling & Sensors", "ic": "sheet", "tiles": [
-                    tile("GIRO HASTUS", "sheet", "Transit scheduling and crew rostering: timetables, blocking, runcutting and rosters, the plan the operation is measured against.", cite=["hastus"]),
-                    tile("GTFS / GTFS-RT", "stream", "General Transit Feed Specification static schedules and real-time trip updates, the open standard for stops, trips and live arrivals.", cite=["gtfs"]),
-                    tile("Wayside Detectors", "iot", "Hot bearing, wheel-impact and dragging-equipment detectors along the track, catching a failing axle before it becomes a derailment.", cite=["hotbox"]),
-                    tile("Track Geometry", "iot", "Track-geometry inspection car runs measuring gauge, alignment and cant, the basis for slow orders and renewal planning.", cite=["trackgeo"]),
+                    tile("GIRO HASTUS", "sheet", "Transit scheduling and crew rostering: timetables, blocking, runcutting and rosters, the plan the operation is measured against.", cite=["hastus"],
+                         cat="Transit Scheduling & Rostering",
+                         what="Builds timetables, blocking, runcutting and crew rosters, the plan the operation is measured against and repaired from during disruption.",
+                         users="Network Ops, Crew control and Commercial planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily + schedule-change batch"))),
+                    tile("GTFS / GTFS-RT", "stream", "General Transit Feed Specification static schedules and real-time trip updates, the open standard for stops, trips and live arrivals.", cite=["gtfs"],
+                         cat="Transit Data Standard (GTFS)",
+                         what="Carries static GTFS schedules and GTFS-RT real-time trip updates, the open standard for stops, trips and live arrivals used for delay and passenger info.",
+                         users="Network Ops, Passenger information and Revenue & demand teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "100s of MB", "Daily static feed"),
+                             stream=flow(["semi-structured"], "hundreds of trip updates/sec", "Continuous (seconds)"))),
+                    tile("Wayside Detectors", "iot", "Hot bearing, wheel-impact and dragging-equipment detectors along the track, catching a failing axle before it becomes a derailment.", cite=["hotbox"],
+                         cat="Wayside Condition Monitoring",
+                         what="Reads hot-bearing, wheel-impact and dragging-equipment detectors along the track, catching a failing axle before it becomes a derailment.",
+                         users="Fleet & Assets, Infrastructure & track and Safety assurance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of detections/sec", "Continuous per train pass"))),
+                    tile("Track Geometry", "iot", "Track-geometry inspection car runs measuring gauge, alignment and cant, the basis for slow orders and renewal planning.", cite=["trackgeo"],
+                         cat="Track Geometry Inspection",
+                         what="Records track-geometry inspection car runs measuring gauge, alignment and cant, the basis for slow orders and renewal planning.",
+                         users="Fleet & Assets, Infrastructure & track and Maintenance planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs per inspection run", "Per inspection run (weekly/monthly)"))),
                 ]},
-                fed_group("Cost & Revenue Marts", "Finance, farebox recovery and subsidy marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers."),
+                fed_group("Cost & Revenue Marts", "Finance, farebox recovery and subsidy marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.",
+                          cat="Finance Data Warehouse",
+                          what="Finance, farebox-recovery and subsidy marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.",
+                          users="Executive Team, CFO & Finance and Revenue & demand analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Mobile Ticketing", "api", "Account-based and mobile ticketing platforms carrying purchases and validations inbound, joined to AFC taps for ridership and revenue.", cite=["masabi"]),
-                tile("Weather & Geo", "globe", "Weather, geospatial and land-use feeds joined to movement and demand for delay, energy and ridership analysis."),
-                tile("IoT Event Streams", "stream", "Existing Kafka or event-hub topics carrying AVL, sensor and PTC events, landed generically as structured events."),
+                tile("Mobile Ticketing", "api", "Account-based and mobile ticketing platforms carrying purchases and validations inbound, joined to AFC taps for ridership and revenue.", cite=["masabi"],
+                     cat="Mobile / Account-Based Ticketing",
+                     what="Account-based and mobile ticketing platforms carrying purchases and validations inbound, joined to AFC taps for a full ridership and revenue picture.",
+                     users="Revenue & Fares, Fare collection and Commercial planning teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of purchases/validations/sec", "Continuous (API / webhook)"))),
+                tile("Weather & Geo", "globe", "Weather, geospatial and land-use feeds joined to movement and demand for delay, energy and ridership analysis.",
+                     cat="Weather & Geospatial Data",
+                     what="Weather, geospatial and land-use feeds joined to movement and demand for delay, energy and ridership analysis.",
+                     users="Network Ops, Revenue & demand and Data Scientists.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly forecast + daily geo"))),
+                tile("IoT Event Streams", "stream", "Existing Kafka or event-hub topics carrying AVL, sensor and PTC events, landed generically as structured events.",
+                     cat="Event Streaming Platform",
+                     what="Existing Kafka or event-hub topics carrying AVL, sensor and PTC events, landed generically as structured events for downstream conforming.",
+                     users="Data Engineers, Streaming engineers and Network Ops teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "thousands of events/sec", "Continuous (sub-second)"))),
             ]),
             "ppl": ppl2([
                 biz("Executive Team", "Genie One",
@@ -190,6 +297,56 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Lessors, maintenance partners and infrastructure owners reading live tables with no copy and no egress duplication."),
                 ]},
+            ], genie_spaces=[
+                genie("Network Punctuality", "Ask about on-time performance, delay causes and where the network is running late right now.",
+                      feeds=["AVL / GPS Telemetry", "GTFS / GTFS-RT", "Alstom Onvia", "OTP, availability, ridership"],
+                      teams=["Network Ops", "Dispatchers", "Executive Team"],
+                      questions=[
+                          "What was on-time performance by line yesterday and this week?",
+                          "Which delay causes are driving the most lost minutes right now?",
+                          "Where is knock-on delay propagating across the network this hour?",
+                          "Which services are most at risk of running late in the next window?",
+                          "How does punctuality compare to the same period last year?"]),
+                genie("Asset Health & Maintenance", "Explore component condition, predicted removals and the work-order backlog.",
+                      feeds=["IBM Maximo", "Wayside Detectors", "Track Geometry", "Conformed train, asset, trip"],
+                      teams=["Fleet & Assets", "Rolling-stock engineering", "Maintenance planning"],
+                      questions=[
+                          "Which components are predicted to be removed in the next 30 days?",
+                          "What is mean distance between failures by fleet class?",
+                          "Which track segments have the worst geometry defects right now?",
+                          "How large is the maintenance work-order backlog by depot?",
+                          "Which wayside detector alarms have not yet been actioned?"]),
+                genie("Ridership & Revenue", "Answer ridership, origin-destination demand and farebox recovery questions.",
+                      feeds=["Cubic AFC", "GIRO HASTUS", "GTFS / GTFS-RT", "OTP, availability, ridership"],
+                      teams=["Revenue & Fares", "Revenue & demand", "Commercial planning"],
+                      questions=[
+                          "What is ridership by line and time band this week versus last?",
+                          "Which origin-destination pairs are growing fastest?",
+                          "What is farebox recovery by line this quarter?",
+                          "Where is capacity most mismatched to demand at peak?",
+                          "How did the last fare change affect ridership and revenue?"]),
+                genie("Safety & Compliance", "Ask about signaling and PTC events, incident precursors and regulatory metrics.",
+                      feeds=["Wabtec I-ETMS PTC", "Alstom Signalling", "IBM Maximo", "OTP, availability, ridership"],
+                      teams=["Safety & Reg", "Safety assurance", "Incident investigation"],
+                      questions=[
+                          "How many PTC enforcements occurred this month and where?",
+                          "Which signaling exceedances cluster around the same locations?",
+                          "What are the leading precursor patterns before recent incidents?",
+                          "Which corrective actions from past incidents are still open?",
+                          "What punctuality and safety metrics are due to the authority this cycle?"]),
+            ], dashboards=[
+                dashboard("On-Time Performance", "Punctuality and delay attribution by line, cause and time of day.",
+                          kpis=["On-time performance", "Delay minutes", "Delay by cause", "Cancellations", "Headway adherence"],
+                          teams=["Network Ops", "Executive Team", "Dispatchers"]),
+                dashboard("Asset Availability & Reliability", "Fleet and infrastructure availability, MDBF and maintenance backlog.",
+                          kpis=["Asset availability", "Mean distance between failures", "Work-order backlog", "Track defects", "Predicted removals"],
+                          teams=["Fleet & Assets", "Rolling-stock engineering", "Maintenance planning"]),
+                dashboard("Ridership & Farebox", "Ridership, origin-destination demand and farebox recovery by line.",
+                          kpis=["Ridership", "Origin-destination demand", "Farebox recovery", "Load factor", "Fare revenue"],
+                          teams=["Revenue & Fares", "Revenue & demand", "Commercial planning"]),
+                dashboard("Safety & Energy", "Signaling and PTC events, incident precursors and traction energy per train-km.",
+                          kpis=["PTC enforcements", "Signaling exceedances", "Incident rate", "Energy per train-km", "Precursor closure"],
+                          teams=["Safety & Reg", "Safety assurance", "Network Ops"]),
             ]),
         },
         "top": top_band([

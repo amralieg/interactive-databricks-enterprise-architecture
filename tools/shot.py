@@ -15,6 +15,16 @@ DOCS = os.path.join(ROOT, "docs")
 SETTLE = ("document.querySelectorAll('.tip,.drawer.open,#shape-menu.open')"
           ".forEach(function(e){e.classList.remove('open')});")
 
+# The first-visit tour auto-starts when its localStorage key is unset, which a
+# fresh temp page always is, so every capture would otherwise carry the tour
+# popover. Set the key in <head> before the tour reads it on load.
+HEAD = ("<head><script>try{localStorage.setItem('dbx-arch-tour-v1','1');}"
+        "catch(e){}</script>")
+
+
+def prep(html):
+    return html.replace("<head>", HEAD, 1)
+
 SHOTS = {
     "screenshot-light": "document.body.classList.remove('theme-dark');",
     "screenshot-dark": "document.body.classList.add('theme-dark');",
@@ -26,7 +36,7 @@ SHOTS = {
 
 
 def shoot(name, setup, size="1728,1180"):
-    html = open(APP, encoding="utf-8").read()
+    html = prep(open(APP, encoding="utf-8").read())
     boot = ("<script>window.addEventListener('load',function(){setTimeout(function(){"
             + setup + SETTLE + "},250)});</script>\n</body>")
     tmp = tempfile.mkdtemp()
@@ -77,7 +87,7 @@ def montage(name, spec, size="1500,1000"):
     tiles = []
     for key, setup in spec["cells"]:
         p = os.path.join(tmp, key + ".png")
-        html = open(APP, encoding="utf-8").read()
+        html = prep(open(APP, encoding="utf-8").read())
         boot = ("<script>window.addEventListener('load',function(){setTimeout("
                 "function(){" + setup + SETTLE + NO_BAR + "},250)});</script>\n</body>")
         page = os.path.join(tmp, key + ".html")

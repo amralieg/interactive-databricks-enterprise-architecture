@@ -37,6 +37,14 @@ IDEA is the same architecture as a live document:
   team is a story you can open: click a use case for the problem it solves, who
   benefits, how it is built, the components it uses and the customer stories that
   prove it; click a team for its sub-personas and the use cases they care about.
+- **The flows are alive.** Every connector is a solid arrow with a glowing dot
+  gliding from source to target, each on its own timing, so the board reads as
+  many independent data flows rather than one static picture. The motion is
+  captured in the GIF export too.
+- **A guided tour** walks a first-time viewer through every control and every
+  zone, and opens the detail panel on a real box so they see what a click gives
+  them. It runs itself once on a first visit and replays any time from the ◎
+  button in the toolbar.
 - **It exports, and the export points back.** PDF and PowerPoint open on a cover
   carrying the title and a link to the exact live board the file was made from,
   the architecture next, then a *Use Cases* section: one slide per use case
@@ -67,7 +75,7 @@ with the teams who use it and the cloud it runs on wrapped around the outside.
 
 | Signal | Meaning |
 |---|---|
-| **Solid arrow** | Data moves along it, and the travelling dashes run in the direction it actually flows |
+| **Solid arrow** | Data moves along it, and a glowing dot glides from source to target in the direction it actually flows. Each arrow runs on its own timing, so the board reads as many independent flows rather than one synchronised pulse |
 | **Dashed zone outline** | A grouping, not a boundary that data crosses |
 | **The ring around the platform** | One continuous outline: the platform is one product, not a stack of separate ones |
 | **Colour** | Identifies the zone, never the status. Every zone keeps its own hue in every palette and both themes |
@@ -76,18 +84,20 @@ with the teams who use it and the cloud it runs on wrapped around the outside.
 
 ## The controls
 
-Seven controls, left to right, sitting in the header above the diagram, plus one
+Nine controls, left to right, sitting in the header above the diagram, plus one
 on the diagram itself.
 
 | Control | What it does |
 |---|---|
 | **Industry** | Sixty-three industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
+| **Commercial / Categorical** | Shows every product by its commercial brand name, or rooted back to its generic category, for a room that knows the category but not the product |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
 | **Dark / Light** | Follows the operating system by default, and remembers an explicit choice. Downloads follow whatever is on screen |
 | **Palette** | Thirteen colour schemes in three groups |
 | **Style** | Five platform shapes |
 | **Stage** | Filters the platform box by release stage |
 | **Download** | PDF, PowerPoint, PNG, GIF, HTML |
+| **Tour** (the ◎ at the end of the toolbar) | A guided walk-through that spotlights each control and each zone in turn, opens the detail panel on a real box so you see what a click gives you, and runs itself once on a first visit. Replayable any time |
 | **Zoom** (on the platform heading, not the toolbar) | Zooms into the platform on its own: hides sources, consumers, the apps band and the cloud services. Click again to restore. Exports respect it, and the button itself never appears in one |
 
 Everything that acts on a diagram goes inert on a tab that has no diagram yet,
@@ -278,28 +288,17 @@ Every box is reachable by keyboard, and Escape closes the drawer.
 
 ## Tabs
 
-The **Reference Architecture** tab is pinned and cannot be closed. **`+`** opens
-a tab of your own, renamed by double-click and closed with its own x. The strip
-scrolls horizontally with arrows on whichever side has more to show, so adding
-tabs never pushes the toolbar off the right edge.
-
-A tab of your own says **Coming Soon**, and nothing else. Describing a customer
-in words and having this architecture drawn for them is not implemented, so the
-tab offers no form to fill in: a form that collects a description and then
-answers "no model is connected" reads as a broken feature rather than an unbuilt
-one.
-
-Where the work goes when it happens is marked in `app/index.html`: a tab already
-holds a name and a description, and generating means producing the same shape as
-`ARCH` (bands, rails, top, cloud), assigning it, and calling `build()` and
-`fitBoard()`. The editing engine behind that (add, rename, remove and re-parent
-boxes) is in the file and working, reached from a generated diagram rather than
-from the reference one.
+The **Reference Architecture** tab is pinned and cannot be closed. **Edit**
+clones the board on screen into a tab of your own: an independent working copy
+that carries its own industry, cloud, palette, shape, stage and platform zoom,
+so you can retarget and export it without touching the reference. One clone at a
+time, so Edit steps aside while a clone is open and returns the moment you close
+it. Rename a tab by double-clicking its name, and close it with its own x.
 
 What is remembered between visits: theme, palette, platform shape, stage filter,
-and your tabs with their descriptions, including which one was open. The cloud
-switch and Platform-only start fresh on every load, because both are how you
-frame one conversation rather than a preference.
+and your tabs, including which one was open. The cloud switch and Platform-only
+start fresh on every load, because both are how you frame one conversation
+rather than a preference.
 
 ---
 
@@ -440,8 +439,8 @@ zone and walks lightness until every foreground clears WCAG AA against the
 surface it will actually sit on, in both themes, then emits the CSS.
 
 **The animation survives export.** A raster export freezes every CSS animation,
-so a naive GIF would be twelve identical frames. Each connector's dash travel is
-also expressed as a function of a `--dash-t` phase variable, which the GIF
+so a naive GIF would be twelve identical frames. Each connector's travelling dot
+is also expressed as a function of a `--dash-t` phase variable, which the GIF
 encoder walks one step per frame. Only the moving pixels differ between frames,
 and the encoder stores the rest as transparent, which is why twelve frames of a
 1400px board fit in about 200 KB.

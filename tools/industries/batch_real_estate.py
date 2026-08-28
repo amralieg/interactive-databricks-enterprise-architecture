@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,111 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
         "rails": {
             "src": [
                 {"box": "Property & ERP", "ic": "erp", "tiles": [
-                        tile("Yardi Voyager", "erp", "Property accounting, AP/AR and CAM reconciliations for operating portfolios.", "yardi"),
-                        tile("MRI Software", "db", "Commercial lease administration, billing and investor reporting.", "mri"),
-                        tile("SAP Real Estate Mgmt", "erp", "Corporate real estate, cost allocations and IFRS lease accounting.", "sap-rem"),
+                        tile("Yardi Voyager", "erp", "Property accounting, AP/AR and CAM reconciliations for operating portfolios.", "yardi",
+                            cat="Property Management & Accounting (ERP)",
+                            what="Property accounting, AP/AR and CAM reconciliations for operating portfolios, the financial system of record per asset.",
+                            users="Lease Administration, Portfolio Manager and Construction Finance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "millions of GL and lease ledger rows", "Nightly close batch"))),
+                        tile("MRI Software", "db", "Commercial lease administration, billing and investor reporting.", "mri",
+                            cat="Lease Administration & Investor Reporting",
+                            what="Commercial lease administration, billing and investor reporting across the operating portfolio.",
+                            users="Lease Administration, Head of Investor Relations and Valuations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "hundreds of thousands of lease and billing rows", "Daily"))),
+                        tile("SAP Real Estate Mgmt", "erp", "Corporate real estate, cost allocations and IFRS lease accounting.", "sap-rem",
+                            cat="Corporate Real Estate & Lease Accounting",
+                            what="Corporate real estate, cost allocations and IFRS 16 / ASC 842 lease accounting.",
+                            users="CFO & Treasury, Lease Administration and Governance Engineering teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "millions of cost-allocation and lease rows", "Nightly ERP extract"))),
                     ]},
                 {"box": "Leasing & CRM", "ic": "custlake", "tiles": [
-                        tile("Salesforce Real Estate", "custlake", "Broker pipelines, tour activity and lease negotiation stages.", "sf-real-estate"),
-                        tile("VTS Lease Platform", "partner", "Availabilities, proposals and executed leases for commercial assets.", "vts"),
-                        tile("ARGUS Enterprise", "chart", "Discounted cash flow valuation and hold-sell analysis for commercial assets.", "buildout"),
+                        tile("Salesforce Real Estate", "custlake", "Broker pipelines, tour activity and lease negotiation stages.", "sf-real-estate",
+                            cat="Customer Relationship Management (CRM)",
+                            what="Broker pipelines, tour activity and lease negotiation stages for the leasing deal desk.",
+                            users="Brokerage Team, Leasing Director and Head of Investor Relations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "hundreds of thousands of pipeline and activity rows", "Hourly CRM sync"))),
+                        tile("VTS Lease Platform", "partner", "Availabilities, proposals and executed leases for commercial assets.", "vts",
+                            cat="Commercial Leasing Platform",
+                            what="Availabilities, proposals and executed leases for commercial assets across the leasing lifecycle.",
+                            users="Leasing Director, Brokerage Team and Lease Counsel teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "hundreds of thousands of availability and proposal rows", "Hourly sync"))),
+                        tile("ARGUS Enterprise", "chart", "Discounted cash flow valuation and hold-sell analysis for commercial assets.", "buildout",
+                            cat="CRE Valuation & Cash Flow Modelling",
+                            what="Discounted cash flow valuation and hold-sell analysis for commercial assets used in underwriting.",
+                            users="Valuations, Portfolio Manager and Rent & Valuation Modelling teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "thousands of valuation model outputs", "Per valuation cycle"))),
                     ]},
                 {"box": "Construction & Dev", "ic": "sheet", "tiles": [
-                        tile("Procore Project Mgmt", "sheet", "Budgets, schedules, RFIs and daily logs from development sites.", "procore"),
-                        tile("Oracle Aconex", "notebook", "Document transmittals, submittals and design revisions.", "aconex"),
-                        tile("CoStar Market Data", "chart", "Comparable rents, vacancy and transaction comps for underwriting.", "costar"),
+                        tile("Procore Project Mgmt", "sheet", "Budgets, schedules, RFIs and daily logs from development sites.", "procore",
+                            cat="Construction Project Management",
+                            what="Budgets, schedules, RFIs and daily logs from development sites, the project system of record.",
+                            users="Project Controls, Development Director and Construction Finance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "hundreds of thousands of budget and log records", "Daily site logs"))),
+                        tile("Oracle Aconex", "notebook", "Document transmittals, submittals and design revisions.", "aconex",
+                            cat="Construction Document Management",
+                            what="Document transmittals, submittals and design revisions across the development lifecycle.",
+                            users="Project Controls, Development Director and Application Engineering teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured", "unstructured"], "millions of documents and transmittals", "Daily"))),
+                        tile("CoStar Market Data", "chart", "Comparable rents, vacancy and transaction comps for underwriting.", "costar",
+                            cat="Property Listing / Market Data",
+                            what="Comparable rents, vacancy and transaction comps for underwriting and valuation.",
+                            users="Valuations, Portfolio Manager and Rent & Valuation Modelling teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "millions of comp and market rows", "Daily market feed"))),
                     ]},
                 {"box": "Operations & IoT", "ic": "iot", "tiles": [
-                        tile("Honeywell Forge BMS", "iot", "HVAC, access and energy telemetry from building management systems.", "honeywell-forge"),
-                        tile("ServiceChannel FM", "stream", "Work orders, contractor SLAs and tenant service requests.", "servicechannel"),
-                        tile("Measurabl ESG", "observ", "Utility bills, ENERGY STAR scores and carbon disclosures by asset.", "measurabl"),
+                        tile("Honeywell Forge BMS", "iot", "HVAC, access and energy telemetry from building management systems.", "honeywell-forge",
+                            cat="Building Management System (BMS)",
+                            what="HVAC, access and energy telemetry from building management systems across the operating portfolio.",
+                            users="Chief Engineer, Energy Optimisation and Facilities Management teams.",
+                            data_out=data_out(
+                                stream=flow(["structured"], "tens of thousands of meter and sensor points/min", "Continuous (BMS)"))),
+                        tile("ServiceChannel FM", "stream", "Work orders, contractor SLAs and tenant service requests.", "servicechannel",
+                            cat="Facilities Management (CMMS)",
+                            what="Work orders, contractor SLAs and tenant service requests across managed properties.",
+                            users="Facilities Management, Chief Engineer and Retention & Risk teams.",
+                            data_out=data_out(
+                                stream=flow(["structured", "semi-structured"], "thousands of work-order events/hour", "Continuous (work orders)"))),
+                        tile("Measurabl ESG", "observ", "Utility bills, ENERGY STAR scores and carbon disclosures by asset.", "measurabl",
+                            cat="ESG & Sustainability Reporting",
+                            what="Utility bills, ENERGY STAR scores and carbon disclosures by asset for ESG reporting.",
+                            users="ESG & Sustainability, Chief Engineer and CFO & Treasury teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "hundreds of thousands of utility and emissions rows", "Monthly billing cycle"))),
                     ]},
-                fed_group("Investor Reporting Mart", "Fund NAV and waterfall marts queried in place under Unity Catalog."),
+                fed_group("Investor Reporting Mart", "Fund NAV and waterfall marts queried in place under Unity Catalog.",
+                    cat="Federated Data Warehouse / Marts",
+                    what="Fund NAV and waterfall marts queried in place under Unity Catalog, avoiding a second copy of numbers finance already closed.",
+                    users="Head of Investor Relations, CFO & Treasury and Governance Engineering teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "millions of NAV and waterfall rows queried in place", "Query-time federation"))),
             ],
             "ing": ing_rail([
-                tile("Municipal Permit APIs", "api", "Zoning and permit filings consumed inbound for development risk monitoring.", "procore"),
-                tile("Walk Score / Transit", "globe", "Amenity and transit scores attached to assets for underwriting models.", "walkscore"),
-                tile("Flood & Hazard Layers", "globe", "Climate hazard overlays normalised for portfolio risk scoring."),
+                tile("Municipal Permit APIs", "api", "Zoning and permit filings consumed inbound for development risk monitoring.", "procore",
+                    cat="Government Permit / Zoning Data",
+                    what="Zoning and permit filings consumed inbound for development risk monitoring.",
+                    users="Project Controls, Development Director and Governance Engineering teams.",
+                    data_out=data_out(
+                        batch=flow(["structured", "semi-structured"], "thousands of permit filings/day", "Scheduled API pulls"))),
+                tile("Walk Score / Transit", "globe", "Amenity and transit scores attached to assets for underwriting models.", "walkscore",
+                    cat="Location & Amenity Scoring",
+                    what="Amenity and transit scores attached to assets for underwriting and valuation models.",
+                    users="Valuations, Rent & Valuation Modelling and Portfolio Manager teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "scores per asset location", "On refresh"))),
+                tile("Flood & Hazard Layers", "globe", "Climate hazard overlays normalised for portfolio risk scoring.",
+                    cat="Climate & Hazard Geospatial Data",
+                    what="Flood, wildfire and heat hazard overlays normalised for portfolio climate-risk scoring.",
+                    users="Retention & Risk, CFO & Treasury and Data Scientists teams.",
+                    data_out=data_out(
+                        batch=flow(["semi-structured", "unstructured"], "hazard raster and polygon layers", "Periodic refresh"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Fund & Asset Leadership", "Genie One", "The CEO on portfolio NOI and occupancy; the CFO on capex per square foot and fund IRR when interest rates and cap rates shift the book.", [["Genie One", "Ask what same-store NOI was last quarter without waiting on asset management."], ["AI/BI", "NOI, occupancy and capex on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"occupancy\" means one thing across ERP and CRM."]],
@@ -137,6 +220,58 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Investors, lenders and partners reading live tables with no copy."),
                     ]},
+            ],
+            genie_spaces=[
+                genie("Portfolio & NOI", "Ask about net operating income, occupancy and capex by asset and fund in plain language.",
+                      feeds=["Yardi Voyager", "MRI Software", "Investor Reporting Mart", "NOI, occupancy, capex"],
+                      teams=["Fund & Asset Leadership", "Asset Management", "Portfolio Manager"],
+                      questions=[
+                          "What was same-store NOI by asset last quarter?",
+                          "Which assets missed their budgeted rent steps this year?",
+                          "How does occupancy trend by market and property type?",
+                          "Where is capex per square foot running above plan?",
+                          "Which funds are most exposed to upcoming lease expirations?"]),
+                genie("Leasing & Retention", "Explore pipeline, tour conversion, time-to-lease and tenant churn risk.",
+                      feeds=["Salesforce Real Estate", "VTS Lease Platform", "ServiceChannel FM", "Conformed asset, lease"],
+                      teams=["Leasing & Brokerage", "Asset Management", "Brokerage Team"],
+                      questions=[
+                          "What is time-to-lease by asset and market this quarter?",
+                          "Which brokerage teams have the highest tour-to-lease conversion?",
+                          "Which tenants are at highest churn risk before renewal?",
+                          "Where is net effective rent trending below the market comp?",
+                          "Which proposals are at risk of expiring options this month?"]),
+                genie("Development & Capex", "Answer questions on draw schedules, cost-to-complete and development IRR.",
+                      feeds=["Procore Project Mgmt", "Oracle Aconex", "Investor Reporting Mart", "NOI, occupancy, capex"],
+                      teams=["Development", "Development Director", "Construction Finance"],
+                      questions=[
+                          "Which projects are over budget or behind schedule right now?",
+                          "What is cost-to-complete versus the approved budget by project?",
+                          "How does development IRR compare across the active pipeline?",
+                          "Which draws are approaching a covenant threshold?",
+                          "Where is contractor performance dragging the schedule?"]),
+                genie("Operations & Energy", "Ask about work orders, SLA breaches and energy intensity across the portfolio.",
+                      feeds=["Honeywell Forge BMS", "ServiceChannel FM", "Measurabl ESG", "Conformed asset, lease"],
+                      teams=["Property Operations", "Chief Engineer", "ESG & Sustainability"],
+                      questions=[
+                          "Which assets have the most open work orders and SLA breaches?",
+                          "Where is energy intensity highest per square foot this month?",
+                          "Which buildings are missing ENERGY STAR or ESG disclosures?",
+                          "How does operating cost per square foot compare across the portfolio?",
+                          "Which HVAC assets show anomalies against occupancy schedules?"]),
+            ],
+            dashboards=[
+                dashboard("Portfolio & NOI", "NOI, occupancy and capex by asset and fund on certified Metric Views.",
+                          kpis=["Same-store NOI", "Occupancy", "Capex per sq ft", "Retention rate", "Fund IRR"],
+                          teams=["Fund & Asset Leadership", "Asset Management", "Portfolio Manager"]),
+                dashboard("Leasing & Retention", "Pipeline, conversion, time-to-lease and churn risk on governed data.",
+                          kpis=["Leasing velocity", "Tour-to-lease conversion", "Net effective rent", "Time-to-lease", "Churn risk"],
+                          teams=["Leasing & Brokerage", "Asset Management", "Brokerage Team"]),
+                dashboard("Development & Capex", "Draw schedules, cost-to-complete and development IRR against covenants.",
+                          kpis=["Budget variance", "Schedule variance", "Cost-to-complete", "Development IRR", "Draw utilisation"],
+                          teams=["Development", "Development Director", "Construction Finance"]),
+                dashboard("Operations & Energy", "Work orders, SLA breaches and energy intensity across the portfolio.",
+                          kpis=["Open work orders", "SLA breach rate", "Energy intensity", "Operating cost per sq ft", "ENERGY STAR coverage"],
+                          teams=["Property Operations", "Chief Engineer", "ESG & Sustainability"]),
             ]),
         },
         "top": top_band(

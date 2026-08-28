@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -31,52 +34,145 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                     "box": "Farm Management",
                     "ic": "sheet",
                     "tiles": [
-                        tile("John Deere Operations Center", "iot", "Machine telemetry, as-applied maps and field boundaries from connected equipment.", "john-deere"),
-                        tile("Climate FieldView", "iot", "Planting, spraying and harvest layers with hybrid performance by field.", "climate-fieldview"),
-                        tile("Traction Ag", "sheet", "Field plans, input tracking and profit and loss by field for growers.", "granular"),
+                        tile("John Deere Operations Center", "iot", "Machine telemetry, as-applied maps and field boundaries from connected equipment.", "john-deere",
+                             cat="Farm Management (FMIS) / Machine Data",
+                             what="Streams machine telemetry, as-applied maps and field boundaries from connected equipment, the ground truth for operations and prescriptions.",
+                             users="Agronomy, Precision Ag Specialists and Field Scouts.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "1-10 GB/day in season", "Daily + per-operation sync"),
+                                 stream=flow(["semi-structured"], "hundreds of machine events/sec at peak", "Continuous in-field telemetry"))),
+                        tile("Climate FieldView", "iot", "Planting, spraying and harvest layers with hybrid performance by field.", "climate-fieldview",
+                             cat="Farm Management (FMIS) / Agronomy",
+                             what="Holds planting, spraying and harvest layers with hybrid performance by field, feeding yield response and prescription analysis.",
+                             users="Agronomy, Lead Agronomists and Field Scouts.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-5 GB/day in season", "Daily layer sync"))),
+                        tile("Traction Ag", "sheet", "Field plans, input tracking and profit and loss by field for growers.", "granular",
+                             cat="Farm Financial & Field Management",
+                             what="Maintains field plans, input tracking and profit and loss by field for growers, the basis for cost-per-bushel analysis.",
+                             users="Finance & Risk, Agronomy and grower operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "100s of MB", "Daily sync"))),
                     ],
                 },
                 {
                     "box": "ERP & Supply Chain",
                     "ic": "erp",
                     "tiles": [
-                        tile("SAP S/4HANA Agribusiness", "erp", "Grain contracts, settlements and inventory across elevators and processing.", "sap-agri"),
-                        tile("Oracle Food & Beverage", "erp", "Procurement, production and lot traceability for processors.", "oracle-fb"),
-                        tile("Agvance (SSI)", "erp", "Co-op grain accounting, patronage and settlements for ag retailers.", "agvance"),
+                        tile("SAP S/4HANA Agribusiness", "erp", "Grain contracts, settlements and inventory across elevators and processing.", "sap-agri",
+                             cat="Agribusiness ERP",
+                             what="Holds grain contracts, settlements and inventory across elevators and processing, the system of record for commodity supply chain and finance.",
+                             users="Grain Merchandising, Finance & Risk and Sustainability teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("Oracle Food & Beverage", "erp", "Procurement, production and lot traceability for processors.", "oracle-fb",
+                             cat="Food & Beverage ERP",
+                             what="Runs procurement, production and lot traceability for processors, the source of lot lineage behind traceability claims.",
+                             users="Sustainability, Finance & Risk and processing operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-10 GB/day", "Nightly batch"))),
+                        tile("Agvance (SSI)", "erp", "Co-op grain accounting, patronage and settlements for ag retailers.", "agvance",
+                             cat="Co-op Grain Accounting",
+                             what="Handles co-op grain accounting, patronage and settlements for ag retailers, the source of patronage pools and member returns.",
+                             users="Finance & Risk, CFO & Controller and Member board teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly batch + settlement runs"))),
                     ],
                 },
                 {
                     "box": "Commodity Markets",
                     "ic": "market",
                     "tiles": [
-                        tile("CME Group Futures", "market", "Corn, soybean and wheat futures, options and settlement prices.", "cme"),
-                        tile("DTN ProphetX", "market", "Cash bids, basis and local elevator prices by location.", "dtn"),
-                        tile("Barchart cmdty", "chart", "Historical cash and futures curves for hedging analysis.", "barchart"),
+                        tile("CME Group Futures", "market", "Corn, soybean and wheat futures, options and settlement prices.", "cme",
+                             cat="Commodity Futures Exchange",
+                             what="Carries corn, soybean and wheat futures, options and settlement prices, the hedging benchmark behind basis and position management.",
+                             users="Grain Merchandising, Risk Desk and Head Merchandisers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (settlements + history)", "Daily settlement"),
+                                 stream=flow(["structured"], "hundreds of ticks/sec", "Continuous market data"))),
+                        tile("DTN ProphetX", "market", "Cash bids, basis and local elevator prices by location.", "dtn",
+                             cat="Cash Grain & Basis Data",
+                             what="Provides cash bids, basis and local elevator prices by location, the local price signal for origination and basis trading.",
+                             users="Grain Merchandising, Origination and Risk Desk teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "100s of MB", "Multiple intraday updates"),
+                                 stream=flow(["structured"], "tens of quotes/sec", "Continuous cash bids"))),
+                        tile("Barchart cmdty", "chart", "Historical cash and futures curves for hedging analysis.", "barchart",
+                             cat="Market Data & Analytics",
+                             what="Supplies historical cash and futures curves for hedging analysis, the reference series behind basis-forecast models.",
+                             users="Grain Merchandising, Quant & Basis and Data Scientists.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (historical curves)", "Daily refresh"))),
                     ],
                 },
                 {
                     "box": "Weather & Imagery",
                     "ic": "stream",
                     "tiles": [
-                        tile("DTN Weather", "stream", "Hyperlocal forecasts, growing degree days and spray windows.", "dtn-weather"),
-                        tile("Planet Labs Imagery", "iot", "Daily satellite NDVI and change detection by parcel.", "planet"),
-                        tile("Sentinel Hub", "globe", "Copernicus optical and radar scenes for crop condition.", "sentinel"),
+                        tile("DTN Weather", "stream", "Hyperlocal forecasts, growing degree days and spray windows.", "dtn-weather",
+                             cat="Agricultural Weather Data",
+                             what="Delivers hyperlocal forecasts, growing degree days and spray windows, joined to field boundaries for risk and operations timing.",
+                             users="Agronomy, Co-op Executive Board and Field Scouts.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "tens of updates/sec", "Continuous forecast updates"))),
+                        tile("Planet Labs Imagery", "iot", "Daily satellite NDVI and change detection by parcel.", "planet",
+                             cat="Satellite Imagery",
+                             what="Provides daily satellite NDVI and change detection by parcel, the in-season crop-condition signal behind yield forecasts.",
+                             users="Agronomy, Yield Modeling and Precision Ag Specialists.",
+                             data_out=data_out(
+                                 batch=flow(["unstructured", "structured"], "GBs/day (imagery + derived)", "Daily scenes"))),
+                        tile("Sentinel Hub", "globe", "Copernicus optical and radar scenes for crop condition.", "sentinel",
+                             cat="Satellite Imagery",
+                             what="Supplies Copernicus optical and radar scenes for crop condition, complementing NDVI through cloud cover and for verification.",
+                             users="Agronomy, Yield Modeling and Carbon Quantification teams.",
+                             data_out=data_out(
+                                 batch=flow(["unstructured", "structured"], "GBs per revisit", "Per satellite revisit"))),
                     ],
                 },
                 {
                     "box": "Sustainability",
                     "ic": "gavel",
                     "tiles": [
-                        tile("Regrow MRV", "gavel", "Practice verification and carbon quantification for regenerative programs.", "regrow"),
-                        tile("Indigo Carbon", "partner", "Carbon credit issuance and soil carbon sampling workflows.", "indigo"),
+                        tile("Regrow MRV", "gavel", "Practice verification and carbon quantification for regenerative programs.", "regrow",
+                             cat="Carbon MRV Platform",
+                             what="Handles practice verification and carbon quantification for regenerative programs, the measurement basis behind issued credits.",
+                             users="Sustainability, MRV & Verification and Carbon Program Lead teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Daily + verification cycles"))),
+                        tile("Indigo Carbon", "partner", "Carbon credit issuance and soil carbon sampling workflows.", "indigo",
+                             cat="Carbon Credit Program",
+                             what="Runs carbon credit issuance and soil-carbon sampling workflows, the issuance and sampling record for the carbon registry.",
+                             users="Sustainability, Carbon Program Lead and Scope 3 Reporting teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "100s of MB", "Per sampling / issuance cycle"))),
                     ],
                 },
-                fed_group("Legacy Co-op Mart", "Patronage and historical elevator marts queried in place under Unity Catalog."),
+                fed_group("Legacy Co-op Mart", "Patronage and historical elevator marts queried in place under Unity Catalog.",
+                          cat="Co-op Data Warehouse",
+                          what="Patronage and historical elevator marts kept in the legacy warehouse and queried in place through federation rather than copied.",
+                          users="Finance & Risk, CFO & Controller and Member board analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("USDA NASS QuickStats", "api", "County yield, acreage and production statistics ingested for benchmarking.", "usda-nass"),
-                tile("USDA RMA Crop Insurance", "gavel", "Policy, acreage and indemnity files for risk programs.", "usda-rma"),
-                tile("AgGateway ADAPT", "zplug", "Standardized machine and application data from mixed OEM fleets.", "aggateway"),
+                tile("USDA NASS QuickStats", "api", "County yield, acreage and production statistics ingested for benchmarking.", "usda-nass",
+                     cat="Government Ag Statistics",
+                     what="Provides county yield, acreage and production statistics ingested for benchmarking grower and regional performance.",
+                     users="Agronomy, Finance & Risk and Data Scientists.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "100s of MB", "Periodic USDA releases"))),
+                tile("USDA RMA Crop Insurance", "gavel", "Policy, acreage and indemnity files for risk programs.", "usda-rma",
+                     cat="Crop Insurance Data",
+                     what="Supplies policy, acreage and indemnity files for risk programs, the basis for crop-insurance exposure and coverage analysis.",
+                     users="Finance & Risk, Crop Insurance and Counterparty Risk teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "100s of MB", "Periodic + reporting cycles"))),
+                tile("AgGateway ADAPT", "zplug", "Standardized machine and application data from mixed OEM fleets.", "aggateway",
+                     cat="Machine Data Standard (ADAPT)",
+                     what="Standardises machine and application data from mixed OEM fleets, letting agronomy read as-applied data regardless of equipment brand.",
+                     users="Agronomy, Precision Ag Specialists and Data Engineers.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "0.5-3 GB/day in season", "Per-operation sync"))),
             ]),
             "ppl": ppl2([
                 biz("Co-op Executive Board", "Genie One",
@@ -161,6 +257,56 @@ INDUSTRIES_BATCH_AGRICULTURE = {
                     tile("Data Products", "product", "Yield and sustainability products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Food companies and lenders reading live tables via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Yield & Agronomy", "Ask about in-season yield, crop condition and prescription performance by field.",
+                      feeds=["Planet Labs Imagery", "Climate FieldView", "John Deere Operations Center", "Yield, margin and carbon"],
+                      teams=["Agronomy", "Lead Agronomist", "Precision Ag Specialist"],
+                      questions=[
+                          "What is the current yield estimate by field and hybrid?",
+                          "Which fields show declining crop condition on recent imagery?",
+                          "How did variable-rate prescriptions perform versus flat rate?",
+                          "Which fields have the best nitrogen use efficiency this season?",
+                          "Where is pest or disease pressure building right now?"]),
+                genie("Basis & Merchandising", "Explore basis positions, hedge exposure and origination against futures and local bids.",
+                      feeds=["CME Group Futures", "DTN ProphetX", "SAP S/4HANA Agribusiness", "Yield, margin and carbon"],
+                      teams=["Grain Merchandising", "Head Merchandiser", "Risk Desk"],
+                      questions=[
+                          "What is our basis position by location right now?",
+                          "How much futures and basis exposure is open against limits?",
+                          "Where should we bid to fill the elevator at target basis?",
+                          "What is hedge P&L by commodity this month?",
+                          "Which contracts are off-margin at current prices?"]),
+                genie("Harvest & Elevator Ops", "Answer harvest progress, elevator throughput and logistics bottleneck questions.",
+                      feeds=["John Deere Operations Center", "Agvance (SSI)", "DTN Weather", "Conformed fields and assets"],
+                      teams=["Co-op Executive Board", "Chief Operating Officer", "Origination"],
+                      questions=[
+                          "What is harvest progress by region and crop today?",
+                          "Where are elevator and dryer queues building right now?",
+                          "Which routes have the longest truck wait at receiving?",
+                          "What is cost per acre this harvest versus plan?",
+                          "Which spray or harvest windows are at weather risk this week?"]),
+                genie("Carbon & Sustainability", "Ask about enrolled acres, practice verification and credits issued per grower.",
+                      feeds=["Regrow MRV", "Indigo Carbon", "Planet Labs Imagery", "Yield, margin and carbon"],
+                      teams=["Sustainability", "Carbon Program Lead", "MRV & Verification"],
+                      questions=[
+                          "How many acres are enrolled in carbon programs by practice?",
+                          "Which enrolled fields are missing practice verification evidence?",
+                          "How many credits have been issued per grower this cycle?",
+                          "What is carbon intensity by crop for Scope 3 reporting?",
+                          "Which practices are at risk of failing third-party verification?"]),
+            ], dashboards=[
+                dashboard("Yield & Input Cost", "Yield per acre, input cost per bushel and prescription performance by field.",
+                          kpis=["Yield per acre", "Input cost per bushel", "Nitrogen use efficiency", "Forecast vs actual yield", "Prescription lift"],
+                          teams=["Agronomy", "Finance & Risk", "Co-op Executive Board"]),
+                dashboard("Basis & Hedge P&L", "Basis positions, hedge exposure and P&L across locations and commodities.",
+                          kpis=["Basis position", "Hedge P&L", "Open exposure", "Position vs limit", "Origination volume"],
+                          teams=["Grain Merchandising", "Head Merchandiser", "Risk Desk"]),
+                dashboard("Harvest Logistics", "Harvest progress, elevator throughput and truck wait across the network.",
+                          kpis=["Harvest progress", "Elevator throughput", "Truck wait time", "Cost per acre", "Grain shrink"],
+                          teams=["Co-op Executive Board", "Chief Operating Officer", "Origination"]),
+                dashboard("Carbon & Patronage", "Enrolled acres, credits issued and patronage pools by grower.",
+                          kpis=["Enrolled acres", "Credits issued", "Carbon intensity", "Practice compliance", "Patronage pool"],
+                          teams=["Sustainability", "Finance & Risk", "Carbon Program Lead"]),
             ]),
         },
         "top": top_band(

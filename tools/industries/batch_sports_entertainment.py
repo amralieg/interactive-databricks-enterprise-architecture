@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,31 +31,114 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
         "rails": {
             "src": [
                 {"box": "Ticketing & CRM", "ic": "erp", "tiles": [
-                    tile("Ticketmaster Archtics", "erp", "Primary ticketing, seat inventory, pricing and scan data from every event.", "ticketmaster"),
-                    tile("Salesforce Marketing Cloud", "custlake", "Fan profiles, membership tiers, service cases and campaign responses.", "sf-sports"),
-                    tile("SeatGeek Enterprise", "market", "Secondary market listings, transfer activity and dynamic pricing signals.", "seatgeek"),
+                    tile("Ticketmaster Archtics", "erp", "Primary ticketing, seat inventory, pricing and scan data from every event.", "ticketmaster",
+                         cat="Primary Ticketing System",
+                         what="System-of-record for primary ticketing: seat inventory, pricing, sales and gate-scan data from every event.",
+                         users="Ticketing, Pricing and Game-day operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-10 GB/day sales + scans", "Nightly + intraday deltas"),
+                             stream=flow(["semi-structured"], "thousands of scans/sec at ingress", "Continuous on event day"))),
+                    tile("Salesforce Marketing Cloud", "custlake", "Fan profiles, membership tiers, service cases and campaign responses.", "sf-sports",
+                         cat="CRM & Marketing Platform",
+                         what="Holds fan profiles, membership tiers, service cases and campaign responses used for engagement and retention.",
+                         users="Fan engagement, CRM and Membership services teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous (engagement events)"))),
+                    tile("SeatGeek Enterprise", "market", "Secondary market listings, transfer activity and dynamic pricing signals.", "seatgeek",
+                         cat="Secondary Ticketing Marketplace",
+                         what="Supplies secondary-market listings, transfer activity and dynamic-pricing signals that reveal true demand.",
+                         users="Ticketing, Pricing analysts and Yield management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "sub-GB to 2 GB/day", "Hourly listing + transfer feeds"))),
                 ]},
                 {"box": "Venue Operations", "ic": "stream", "tiles": [
-                    tile("VenueNext", "apps", "Mobile ordering, wayfinding and in-seat service for arena and stadium guests.", "venuenext"),
-                    tile("Genetec Security Center", "iot", "Access control, crowd density cameras and incident logs on game day.", "genetec"),
-                    tile("Catapult Sports", "iot", "GPS and IMU player tracking: load, sprint distance and injury risk flags.", "catapult"),
+                    tile("VenueNext", "apps", "Mobile ordering, wayfinding and in-seat service for arena and stadium guests.", "venuenext",
+                         cat="Venue Experience & Mobile Ordering",
+                         what="Runs mobile ordering, wayfinding and in-seat service, emitting concessions and guest-flow events on game day.",
+                         users="Game-day operations, Concessions and Guest experience teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of orders/sec at peak", "Continuous on event day"))),
+                    tile("Genetec Security Center", "iot", "Access control, crowd density cameras and incident logs on game day.", "genetec",
+                         cat="Physical Security & Access Control",
+                         what="Provides access control, crowd-density camera analytics and incident logs used for crowd-safety monitoring.",
+                         users="Security, Game-day operations and Safety teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of events/sec at peak", "Continuous on event day"))),
+                    tile("Catapult Sports", "iot", "GPS and IMU player tracking: load, sprint distance and injury risk flags.", "catapult",
+                         cat="Athlete Performance Tracking (GPS/IMU)",
+                         what="Captures GPS and IMU athlete-tracking data for training load, sprint distance and injury-risk signals.",
+                         users="Sports science, Medical and Coaching staff.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "high-frequency samples per athlete", "Continuous during sessions"),
+                             batch=flow(["structured"], "GBs per session", "Post-session uploads"))),
                 ]},
                 {"box": "Broadcast & OTT", "ic": "partner", "tiles": [
-                    tile("Grabyo Clipping", "stream", "Live clipping, highlights and social publishing from broadcast feeds.", "grabyo"),
-                    tile("Deltatre OTT Platform", "api", "Streaming concurrency, start-over and device telemetry for direct-to-consumer.", "deltatre"),
-                    tile("Nielsen Sports", "chart", "TV and digital audience measurement for rights valuation.", "nielsen-sports"),
+                    tile("Grabyo Clipping", "stream", "Live clipping, highlights and social publishing from broadcast feeds.", "grabyo",
+                         cat="Live Video Clipping & Publishing",
+                         what="Clips and publishes live highlights from broadcast feeds to social and digital channels in near real time.",
+                         users="Digital & content, Social media and Broadcast teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured", "unstructured"], "high-bitrate clips + metadata", "Continuous during broadcast"))),
+                    tile("Deltatre OTT Platform", "api", "Streaming concurrency, start-over and device telemetry for direct-to-consumer.", "deltatre",
+                         cat="OTT Streaming Platform",
+                         what="Delivers direct-to-consumer streaming and emits concurrency, start-over and device telemetry for engagement.",
+                         users="Direct-to-consumer, Digital product and Audience teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens of thousands of events/sec at peak", "Continuous during streams"))),
+                    tile("Nielsen Sports", "chart", "TV and digital audience measurement for rights valuation.", "nielsen-sports",
+                         cat="Audience Measurement",
+                         what="Measures TV and digital audiences used to value media rights and sponsorship exposure.",
+                         users="Media rights, Sponsorship and Commercial strategy teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs of audience panels", "Daily / weekly measurement"))),
                 ]},
                 {"box": "Sponsorship & Ads", "ic": "market", "tiles": [
-                    tile("SponsorUnited", "partner", "Sponsorship inventory, activation tracking and competitive spend intelligence.", "sponsorunited"),
-                    tile("The Trade Desk", "market", "Programmatic inventory across league and team digital properties.", "trade-desk"),
-                    tile("UKG Workforce", "people", "Staff scheduling, time and attendance for event and concessions crews.", "ukg"),
+                    tile("SponsorUnited", "partner", "Sponsorship inventory, activation tracking and competitive spend intelligence.", "sponsorunited",
+                         cat="Sponsorship Intelligence Platform",
+                         what="Tracks sponsorship inventory, activation delivery and competitive spend intelligence across the market.",
+                         users="Commercial, Sponsorship sales and Partnership teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs of deals + activations", "Daily / weekly"))),
+                    tile("The Trade Desk", "market", "Programmatic inventory across league and team digital properties.", "trade-desk",
+                         cat="Programmatic Advertising (DSP)",
+                         what="Buys and reports programmatic ad inventory across league and team digital properties.",
+                         users="Digital advertising, Media and Commercial teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day impressions + conversions", "Hourly / daily"))),
+                    tile("UKG Workforce", "people", "Staff scheduling, time and attendance for event and concessions crews.", "ukg",
+                         cat="Workforce Management",
+                         what="Schedules event and concessions crews and records time and attendance for game-day staffing.",
+                         users="Venue operations, Concessions and HR teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "sub-GB/day", "Hourly punch + schedule sync"))),
                 ]},
-                fed_group("League Data Marts", "Official league statistics and schedule marts queried in place under Unity Catalog."),
+                fed_group("League Data Marts", "Official league statistics and schedule marts queried in place under Unity Catalog.",
+                          cat="League Statistics Data Warehouse",
+                          what="Official league statistics and schedule marts kept at the league and queried in place through federation.",
+                          users="Analytics, Broadcast and Commercial teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "GB-scale reference marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Stats Perform Feeds", "api", "Live play-by-play, rosters and official statistics ingested for analytics.", "stats-perform"),
-                tile("Social Listening APIs", "observ", "Brand mention and sentiment feeds for sponsorship and crisis monitoring."),
-                tile("Rights Holder Metadata", "zplug", "Media rights windows and blackout rules from league partners.", "stats-perform"),
+                tile("Stats Perform Feeds", "api", "Live play-by-play, rosters and official statistics ingested for analytics.", "stats-perform",
+                     cat="Sports Data Feed",
+                     what="Delivers live play-by-play, rosters and official statistics used for analytics, highlights and broadcast graphics.",
+                     users="Analytics, Broadcast and Content teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of events/sec during games", "Continuous during events"))),
+                tile("Social Listening APIs", "observ", "Brand mention and sentiment feeds for sponsorship and crisis monitoring.",
+                     cat="Social Listening & Sentiment",
+                     what="Aggregates brand mentions and sentiment across social platforms for sponsorship value and crisis monitoring.",
+                     users="Sponsorship, Communications and Digital teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured", "unstructured"], "GBs of posts + sentiment", "Continuous / hourly"))),
+                tile("Rights Holder Metadata", "zplug", "Media rights windows and blackout rules from league partners.", "stats-perform",
+                     cat="Media Rights Metadata",
+                     what="Supplies media-rights windows and blackout rules from league partners that govern where content may air.",
+                     users="Media rights, Broadcast operations and Legal teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "sub-GB", "On schedule updates"))),
             ]),
             "ppl": ppl2([
                 biz("Ownership & Executive", "Genie One", "The CEO on revenue per fan and matchday P&L; the COO on ingress throughput, concessions flow and the safety record across the venue.",
@@ -109,6 +195,56 @@ INDUSTRIES_BATCH_SPORTS_ENTERTAINMENT = {
                     tile("Data Products", "product", "Fan and performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "League partners reading live attendance via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Ticketing & Pricing", "Ask about sell-through pace, seat yield and secondary-market pressure in plain language.",
+                      feeds=["Ticketmaster Archtics", "SeatGeek Enterprise", "Attendance, yield, engagement"],
+                      teams=["Ticketing & Pricing", "Head of Ticketing", "Pricing Analyst"],
+                      questions=[
+                          "What was ticket yield by section for the last home stand?",
+                          "Which sections are behind sell-through pace for the next event?",
+                          "How much secondary-market pressure is building against face value?",
+                          "Which events are pricing below the demand curve right now?",
+                          "What is average net effective ticket price by opponent this season?"]),
+                genie("Fan 360 & Engagement", "Explore fan profiles, membership churn and engagement stitched across channels.",
+                      feeds=["Salesforce Marketing Cloud", "VenueNext", "Deltatre OTT Platform", "Conformed fan, event, asset"],
+                      teams=["Fan Engagement", "CRM Director", "Membership Services"],
+                      questions=[
+                          "What is the total spend of this fan across tickets, concessions and merch?",
+                          "Which season-ticket members are at churn risk before renewal?",
+                          "Which fans are highly engaged on OTT but have never attended in person?",
+                          "What is streaming concurrency and churn by content type?",
+                          "Which segments respond best to the current personalised offer?"]),
+                genie("Game-Day Operations", "Answer questions on ingress flow, concessions throughput and crowd safety.",
+                      feeds=["VenueNext", "Genetec Security Center", "Ticketmaster Archtics", "Attendance, yield, engagement"],
+                      teams=["Game-Day Ops", "VP Venue Operations", "Head of Security"],
+                      questions=[
+                          "How is ingress throughput tracking against target right now?",
+                          "Which gates and concourses have the longest queues today?",
+                          "Which concession stands are at risk of running out during peak?",
+                          "Where are crowd-density hot spots approaching capacity thresholds?",
+                          "How many incidents have been logged this event and of what type?"]),
+                genie("Sponsorship & Media", "Ask about activation delivery, audience reach and sponsorship ROI.",
+                      feeds=["SponsorUnited", "Nielsen Sports", "Stats Perform Feeds", "Attendance, yield, engagement"],
+                      teams=["Ownership & Executive", "Chief Commercial Officer", "Fan Engagement"],
+                      questions=[
+                          "Which sponsors are under-delivering against contracted impressions?",
+                          "What is the audience reach of last week's broadcast by segment?",
+                          "How does sponsorship ROI compare across activation types?",
+                          "Which digital properties drive the most sponsor conversions?",
+                          "What premium inventory remains unsold for upcoming events?"]),
+            ], dashboards=[
+                dashboard("Attendance & Ticket Yield", "Attendance, sell-through and seat yield on certified Metric Views.",
+                          kpis=["Attendance", "Sell-through rate", "Ticket yield per section", "Net effective rate", "No-show rate"],
+                          teams=["Ownership & Executive", "Ticketing & Pricing", "Fan Engagement"]),
+                dashboard("Fan Engagement & Churn", "Membership growth, churn risk and OTT engagement across channels.",
+                          kpis=["Membership growth", "Churn risk", "Streaming concurrency", "Per-cap spend", "Offer conversion"],
+                          teams=["Fan Engagement", "CRM Director", "Digital & Content"]),
+                dashboard("Game-Day Operations", "Ingress flow, concessions throughput and safety incidents on event day.",
+                          kpis=["Ingress throughput", "Queue time", "Concessions per cap", "Crowd density", "Incident count"],
+                          teams=["Game-Day Ops", "VP Venue Operations", "Head of Security"]),
+                dashboard("Sponsorship & Media ROI", "Activation delivery, audience reach and sponsorship return.",
+                          kpis=["Sponsorship ROI", "Impressions delivered", "Audience reach", "Activation completion", "Premium inventory sold"],
+                          teams=["Ownership & Executive", "Chief Commercial Officer", "Fan Engagement"]),
             ]),
         },
         "top": top_band(

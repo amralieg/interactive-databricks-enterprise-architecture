@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,127 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
         "rails": {
             "src": [
                 {"box": "ERP & Manufacturing", "ic": "erp", "tiles": [
-                    tile("SAP IBP / S/4", "erp", "Demand, supply and production planning with financials.", "sap-ibp"),
-                    tile("Oracle JD Edwards", "erp", "Batch manufacturing, lot trace and DSD routes.", "jde"),
-                    tile("Kinaxis Maestro", "sheet", "Concurrent planning and scenario simulation.", "kinaxis"),
+                    tile("SAP IBP / S/4", "erp", "Demand, supply and production planning with financials.", "sap-ibp",
+                         cat="ERP / Integrated Business Planning",
+                         what="Holds the shipment, order and financial system of record and runs integrated demand, supply and production planning across the network.",
+                         users="Demand Planning, Supply Chain and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "50-200 GB/day", "Nightly close + hourly deltas"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC"))),
+                    tile("Oracle JD Edwards", "erp", "Batch manufacturing, lot trace and DSD routes.", "jde",
+                         cat="Manufacturing ERP System",
+                         what="Runs batch manufacturing, lot traceability and direct-store-delivery routing, emitting production and shipment records.",
+                         users="Manufacturing, Logistics and DSD Operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Nightly batch"))),
+                    tile("Kinaxis Maestro", "sheet", "Concurrent planning and scenario simulation.", "kinaxis",
+                         cat="Supply Chain Planning Platform",
+                         what="Runs concurrent supply-and-demand planning and scenario simulation so planners test allocation and service before committing.",
+                         users="Supply Planners, S&OP and Demand Planning teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Daily + scenario runs"))),
                 ]},
                 {"box": "Retail & Syndicated", "ic": "market", "tiles": [
-                    tile("NielsenIQ Connect", "market", "Syndicated scan and market share by category.", "nielseniq"),
-                    tile("Circana Liquid Data", "chart", "Omni-channel consumption and household panels.", "circana"),
-                    tile("Circana Market Advantage", "market", "Promo decomposition and competitive tracking.", "iri"),
+                    tile("NielsenIQ Connect", "market", "Syndicated scan and market share by category.", "nielseniq",
+                         cat="Syndicated Market Data Provider",
+                         what="Supplies syndicated scan and market-share reads by category so brand and sales teams track share against competitors.",
+                         users="Brand & Category, Sales & Accounts and Insights teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/week", "Weekly / monthly syndicated feed"))),
+                    tile("Circana Liquid Data", "chart", "Omni-channel consumption and household panels.", "circana",
+                         cat="Consumer Panel / Consumption Data",
+                         what="Provides omni-channel consumption and household-panel data used for elasticity, price-pack and demand analytics.",
+                         users="Brand & Category, Revenue Management and Insights teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/week", "Weekly feed"))),
+                    tile("Circana Market Advantage", "market", "Promo decomposition and competitive tracking.", "iri",
+                         cat="Syndicated Promotion Analytics",
+                         what="Decomposes promotions and tracks competitive activity so trade teams see true lift versus baseline by event.",
+                         users="Trade Marketing, Revenue Management and Category teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/week", "Weekly feed"))),
                 ]},
                 {"box": "Trade Promotion", "ic": "partner", "tiles": [
-                    tile("SAP TPM", "partner", "Promo planning, accruals and settlement.", "sap-tpm"),
-                    tile("Vistex GTM", "market", "Chargebacks, rebates and contract compliance.", "vistex"),
-                    tile("Blacksmith TPM", "chart", "ROI analytics and post-event evaluation.", "blacksmith"),
+                    tile("SAP TPM", "partner", "Promo planning, accruals and settlement.", "sap-tpm",
+                         cat="Trade Promotion Management (TPM)",
+                         what="Plans promotions, manages accruals and settles trade spend, the system of record for promotional events and funding.",
+                         users="Trade Marketing, Revenue Management and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Daily + settlement cycles"))),
+                    tile("Vistex GTM", "market", "Chargebacks, rebates and contract compliance.", "vistex",
+                         cat="Pricing & Rebate Management System",
+                         what="Manages chargebacks, rebates and contract compliance so deductions can be matched to shipment and promo proof.",
+                         users="Sales & Accounts, Revenue Management and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily batch"))),
+                    tile("Blacksmith TPM", "chart", "ROI analytics and post-event evaluation.", "blacksmith",
+                         cat="Trade Promotion Analytics",
+                         what="Runs ROI analytics and post-event evaluation so trade teams learn which promotions actually paid for themselves.",
+                         users="Trade Marketing and Revenue Growth Management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs/day", "Daily + post-event runs"))),
                 ]},
                 {"box": "Field & DSD", "ic": "stream", "tiles": [
-                    tile("Salesforce Consumer Goods", "custlake", "Retail visits, audits and perfect store scores.", "sf-cg"),
-                    tile("Körber WMS", "stream", "Warehouse picking and DSD route sequencing.", "highjump"),
-                    tile("o9 Demand Planning", "sheet", "Statistical and ML forecasts by SKU-region.", "o9"),
+                    tile("Salesforce Consumer Goods", "custlake", "Retail visits, audits and perfect store scores.", "sf-cg",
+                         cat="Retail Execution / Field Sales CRM",
+                         what="Captures retail visits, store audits and perfect-store scores from the field, the base for retail-execution analytics.",
+                         users="Field Sales, Sales & Accounts and Shopper Marketing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous visit events"))),
+                    tile("Körber WMS", "stream", "Warehouse picking and DSD route sequencing.", "highjump",
+                         cat="Warehouse Management System (WMS)",
+                         what="Runs warehouse picking and direct-store-delivery route sequencing, emitting the movement and route events behind service levels.",
+                         users="DC Operations, Logistics and DSD teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous movement events"))),
+                    tile("o9 Demand Planning", "sheet", "Statistical and ML forecasts by SKU-region.", "o9",
+                         cat="Demand Planning Platform",
+                         what="Generates statistical and ML forecasts by SKU-region, feeding the consensus plan and safety-stock optimization.",
+                         users="Demand Planners, Supply Chain and Forecast Analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Daily plan runs"))),
                 ]},
                 {"box": "E-commerce", "ic": "apps", "tiles": [
-                    tile("Amazon Vendor Central", "partner", "Purchase orders, chargebacks and traffic.", "amazon-vc"),
-                    tile("Instacart Ads & Data", "product", "Retail media and basket insights.", "instacart"),
+                    tile("Amazon Vendor Central", "partner", "Purchase orders, chargebacks and traffic.", "amazon-vc",
+                         cat="E-Retail Vendor Platform",
+                         what="Supplies purchase orders, chargebacks and traffic from Amazon so teams tie e-retail spend to sell-through and deductions.",
+                         users="E-commerce, Sales & Accounts and Retail Media teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily reports + hourly POs"))),
+                    tile("Instacart Ads & Data", "product", "Retail media and basket insights.", "instacart",
+                         cat="Retail Media Platform",
+                         what="Provides retail-media performance and basket insights so shopper-marketing spend can be tied to real sell-through.",
+                         users="Shopper Marketing, Trade Marketing and E-commerce teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs/day", "Daily feed"))),
                 ]},
-                fed_group("Finance Close Mart", "Trade spend accrual marts queried in place under Unity Catalog."),
+                fed_group("Finance Close Mart", "Trade spend accrual marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Trade-spend accrual and close marts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                          users="Finance, Revenue Management and Accounting analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Weather Source", "stream", "Weather-driven demand signals by market.", "weather-source"),
-                tile("USDA ERS Food Data", "api", "Commodity input cost indices for margin planning.", "usda-ers"),
-                tile("Google Trends", "observ", "Search interest proxies for emerging demand.", "google-trends"),
+                tile("Weather Source", "stream", "Weather-driven demand signals by market.", "weather-source",
+                     cat="External Signal / Weather Feed",
+                     what="Supplies weather-driven demand signals by market as an exogenous input to the demand forecast.",
+                     users="Demand Planning and Forecast Analytics teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/day", "Daily forecast refresh"))),
+                tile("USDA ERS Food Data", "api", "Commodity input cost indices for margin planning.", "usda-ers",
+                     cat="Commodity / Economic Data Source",
+                     what="Provides commodity input-cost indices consumed inbound for margin and price-pack planning.",
+                     users="Revenue Management, Finance and Procurement teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs/month", "Monthly index release"))),
+                tile("Google Trends", "observ", "Search interest proxies for emerging demand.", "google-trends",
+                     cat="Search Interest Signal",
+                     what="Supplies search-interest proxies used as an early signal for emerging demand and innovation tracking.",
+                     users="Brand & Category and Category Insights teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "MBs/day", "Daily / weekly pulls"))),
             ]),
             "ppl": ppl2([
                 biz("Brand & Category", "Genie One",
@@ -157,6 +252,56 @@ INDUSTRIES_BATCH_CONSUMER_GOODS = {
                     tile("Data Products", "product", "Category insight products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Retail partners via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Share & Category", "Ask about market share, distribution and category performance in plain language.",
+                      feeds=["NielsenIQ Connect", "Circana Liquid Data", "Circana Market Advantage", "Shipments, share, promo ROI"],
+                      teams=["Brand & Category", "Sales & Accounts", "Demand Planning"],
+                      questions=[
+                          "What is our market share by category and channel this period?",
+                          "Which brands are gaining and losing distribution points?",
+                          "How does consumption compare to shipments by market?",
+                          "Which price-pack tiers are trading up or down?",
+                          "Where is the category growing fastest by geography?"]),
+                genie("Trade Promotion", "Explore promo lift, incrementality and trade-spend ROI by event and retailer.",
+                      feeds=["SAP TPM", "Blacksmith TPM", "Circana Market Advantage"],
+                      teams=["Trade Marketing", "Sales & Accounts", "Brand & Category"],
+                      questions=[
+                          "What was the ROI of last quarter's promotions by retailer?",
+                          "Which events drove incremental volume versus base?",
+                          "How much trade spend is accrued but unsettled?",
+                          "Which mechanics deliver the best lift by category?",
+                          "Where are we overspending on promotions that don't pay back?"]),
+                genie("Demand & Supply", "Answer forecast accuracy, service level and inventory questions across the network.",
+                      feeds=["o9 Demand Planning", "Kinaxis Maestro", "SAP IBP / S/4", "Conformed products and markets"],
+                      teams=["Demand Planning", "Supply Chain", "Sales & Accounts"],
+                      questions=[
+                          "Where is forecast bias worst by SKU-region?",
+                          "What is case fill rate and OTIF by DC and customer?",
+                          "Which SKUs are at risk of stockout this cycle?",
+                          "What is days of inventory by brand and site?",
+                          "Where should scarce supply be allocated first?"]),
+                genie("Retail Execution", "Ask about perfect-store, on-shelf availability and deductions across banners.",
+                      feeds=["Salesforce Consumer Goods", "Amazon Vendor Central", "Vistex GTM"],
+                      teams=["Sales & Accounts", "Trade Marketing", "Brand & Category"],
+                      questions=[
+                          "What is our perfect-store score by banner?",
+                          "Which stores have the worst on-shelf availability?",
+                          "How many deductions are recoverable with shipment proof?",
+                          "Which retailers show the most distribution voids?",
+                          "Where is retail-media spend tied to real sell-through?"]),
+            ], dashboards=[
+                dashboard("Share & Distribution", "Market share, distribution and category performance on certified Metric Views.",
+                          kpis=["Market share", "Distribution points", "Shipment volume", "Consumption", "Price-pack mix"],
+                          teams=["Brand & Category", "Sales & Accounts", "Demand Planning"]),
+                dashboard("Trade Spend & ROI", "Promo lift, incrementality and trade-spend ROI by event and retailer.",
+                          kpis=["Promo lift", "Incrementality", "Trade-spend ROI", "Accrual balance", "Payback rate"],
+                          teams=["Trade Marketing", "Sales & Accounts", "Brand & Category"]),
+                dashboard("Demand & Service", "Forecast accuracy, fill rate and inventory health across the network.",
+                          kpis=["Forecast accuracy", "Forecast bias", "Case fill rate", "OTIF", "Days of inventory"],
+                          teams=["Demand Planning", "Supply Chain", "Sales & Accounts"]),
+                dashboard("Retail Execution", "Perfect-store, on-shelf availability and deduction recovery across banners.",
+                          kpis=["Perfect-store score", "On-shelf availability", "Distribution voids", "Chargeback recovery", "Retail-media ROAS"],
+                          teams=["Sales & Accounts", "Trade Marketing", "Brand & Category"]),
             ]),
         },
         "top": top_band(

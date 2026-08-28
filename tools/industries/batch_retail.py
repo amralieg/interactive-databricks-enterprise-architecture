@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,116 @@ INDUSTRIES_BATCH_RETAIL = {
         "rails": {
             "src": [
                 {"box": "ERP & Merchandising", "ic": "erp", "tiles": [
-                        tile("SAP S/4HANA Retail", "erp", "Item masters, pricing, allocation and financial close for multi-banner retailers.", "sap-retail"),
-                        tile("Oracle Retail Merch", "sheet", "Assortment planning, size profiles and PO lifecycle.", "oracle-retail"),
-                        tile("Blue Yonder WMS", "stream", "Warehouse execution, pick paths and store replenishment.", "blue-yonder-wms"),
+                        tile("SAP S/4HANA Retail", "erp", "Item masters, pricing, allocation and financial close for multi-banner retailers.", "sap-retail",
+                             cat="Retail ERP / Merchandising System",
+                             what="Holds the item, price and inventory system of record, runs allocation and the financial close, and posts the merchandising numbers finance and buyers reconcile to.",
+                             users="Merchandising, Master Data, Finance and Allocation teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "50-200 GB/day", "Nightly close + hourly deltas"),
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC (near real-time)"))),
+                        tile("Oracle Retail Merch", "sheet", "Assortment planning, size profiles and PO lifecycle.", "oracle-retail",
+                             cat="Merchandise Planning System",
+                             what="Plans assortments, size profiles and the purchase-order lifecycle against the open-to-buy so buyers commit the right depth and breadth by category.",
+                             users="Buyers, Merchandise Planners and Category Managers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + intraday plan saves"))),
+                        tile("Blue Yonder WMS", "stream", "Warehouse execution, pick paths and store replenishment.", "blue-yonder-wms",
+                             cat="Warehouse Management System (WMS)",
+                             what="Runs distribution-centre execution, pick paths and outbound replenishment, emitting the stock movements and shipment confirmations behind store availability.",
+                             users="DC Operations, Store Replenishment and Logistics teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-30 GB/day", "Multiple daily waves"),
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous movement events"))),
                     ]},
                 {"box": "Commerce & POS", "ic": "market", "tiles": [
-                        tile("Salesforce Commerce", "partner", "Omnichannel carts, promotions and clienteling across web and store.", "sf-commerce"),
-                        tile("Shopify Plus", "api", "DTC orders, returns and marketplace connectors for owned brands.", "shopify"),
-                        tile("NCR Voyix POS", "market", "Store transactions, endless aisle and associate workflows.", "ncr-voyix"),
+                        tile("Salesforce Commerce", "partner", "Omnichannel carts, promotions and clienteling across web and store.", "sf-commerce",
+                             cat="E-Commerce Platform",
+                             what="Runs the web and mobile storefront, carts, promotions and clienteling, emitting the clickstream and order events behind omnichannel journeys.",
+                             users="E-commerce, Digital Merchandising and Marketing teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "5-20k events/sec at peak", "Continuous clickstream + orders"))),
+                        tile("Shopify Plus", "api", "DTC orders, returns and marketplace connectors for owned brands.", "shopify",
+                             cat="DTC E-Commerce Platform",
+                             what="Powers direct-to-consumer storefronts for owned brands, capturing orders, returns and marketplace-connector traffic.",
+                             users="DTC brand teams, E-commerce Operations and Fulfillment.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Hourly order sync"),
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous (API / webhook)"))),
+                        tile("NCR Voyix POS", "market", "Store transactions, endless aisle and associate workflows.", "ncr-voyix",
+                             cat="Point-of-Sale (POS) System",
+                             what="Captures in-store lane transactions, endless-aisle lookups and associate workflows across the store fleet.",
+                             users="Store Operations, Front-End teams and Loss Prevention.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-40 GB/day", "End-of-day polling"),
+                                 stream=flow(["semi-structured"], "1-5k transactions/sec at peak", "Continuous (near real-time)"))),
                     ]},
                 {"box": "Inventory & Supply", "ic": "product", "tiles": [
-                        tile("Manhattan Active Omni", "stream", "Order orchestration, ship-from-store and BOPIS fulfillment.", "manhattan-omni"),
-                        tile("E2open Supply Planning", "globe", "Vendor OTIF, inbound containers and allocation constraints.", "e2open"),
-                        tile("SymphonyAI IRIS", "chart", "Promotion planning, markdown optimization and demand sensing.", "symphony-iris"),
+                        tile("Manhattan Active Omni", "stream", "Order orchestration, ship-from-store and BOPIS fulfillment.", "manhattan-omni",
+                             cat="Order Management System (OMS)",
+                             what="Orchestrates orders across channels, sourcing ship-from-store and BOPIS against a unified inventory position and emitting fulfillment events.",
+                             users="Fulfillment Operations, Store Operations and E-commerce teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds-thousands of order events/sec", "Continuous orchestration events"))),
+                        tile("E2open Supply Planning", "globe", "Vendor OTIF, inbound containers and allocation constraints.", "e2open",
+                             cat="Supply Chain Planning Platform",
+                             what="Tracks vendor OTIF, inbound containers and allocation constraints so planners see fill risk and inbound flow before it hits the shelf.",
+                             users="Supply Planners, Vendor Management and Logistics teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-10 GB/day", "Daily + on-demand plan runs"))),
+                        tile("SymphonyAI IRIS", "chart", "Promotion planning, markdown optimization and demand sensing.", "symphony-iris",
+                             cat="Retail AI / Merchandising Analytics",
+                             what="Plans promotions, optimizes markdowns and senses demand, feeding recommended prices and cuts back into merchandising.",
+                             users="Pricing & Markdown, Merchandising and Planning teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Daily model runs"))),
                     ]},
                 {"box": "Customer & Loyalty", "ic": "custlake", "tiles": [
-                        tile("Salesforce Loyalty", "custlake", "Points, tiers and offer redemptions across channels.", "sf-loyalty"),
-                        tile("Adobe Experience Plat", "partner", "Web behaviour, segments and consent for personalisation.", "adobe-aep"),
-                        tile("Medallia Experience", "observ", "Store and digital survey scores tied to visit and order.", "medallia"),
+                        tile("Salesforce Loyalty", "custlake", "Points, tiers and offer redemptions across channels.", "sf-loyalty",
+                             cat="Loyalty Management Platform",
+                             what="Runs the loyalty program, holding points, tiers and offer redemptions and emitting the redemption events behind member value.",
+                             users="Loyalty & CRM, Marketing and Digital teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-3 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of redemptions/sec", "Continuous redemption events"))),
+                        tile("Adobe Experience Plat", "partner", "Web behaviour, segments and consent for personalisation.", "adobe-aep",
+                             cat="Customer Data Platform (CDP)",
+                             what="Unifies web and app behaviour into segments with consent, feeding audiences and profiles used for personalisation.",
+                             users="Personalisation, Digital and Marketing teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-10k behavioural events/sec", "Continuous event stream"))),
+                        tile("Medallia Experience", "observ", "Store and digital survey scores tied to visit and order.", "medallia",
+                             cat="Customer Experience (VoC) Platform",
+                             what="Collects store and digital survey responses and experience scores tied to the visit and order for voice-of-customer analytics.",
+                             users="Customer Experience, Store Operations and Insights teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "GBs (surveys + verbatims)", "Daily feed"))),
                     ]},
-                fed_group("Wholesale Partner Mart", "Department store sell-in marts queried in place under Unity Catalog."),
+                fed_group("Wholesale Partner Mart", "Department store sell-in marts queried in place under Unity Catalog.",
+                          cat="Wholesale Data Mart",
+                          what="Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                          users="Wholesale, Merchandising and Finance analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("NielsenIQ POS", "market", "Syndicated sell-through consumed inbound for category benchmarking.", "nielseniq"),
-                tile("Google Merchant Center", "api", "Product feed performance and local inventory ads parsed on ingest.", "google-merchant"),
-                tile("Weather & Local Events", "globe", "Forecast feeds attached to stores for short-term demand models."),
+                tile("NielsenIQ POS", "market", "Syndicated sell-through consumed inbound for category benchmarking.", "nielseniq",
+                     cat="Syndicated Market Data Provider",
+                     what="Supplies syndicated sell-through and market-share reads so category teams can benchmark performance against the wider market.",
+                     users="Category Managers, Merchant Leadership and Insights teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "1-5 GB/week", "Weekly / monthly syndicated feed"))),
+                tile("Google Merchant Center", "api", "Product feed performance and local inventory ads parsed on ingest.", "google-merchant",
+                     cat="Product Feed / Shopping Ads Platform",
+                     what="Reports product-feed performance and local inventory ads, parsed on ingest to tie shopping-ad spend to catalogue and stock.",
+                     users="Digital Marketing and E-commerce teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs/day feed reports", "Daily feed + API pulls"))),
+                tile("Weather & Local Events", "globe", "Forecast feeds attached to stores for short-term demand models.",
+                     cat="External Signal / Weather Feed",
+                     what="Attaches weather forecasts and local-event calendars to stores as exogenous signals for short-term demand models.",
+                     users="Demand Planners and Store Operations teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/day", "Daily forecast refresh"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Merchant Leadership", "Genie One", "The CEO on comparable sales and market share; the CFO on gross margin and inventory ownership when a season turns and markdowns start to bite.", [["Genie One", "Ask what comp sales were yesterday by banner without waiting on retail analytics."], ["AI/BI", "Sales, margin and in-stock on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"comp\" means one thing across channels."]],
@@ -137,6 +225,56 @@ INDUSTRIES_BATCH_RETAIL = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Suppliers, marketplaces and auditors reading live tables with no copy."),
                     ]},
+            ], genie_spaces=[
+                genie("Merchandising & Sell-Through", "Ask about comparable sales, sell-through and markdown health by category in plain language.",
+                      feeds=["SAP S/4HANA Retail", "NCR Voyix POS", "SymphonyAI IRIS", "Comp, margin, in-stock"],
+                      teams=["Merchandising", "Merchant Leadership", "Planning & Allocation"],
+                      questions=[
+                          "What were comparable sales yesterday by banner and category?",
+                          "Which SKUs are overstocked and heading into markdown season?",
+                          "What is gross margin after markdowns by department this month?",
+                          "Which categories are beating and missing the merchandise plan?",
+                          "How is sell-through trending versus last year for the new season?"]),
+                genie("Inventory & Availability", "Explore in-stock rate, inventory turns and fulfillment across stores and the network.",
+                      feeds=["Blue Yonder WMS", "Manhattan Active Omni", "E2open Supply Planning", "Conformed SKU, store"],
+                      teams=["Store Operations", "Planning & Allocation", "Merchandising"],
+                      questions=[
+                          "What is our in-stock rate by store and category right now?",
+                          "Which doors have the most stockouts on the fastest sellers?",
+                          "What are inventory turns and weeks of supply by category?",
+                          "Which orders are at risk of missing the fulfillment promise?",
+                          "Where is inbound flow behind and threatening replenishment?"]),
+                genie("Customer & Loyalty", "Answer loyalty, personalisation and experience questions across web and store.",
+                      feeds=["Salesforce Loyalty", "Adobe Experience Plat", "Medallia Experience"],
+                      teams=["Digital & CRM", "Merchant Leadership", "Store Operations"],
+                      questions=[
+                          "What is loyalty penetration and member growth by segment?",
+                          "Which customers are cross-sell candidates but hold one category?",
+                          "How do experience scores compare across store and digital?",
+                          "Which segments responded best to last week's offers?",
+                          "What is churn risk for our top-decile households?"]),
+                genie("Supply & Vendor", "Ask about vendor OTIF, market share and wholesale sell-in across the network.",
+                      feeds=["E2open Supply Planning", "NielsenIQ POS", "Wholesale Partner Mart"],
+                      teams=["Planning & Allocation", "Merchandising", "Merchant Leadership"],
+                      questions=[
+                          "Which vendors are missing OTIF and lead-time targets?",
+                          "How is our market share trending versus the category?",
+                          "Which wholesale partners are driving sell-in growth?",
+                          "Where are inbound containers late and putting receipts at risk?",
+                          "Which SKUs show the widest gap between plan and syndicated demand?"]),
+            ], dashboards=[
+                dashboard("Comp Sales & Margin", "Comparable sales, gross margin after markdowns and category performance on certified Metric Views.",
+                          kpis=["Comparable sales", "Gross margin", "Markdown rate", "Sell-through", "Basket size"],
+                          teams=["Merchant Leadership", "Merchandising", "Planning & Allocation"]),
+                dashboard("In-Stock & Inventory", "In-stock rate, inventory turns and weeks of supply across stores and the network.",
+                          kpis=["In-stock rate", "Inventory turns", "Weeks of supply", "Stockout count", "Fulfillment SLA"],
+                          teams=["Store Operations", "Planning & Allocation", "Merchandising"]),
+                dashboard("Markdown & Promotion ROI", "Markdown depth, promotion lift and incremental margin across banners.",
+                          kpis=["Markdown depth", "Promotion lift", "Incremental sales", "Full-price sell-through", "Margin recovery"],
+                          teams=["Merchandising", "Merchant Leadership", "Digital & CRM"]),
+                dashboard("Customer & Loyalty", "Loyalty penetration, retention and customer lifetime value across channels.",
+                          kpis=["Loyalty penetration", "Repeat rate", "Customer lifetime value", "Offer response rate", "Churn risk"],
+                          teams=["Digital & CRM", "Merchant Leadership", "Store Operations"]),
             ]),
         },
         "top": top_band(

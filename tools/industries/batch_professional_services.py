@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -30,57 +33,157 @@ INDUSTRIES_BATCH_PROFESSIONAL_SERVICES = {
                     "box": "PSA & Delivery",
                     "ic": "erp",
                     "tiles": [
-                        tile("Kantata PSA", "erp", "Professional services automation: projects, resource plans, time and margin. The system of record for engagement delivery and billing.", "kantata"),
-                        tile("NetSuite OpenAir", "sheet", "PSA for time capture, project accounting, utilization and invoicing across the engagement lifecycle.", "openair"),
-                        tile("Certinia PSA", "product", "Salesforce-native services automation linking opportunity, staffing, delivery and revenue on one record.", "certinia"),
+                        tile("Kantata PSA", "erp", "Professional services automation: projects, resource plans, time and margin. The system of record for engagement delivery and billing.", "kantata",
+                             cat="Professional Services Automation (PSA)",
+                             what="System of record for engagement delivery and billing: projects, resource plans, time and margin.",
+                             users="Delivery leads, resource managers and the PMO.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-10 GB/day", "Nightly batch + hourly deltas"),
+                                 stream=flow(["semi-structured"], "tens of time and staffing events/sec", "Continuous CDC"))),
+                        tile("NetSuite OpenAir", "sheet", "PSA for time capture, project accounting, utilization and invoicing across the engagement lifecycle.", "openair",
+                             cat="Professional Services Automation (PSA)",
+                             what="Handles time capture, project accounting, utilization and invoicing across the engagement lifecycle.",
+                             users="Delivery, project accounting and billing teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-6 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("Certinia PSA", "product", "Salesforce-native services automation linking opportunity, staffing, delivery and revenue on one record.", "certinia",
+                             cat="Professional Services Automation (PSA)",
+                             what="Salesforce-native services automation linking opportunity, staffing, delivery and revenue on one record.",
+                             users="Practice leaders, delivery and revenue operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of engagement events/sec", "Continuous CDC"))),
                     ],
                 },
                 {
                     "box": "CRM & Pipeline",
                     "ic": "crm",
                     "tiles": [
-                        tile("Salesforce Sales Cloud", "crm", "Accounts, opportunities and the sales pipeline, the source of proposals in flight and closed-won engagements.", "sfdc"),
-                        tile("Dynamics 365 Sales", "crm", "Microsoft CRM pipeline, quotes and win/loss reasons feeding win-rate and bid analytics.", "dynamics"),
-                        tile("HubSpot CRM", "crm", "Agency and boutique pipeline, deal stages and proposal tracking for the front of the funnel.", "hubspot"),
+                        tile("Salesforce Sales Cloud", "crm", "Accounts, opportunities and the sales pipeline, the source of proposals in flight and closed-won engagements.", "sfdc",
+                             cat="CRM / Sales Pipeline",
+                             what="Holds accounts, opportunities and the sales pipeline, the source of proposals in flight and closed-won engagements.",
+                             users="Practice leaders, sector leads and business development.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of opportunity events/sec", "Continuous CDC"))),
+                        tile("Dynamics 365 Sales", "crm", "Microsoft CRM pipeline, quotes and win/loss reasons feeding win-rate and bid analytics.", "dynamics",
+                             cat="CRM / Sales Pipeline",
+                             what="Microsoft CRM holding pipeline, quotes and win/loss reasons that feed win-rate and bid analytics.",
+                             users="Business development, sector leads and sales operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-3 GB/day", "Hourly / nightly sync"))),
+                        tile("HubSpot CRM", "crm", "Agency and boutique pipeline, deal stages and proposal tracking for the front of the funnel.", "hubspot",
+                             cat="CRM / Sales Pipeline",
+                             what="Agency and boutique CRM holding pipeline, deal stages and proposal tracking for the front of the funnel.",
+                             users="Business development and marketing teams at agencies and boutiques.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly sync"))),
                     ],
                 },
                 {
                     "box": "Finance & ERP",
                     "ic": "erp",
                     "tiles": [
-                        tile("Workday Financials", "erp", "General ledger, project financials and revenue recognition for services firms.", "workday-fins"),
-                        tile("NetSuite ERP", "erp", "Services accounting, billing, revenue recognition and subcontractor payables.", "netsuite"),
-                        tile("SAP S/4HANA", "erp", "Finance and project system core for large engineering and consulting firms.", "sap"),
+                        tile("Workday Financials", "erp", "General ledger, project financials and revenue recognition for services firms.", "workday-fins",
+                             cat="ERP / Financials Suite",
+                             what="Runs the general ledger, project financials and revenue recognition as the finance system of record.",
+                             users="CFO, controllership and revenue accounting teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-10 GB/day", "Nightly batch + monthly close"))),
+                        tile("NetSuite ERP", "erp", "Services accounting, billing, revenue recognition and subcontractor payables.", "netsuite",
+                             cat="ERP / Financials Suite",
+                             what="Handles services accounting, billing, revenue recognition and subcontractor payables.",
+                             users="Controllership, billing/AR and accounts payable teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-6 GB/day", "Nightly batch + close cycles"))),
+                        tile("SAP S/4HANA", "erp", "Finance and project system core for large engineering and consulting firms.", "sap",
+                             cat="ERP / Financials Suite",
+                             what="Finance and project-system core for large engineering and consulting firms.",
+                             users="Finance, project systems and controllership teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + monthly close"))),
                     ],
                 },
                 {
                     "box": "Time & Billing",
                     "ic": "sheet",
                     "tiles": [
-                        tile("Deltek Vantagepoint", "erp", "Project ERP for project-based firms: engagements, cost, time and billing for A&E and consulting.", "deltek"),
-                        tile("Replicon Time", "sheet", "Time capture and billing across billable and non-billable activity, the raw signal for utilization.", "replicon"),
-                        tile("BigTime", "sheet", "Time, expense and billing for accounting and consulting practices, feeding WIP and invoicing.", "bigtime"),
+                        tile("Deltek Vantagepoint", "erp", "Project ERP for project-based firms: engagements, cost, time and billing for A&E and consulting.", "deltek",
+                             cat="Project ERP / Time & Billing",
+                             what="Project ERP covering engagements, cost, time and billing for architecture, engineering and consulting firms.",
+                             users="Project accounting, delivery and billing teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-6 GB/day", "Nightly batch + billing cycles"))),
+                        tile("Replicon Time", "sheet", "Time capture and billing across billable and non-billable activity, the raw signal for utilization.", "replicon",
+                             cat="Time Tracking & Billing System",
+                             what="Captures time and billing across billable and non-billable activity, the raw signal behind utilization.",
+                             users="Consultants, delivery leads and billing teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch"),
+                                 stream=flow(["semi-structured"], "tens of timecard events/sec", "Continuous"))),
+                        tile("BigTime", "sheet", "Time, expense and billing for accounting and consulting practices, feeding WIP and invoicing.", "bigtime",
+                             cat="Time Tracking & Billing System",
+                             what="Handles time, expense and billing for accounting and consulting practices, feeding WIP and invoicing.",
+                             users="Consultants, project accounting and billing teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.3-2 GB/day", "Nightly batch"))),
                     ],
                 },
                 {
                     "box": "Talent & Knowledge",
                     "ic": "people",
                     "tiles": [
-                        tile("Workday HCM", "people", "Headcount, skills, compensation and attrition, the source of the talent and bench picture.", "workday-hcm"),
-                        tile("Coupa Procurement", "docs", "Subcontractor and supplier spend, purchase orders and category commitments.", "coupa"),
-                        tile("iManage Knowledge", "docs", "Documents, deliverables and matter/engagement knowledge, the corpus a GenAI assistant is grounded on.", "imanage"),
+                        tile("Workday HCM", "people", "Headcount, skills, compensation and attrition, the source of the talent and bench picture.", "workday-hcm",
+                             cat="HCM / Talent Suite",
+                             what="Holds headcount, skills, compensation and attrition, the source of the talent and bench picture.",
+                             users="Chief People Officer, talent acquisition and L&D teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Nightly batch + payroll cycles"))),
+                        tile("Coupa Procurement", "docs", "Subcontractor and supplier spend, purchase orders and category commitments.", "coupa",
+                             cat="Procurement / Spend Management",
+                             what="Tracks subcontractor and supplier spend, purchase orders and category commitments across the firm.",
+                             users="Procurement, finance and category management teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly batch"))),
+                        tile("iManage Knowledge", "docs", "Documents, deliverables and matter/engagement knowledge, the corpus a GenAI assistant is grounded on.", "imanage",
+                             cat="Knowledge / Document Management",
+                             what="Holds documents, deliverables and engagement knowledge, the corpus a GenAI assistant is grounded on.",
+                             users="Consultants, knowledge management and the GenAI assistant.",
+                             data_out=data_out(
+                                 batch=flow(["unstructured", "semi-structured"], "5-30 GB/day docs + metadata", "Nightly batch + hourly deltas"))),
                     ],
                 },
                 fed_group(
                     "Revenue & GL Mart",
                     "Audited revenue recognition and general-ledger marts left in the finance warehouse and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.",
+                    cat="Finance Data Warehouse / Marts",
+                    what="Audited revenue-recognition and general-ledger marts kept in the finance warehouse and queried in place through federation.",
+                    users="CFO, controllership and revenue accounting analysts.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale audited marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
                 [
-                    tile("SAP Concur Expense", "api", "Travel and expense line items joined to engagements for reimbursable and leakage analysis.", "concur"),
-                    tile("DocuSign CLM", "api", "Engagement contracts, SOWs and change orders parsed for rates, caps and milestones.", "docusign"),
-                    tile("Jira & Confluence", "api", "Delivery tasks, sprints and engagement knowledge from technical and product engagements.", "atlassian"),
+                    tile("SAP Concur Expense", "api", "Travel and expense line items joined to engagements for reimbursable and leakage analysis.", "concur",
+                         cat="Travel & Expense Management",
+                         what="Carries travel and expense line items joined to engagements for reimbursable and margin-leakage analysis.",
+                         users="Finance, delivery leads and expense audit teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Daily feed"))),
+                    tile("DocuSign CLM", "api", "Engagement contracts, SOWs and change orders parsed for rates, caps and milestones.", "docusign",
+                         cat="Contract Lifecycle Management (CLM)",
+                         what="Holds engagement contracts, SOWs and change orders parsed for rates, caps and milestones.",
+                         users="Contract management, finance and delivery leads.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "0.3-2 GB/day contracts + metadata", "Daily + on-signature"))),
+                    tile("Jira & Confluence", "api", "Delivery tasks, sprints and engagement knowledge from technical and product engagements.", "atlassian",
+                         cat="Delivery / Project Collaboration",
+                         what="Carries delivery tasks, sprints and engagement knowledge from technical and product engagements.",
+                         users="Delivery engineers, PMO and knowledge management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-3 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of issue events/sec", "Continuous (webhook)"))),
                 ]
             ),
             "ppl": ppl2(
@@ -195,7 +298,59 @@ INDUSTRIES_BATCH_PROFESSIONAL_SERVICES = {
                             tile("Sharing Recipients", "share", "Clients and alliance partners reading live tables with no copy and no egress duplication."),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Utilization & Delivery", "Ask about billable utilization, bench and engagement health across practices in plain language.",
+                          feeds=["Kantata PSA", "Replicon Time", "NetSuite OpenAir", "Utilization, margin, win-rate"],
+                          teams=["Delivery & PMO", "Firm Leadership", "Resource managers"],
+                          questions=[
+                              "What was billable utilization last month by practice and consultant?",
+                              "Who is on the bench this week and for how long?",
+                              "Which engagements are burning ahead of plan?",
+                              "Where is idle capacity likely next week?",
+                              "How does utilization compare to target by sector?"]),
+                    genie("Engagement Margin", "Explore realised margin, rate-versus-cost and leakage across engagements and practices.",
+                          feeds=["Workday Financials", "DocuSign CLM", "Revenue & GL Mart", "Utilization, margin, win-rate"],
+                          teams=["Practice Leaders", "CFO & Finance", "Engagement partners"],
+                          questions=[
+                              "Which engagements are slipping on margin this quarter?",
+                              "What is realised margin by practice against the rate card?",
+                              "Where is scope creep eroding margin the most?",
+                              "How does margin compare across fixed-fee and T&M engagements?",
+                              "Which clients consistently deliver below target margin?"]),
+                    genie("Pipeline & Win-Rate", "Answer questions on pipeline health, win probability and proposal outcomes across the book.",
+                          feeds=["Salesforce Sales Cloud", "Dynamics 365 Sales", "HubSpot CRM", "Utilization, margin, win-rate"],
+                          teams=["Practice Leaders", "Firm Leadership", "Sector leads"],
+                          questions=[
+                              "What is our weighted pipeline by practice and sector?",
+                              "Which open opportunities have the highest win probability?",
+                              "What is our win rate by sector this year versus last?",
+                              "Which proposals stalled and at what stage?",
+                              "Which deals should partners prioritise this week?"]),
+                    genie("Talent & Skills", "Ask about attrition risk, skills coverage and staffing fit across the workforce.",
+                          feeds=["Workday HCM", "Jira & Confluence", "iManage Knowledge", "Conformed engagement, person, client"],
+                          teams=["Talent & HR", "Delivery & PMO", "L&D / capability"],
+                          questions=[
+                              "Which consultants are at highest attrition risk right now?",
+                              "Where are our biggest skills-to-demand gaps?",
+                              "Who is the best-fit staffing for this open role?",
+                              "Which skills are we overselling versus our bench?",
+                              "How is attrition trending by practice and level?"]),
+                ],
+                dashboards=[
+                    dashboard("Utilization & Bench", "Billable utilization, bench, burn and engagement health across practices on certified views.",
+                              kpis=["Billable utilization", "Bench days", "Engagement burn", "Realization", "Delivery risk"],
+                              teams=["Delivery & PMO", "Firm Leadership", "Resource managers"]),
+                    dashboard("Engagement Margin", "Realised margin, rate-versus-cost and leakage by engagement and practice.",
+                              kpis=["Engagement margin", "Rate realisation", "Cost rate variance", "Margin leakage", "Write-offs"],
+                              teams=["Practice Leaders", "CFO & Finance", "Engagement partners"]),
+                    dashboard("Pipeline & Growth", "Pipeline health, weighted forecast, win-rate and backlog across the book of business.",
+                              kpis=["Weighted pipeline", "Win rate", "Backlog", "Proposal conversion", "Book-to-bill"],
+                              teams=["Practice Leaders", "Firm Leadership", "Sector leads"]),
+                    dashboard("Talent & Skills", "Attrition risk, skills coverage, staffing fit and hiring against sold demand.",
+                              kpis=["Attrition rate", "Skills-to-demand gap", "Staffing fill rate", "Time-to-staff", "Hiring vs demand"],
+                              teams=["Talent & HR", "Delivery & PMO", "L&D / capability"]),
+                ],
             ),
         },
         "top": top_band(

@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,126 @@ INDUSTRIES_BATCH_AUTOMOTIVE = {
         "rails": {
             "src": [
                 {"box": "Engineering & PLM", "ic": "product", "tiles": [
-                    tile("Siemens Teamcenter", "product", "EBOM, change orders and variant configuration through SOP.", "teamcenter"),
-                    tile("Dassault 3DEXPERIENCE", "product", "CAD, simulation and manufacturing process definitions.", "3dexperience"),
-                    tile("PTC Windchill", "product", "Part masters, effectivity and supplier packages.", "windchill"),
+                    tile("Siemens Teamcenter", "product", "EBOM, change orders and variant configuration through SOP.", "teamcenter",
+                         cat="PLM System",
+                         what="System of record for the engineering BOM, change orders and variant configuration carried through to start of production.",
+                         users="Vehicle engineering, change management and Configuration management.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "5-20 GB/day", "On change release + nightly"))),
+                    tile("Dassault 3DEXPERIENCE", "product", "CAD, simulation and manufacturing process definitions.", "3dexperience",
+                         cat="CAD / PLM Platform",
+                         what="Holds CAD geometry, simulation results and manufacturing process definitions for vehicle and component design.",
+                         users="Design engineers, CAE/simulation and Manufacturing engineering.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs (CAD + simulation)", "On design release"))),
+                    tile("PTC Windchill", "product", "Part masters, effectivity and supplier packages.", "windchill",
+                         cat="PLM System",
+                         what="Manages part masters, effectivity dates and supplier data packages across programs standardized on Windchill.",
+                         users="Component engineering, Supplier engineering and Configuration management.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "On change release + nightly"))),
                 ]},
                 {"box": "Manufacturing MES", "ic": "iot", "tiles": [
-                    tile("Siemens Opcenter", "iot", "Line sequencing, torque traces, andon events by station.", "opcenter"),
-                    tile("Rockwell FactoryTalk", "iot", "PLC tags, quality checks and downtime reason codes.", "factorytalk"),
-                    tile("Bosch Nexeed", "stream", "Tier-1 JIT sequencing and logistics for assembly plants.", "nexeed"),
+                    tile("Siemens Opcenter", "iot", "Line sequencing, torque traces, andon events by station.", "opcenter",
+                         cat="Manufacturing Execution System (MES)",
+                         what="Runs line sequencing and captures torque traces, station cycle data and andon events across the assembly line.",
+                         users="Plant operations, production engineering and Quality.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "2-10k events/sec at peak", "Continuous station events"))),
+                    tile("Rockwell FactoryTalk", "iot", "PLC tags, quality checks and downtime reason codes.", "factorytalk",
+                         cat="Industrial Automation / SCADA",
+                         what="Streams PLC tags, in-line quality checks and downtime reason codes from controlled assembly and body-shop assets.",
+                         users="Controls engineers, plant operations and Continuous improvement.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-20k tags/sec", "Continuous high-frequency telemetry"))),
+                    tile("Bosch Nexeed", "stream", "Tier-1 JIT sequencing and logistics for assembly plants.", "nexeed",
+                         cat="Manufacturing Operations / JIS-JIT",
+                         what="Coordinates tier-1 just-in-sequence and just-in-time part sequencing and logistics feeding the assembly plant.",
+                         users="Plant logistics, materials management and Tier-1 suppliers.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous sequencing events"))),
                 ]},
                 {"box": "Dealer & Retail", "ic": "market", "tiles": [
-                    tile("CDK Global DMS", "erp", "Dealer inventory, deals, F&I and service ROs.", "cdk"),
-                    tile("Reynolds ERA", "erp", "Retail, parts and service transactions across dealer groups.", "reynolds"),
-                    tile("VinSolutions CRM", "custlake", "Leads, appointments and sold-not-reported tracking.", "vinsolutions"),
+                    tile("CDK Global DMS", "erp", "Dealer inventory, deals, F&I and service ROs.", "cdk",
+                         cat="Dealer Management System (DMS)",
+                         what="Runs dealer inventory, vehicle deals, F&I and service repair orders across the dealer network.",
+                         users="Dealer principals, sales and service managers and OEM Sales operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly + hourly deltas"))),
+                    tile("Reynolds ERA", "erp", "Retail, parts and service transactions across dealer groups.", "reynolds",
+                         cat="Dealer Management System (DMS)",
+                         what="Processes retail, parts and service transactions across dealer groups on the Reynolds platform.",
+                         users="Dealer groups, parts and service operations and OEM Sales operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Nightly batch"))),
+                    tile("VinSolutions CRM", "custlake", "Leads, appointments and sold-not-reported tracking.", "vinsolutions",
+                         cat="Automotive Retail CRM",
+                         what="Tracks dealer leads, appointments and sold-not-reported activity across the sales funnel.",
+                         users="Dealer sales teams, BDC and OEM Marketing analytics.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous lead events"))),
                 ]},
                 {"box": "Connected Vehicle", "ic": "stream", "tiles": [
-                    tile("OEM Telematics Gateway", "iot", "CAN signals, GPS and remote diagnostics from connected fleets.", "telematics"),
-                    tile("HERE HD Maps", "globe", "Lane-level map tiles for ADAS and navigation features.", "here-maps"),
-                    tile("Aptiv Smart Vehicle", "zplug", "Sensor fusion and software-defined feature telemetry.", "aptiv"),
+                    tile("OEM Telematics Gateway", "iot", "CAN signals, GPS and remote diagnostics from connected fleets.", "telematics",
+                         cat="Connected Vehicle Telematics",
+                         what="Ingests CAN bus signals, GPS and remote diagnostics streamed from the connected vehicle fleet.",
+                         users="Connected-vehicle engineering, Aftersales and Data science.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "50-500k signals/sec (fleet)", "Continuous vehicle telemetry"))),
+                    tile("HERE HD Maps", "globe", "Lane-level map tiles for ADAS and navigation features.", "here-maps",
+                         cat="HD Mapping / Location Data",
+                         what="Supplies lane-level HD map tiles and location data feeding ADAS and navigation features.",
+                         users="ADAS engineering, navigation and Connected-vehicle teams.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured"], "GBs (map tiles)", "Periodic map updates"))),
+                    tile("Aptiv Smart Vehicle", "zplug", "Sensor fusion and software-defined feature telemetry.", "aptiv",
+                         cat="Vehicle Software / Sensor Platform",
+                         what="Provides sensor-fusion output and software-defined vehicle feature telemetry from the vehicle architecture.",
+                         users="ADAS/software engineering and Connected-vehicle data teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "10-100k signals/sec", "Continuous sensor telemetry"))),
                 ]},
                 {"box": "Aftersales & Parts", "ic": "zplug", "tiles": [
-                    tile("SAP Aftermarket", "erp", "Parts catalog, supersession and dealer ordering.", "sap-aftermarket"),
-                    tile("Mitchell Repair", "product", "Labor guides, TSBs and repair procedures.", "mitchell"),
+                    tile("SAP Aftermarket", "erp", "Parts catalog, supersession and dealer ordering.", "sap-aftermarket",
+                         cat="Aftermarket / Parts ERP",
+                         what="Manages the parts catalog, supersession chains and dealer parts ordering across the aftermarket.",
+                         users="Parts planning, aftersales operations and Dealer parts teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly + hourly deltas"))),
+                    tile("Mitchell Repair", "product", "Labor guides, TSBs and repair procedures.", "mitchell",
+                         cat="Repair Information System",
+                         what="Provides labor time guides, technical service bulletins and repair procedures used in service.",
+                         users="Service technicians, warranty analysts and Aftersales engineering.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured", "unstructured"], "100s of MB/day", "Periodic content updates"))),
                 ]},
-                fed_group("Finance & Warranty Mart", "Warranty accrual and revenue recognition marts queried in place under Unity Catalog."),
+                fed_group("Finance & Warranty Mart", "Warranty accrual and revenue recognition marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Warranty accrual and revenue-recognition marts kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="Finance, Warranty management and Revenue accounting.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("JD Power IQS/SSI", "chart", "Initial quality and sales satisfaction benchmarks by segment.", "jdpower"),
-                tile("Polk Registration", "market", "Vehicle registration and conquest data by geography.", "polk"),
-                tile("MQTT / DDS Telematics", "iot", "CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events."),
+                tile("JD Power IQS/SSI", "chart", "Initial quality and sales satisfaction benchmarks by segment.", "jdpower",
+                     cat="Quality & Satisfaction Benchmarks",
+                     what="Provides Initial Quality Study and Sales Satisfaction Index benchmarks by segment for competitive quality and CX analysis.",
+                     users="Quality engineering, Sales operations and Product planning.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "100s of MB (surveys)", "Periodic study releases"))),
+                tile("Polk Registration", "market", "Vehicle registration and conquest data by geography.", "polk",
+                     cat="Vehicle Registration Data",
+                     what="Supplies vehicle registration, ownership and conquest data by geography for market share and targeting.",
+                     users="Sales & Marketing, incentive planning and Market analytics.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "1-3 GB/month", "Monthly registration refresh"))),
+                tile("MQTT / DDS Telematics", "iot", "CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events.",
+                     cat="Vehicle Telemetry Middleware",
+                     what="Carries CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events.",
+                     users="Connected-vehicle engineering and Streaming data teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "50-500k signals/sec (fleet)", "Continuous vehicle telemetry"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Mfg COO", "Genie One",
@@ -157,6 +251,56 @@ INDUSTRIES_BATCH_AUTOMOTIVE = {
                     tile("Data Products", "product", "Vehicle and quality products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Suppliers and finance partners via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Plant Quality & Throughput", "Ask about OEE, defect PPM and launch-curve progress by line and station.",
+                      feeds=["Siemens Opcenter", "Rockwell FactoryTalk", "Bosch Nexeed", "Quality, throughput, loyalty"],
+                      teams=["Manufacturing", "Quality Engineering", "Plant Manager"],
+                      questions=[
+                          "What was plant OEE by line and shift yesterday?",
+                          "Which stations are driving defect PPM this week?",
+                          "How is the launch curve tracking against SOP targets by week?",
+                          "Which andon events caused the most line downtime?",
+                          "What is first-time-through quality by line this month?"]),
+                genie("Warranty & Field Quality", "Explore warranty cost, field failures and supplier chargebacks across the fleet.",
+                      feeds=["Finance & Warranty Mart", "SAP Aftermarket", "Mitchell Repair", "Conformed vehicles and parts"],
+                      teams=["Quality Engineering", "Aftersales", "Supplier Quality"],
+                      questions=[
+                          "What is warranty cost per vehicle by model and model year?",
+                          "Which failure modes are emerging fastest in the field?",
+                          "Which supplier lots are linked to recoverable chargebacks?",
+                          "Where is time-to-containment slipping by defect cluster?",
+                          "Which VINs are candidates for an OTA fix versus a recall?"]),
+                genie("Dealer & Sales", "Answer inventory, days-supply and conquest questions across the dealer network.",
+                      feeds=["CDK Global DMS", "VinSolutions CRM", "Polk Registration", "Quality, throughput, loyalty"],
+                      teams=["Sales & Marketing", "Incentive Planning", "Digital Marketing"],
+                      questions=[
+                          "What is days supply by dealer and configuration right now?",
+                          "Which markets are over- or under-allocated versus demand?",
+                          "What is incentive spend per unit versus margin by region?",
+                          "What is our conquest rate against key competitors this quarter?",
+                          "Which leads are highest-propensity and unassigned?"]),
+                genie("Connected Vehicle & Service", "Ask about connected diagnostics, battery health and service retention.",
+                      feeds=["OEM Telematics Gateway", "Aptiv Smart Vehicle", "VinSolutions CRM", "Conformed vehicles and parts"],
+                      teams=["Aftersales", "Service Operations", "Connected-Vehicle ML"],
+                      questions=[
+                          "Which VINs show fault signatures predicting a failure soon?",
+                          "What is EV battery state-of-health distribution by fleet?",
+                          "What is service retention rate by dealer and region?",
+                          "Which parts are predicted to be needed by DC next month?",
+                          "Which connected faults should trigger a proactive service offer?"]),
+            ], dashboards=[
+                dashboard("Plant Quality & OEE", "Line OEE, defect PPM and launch-curve tracking on certified Metric Views.",
+                          kpis=["OEE", "Defect PPM", "First-time-through", "Launch curve attainment", "Andon downtime"],
+                          teams=["Manufacturing", "Quality Engineering", "Plant Manager"]),
+                dashboard("Warranty & Field Performance", "Warranty cost, field failure trends and chargeback recovery.",
+                          kpis=["Warranty cost per vehicle", "Field failure rate", "Time-to-containment", "Chargeback recovery", "Recall exposure"],
+                          teams=["Quality Engineering", "Aftersales", "Warranty Management"]),
+                dashboard("Dealer Inventory & Sales", "Days supply, allocation, conquest and incentive efficiency across dealers.",
+                          kpis=["Days supply", "Allocation fill", "Conquest rate", "Incentive spend per unit", "Lead conversion"],
+                          teams=["Sales & Marketing", "Incentive Planning", "Digital Marketing"]),
+                dashboard("Connected & Aftersales", "Connected diagnostics, battery health, parts fill and service retention.",
+                          kpis=["Service retention", "Parts fill rate", "Battery state-of-health", "Proactive offer take rate", "Fix-first-visit"],
+                          teams=["Aftersales", "Service Operations", "Parts & Supply"]),
             ]),
         },
         "top": top_band(

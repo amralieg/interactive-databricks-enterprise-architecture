@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,126 @@ INDUSTRIES_BATCH_SEMICONDUCTORS = {
         "rails": {
             "src": [
                 {"box": "Fab & MES", "ic": "erp", "tiles": [
-                    tile("Applied E3 MES", "erp", "Manufacturing execution for wafer fabs: lot tracking, recipe management, equipment dispatch and hold/release.", "applied-e3"),
-                    tile("Camstar Semiconductor", "sheet", "MES routings, BOMs, component traceability and quality holds against each lot.", "camstar"),
-                    tile("camLine LineWorks", "db", "Fab APC, FDC and SPC with equipment integration: run-to-run control and tool health across the wafer line.", "brooks-pfab"),
+                    tile("Applied E3 MES", "erp", "Manufacturing execution for wafer fabs: lot tracking, recipe management, equipment dispatch and hold/release.", "applied-e3",
+                         cat="Semiconductor MES",
+                         what="Manufacturing execution for wafer fabs covering lot tracking, recipe management, equipment dispatch and hold/release.",
+                         users="Fab operations, dispatch and Process engineering.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k events/sec", "Continuous lot/step events"))),
+                    tile("Camstar Semiconductor", "sheet", "MES routings, BOMs, component traceability and quality holds against each lot.", "camstar",
+                         cat="Semiconductor MES",
+                         what="Manages MES routings, BOMs, component traceability and quality holds against each lot through the route.",
+                         users="Fab operations, quality and Traceability teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly + hourly deltas"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous lot events"))),
+                    tile("camLine LineWorks", "db", "Fab APC, FDC and SPC with equipment integration: run-to-run control and tool health across the wafer line.", "brooks-pfab",
+                         cat="APC / FDC / SPC Platform",
+                         what="Runs advanced process control, fault detection and SPC with equipment integration for run-to-run control and tool health.",
+                         users="Process engineering, equipment engineering and Yield engineering.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "2-20k tags/sec", "Continuous equipment telemetry"))),
                 ]},
                 {"box": "Design & IP", "ic": "sheet", "tiles": [
-                    tile("Synopsys Fusion Design", "sheet", "RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.", "synopsys-fusion"),
-                    tile("Cadence Virtuoso", "code", "Custom and analog design: schematic, layout and LVS for IP blocks on each die.", "cadence-virtuoso"),
-                    tile("Siemens Calibre", "gavel", "DRC, LVS and OPC verification against foundry rules before mask order.", "calibre"),
+                    tile("Synopsys Fusion Design", "sheet", "RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.", "synopsys-fusion",
+                         cat="EDA Digital Design",
+                         what="Takes RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.",
+                         users="Digital design, physical design and Sign-off teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs-TBs per block", "Per design run"))),
+                    tile("Cadence Virtuoso", "code", "Custom and analog design: schematic, layout and LVS for IP blocks on each die.", "cadence-virtuoso",
+                         cat="EDA Custom/Analog Design",
+                         what="Supports custom and analog design: schematic, layout and LVS for IP blocks on each die.",
+                         users="Analog/mixed-signal designers and IP teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs per IP block", "Per design run"))),
+                    tile("Siemens Calibre", "gavel", "DRC, LVS and OPC verification against foundry rules before mask order.", "calibre",
+                         cat="EDA Physical Verification",
+                         what="Runs DRC, LVS and OPC verification against foundry rules before the mask is ordered.",
+                         users="Physical verification, DFM and Tape-out teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (verification results)", "Per verification run"))),
                 ]},
                 {"box": "Yield & Test", "ic": "iot", "tiles": [
-                    tile("Teradyne UltraFLEX", "iot", "ATE parametric and functional test: bin maps, shmoo plots and bin history per die.", "teradyne"),
-                    tile("PDF Solutions Exensio", "chart", "Yield management: defect classification, spatial signatures and excursion detection.", "pdf-exensio"),
-                    tile("KLA 5D Analyzer", "stream", "Inspection and metrology: defect maps, overlay and CD measurements by tool and recipe.", "kla-5d"),
+                    tile("Teradyne UltraFLEX", "iot", "ATE parametric and functional test: bin maps, shmoo plots and bin history per die.", "teradyne",
+                         cat="Automated Test Equipment (ATE)",
+                         what="Runs parametric and functional test producing bin maps, shmoo plots and bin history per die.",
+                         users="Test engineering, product engineering and Yield engineering.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "GBs/hour parametric dumps", "Continuous during test"))),
+                    tile("PDF Solutions Exensio", "chart", "Yield management: defect classification, spatial signatures and excursion detection.", "pdf-exensio",
+                         cat="Yield Management System (YMS)",
+                         what="Yield management for defect classification, spatial signature analysis and excursion detection across the fab.",
+                         users="Yield engineering, defect analysis and Process engineering.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Hourly + per-lot"))),
+                    tile("KLA 5D Analyzer", "stream", "Inspection and metrology: defect maps, overlay and CD measurements by tool and recipe.", "kla-5d",
+                         cat="Inspection & Metrology",
+                         what="Inspection and metrology producing defect maps, overlay and CD measurements by tool and recipe.",
+                         users="Metrology, defect engineering and Yield engineering.",
+                         data_out=data_out(
+                             stream=flow(["unstructured", "structured"], "TBs/day images + measures", "Continuous inline inspection"))),
                 ]},
                 {"box": "Equipment & Sensors", "ic": "stream", "tiles": [
-                    tile("SECS/GEM Tool Interface", "stream", "Equipment events, alarms and trace data from lithography, etch and deposition tools.", "secs-gem"),
-                    tile("ASML YieldStar", "iot", "In-line overlay and CD metrology from the scanner feeding litho feedback.", "asml-yieldstar"),
-                    tile("Lam Equipment Analytics", "partner", "Chamber health, RF matching and preventive maintenance signals from process tools.", "lam-analytics"),
+                    tile("SECS/GEM Tool Interface", "stream", "Equipment events, alarms and trace data from lithography, etch and deposition tools.", "secs-gem",
+                         cat="Equipment Interface (SECS/GEM)",
+                         what="Carries equipment events, alarms and trace data from lithography, etch and deposition tools to the host.",
+                         users="Equipment engineering, process control and Data engineering.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-50k events/sec", "Continuous tool telemetry"))),
+                    tile("ASML YieldStar", "iot", "In-line overlay and CD metrology from the scanner feeding litho feedback.", "asml-yieldstar",
+                         cat="Lithography Metrology",
+                         what="Provides in-line overlay and CD metrology from the scanner feeding litho run-to-run feedback.",
+                         users="Litho engineering, metrology and Process control.",
+                         data_out=data_out(
+                             stream=flow(["structured"], "GBs/day metrology", "Continuous inline metrology"))),
+                    tile("Lam Equipment Analytics", "partner", "Chamber health, RF matching and preventive maintenance signals from process tools.", "lam-analytics",
+                         cat="Equipment Analytics",
+                         what="Supplies chamber health, RF matching and preventive-maintenance signals from process tools for reliability.",
+                         users="Equipment engineering, maintenance and Reliability teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k tags/sec", "Continuous chamber telemetry"))),
                 ]},
                 {"box": "Supply & Materials", "ic": "market", "tiles": [
-                    tile("SAP S/4HANA", "erp", "Procurement, inventory and cost accounting for wafers, chemicals and substrates.", "sap-s4"),
-                    tile("Resilinc Supply Risk", "globe", "Multi-tier supplier mapping and disruption alerts for critical materials.", "resilinc"),
+                    tile("SAP S/4HANA", "erp", "Procurement, inventory and cost accounting for wafers, chemicals and substrates.", "sap-s4",
+                         cat="Enterprise ERP",
+                         what="System of record for procurement, inventory and cost accounting for wafers, chemicals and substrates.",
+                         users="Procurement, materials planning and Cost accounting.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "Nightly batch + hourly deltas"))),
+                    tile("Resilinc Supply Risk", "globe", "Multi-tier supplier mapping and disruption alerts for critical materials.", "resilinc",
+                         cat="Supply Chain Risk Intelligence",
+                         what="Provides multi-tier supplier mapping and disruption alerts for critical materials and sub-tier fabs.",
+                         users="Supply chain risk, procurement and Materials planning.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "100s of MB/day", "Daily + event-driven alerts"))),
                 ]},
-                fed_group("Partner Foundry Marts", "Yield and capacity marts left at the foundry and queried in place under Unity Catalog."),
+                fed_group("Partner Foundry Marts", "Yield and capacity marts left at the foundry and queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Yield and capacity marts kept at the foundry and queried in place through federation instead of copied into the lakehouse.",
+                          users="Yield engineering, capacity planning and Foundry interface teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale yield/capacity marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("SEMI E134 Data Collection", "stream", "Industry data collection standard for equipment and MES events parsed on arrival.", "semi-e134"),
-                tile("SECS/GEM Message Bus", "api", "Equipment host communication for remote commands, trace reports and alarms.", "secs-gem"),
-                tile("OSAT Test File Exchange", "zplug", "STDF parametric files from outsourced assembly and test partners.", "stdf"),
+                tile("SEMI E134 Data Collection", "stream", "Industry data collection standard for equipment and MES events parsed on arrival.", "semi-e134",
+                     cat="Equipment Data Collection Standard",
+                     what="Industry standard (SEMI E134) for collecting equipment and MES event and trace data, parsed on arrival into structured events.",
+                     users="Data engineering, equipment engineering and Process control.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "5-50k events/sec", "Continuous equipment events"))),
+                tile("SECS/GEM Message Bus", "api", "Equipment host communication for remote commands, trace reports and alarms.", "secs-gem",
+                     cat="Equipment Host Messaging",
+                     what="Equipment-host communication carrying remote commands, trace reports and alarms between tools and the fab host.",
+                     users="Equipment engineering, automation and Data engineering.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "2-20k messages/sec", "Continuous host messaging"))),
+                tile("OSAT Test File Exchange", "zplug", "STDF parametric files from outsourced assembly and test partners.", "stdf",
+                     cat="Outsourced Test Data Exchange",
+                     what="Delivers STDF parametric and bin files from outsourced assembly and test (OSAT) partners for yield correlation.",
+                     users="Test engineering, quality and OSAT interface teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs/day STDF files", "Per-lot file drops"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Fab Strategy", "Genie One", "The CEO on capacity utilisation and margin; the COO on cycle time, yield ramp and the cost of a fab excursion by product and layer.",
@@ -117,6 +211,56 @@ INDUSTRIES_BATCH_SEMICONDUCTORS = {
                     tile("Data Products", "product", "Yield and traceability products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Fabless customers and OSAT partners reading live tables via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Yield & Excursion", "Ask about yield, bin pareto and excursions by layer, tool and product in plain language.",
+                      feeds=["PDF Solutions Exensio", "Teradyne UltraFLEX", "KLA 5D Analyzer", "Yield, cycle time, OEE"],
+                      teams=["Yield Engineering", "Yield Engineer", "Failure Analysis"],
+                      questions=[
+                          "What is yield by layer and product this week versus last?",
+                          "Which tools or steps are correlated with the current excursion?",
+                          "What is the bin pareto for this failing lot?",
+                          "Which spatial defect signatures are trending up?",
+                          "Which lots are at risk of falling below yield target before disposition?"]),
+                genie("Fab Operations & WIP", "Explore WIP position, cycle time and tool availability across the route.",
+                      feeds=["Applied E3 MES", "Camstar Semiconductor", "SECS/GEM Tool Interface", "Yield, cycle time, OEE"],
+                      teams=["Fab Operations", "Fab Shift Manager", "Dispatch & Scheduling"],
+                      questions=[
+                          "Where is WIP piling up and which tools are the bottleneck?",
+                          "What is cycle time by route and layer versus target?",
+                          "Which tools have the worst availability this shift?",
+                          "Are we on track to hit today's wafer starts?",
+                          "Which hot lots are behind schedule right now?"]),
+                genie("Equipment Health", "Answer chamber-matching, drift and predictive-maintenance questions from tool telemetry.",
+                      feeds=["Lam Equipment Analytics", "camLine LineWorks", "ASML YieldStar", "Yield, cycle time, OEE"],
+                      teams=["Fab Operations", "Process Engineering", "Equipment ML"],
+                      questions=[
+                          "Which chambers are drifting apart on process signatures?",
+                          "Which tools are predicted to fail in the next two weeks?",
+                          "Which recipes show the most run-to-run variability by tool?",
+                          "Where is overlay or CD drifting toward guard bands?",
+                          "Which preventive-maintenance actions are overdue on bottleneck tools?"]),
+                genie("Supply & Quality", "Ask about material lead times, allocation and customer returns tied to fab lots.",
+                      feeds=["Resilinc Supply Risk", "SAP S/4HANA", "OSAT Test File Exchange", "Conformed lot, wafer, die"],
+                      teams=["Supply Chain", "Quality & Reliability", "Customer Quality"],
+                      questions=[
+                          "Which lots are at risk from a supplier or substrate delay?",
+                          "How is scarce wafer capacity allocated against demand and priority?",
+                          "Which customer returns trace back to which fab lot and test bin?",
+                          "What is single-source exposure on critical materials?",
+                          "What is right-first-time CoA release rate by product?"]),
+            ], dashboards=[
+                dashboard("Yield & Bin Analysis", "Yield, bin pareto and excursion trends by layer, tool and product.",
+                          kpis=["Yield", "Bin pareto", "Excursion count", "Cost per good die", "Defect density"],
+                          teams=["Yield Engineering", "Product & Test Engineering", "Failure Analysis"]),
+                dashboard("Fab Cycle Time & OEE", "WIP, cycle time, tool availability and OEE across the route.",
+                          kpis=["Cycle time", "WIP ageing", "Tool availability", "OEE", "Wafer starts"],
+                          teams=["Fab Operations", "Dispatch & Scheduling", "CEO & Fab Strategy"]),
+                dashboard("Equipment Reliability", "Chamber matching, run-to-run drift and predicted tool failures.",
+                          kpis=["Chamber match score", "R2R variability", "Predicted failures", "Unplanned downtime", "PM compliance"],
+                          teams=["Fab Operations", "Process Engineering", "Equipment ML"]),
+                dashboard("Supply & Customer Quality", "Material risk, wafer allocation and returns correlation to fab lots.",
+                          kpis=["Supplier OTIF", "Single-source exposure", "Wafer allocation fill", "Return rate", "CoA right-first-time"],
+                          teams=["Supply Chain", "Quality & Reliability", "Customer Quality"]),
             ]),
         },
         "top": top_band(

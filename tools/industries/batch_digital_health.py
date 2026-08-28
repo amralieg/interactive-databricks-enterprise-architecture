@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,46 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             "erp",
                             "The virtual-care platform of record: scheduled and on-demand video visits, provider queues and visit notes, and the source of the telehealth encounter.",
                             "amwell",
+                            cat="Telehealth / Virtual Care Platform",
+                            what="System of record for the telehealth encounter: scheduled and on-demand video visits, provider queues and visit notes, emitting visit, queue and note events.",
+                            users="Clinical Ops, care delivery and quality teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "5-20 GB/day incl. notes", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of visit events/sec at peak", "Continuous visit stream")),
                         ),
                         tile(
                             "Teladoc Health",
                             "erp",
                             "Whole-person virtual care across urgent, chronic and mental health, carrying visits, programmes and clinician assignments into the estate.",
                             "teladoc",
+                            cat="Telehealth / Virtual Care Platform",
+                            what="Delivers whole-person virtual care across urgent, chronic and mental health, carrying visits, programmes and clinician assignments into the estate.",
+                            users="Clinical Ops, care delivery and programme teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "5-20 GB/day incl. notes", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of visit events/sec at peak", "Continuous visit stream")),
                         ),
                         tile(
                             "Zoom for Healthcare",
                             "globe",
                             "HIPAA-configured video sessions embedded in the care journey, the media and connection quality feed behind each visit.",
                             "zoom-health",
+                            cat="Video Conferencing Platform",
+                            what="Runs HIPAA-configured video sessions embedded in the care journey, emitting the media and connection-quality telemetry behind each visit.",
+                            users="Clinical Ops, care delivery and platform-reliability teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of session events/sec at peak", "Continuous session telemetry")),
                         ),
                         tile(
                             "Doxy.me Telehealth",
                             "globe",
                             "Browser-based telemedicine for lightweight virtual visits, feeding session and waiting-room events where Doxy.me is the incumbent.",
                             "doxyme",
+                            cat="Telehealth / Virtual Care Platform",
+                            what="Browser-based telemedicine for lightweight virtual visits, feeding session and waiting-room events where Doxy.me is the incumbent.",
+                            users="Clinical Ops, care delivery and virtual-visit operations teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of session events/sec", "Continuous session stream")),
                         ),
                     ],
                 },
@@ -65,24 +90,45 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             "erp",
                             "Patient, Encounter, Observation and Medication resources pulled from the EHR over FHIR R4, the clinical spine every care plan is joined to.",
                             "epic-fhir",
+                            cat="EHR FHIR API",
+                            what="Serves Patient, Encounter, Observation and Medication resources from the EHR over FHIR R4, the clinical spine every care plan is joined to.",
+                            users="App & FHIR Devs, Clinical ML and care-management teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of resources/sec at peak", "Continuous (FHIR API / subscription)")),
                         ),
                         tile(
                             "athenahealth API",
                             "erp",
                             "Ambulatory EHR and practice data over athenahealth's APIs, feeding problems, medications and results where athena is the record.",
                             "athenahealth",
+                            cat="Ambulatory EHR API",
+                            what="Serves ambulatory EHR and practice data over athenahealth's APIs, feeding problems, medications and results where athena is the record.",
+                            users="App & FHIR Devs, Clinical ML and care-management teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of resources/sec", "Continuous (API)")),
                         ),
                         tile(
                             "Redox Interop",
                             "partner",
                             "Interoperability layer normalising HL7 v2 and FHIR across dozens of EHRs into one integration the platform reads.",
                             "redox",
+                            cat="Healthcare Interoperability Platform",
+                            what="Normalises HL7 v2 and FHIR across dozens of EHRs into one integration the platform reads, emitting conformed clinical events.",
+                            users="App & FHIR Devs, Health Data Eng and integration teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of messages/sec at peak", "Continuous (HL7/FHIR)")),
                         ),
                         tile(
                             "Health Gorilla",
                             "partner",
                             "National FHIR network for clinical records, labs and patient query, the source of longitudinal history beyond the platform's own visits.",
                             "health-gorilla",
+                            cat="Health Information Network",
+                            what="National FHIR network for clinical records, labs and patient query, the source of longitudinal history beyond the platform's own visits.",
+                            users="App & FHIR Devs, Clinical ML and care-management teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured"], "1-5 GB/day records + labs", "Daily + on-demand query"),
+                                stream=flow(["semi-structured"], "tens of queries/sec", "Continuous (API)")),
                         ),
                     ],
                 },
@@ -95,24 +141,44 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             "iot",
                             "Device-data aggregation across hundreds of wearables and RPM kits, normalising readings into one Observation stream.",
                             "validic",
+                            cat="Remote Patient Monitoring Hub",
+                            what="Aggregates device data across hundreds of wearables and RPM kits, normalising readings into one Observation stream.",
+                            users="Care Management, RPM nurses and Clinical ML teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "2-10k readings/sec at peak", "Continuous device stream")),
                         ),
                         tile(
                             "Apple HealthKit",
                             "iot",
                             "Steps, heart rate, sleep and workout data shared from the member's phone, the consumer-side signal behind adherence and coaching.",
                             "healthkit",
+                            cat="Consumer Wearable Data Source",
+                            what="Shares steps, heart rate, sleep and workout data from the member's phone, the consumer-side signal behind adherence and coaching.",
+                            users="Care Management, health coaches and Clinical ML teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of readings/sec at peak", "Continuous (device sync)")),
                         ),
                         tile(
                             "Dexcom CGM",
                             "iot",
                             "Continuous glucose readings streamed from the sensor, the ground truth for diabetes and cardiometabolic programmes.",
                             "dexcom",
+                            cat="Continuous Glucose Monitor (CGM)",
+                            what="Streams continuous glucose readings from the sensor, the ground truth for diabetes and cardiometabolic programmes.",
+                            users="Care Management, digital therapeutics and Clinical ML teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-5k readings/sec at peak", "Continuous CGM stream")),
                         ),
                         tile(
                             "Fitbit & Google Fit",
                             "iot",
                             "Activity, resting heart rate and sleep from consumer wearables, joined to programmes for behavioural and outcome signals.",
                             "fitbit",
+                            cat="Consumer Wearable Data Source",
+                            what="Provides activity, resting heart rate and sleep from consumer wearables, joined to programmes for behavioural and outcome signals.",
+                            users="Member Growth, health coaches and Clinical ML teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of readings/sec at peak", "Continuous (device sync)")),
                         ),
                     ],
                 },
@@ -125,18 +191,35 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             "crm",
                             "Salesforce Health Cloud: member and care-team relationships, service cases and next-best-action, the system of record for engagement and outreach.",
                             "sf-health",
+                            cat="Healthcare CRM",
+                            what="System of record for engagement and outreach: member and care-team relationships, service cases and next-best-action, emitting account, case and activity events.",
+                            users="Member Growth, member-engagement and care-team leads.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Twilio Comms",
                             "chat",
                             "SMS, voice and WhatsApp reminders and nudges, the delivery channel and event source for every outreach the platform sends.",
                             "twilio",
+                            cat="Communications / Messaging Platform",
+                            what="Delivers SMS, voice and WhatsApp reminders and nudges, the delivery channel and event source for every outreach the platform sends.",
+                            users="Member Growth, member-engagement and lifecycle-marketing teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of message events/sec at peak", "Continuous message stream")),
                         ),
                         tile(
                             "Braze Journeys",
                             "custlake",
                             "Lifecycle campaigns and in-app messaging, carrying journey membership, sends and responses into the estate.",
                             "braze",
+                            cat="Customer Engagement Platform",
+                            what="Runs lifecycle campaigns and in-app messaging, carrying journey membership, sends and responses into the estate.",
+                            users="Member Growth, lifecycle-marketing and member-engagement teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-3 GB/day", "Hourly / daily export"),
+                                stream=flow(["semi-structured"], "tens of journey events/sec", "Continuous event stream")),
                         ),
                     ],
                 },
@@ -149,24 +232,45 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             "market",
                             "Clearinghouse for eligibility, claims and remittance, the gateway between the platform and payer adjudication.",
                             "change",
+                            cat="Healthcare Claims Clearinghouse",
+                            what="Clearinghouse for eligibility, claims and remittance, the gateway between the platform and payer adjudication.",
+                            users="Payer Partners, revenue and eligibility teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "2-8 GB/day claims + remits", "Daily claims cycle"),
+                                stream=flow(["semi-structured"], "tens of eligibility checks/sec", "Continuous (API)")),
                         ),
                         tile(
                             "Availity Gateway",
                             "partner",
                             "Real-time eligibility, benefits and prior-authorisation checks against payers, feeding coverage state into the visit path.",
                             "availity",
+                            cat="Payer Connectivity Gateway",
+                            what="Runs real-time eligibility, benefits and prior-authorisation checks against payers, feeding coverage state into the visit path.",
+                            users="Payer Partners, eligibility and revenue teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of checks/sec at peak", "Continuous (API at visit)")),
                         ),
                         tile(
                             "Stripe Payments",
                             "product",
                             "Copay, subscription and self-pay transactions, the source of billing and collection events for the member.",
                             "stripe",
+                            cat="Payments Platform",
+                            what="Processes copay, subscription and self-pay transactions, the source of billing and collection events for the member.",
+                            users="Payer Partners, billing and finance teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of payment events/sec", "Continuous (webhook / API)")),
                         ),
                     ],
                 },
                 fed_group(
                     "Enrollment & Claims",
                     "Employer and payer eligibility, enrollment and adjudicated-claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the paid claims.",
+                    cat="Eligibility & Claims Data Warehouse",
+                    what="Employer and payer eligibility, enrollment and adjudicated-claims marts kept where they are and queried in place through federation instead of being copied.",
+                    users="Payer Partners, Actuarial & VBC and care-management teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale claims marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -176,17 +280,32 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                         "stream",
                         "Delivery, open and reply events from SMS and voice outreach streamed in for engagement and adherence analysis.",
                         "twilio",
+                        cat="Communications Event Stream",
+                        what="Streams delivery, open and reply events from SMS and voice outreach for engagement and adherence analysis.",
+                        users="Member Growth, member-engagement and lifecycle-marketing teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous event stream")),
                     ),
                     tile(
                         "HL7 & FHIR Messages",
                         "stream",
                         "HL7 v2 ADT and FHIR subscription events parsed on arrival and landed as structured clinical events for near-real-time care.",
                         "hl7-fhir",
+                        cat="Health Interoperability Standard (HL7/FHIR)",
+                        what="HL7 v2 ADT and FHIR subscription events parsed on arrival and landed as structured clinical events for near-real-time care.",
+                        users="Health Data Eng, App & FHIR Devs and care-management teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "hundreds of messages/sec at peak", "Continuous HL7/FHIR feed")),
                     ),
                     tile(
                         "Kafka Device Events",
                         "eventbus",
                         "High-frequency device telemetry from RPM kits and wearables on existing Kafka or event-hub topics, landed as it streams.",
+                        cat="Streaming Event Bus",
+                        what="Carries high-frequency device telemetry from RPM kits and wearables on existing Kafka or event-hub topics, landed as it streams.",
+                        users="Health Data Eng, Clinical ML and RPM-monitoring teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "5-20k messages/sec at peak", "Continuous (Kafka / event hub)")),
                     ),
                 ]
             ),
@@ -409,7 +528,59 @@ INDUSTRIES_BATCH_DIGITAL_HEALTH = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Virtual Visit Ops", "Ask about visit access, no-show rates and clinician utilisation in plain language.",
+                          feeds=["Amwell Platform", "Teladoc Health", "Zoom for Healthcare", "Engagement, outcomes, cost of care"],
+                          teams=["Clinical Ops", "Care Delivery", "Quality & Safety"],
+                          questions=[
+                              "What is this week's no-show rate by programme and channel?",
+                              "Where is clinician availability falling short of visit demand?",
+                              "What is average wait time from request to visit start?",
+                              "Which programmes have the longest queue depth right now?",
+                              "How has virtual visit volume grown month over month?"]),
+                    genie("RPM & Deterioration", "Explore device adherence, alert precision and rising risk across the panel.",
+                          feeds=["Validic Device Hub", "Dexcom CGM", "Kafka Device Events", "Conformed member, encounter, device"],
+                          teams=["Care Management", "RPM Nurses", "Health Coaches"],
+                          questions=[
+                              "Which members have the highest deterioration risk from device signals?",
+                              "What is RPM adherence by programme and device type?",
+                              "Where is alert precision lowest and driving alert fatigue?",
+                              "Which members stopped syncing their device this week?",
+                              "How many escalations came from device alerts by cohort?"]),
+                    genie("Engagement & Retention", "Answer activation, engagement and retention questions across cohorts.",
+                          feeds=["SF Health Cloud", "Braze Journeys", "Twilio Comms", "Engagement, outcomes, cost of care"],
+                          teams=["Member Growth", "Member Engagement", "Lifecycle Marketing"],
+                          questions=[
+                              "Which cohort is disengaging this month and why?",
+                              "What is activation rate by acquisition channel?",
+                              "Which outreach journeys drive the best adherence lift?",
+                              "Where is retention weakest across programmes?",
+                              "What is the reactivation rate for lapsed members?"]),
+                    genie("Outcomes & Value", "Ask about cost of care, gap closure and shared-savings performance by cohort.",
+                          feeds=["Enrollment & Claims", "Change Healthcare", "Engagement, outcomes, cost of care"],
+                          teams=["Payer Partners", "Actuarial & VBC", "Contracting"],
+                          questions=[
+                              "What is cost of care and utilisation by cohort this quarter?",
+                              "How is care-gap closure trending against contract targets?",
+                              "Which programmes show the strongest outcome improvement?",
+                              "Where are we against shared-savings targets by contract?",
+                              "Which cohorts drive the most avoidable utilisation?"]),
+                ],
+                dashboards=[
+                    dashboard("Virtual Care Operations", "Visit volume, no-show, wait time and clinician utilisation on certified Metric Views.",
+                              kpis=["Visit volume", "No-show rate", "Wait time", "Clinician utilisation", "Access rate"],
+                              teams=["Clinical Ops", "Care Delivery", "Quality & Safety"]),
+                    dashboard("RPM & Alerting", "Device adherence, alert precision and escalations across the monitored panel.",
+                              kpis=["RPM adherence", "Alert precision", "Alerts per member", "Escalation rate", "Readings ingested"],
+                              teams=["Care Management", "RPM Nurses", "Health Coaches"]),
+                    dashboard("Engagement & Retention", "Activation, engagement, outreach response and retention across cohorts.",
+                              kpis=["Activation rate", "Engagement rate", "Retention rate", "Outreach response", "Reactivation rate"],
+                              teams=["Member Growth", "Member Engagement", "Lifecycle Marketing"]),
+                    dashboard("Outcomes & Cost of Care", "Care-gap closure, cost of care and shared-savings performance by cohort.",
+                              kpis=["Care-gap closure", "Cost of care", "Utilisation", "Shared savings", "Outcome improvement"],
+                              teams=["Payer Partners", "Actuarial & VBC", "Contracting"]),
+                ],
             ),
         },
         "top": top_band(

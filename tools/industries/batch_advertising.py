@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -36,24 +39,47 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             "erp",
                             "Campaign trafficking, creative rotation and delivery reporting across display and video inventory.",
                             "google-cm360",
+                            cat="Ad Server / Campaign Management",
+                            what="Campaign trafficking, creative rotation and delivery reporting across display and video inventory.",
+                            users="Ad operations and Media planning teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "5-50 GB/day delivery logs", "Hourly"),
+                                stream=flow(["semi-structured"], "1-10k impression events/sec", "Continuous")),
                         ),
                         tile(
                             "The Trade Desk",
                             "market",
                             "Programmatic buying, audience segments and bid stream across open web and CTV.",
                             "trade-desk",
+                            cat="Demand-Side Platform (DSP)",
+                            what="Programmatic buying, audience segments and bid stream across open web and CTV.",
+                            users="Programmatic trading and Performance marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day spend + delivery", "Hourly"),
+                                stream=flow(["semi-structured"], "50k-500k bid events/sec", "Continuous")),
                         ),
                         tile(
                             "Meta Ads Manager",
                             "partner",
                             "Paid social campaigns, creative variants and conversion events from Meta properties.",
                             "meta-ads",
+                            cat="Paid Social Platform",
+                            what="Paid social campaigns, creative variants and conversion events from Meta properties.",
+                            users="Paid social and Performance marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Hourly"),
+                                stream=flow(["semi-structured"], "100s of conversion events/sec", "Continuous")),
                         ),
                         tile(
                             "Amazon Ads",
                             "product",
                             "Sponsored products, brands and display across retail media networks.",
                             "amazon-ads",
+                            cat="Retail Media Network",
+                            what="Sponsored products, brands and display across retail media networks.",
+                            users="Retail media and Commerce marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day", "Daily")),
                         ),
                     ],
                 },
@@ -66,18 +92,33 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             "stream",
                             "Publisher ad serving, yield management and direct-sold inventory for owned media.",
                             "google-ad-manager",
+                            cat="Publisher Ad Server / SSP",
+                            what="Publisher ad serving, yield management and direct-sold inventory for owned media.",
+                            users="Publisher yield and Ad operations teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k ad requests/sec", "Continuous")),
                         ),
                         tile(
                             "Magnite SSP",
                             "market",
                             "Supply-side auction data, deal IDs and publisher yield across CTV and open web.",
                             "magnite",
+                            cat="Supply-Side Platform (SSP)",
+                            what="Supply-side auction data, deal IDs and publisher yield across CTV and open web.",
+                            users="Publisher yield and Programmatic teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "50k-500k auction events/sec", "Continuous")),
                         ),
                         tile(
                             "Index Exchange",
                             "api",
                             "Header bidding and private marketplace bid requests for premium inventory.",
                             "index-exchange",
+                            cat="Ad Exchange / Header Bidding",
+                            what="Header bidding and private marketplace bid requests for premium inventory.",
+                            users="Programmatic and Publisher yield teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "50k-500k bid requests/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -90,18 +131,35 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             "custlake",
                             "Email, journey orchestration and first-party audience lists for activation.",
                             "sf-marketing-cloud",
+                            cat="Marketing Automation",
+                            what="Email, journey orchestration and first-party audience lists for activation.",
+                            users="CRM marketing and Audience operations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly"),
+                                stream=flow(["semi-structured"], "tens of engagement events/sec", "Continuous")),
                         ),
                         tile(
                             "Adobe Experience Platform",
                             "custlake",
                             "Real-time customer profiles, segments and consent state for cross-channel targeting.",
                             "adobe-aep",
+                            cat="Customer Data Platform (CDP)",
+                            what="Real-time customer profiles, segments and consent state for cross-channel targeting.",
+                            users="Audience operations and Performance marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day profiles + segments", "Hourly"),
+                                stream=flow(["semi-structured"], "100s-1000s of profile events/sec", "Continuous")),
                         ),
                         tile(
                             "LiveRamp RampID",
                             "partner",
                             "Identity resolution and onboarding for privacy-safe audience matching.",
                             "liveramp",
+                            cat="Identity Resolution",
+                            what="Identity resolution and onboarding for privacy-safe audience matching.",
+                            users="Audience operations and Data science teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day identity graphs", "Daily")),
                         ),
                     ],
                 },
@@ -114,24 +172,45 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             "chart",
                             "Cross-media reach and frequency measurement across linear and digital.",
                             "nielsen-one",
+                            cat="Audience Measurement / Ratings",
+                            what="Cross-media reach and frequency measurement across linear and digital.",
+                            users="Media planning and Investment teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day panel + ratings", "Daily")),
                         ),
                         tile(
                             "IAS Brand Safety",
                             "gavel",
                             "Viewability, invalid traffic and brand suitability scoring on every impression.",
                             "ias",
+                            cat="Ad Verification / Brand Safety",
+                            what="Viewability, invalid traffic and brand suitability scoring on every impression.",
+                            users="Brand safety and Ad verification teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k verification events/sec", "Continuous")),
                         ),
                         tile(
                             "AppsFlyer MMP",
                             "observ",
                             "Mobile attribution, SKAdNetwork postbacks and fraud signals.",
                             "appsflyer",
+                            cat="Mobile Measurement Partner (MMP)",
+                            what="Mobile attribution, SKAdNetwork postbacks and fraud signals.",
+                            users="Performance marketing and Fraud operations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly"),
+                                stream=flow(["semi-structured"], "100s-1000s of postbacks/sec", "Continuous")),
                         ),
                         tile(
                             "Kantar Brand Lift",
                             "ztarget",
                             "Survey-based brand lift studies tied to exposed and control cohorts.",
                             "kantar",
+                            cat="Brand Lift / Survey Measurement",
+                            what="Survey-based brand lift studies tied to exposed and control cohorts.",
+                            users="Brand and Marketing analytics teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.1-0.5 GB/day survey results", "Daily")),
                         ),
                     ],
                 },
@@ -144,18 +223,33 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             "product",
                             "Creative assets, rights metadata and version history for trafficking.",
                             "bynder",
+                            cat="Digital Asset Management (DAM)",
+                            what="Creative assets, rights metadata and version history for trafficking.",
+                            users="Creative operations and Ad operations teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured", "unstructured"], "0.5-3 GB/day assets + metadata", "Daily")),
                         ),
                         tile(
                             "Celtra Creative",
                             "apps",
                             "Dynamic creative optimization variants and performance by element.",
                             "celtra",
+                            cat="Creative Management / DCO",
+                            what="Dynamic creative optimization variants and performance by element.",
+                            users="Creative operations and Performance marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly")),
                         ),
                     ],
                 },
                 fed_group(
                     "Finance & Billing Mart",
                     "Agency billing, rebates and client invoicing marts left in place and queried under Unity Catalog.",
+                    cat="Finance Data Warehouse",
+                    what="Agency billing, rebates and client invoicing marts kept in existing warehouses and queried in place through federation.",
+                    users="Finance, Billing and Rebate teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale billing history", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -165,18 +259,33 @@ INDUSTRIES_BATCH_ADVERTISING = {
                         "api",
                         "Bid request and response logs from programmatic exchanges, parsed into structured auction events.",
                         "iab-openrtb",
+                        cat="Programmatic Auction Logs (OpenRTB)",
+                        what="Bid request and response logs from programmatic exchanges, parsed into structured auction events.",
+                        users="Programmatic trading and Data science teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "100k-1M bid events/sec", "Continuous")),
                     ),
                     tile(
                         "LiveRamp Data Clean Room",
                         "partner",
                         "Privacy-safe overlap and attribution queries against retailer and publisher partners.",
                         "liveramp-cleanroom",
+                        cat="Data Clean Room",
+                        what="Privacy-safe overlap and attribution queries against retailer and publisher partners.",
+                        users="Audience operations and Measurement teams.",
+                        data_out=data_out(
+                            batch=flow(["structured"], "1-10 GB/day overlap results", "Daily")),
                     ),
                     tile(
                         "Comscore Campaign Ratings",
                         "chart",
                         "Digital campaign delivery and demographic composition for guaranteed buys.",
                         "comscore",
+                        cat="Digital Audience Measurement",
+                        what="Digital campaign delivery and demographic composition for guaranteed buys.",
+                        users="Media planning and Investment teams.",
+                        data_out=data_out(
+                            batch=flow(["structured"], "0.5-3 GB/day", "Daily")),
                     ),
                 ]
             ),
@@ -372,7 +481,59 @@ INDUSTRIES_BATCH_ADVERTISING = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Campaign Performance", "Ask about spend, delivery and ROAS across every active flight in plain language.",
+                          feeds=["Google Campaign Manager", "The Trade Desk", "Meta Ads Manager", "ROAS, reach and attribution"],
+                          teams=["Performance Marketing", "Media Planning", "Data Scientists"],
+                          questions=[
+                              "Which flights will miss their guarantee before the IO closes?",
+                              "What is ROAS by channel this quarter versus last?",
+                              "Which campaigns are over-pacing right now?",
+                              "Where is working media leaking across platforms?",
+                              "Which creatives are driving the best CPA this week?"]),
+                    genie("Audience & Identity", "Explore segments, overlap and match rates on governed first-party data.",
+                          feeds=["Adobe Experience Platform", "LiveRamp RampID", "LiveRamp Data Clean Room", "Conformed campaigns and audiences"],
+                          teams=["Performance Marketing", "Media Planning", "Data Engineers"],
+                          questions=[
+                              "What is our match rate with each retail media partner?",
+                              "Which lookalike segments convert best right now?",
+                              "How much audience overlap exists across our top campaigns?",
+                              "Which segments should be suppressed to cut waste?",
+                              "What consent state applies to each activation audience?"]),
+                    genie("Brand Safety & Fraud", "Answer viewability, IVT and suitability questions on live delivery data.",
+                          feeds=["IAS Brand Safety", "IAB Tech Lab OpenRTB", "AppsFlyer MMP", "ROAS, reach and attribution"],
+                          teams=["Brand Safety", "Performance Marketing", "Data Scientists"],
+                          questions=[
+                              "What is our invalid-traffic rate by exchange today?",
+                              "Which placements breached brand-suitability thresholds?",
+                              "Where is viewability below the campaign floor?",
+                              "Which publishers show spoofed-inventory patterns?",
+                              "What spend is exposed to unsafe inventory right now?"]),
+                    genie("Finance & Reconciliation", "Ask about pacing, makegoods and margin against contracted IO terms.",
+                          feeds=["Finance & Billing Mart", "Google Campaign Manager", "Comscore Campaign Ratings", "ROAS, reach and attribution"],
+                          teams=["Finance & Billing", "CMO & CFO Office", "Media Planning"],
+                          questions=[
+                              "Which campaigns are over-pacing against the IO?",
+                              "What makegood liability is accruing this quarter?",
+                              "How do agency rebate accruals compare to plan?",
+                              "Where is margin leaking on booked media?",
+                              "What is variance to plan by client this month?"]),
+                ],
+                dashboards=[
+                    dashboard("Campaign Performance", "Spend, delivery and ROAS across every active flight on certified views.",
+                              kpis=["ROAS", "CPA", "Delivery vs guarantee", "Pacing", "Working-media ratio"],
+                              teams=["Performance Marketing", "Media Planning", "CMO & CFO Office"]),
+                    dashboard("Attribution & Reach", "Cross-channel attribution, reach and frequency on governed identity graphs.",
+                              kpis=["Multi-touch credit", "Reach", "Frequency", "Incremental lift", "Cross-channel CPA"],
+                              teams=["CMO & CFO Office", "Media Planning", "Data Scientists"]),
+                    dashboard("Brand Safety & Quality", "Viewability, IVT and suitability on live delivery data.",
+                              kpis=["Viewability", "IVT rate", "Brand-safety incidents", "Suitability score", "Blocked spend"],
+                              teams=["Brand Safety", "Performance Marketing", "Data Scientists"]),
+                    dashboard("Finance & Reconciliation", "Pacing, makegoods and margin reconciled to contracted IO terms.",
+                              kpis=["Over-pacing", "Makegood liability", "Rebate accruals", "Margin on booked media", "Variance to plan"],
+                              teams=["Finance & Billing", "CMO & CFO Office", "App Developers"]),
+                ],
             ),
         },
         "top": top_band(

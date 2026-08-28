@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,113 @@ INDUSTRIES_BATCH_OIL_GAS = {
         "rails": {
             "src": [
                 {"box": "Production & SCADA", "ic": "iot", "tiles": [
-                        tile("AVEVA PI System", "iot", "Separator pressures, flow rates and compressor tags from upstream and midstream historians.", "aveva-pi"),
-                        tile("SLB OFM", "stream", "Well tests, decline curves and reservoir models the subsurface team updates.", "slb-ofm"),
-                        tile("Honeywell Experion", "gauge", "DCS alarms, setpoints and batch sequences from refining units.", "honeywell-exp"),
+                        tile("AVEVA PI System", "iot", "Separator pressures, flow rates and compressor tags from upstream and midstream historians.", "aveva-pi",
+                             cat="Process/Time-Series Historian",
+                             what="Stores high-frequency separator, flow and compressor tags from upstream and midstream facilities as the operational time-series system of record.",
+                             users="Production engineers, facility operators and reliability engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "20-80 GB/day tag history", "Hourly / daily aggregates"),
+                                 stream=flow(["semi-structured"], "50-500k tags/sec at peak", "Continuous (sub-second sampling)"))),
+                        tile("SLB OFM", "stream", "Well tests, decline curves and reservoir models the subsurface team updates.", "slb-ofm",
+                             cat="Production/Well Surveillance System",
+                             what="Captures well tests, decline curves and reservoir surveillance data the subsurface team uses to model and forecast well performance.",
+                             users="Reservoir engineers, production engineers and subsurface geologists.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Daily well tests + periodic model updates"))),
+                        tile("Honeywell Experion", "gauge", "DCS alarms, setpoints and batch sequences from refining units.", "honeywell-exp",
+                             cat="Distributed Control System (DCS)",
+                             what="Runs refining and process units in real time and emits the alarms, setpoints and batch sequences that describe how the plant is operating.",
+                             users="Console operators, process control engineers and refinery operations.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k signals/sec", "Continuous (sub-second)"))),
                     ]},
                 {"box": "Midstream & Logistics", "ic": "stream", "tiles": [
-                        tile("Quorum PGAS", "erp", "Pipeline nominations, allocations and imbalance statements.", "quorum-pgas"),
-                        tile("Veson IMOS", "sheet", "Marine chartering, voyage scheduling and demurrage tracking for cargo movements and terminal calls.", "opentext-vim"),
-                        tile("Kpler Cargo Tracking", "globe", "Tanker positions, port calls and cargo lineage for export marketing.", "kpler"),
+                        tile("Quorum PGAS", "erp", "Pipeline nominations, allocations and imbalance statements.", "quorum-pgas",
+                             cat="Pipeline Nomination & Allocation System",
+                             what="Manages pipeline nominations, scheduling, allocations and imbalance statements across gathering and transmission systems.",
+                             users="Pipeline schedulers, gas controllers and commercial operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Multiple nomination cycles daily"))),
+                        tile("Veson IMOS", "sheet", "Marine chartering, voyage scheduling and demurrage tracking for cargo movements and terminal calls.", "opentext-vim",
+                             cat="Maritime Freight & Chartering Platform",
+                             what="Handles marine chartering, voyage scheduling and demurrage tracking for cargo movements and terminal calls.",
+                             users="Chartering, marine operations and freight settlement teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day", "Per-voyage + daily updates"))),
+                        tile("Kpler Cargo Tracking", "globe", "Tanker positions, port calls and cargo lineage for export marketing.", "kpler",
+                             cat="Commodity Flow & Vessel Tracking",
+                             what="Provides tanker positions, port calls and cargo lineage used to track physical flows for export marketing and supply intelligence.",
+                             users="Cargo marketing, supply analysts and freight traders.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly position updates"),
+                                 stream=flow(["semi-structured"], "100s of position events/sec", "Continuous (AIS-derived)"))),
                     ]},
                 {"box": "Commercial & Trading", "ic": "market", "tiles": [
-                        tile("ION Openlink Endur", "market", "Physical deals, hedges and MtM for crude and products desks.", "ion-endur"),
-                        tile("SAP IS-Oil", "erp", "Joint-venture allocations, production accounting and tax royalty postings.", "sap-is-oil"),
-                        tile("Platts Price Assess", "chart", "Benchmark curves and differential indices the marketing desk marks to.", "platts"),
+                        tile("ION Openlink Endur", "market", "Physical deals, hedges and MtM for crude and products desks.", "ion-endur",
+                             cat="Energy Trading & Risk Management (ETRM)",
+                             what="Captures physical and paper deals, hedges and mark-to-market for the crude and products trading desks across the book.",
+                             users="Crude and products traders, middle office and risk teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day deals + positions", "Intraday + end-of-day marks"))),
+                        tile("SAP IS-Oil", "erp", "Joint-venture allocations, production accounting and tax royalty postings.", "sap-is-oil",
+                             cat="Hydrocarbon Accounting ERP",
+                             what="Runs joint-venture allocations, production accounting and tax and royalty postings on the industry-specific SAP oil and gas core.",
+                             users="Production accounting, joint-venture accounting and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + monthly close"))),
+                        tile("Platts Price Assess", "chart", "Benchmark curves and differential indices the marketing desk marks to.", "platts",
+                             cat="Commodity Price Benchmark Provider",
+                             what="Supplies benchmark price assessments, curves and differential indices the marketing and trading desks mark physical and paper positions to.",
+                             users="Trading, cargo marketing and risk teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "MBs-GBs reference data", "Daily assessment publication"))),
                     ]},
                 {"box": "Safety & Environment", "ic": "gavel", "tiles": [
-                        tile("Sphera Risk Mgmt", "gavel", "Process safety, MOC and incident investigations tied to facilities.", "sphera"),
-                        tile("Enablon EHS", "observ", "Emissions events, flare logs and regulatory permit limits.", "enablon"),
-                        tile("FLIR Optical Gas Img", "iot", "Leak detection surveys and repair verification imagery."),
+                        tile("Sphera Risk Mgmt", "gavel", "Process safety, MOC and incident investigations tied to facilities.", "sphera",
+                             cat="Process Safety & Operational Risk Platform",
+                             what="Manages process safety, management-of-change and incident investigations tied to facilities and barriers.",
+                             users="Process safety, HSE and integrity engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day cases + events", "Hourly / daily"))),
+                        tile("Enablon EHS", "observ", "Emissions events, flare logs and regulatory permit limits.", "enablon",
+                             cat="EHS & Emissions Management System",
+                             what="Records emissions events, flare and vent logs and regulatory permit limits for environmental compliance.",
+                             users="Environmental and emissions teams and Regulatory compliance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day events + logs", "Hourly / daily"))),
+                        tile("FLIR Optical Gas Img", "iot", "Leak detection surveys and repair verification imagery.",
+                             cat="Optical Gas Imaging / Leak Detection",
+                             what="Produces optical-gas imaging surveys and repair-verification imagery used to detect and confirm fugitive hydrocarbon leaks.",
+                             users="LDAR survey crews, integrity and environmental teams.",
+                             data_out=data_out(
+                                 batch=flow(["unstructured"], "10s-100s of GB/survey", "Per-survey (periodic campaigns)"))),
                     ]},
-                fed_group("Corporate Treasury Mart", "Hedge effectiveness and working-capital marts queried in place under Unity Catalog."),
+                fed_group("Corporate Treasury Mart", "Hedge effectiveness and working-capital marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Corporate treasury hedge-effectiveness and working-capital marts kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="Treasury, Finance and Risk analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("EPA GHGRP Templates", "gavel", "Greenhouse gas reporting layouts validated on ingest before filing windows.", "epa-ghgrp"),
-                tile("AIS Vessel Tracks", "globe", "Marine AIS positions normalised for demurrage and cargo reconciliation.", "kpler"),
-                tile("Weather & Ocean Data", "stream", "Storm and swell feeds for offshore production and marine scheduling."),
+                tile("EPA GHGRP Templates", "gavel", "Greenhouse gas reporting layouts validated on ingest before filing windows.", "epa-ghgrp",
+                     cat="Regulatory Reporting Schema",
+                     what="Greenhouse-gas reporting layouts and factors validated on ingest so emissions data conforms before filing windows.",
+                     users="Environmental reporting and Regulatory compliance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs (templates + factors)", "Annual + periodic updates"))),
+                tile("AIS Vessel Tracks", "globe", "Marine AIS positions normalised for demurrage and cargo reconciliation.", "kpler",
+                     cat="Vessel Position (AIS) Feed",
+                     what="Normalised marine AIS vessel positions used for demurrage calculation and cargo movement reconciliation.",
+                     users="Marine operations, demurrage and cargo marketing teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s-1000s of positions/sec", "Continuous (near real-time)"))),
+                tile("Weather & Ocean Data", "stream", "Storm and swell feeds for offshore production and marine scheduling.",
+                     cat="Weather & Metocean Provider",
+                     what="Storm, wind and swell forecasts used to plan offshore production, drilling and marine scheduling around weather windows.",
+                     users="Offshore operations, marine scheduling and HSE teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day gridded forecasts", "Multiple forecast cycles daily"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Corporate & Asset Leaders", "Genie One", "The CEO on net production and cash margin; the CFO on hedge exposure and unit lifting cost when crude and product benchmarks move.", [["Genie One", "Ask what yesterday's net production was by asset without waiting on operations reporting."], ["AI/BI", "Production, cost and margin on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"production\" means one thing across SCADA and accounting."]],
@@ -137,6 +222,56 @@ INDUSTRIES_BATCH_OIL_GAS = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "JV partners, regulators and traders reading live tables with no copy."),
                     ]},
+            ], genie_spaces=[
+                genie("Production & Uptime", "Ask about net production, deferment and facility uptime across assets in plain language.",
+                      feeds=["AVEVA PI System", "SLB OFM", "Honeywell Experion", "Conformed well, cargo"],
+                      teams=["Upstream Operations", "Corporate & Asset Leaders", "Production Engineer"],
+                      questions=[
+                          "What was net production by asset yesterday versus plan?",
+                          "Which wells are deferring the most volume right now, and why?",
+                          "Which facilities have the worst uptime this month?",
+                          "How much production is at risk from the current open alarms?",
+                          "What is our hydrocarbon loss rate by asset this quarter?"]),
+                genie("Midstream & Cargo", "Explore nominations, linepack, imbalance and cargo scheduling across the logistics chain.",
+                      feeds=["Quorum PGAS", "Kpler Cargo Tracking", "Veson IMOS", "AIS Vessel Tracks"],
+                      teams=["Midstream & Terminals", "Cargo Marketing", "Terminal Operations"],
+                      questions=[
+                          "Which pipelines are running the largest imbalances today?",
+                          "Which terminal is constraining export this week?",
+                          "What is our current demurrage exposure by voyage?",
+                          "Which cargoes are at risk of missing their loading window?",
+                          "How does linepack compare to nominations across the system?"]),
+                genie("Trading & Margin", "Answer questions on physical and paper positions, exposure and crack-spread margin.",
+                      feeds=["ION Openlink Endur", "Platts Price Assess", "SAP IS-Oil", "Production, margin, loss"],
+                      teams=["Trading & Marketing", "Risk & Middle Office", "Corporate & Asset Leaders"],
+                      questions=[
+                          "What is our crack-spread margin by product today?",
+                          "Which desks are closest to their exposure limits right now?",
+                          "How effective are our current hedges against benchmark moves?",
+                          "What is unit lifting cost by asset this month?",
+                          "Which cargoes have the best netback against the benchmark?"]),
+                genie("HSE & Emissions", "Ask about emissions, flare volumes, permits and safety incidents across facilities.",
+                      feeds=["Enablon EHS", "Sphera Risk Mgmt", "FLIR Optical Gas Img", "EPA GHGRP Templates"],
+                      teams=["HSE & Compliance", "Environmental & Emissions", "Process Safety"],
+                      questions=[
+                          "What are our flare and vent volumes by facility this month?",
+                          "Which permits are closest to their limit right now?",
+                          "How many leaks were detected and how many are still open?",
+                          "What is our TRIR trend across the portfolio this year?",
+                          "Which facilities are driving the most greenhouse-gas emissions?"]),
+            ], dashboards=[
+                dashboard("Production & Reliability", "Net production, deferment and facility uptime on certified operations Metric Views.",
+                          kpis=["Net production", "Deferment volume", "Facility uptime", "Hydrocarbon loss rate", "Well availability"],
+                          teams=["Upstream Operations", "Midstream & Terminals", "Corporate & Asset Leaders"]),
+                dashboard("Logistics & Cargo", "Nominations, linepack, imbalance and demurrage across the midstream chain.",
+                          kpis=["Pipeline imbalance", "Linepack", "Demurrage exposure", "Terminal throughput", "Cargo on-time rate"],
+                          teams=["Midstream & Terminals", "Cargo Marketing", "Terminal Operations"]),
+                dashboard("Trading & Margin", "Crack-spread margin, exposure, hedge effectiveness and lifting cost.",
+                          kpis=["Crack-spread margin", "Unit lifting cost", "Exposure vs limit", "Hedge effectiveness", "Cargo netback"],
+                          teams=["Trading & Marketing", "Risk & Middle Office", "Corporate & Asset Leaders"]),
+                dashboard("HSE & Emissions", "Flare and vent volumes, permit compliance, leaks and safety indicators.",
+                          kpis=["Flare volume", "GHG emissions", "Permit exceedances", "Open leaks", "TRIR"],
+                          teams=["HSE & Compliance", "Environmental & Emissions", "Process Safety"]),
             ]),
         },
         "top": top_band(

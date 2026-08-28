@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,46 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             "crm",
                             "The system of record for accounts, opportunities and the pipeline, and the source of the customer hierarchy every revenue metric rolls up to.",
                             "salesforce",
+                            cat="CRM / Sales Force Automation",
+                            what="System of record for accounts, opportunities and pipeline, and the customer hierarchy every revenue metric rolls up to.",
+                            users="Sales, RevOps and Finance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "HubSpot CRM",
                             "custlake",
                             "Contacts, deals and marketing engagement for the self-serve and mid-market motion, joined to product signups.",
                             "hubspot",
+                            cat="CRM / Marketing Automation",
+                            what="Contacts, deals and marketing engagement for the self-serve and mid-market motion, joined to product signups.",
+                            users="Marketing, self-serve sales and RevOps.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (webhook)")),
                         ),
                         tile(
                             "Gong Revenue AI",
                             "dial",
                             "Conversation intelligence on sales and renewal calls, the signal for deal risk and competitive mentions.",
                             "gong",
+                            cat="Conversation Intelligence",
+                            what="Records and analyzes sales and renewal calls, surfacing deal risk and competitive mentions.",
+                            users="Sales leadership, RevOps and Enablement.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "1-4 GB/day (transcripts + metadata)", "Daily")),
                         ),
                         tile(
                             "Outreach Engagement",
                             "market",
                             "Sales sequences, activity and reply data feeding rep productivity and pipeline-generation analysis.",
                             "outreach",
+                            cat="Sales Engagement Platform",
+                            what="Sales sequences, activity and reply data feeding rep productivity and pipeline-generation analysis.",
+                            users="Sales development, RevOps and Enablement.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly")),
                         ),
                     ],
                 },
@@ -65,24 +90,46 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             "market",
                             "Subscriptions, invoices, usage records and payment events, the source of MRR, ARR and collected revenue.",
                             "stripe",
+                            cat="Subscription Billing & Payments",
+                            what="Subscriptions, invoices, usage records and payment events, the source of MRR, ARR and collected revenue.",
+                            users="Finance, RevOps and billing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Daily billing runs"),
+                                stream=flow(["semi-structured"], "100s of events/sec", "Continuous (webhook)")),
                         ),
                         tile(
                             "Zuora Billing",
                             "erp",
                             "Recurring and usage-based billing, rating and revenue schedules for the enterprise subscription estate.",
                             "zuora",
+                            cat="Recurring / Usage-Based Billing",
+                            what="Recurring and usage-based billing, rating and revenue schedules for the enterprise subscription estate.",
+                            users="Finance, revenue accounting and RevOps.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-3 GB/day", "Nightly billing cycles")),
                         ),
                         tile(
                             "Chargebee",
                             "product",
                             "Subscription lifecycle, dunning and revenue operations for the self-serve and PLG billing motion.",
                             "chargebee",
+                            cat="Subscription Management",
+                            what="Subscription lifecycle, dunning and revenue operations for the self-serve and PLG billing motion.",
+                            users="RevOps, finance and growth billing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.2-1 GB/day", "Daily")),
                         ),
                         tile(
                             "m3ter Metering",
                             "gauge",
                             "Usage metering and rating that turns raw consumption events into billable, reconcilable line items.",
                             "m3ter",
+                            cat="Usage Metering & Rating",
+                            what="Meters and rates raw consumption events into billable, reconcilable line items for usage-based pricing.",
+                            users="RevOps, billing engineering and finance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs/day rated rollups", "Hourly"),
+                                stream=flow(["semi-structured"], "10-50k usage events/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -95,18 +142,33 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             "custlake",
                             "The customer data platform routing product, web and server events into one schema of identified and anonymous activity.",
                             "segment",
+                            cat="Customer Data Platform (CDP)",
+                            what="Routes product, web and server events into one schema of identified and anonymous activity.",
+                            users="Growth, product analytics and lifecycle marketing.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-50k events/sec at peak", "Continuous clickstream")),
                         ),
                         tile(
                             "Amplitude Analytics",
                             "chart",
                             "Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.",
                             "amplitude",
+                            cat="Product Analytics",
+                            what="Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.",
+                            users="Product analytics and growth teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "5-20k events/sec at peak", "Continuous")),
                         ),
                         tile(
                             "Snowplow Behavioral",
                             "stream",
                             "First-party behavioural event pipeline with a governed schema, the raw stream behind product and growth models.",
                             "snowplow",
+                            cat="Behavioral Event Pipeline",
+                            what="First-party behavioural event pipeline with a governed schema, the raw stream behind product and growth models.",
+                            users="Data engineering, growth and product data science.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k events/sec at peak", "Continuous")),
                         ),
                     ],
                 },
@@ -119,24 +181,45 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             "code",
                             "Commits, pull requests and Actions runs, the source of developer velocity and deployment-frequency signals.",
                             "github",
+                            cat="Source Control / CI",
+                            what="Commits, pull requests and Actions runs, the source of developer velocity and deployment-frequency signals.",
+                            users="Engineering, platform and developer-experience teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured"], "0.2-1 GB/day", "Daily + webhook"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (webhook)")),
                         ),
                         tile(
                             "GitLab",
                             "cicd",
                             "Repositories, pipelines and merge requests where the delivery motion runs on a single DevOps platform.",
                             "gitlab",
+                            cat="DevOps Platform",
+                            what="Repositories, pipelines and merge requests where the delivery motion runs on a single DevOps platform.",
+                            users="Engineering and platform teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured"], "0.2-1 GB/day", "Daily + webhook")),
                         ),
                         tile(
                             "Jira Software",
                             "sheet",
                             "Issues, sprints and cycle time, the planning system of record joined to delivery and incident data.",
                             "jira",
+                            cat="Project / Issue Tracking",
+                            what="Issues, sprints and cycle time, the planning system of record joined to delivery and incident data.",
+                            users="Engineering, product and program management.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.2-1 GB/day", "Hourly / nightly")),
                         ),
                         tile(
                             "PagerDuty",
                             "observ",
                             "Incidents, on-call and escalation events, the source of reliability and mean-time-to-resolve measurement.",
                             "pagerduty",
+                            cat="Incident Management / On-Call",
+                            what="Incidents, on-call and escalation events, the source of reliability and mean-time-to-resolve measurement.",
+                            users="SRE, platform engineering and on-call teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (webhook)")),
                         ),
                     ],
                 },
@@ -149,30 +232,56 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             "chat",
                             "Support tickets, CSAT and macros, a leading signal for churn risk and the corpus behind support deflection.",
                             "zendesk",
+                            cat="Customer Support / Ticketing",
+                            what="Support tickets, CSAT and macros, a leading signal for churn risk and the corpus behind support deflection.",
+                            users="Support, customer success and product teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "0.5-2 GB/day", "Hourly"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (webhook)")),
                         ),
                         tile(
                             "Intercom",
                             "dial",
                             "In-product messaging, conversations and resolution data across the onboarding and support journey.",
                             "intercom",
+                            cat="In-Product Messaging / Support",
+                            what="In-product messaging, conversations and resolution data across the onboarding and support journey.",
+                            users="Support, growth and lifecycle teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100s of events/sec", "Continuous")),
                         ),
                         tile(
                             "Workday HCM",
                             "people",
                             "Headcount, roles and cost centres, the reference for engineering capacity and cost-of-delivery analysis.",
                             "workday",
+                            cat="Human Capital Management (HCM)",
+                            what="Headcount, roles and cost centres, the reference for engineering capacity and cost-of-delivery analysis.",
+                            users="Finance, People and engineering leadership.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.1-0.5 GB/day", "Nightly")),
                         ),
                         tile(
                             "NetSuite ERP",
                             "erp",
                             "General ledger, revenue and expense, the finance system of record reconciled against billing and metering.",
                             "netsuite",
+                            cat="ERP / Financials",
+                            what="General ledger, revenue and expense, the finance system of record reconciled against billing and metering.",
+                            users="Finance and accounting teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Nightly")),
                         ),
                     ],
                 },
                 fed_group(
                     "Cloud Warehouse Marts",
                     "Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.",
+                    cat="Cloud Data Warehouse",
+                    what="Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation rather than copied.",
+                    users="Finance, RevOps and analytics engineers.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -182,17 +291,32 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                         "eventbus",
                         "Product and billing event topics on Kafka or managed streaming, carrying signup, feature-usage and invoice events, parsed on arrival and landed as structured events.",
                         "kafka",
+                        cat="Event Streaming Platform",
+                        what="Product and billing event topics carrying signup, feature-usage and invoice events, parsed on arrival.",
+                        users="Streaming and platform data engineers.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "20-100k events/sec at peak", "Continuous")),
                     ),
                     tile(
                         "Product Webhooks",
                         "api",
                         "Stripe, GitHub and Zendesk webhooks delivering near-real-time billing, commit and ticket events. Managed ELT connectors and existing streaming topics carrying usage and telemetry land here too, drawn generically on the reference board.",
+                        cat="Webhook / ELT Ingest",
+                        what="Stripe, GitHub and Zendesk webhooks and managed ELT connectors delivering near-real-time billing, commit and ticket events.",
+                        users="Integration and platform data engineers.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (webhook)")),
                     ),
                     tile(
                         "FinOps Cost Exports",
                         "market",
                         "FOCUS-format cloud cost and usage exports feeding cloud COGS and gross-margin analysis by product and customer.",
                         "focus",
+                        cat="Cloud Cost & Usage (FinOps)",
+                        what="FOCUS-format cloud cost and usage exports feeding cloud COGS and gross-margin analysis by product and customer.",
+                        users="FinOps, finance and platform teams.",
+                        data_out=data_out(
+                            batch=flow(["structured"], "1-10 GB/day", "Daily exports")),
                     ),
                 ]
             ),
@@ -435,7 +559,59 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Product & Growth", "Ask about activation, engagement and retention across the product in plain language.",
+                          feeds=["Segment CDP", "Amplitude Analytics", "Snowplow Behavioral", "Conformed account, user, subscription"],
+                          teams=["Growth & Analytics", "Exec & Product", "Analytics Engineers"],
+                          questions=[
+                              "What is activation rate by signup cohort this month?",
+                              "Which features correlate most with 90-day retention?",
+                              "Where in onboarding do free users most often stall?",
+                              "Which accounts show rising engagement but no paid upgrade?",
+                              "What is free-to-paid conversion by acquisition channel?"]),
+                    genie("Revenue & Retention", "Explore ARR, net revenue retention and churn across segments and cohorts.",
+                          feeds=["Salesforce Sales Cloud", "Stripe Billing", "Zuora Billing", "NRR, activation, health, margin"],
+                          teams=["Revenue & Sales", "Finance & RevOps", "Exec & Product"],
+                          questions=[
+                              "What is net revenue retention by segment this quarter?",
+                              "Which accounts are at highest churn risk right now?",
+                              "How does ARR bridge from new, expansion and churn this month?",
+                              "Which cohorts show the strongest expansion?",
+                              "What is win rate and pipeline coverage this quarter?"]),
+                    genie("Usage & Billing", "Answer metering, billing accuracy and usage-based revenue questions.",
+                          feeds=["m3ter Metering", "Stripe Billing", "FinOps Cost Exports", "Conformed account, user, subscription"],
+                          teams=["Finance & RevOps", "Revenue & Sales", "Platform & Data Eng"],
+                          questions=[
+                              "Which accounts are under-billed versus metered consumption this month?",
+                              "What is metering-to-invoice accuracy by product?",
+                              "Which customers are approaching their plan limits?",
+                              "What is revenue at risk from metering discrepancies?",
+                              "How much usage-based revenue is unbilled right now?"]),
+                    genie("Platform & Reliability", "Ask about developer velocity, reliability and incident trends across teams.",
+                          feeds=["GitHub", "Jira Software", "PagerDuty", "Raw product and billing events"],
+                          teams=["Platform & Security", "Platform & Data Eng", "Applied ML Scientists"],
+                          questions=[
+                              "What is deployment frequency and change-failure rate by team?",
+                              "Which services have the worst MTTR this quarter?",
+                              "How does cycle time trend across squads?",
+                              "Which incidents correlate with recent deploys?",
+                              "Where are access or entitlement anomalies concentrated?"]),
+                ],
+                dashboards=[
+                    dashboard("Growth & Activation", "PLG activation, conversion and engagement funnels on certified Metric Views.",
+                              kpis=["Activation rate", "Free-to-paid conversion", "WAU/MAU", "Feature adoption", "Time-to-value"],
+                              teams=["Growth & Analytics", "Exec & Product", "Analytics Engineers"]),
+                    dashboard("Revenue & NRR", "ARR bridge, net revenue retention and churn by cohort and segment.",
+                              kpis=["ARR", "NRR", "Gross churn", "Expansion rate", "Win rate"],
+                              teams=["Revenue & Sales", "Finance & RevOps", "Exec & Product"]),
+                    dashboard("Usage & Margin", "Metered consumption, billing accuracy and cloud COGS by product and account.",
+                              kpis=["Usage-based revenue", "Metering accuracy", "Gross margin", "Cloud COGS", "Revenue at risk"],
+                              teams=["Finance & RevOps", "Revenue & Sales", "Analytics Engineers"]),
+                    dashboard("Engineering Delivery", "Developer velocity, reliability and incident metrics across teams.",
+                              kpis=["Deployment frequency", "Change-failure rate", "MTTR", "Cycle time", "Open incidents"],
+                              teams=["Platform & Security", "Platform & Data Eng", "Applied ML Scientists"]),
+                ],
             ),
         },
         "top": top_band(

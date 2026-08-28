@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,115 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
         "rails": {
             "src": [
                 {"box": "Clinical & EDC", "ic": "people", "tiles": [
-                        tile("Medidata Rave EDC", "people", "Case report forms, visit schedules and query management from pivotal trials.", "medidata-rave"),
-                        tile("Veeva Vault CTMS", "sheet", "Site feasibility, monitoring visits and enrollment tracking.", "veeva-ctms"),
-                        tile("Oracle Clinical One", "db", "Unified clinical data hub for trials across modalities and regions.", "oracle-clinical"),
+                        tile("Medidata Rave EDC", "people", "Case report forms, visit schedules and query management from pivotal trials.", "medidata-rave",
+                             cat="Electronic Data Capture (EDC)",
+                             what="Captures case report forms, visit schedules and query management from pivotal trials, the operational system of record for clinical data collection.",
+                             users="Clinical Data Management, Clinical Trial Managers and CRAs.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-10 GB/day per study", "Nightly extracts + intraday queries"),
+                                 stream=flow(["semi-structured"], "form events on save", "Continuous CDC on eCRF"))),
+                        tile("Veeva Vault CTMS", "sheet", "Site feasibility, monitoring visits and enrollment tracking.", "veeva-ctms",
+                             cat="Clinical Trial Management System (CTMS)",
+                             what="Tracks site feasibility, monitoring visits and enrollment against plan across the trial's sites and countries.",
+                             users="Clinical Operations, Clinical Trial Managers and Clinical Supply.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Nightly sync"))),
+                        tile("Oracle Clinical One", "db", "Unified clinical data hub for trials across modalities and regions.", "oracle-clinical",
+                             cat="Clinical Data Management & Randomization Platform",
+                             what="Unified clinical data hub combining data capture and randomization for trials across modalities and regions on one platform.",
+                             users="Clinical Data Management, Clinical Supply and Biostatistics.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-6 GB/day per study", "Nightly batch extracts"),
+                                 stream=flow(["semi-structured"], "randomization events on demand", "Continuous at randomization"))),
                     ]},
                 {"box": "GxP Manufacturing", "ic": "stream", "tiles": [
-                        tile("Werum PAS-X", "stream", "Electronic batch records, weighing and dispensing, and review by exception across GMP suites.", "opcenter-pharma"),
-                        tile("Rockwell PharmaSuite", "iot", "Packaging line events, serialization and line clearance records.", "pharmasuite"),
-                        tile("SAP S/4HANA PP", "erp", "Production orders, material consumption and co-product yields.", "sap-s4"),
+                        tile("Werum PAS-X", "stream", "Electronic batch records, weighing and dispensing, and review by exception across GMP suites.", "opcenter-pharma",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Runs electronic batch records, weighing and dispensing and review-by-exception across GMP suites, the system of record for how a batch was made.",
+                             users="Manufacturing Operations, Quality Assurance and GxP Validation Engineering.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "5-30 GB/day batch records", "Per-batch + shift batch"),
+                                 stream=flow(["semi-structured"], "line events at batch latency", "Continuous during runs"))),
+                        tile("Rockwell PharmaSuite", "iot", "Packaging line events, serialization and line clearance records.", "pharmasuite",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Captures packaging-line events, serialization and line-clearance records for finished-goods packaging and DSCSA compliance.",
+                             users="Manufacturing Operations, Serialization & Distribution and Quality Assurance.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous on the line"))),
+                        tile("SAP S/4HANA PP", "erp", "Production orders, material consumption and co-product yields.", "sap-s4",
+                             cat="ERP (Production Planning)",
+                             what="Holds production orders, material consumption and co-product yields, tying the plant to procurement, inventory and finance.",
+                             users="Supply Chain Planning, Manufacturing Operations and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-50 GB/day", "Nightly batch + hourly deltas"))),
                     ]},
                 {"box": "Quality & LIMS", "ic": "gavel", "tiles": [
-                        tile("LabWare LIMS", "gavel", "Stability, release and environmental monitoring assay results.", "labware"),
-                        tile("MasterControl QMS", "gavel", "Deviations, CAPA and change control tied to batches and sites.", "mastercontrol"),
-                        tile("Veeva QualityDocs", "product", "Specifications, SOPs and approved label artwork.", "veeva-quality"),
+                        tile("LabWare LIMS", "gavel", "Stability, release and environmental monitoring assay results.", "labware",
+                             cat="Laboratory Information Management System (LIMS)",
+                             what="Manages stability, release and environmental-monitoring assay results so QC testing gates batch release from one record.",
+                             users="Quality Control, Quality Assurance and Manufacturing Operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-8 GB/day", "Nightly batch + result release"))),
+                        tile("MasterControl QMS", "gavel", "Deviations, CAPA and change control tied to batches and sites.", "mastercontrol",
+                             cat="Quality Management System (QMS)",
+                             what="Manages deviations, CAPA and change control tied to batches and sites, the quality system of record for GxP compliance.",
+                             users="Quality Assurance, Regulatory Affairs and Manufacturing Operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "0.5-3 GB/day", "Nightly + event-driven"))),
+                        tile("Veeva QualityDocs", "product", "Specifications, SOPs and approved label artwork.", "veeva-quality",
+                             cat="Quality Document / Content Management",
+                             what="Controls specifications, SOPs and approved label artwork so the current, approved document governs every batch and submission.",
+                             users="Quality Assurance, Regulatory Affairs and Manufacturing Operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "0.2-1 GB/day", "Nightly + on approval"))),
                     ]},
                 {"box": "Safety & Commercial", "ic": "custlake", "tiles": [
-                        tile("ArisGlobal LifeSphere", "gavel", "Individual case safety reports, signal detection and regulatory submissions.", "arisglobal"),
-                        tile("IQVIA OCE", "partner", "Field force activity, sample accountability and call notes.", "iqvia-oce"),
-                        tile("Veeva CRM", "custlake", "HCP engagement, consent and medical inquiry workflows.", "veeva-crm"),
+                        tile("ArisGlobal LifeSphere", "gavel", "Individual case safety reports, signal detection and regulatory submissions.", "arisglobal",
+                             cat="Pharmacovigilance / Safety System",
+                             what="Processes individual case safety reports, runs signal detection and drives regulatory safety submissions for marketed and investigational products.",
+                             users="Pharmacovigilance, Medical Affairs and Regulatory Affairs.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "1-4 GB/day cases + narratives", "Hourly / daily intake"))),
+                        tile("IQVIA OCE", "partner", "Field force activity, sample accountability and call notes.", "iqvia-oce",
+                             cat="Life Sciences CRM / Commercial Engagement",
+                             what="Captures field-force activity, sample accountability and call notes for commercial engagement with healthcare professionals.",
+                             users="Commercial Field, Sales Operations and Medical Affairs.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly sync + intraday"))),
+                        tile("Veeva CRM", "custlake", "HCP engagement, consent and medical inquiry workflows.", "veeva-crm",
+                             cat="Life Sciences CRM (HCP Engagement)",
+                             what="Runs HCP engagement, consent and medical-inquiry workflows across field and medical teams for compliant omnichannel outreach.",
+                             users="Commercial Field, Medical Affairs and Compliance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly sync"),
+                                 stream=flow(["semi-structured"], "engagement events as they occur", "Continuous CDC"))),
                     ]},
-                fed_group("Partner CMO Inventory", "Contract manufacturer batch status queried in place under Unity Catalog."),
+                fed_group("Partner CMO Inventory", "Contract manufacturer batch status queried in place under Unity Catalog.",
+                          cat="Contract Manufacturer (CMO) Inventory System",
+                          what="Batch status and inventory held at contract manufacturers, queried in place through federation rather than copied into the platform.",
+                          users="Supply Chain Planning, Manufacturing Operations and Quality Assurance.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "GB-scale partner inventory", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("CDISC SDTM / ADaM", "api", "Clinical datasets validated on ingest against CDISC standards before submission builds.", "cdisc"),
-                tile("FDA FAERS Feeds", "gavel", "Public safety reference cases consumed inbound for signal triage.", "fda-faers"),
-                tile("GS1 EPCIS Pharma", "stream", "Serialization and distribution events for DSCSA traceability.", "gs1-epcis"),
+                tile("CDISC SDTM / ADaM", "api", "Clinical datasets validated on ingest against CDISC standards before submission builds.", "cdisc",
+                     cat="Clinical Data Standards (CDISC)",
+                     what="Clinical datasets validated on ingest against the SDTM and ADaM standards so submission builds start from conformant, traceable data.",
+                     users="Biostatistics, Clinical Data Management and Regulatory Affairs.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "1-5 GB per study", "Per submission build"))),
+                tile("FDA FAERS Feeds", "gavel", "Public safety reference cases consumed inbound for signal triage.", "fda-faers",
+                     cat="Public Adverse-Event Database",
+                     what="Public FDA adverse-event reports consumed inbound as a reference for signal triage and disproportionality benchmarking against the safety database.",
+                     users="Pharmacovigilance, Safety Signal Science and Medical Affairs.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs (quarterly case files)", "Quarterly reference releases"))),
+                tile("GS1 EPCIS Pharma", "stream", "Serialization and distribution events for DSCSA traceability.", "gs1-epcis",
+                     cat="Serialization / Track-and-Trace Standard (EPCIS)",
+                     what="Serialization and distribution events in the EPCIS standard that give item-level traceability across the supply chain for DSCSA compliance.",
+                     users="Serialization & Distribution, Supply Chain Planning and Quality Assurance.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (event)"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Biopharma Leaders", "Genie One", "The CEO on pipeline milestones and supply readiness; the CFO on inventory and write-offs when a pivotal trial reads out or a launch scales.", [["Genie One", "Ask what enrollment pace is versus protocol without waiting on clinical ops."], ["AI/BI", "Enrollment, yield and safety on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"SAE\" means one thing across safety and clinical."]],
@@ -137,6 +224,56 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "CROs, CMOs and regulators reading live tables with no copy."),
                     ]},
+            ], genie_spaces=[
+                genie("Enrollment & Trials", "Ask how enrollment is tracking and where data quality is at risk before database lock.",
+                      feeds=["Medidata Rave EDC", "Veeva Vault CTMS", "Oracle Clinical One", "Enrollment, yield, safety"],
+                      teams=["Clinical Operations", "Biopharma Leaders", "Clinical Trial Managers"],
+                      questions=[
+                          "How is enrollment pacing versus protocol by site and country?",
+                          "Which sites are under-enrolling this month?",
+                          "What is query aging by site ahead of database lock?",
+                          "Where is the protocol-deviation rate trending up?",
+                          "Which studies are at risk of missing their readout date?"]),
+                genie("Manufacturing & Batch Release", "Explore batch release, yield and open deviations across the GMP suites.",
+                      feeds=["Werum PAS-X", "LabWare LIMS", "SAP S/4HANA PP", "Conformed subject, batch"],
+                      teams=["Mfg & Supply", "Manufacturing Operations", "Quality Control"],
+                      questions=[
+                          "Which batches are held by open deviations right now?",
+                          "What is first-pass yield by product and line this month?",
+                          "Where is LIMS release testing behind schedule?",
+                          "Which lines have the most right-first-time failures?",
+                          "How does batch release rate compare to the plan?"]),
+                genie("Safety Signals", "Answer adverse-event, signal and reporting-timeliness questions across the safety database.",
+                      feeds=["ArisGlobal LifeSphere", "FDA FAERS Feeds", "Enrollment, yield, safety"],
+                      teams=["Medical & Comm", "Pharmacovigilance", "Quality & Reg"],
+                      questions=[
+                          "What is the SAE rate by product this quarter?",
+                          "Which events are disproportionate versus FAERS reference?",
+                          "How many ICSRs are in the processing backlog?",
+                          "Which expedited reports are near their reporting deadline?",
+                          "What is the average case-processing time this month?"]),
+                genie("Quality & Inspection", "Ask about CAPA aging, repeat deviations and lineage before FDA and EMA inspections.",
+                      feeds=["MasterControl QMS", "Veeva QualityDocs", "LabWare LIMS", "Conformed subject, batch"],
+                      teams=["Quality & Reg", "Quality Assurance", "Regulatory Affairs"],
+                      questions=[
+                          "Which CAPAs are open past their target closure date?",
+                          "What deviations are repeating across sites and products?",
+                          "Can we trace this batch from record to submission annex?",
+                          "How long is change control taking to close?",
+                          "Which sites carry the most audit exposure right now?"]),
+            ], dashboards=[
+                dashboard("Trial Enrollment", "Enrollment versus plan, query aging and deviations across the clinical portfolio.",
+                          kpis=["Enrollment vs plan", "Site activation", "Query aging", "Protocol deviation rate", "Screen-failure rate"],
+                          teams=["Clinical Operations", "Biopharma Leaders", "Clinical Trial Managers"]),
+                dashboard("Batch Release & Yield", "Batch release rate, first-pass yield and open deviations on certified Metric Views.",
+                          kpis=["Batch release rate", "First-pass yield", "Open deviations", "LIMS TAT", "Right-first-time"],
+                          teams=["Mfg & Supply", "Quality & Reg", "Manufacturing Operations"]),
+                dashboard("Pharmacovigilance", "SAE rates, signal counts and case throughput across the safety database.",
+                          kpis=["SAE rate", "Signal count", "ICSR backlog", "Expedited-report timeliness", "Case processing time"],
+                          teams=["Medical & Comm", "Quality & Reg", "Pharmacovigilance"]),
+                dashboard("Quality & Compliance", "CAPA aging, repeat deviations and inspection readiness across sites.",
+                          kpis=["CAPA aging", "Repeat deviations", "Right-first-time", "Inspection findings", "Change-control cycle time"],
+                          teams=["Quality & Reg", "Quality Assurance", "Regulatory Affairs"]),
             ]),
         },
         "top": top_band(

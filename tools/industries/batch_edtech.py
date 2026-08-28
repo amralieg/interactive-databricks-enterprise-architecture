@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,47 @@ INDUSTRIES_BATCH_EDTECH = {
                             "crm",
                             "The system of record for institution and district accounts, opportunities and the pipeline, and the source of the customer hierarchy every revenue metric rolls up to.",
                             "salesforce",
+                            cat="CRM",
+                            what="System-of-record for institution and district accounts, opportunities and pipeline, and the customer hierarchy every revenue metric rolls up to.",
+                            users="Sales, RevOps and Customer success teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "HubSpot CRM",
                             "custlake",
                             "Contacts, deals and marketing engagement for the self-serve and teacher-led motion, joined to product signups.",
                             "hubspot",
+                            cat="CRM & Marketing Automation",
+                            what="Holds contacts, deals and marketing engagement for the self-serve and teacher-led motion, joined to product signups.",
+                            users="Marketing, Growth and Self-serve sales teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "sub-GB to 2 GB/day", "Hourly / nightly sync")),
                         ),
                         tile(
                             "Chargebee Billing",
                             "market",
                             "Subscription lifecycle, dunning and revenue operations for the self-serve and B2C billing motion, the source of MRR and churn.",
                             "chargebee",
+                            cat="Subscription Billing Platform",
+                            what="Runs subscription lifecycle, dunning and revenue operations for the self-serve and B2C motion, the source of MRR and churn.",
+                            users="Finance, RevOps and Renewals teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "sub-GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (billing webhooks)")),
                         ),
                         tile(
                             "Stripe Billing",
                             "market",
                             "Subscriptions, invoices, seat and usage records and payment events, reconciled against enrolment and consumption.",
                             "stripe",
+                            cat="Payments & Subscription Billing",
+                            what="Manages subscriptions, invoices, seat and usage records and payment events reconciled against enrolment and consumption.",
+                            users="Finance, RevOps and Billing engineering teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous (payment webhooks)"),
+                                batch=flow(["structured"], "sub-GB to 2 GB/day", "Nightly reconciliation")),
                         ),
                     ],
                 },
@@ -65,24 +91,45 @@ INDUSTRIES_BATCH_EDTECH = {
                             "notebook",
                             "Course shells, assignment activity and gradebook events from the LMS the product launches into over LTI, the source of in-course engagement.",
                             "instructure",
+                            cat="Learning Management System (LMS)",
+                            what="The LMS the product launches into over LTI, emitting course, assignment and gradebook events behind in-course engagement.",
+                            users="Learning science, Product analytics and Integration teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous (LTI events)"),
+                                batch=flow(["structured"], "1-10 GB/day", "Hourly / nightly")),
                         ),
                         tile(
                             "Moodle LMS",
                             "notebook",
                             "Open-source LMS activity, submission and completion logs for the institutions and markets running on the Moodle estate.",
                             "moodle",
+                            cat="Learning Management System (LMS)",
+                            what="Open-source LMS supplying activity, submission and completion logs for institutions running on the Moodle estate.",
+                            users="Learning science, Product analytics and Integration teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-8 GB/day", "Hourly / nightly")),
                         ),
                         tile(
                             "Clever Rostering",
                             "people",
                             "Single sign-on and roster sync for K-12: students, sections and teachers provisioned from the district into the product.",
                             "clever",
+                            cat="Rostering & SSO Provider",
+                            what="Single sign-on and roster sync for K-12, provisioning students, sections and teachers from the district into the product.",
+                            users="Integration engineering, Onboarding and Trust & safety teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "sub-GB/day", "Daily roster sync")),
                         ),
                         tile(
                             "OneRoster & LTI",
                             "api",
                             "The 1EdTech interoperability standards carrying rostering, launch and grade passback between the product and the customer's LMS and SIS.",
                             "oneroster",
+                            cat="Learning Interoperability Standard",
+                            what="The 1EdTech standards carrying rostering, launch and grade passback between the product and the customer's LMS and SIS.",
+                            users="Integration engineering, Learning platforms and Product teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens-hundreds of events/sec at peak", "Continuous (launch / passback)")),
                         ),
                     ],
                 },
@@ -95,24 +142,44 @@ INDUSTRIES_BATCH_EDTECH = {
                             "custlake",
                             "The customer data platform routing product, web and lesson events into one schema of identified and anonymous learner activity.",
                             "segment",
+                            cat="Customer Data Platform (CDP)",
+                            what="Routes product, web and lesson events into one schema of identified and anonymous learner activity.",
+                            users="Growth, Engagement analysts and Lifecycle marketing teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "thousands of events/sec at peak", "Continuous (event stream)")),
                         ),
                         tile(
                             "Amplitude Analytics",
                             "chart",
                             "Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.",
                             "amplitude",
+                            cat="Product Analytics Platform",
+                            what="Captures product events, funnels and feature adoption, the source of activation and engagement measurement.",
+                            users="Product, Growth and Learning science teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "thousands of events/sec at peak", "Continuous (event stream)")),
                         ),
                         tile(
                             "Snowplow Behavioral",
                             "stream",
                             "First-party behavioural event pipeline with a governed schema, the raw clickstream behind engagement and drop-off models.",
                             "snowplow",
+                            cat="Behavioural Event Pipeline",
+                            what="First-party behavioural event pipeline with a governed schema, the raw clickstream behind engagement and drop-off models.",
+                            users="Data engineering, ML scientists and Engagement analysts.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of thousands of events/sec at peak", "Continuous clickstream")),
                         ),
                         tile(
                             "xAPI Record Store",
                             "db",
                             "The Experience API learning record store capturing granular lesson, attempt and mastery statements across content and tools.",
                             "xapi",
+                            cat="Learning Record Store (LRS)",
+                            what="Experience API learning record store capturing granular lesson, attempt and mastery statements across content and tools.",
+                            users="Learning science, Curriculum designers and ML scientists.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds-thousands of statements/sec at peak", "Continuous (xAPI statements)")),
                         ),
                     ],
                 },
@@ -125,24 +192,44 @@ INDUSTRIES_BATCH_EDTECH = {
                             "watch",
                             "Remote proctoring session events, gaze and behaviour signals and integrity flags captured during online exams.",
                             "proctorio",
+                            cat="Remote Proctoring Platform",
+                            what="Captures remote-proctoring session events, gaze and behaviour signals and integrity flags during online exams.",
+                            users="Trust & safety, Assessment integrity and Privacy teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured", "unstructured"], "GBs of session signals per exam window", "Continuous during exams")),
                         ),
                         tile(
                             "ExamSoft Assessment",
                             "gavel",
                             "Secure exam delivery, item-level response data and category analytics for high-stakes computer-based testing.",
                             "examsoft",
+                            cat="Assessment Delivery Platform",
+                            what="Delivers secure exams and supplies item-level response data and category analytics for high-stakes computer-based testing.",
+                            users="Assessment integrity, Psychometricians and Learning science teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs per exam window", "Per exam sitting")),
                         ),
                         tile(
                             "Respondus LockDown",
                             "key",
                             "Lockdown browser and monitoring events restricting and recording the exam environment for online assessment.",
                             "respondus",
+                            cat="Exam Lockdown & Monitoring",
+                            what="Restricts and records the exam environment, emitting lockdown-browser and monitoring events for online assessment.",
+                            users="Trust & safety and Assessment integrity teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of events/sec during exams", "Continuous during exams")),
                         ),
                         tile(
                             "QTI Question Banks",
                             "sheet",
                             "Question and Test Interoperability item banks and rubrics, the interchange format for assessment content and scoring keys.",
                             "qti",
+                            cat="Assessment Content Standard",
+                            what="Question and Test Interoperability item banks and rubrics, the interchange format for assessment content and scoring keys.",
+                            users="Learning science, Curriculum designers and Assessment teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "sub-GB item banks", "On content publish")),
                         ),
                     ],
                 },
@@ -155,30 +242,55 @@ INDUSTRIES_BATCH_EDTECH = {
                             "docs",
                             "SCORM and xAPI content packaging, launch and completion tracking for the courseware the platform delivers.",
                             "scorm",
+                            cat="Courseware Packaging & Tracking",
+                            what="Packages and launches SCORM and xAPI courseware and tracks completion for the content the platform delivers.",
+                            users="Content operations, Learning science and Product teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (launch / completion)")),
                         ),
                         tile(
                             "Contentful CMS",
                             "docs",
                             "Headless content management for lessons, media and metadata, the source of the courseware catalogue.",
                             "contentful",
+                            cat="Headless CMS",
+                            what="Headless content management for lessons, media and metadata, the source of the courseware catalogue.",
+                            users="Content operations, Curriculum designers and Product teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "GBs of content + metadata", "On publish / nightly")),
                         ),
                         tile(
                             "Zendesk Support",
                             "chat",
                             "Learner and educator support tickets, CSAT and macros, a leading churn signal and the corpus behind support deflection.",
                             "zendesk",
+                            cat="Customer Support Platform",
+                            what="Holds learner and educator support tickets, CSAT and macros, a leading churn signal and the corpus behind support deflection.",
+                            users="Support, Customer success and Growth teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "GBs of tickets + transcripts", "Continuous / hourly")),
                         ),
                         tile(
                             "Intercom",
                             "dial",
                             "In-product messaging, conversations and resolution data across the onboarding and support journey.",
                             "intercom",
+                            cat="In-Product Messaging & Support",
+                            what="Runs in-product messaging and captures conversations and resolution data across the onboarding and support journey.",
+                            users="Support, Lifecycle marketing and Onboarding teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous (messaging events)")),
                         ),
                     ],
                 },
                 fed_group(
                     "Warehouse Marts",
                     "Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.",
+                    cat="Cloud Data Warehouse",
+                    what="Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation, avoiding a second copy of the reported numbers.",
+                    users="Finance, RevOps and Analytics teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -188,16 +300,31 @@ INDUSTRIES_BATCH_EDTECH = {
                         "eventbus",
                         "Learning-event topics on Kafka or managed streaming carrying lesson-start, submission and grade events, parsed on arrival and landed as structured events.",
                         "kafka",
+                        cat="Event Streaming Platform",
+                        what="Learning-event topics on Kafka or managed streaming carrying lesson-start, submission and grade events, parsed on arrival.",
+                        users="Data engineering and Streaming engineering teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "tens of thousands of events/sec at peak", "Continuous (topics)")),
                     ),
                     tile(
                         "LTI & Webhooks",
                         "api",
                         "LTI launch, deep-linking and grade-passback callbacks plus Stripe and Zendesk webhooks delivering near-real-time enrolment, billing and ticket events. Managed ELT connectors and existing streaming topics land here too, drawn generically on the reference board.",
+                        cat="Webhooks & Integration APIs",
+                        what="LTI launch, deep-linking and grade-passback callbacks plus Stripe and Zendesk webhooks delivering near-real-time enrolment, billing and ticket events.",
+                        users="Integration engineering, Data engineering and RevOps teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "hundreds of callbacks/sec at peak", "Continuous (webhooks)")),
                     ),
                     tile(
                         "Clickstream Firehose",
                         "stream",
                         "High-volume web and mobile app clickstream from the learning experience, joined to enrolments for engagement and drop-off analysis.",
+                        cat="Clickstream Ingestion",
+                        what="High-volume web and mobile clickstream from the learning experience, joined to enrolments for engagement and drop-off analysis.",
+                        users="Engagement analysts, Growth and Data engineering teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "tens of thousands of events/sec at peak", "Continuous clickstream")),
                     ),
                 ]
             ),
@@ -442,7 +569,59 @@ INDUSTRIES_BATCH_EDTECH = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Learner Engagement", "Ask about activation, engagement and quiet disengagement across the base in plain language.",
+                          feeds=["Segment CDP", "Snowplow Behavioral", "Amplitude Analytics", "Outcomes, engagement, retention, NRR"],
+                          teams=["Growth & Engage", "Engagement analysts", "Lifecycle marketing"],
+                          questions=[
+                              "What was activation by cohort this month versus last?",
+                              "Which learners are drifting toward disengagement right now?",
+                              "Where does the onboarding funnel drop off most?",
+                              "Which features correlate with sustained engagement?",
+                              "How does engagement differ between free and paid learners?"]),
+                    genie("Learning Outcomes", "Explore mastery, adaptive-path performance and content efficacy across the product.",
+                          feeds=["xAPI Record Store", "Instructure Canvas", "Amplitude Analytics", "Conformed learner, course, tenant"],
+                          teams=["Learning Science", "Curriculum designers", "Efficacy researchers"],
+                          questions=[
+                              "Which content moves mastery most against a control cohort?",
+                              "Where does the adaptive path stall learners by topic?",
+                              "How does mastery attainment differ by content sequence?",
+                              "Which lessons show high engagement but low outcome gain?",
+                              "Which cohorts improved outcomes after the last content update?"]),
+                    genie("Revenue & Retention", "Answer questions on MRR, net revenue retention and subscription churn.",
+                          feeds=["Chargebee Billing", "Stripe Billing", "Instructure Canvas", "Outcomes, engagement, retention, NRR"],
+                          teams=["Finance & RevOps", "Renewals desk", "RevOps & billing"],
+                          questions=[
+                              "What is net revenue retention by cohort this month?",
+                              "Which accounts are quietly heading for non-renewal?",
+                              "Which accounts are under-billed against consumption this month?",
+                              "How does churn relate to engagement and outcome signals?",
+                              "What is the ARR bridge for the quarter so far?"]),
+                    genie("Trust & Integrity", "Ask about exam anomalies, proctoring signals and support deflection.",
+                          feeds=["Proctorio", "Zendesk Support", "xAPI Record Store", "Conformed learner, course, tenant"],
+                          teams=["Trust & Safety", "Assessment integrity", "Privacy office"],
+                          questions=[
+                              "Which exam sessions rank highest for integrity review this week?",
+                              "How many proctoring flags are false positives on review?",
+                              "Which support topics could an assistant deflect today?",
+                              "Where are student-safety alerts concentrated in K-12 tenants?",
+                              "Which tenants have open DSAR requests approaching their deadline?"]),
+                ],
+                dashboards=[
+                    dashboard("Engagement & Activation", "Activation, engagement and disengagement funnels on certified Metric Views.",
+                              kpis=["Activation rate", "Weekly active learners", "Engagement score", "Disengagement risk", "Feature adoption"],
+                              teams=["Growth & Engage", "Exec & Product", "Engagement analysts"]),
+                    dashboard("Learning Outcomes", "Mastery, adaptive-path performance and content efficacy across the product.",
+                              kpis=["Mastery attainment", "Completion rate", "Efficacy lift", "Adaptive-path progress", "Outcome gain vs control"],
+                              teams=["Learning Science", "Exec & Product", "Curriculum designers"]),
+                    dashboard("Revenue & Retention", "MRR, net revenue retention, churn and metering accuracy on governed tables.",
+                              kpis=["MRR", "Net revenue retention", "Churn rate", "Billed-to-consumed", "ARR bridge"],
+                              teams=["Finance & RevOps", "Renewals desk", "Exec & Product"]),
+                    dashboard("Trust & Integrity", "Exam-integrity throughput, proctoring signals and support deflection.",
+                              kpis=["Integrity cases reviewed", "Proctoring false-positive rate", "Support deflection rate", "CSAT", "DSAR timeliness"],
+                              teams=["Trust & Safety", "Assessment integrity", "Privacy office"]),
+                ],
             ),
         },
         "top": top_band(

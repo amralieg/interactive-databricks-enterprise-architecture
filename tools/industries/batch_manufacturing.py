@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,112 @@ INDUSTRIES_BATCH_MANUFACTURING = {
         "rails": {
             "src": [
                 {"box": "ERP & Planning", "ic": "erp", "tiles": [
-                        tile("SAP S/4HANA", "erp", "Manufacturing orders, BOMs, routings, inventory and financial postings. The system of record for what was planned to be made and what was consumed.", "sap-s4"),
-                        tile("Oracle SCM Cloud", "erp", "Supply planning, work definitions and costed transactions for plants on the Oracle manufacturing estate.", "oracle-scm"),
-                        tile("Kinaxis Maestro", "sheet", "Concurrent S&OP scenarios, constraint-based planning and what-if responses when a supplier or line goes down.", "kinaxis"),
+                        tile("SAP S/4HANA", "erp", "Manufacturing orders, BOMs, routings, inventory and financial postings. The system of record for what was planned to be made and what was consumed.", "sap-s4",
+                             cat="Manufacturing ERP",
+                             what="Holds the production orders, bills of material, routings, inventory and financial postings that define what was planned, made and consumed across plants.",
+                             users="Production planning, plant controllers and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "20-100 GB/day", "Nightly batch + hourly deltas"),
+                                 stream=flow(["semi-structured"], "hundreds of postings/sec", "Continuous CDC"))),
+                        tile("Oracle SCM Cloud", "erp", "Supply planning, work definitions and costed transactions for plants on the Oracle manufacturing estate.", "oracle-scm",
+                             cat="Supply Chain Management (SCM) Cloud",
+                             what="Runs supply planning, work definitions and costed manufacturing transactions for plants standardized on the Oracle cloud estate.",
+                             users="Supply planners, manufacturing engineering and Cost accounting.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-50 GB/day", "Nightly batch"))),
+                        tile("Kinaxis Maestro", "sheet", "Concurrent S&OP scenarios, constraint-based planning and what-if responses when a supplier or line goes down.", "kinaxis",
+                             cat="Supply Chain Planning (S&OP/IBP)",
+                             what="Runs concurrent constraint-based S&OP scenarios and what-if replanning when a supplier or line goes down.",
+                             users="S&OP planners, demand planning and Supply Chain leadership.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day scenarios", "Planning cycles + on-demand what-if"))),
                     ]},
                 {"box": "MES & Shop Floor", "ic": "stream", "tiles": [
-                        tile("Siemens Opcenter", "stream", "Work instructions, cycle counts, downtime reason codes and WIP status from the MES the operators work in.", "opcenter"),
-                        tile("Rockwell FactoryTalk", "iot", "Line state, OEE counters and recipe execution from Allen-Bradley controlled assets.", "factorytalk"),
-                        tile("AVEVA MES", "db", "Batch records, electronic batch tickets and equipment logbooks for process manufacturing sites.", "aveva-mes"),
+                        tile("Siemens Opcenter", "stream", "Work instructions, cycle counts, downtime reason codes and WIP status from the MES the operators work in.", "opcenter",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Executes work instructions and captures cycle counts, downtime reason codes and WIP status from the shop floor the operators work in.",
+                             users="Line operators, shift supervisors and Manufacturing engineering.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-5k events/sec at peak", "Continuous shop-floor events"))),
+                        tile("Rockwell FactoryTalk", "iot", "Line state, OEE counters and recipe execution from Allen-Bradley controlled assets.", "factorytalk",
+                             cat="Industrial Automation / SCADA",
+                             what="Streams line state, OEE counters and recipe execution from Allen-Bradley PLC-controlled assets on the plant network.",
+                             users="Controls engineers, plant operations and Continuous improvement.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "2-10k tags/sec", "Continuous high-frequency telemetry"))),
+                        tile("AVEVA MES", "db", "Batch records, electronic batch tickets and equipment logbooks for process manufacturing sites.", "aveva-mes",
+                             cat="Process MES / Electronic Batch Records",
+                             what="Captures electronic batch records, batch tickets and equipment logbooks for process and hybrid manufacturing sites.",
+                             users="Process operators, Quality and Regulatory affairs.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "2-10 GB/day batch records", "Per-batch + hourly"))),
                     ]},
                 {"box": "Quality & PLM", "ic": "gavel", "tiles": [
-                        tile("PTC Windchill", "product", "Engineering BOMs, change orders and approved drawings the shop floor must build to.", "windchill"),
-                        tile("MasterControl QMS", "gavel", "Non-conformance, CAPA and audit findings tied to lots and suppliers.", "mastercontrol"),
-                        tile("ETQ Reliance", "gavel", "Inspection plans, SPC results and supplier quality scorecards for regulated industries.", "etq"),
+                        tile("PTC Windchill", "product", "Engineering BOMs, change orders and approved drawings the shop floor must build to.", "windchill",
+                             cat="PLM System",
+                             what="Manages engineering BOMs, change orders and released drawings and revisions the shop floor must build to.",
+                             users="Design engineering, change management and Manufacturing engineering.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "1-5 GB/day", "On change release + nightly"))),
+                        tile("MasterControl QMS", "gavel", "Non-conformance, CAPA and audit findings tied to lots and suppliers.", "mastercontrol",
+                             cat="Quality Management System (QMS)",
+                             what="Manages non-conformances, CAPA and audit findings tied back to the lots, suppliers and processes that caused them.",
+                             users="Quality managers, Regulatory affairs and Supplier quality.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-3 GB/day", "Hourly / event-driven"))),
+                        tile("ETQ Reliance", "gavel", "Inspection plans, SPC results and supplier quality scorecards for regulated industries.", "etq",
+                             cat="Quality Management System (QMS)",
+                             what="Runs inspection plans, SPC results and supplier quality scorecards for regulated and safety-critical industries.",
+                             users="Quality engineers, SPC analysts and Supplier quality.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (inspection + SPC)", "Hourly / per-inspection"))),
                     ]},
                 {"box": "IoT & Historians", "ic": "iot", "tiles": [
-                        tile("AVEVA PI System", "iot", "High-frequency sensor and actuator tags from lines, utilities and environmental systems.", "aveva-pi"),
-                        tile("AspenTech IP.21", "stream", "Process historian data for batch analytics, energy intensity and abnormal event detection.", "aspen-ip21"),
-                        tile("Machine Vision QC", "observ", "Inline defect images and measurement vectors joined to lot and serial for root-cause analysis."),
+                        tile("AVEVA PI System", "iot", "High-frequency sensor and actuator tags from lines, utilities and environmental systems.", "aveva-pi",
+                             cat="Process/Time-Series Historian",
+                             what="Collects high-frequency sensor and actuator tags from lines, utilities and environmental systems for OEE, energy and anomaly analytics.",
+                             users="Reliability engineers, Process engineering and Energy management.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous historian stream"))),
+                        tile("AspenTech IP.21", "stream", "Process historian data for batch analytics, energy intensity and abnormal event detection.", "aspen-ip21",
+                             cat="Process/Time-Series Historian",
+                             what="Stores process historian time-series for batch analytics, energy intensity and abnormal-event detection at process sites.",
+                             users="Process engineers, batch analytics and Energy teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "5-50k tags/sec", "Continuous historian stream"))),
+                        tile("Machine Vision QC", "observ", "Inline defect images and measurement vectors joined to lot and serial for root-cause analysis.",
+                             cat="Machine Vision Inspection",
+                             what="Captures inline defect images and measurement vectors and joins them to lot and serial for defect classification and root-cause analysis.",
+                             users="Quality engineers, Vision/ML teams and Manufacturing engineering.",
+                             data_out=data_out(
+                                 stream=flow(["unstructured", "structured"], "100s of images/sec + vectors", "Continuous inline capture"))),
                     ]},
-                fed_group("Corporate Data Warehouse", "Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations."),
+                fed_group("Corporate Data Warehouse", "Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations.",
+                          cat="Enterprise Data Warehouse",
+                          what="Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost allocations.",
+                          users="Finance, HR analytics and Cost accounting.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("OPC-UA Plant Gateway", "iot", "Shop-floor protocol bridges normalising PLC and robot telemetry on ingest before historian landing.", "opc-ua"),
-                tile("EDI ASN / DESADV", "api", "Supplier advance ship notices and delivery confirmations parsed into structured receipt events.", "edi-asn"),
-                tile("GS1 EPCIS Events", "stream", "Serialised product movement events for track-and-trace across plants, DCs and customers.", "gs1-epcis"),
+                tile("OPC-UA Plant Gateway", "iot", "Shop-floor protocol bridges normalising PLC and robot telemetry on ingest before historian landing.", "opc-ua",
+                     cat="OT Protocol Gateway",
+                     what="Bridges shop-floor OPC-UA and PLC/robot protocols, normalizing controller telemetry on ingest before historian landing.",
+                     users="Controls engineers, OT/IT integration and Streaming data engineers.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "5-50k tags/sec", "Continuous OT telemetry"))),
+                tile("EDI ASN / DESADV", "api", "Supplier advance ship notices and delivery confirmations parsed into structured receipt events.", "edi-asn",
+                     cat="Supplier EDI",
+                     what="Parses supplier advance ship notices and delivery confirmations (DESADV) into structured inbound receipt events.",
+                     users="Inbound logistics, Procurement and Materials planning.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured", "structured"], "100s of MB/day", "Continuous EDI messages"))),
+                tile("GS1 EPCIS Events", "stream", "Serialised product movement events for track-and-trace across plants, DCs and customers.", "gs1-epcis",
+                     cat="Track & Trace Events (EPCIS)",
+                     what="Streams serialized product movement (commissioning, aggregation, shipping) events for track-and-trace across plants, DCs and customers.",
+                     users="Traceability, Serialization and Supply chain teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "1-10k events/sec", "Continuous serialization events"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Plant Leadership", "Genie One", "The plant manager and VP operations on OEE by line, cost per unit produced and OTIF service level when a line stalls or a key supplier slips.", [["Genie One", "Ask what yesterday's scrap cost or which customer orders are at risk without waiting on manufacturing IT."], ["AI/BI", "OEE, yield and OTIF on one certified set of Metric Views."], ["Unity Catalog", "Certification and the business glossary, so \"downtime\" means one thing across plants."]],
@@ -137,6 +221,56 @@ INDUSTRIES_BATCH_MANUFACTURING = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Customers, co-mans and auditors reading live tables with no copy and no egress duplication."),
                     ]},
+            ], genie_spaces=[
+                genie("Plant Performance", "Ask about OEE, downtime and scrap by line and shift in plain language.",
+                      feeds=["Siemens Opcenter", "Rockwell FactoryTalk", "AVEVA PI System", "OEE, yield, OTIF"],
+                      teams=["Plant Leadership", "Production & Scheduling", "Continuous Improvement"],
+                      questions=[
+                          "What was OEE by line and shift yesterday, and where did the losses go?",
+                          "Which downtime reason codes cost the most this week?",
+                          "What is scrap cost by line and product this month versus last?",
+                          "Which lines are behind the production plan right now?",
+                          "What is the biggest loss bucket dragging throughput this quarter?"]),
+                genie("Quality & Traceability", "Explore first-pass yield, non-conformance and lot genealogy across MES and QMS.",
+                      feeds=["MasterControl QMS", "ETQ Reliance", "GS1 EPCIS Events", "Conformed order, lot"],
+                      teams=["Quality & Compliance", "Quality Manager", "Supplier Quality"],
+                      questions=[
+                          "What is first-pass yield by product and line this month?",
+                          "Which suppliers drive the most non-conformances and CAPA?",
+                          "Which lots are affected if we recall this supplier batch?",
+                          "What is the scrap and rework rate trend by defect type?",
+                          "Which inspection plans are failing SPC limits right now?"]),
+                genie("Supply Chain & Inventory", "Answer S&OP, inventory and supplier OTIF questions across plants.",
+                      feeds=["Kinaxis Maestro", "SAP S/4HANA", "EDI ASN / DESADV", "OEE, yield, OTIF"],
+                      teams=["Supply Chain", "S&OP Lead", "Procurement"],
+                      questions=[
+                          "Which SKUs will stock out before the next planning cycle?",
+                          "What is supplier OTIF by supplier and plant this quarter?",
+                          "Where do we carry the most excess and obsolete inventory?",
+                          "Which parts are single-source and exposed to disruption?",
+                          "What is inventory turns by plant versus target?"]),
+                genie("Maintenance & Reliability", "Ask about asset health, MTBF and maintenance cost across the plant.",
+                      feeds=["AVEVA PI System", "AspenTech IP.21", "OEE, yield, OTIF"],
+                      teams=["Maintenance & Reliability", "Reliability Engineer", "Maintenance Planner"],
+                      questions=[
+                          "Which assets have the worst MTBF this quarter?",
+                          "What is maintenance cost per unit by line and asset?",
+                          "Which machines are predicted to fail in the next two weeks?",
+                          "How much unplanned downtime came from each asset class?",
+                          "Which spare parts are at risk of stockout for planned work?"]),
+            ], dashboards=[
+                dashboard("Plant OEE & Downtime", "Line and shift OEE, downtime pareto and throughput on certified Metric Views.",
+                          kpis=["OEE", "Availability", "Performance", "Quality rate", "Downtime by reason"],
+                          teams=["Plant Leadership", "Production & Scheduling", "Continuous Improvement"]),
+                dashboard("Quality & Yield", "First-pass yield, scrap, non-conformance and supplier quality trends.",
+                          kpis=["First-pass yield", "Scrap rate", "Non-conformance rate", "CAPA cycle time", "Supplier PPM"],
+                          teams=["Quality & Compliance", "Supplier Quality", "Manufacturing Engineering"]),
+                dashboard("Supply Chain & OTIF", "Inventory turns, supplier OTIF and S&OP plan attainment across plants.",
+                          kpis=["OTIF", "Inventory turns", "Days of supply", "Forecast accuracy", "Plan attainment"],
+                          teams=["Supply Chain", "S&OP Lead", "Procurement"]),
+                dashboard("Reliability & Maintenance", "Asset MTBF, predicted failures and maintenance cost per unit.",
+                          kpis=["MTBF", "Unplanned downtime", "Maintenance cost per unit", "PM compliance", "Predicted failures"],
+                          teams=["Maintenance & Reliability", "Reliability Engineer", "Asset Manager"]),
             ]),
         },
         "top": top_band(

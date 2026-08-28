@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,117 @@ INDUSTRIES_BATCH_FOOD_BEVERAGE = {
         "rails": {
             "src": [
                 {"box": "Manufacturing & MES", "ic": "erp", "tiles": [
-                    tile("Rockwell FactoryTalk", "iot", "Line speeds, filler weights, CIP cycles and downtime reason codes from the plant floor.", "rockwell-ft"),
-                    tile("Siemens Opcenter MES", "sheet", "Batch recipes, material consumption and electronic batch records for regulated plants.", "siemens-opcenter"),
-                    tile("SAP S/4HANA PP", "erp", "Production orders, BOM explosions, confirmations and co-product yields.", "sap-s4")
+                    tile("Rockwell FactoryTalk", "iot", "Line speeds, filler weights, CIP cycles and downtime reason codes from the plant floor.", "rockwell-ft",
+                         cat="Industrial Automation / SCADA",
+                         what="Streams line speeds, filler weights, CIP cycles and downtime reason codes from the plant floor, the base signal for OEE and yield.",
+                         users="Plant Operations, Line Leads and Maintenance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of tag reads/sec", "Continuous telemetry"))),
+                    tile("Siemens Opcenter MES", "sheet", "Batch recipes, material consumption and electronic batch records for regulated plants.", "siemens-opcenter",
+                         cat="Manufacturing Execution System (MES)",
+                         what="Manages batch recipes, material consumption and electronic batch records for regulated plants, the backbone of lot genealogy and release.",
+                         users="Plant Operations, Quality and Food Safety teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "Per-batch + nightly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous batch events"))),
+                    tile("SAP S/4HANA PP", "erp", "Production orders, BOM explosions, confirmations and co-product yields.", "sap-s4",
+                         cat="ERP / Production Planning",
+                         what="Holds production orders, BOM explosions, confirmations and co-product yields, the commercial and planning system of record.",
+                         users="Supply Chain, Plant Operations and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-80 GB/day", "Nightly close + hourly deltas"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC"))),
                 ]},
                 {"box": "Quality & Safety", "ic": "gavel", "tiles": [
-                    tile("Veeva QualityDocs", "gavel", "Specifications, deviations, CAPA and release documentation for food safety programs.", "veeva-quality"),
-                    tile("SafetyChain Plant Mgmt", "gauge", "HACCP checks, temperature logs and sanitation records from production shifts.", "safetychain"),
-                    tile("LabWare LIMS", "db", "Microbiology, allergen and nutritional assay results tied to lot and line.")
+                    tile("Veeva QualityDocs", "gavel", "Specifications, deviations, CAPA and release documentation for food safety programs.", "veeva-quality",
+                         cat="Quality Management System (QMS)",
+                         what="Manages specifications, deviations, CAPA and release documentation for food-safety programs, the audit trail behind quality release.",
+                         users="Quality, Food Safety and Regulatory Affairs teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs/day docs + records", "Hourly / nightly sync"))),
+                    tile("SafetyChain Plant Mgmt", "gauge", "HACCP checks, temperature logs and sanitation records from production shifts.", "safetychain",
+                         cat="Food Safety / Plant Management",
+                         what="Captures HACCP checks, temperature logs and sanitation records from production shifts for food-safety compliance.",
+                         users="Food Safety, Quality and Plant Operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Per-shift + hourly"))),
+                    tile("LabWare LIMS", "db", "Microbiology, allergen and nutritional assay results tied to lot and line.",
+                         cat="Laboratory Information System (LIMS)",
+                         what="Holds microbiology, allergen and nutritional assay results tied to lot and line, gating release on lab confirmation.",
+                         users="Quality Lab, Food Safety and Regulatory teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs/day results", "Per-assay + nightly batch"))),
                 ]},
                 {"box": "Supply & Logistics", "ic": "stream", "tiles": [
-                    tile("Blue Yonder TMS", "stream", "Inbound raw material and outbound finished goods movements with carrier ETA and temperature probes.", "blue-yonder"),
-                    tile("Manhattan WMS", "product", "Warehouse inventory, pick/pack and shipment confirmation against customer orders.", "manhattan-wms"),
-                    tile("Sensitech TempTale", "iot", "Cold-chain logger readings from plant dock through DC to customer delivery.", "sensitech")
+                    tile("Blue Yonder TMS", "stream", "Inbound raw material and outbound finished goods movements with carrier ETA and temperature probes.", "blue-yonder",
+                         cat="Transportation Management System (TMS)",
+                         what="Tracks inbound raw material and outbound finished-goods movements with carrier ETA and temperature probes for service and cold chain.",
+                         users="Logistics, Supply Chain and Cold-Chain teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Multiple daily loads"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous shipment events"))),
+                    tile("Manhattan WMS", "product", "Warehouse inventory, pick/pack and shipment confirmation against customer orders.", "manhattan-wms",
+                         cat="Warehouse Management System (WMS)",
+                         what="Runs warehouse inventory, pick/pack and shipment confirmation against customer orders, emitting movements behind OTIF.",
+                         users="DC Operations, Logistics and Inventory teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous movement events"))),
+                    tile("Sensitech TempTale", "iot", "Cold-chain logger readings from plant dock through DC to customer delivery.", "sensitech",
+                         cat="Cold-Chain Monitoring Platform",
+                         what="Streams cold-chain logger readings from plant dock through DC to customer delivery, the excursion signal behind shelf life.",
+                         users="Cold-Chain, Logistics and Quality teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of sensor reads/sec", "Continuous telemetry"))),
                 ]},
                 {"box": "Commercial & Retail", "ic": "market", "tiles": [
-                    tile("NielsenIQ POS", "market", "Syndicated and direct retail sell-through by SKU, banner and geography.", "nielseniq"),
-                    tile("Circana/IRI Panel", "chart", "Household panel and causal analytics for category and brand performance.", "circana"),
-                    tile("Trade Promotion Mgmt", "partner", "Promotional calendars, scan data and accrual settlements with retail partners.")
+                    tile("NielsenIQ POS", "market", "Syndicated and direct retail sell-through by SKU, banner and geography.", "nielseniq",
+                         cat="Syndicated Market Data Provider",
+                         what="Supplies syndicated and direct retail sell-through by SKU, banner and geography for demand and category analytics.",
+                         users="Sales & Marketing, Supply Chain and Insights teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/week", "Weekly / monthly syndicated feed"))),
+                    tile("Circana/IRI Panel", "chart", "Household panel and causal analytics for category and brand performance.", "circana",
+                         cat="Consumer Panel / Consumption Data",
+                         what="Provides household-panel and causal analytics for category and brand performance used in promotion and share analysis.",
+                         users="Sales & Marketing, Category and Insights teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/week", "Weekly feed"))),
+                    tile("Trade Promotion Mgmt", "partner", "Promotional calendars, scan data and accrual settlements with retail partners.",
+                         cat="Trade Promotion Management (TPM)",
+                         what="Holds promotional calendars, scan data and accrual settlements with retail partners, the base for trade-ROI reconciliation.",
+                         users="Sales & Marketing, Trade Marketing and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily + settlement cycles"))),
                 ]},
                 fed_group(
                     "Co-manufacturer Inventory",
                     "Third-party production inventory and batch status left at co-packers and queried in place under Unity Catalog.",
+                    cat="External Partner Data Source",
+                    what="Third-party production inventory and batch status left at co-packers and queried in place through federation instead of manual spreadsheet chases.",
+                    users="Supply Chain, Planning and Co-pack Operations teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "10s-100s GB (federated)", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("GS1 EPCIS Events", "api", "Serial shipping container and lot traceability events normalised on ingest for recall readiness.", "gs1-epcis"),
-                tile("FDA FSMA 204 Trace", "gavel", "Key data elements for high-risk foods consumed inbound for compliance validation.", "fsma-204"),
-                tile("Weather & Commodity", "globe", "Crop condition and commodity price feeds for agricultural input planning.")
+                tile("GS1 EPCIS Events", "api", "Serial shipping container and lot traceability events normalised on ingest for recall readiness.", "gs1-epcis",
+                     cat="Traceability Event Standard",
+                     what="Normalises serial shipping container and lot traceability events on ingest so recall lists can be built forward and backward.",
+                     users="Quality & Food Safety, Regulatory and Logistics teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous trace events"))),
+                tile("FDA FSMA 204 Trace", "gavel", "Key data elements for high-risk foods consumed inbound for compliance validation.", "fsma-204",
+                     cat="Food Traceability Compliance Feed",
+                     what="Supplies the key data elements for high-risk foods consumed inbound to validate FSMA Rule 204 traceability compliance.",
+                     users="Regulatory Affairs, Quality and Food Safety teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day KDEs", "Daily + event-driven"))),
+                tile("Weather & Commodity", "globe", "Crop condition and commodity price feeds for agricultural input planning.",
+                     cat="Commodity / Weather Data Source",
+                     what="Provides crop-condition and commodity-price feeds consumed inbound for agricultural input and margin planning.",
+                     users="Supply Chain, Procurement and Sustainability teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/day", "Daily feed"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & COO", "Genie One", "The CEO on volume, gross margin and category share; the COO on plant OEE, OTIF service level and recall exposure across the network.",
@@ -116,6 +202,56 @@ INDUSTRIES_BATCH_FOOD_BEVERAGE = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Retailers, co-packers and auditors reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Plant & OEE", "Ask about line yield, OEE and downtime by line and shift in plain language.",
+                      feeds=["Rockwell FactoryTalk", "Siemens Opcenter MES", "Yield, OTIF, quality"],
+                      teams=["Plant Operations", "CEO & COO", "Supply Chain"],
+                      questions=[
+                          "What is OEE by line and shift this week?",
+                          "Which downtime reason codes are driving the most loss?",
+                          "Where is filler giveaway highest across the plants?",
+                          "What is line yield and scrap by SKU today?",
+                          "Which lines have the longest changeover times?"]),
+                genie("Quality & Traceability", "Explore hold rate, deviations and recall readiness across sites.",
+                      feeds=["Siemens Opcenter MES", "SafetyChain Plant Mgmt", "GS1 EPCIS Events", "Conformed SKU, batch"],
+                      teams=["Quality & Food Safety", "Plant Operations", "CEO & COO"],
+                      questions=[
+                          "What is the quality hold rate by plant and SKU?",
+                          "Which lots are affected by a supplier ingredient alert?",
+                          "How many deviations are open past their CAPA SLA?",
+                          "Where are allergen cross-contact risks by changeover?",
+                          "How fast can we build a recall list for a given lot?"]),
+                genie("Demand & Cold Chain", "Answer forecast, OTIF and cold-chain questions across the network.",
+                      feeds=["NielsenIQ POS", "Blue Yonder TMS", "Sensitech TempTale"],
+                      teams=["Supply Chain", "Sales & Marketing", "Plant Operations"],
+                      questions=[
+                          "What is OTIF by customer and DC this week?",
+                          "Where is forecast bias worst by SKU-location?",
+                          "Which loads had cold-chain excursions in transit?",
+                          "What is days of supply and short-dated risk by SKU?",
+                          "Which shipments are at risk of missing the delivery window?"]),
+                genie("Commercial & Trade", "Ask about promotion ROI, share and distribution across retailers.",
+                      feeds=["NielsenIQ POS", "Circana/IRI Panel", "Trade Promotion Mgmt"],
+                      teams=["Sales & Marketing", "Supply Chain", "CEO & COO"],
+                      questions=[
+                          "Which promotions drove incremental volume versus base?",
+                          "What is our category share by banner and geography?",
+                          "Which SKUs lost distribution last month?",
+                          "How much trade spend is accrued but unsettled?",
+                          "Which retailer scorecards are trending down?"]),
+            ], dashboards=[
+                dashboard("Plant OEE & Yield", "Line yield, OEE, scrap and downtime by line and shift on certified Metric Views.",
+                          kpis=["OEE", "Line yield", "Scrap rate", "Giveaway", "Changeover time"],
+                          teams=["Plant Operations", "CEO & COO", "Supply Chain"]),
+                dashboard("Quality & Recall", "Hold rate, deviations, CAPA aging and recall readiness across sites.",
+                          kpis=["Quality hold rate", "Open deviations", "CAPA aging", "Recall trace time", "Sanitation compliance"],
+                          teams=["Quality & Food Safety", "Plant Operations", "CEO & COO"]),
+                dashboard("Service & Cold Chain", "OTIF, forecast accuracy, cold-chain integrity and inventory across the network.",
+                          kpis=["OTIF", "Forecast accuracy", "Cold-chain excursion rate", "Days of supply", "Short-dated write-offs"],
+                          teams=["Supply Chain", "Sales & Marketing", "Plant Operations"]),
+                dashboard("Commercial & Trade", "Promotion ROI, share and distribution across retailers.",
+                          kpis=["Promo lift", "Trade-spend ROI", "Category share", "Distribution voids", "Accrual balance"],
+                          teams=["Sales & Marketing", "Supply Chain", "CEO & COO"]),
             ]),
         },
         "top": top_band(

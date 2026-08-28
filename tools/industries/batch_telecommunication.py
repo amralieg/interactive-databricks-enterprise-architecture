@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,36 +31,140 @@ INDUSTRIES_BATCH_TELECOMMUNICATION = {
         "rails": {
             "src": [
                 {"box": "BSS & Billing", "ic": "erp", "tiles": [
-                    tile("Amdocs CES", "erp", "Customer, product and billing: subscriptions, invoices, payments and dunning.", "amdocs-ces"),
-                    tile("Netcracker BSS", "market", "Order management, product catalog and revenue management for converged offers.", "netcracker"),
-                    tile("CSG Singleview", "chart", "Mediation, rating and billing for high-volume prepaid and postpaid.", "csg"),
+                    tile("Amdocs CES", "erp", "Customer, product and billing: subscriptions, invoices, payments and dunning.", "amdocs-ces",
+                         cat="Telecom BSS / Billing",
+                         what="Customer, product and billing: subscriptions, invoices, payments and dunning across the base.",
+                         users="Billing operations, Finance and Commercial teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Billing cycles + hourly deltas"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("Netcracker BSS", "market", "Order management, product catalog and revenue management for converged offers.", "netcracker",
+                         cat="Telecom BSS / Order Management",
+                         what="Order management, product catalog and revenue management for converged fixed and mobile offers.",
+                         users="Order management, Product and Commercial teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Nightly"),
+                             stream=flow(["semi-structured"], "tens of order events/sec", "Continuous"))),
+                    tile("CSG Singleview", "chart", "Mediation, rating and billing for high-volume prepaid and postpaid.", "csg",
+                         cat="Mediation & Rating / Billing",
+                         what="Mediation, rating and billing for high-volume prepaid and postpaid usage.",
+                         users="Billing, Revenue assurance and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-80 GB/day", "Rating cycles"),
+                             stream=flow(["semi-structured"], "1-10k usage events/sec", "Continuous"))),
                 ]},
                 {"box": "OSS & Inventory", "ic": "db", "tiles": [
-                    tile("Ericsson ENM", "stream", "Radio access network configuration, alarms and performance counters.", "ericsson-enm"),
-                    tile("Nokia NetAct", "iot", "Multi-vendor OSS fault, configuration and performance for transport and RAN.", "nokia-netact"),
-                    tile("Cisco Crosswork", "api", "IP/MPLS transport inventory, topology and service paths.", "cisco-crosswork"),
+                    tile("Ericsson ENM", "stream", "Radio access network configuration, alarms and performance counters.", "ericsson-enm",
+                         cat="RAN OSS / Element Management",
+                         what="Radio access network configuration, alarms and performance counters across the RAN estate.",
+                         users="NOC, RAN planning and network engineering.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured"], "PM counter files", "Hourly"),
+                             stream=flow(["semi-structured"], "1-10k alarms + counters/sec", "Continuous"))),
+                    tile("Nokia NetAct", "iot", "Multi-vendor OSS fault, configuration and performance for transport and RAN.", "nokia-netact",
+                         cat="Multi-Vendor OSS",
+                         what="Multi-vendor OSS fault, configuration and performance for transport and RAN.",
+                         users="NOC and network operations teams.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured"], "PM files", "Hourly"),
+                             stream=flow(["semi-structured"], "1-10k events/sec", "Continuous"))),
+                    tile("Cisco Crosswork", "api", "IP/MPLS transport inventory, topology and service paths.", "cisco-crosswork",
+                         cat="Transport / IP Network Automation",
+                         what="IP/MPLS transport inventory, topology and service paths across the core network.",
+                         users="Transport planning and network engineering.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily"),
+                             stream=flow(["semi-structured"], "100s-1000s of telemetry msgs/sec", "Continuous"))),
                 ]},
                 {"box": "Customer & Care", "ic": "custlake", "tiles": [
-                    tile("Salesforce Service Cloud", "partner", "Cases, omni-channel interactions and knowledge articles.", "sf-service"),
-                    tile("Genesys Cloud CX", "chat", "Contact centre queues, IVR paths and agent handle times.", "genesys"),
-                    tile("Medallia Experience", "observ", "NPS, CES and verbatim feedback tied to subscriber journeys.", "medallia"),
+                    tile("Salesforce Service Cloud", "partner", "Cases, omni-channel interactions and knowledge articles.", "sf-service",
+                         cat="Customer Service / CRM",
+                         what="Cases, omni-channel interactions and knowledge articles across care channels.",
+                         users="Customer care and service operations.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly"),
+                             stream=flow(["semi-structured"], "tens of case events/sec", "Continuous CDC"))),
+                    tile("Genesys Cloud CX", "chat", "Contact centre queues, IVR paths and agent handle times.", "genesys",
+                         cat="Contact Center Platform (CCaaS)",
+                         what="Contact-centre queues, IVR paths and agent handle times across care.",
+                         users="Care operations and workforce management.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s of events/sec", "Continuous"))),
+                    tile("Medallia Experience", "observ", "NPS, CES and verbatim feedback tied to subscriber journeys.", "medallia",
+                         cat="Experience Management (VoC)",
+                         what="NPS, CES and verbatim feedback tied to subscriber journeys.",
+                         users="Customer experience and complaint-quality teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "0.5-2 GB/day", "Daily"))),
                 ]},
                 {"box": "Field Service", "ic": "people", "tiles": [
-                    tile("ServiceMax FSM", "apps", "Technician dispatch, truck rolls, parts and SLA compliance.", "servicemax"),
-                    tile("Salesforce Field Service", "sheet", "Field workforce scheduling and capacity for fibre and tower work.", "clicksoftware"),
-                    tile("Geotab Fleet", "iot", "Van location, job duration and fuel for field operations.", "geotab"),
+                    tile("ServiceMax FSM", "apps", "Technician dispatch, truck rolls, parts and SLA compliance.", "servicemax",
+                         cat="Field Service Management (FSM)",
+                         what="Technician dispatch, truck rolls, parts and SLA compliance for field work.",
+                         users="Field operations and dispatch teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly"),
+                             stream=flow(["semi-structured"], "tens of job events/sec", "Continuous"))),
+                    tile("Salesforce Field Service", "sheet", "Field workforce scheduling and capacity for fibre and tower work.", "clicksoftware",
+                         cat="Field Workforce Scheduling",
+                         what="Field workforce scheduling and capacity for fibre and tower work.",
+                         users="Field operations and workforce planning.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly"))),
+                    tile("Geotab Fleet", "iot", "Van location, job duration and fuel for field operations.", "geotab",
+                         cat="Fleet Telematics",
+                         what="Van location, job duration and fuel for field operations.",
+                         users="Field operations and fleet management.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s of telematics events/sec", "Continuous"))),
                 ]},
                 {"box": "Fraud & Assurance", "ic": "gavel", "tiles": [
-                    tile("Subex Revenue Assurance", "gavel", "Leakage detection across rating, interconnect and roaming.", "subex"),
-                    tile("Mobileum Fraud", "partner", "SIM swap, IRSF and subscription fraud scored in near real time.", "mobileum"),
-                    tile("WeDo RAID", "chart", "Revenue, asset and usage integrity dashboards for finance.", "wedo"),
+                    tile("Subex Revenue Assurance", "gavel", "Leakage detection across rating, interconnect and roaming.", "subex",
+                         cat="Revenue Assurance",
+                         what="Leakage detection across rating, interconnect and roaming.",
+                         users="Revenue assurance and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily"))),
+                    tile("Mobileum Fraud", "partner", "SIM swap, IRSF and subscription fraud scored in near real time.", "mobileum",
+                         cat="Telecom Fraud Management",
+                         what="SIM swap, IRSF and subscription fraud scored in near real time.",
+                         users="Fraud management and Revenue assurance.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day", "Daily"),
+                             stream=flow(["semi-structured"], "100s-1000s of fraud scores/sec", "Continuous"))),
+                    tile("WeDo RAID", "chart", "Revenue, asset and usage integrity dashboards for finance.", "wedo",
+                         cat="Revenue & Business Assurance",
+                         what="Revenue, asset and usage integrity dashboards for finance.",
+                         users="Revenue assurance and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day", "Daily"))),
                 ]},
-                fed_group("MVNO Partner Marts", "Wholesale usage and settlement marts queried in place under Unity Catalog."),
+                fed_group("MVNO Partner Marts", "Wholesale usage and settlement marts queried in place under Unity Catalog.",
+                          cat="Wholesale / Partner Data Warehouse",
+                          what="Wholesale usage and settlement marts kept in existing warehouses and queried in place through federation.",
+                          users="Wholesale, Revenue assurance and Finance teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale settlement history", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("GSMA TAP Roaming", "stream", "TAP files and roaming usage from partner operators parsed on arrival.", "gsma-tap"),
-                tile("TM Forum Open APIs", "api", "TMF Open API event streams for order and trouble-ticket lifecycle.", "tmforum"),
-                tile("RAN PM File Exchange", "zplug", "Vendor performance management files from multi-vendor RAN estates.", "ericsson-enm"),
+                tile("GSMA TAP Roaming", "stream", "TAP files and roaming usage from partner operators parsed on arrival.", "gsma-tap",
+                     cat="Roaming Clearing (TAP)",
+                     what="TAP files and roaming usage from partner operators parsed on arrival.",
+                     users="Roaming settlement and Revenue assurance teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "1-10 GB/day TAP files", "Daily"))),
+                tile("TM Forum Open APIs", "api", "TMF Open API event streams for order and trouble-ticket lifecycle.", "tmforum",
+                     cat="Open API Event Streams (TMF)",
+                     what="TMF Open API event streams for order and trouble-ticket lifecycle.",
+                     users="BSS/OSS integration and network operations.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s of events/sec", "Continuous"))),
+                tile("RAN PM File Exchange", "zplug", "Vendor performance management files from multi-vendor RAN estates.", "ericsson-enm",
+                     cat="RAN Performance Files",
+                     what="Vendor performance-management files from multi-vendor RAN estates.",
+                     users="RAN planning and network engineering.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "5-50 GB/day PM files", "15-min / hourly"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & CTO Office", "Genie One", "The CEO on ARPU and churn; the CTO on network availability and capex efficiency, trading coverage build against the subscribers it retains.",
@@ -150,6 +257,56 @@ INDUSTRIES_BATCH_TELECOMMUNICATION = {
                     tile("Data Products", "product", "Network and subscriber products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Partners reading live usage via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Network Operations", "Ask about cell performance, alarms and outage impact in plain language.",
+                      feeds=["Ericsson ENM", "Nokia NetAct", "Cisco Crosswork", "Churn, ARPU, network KPI"],
+                      teams=["Network Operations", "CEO & CTO Office", "Data Engineers"],
+                      questions=[
+                          "Which cells have the worst dropped-call rate right now?",
+                          "What is the current alarm-to-restoration time by region?",
+                          "Which transport paths are approaching capacity?",
+                          "Where are outages affecting the most subscribers today?",
+                          "Which sites show degrading performance counters this week?"]),
+                genie("Subscriber & Churn", "Explore churn risk, ARPU and NPS drivers across the subscriber base.",
+                      feeds=["Amdocs CES", "Salesforce Service Cloud", "Medallia Experience", "Conformed subscriber, session"],
+                      teams=["Commercial & Marketing", "Customer Care", "Data Scientists"],
+                      questions=[
+                          "Which high-value subscribers are at highest churn risk this month?",
+                          "What are the top complaint drivers behind low NPS?",
+                          "Which segments have the best next-best-offer uptake?",
+                          "How does ARPU trend by segment this quarter?",
+                          "Which subscribers had a dropped call and then contacted care?"]),
+                genie("Revenue Assurance & Fraud", "Answer leakage, fraud and roaming-dispute questions on governed data.",
+                      feeds=["Mobileum Fraud", "Subex Revenue Assurance", "GSMA TAP Roaming", "Churn, ARPU, network KPI"],
+                      teams=["Revenue Assurance", "CEO & CTO Office", "Data Scientists"],
+                      questions=[
+                          "What is our fraud loss rate this month versus last?",
+                          "Which roaming partners exceed dispute thresholds?",
+                          "Where is revenue leaking across rating and interconnect?",
+                          "Which accounts show SIM-swap or IRSF patterns right now?",
+                          "What is the value of unreconciled TAP discrepancies?"]),
+                genie("Care & Field Service", "Ask about resolution rates, handle times and field-SLA risk in plain language.",
+                      feeds=["Genesys Cloud CX", "ServiceMax FSM", "Salesforce Field Service", "Conformed subscriber, session"],
+                      teams=["Customer Care", "Network Operations", "App Developers"],
+                      questions=[
+                          "What is first-contact resolution by care channel today?",
+                          "Which truck rolls are at risk of missing SLA?",
+                          "Where is technician capacity most constrained this week?",
+                          "Which complaint types drive the most repeat contacts?",
+                          "What is average handle time by queue right now?"]),
+            ], dashboards=[
+                dashboard("Network Performance", "Cell and transport KPIs, alarms and restoration times on certified views.",
+                          kpis=["Dropped-call rate", "Alarm-to-restoration", "Cell availability", "Transport utilisation", "Outage impact"],
+                          teams=["Network Operations", "CEO & CTO Office", "Data Engineers"]),
+                dashboard("Churn & ARPU", "Churn, ARPU and NPS by segment on governed subscriber data.",
+                          kpis=["Churn rate", "ARPU", "NPS", "Next-best-offer uptake", "Renewal save rate"],
+                          teams=["Commercial & Marketing", "Customer Care", "CEO & CTO Office"]),
+                dashboard("Revenue Assurance & Fraud", "Leakage, fraud loss and roaming-dispute exposure on certified views.",
+                          kpis=["Fraud loss rate", "Revenue leakage", "Roaming disputes", "SIM-swap alerts", "Recovery rate"],
+                          teams=["Revenue Assurance", "CEO & CTO Office", "Data Scientists"]),
+                dashboard("Care & Field SLA", "First-contact resolution, handle time and field-SLA risk across operations.",
+                          kpis=["First-contact resolution", "Average handle time", "Truck-roll SLA", "Technician utilisation", "Complaint backlog"],
+                          teams=["Customer Care", "Network Operations", "App Developers"]),
             ]),
         },
         "top": top_band(

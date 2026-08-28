@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,129 @@ INDUSTRIES_BATCH_BANKING = {
         "rails": {
             "src": [
                 {"box": "Core Banking", "ic": "erp", "tiles": [
-                    tile("Temenos Transact", "erp", "Deposits, loans, GL and end-of-day across retail and commercial.", "temenos"),
-                    tile("FIS Profile", "erp", "Account processing, interest accrual and regulatory extracts.", "fis-profile"),
-                    tile("Fiserv DNA", "erp", "US core account processing: deposits, loans and GL on Fiserv DNA and Premier.", "finastra"),
+                    tile("Temenos Transact", "erp", "Deposits, loans, GL and end-of-day across retail and commercial.", "temenos",
+                         cat="Core Banking System",
+                         what="Holds the system-of-record ledger for deposits, loans and the general ledger, and runs the end-of-day cycle that posts interest, fees and balances.",
+                         users="Core banking operations, retail and commercial product teams, and Finance for the general ledger.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "50-200 GB/day", "End-of-day batch + hourly deltas"),
+                             stream=flow(["semi-structured"], "0.5-3k postings/sec at peak", "Continuous CDC (near real-time)"))),
+                    tile("FIS Profile", "erp", "Account processing, interest accrual and regulatory extracts.", "fis-profile",
+                         cat="Core Banking System",
+                         what="Processes retail and commercial accounts, accrues interest and produces the regulatory and statement extracts the back office depends on.",
+                         users="Deposit operations, Finance and Regulatory reporting teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-80 GB/day", "Nightly batch extracts"))),
+                    tile("Fiserv DNA", "erp", "US core account processing: deposits, loans and GL on Fiserv DNA and Premier.", "finastra",
+                         cat="Core Banking System",
+                         what="US community and regional bank core platform covering deposits, loans and the GL, with real-time posting on the DNA architecture.",
+                         users="Core operations and branch systems teams at US community and regional banks.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-60 GB/day", "Nightly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC"))),
                 ]},
                 {"box": "Cards & Payments", "ic": "market", "tiles": [
-                    tile("Visa DPS / Auth", "market", "Authorization, clearing and dispute messages.", "visa"),
-                    tile("Mastercard Smart Data", "market", "Commercial-card expense and spend analytics with merchant category enrichment.", "mastercard"),
-                    tile("SWIFT FIN Messages", "api", "Cross-border payment instructions and confirmations.", "swift"),
+                    tile("Visa DPS / Auth", "market", "Authorization, clearing and dispute messages.", "visa",
+                         cat="Card Authorization & Clearing",
+                         what="Carries the real-time card authorization decisions and the clearing and dispute (chargeback) messages that settle them.",
+                         users="Fraud, Cards & Payments operations and Dispute/chargeback teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day clearing files", "Multiple settlement cycles daily"),
+                             stream=flow(["semi-structured"], "2-10k auths/sec at peak", "Continuous (sub-second)"))),
+                    tile("Mastercard Smart Data", "market", "Commercial-card expense and spend analytics with merchant category enrichment.", "mastercard",
+                         cat="Commercial Card Spend Analytics",
+                         what="Enriches commercial-card transactions with merchant, category and tax detail for expense management and spend analytics.",
+                         users="Commercial Banking, Corporate card program managers and client Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily feed"))),
+                    tile("SWIFT FIN Messages", "api", "Cross-border payment instructions and confirmations.", "swift",
+                         cat="Interbank Messaging Network",
+                         what="Standardized MT/MX financial messages for cross-border payments, confirmations and correspondent-bank instructions.",
+                         users="Payments operations, Treasury and Correspondent banking teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "50-500 msgs/sec", "Continuous message flow"))),
                 ]},
                 {"box": "Digital Channels", "ic": "apps", "tiles": [
-                    tile("Temenos Infinity", "apps", "Mobile and web sessions, transfers and self-service events.", "temenos-infinity"),
-                    tile("Salesforce FSC", "custlake", "Households, opportunities and service cases.", "sf-fsc"),
-                    tile("NICE Actimize", "gavel", "AML alerts, cases and SAR workflow.", "actimize"),
+                    tile("Temenos Infinity", "apps", "Mobile and web sessions, transfers and self-service events.", "temenos-infinity",
+                         cat="Digital Banking Platform",
+                         what="Runs the mobile and web banking experience and emits the clickstream, transfer and self-service events behind digital journeys.",
+                         users="Digital Banking, Product and Marketing analytics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-20k events/sec at peak", "Continuous clickstream"))),
+                    tile("Salesforce FSC", "custlake", "Households, opportunities and service cases.", "sf-fsc",
+                         cat="Banking CRM",
+                         what="Financial Services CRM holding household and relationship models, opportunities and service cases across channels.",
+                         users="Retail and Commercial relationship managers, and Service teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("NICE Actimize", "gavel", "AML alerts, cases and SAR workflow.", "actimize",
+                         cat="Financial Crime / AML Platform",
+                         what="Generates AML transaction-monitoring alerts, manages investigation cases and drives the SAR filing workflow.",
+                         users="Financial crime investigators, AML compliance and Fraud operations.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "2-8 GB/day alerts + cases", "Hourly"))),
                 ]},
                 {"box": "Risk & Finance", "ic": "chart", "tiles": [
-                    tile("Moody's RiskCalc", "chart", "PD/LGD models and rating migrations for commercial names.", "moodys"),
-                    tile("FIS Ambit Focus", "chart", "ALM, liquidity and interest rate risk measurement.", "fis-alm"),
-                    tile("Nasdaq AxiomSL Reg Reporting", "gavel", "Basel, CCAR and local regulatory templates.", "axiomsl"),
+                    tile("Moody's RiskCalc", "chart", "PD/LGD models and rating migrations for commercial names.", "moodys",
+                         cat="Credit Risk Model Library",
+                         what="Provides probability-of-default and loss-given-default models and rating migrations for commercial and corporate exposures.",
+                         users="Credit risk modelers, Commercial credit officers and Regulatory capital teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs (reference + scores)", "Daily / monthly refresh"))),
+                    tile("FIS Ambit Focus", "chart", "ALM, liquidity and interest rate risk measurement.", "fis-alm",
+                         cat="Asset & Liability Management System",
+                         what="Measures balance-sheet interest-rate risk, liquidity and funding under scenarios for asset-liability management.",
+                         users="Treasury, ALM and Liquidity risk teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day positions", "Daily + scenario runs"))),
+                    tile("Nasdaq AxiomSL Reg Reporting", "gavel", "Basel, CCAR and local regulatory templates.", "axiomsl",
+                         cat="Regulatory Reporting Platform",
+                         what="Assembles Basel, CCAR and local regulatory returns from risk and finance data with full lineage and validation.",
+                         users="Regulatory reporting, Finance and Risk control teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/reporting cycle", "Daily / monthly / quarterly cycles"))),
                 ]},
                 {"box": "Open Banking", "ic": "api", "tiles": [
-                    tile("Plaid Aggregation", "api", "External account verification and aggregation with consent.", "plaid"),
-                    tile("Tink Open Banking", "partner", "AIS/PIS traffic and consent registry.", "tink"),
+                    tile("Plaid Aggregation", "api", "External account verification and aggregation with consent.", "plaid",
+                         cat="Account Aggregation Provider",
+                         what="Connects to external accounts with customer consent to verify ownership and aggregate balances and transactions.",
+                         users="Digital Banking, Lending origination and Personal financial management teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s of API calls/sec", "Continuous (API / webhook)"))),
+                    tile("Tink Open Banking", "partner", "AIS/PIS traffic and consent registry.", "tink",
+                         cat="Open Banking Platform",
+                         what="Handles account-information and payment-initiation traffic under PSD2 with a consent registry for third-party access.",
+                         users="Open banking, Payments and Compliance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (API)"))),
                 ]},
-                fed_group("Data Warehouse Mart", "Historical GL and risk marts queried in place under Unity Catalog."),
+                fed_group("Data Warehouse Mart", "Historical GL and risk marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Legacy general-ledger and risk marts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                          users="Finance, Risk and Regulatory reporting analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("FICO Falcon", "gavel", "Card fraud scores and consortium intelligence.", "fico"),
-                tile("LexisNexis Risk", "partner", "KYC, sanctions and adverse media screening.", "lexisnexis"),
-                tile("Experian Bureau", "custlake", "Credit bureau pulls and attribute refreshes.", "experian"),
+                tile("FICO Falcon", "gavel", "Card fraud scores and consortium intelligence.", "fico",
+                     cat="Card Fraud Scoring",
+                     what="Scores card transactions for fraud in real time using consortium models and returns a risk score to the authorization path.",
+                     users="Fraud operations and Card risk teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "2-10k scores/sec at peak", "Continuous (sub-second)"))),
+                tile("LexisNexis Risk", "partner", "KYC, sanctions and adverse media screening.", "lexisnexis",
+                     cat="KYC & Screening Provider",
+                     what="Provides identity verification, sanctions and adverse-media screening used at onboarding and in ongoing due diligence.",
+                     users="Financial crime compliance, KYC/onboarding and Sanctions teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "1-4 GB/day", "Daily + on-demand"))),
+                tile("Experian Bureau", "custlake", "Credit bureau pulls and attribute refreshes.", "experian",
+                     cat="Credit Bureau",
+                     what="Supplies credit reports, scores and attribute refreshes used in lending decisions and portfolio monitoring.",
+                     users="Lending, Credit risk and Collections teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "1-3 GB/day", "Daily + on-demand pulls"))),
             ]),
             "ppl": ppl2([
                 biz("Chief Credit Officer & CFO", "Genie One",
@@ -125,6 +222,56 @@ INDUSTRIES_BATCH_BANKING = {
                     tile("Data Products", "product", "Customer and exposure products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Partners and regulators via governed sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Fraud & Financial Crime", "Ask about fraud losses, alert quality and AML case backlogs in plain language.",
+                      feeds=["Visa DPS / Auth", "NICE Actimize", "FICO Falcon", "Conformed customers and accounts"],
+                      teams=["Risk & Compliance", "Head of Fraud", "AML Investigators"],
+                      questions=[
+                          "What is our card fraud loss rate this month versus last?",
+                          "Which alert types have the worst false-positive rate right now?",
+                          "How many AML cases are open past their SLA, and for which segments?",
+                          "Which merchant categories are driving the most confirmed fraud?",
+                          "What is the alert-to-SAR conversion rate by investigator team?"]),
+                genie("Credit Risk", "Explore portfolio credit quality, early-warning signals and provisioning across the book.",
+                      feeds=["Moody's RiskCalc", "Experian Bureau", "Conformed customers and accounts", "NIM, NPL, liquidity ratios"],
+                      teams=["Commercial Banking", "Chief Credit Officer & CFO", "Credit Risk Officers"],
+                      questions=[
+                          "Which commercial names moved to a worse rating band this quarter?",
+                          "What is our NPL ratio by segment and region?",
+                          "Which exposures are approaching a covenant breach?",
+                          "How has expected loss changed since last month and why?",
+                          "Which borrowers show the strongest early-warning deterioration signals?"]),
+                genie("Customer 360", "Answer household and relationship questions across deposits, loans, cards and digital.",
+                      feeds=["Salesforce FSC", "Temenos Transact", "Temenos Infinity", "Conformed customers and accounts"],
+                      teams=["Retail Banking", "Relationship Managers", "Marketing & Sales"],
+                      questions=[
+                          "What is the total relationship value of this household across all products?",
+                          "Which customers hold only one product but look like cross-sell candidates?",
+                          "What is deposit and loan growth by branch and relationship manager?",
+                          "Which digitally-active customers have never been offered a card?",
+                          "What is attrition risk for our top-decile households?"]),
+                genie("Treasury & Liquidity", "Ask about funding, liquidity buffers and rate risk under stress.",
+                      feeds=["FIS Ambit Focus", "SWIFT FIN Messages", "NIM, NPL, liquidity ratios"],
+                      teams=["Treasury & ALM", "Group Treasurer", "Liquidity Risk Lead"],
+                      questions=[
+                          "What is our LCR and NSFR today, and the trend this quarter?",
+                          "How does the interest-rate gap look under a +200bp shock?",
+                          "What is projected deposit runoff under the stress scenario?",
+                          "Which currencies show the tightest intraday liquidity?",
+                          "How effective are our current hedges against rate moves?"]),
+            ], dashboards=[
+                dashboard("Capital & Liquidity", "Basel capital ratios, LCR and NSFR on certified regulatory Metric Views.",
+                          kpis=["CET1 ratio", "LCR", "NSFR", "RWA", "Interest-rate gap"],
+                          teams=["Chief Credit Officer & CFO", "Treasury & ALM", "Regulatory Reporting"]),
+                dashboard("Fraud & AML Operations", "Fraud loss, alert volumes, false-positive rates and SAR throughput.",
+                          kpis=["Fraud loss rate", "Alert volume", "False-positive rate", "Alert-to-SAR conversion", "Dispute volume"],
+                          teams=["Risk & Compliance", "Head of Fraud", "Head of Financial Crime"]),
+                dashboard("Retail Growth & Cross-Sell", "Deposit and loan growth, product penetration and household profitability.",
+                          kpis=["Deposit growth", "Loan growth", "Products per household", "Cross-sell rate", "Household profitability"],
+                          teams=["Retail Banking", "Marketing & Sales", "Head of Branch Network"]),
+                dashboard("Credit Portfolio Quality", "NPL formation, rating migration and expected loss across the book.",
+                          kpis=["NPL ratio", "Rating migration", "Expected loss", "PD/LGD trend", "Coverage ratio"],
+                          teams=["Commercial Banking", "Credit Risk Officers", "Chief Credit Officer & CFO"]),
             ]),
         },
         "top": top_band(

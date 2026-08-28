@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,127 @@ INDUSTRIES_BATCH_SHIPPING_PORTS = {
         "rails": {
             "src": [
                 {"box": "Terminal Operating", "ic": "erp", "tiles": [
-                    tile("Navis N4 TOS", "erp", "Terminal operating system: vessel plans, yard slots, crane dispatch and gate transactions.", "navis-n4"),
-                    tile("CyberLogitec OPUS", "db", "Container yard inventory, equipment control and rail loading for multi-modal terminals.", "cyberlogitec"),
-                    tile("SAP TM for Ports", "sheet", "Landside transport orders, appointment scheduling and carrier billing.", "sap-tm"),
+                    tile("Navis N4 TOS", "erp", "Terminal operating system: vessel plans, yard slots, crane dispatch and gate transactions.", "navis-n4",
+                         cat="Terminal Operating System (TOS)",
+                         what="Holds the system-of-record for vessel stow plans, yard slots, crane dispatch and gate transactions, emitting the move events every terminal KPI is built on.",
+                         users="Terminal Operations, Berth Planners and Yard Controllers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "Hourly batch + end-of-shift"),
+                             stream=flow(["semi-structured"], "hundreds-thousands of moves/sec at peak", "Continuous move events"))),
+                    tile("CyberLogitec OPUS", "db", "Container yard inventory, equipment control and rail loading for multi-modal terminals.", "cyberlogitec",
+                         cat="Terminal Operating System (TOS)",
+                         what="Manages container yard inventory, equipment control and rail loading for multi-modal terminals, the source of stack and rehandle state.",
+                         users="Terminal Operations, Yard Controllers and Intermodal Planners.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous yard events"))),
+                    tile("SAP TM for Ports", "sheet", "Landside transport orders, appointment scheduling and carrier billing.", "sap-tm",
+                         cat="Transportation Management System (TMS)",
+                         what="Handles landside transport orders, appointment scheduling and carrier billing, feeding rail and truck movement into terminal planning.",
+                         users="Landside Logistics, Intermodal Planners and Commercial & Tariffs teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly batch + hourly deltas"))),
                 ]},
                 {"box": "Vessel & Traffic", "ic": "stream", "tiles": [
-                    tile("Port Community System", "api", "Berth requests, pilot orders and customs pre-arrival messages exchanged with carriers.", "pcs"),
-                    tile("AIS Vessel Tracking", "globe", "Position, ETA and anchorage queue for every vessel approaching the port.", "ais"),
-                    tile("MarineTraffic API", "partner", "Historical track, port calls and congestion signals for schedule planning.", "marinetraffic"),
+                    tile("Port Community System", "api", "Berth requests, pilot orders and customs pre-arrival messages exchanged with carriers.", "pcs",
+                         cat="Port Community System (PCS)",
+                         what="Exchanges berth requests, pilot orders and customs pre-arrival messages between carriers, agents and the port, the shared operating picture for a call.",
+                         users="Terminal Operations, Harbour Master and Customs & Security teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of messages/sec", "Continuous message flow"))),
+                    tile("AIS Vessel Tracking", "globe", "Position, ETA and anchorage queue for every vessel approaching the port.", "ais",
+                         cat="Vessel Position (AIS)",
+                         what="Broadcasts vessel position, speed, ETA and anchorage queue for every ship approaching the port, the ground truth for arrival timing.",
+                         users="Terminal Operations, Berth Planners and Harbour Master.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of position reports/sec", "Continuous (seconds-minutes)"))),
+                    tile("MarineTraffic API", "partner", "Historical track, port calls and congestion signals for schedule planning.", "marinetraffic",
+                         cat="Maritime Data Provider",
+                         what="Provides historical vessel tracks, port-call history and congestion signals used to plan schedules and validate declared ETAs.",
+                         users="Terminal Operations, Berth Planners and ETA & Dwell Modelers.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly / daily API pulls"))),
                 ]},
                 {"box": "Cargo & Customs", "ic": "gavel", "tiles": [
-                    tile("Descartes Customs", "gavel", "Import and export declarations, duty calculation and hold status from customs brokers.", "descartes-customs"),
-                    tile("CargoWise One", "market", "Freight forwarding, house bills and milestone events for containerised cargo.", "cargowise"),
-                    tile("INTTRA eBL", "product", "Electronic bills of lading and booking confirmations from ocean carriers.", "inttra"),
+                    tile("Descartes Customs", "gavel", "Import and export declarations, duty calculation and hold status from customs brokers.", "descartes-customs",
+                         cat="Customs & Trade Compliance",
+                         what="Processes import and export declarations, duty calculation and hold status from customs brokers, driving pre-arrival clearance and holds.",
+                         users="Customs & Security, Customs Compliance and Landside Logistics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-4 GB/day", "Hourly + on-demand"))),
+                    tile("CargoWise One", "market", "Freight forwarding, house bills and milestone events for containerised cargo.", "cargowise",
+                         cat="Freight Forwarding Platform",
+                         what="Runs freight-forwarding operations, house bills and milestone events for containerised cargo, joining forwarder detail to terminal units.",
+                         users="Commercial & Tariffs, Customs Compliance and forwarder account teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily + milestone events"))),
+                    tile("INTTRA eBL", "product", "Electronic bills of lading and booking confirmations from ocean carriers.", "inttra",
+                         cat="Electronic Bill of Lading Network",
+                         what="Carries electronic bills of lading and booking confirmations from ocean carriers, the documentary basis for cargo release and DG declarations.",
+                         users="Customs & Security, DG Officers and documentation teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Continuous documents / daily batch"))),
                 ]},
                 {"box": "Equipment & Yard", "ic": "iot", "tiles": [
-                    tile("Kalmar Insight", "iot", "RTG and STS crane telemetry, spreader cycles and fuel burn by shift.", "kalmar-tv"),
-                    tile("Identec RFID Gates", "stream", "Automated gate OCR, RFID and chassis identification at in-gate and out-gate.", "identec"),
-                    tile("SICK Yard Automation", "partner", "Automated straddle carrier and AGV position for high-throughput yards.", "sick-yard"),
+                    tile("Kalmar Insight", "iot", "RTG and STS crane telemetry, spreader cycles and fuel burn by shift.", "kalmar-tv",
+                         cat="Crane & Equipment Telemetry",
+                         what="Streams RTG and STS crane telemetry, spreader cycles and fuel burn by shift, the source of crane productivity and emissions data.",
+                         users="Terminal Operations, Shift Managers and Environmental reporting teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of readings/sec", "Continuous equipment telemetry"))),
+                    tile("Identec RFID Gates", "stream", "Automated gate OCR, RFID and chassis identification at in-gate and out-gate.", "identec",
+                         cat="Gate Automation & OCR",
+                         what="Captures automated gate OCR, RFID and chassis identification at in-gate and out-gate, decomposing truck turnaround into stages.",
+                         users="Landside Logistics, Gate Managers and Yard Controllers.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of gate events/sec", "Continuous gate transactions"))),
+                    tile("SICK Yard Automation", "partner", "Automated straddle carrier and AGV position for high-throughput yards.", "sick-yard",
+                         cat="Yard Automation Sensors",
+                         what="Reports automated straddle carrier and AGV position and status for high-throughput yards, feeding equipment balance and safety analytics.",
+                         users="Terminal Operations, Yard Controllers and automation engineering teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of position events/sec", "Continuous (seconds)"))),
                 ]},
                 {"box": "Finance & Tariffs", "ic": "market", "tiles": [
-                    tile("Jade Master Terminal", "erp", "Storage, handling and demurrage invoices reconciled against actual moves.", "oracle-port"),
-                    tile("Tideworks Mainsail", "chart", "Published tariffs, rebates and contract rates applied to each service event.", "hph-tariff"),
+                    tile("Jade Master Terminal", "erp", "Storage, handling and demurrage invoices reconciled against actual moves.", "oracle-port",
+                         cat="Terminal Billing & Revenue",
+                         what="Generates storage, handling and demurrage invoices reconciled against actual crane and gate moves, the source of billed-versus-actual revenue.",
+                         users="Commercial & Tariffs, Revenue Assurance and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Daily billing cycles"))),
+                    tile("Tideworks Mainsail", "chart", "Published tariffs, rebates and contract rates applied to each service event.", "hph-tariff",
+                         cat="Tariff & Rate Management",
+                         what="Maintains published tariffs, rebates and contract rates applied to each service event, the pricing reference behind revenue leakage analysis.",
+                         users="Commercial & Tariffs, Tariff Managers and Key Account Managers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "MBs-GBs (rates + events)", "Daily rate refresh"))),
                 ]},
-                fed_group("Carrier Schedule Marts", "Vessel schedules and capacity marts left with carriers and queried in place under Unity Catalog."),
+                fed_group("Carrier Schedule Marts", "Vessel schedules and capacity marts left with carriers and queried in place under Unity Catalog.",
+                          cat="Carrier Schedule Warehouse",
+                          what="Carrier-side vessel schedule and capacity marts kept with the lines and queried in place through federation rather than copied into the terminal.",
+                          users="Terminal Operations, Berth Planners and Commercial & Tariffs analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("UN/EDIFACT COPRAR / CODECO", "stream", "COPRAR and CODECO vessel and gate moves and IFTMIN and IFTSTA transport messages from shipping lines, parsed on arrival.", "edifact"),
-                tile("Port Authority AIS Feed", "api", "Real-time berth occupancy and pilot boarding events from the port authority.", "pcs"),
-                tile("Customs Single Window", "gavel", "Government clearance status and inspection results consumed inbound.", "descartes-customs"),
+                tile("UN/EDIFACT COPRAR / CODECO", "stream", "COPRAR and CODECO vessel and gate moves and IFTMIN and IFTSTA transport messages from shipping lines, parsed on arrival.", "edifact",
+                     cat="EDI Transaction Messages",
+                     what="Carries COPRAR/CODECO vessel and gate moves and IFTMIN/IFTSTA transport messages from shipping lines, parsed on arrival and matched to units.",
+                     users="Terminal Operations, Customs Compliance and Integration Engineers.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "tens-hundreds of messages/sec", "Continuous message flow"))),
+                tile("Port Authority AIS Feed", "api", "Real-time berth occupancy and pilot boarding events from the port authority.", "pcs",
+                     cat="Port Authority Data Feed",
+                     what="Provides real-time berth occupancy and pilot-boarding events from the port authority, aligning the terminal to harbour-wide movement.",
+                     users="Terminal Operations, Harbour Master and Berth Planners.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "tens of events/sec", "Continuous (near real-time)"))),
+                tile("Customs Single Window", "gavel", "Government clearance status and inspection results consumed inbound.", "descartes-customs",
+                     cat="Government Single Window",
+                     what="Consumes government clearance status and inspection results inbound, the authoritative signal for whether a box may be released.",
+                     users="Customs & Security, Customs Compliance and Port Security teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly + event-driven"))),
             ]),
             "ppl": ppl2([
                 biz("Port Director Office", "Genie One", "The port director on throughput and revenue per call; the COO on berth productivity, truck queues and the terminal's demurrage exposure.",
@@ -149,6 +244,56 @@ INDUSTRIES_BATCH_SHIPPING_PORTS = {
                     tile("Data Products", "product", "Terminal performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Carriers and shippers reading live dwell and berth data via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Berth & Vessel Operations", "Ask about crane productivity, berth idle time and vessel arrival reliability.",
+                      feeds=["Navis N4 TOS", "Kalmar Insight", "AIS Vessel Tracking", "Throughput, dwell, crane rate"],
+                      teams=["Terminal Operations", "Berth Planner", "Shift Manager"],
+                      questions=[
+                          "What were crane moves per hour by vessel and berth on the last shift?",
+                          "How much berth idle time did we lose to plan versus execution today?",
+                          "Which approaching vessels have the least reliable declared ETA?",
+                          "What is the anchorage queue and expected berthing order right now?",
+                          "Which cranes show the highest fuel burn per move this week?"]),
+                genie("Container Dwell & Yard", "Explore dwell days, demurrage exposure and yard density across the stacks.",
+                      feeds=["CyberLogitec OPUS", "Identec RFID Gates", "Descartes Customs", "Conformed vessel, visit, unit"],
+                      teams=["Landside Logistics", "Yard Controller", "Terminal Operations"],
+                      questions=[
+                          "Which containers are about to breach free-dwell and accrue demurrage?",
+                          "What is average container dwell by line and cargo type this month?",
+                          "Which yard blocks are most congested and driving rehandles?",
+                          "How many units are held by customs and blocking their slots?",
+                          "What is our demurrage exposure by customer right now?"]),
+                genie("Gate & Landside Flow", "Answer truck turnaround, gate queue and intermodal handoff questions.",
+                      feeds=["Identec RFID Gates", "SAP TM for Ports", "Navis N4 TOS", "Throughput, dwell, crane rate"],
+                      teams=["Landside Logistics", "Gate Manager", "Intermodal Planner"],
+                      questions=[
+                          "What is average truck turnaround time by gate and hour today?",
+                          "Which stage of the gate process is the current bottleneck?",
+                          "How does appointment compliance compare to actual arrivals?",
+                          "Which rail consists are at risk of going out light this window?",
+                          "What is drayage carrier slot compliance this week?"]),
+                genie("Tariff & Revenue Assurance", "Ask about handling and storage revenue, rebates and billed-versus-actual moves.",
+                      feeds=["Jade Master Terminal", "Tideworks Mainsail", "Navis N4 TOS", "Throughput, dwell, crane rate"],
+                      teams=["Commercial & Tariffs", "Tariff Manager", "Revenue Assurance"],
+                      questions=[
+                          "Where do billed moves diverge from actual crane and gate events?",
+                          "Which customers exceeded free dwell but were not billed storage?",
+                          "How much storage and demurrage revenue did we bill this month?",
+                          "Which rebate tiers are customers close to triggering?",
+                          "What is revenue per vessel call by line this quarter?"]),
+            ], dashboards=[
+                dashboard("Vessel & Berth Productivity", "Crane moves per hour, berth utilisation and vessel ETA reliability.",
+                          kpis=["Crane moves per hour", "Berth utilisation", "Berth idle time", "Vessel ETA accuracy", "Gang productivity"],
+                          teams=["Terminal Operations", "Port Director Office", "Berth Planner"]),
+                dashboard("Container Dwell & Demurrage", "Dwell days, demurrage exposure and yard density across the terminal.",
+                          kpis=["Container dwell", "Demurrage exposure", "Yard density", "Rehandle rate", "Customs hold count"],
+                          teams=["Landside Logistics", "Yard Controller", "Commercial & Tariffs"]),
+                dashboard("Gate Turnaround & Intermodal", "Truck turnaround, gate queues and rail loading performance.",
+                          kpis=["Truck turnaround", "Gate queue length", "Appointment compliance", "Rail utilisation", "Drayage slot compliance"],
+                          teams=["Landside Logistics", "Gate Manager", "Intermodal Planner"]),
+                dashboard("Tariff & Storage Revenue", "Handling and storage revenue reconciled to actual moves with leakage.",
+                          kpis=["Handling revenue", "Storage revenue", "Revenue leakage", "Rebate accuracy", "Revenue per call"],
+                          teams=["Commercial & Tariffs", "Tariff Manager", "Revenue Assurance"]),
             ]),
         },
         "top": top_band(

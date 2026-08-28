@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,114 @@ INDUSTRIES_BATCH_MEDIA_BROADCASTING = {
         "rails": {
             "src": [
                 {"box": "Playout & MAM", "ic": "stream", "tiles": [
-                        tile("Dalet Galaxy", "stream", "Newsroom, MAM and playout scheduling: rundowns, media assets and as-run logs from linear operations.", "dalet"),
-                        tile("Avid MediaCentral", "stream", "Edit decisions, proxy media and production metadata from craft editing and finishing.", "avid"),
-                        tile("Imagine Nexio", "iot", "Channel playout automation, primary and backup chain state and splice events.", "imagine"),
+                        tile("Dalet Galaxy", "stream", "Newsroom, MAM and playout scheduling: rundowns, media assets and as-run logs from linear operations.", "dalet",
+                             cat="Media Asset Management (MAM) / Playout",
+                             what="Newsroom, MAM and playout scheduling: rundowns, media assets and as-run logs from linear operations.",
+                             users="Playout operations, News and Programming teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "1-5 GB/day as-run + metadata", "Hourly / per-run"),
+                                 stream=flow(["semi-structured"], "tens of playout events/sec", "Continuous"))),
+                        tile("Avid MediaCentral", "stream", "Edit decisions, proxy media and production metadata from craft editing and finishing.", "avid",
+                             cat="Production Asset Management (PAM)",
+                             what="Edit decisions, proxy media and production metadata from craft editing and finishing.",
+                             users="Production, Post and Craft editing teams.",
+                             data_out=data_out(
+                                 batch=flow(["semi-structured", "unstructured"], "0.5-3 GB/day metadata + proxies", "Daily"))),
+                        tile("Imagine Nexio", "iot", "Channel playout automation, primary and backup chain state and splice events.", "imagine",
+                             cat="Playout Automation",
+                             what="Channel playout automation, primary and backup chain state and splice events.",
+                             users="Broadcast operations and Master control.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "100s of channel events/sec", "Continuous"))),
                     ]},
                 {"box": "OTT & Streaming", "ic": "partner", "tiles": [
-                        tile("Brightcove", "stream", "VOD and live streaming delivery, QoE metrics and viewer engagement by title.", "brightcove"),
-                        tile("Conviva Experience", "observ", "Startup time, rebuffering and device-level QoE for every stream session.", "conviva"),
-                        tile("Zuora Media", "market", "Subscription plans, renewals and billing events for direct-to-consumer offers.", "zuora"),
+                        tile("Brightcove", "stream", "VOD and live streaming delivery, QoE metrics and viewer engagement by title.", "brightcove",
+                             cat="Online Video Platform (OVP)",
+                             what="VOD and live streaming delivery, QoE metrics and viewer engagement by title.",
+                             users="Streaming operations and Digital product teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k play events/sec", "Continuous"))),
+                        tile("Conviva Experience", "observ", "Startup time, rebuffering and device-level QoE for every stream session.", "conviva",
+                             cat="Streaming QoE / Observability",
+                             what="Startup time, rebuffering and device-level QoE for every stream session.",
+                             users="Streaming operations, CDN and Delivery teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "50k-500k QoE events/sec", "Continuous"))),
+                        tile("Zuora Media", "market", "Subscription plans, renewals and billing events for direct-to-consumer offers.", "zuora",
+                             cat="Subscription Billing",
+                             what="Subscription plans, renewals and billing events for direct-to-consumer offers.",
+                             users="Direct-to-consumer, Retention and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Daily"),
+                                 stream=flow(["semi-structured"], "tens of billing events/sec", "Continuous CDC"))),
                     ]},
                 {"box": "Ad Sales & Traffic", "ic": "market", "tiles": [
-                        tile("WideOrbit WO Traffic", "market", "Inventory, orders and makegoods for linear ad sales and traffic.", "wideorbit"),
-                        tile("FreeWheel Ad Server", "stream", "Dynamic ad insertion, pod structure and impression delivery on streaming inventory.", "freewheel"),
-                        tile("Operative One", "sheet", "Upfront deals, pacing and revenue recognition across linear and digital.", "operative"),
+                        tile("WideOrbit WO Traffic", "market", "Inventory, orders and makegoods for linear ad sales and traffic.", "wideorbit",
+                             cat="Ad Sales & Traffic (Linear)",
+                             what="Inventory, orders and makegoods for linear ad sales and traffic.",
+                             users="Ad operations, Yield and Ad sales teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-3 GB/day", "Hourly / nightly"))),
+                        tile("FreeWheel Ad Server", "stream", "Dynamic ad insertion, pod structure and impression delivery on streaming inventory.", "freewheel",
+                             cat="Ad Server (Streaming / CTV)",
+                             what="Dynamic ad insertion, pod structure and impression delivery on streaming inventory.",
+                             users="Ad operations and Yield teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k impressions/sec", "Continuous"))),
+                        tile("Operative One", "sheet", "Upfront deals, pacing and revenue recognition across linear and digital.", "operative",
+                             cat="Ad Sales Order Management",
+                             what="Upfront deals, pacing and revenue recognition across linear and digital.",
+                             users="Ad sales, Yield and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day", "Daily"))),
                     ]},
                 {"box": "Audience & Rights", "ic": "custlake", "tiles": [
-                        tile("Nielsen One", "chart", "Cross-platform audience measurement and demographic ratings the sales team prices against.", "nielsen"),
-                        tile("Comscore", "chart", "Digital audience panels and campaign validation for addressable and CTV.", "comscore"),
-                        tile("Rightsline", "gavel", "Title rights, windows and territory restrictions governing what can air where.", "rightsline"),
+                        tile("Nielsen One", "chart", "Cross-platform audience measurement and demographic ratings the sales team prices against.", "nielsen",
+                             cat="Audience Measurement / Ratings",
+                             what="Cross-platform audience measurement and demographic ratings the sales team prices against.",
+                             users="Research, Ad sales and Programming teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day panel + ratings", "Daily"))),
+                        tile("Comscore", "chart", "Digital audience panels and campaign validation for addressable and CTV.", "comscore",
+                             cat="Digital Audience Measurement",
+                             what="Digital audience panels and campaign validation for addressable and CTV.",
+                             users="Research and Ad sales teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-3 GB/day", "Daily"))),
+                        tile("Rightsline", "gavel", "Title rights, windows and territory restrictions governing what can air where.", "rightsline",
+                             cat="Rights & Royalties Management",
+                             what="Title rights, windows and territory restrictions governing what can air where.",
+                             users="Legal, Rights and Programming teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.1-0.5 GB/day", "Daily"))),
                     ]},
-                fed_group("Studio Cost Ledger", "Production accounting and amortisation marts queried in place under Unity Catalog for title P&L."),
+                fed_group("Studio Cost Ledger", "Production accounting and amortisation marts queried in place under Unity Catalog for title P&L.",
+                          cat="Production Finance Warehouse",
+                          what="Production accounting and amortisation marts kept in existing warehouses and queried in place through federation for title P&L.",
+                          users="Finance, Production accounting and Content strategy teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale cost history", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("SCTE-35 Ad Markers", "stream", "Splice insert and cue-out events parsed from transport streams for ad pod reconciliation.", "scte35"),
-                tile("Roku / Samsung ACR", "partner", "Automatic content recognition feeds for incremental reach on CTV.", "roku-acr"),
-                tile("Social Platform APIs", "api", "Clip views, shares and comment sentiment from owned and talent accounts.", "meta-graph"),
+                tile("SCTE-35 Ad Markers", "stream", "Splice insert and cue-out events parsed from transport streams for ad pod reconciliation.", "scte35",
+                     cat="Ad Insertion Signalling (SCTE-35)",
+                     what="Splice insert and cue-out events parsed from transport streams for ad pod reconciliation.",
+                     users="Ad operations and Broadcast operations.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s-1000s of cue events/sec", "Continuous"))),
+                tile("Roku / Samsung ACR", "partner", "Automatic content recognition feeds for incremental reach on CTV.", "roku-acr",
+                     cat="Automatic Content Recognition (ACR)",
+                     what="Automatic content recognition feeds for incremental reach on CTV.",
+                     users="Research and Ad sales teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "10-100k ACR events/sec", "Continuous"))),
+                tile("Social Platform APIs", "api", "Clip views, shares and comment sentiment from owned and talent accounts.", "meta-graph",
+                     cat="Social Media APIs",
+                     what="Clip views, shares and comment sentiment from owned and talent accounts.",
+                     users="Social, Digital and News teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "0.2-1 GB/day", "Hourly"),
+                         stream=flow(["semi-structured"], "100s of engagement events/sec", "Continuous"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Network & Studio Chiefs", "Genie One", "The CEO on portfolio ROI and subscriber growth; the CRO on ad yield by daypart and upfront commitments against the reach actually delivered.", [["Genie One", "Ask what last night's prime delivered in reach without waiting on research."], ["AI/BI", "Reach, yield and churn on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"impression\" means one thing across sales and ops."]],
@@ -137,6 +223,56 @@ INDUSTRIES_BATCH_MEDIA_BROADCASTING = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Agencies, studios and platforms reading live tables with no copy and no egress duplication."),
                     ]},
+            ], genie_spaces=[
+                genie("Audience & Reach", "Ask about cross-platform reach, frequency and ratings in plain language.",
+                      feeds=["Nielsen One", "Comscore", "Roku / Samsung ACR", "Reach, yield, churn"],
+                      teams=["Ad Sales", "Programming", "Data Scientists"],
+                      questions=[
+                          "What reach and frequency did last night's prime deliver by demo?",
+                          "Which titles drove the most incremental reach on CTV?",
+                          "How does linear versus streaming reach compare this quarter?",
+                          "Which demos are we under-delivering against upfront guarantees?",
+                          "What is duplicated reach across linear, OTT and CTV panels?"]),
+                genie("Ad Yield & Delivery", "Explore pacing, delivery and makegood exposure across linear and streaming.",
+                      feeds=["WideOrbit WO Traffic", "FreeWheel Ad Server", "Operative One", "Reach, yield, churn"],
+                      teams=["Ad Sales", "Network & Studio Chiefs", "App Developers"],
+                      questions=[
+                          "Which campaigns are pacing to under-deliver this quarter?",
+                          "What is ad yield by daypart versus last year?",
+                          "Where is makegood liability accumulating right now?",
+                          "Which pods have the lowest fill rate on streaming?",
+                          "What scatter inventory is priced below market?"]),
+                genie("Content & Programming", "Answer content ROI, completion and title-performance questions on governed data.",
+                      feeds=["Brightcove", "Studio Cost Ledger", "Nielsen One", "Conformed asset, viewer"],
+                      teams=["Programming", "Network & Studio Chiefs", "Data Scientists"],
+                      questions=[
+                          "Which titles returned the most acquisition and retention last month?",
+                          "What is completion rate by genre this quarter?",
+                          "Which catalog titles are driving new subscribers?",
+                          "How does content ROI compare across platforms by title?",
+                          "Which premieres under-performed against their lead-in?"]),
+                genie("Streaming & Churn", "Ask about QoE, concurrency and subscriber churn risk in plain language.",
+                      feeds=["Conviva Experience", "Brightcove", "Zuora Media", "Reach, yield, churn"],
+                      teams=["Distribution", "Programming", "Data Engineers"],
+                      questions=[
+                          "Which regions have the worst rebuffering right now?",
+                          "What is concurrency versus forecast for tonight's live event?",
+                          "Which subscribers are at highest churn risk before renewal?",
+                          "How does QoE correlate with cancellations this month?",
+                          "Which devices show the highest startup failure rate?"]),
+            ], dashboards=[
+                dashboard("Audience & Reach", "Cross-platform reach, frequency and ratings on certified views.",
+                          kpis=["Reach", "Frequency", "Rating by demo", "Duplicated reach", "Delivery vs guarantee"],
+                          teams=["Ad Sales", "Programming", "Network & Studio Chiefs"]),
+                dashboard("Ad Revenue & Yield", "Ad yield, pacing and makegood exposure across linear and streaming.",
+                          kpis=["Ad yield by daypart", "Pacing", "Fill rate", "Makegood liability", "Scatter pricing"],
+                          teams=["Ad Sales", "Network & Studio Chiefs", "Data Scientists"]),
+                dashboard("Content ROI", "Title P&L, completion and content ROI on governed definitions.",
+                          kpis=["Content ROI", "Completion rate", "Subscriber acquisition", "Title P&L", "Licensing revenue"],
+                          teams=["Programming", "Network & Studio Chiefs", "Data Scientists"]),
+                dashboard("Streaming & Churn", "QoE, concurrency and subscriber churn on certified streaming data.",
+                          kpis=["Rebuffering rate", "Startup time", "Concurrency", "Churn rate", "Cost per stream"],
+                          teams=["Distribution", "Programming", "Data Engineers"]),
             ]),
         },
         "top": top_band(

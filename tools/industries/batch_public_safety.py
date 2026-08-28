@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,47 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             "stream",
                             "Enterprise Public Safety computer-aided dispatch: the system of record for calls for service, unit assignment and incident timestamps.",
                             "tyler-cad",
+                            cat="Computer-Aided Dispatch (CAD)",
+                            what="System of record for calls for service, unit assignment and incident timestamps that a response can be replayed against.",
+                            users="Dispatchers, watch commanders and patrol operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of incident events/sec at peak", "Continuous (sub-second)")),
                         ),
                         tile(
                             "Hexagon CAD",
                             "stream",
                             "HxGN OnCall Dispatch: incident intake, resource recommendation and unit status used by large agencies and consolidated dispatch centres.",
                             "hexagon-cad",
+                            cat="Computer-Aided Dispatch (CAD)",
+                            what="Handles incident intake, resource recommendation and unit status for large agencies and consolidated dispatch centres.",
+                            users="Consolidated dispatch centre operators and patrol supervisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-25 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous (sub-second)")),
                         ),
                         tile(
                             "Carbyne NG911",
                             "dial",
                             "Cloud-native NG911 call handling with caller location and live video, the front door for emergency calls into the CAD estate.",
                             "carbyne",
+                            cat="NG911 Call Handling System",
+                            what="Cloud-native NG911 call handling carrying caller location, live video and call metadata as the front door into the CAD estate.",
+                            users="911 call-takers and dispatch supervisors.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured", "unstructured"], "hundreds of calls/hour + live media", "Continuous (real-time)")),
                         ),
                         tile(
                             "Motorola PremierOne CAD",
                             "stream",
                             "Motorola PremierOne computer-aided dispatch: call intake, unit recommendation and incident timestamps, a widely deployed CAD system of record feeding the same incident and unit entities.",
                             "centralsquare",
+                            cat="Computer-Aided Dispatch (CAD)",
+                            what="Widely deployed CAD covering call intake, unit recommendation and incident timestamps, feeding the same incident and unit entities.",
+                            users="Dispatchers, watch commanders and patrol operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous (sub-second)")),
                         ),
                     ],
                 },
@@ -65,18 +91,35 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             "db",
                             "Cloud records management: incident and arrest reports, case files and NIBRS-ready records, the system of record for what happened after the call.",
                             "mark43",
+                            cat="Records Management System (RMS)",
+                            what="System of record for incident and arrest reports, case files and NIBRS-ready records after the call is closed.",
+                            users="Officers, detectives, records staff and crime analysts.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "3-15 GB/day", "Nightly batch + hourly deltas"),
+                                stream=flow(["semi-structured"], "tens of report events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Tyler Odyssey Court",
                             "gavel",
                             "Enterprise Justice court case management: charges, dispositions and warrants shared with law enforcement and corrections.",
                             "odyssey",
+                            cat="Court Case Management System",
+                            what="Manages charges, dispositions and warrants and shares them with law enforcement and corrections.",
+                            users="Court clerks, records and warrants teams and prosecutors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "2-8 GB/day", "Nightly batch")),
                         ),
                         tile(
                             "Guardian RFID JMS",
                             "gavel",
                             "Jail management: booking, classification, housing and inmate movement tracked as the custody record of the facility.",
                             "guardian-rfid",
+                            cat="Jail Management System (JMS)",
+                            what="Tracks booking, classification, housing and inmate movement as the custody record of the facility.",
+                            users="Corrections officers, classification and facility administration.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "tens of movement events/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -89,24 +132,44 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             "media",
                             "Digital evidence management: body-worn and in-car video, photos and files with chain of custody, the evidence estate of record.",
                             "axon",
+                            cat="Digital Evidence Management System",
+                            what="Stores body-worn and in-car video, photos and files with chain of custody as the evidence estate of record.",
+                            users="Officers, digital evidence teams and prosecutors.",
+                            data_out=data_out(
+                                batch=flow(["unstructured", "semi-structured"], "TB-scale video + metadata/day", "Continuous upload + nightly batch")),
                         ),
                         tile(
                             "Axon Body 4",
                             "media",
                             "Body-worn cameras streaming live and uploading recordings, the source of the video every review and disclosure request draws on.",
                             "axon-body",
+                            cat="Body-Worn Camera Fleet",
+                            what="Body-worn cameras streaming live and uploading recordings, the source video every review and disclosure request draws on.",
+                            users="Patrol officers, supervisors and digital evidence teams.",
+                            data_out=data_out(
+                                stream=flow(["unstructured"], "hundreds of GB/day video", "Continuous live + on-dock upload")),
                         ),
                         tile(
                             "Genetec Clearance",
                             "share",
                             "Digital evidence sharing and redaction across agencies and prosecutors, the disclosure path for video and case files.",
                             "genetec",
+                            cat="Evidence Sharing & Redaction Platform",
+                            what="Shares and redacts digital evidence across agencies and prosecutors as the disclosure path for video and case files.",
+                            users="Digital evidence, records and disclosure teams and prosecutors.",
+                            data_out=data_out(
+                                batch=flow(["unstructured", "semi-structured"], "tens of GB/day + share logs", "Continuous + nightly batch")),
                         ),
                         tile(
                             "Flock Safety ALPR",
                             "network",
                             "Automatic licence-plate recognition cameras generating plate reads matched against wanted and missing-person lists.",
                             "flock",
+                            cat="Automatic Licence-Plate Recognition (ALPR)",
+                            what="Cameras generating plate reads matched against wanted and missing-person watch-lists to surface leads.",
+                            users="Crime analysts, detectives and patrol operations.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "thousands of plate reads/sec across the network", "Continuous (real-time)")),
                         ),
                     ],
                 },
@@ -119,18 +182,33 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             "docs",
                             "Electronic patient-care records and fire incident reporting: the NEMSIS and NFIRS-ready record of every EMS and fire response.",
                             "imagetrend",
+                            cat="ePCR / Fire Records System",
+                            what="Electronic patient-care records and fire incident reporting, the NEMSIS and NFIRS-ready record of every EMS and fire response.",
+                            users="EMS crews, fire officers and quality-review teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "2-8 GB/day", "Nightly batch + per-run upload")),
                         ),
                         tile(
                             "ESO EHR",
                             "docs",
                             "EMS electronic health records and fire records, feeding patient outcomes, response intervals and quality review.",
                             "eso",
+                            cat="ePCR / Fire Records System",
+                            what="EMS electronic health records and fire records feeding patient outcomes, response intervals and quality review.",
+                            users="EMS medical directors, fire officers and QA teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-6 GB/day", "Nightly batch + per-run upload")),
                         ),
                         tile(
                             "First Due Fire",
                             "gauge",
                             "Fire prevention, inspections and pre-incident planning: the building, hydrant and inspection record behind risk-based deployment.",
                             "firstdue",
+                            cat="Fire Prevention & Inspections System",
+                            what="Holds the building, hydrant and inspection records and pre-incident plans behind risk-based deployment and prevention.",
+                            users="Fire prevention, inspectors and fire operations.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "0.5-3 GB/day", "Nightly batch")),
                         ),
                     ],
                 },
@@ -143,23 +221,43 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             "globe",
                             "The GIS of record: beats, parcels, hydrants and service geographies and the spatial layers behind hotspots, coverage and response.",
                             "arcgis-esri",
+                            cat="Geographic Information System (GIS)",
+                            what="System of record for beats, parcels, hydrants and service geographies and the spatial layers behind hotspots, coverage and response.",
+                            users="GIS and crime analysts, fire and emergency management.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "GB-scale spatial layers", "Nightly / on-change refresh")),
                         ),
                         tile(
                             "AVL Telemetry",
                             "iot",
                             "Automatic vehicle location and unit telemetry from patrol cars, fire apparatus and ambulances, the ground truth for travel time.",
+                            cat="Vehicle Location / Telemetry (AVL)",
+                            what="Automatic vehicle location and unit telemetry from patrol cars, fire apparatus and ambulances, the ground truth for travel time.",
+                            users="Dispatch, patrol operations and fleet telematics teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "thousands of GPS pings/sec across the fleet", "Continuous (seconds)")),
                         ),
                         tile(
                             "FirstNet Broadband",
                             "network",
                             "The first-responder broadband network carrying location, status and field data from responders back to the operations picture.",
                             "firstnet",
+                            cat="First-Responder Broadband Network",
+                            what="Carries responder location, status and field data back to the operations picture over the first-responder broadband network.",
+                            users="Field responders, dispatch and command staff.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "thousands of status/location events/sec", "Continuous (real-time)")),
                         ),
                     ],
                 },
                 fed_group(
                     "CJIS Repository",
                     "State criminal-justice and NCIC/III record stores left where they are and queried in place under Unity Catalog, so CJIS-controlled records are never needlessly copied.",
+                    cat="Criminal Justice Record Store (CJIS)",
+                    what="State criminal-justice and NCIC/III record stores queried in place through federation so CJIS-controlled records are never needlessly copied.",
+                    users="Records, warrants and CJIS-compliance teams and detectives.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale controlled records", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -169,18 +267,33 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                         "api",
                         "Device and app emergency data, precise caller location and medical profiles, streamed into the 911 and CAD picture.",
                         "rapidsos",
+                        cat="Emergency Data Provider (Location)",
+                        what="Streams device and app emergency data, precise caller location and medical profiles into the 911 and CAD picture.",
+                        users="911 call-takers, dispatchers and patrol operations.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "hundreds of location events/sec", "Continuous (real-time)")),
                     ),
                     tile(
                         "ShotSpotter Alerts",
                         "stream",
                         "Acoustic gunshot detection alerts with location and time, ingested as events for real-time response and analysis.",
                         "shotspotter",
+                        cat="Acoustic Gunshot Detection",
+                        what="Emits acoustic gunshot-detection alerts with location and time, ingested as events for real-time response and analysis.",
+                        users="Real-time crime centre operators, patrol and crime analysts.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "alerts on detection (bursty)", "Continuous (real-time)")),
                     ),
                     tile(
                         "Weather & Traffic",
                         "globe",
                         "National Weather Service and traffic feeds joined for demand forecasting, routing and disaster response.",
                         "nws",
+                        cat="Weather & Traffic Reference Feeds",
+                        what="National Weather Service and traffic feeds joined for demand forecasting, routing and disaster response.",
+                        users="Emergency management, EMS demand planning and dispatch.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "periodic observations + alerts", "Continuous (polling / push)")),
                     ),
                 ]
             ),
@@ -408,7 +521,75 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie(
+                        "Response & Dispatch",
+                        "Ask about response times, call queues and unit availability across the city in plain language.",
+                        feeds=["Tyler Enterprise CAD", "Carbyne NG911", "AVL Telemetry", "Response time, clearance, safety"],
+                        teams=["Patrol Ops", "Command Staff", "Dispatch Supervisor"],
+                        questions=[
+                            "What were response times by call type and beat last night?",
+                            "Which beats are running slowest against the standard right now?",
+                            "How many calls are holding in queue and for how long?",
+                            "Where is call-for-service demand concentrating this shift?",
+                            "How does dispatch-to-on-scene time break down into call-taking, dispatch and travel?"]),
+                    genie(
+                        "Crime Analysis",
+                        "Explore incident patterns, hotspots and clearance across records and calls for service.",
+                        feeds=["Mark43 RMS", "Flock Safety ALPR", "Esri ArcGIS", "Conformed incident, unit, person"],
+                        teams=["Investigations", "Command Staff", "Crime Analysts"],
+                        questions=[
+                            "Which areas are hotspots for this offence type this month?",
+                            "What is our case clearance rate by crime type and unit?",
+                            "Which incidents link into a possible series?",
+                            "Which plate reads matched a wanted or missing-person list today?",
+                            "How has this crime category trended versus the same period last year?"]),
+                    genie(
+                        "Fire & EMS",
+                        "Ask about EMS demand, response intervals, fire risk and unit utilisation across the service area.",
+                        feeds=["ImageTrend ePCR", "ESO EHR", "First Due Fire", "Response time, clearance, safety"],
+                        teams=["Fire & EMS", "Command Staff", "EMS Medical Director"],
+                        questions=[
+                            "Where will EMS demand peak by hour and location tomorrow?",
+                            "What are our response intervals by unit and call type?",
+                            "Which properties carry the highest fire risk right now?",
+                            "What is unit-hour utilisation across the ambulance fleet?",
+                            "How is turnout time trending by station this month?"]),
+                    genie(
+                        "Evidence & Accountability",
+                        "Answer questions across digital evidence, use-of-force and early-intervention indicators.",
+                        feeds=["Axon Evidence", "Genetec Clearance", "Mark43 RMS", "Conformed incident, unit, person"],
+                        teams=["Prof Standards", "Investigations", "Internal Affairs"],
+                        questions=[
+                            "Which use-of-force and complaint indicators are trending this quarter?",
+                            "Which officers fall in the early-intervention window right now?",
+                            "How much evidence is pending review against disclosure deadlines?",
+                            "What is the average time from request to disclosure for video?",
+                            "Which cases are missing required evidence for prosecution?"]),
+                ],
+                dashboards=[
+                    dashboard(
+                        "Response Performance",
+                        "Response time by call type and beat, call-queue depth and unit availability on certified views.",
+                        kpis=["Response time", "Call-taking time", "Queue depth", "Unit availability", "On-time rate"],
+                        teams=["Patrol Ops", "Command Staff", "Dispatch Supervisor"]),
+                    dashboard(
+                        "Crime & Clearance",
+                        "Calls-for-service demand, offence trends, hotspots and case clearance across the agency.",
+                        kpis=["Calls for service", "Clearance rate", "Offence trend", "Hotspot density", "ALPR hit rate"],
+                        teams=["Investigations", "Command Staff", "Crime Analysts"]),
+                    dashboard(
+                        "Fire & EMS Operations",
+                        "EMS demand, response intervals, turnout time, fire risk and unit-hour utilisation.",
+                        kpis=["EMS demand", "Response interval", "Turnout time", "Unit-hour utilisation", "Fire-risk score"],
+                        teams=["Fire & EMS", "Command Staff", "EMS Medical Director"]),
+                    dashboard(
+                        "Accountability & Evidence",
+                        "Use-of-force, complaint and early-intervention indicators with evidence review and disclosure throughput.",
+                        kpis=["Use-of-force rate", "Complaint volume", "Early-intervention flags", "Evidence backlog", "Disclosure turnaround"],
+                        teams=["Prof Standards", "Internal Affairs", "Community Relations"]),
+                ],
             ),
         },
         "top": top_band(

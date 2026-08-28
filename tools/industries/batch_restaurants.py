@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,113 @@ INDUSTRIES_BATCH_RESTAURANTS = {
         "rails": {
             "src": [
                 {"box": "POS & Kitchen", "ic": "market", "tiles": [
-                        tile("NCR Aloha POS", "market", "Guest checks, modifiers, voids and payment tenders from dine-in and bar.", "ncr-aloha"),
-                        tile("Toast Restaurant POS", "partner", "Full-service and QSR transactions with online ordering integration.", "toast"),
-                        tile("QSR Automations KDS", "stream", "Kitchen display timing, bump events and course sequencing.", "qsr-automations"),
+                        tile("NCR Aloha POS", "market", "Guest checks, modifiers, voids and payment tenders from dine-in and bar.", "ncr-aloha",
+                             cat="Restaurant POS",
+                             what="Captures guest checks, modifiers, voids, comps and payment tenders across dine-in, bar and counter service.",
+                             users="Store operations, Shift managers and Loss prevention teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of checks/sec at peak", "Continuous (POS transactions)"),
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly polling extracts"))),
+                        tile("Toast Restaurant POS", "partner", "Full-service and QSR transactions with online ordering integration.", "toast",
+                             cat="Restaurant POS",
+                             what="Cloud POS for full-service and QSR that unifies in-store checks with online and app ordering on one platform.",
+                             users="Store operations, Digital ordering and Menu management teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of orders/sec at peak", "Continuous (API / webhook)"))),
+                        tile("QSR Automations KDS", "stream", "Kitchen display timing, bump events and course sequencing.", "qsr-automations",
+                             cat="Kitchen Display System (KDS)",
+                             what="Drives kitchen display timing, bump events and course sequencing so ticket and prep times can be measured.",
+                             users="Kitchen operations, Speed-of-service and Operations teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "thousands of bump events/min at peak", "Continuous (kitchen events)"))),
                     ]},
                 {"box": "Back Office & ERP", "ic": "erp", "tiles": [
-                        tile("Restaurant365", "erp", "AP, inventory, scheduling and store P&L for multi-unit operators.", "r365"),
-                        tile("CrunchTime Inventory", "sheet", "Food counts, theoretical usage and waste tracking by store.", "crunchtime"),
-                        tile("SAP Business One", "db", "Franchise billing, royalties and consolidated financial close.", "sap-b1"),
+                        tile("Restaurant365", "erp", "AP, inventory, scheduling and store P&L for multi-unit operators.", "r365",
+                             cat="Restaurant Back-Office / ERP",
+                             what="Restaurant-specific ERP covering accounts payable, inventory, scheduling and store-level P&L for multi-unit operators.",
+                             users="Finance, Controllers and Above-store operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-8 GB/day", "Nightly close + intraday deltas"))),
+                        tile("CrunchTime Inventory", "sheet", "Food counts, theoretical usage and waste tracking by store.", "crunchtime",
+                             cat="Inventory & Food-Cost Management",
+                             what="Tracks food counts, theoretical versus actual usage and waste by store to drive food-cost control.",
+                             users="Finance, Kitchen operations and Purchasing teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day counts + usage", "Daily counts + period close"))),
+                        tile("SAP Business One", "db", "Franchise billing, royalties and consolidated financial close.", "sap-b1",
+                             cat="Financial / ERP System",
+                             what="Handles franchise billing, royalty accruals and the consolidated financial close for the operator.",
+                             users="Finance, Franchise accounting and Treasury teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly batch + period close"))),
                     ]},
                 {"box": "Labor & Scheduling", "ic": "people", "tiles": [
-                        tile("HotSchedules", "people", "Shift schedules, punches and labor compliance across locations.", "hotschedules"),
-                        tile("Deputy Workforce", "chart", "Time and attendance, leave and wage rules for hourly teams.", "deputy"),
-                        tile("Harri Talent Platform", "custlake", "Hiring, onboarding and turnover metrics by store and role.", "harri"),
+                        tile("HotSchedules", "people", "Shift schedules, punches and labor compliance across locations.", "hotschedules",
+                             cat="Workforce Scheduling System",
+                             what="Builds shift schedules, captures punches and enforces labor-compliance rules across store locations.",
+                             users="Store managers, Above-store operations and HR compliance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "sub-GB to 2 GB/day", "Hourly punch + schedule sync"))),
+                        tile("Deputy Workforce", "chart", "Time and attendance, leave and wage rules for hourly teams.", "deputy",
+                             cat="Time & Attendance Platform",
+                             what="Records time and attendance, leave and wage rules for hourly teams and feeds payroll and labor analytics.",
+                             users="Store managers, Payroll and HR teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "sub-GB/day", "Hourly / nightly sync"))),
+                        tile("Harri Talent Platform", "custlake", "Hiring, onboarding and turnover metrics by store and role.", "harri",
+                             cat="HR & Talent Management",
+                             what="Manages hiring, onboarding and turnover tracking by store and role for high-churn hourly workforces.",
+                             users="HR, Recruiting and Store operations teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "sub-GB/day", "Daily sync"))),
                     ]},
                 {"box": "Delivery & Loyalty", "ic": "partner", "tiles": [
-                        tile("DoorDash Marketplace", "partner", "Third-party delivery orders, fees and customer ratings by store.", "doordash"),
-                        tile("Uber Eats Merchant", "api", "Delivery channel orders, adjustments and payout statements.", "uber-eats"),
-                        tile("Paytronix Loyalty", "custlake", "Guest profiles, offers redeemed and visit frequency.", "paytronix"),
+                        tile("DoorDash Marketplace", "partner", "Third-party delivery orders, fees and customer ratings by store.", "doordash",
+                             cat="Delivery Marketplace",
+                             what="Third-party delivery marketplace supplying orders, commission and fee detail, refunds and customer ratings per store.",
+                             users="Digital & delivery, Store operations and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "1-3 GB/day orders + payouts", "Hourly orders + daily payout files"))),
+                        tile("Uber Eats Merchant", "api", "Delivery channel orders, adjustments and payout statements.", "uber-eats",
+                             cat="Delivery Marketplace",
+                             what="Delivery channel supplying orders, adjustments and payout statements reconciled against store sales.",
+                             users="Digital & delivery, Store operations and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "1-3 GB/day", "Hourly orders + daily payouts"))),
+                        tile("Paytronix Loyalty", "custlake", "Guest profiles, offers redeemed and visit frequency.", "paytronix",
+                             cat="Loyalty & Guest Engagement",
+                             what="Holds guest profiles, offer redemptions and visit frequency behind loyalty and win-back programs.",
+                             users="Marketing, Loyalty and CRM teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"),
+                                 stream=flow(["semi-structured"], "tens of events/sec", "Continuous (redemption events)"))),
                     ]},
-                fed_group("Franchisee P&L Mart", "Franchise unit economics left at franchisees and queried in place under Unity Catalog."),
+                fed_group("Franchisee P&L Mart", "Franchise unit economics left at franchisees and queried in place under Unity Catalog.",
+                          cat="Franchise Financial Data Warehouse",
+                          what="Franchise unit-economics marts left at franchisees and queried in place through federation rather than centralised.",
+                          users="Franchise business consultants, Finance and Franchise development teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "GB-scale per franchisee", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Weather & Events API", "globe", "Local weather and event calendars consumed inbound for demand forecasting."),
-                tile("Commodity Price Feeds", "market", "Protein and produce indices normalised for menu engineering alerts.", "usda-ams"),
-                tile("Health Dept Inspections", "gavel", "Municipal inspection scores parsed for franchise compliance monitoring."),
+                tile("Weather & Events API", "globe", "Local weather and event calendars consumed inbound for demand forecasting.",
+                     cat="Weather & Events Data",
+                     what="Supplies local forecasts and event calendars used as demand-forecasting features for prep, ordering and staffing.",
+                     users="Operations, Forecasting scientists and Store managers.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "sub-GB/day", "Hourly / daily pulls"))),
+                tile("Commodity Price Feeds", "market", "Protein and produce indices normalised for menu engineering alerts.", "usda-ams",
+                     cat="Commodity Price Index",
+                     what="Normalises protein and produce price indices into food-cost and menu-engineering alerts.",
+                     users="Finance, Purchasing and Menu strategy teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "sub-GB/day", "Daily index files"))),
+                tile("Health Dept Inspections", "gavel", "Municipal inspection scores parsed for franchise compliance monitoring.",
+                     cat="Regulatory Inspection Data",
+                     what="Parses municipal health-inspection scores and violations for franchise food-safety and compliance monitoring.",
+                     users="Franchise compliance, Food safety and Operations teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "sub-GB/day", "Weekly / on publication"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Brand Leadership", "Genie One", "The CEO on comparable sales and franchise growth; the CFO on food and labor cost percent when commodity prices and hourly wages spike.", [["Genie One", "Ask what yesterday's comp sales were by banner without waiting on operations."], ["AI/BI", "Sales, labor and margin on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"comp\" means one thing across POS and ERP."]], sub=[["CEO", "comparable sales, franchise growth and the trade between new units and unit margin."], ["CFO", "prime cost, cash and food and labor exposure when commodities and wages spike."], ["Chief Brand Officer", "menu strategy, LTO cadence and the guest brand promise across banners."]], ucs=["Menu Engineering", "Demand Forecasting", "New Store Analytics"]),
@@ -89,6 +174,56 @@ INDUSTRIES_BATCH_RESTAURANTS = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Franchisees, auditors and partners reading live tables with no copy."),
                     ]},
+            ], genie_spaces=[
+                genie("Store Performance", "Ask about comp sales, ticket times and daypart performance across stores in plain language.",
+                      feeds=["NCR Aloha POS", "Toast Restaurant POS", "QSR Automations KDS", "Sales, labor, margin"],
+                      teams=["Operations", "VP Operations", "Regional Director"],
+                      questions=[
+                          "What were comp sales by store and daypart yesterday versus last year?",
+                          "Which stores have the slowest ticket times this week?",
+                          "Which stores missed their speed-of-service target during the lunch rush?",
+                          "How do voids and comps compare across stores this period?",
+                          "Which regions are trending down on order accuracy?"]),
+                genie("Food Cost & Margin", "Explore theoretical-versus-actual food cost, waste and prime cost across stores.",
+                      feeds=["CrunchTime Inventory", "Restaurant365", "NCR Aloha POS", "Sales, labor, margin"],
+                      teams=["Finance & Accounting", "Controller", "Loss Prevention"],
+                      questions=[
+                          "Which stores missed food-cost budget last week and by how much?",
+                          "What is the theoretical-versus-actual usage variance by item?",
+                          "Where is waste highest and which items drive it?",
+                          "How is prime cost tracking against budget by store?",
+                          "Which employees and shifts show unusual void and comp patterns?"]),
+                genie("Delivery & Loyalty", "Answer questions on delivery channel mix, marketplace economics and guest loyalty.",
+                      feeds=["DoorDash Marketplace", "Uber Eats Merchant", "Paytronix Loyalty", "Conformed store, item"],
+                      teams=["Marketing & Loyalty", "Loyalty Manager", "Digital & Delivery"],
+                      questions=[
+                          "What is net margin per delivered check by channel and store?",
+                          "Which delivery platform drives the most profitable orders this month?",
+                          "Which loyalty members are lapsing before their points expire?",
+                          "What is redemption lift on the current offer versus baseline?",
+                          "How does visit frequency differ between loyalty and non-loyalty guests?"]),
+                genie("Franchise & Brand", "Ask about franchise unit economics, audit scores and new-store performance.",
+                      feeds=["Franchisee P&L Mart", "Health Dept Inspections", "Restaurant365", "Sales, labor, margin"],
+                      teams=["Franchise Development", "Franchise Business Consultant", "Brand Leadership"],
+                      questions=[
+                          "Which franchisees are below system-average unit economics?",
+                          "Which units are at risk on their next field or health audit?",
+                          "How are new stores ramping against their pro forma?",
+                          "Which banners are driving comparable-sales growth this quarter?",
+                          "Where is franchisee compliance slipping across the system?"]),
+            ], dashboards=[
+                dashboard("Comp Sales & Operations", "Comparable sales, speed of service and order accuracy on certified Metric Views.",
+                          kpis=["Comparable sales", "Ticket time", "Order accuracy", "Void rate", "Transactions per hour"],
+                          teams=["Operations", "Brand Leadership", "Regional Director"]),
+                dashboard("Prime Cost & Margin", "Food cost, labor percent and prime cost against budget by store and period.",
+                          kpis=["Food cost percent", "Labor percent", "Prime cost", "Waste percent", "Theoretical variance"],
+                          teams=["Finance & Accounting", "Controller", "FP&A"]),
+                dashboard("Delivery & Loyalty", "Channel mix, marketplace margin and loyalty engagement across the base.",
+                          kpis=["Delivery channel mix", "Net margin per check", "Redemption lift", "Visit frequency", "Points liability"],
+                          teams=["Marketing & Loyalty", "Digital & Delivery", "Loyalty Manager"]),
+                dashboard("Franchise Scorecard", "Unit economics, audit scores and new-store ramp by franchisee.",
+                          kpis=["Unit-level P&L", "Audit score", "Compliance rate", "New-store ramp", "Comparable sales"],
+                          teams=["Franchise Development", "Franchise Business Consultant", "Brand Leadership"]),
             ]),
         },
         "top": top_band(

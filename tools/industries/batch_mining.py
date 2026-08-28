@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,114 @@ INDUSTRIES_BATCH_MINING = {
         "rails": {
             "src": [
                 {"box": "Fleet & Dispatch", "ic": "iot", "tiles": [
-                        tile("Modular Mining DISPATCH", "iot", "Shovel-truck assignment, queue times and payload cycles from the open-pit dispatch system.", "modular"),
-                        tile("Hexagon MineOperate", "stream", "Underground and surface fleet location, production reporting and operator logs.", "hexagon"),
-                        tile("Maptek BlastLogic", "sheet", "Drill and blast designs, actuals and fragmentation linked to dig blocks.", "maptek"),
+                        tile("Modular Mining DISPATCH", "iot", "Shovel-truck assignment, queue times and payload cycles from the open-pit dispatch system.", "modular",
+                             cat="Fleet Management System (FMS)",
+                             what="Runs open-pit shovel-truck assignment, queue times and payload cycles as the real-time fleet dispatch system of record.",
+                             users="Dispatch controllers, mine operations and production engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day cycle history", "Shift-end + hourly rollups"),
+                                 stream=flow(["semi-structured"], "1-10k events/sec", "Continuous (real-time assignments)"))),
+                        tile("Hexagon MineOperate", "stream", "Underground and surface fleet location, production reporting and operator logs.", "hexagon",
+                             cat="Fleet Management System (FMS)",
+                             what="Tracks underground and surface fleet location, production reporting and operator logs across the operation.",
+                             users="Mine operations, dispatch controllers and production reporting teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-8k events/sec", "Continuous (location + production)"))),
+                        tile("Maptek BlastLogic", "sheet", "Drill and blast designs, actuals and fragmentation linked to dig blocks.", "maptek",
+                             cat="Drill & Blast Management System",
+                             what="Holds drill and blast designs, actuals and fragmentation results linked to dig blocks for grade and productivity analysis.",
+                             users="Drill & blast engineers, grade control geologists and mine planning.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Per-blast + daily updates"))),
                     ]},
                 {"box": "Plant & Processing", "ic": "stream", "tiles": [
-                        tile("AVEVA PI System", "iot", "Mill throughput, reagent flows and recovery tags from concentrator historians.", "aveva-pi"),
-                        tile("Metso Metrics", "gauge", "Cloud monitoring of crusher, mill and screen performance against nameplate and maintenance windows.", "metso"),
-                        tile("LIMS Assay Lab", "gavel", "Sample preparation, assay results and QA/QC duplicates for grade control.", "lims"),
+                        tile("AVEVA PI System", "iot", "Mill throughput, reagent flows and recovery tags from concentrator historians.", "aveva-pi",
+                             cat="Process/Time-Series Historian",
+                             what="Stores mill throughput, reagent flows and recovery tags from concentrator plants as the processing time-series system of record.",
+                             users="Plant metallurgists, concentrator operators and reliability engineers.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-50 GB/day tag history", "Hourly aggregates"),
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous (sub-second)"))),
+                        tile("Metso Metrics", "gauge", "Cloud monitoring of crusher, mill and screen performance against nameplate and maintenance windows.", "metso",
+                             cat="Equipment Performance Monitoring",
+                             what="Cloud monitoring of crusher, mill and screen performance against nameplate and maintenance windows for reliability and throughput.",
+                             users="Reliability engineers, maintenance planning and plant operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day", "Hourly / daily"),
+                                 stream=flow(["semi-structured"], "hundreds of readings/sec", "Continuous equipment telemetry"))),
+                        tile("LIMS Assay Lab", "gavel", "Sample preparation, assay results and QA/QC duplicates for grade control.", "lims",
+                             cat="Laboratory Information Management (LIMS)",
+                             what="Manages sample preparation, assay results and QA/QC duplicates that grade control and metal accounting depend on.",
+                             users="Assay lab, grade control geologists and metallurgists.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day assays", "Per-batch + daily"))),
                     ]},
                 {"box": "Commercial & ERP", "ic": "erp", "tiles": [
-                        tile("SAP IS-Mining", "erp", "Production orders, inventory, sales contracts and settlement postings.", "sap-mining"),
-                        tile("Metal Bulletin", "market", "Benchmark prices and index curves the marketing desk hedges against.", "metal-bulletin"),
-                        tile("Port Community System", "globe", "Vessel nominations, stow plans and weighbridge tickets at export terminals.", "pcs"),
+                        tile("SAP IS-Mining", "erp", "Production orders, inventory, sales contracts and settlement postings.", "sap-mining",
+                             cat="Mining ERP",
+                             what="Runs production orders, inventory, sales contracts and settlement postings on the industry SAP mining core.",
+                             users="Commercial, supply chain and Finance teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch + monthly close"))),
+                        tile("Metal Bulletin", "market", "Benchmark prices and index curves the marketing desk hedges against.", "metal-bulletin",
+                             cat="Commodity Price Benchmark Provider",
+                             what="Supplies benchmark metal prices and index curves the marketing and treasury desks mark and hedge physical delivery against.",
+                             users="Commercial, marketing and treasury/hedging teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "MBs reference data", "Daily price publication"))),
+                        tile("Port Community System", "globe", "Vessel nominations, stow plans and weighbridge tickets at export terminals.", "pcs",
+                             cat="Port & Terminal Operating System",
+                             what="Manages vessel nominations, stow plans and weighbridge tickets at export terminals for bulk commodity shipping.",
+                             users="Logistics & shipping, port operations and commercial teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day", "Per-vessel + daily updates"))),
                     ]},
                 {"box": "Safety & Environment", "ic": "gavel", "tiles": [
-                        tile("Intelex EHS", "gavel", "Incidents, near-misses and permit-to-work records tied to site and crew.", "intelex"),
-                        tile("Envirosuite", "observ", "Dust, noise and blast vibration monitoring against community thresholds.", "envirosuite"),
-                        tile("Wearable Proximity", "iot", "Tag collision and zone breach events from personnel and equipment proximity systems."),
+                        tile("Intelex EHS", "gavel", "Incidents, near-misses and permit-to-work records tied to site and crew.", "intelex",
+                             cat="EHS Management System",
+                             what="Records incidents, near-misses and permit-to-work compliance tied to site and crew for safety analytics.",
+                             users="HSE managers, site safety and operations supervisors.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly / daily"))),
+                        tile("Envirosuite", "observ", "Dust, noise and blast vibration monitoring against community thresholds.", "envirosuite",
+                             cat="Environmental Monitoring System",
+                             what="Monitors dust, noise and blast vibration against community and regulatory thresholds around the operation.",
+                             users="Environment leads, community relations and compliance teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of readings/sec", "Continuous sensor monitoring"))),
+                        tile("Wearable Proximity", "iot", "Tag collision and zone breach events from personnel and equipment proximity systems.",
+                             cat="Proximity Detection / Collision Avoidance",
+                             what="Emits tag collision and zone-breach events from personnel and equipment proximity systems for fatal-risk protection.",
+                             users="HSE managers, mine operations and safety analytics teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-10k events/sec", "Continuous (event-driven)"))),
                     ]},
-                fed_group("Corporate Risk Ledger", "Hedging and working-capital marts queried in place under Unity Catalog for treasury reporting."),
+                fed_group("Corporate Risk Ledger", "Hedging and working-capital marts queried in place under Unity Catalog for treasury reporting.",
+                          cat="Enterprise Data Warehouse",
+                          what="Corporate hedging and working-capital marts kept in the incumbent treasury warehouse and queried in place through federation rather than copied.",
+                          users="Treasury & hedging, Finance and Risk analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("High-Precision GPS", "iot", "RTK survey and machine guidance files normalised for block model updates.", "hexagon"),
-                tile("Satellite Imagery", "globe", "Pit shell and stockpile volumetrics from periodic earth-observation feeds.", "planet"),
-                tile("Rail Wagon Telemetry", "stream", "Load, location and brake events from outbound rail convoys to port.", "pcs"),
+                tile("High-Precision GPS", "iot", "RTK survey and machine guidance files normalised for block model updates.", "hexagon",
+                     cat="Survey & Machine Guidance Feed",
+                     what="RTK survey and machine-guidance files normalised for block-model updates and as-mined reconciliation.",
+                     users="Surveyors, grade control geologists and mine planning.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "0.5-2 GB/day", "Per-survey + shift updates"))),
+                tile("Satellite Imagery", "globe", "Pit shell and stockpile volumetrics from periodic earth-observation feeds.", "planet",
+                     cat="Earth Observation / Remote Sensing",
+                     what="Pit shell and stockpile volumetrics derived from periodic earth-observation imagery for inventory and progress reconciliation.",
+                     users="Survey, stockpile management and mine planning teams.",
+                     data_out=data_out(
+                         batch=flow(["unstructured"], "GBs/scene", "Periodic (revisit cycle)"))),
+                tile("Rail Wagon Telemetry", "stream", "Load, location and brake events from outbound rail convoys to port.", "pcs",
+                     cat="Rail Logistics Telemetry",
+                     what="Load, location and brake events from outbound rail convoys, streamed in to reconcile the mine-to-port flow.",
+                     users="Logistics & shipping and rail operations teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (in-transit telemetry)"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Site Leadership", "Genie One", "The general manager on tonnes milled, grade recovery and unit cash cost when weather or an unplanned equipment stop limits the month's plan.", [["Genie One", "Ask what yesterday's mill recovery was without waiting on the morning report."], ["AI/BI", "Grade, cost and fleet KPIs on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"head grade\" means one thing across mine and plant."]],
@@ -105,6 +191,56 @@ INDUSTRIES_BATCH_MINING = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Traders, smelters and joint-venture partners reading live tables with no copy."),
                     ]},
+            ], genie_spaces=[
+                genie("Fleet & Pit Productivity", "Ask about payload, cycle time, queue and fleet productivity across the pit in plain language.",
+                      feeds=["Modular Mining DISPATCH", "Hexagon MineOperate", "High-Precision GPS", "Conformed block, fleet"],
+                      teams=["Mine Operations", "Site Leadership", "Dispatch Controller"],
+                      questions=[
+                          "What was fleet productivity by shift yesterday?",
+                          "Where are truck queues building right now and why?",
+                          "Which trucks and shovels are underperforming their payload target?",
+                          "How much did idle time cost us in diesel this week?",
+                          "Which pit areas are limiting dig rate against the plan?"]),
+                genie("Grade & Recovery", "Explore head grade, recovery and metal accounting across mine and plant.",
+                      feeds=["LIMS Assay Lab", "Maptek BlastLogic", "AVEVA PI System", "Grade, cost, recovery"],
+                      teams=["Processing", "Grade Control Geologist", "Plant Metallurgist"],
+                      questions=[
+                          "What was mill recovery yesterday versus plan?",
+                          "Which circuit is constraining recovery today?",
+                          "How does reconciled grade compare to the block model this month?",
+                          "How much metal did we lose to tailings this shift?",
+                          "Which blast blocks are diluting mill feed right now?"]),
+                genie("Commercial & Shipping", "Answer questions on realised price, TC/RC terms, cargoes and demurrage.",
+                      feeds=["SAP IS-Mining", "Metal Bulletin", "Port Community System", "Rail Wagon Telemetry"],
+                      teams=["Marketing & Sales", "Logistics & Shipping", "Treasury & Hedging"],
+                      questions=[
+                          "What is our realised price versus benchmark by cargo this month?",
+                          "What is our current demurrage exposure across vessels?",
+                          "Which cargoes are at risk of missing their laycan?",
+                          "How effective are our hedges against the physical book?",
+                          "Which contracts have open assay disputes right now?"]),
+                genie("Safety & ESG", "Ask about safety leading indicators, permits and emissions across the operation.",
+                      feeds=["Intelex EHS", "Wearable Proximity", "Envirosuite", "Corporate Risk Ledger"],
+                      teams=["Safety & ESG", "HSE Manager", "Environment Lead"],
+                      questions=[
+                          "What is our TRIFR trend this year?",
+                          "How many proximity or zone-breach events happened this week?",
+                          "Which permits are closest to a breach right now?",
+                          "What is our Scope 1 emissions intensity per tonne this month?",
+                          "Where are dust or vibration readings approaching community thresholds?"]),
+            ], dashboards=[
+                dashboard("Pit & Fleet Productivity", "Payload, cycle time, queue and fleet productivity on certified operations Metric Views.",
+                          kpis=["Fleet productivity", "Payload variance", "Truck queue time", "Cycle time", "Idle time"],
+                          teams=["Mine Operations", "Site Leadership", "Dispatch Controller"]),
+                dashboard("Grade & Recovery", "Head grade, recovery, throughput and metal accounting across mine and plant.",
+                          kpis=["Mill recovery", "Head grade", "Throughput", "Recovered metal per tonne", "Grade reconciliation"],
+                          teams=["Processing", "Grade Control Geologist", "Plant Metallurgist"]),
+                dashboard("Commercial & Logistics", "Realised price, TC/RC, demurrage and cargo performance.",
+                          kpis=["Realised price vs benchmark", "TC/RC terms", "Demurrage exposure", "Cargo on-time rate", "Hedge effectiveness"],
+                          teams=["Marketing & Sales", "Logistics & Shipping", "Treasury & Hedging"]),
+                dashboard("Safety & ESG", "Safety leading indicators, permit compliance and Scope 1 emissions intensity.",
+                          kpis=["TRIFR", "Proximity events", "Permit exceedances", "Scope 1 intensity", "Dust/vibration exceedances"],
+                          teams=["Safety & ESG", "HSE Manager", "Environment Lead"]),
             ]),
         },
         "top": top_band(

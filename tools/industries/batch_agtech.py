@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,44 @@ INDUSTRIES_BATCH_AGTECH = {
                             "appbuilder",
                             "Bayer's digital farming platform and the system of record for connected field data: planting, application and harvest layers synced off the FieldView Drive across tens of millions of acres.",
                             "fieldview",
+                            cat="Farm Management System (FMS)",
+                            what="System of record for connected field data: planting, application and harvest layers synced off the FieldView Drive across tens of millions of acres.",
+                            users="Digital Product, Precision Ag Product and Agronomy Advisory teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "tens of millions of acre-layers", "Daily field sync")),
                         ),
                         tile(
                             "JD Operations Center",
                             "apps",
                             "John Deere's farm-management hub: fields, jobs, guidance lines and agronomic layers, the offboard home for the data machines generate in the field.",
                             "jd-opscenter",
+                            cat="Farm Management System (FMS)",
+                            what="Farm-management hub for fields, jobs, guidance lines and agronomic layers, the offboard home for machine-generated field data.",
+                            users="Digital Product, Grower Success and Agronomy Advisory teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "millions of jobs and field records", "Daily field sync")),
                         ),
                         tile(
                             "Trimble Ag Software",
                             "sheet",
                             "Precision-ag field records, mapping and prescription authoring used across mixed-fleet operations, feeding boundaries and as-applied data into the estate.",
                             "trimble-ag",
+                            cat="Precision Ag Software",
+                            what="Precision-ag field records, mapping and prescription authoring across mixed-fleet operations, feeding boundaries and as-applied data.",
+                            users="Precision Ag Product, Agronomy Advisory and Geospatial Eng teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "hundreds of thousands of field records", "Daily field sync")),
                         ),
                         tile(
                             "Granular Insights",
                             "product",
                             "Corteva's agronomic planning and field-data insights; the farm-financials business was divested.",
                             "granular",
+                            cat="Agronomic Planning Software",
+                            what="Agronomic planning and field-data insights tied to the crop portfolio, feeding planning layers into the estate.",
+                            users="Agronomy Advisory, Digital Product and Crop Science R&D teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "hundreds of thousands of plan records", "Daily field sync")),
                         ),
                     ],
                 },
@@ -65,24 +88,44 @@ INDUSTRIES_BATCH_AGTECH = {
                             "iot",
                             "John Deere machine connectivity: position, engine, implement and as-applied telemetry streamed off the machine into the Operations Center and the data platform.",
                             "jdlink",
+                            cat="Equipment Telematics",
+                            what="Machine connectivity for position, engine, implement and as-applied telemetry streamed off the machine into the platform.",
+                            users="Telematics Engineering, Machine Reliability and Autonomy & Guidance teams.",
+                            data_out=data_out(
+                                stream=flow(["structured", "semi-structured"], "petabyte-scale telemetry across the fleet", "Continuous (machine bus)")),
                         ),
                         tile(
                             "CNH AFS Connect",
                             "iot",
                             "Case IH and New Holland fleet telematics and remote display access: machine health, location and agronomic data across the CNH equipment estate.",
                             "cnh-afs",
+                            cat="Equipment Telematics",
+                            what="Fleet telematics and remote display access for machine health, location and agronomic data across the CNH estate.",
+                            users="Telematics Engineering, Machine Reliability and Dealer Network teams.",
+                            data_out=data_out(
+                                stream=flow(["structured", "semi-structured"], "hundreds of GB/day of telemetry", "Continuous (machine bus)")),
                         ),
                         tile(
                             "PTx (AGCO)",
                             "stream",
                             "AGCO's precision ag brand across Fendt, Massey Ferguson and Valtra (Precision Planting and PTx Trimble): mixed-fleet machine and agronomic data brought together for the operation.",
                             "agco-fuse",
+                            cat="Equipment Telematics",
+                            what="Precision-ag brand bringing mixed-fleet machine and agronomic data across Fendt, Massey Ferguson and Valtra together for the operation.",
+                            users="Telematics Engineering, Precision Ag Product and Machine Reliability teams.",
+                            data_out=data_out(
+                                stream=flow(["structured", "semi-structured"], "hundreds of GB/day of telemetry", "Continuous (machine bus)")),
                         ),
                         tile(
                             "ISOBUS Task Data",
                             "connect",
                             "The ISO 11783 in-cab standard for task controllers and implement data: as-applied logs and prescriptions exchanged between terminal and machine, parsed on arrival.",
                             "isobus",
+                            cat="Machine Data Standard",
+                            what="ISO 11783 task-controller and implement data: as-applied logs and prescriptions exchanged between terminal and machine, parsed on arrival.",
+                            users="Geospatial Eng, Telematics Engineering and Precision Ag Product teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "millions of as-applied task files", "Per field pass")),
                         ),
                     ],
                 },
@@ -95,24 +138,44 @@ INDUSTRIES_BATCH_AGTECH = {
                             "globe",
                             "Daily high-cadence satellite imagery over every field, the raster source behind vegetation-index time series and in-season crop monitoring.",
                             "planet",
+                            cat="Satellite Imagery Provider",
+                            what="Daily high-cadence satellite imagery over every field, the raster source behind vegetation-index time series and in-season crop monitoring.",
+                            users="Geospatial Eng, Ag Data Science and Agronomy Advisory teams.",
+                            data_out=data_out(
+                                batch=flow(["unstructured", "semi-structured"], "terabytes of raster tiles/day", "Daily imagery pass")),
                         ),
                         tile(
                             "Sentinel Hub",
                             "globe",
                             "Copernicus Sentinel-2 and Landsat archive access with on-the-fly processing, the free-tier backbone for NDVI and change-detection layers.",
                             "sentinelhub",
+                            cat="Satellite Imagery Provider",
+                            what="Copernicus Sentinel-2 and Landsat archive access with on-the-fly processing, the backbone for NDVI and change-detection layers.",
+                            users="Geospatial Eng, Ag Data Science and Sustainability teams.",
+                            data_out=data_out(
+                                batch=flow(["unstructured", "semi-structured"], "hundreds of GB of raster/day", "Per revisit cycle")),
                         ),
                         tile(
                             "DJI Ag Drones",
                             "media",
                             "Low-altitude drone imagery and multispectral capture for scouting and trial plots, landed as high-resolution rasters alongside the satellite feeds.",
                             "dji-ag",
+                            cat="Drone / Aerial Imagery",
+                            what="Low-altitude drone imagery and multispectral capture for scouting and trial plots, landed as high-resolution rasters.",
+                            users="Field Trials, Agronomy Advisory and Geospatial Eng teams.",
+                            data_out=data_out(
+                                batch=flow(["unstructured"], "high-resolution rasters per flight", "Per scouting flight")),
                         ),
                         tile(
                             "EarthDaily (EarthOne)",
                             "network",
                             "Analysis-ready geospatial data and remote-sensing models over large areas, used for regional crop and yield signals.",
                             "descartes",
+                            cat="Geospatial Analytics Provider",
+                            what="Analysis-ready geospatial data and remote-sensing models over large areas, used for regional crop and yield signals.",
+                            users="Ag Data Science, Geospatial Eng and Agronomy & R&D teams.",
+                            data_out=data_out(
+                                batch=flow(["semi-structured", "unstructured"], "regional raster and index products", "Daily to weekly")),
                         ),
                     ],
                 },
@@ -125,24 +188,44 @@ INDUSTRIES_BATCH_AGTECH = {
                             "stream",
                             "Hyper-local forecasts, historical weather and field-level conditions, the meteorology layer behind spray windows, disease risk and yield modelling.",
                             "dtn",
+                            cat="Weather Data Provider",
+                            what="Hyper-local forecasts, historical weather and field-level conditions behind spray windows, disease risk and yield modelling.",
+                            users="Agronomy Advisory, Ag Data Science and Field Trials teams.",
+                            data_out=data_out(
+                                stream=flow(["structured"], "field-level obs and forecasts", "Continuous (hourly refresh)")),
                         ),
                         tile(
                             "CropX Soil Probes",
                             "iot",
                             "In-ground soil moisture, temperature and salinity sensors feeding irrigation and nutrient decisions at the root zone.",
                             "cropx",
+                            cat="Soil Sensor Network",
+                            what="In-ground soil moisture, temperature and salinity sensors feeding irrigation and nutrient decisions at the root zone.",
+                            users="Agronomy Advisory, App & IoT Eng and Grower Success teams.",
+                            data_out=data_out(
+                                stream=flow(["structured"], "thousands of probe readings/min", "Continuous (sensor)")),
                         ),
                         tile(
                             "Semios IoT Network",
                             "network",
                             "In-canopy pest, disease and microclimate sensors for permanent crops, streamed as time series for scouting and spray timing.",
                             "semios",
+                            cat="Crop IoT Sensor Network",
+                            what="In-canopy pest, disease and microclimate sensors for permanent crops, streamed as time series for scouting and spray timing.",
+                            users="Agronomy Advisory, Ag Data Science and App & IoT Eng teams.",
+                            data_out=data_out(
+                                stream=flow(["structured", "semi-structured"], "tens of thousands of sensor events/min", "Continuous (sensor)")),
                         ),
                         tile(
                             "Pessl METOS Stations",
                             "iot",
                             "Field weather stations and disease-model dataloggers from Pessl Instruments, the on-farm ground truth calibrating remote signals.",
                             "metos",
+                            cat="Weather Station Network",
+                            what="Field weather stations and disease-model dataloggers, the on-farm ground truth calibrating remote signals.",
+                            users="Agronomy Advisory, Field Trials and Ag Data Science teams.",
+                            data_out=data_out(
+                                stream=flow(["structured"], "thousands of station readings/min", "Continuous (station)")),
                         ),
                     ],
                 },
@@ -155,30 +238,55 @@ INDUSTRIES_BATCH_AGTECH = {
                             "sheet",
                             "Syngenta's digital agronomy suite: field scouting, agronomic recommendations and product performance tied to the crop-protection portfolio.",
                             "cropwise",
+                            cat="Digital Agronomy Suite",
+                            what="Field scouting, agronomic recommendations and product performance tied to the crop-protection portfolio.",
+                            users="Agronomy Advisory, Crop Science R&D and Field Trials teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "hundreds of thousands of scouting and rec records", "Daily")),
                         ),
                         tile(
                             "LabWare LIMS",
                             "docs",
                             "The laboratory information management system of record for seed, trait and crop-protection R&D: sample results, assays and study data.",
                             "labware",
+                            cat="Laboratory Information Management (LIMS)",
+                            what="System of record for seed, trait and crop-protection R&D: sample results, assays and study data.",
+                            users="Crop Science R&D, Field Trials and Ag Data Science teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "millions of sample and assay results", "Daily lab batch")),
                         ),
                         tile(
                             "SAP S/4HANA",
                             "erp",
                             "The commercial system of record for the ag vendor: orders, inventory, dealer settlements and the input supply chain behind the products in the field.",
                             "sap-s4",
+                            cat="Enterprise Resource Planning (ERP)",
+                            what="Commercial system of record for orders, inventory, dealer settlements and the input supply chain behind the products in the field.",
+                            users="Input Supply & Pricing, Dealer Network and Commercial teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "millions of order and inventory rows", "Nightly ERP extract")),
                         ),
                         tile(
                             "DSSAT & APSIM Models",
                             "model",
                             "Crop-simulation frameworks turning weather, soil and genetics into growth-stage and yield estimates, run at scale against the conformed field data.",
                             "dssat",
+                            cat="Crop Simulation Models",
+                            what="Crop-simulation frameworks turning weather, soil and genetics into growth-stage and yield estimates, run at scale against conformed field data.",
+                            users="Ag Data Science, Crop Science R&D and Agronomy Advisory teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "simulation outputs per field-scenario", "Per model run")),
                         ),
                     ],
                 },
                 fed_group(
                     "Commercial Data Mart",
                     "Legacy commercial, dealer and R&D data marts left where they are and queried in place under Unity Catalog, which avoids a second copy of numbers still under retention and contract.",
+                    cat="Federated Data Warehouse / Marts",
+                    what="Legacy commercial, dealer and R&D marts queried in place under Unity Catalog, avoiding a second copy of numbers still under retention and contract.",
+                    users="Commercial, Dealer Network and Crop Science R&D teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "billions of historical rows queried in place", "Query-time federation")),
                 ),
             ],
             "ing": ing_rail(
@@ -188,17 +296,32 @@ INDUSTRIES_BATCH_AGTECH = {
                         "connect",
                         "The industry data-interoperability framework and plugins that normalise as-applied, prescription and setup files across mixed equipment brands.",
                         "adapt",
+                        cat="Ag Data Interoperability Framework",
+                        what="Industry framework and plugins normalising as-applied, prescription and setup files across mixed equipment brands.",
+                        users="Geospatial Eng, Telematics Engineering and Precision Ag Product teams.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "millions of normalised task files", "Per field pass")),
                     ),
                     tile(
                         "Leaf Ag API",
                         "api",
                         "A unified API over FieldView, Operations Center, CNH and other providers, pulling machine and field data through one governed connector.",
                         "leaf",
+                        cat="Ag Data Aggregation API",
+                        what="Unified API over FieldView, Operations Center, CNH and other providers, pulling machine and field data through one governed connector.",
+                        users="Geospatial Eng, App & IoT Eng and Digital Product teams.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "millions of field and machine records/day", "Scheduled API pulls")),
                     ),
                     tile(
                         "Machine Event Streams",
                         "eventbus",
                         "Existing Kafka and MQTT topics carrying live machine, sensor and gateway events, landed generically as structured streaming tables.",
+                        cat="Event Streaming Platform",
+                        what="Existing Kafka and MQTT topics carrying live machine, sensor and gateway events, landed generically as structured streaming tables.",
+                        users="App & IoT Eng, Telematics Engineering and Geospatial Eng teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "hundreds of thousands of events/sec at peak", "Continuous (topics)")),
                     ),
                 ]
             ),
@@ -425,7 +548,59 @@ INDUSTRIES_BATCH_AGTECH = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Field & Yield", "Ask about yield, vegetation index and field performance by hybrid and geography in plain language.",
+                          feeds=["Climate FieldView", "Planet Imagery", "DTN Weather", "Yield, agronomy, sustainability"],
+                          teams=["Agronomy & R&D", "Digital Product", "Agronomy Advisory"],
+                          questions=[
+                              "What was average yield by hybrid and region this season?",
+                              "Which fields are trending below their vegetation-index norm right now?",
+                              "How did variable-rate prescriptions perform against flat-rate blocks?",
+                              "Where is disease or pest pressure emerging from the latest imagery?",
+                              "Which hybrids are ready to read out of this season's trials?"]),
+                    genie("Fleet & Uptime", "Explore connected-machine health, utilisation and predicted service needs across the fleet.",
+                          feeds=["JDLink Telematics", "CNH AFS Connect", "ISOBUS Task Data", "Conformed field, grower, machine"],
+                          teams=["Equipment Eng", "Machine Reliability", "Dealer Network"],
+                          questions=[
+                              "Which machines are flagged for a service before harvest this week?",
+                              "What is fleet utilisation by machine class and region?",
+                              "Where are anomaly signals concentrated across the connected fleet?",
+                              "Which components are trending toward end of life this season?",
+                              "How does uptime compare across dealer service territories?"]),
+                    genie("Sustainability & Carbon", "Answer questions on enrolled acres, practice change and verified carbon outcomes.",
+                          feeds=["Planet Imagery", "Sentinel Hub", "DSSAT & APSIM Models", "Yield, agronomy, sustainability"],
+                          teams=["Sustainability", "Carbon Programs", "MRV & Verification"],
+                          questions=[
+                              "How many acres are enrolled and baselined by supply shed?",
+                              "Which practice changes show the strongest verified carbon outcome?",
+                              "Where is cover-crop adoption growing fastest this season?",
+                              "Which enrolled acres are missing evidence for verification?",
+                              "What is the trend in verified credits versus enrolment?"]),
+                    genie("Commercial & Dealers", "Ask about dealer performance, grower retention and input demand.",
+                          feeds=["SAP S/4HANA", "JD Operations Center", "Climate FieldView", "Conformed field, grower, machine"],
+                          teams=["Commercial", "Dealer Network", "Grower Success"],
+                          questions=[
+                              "Which dealers are trending down on parts and service revenue?",
+                              "What is grower retention and expansion on the platform this quarter?",
+                              "Where is input demand spiking against the season?",
+                              "Which growers are strong cross-sell candidates for new inputs?",
+                              "How do connected acres relate to grower expansion?"]),
+                ],
+                dashboards=[
+                    dashboard("Field & Yield", "Yield, vegetation index and prescription performance on certified Metric Views.",
+                              kpis=["Average yield by hybrid", "Vegetation index trend", "VRA performance", "Acres monitored", "Forecast accuracy"],
+                              teams=["Agronomy & R&D", "Digital Product", "Agronomy Advisory"]),
+                    dashboard("Fleet Health", "Connected-fleet health, utilisation and predicted service on governed telemetry.",
+                              kpis=["Fleet utilisation", "Predicted service alerts", "Machine uptime", "Anomaly rate", "Connected acres"],
+                              teams=["Equipment Eng", "Machine Reliability", "Dealer Network"]),
+                    dashboard("Carbon & Sustainability", "Enrolled acres, practice change and verified carbon outcomes by supply shed.",
+                              kpis=["Enrolled acres", "Practice adoption", "Verified credits", "Evidence completeness", "MRV throughput"],
+                              teams=["Sustainability", "Carbon Programs", "MRV & Verification"]),
+                    dashboard("Commercial & Dealers", "Dealer performance, grower retention and input demand on certified views.",
+                              kpis=["Dealer revenue", "Grower retention", "Input demand", "Cross-sell rate", "Connected-acre growth"],
+                              teams=["Commercial", "Dealer Network", "Grower Success"]),
+                ],
             ),
         },
         "top": top_band(

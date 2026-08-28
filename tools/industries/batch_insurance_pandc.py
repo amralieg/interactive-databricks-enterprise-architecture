@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,46 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             "erp",
                             "The policy administration system of record: submissions, quotes, endorsements and renewals across personal and commercial lines, and the source of the policy and coverage.",
                             "guidewire-pc",
+                            cat="P&C Core / Policy Admin System",
+                            what="Holds the system-of-record for submissions, quotes, endorsements and renewals across personal and commercial lines, and emits every policy and coverage transaction.",
+                            users="Underwriting Office, policy operations and Distribution & Agency teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day", "Nightly batch + intraday deltas"),
+                                stream=flow(["semi-structured"], "hundreds of transactions/sec at peak", "Continuous CDC (near real-time)")),
                         ),
                         tile(
                             "Duck Creek Policy",
                             "erp",
                             "Cloud policy administration for rating, product configuration and policy lifecycle, the incumbent core where Guidewire is not.",
                             "duck-creek",
+                            cat="P&C Core / Policy Admin System",
+                            what="Cloud-based policy administration for rating, product configuration and the policy lifecycle, feeding the same policy and coverage entities where Duck Creek is the core.",
+                            users="Underwriting Office, product configuration and policy operations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-50 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "tens of transactions/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Majesco P&C Core",
                             "erp",
                             "P&C core suite for policy, billing and claims used by carriers and MGAs, feeding the same policy and coverage entities.",
                             "majesco",
+                            cat="P&C Core / Policy Admin System",
+                            what="P&C core suite covering policy, billing and claims for carriers and MGAs, emitting policy, coverage and premium transactions into the estate.",
+                            users="Policy operations, MGA program managers and Finance & Reinsurance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-30 GB/day", "Nightly batch")),
                         ),
                         tile(
                             "Earnix Rating",
                             "market",
                             "Rating and pricing engine where rate plans, algorithms and price optimisation are configured and served into the quote path.",
                             "earnix",
+                            cat="Rating & Price Optimization Engine",
+                            what="Configures and serves rate plans, rating algorithms and price-optimisation factors into the quote path, and emits the rate and factor tables behind each price.",
+                            users="Actuarial & Pricing, pricing analytics and Underwriting Office teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day rate tables + factors", "Daily / on rate change")),
                         ),
                     ],
                 },
@@ -65,24 +90,47 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             "erp",
                             "The claims system of record: first notice of loss, adjuster notes, reserves and payments across the claim lifecycle.",
                             "guidewire-cc",
+                            cat="Claims Management System",
+                            what="System of record for the claim lifecycle: first notice of loss, adjuster notes, reserves and payments, emitting claim, reserve and payment transactions.",
+                            users="Claims Leadership, field adjusters and SIU & Fraud teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "15-60 GB/day incl. notes", "Nightly batch + intraday deltas"),
+                                stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous CDC")),
                         ),
                         tile(
                             "Duck Creek Claims",
                             "erp",
                             "Claims management for intake, assignment and settlement used where Duck Creek is the incumbent core.",
                             "duck-creek-claims",
+                            cat="Claims Management System",
+                            what="Handles claim intake, assignment and settlement where Duck Creek is the incumbent core, feeding claim, reserve and payment records.",
+                            users="Claims Leadership, field adjusters and claims operations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "5-30 GB/day incl. notes", "Nightly batch"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "CCC Intelligent Sol.",
                             "product",
                             "Auto physical-damage estimating, repair network and total-loss valuation feeding claim severity and cycle time.",
                             "ccc",
+                            cat="Auto Physical-Damage Estimating Platform",
+                            what="Produces auto physical-damage estimates, repair-network assignments and total-loss valuations that drive claim severity and cycle time.",
+                            users="Claims Leadership, auto adjusters and material-damage teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "2-10 GB/day estimates + photos", "Daily feed"),
+                                stream=flow(["semi-structured"], "tens of estimates/sec", "Continuous (API)")),
                         ),
                         tile(
                             "Snapsheet Claims",
                             "apps",
                             "Virtual and self-service claims: mobile FNOL, photo estimating and digital payments across the claim journey.",
                             "snapsheet",
+                            cat="Virtual Claims / Digital FNOL Platform",
+                            what="Runs virtual and self-service claims with mobile first-notice-of-loss, photo estimating and digital payments, emitting FNOL, photo and payment events.",
+                            users="Claims Leadership, digital claims and customer-experience teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured", "unstructured"], "hundreds of events/sec incl. photos", "Continuous (mobile / API)")),
                         ),
                     ],
                 },
@@ -95,24 +143,45 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             "erp",
                             "BillingCenter: direct and agency bill, invoicing, commissions and delinquency across the book.",
                             "guidewire-bc",
+                            cat="Insurance Billing System",
+                            what="Runs direct and agency billing, invoicing, commissions and delinquency across the book, emitting billing, payment and commission transactions.",
+                            users="Finance & Reinsurance, billing operations and Distribution & Agency teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day", "Nightly billing cycle + intraday deltas")),
                         ),
                         tile(
                             "Salesforce FSC",
                             "crm",
                             "Financial Services Cloud for policyholder and agency relationships, service cases and next-best-action.",
                             "salesforce-fsc",
+                            cat="Insurance CRM",
+                            what="Holds policyholder and agency relationships, service cases and next-best-action across channels, emitting account, case and activity events.",
+                            users="Distribution & Agency, service teams and Marketing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Vertafore AMS360",
                             "sheet",
                             "Agency management system carrying agency-side policies, downloads and commissions into the carrier estate.",
                             "vertafore",
+                            cat="Agency Management System",
+                            what="Agency-side management system carrying policies, carrier downloads and commissions into the carrier estate, feeding agency book-of-business data.",
+                            users="Distribution & Agency, agency operations and commission-accounting teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-3 GB/day", "Daily agency downloads")),
                         ),
                         tile(
                             "Applied Epic",
                             "sheet",
                             "Agency and brokerage management platform feeding submissions, bind requests and book-of-business data.",
                             "applied-epic",
+                            cat="Agency Management System",
+                            what="Agency and brokerage management platform feeding submissions, bind requests and book-of-business data into the carrier estate.",
+                            users="Distribution & Agency, brokerage operations and new-business teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-3 GB/day", "Daily agency downloads")),
                         ),
                     ],
                 },
@@ -125,18 +194,35 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             "market",
                             "Industry statistical, loss-cost and policy-form reference against which rate plans and coverage language are built and validated.",
                             "verisk",
+                            cat="Insurance Statistical & Loss-Cost Bureau",
+                            what="Supplies industry statistical data, advisory loss costs and standard policy forms against which rate plans and coverage language are built and validated.",
+                            users="Actuarial & Pricing, product filing and Underwriting Office teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs (reference + loss costs)", "Periodic circular / on release")),
                         ),
                         tile(
                             "LexisNexis Risk",
                             "partner",
                             "Motor vehicle records, prior claims, credit-based insurance scores and identity signals used at quote and renewal.",
                             "lexisnexis",
+                            cat="Insurance Risk Data & Scoring Provider",
+                            what="Provides motor vehicle records, prior-claims history, credit-based insurance scores and identity signals used at quote and renewal.",
+                            users="Underwriting Office, Actuarial & Pricing and SIU & Fraud teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-3 GB/day", "Daily + on-demand pulls"),
+                                stream=flow(["semi-structured"], "100s of API calls/sec", "Continuous (API at quote)")),
                         ),
                         tile(
                             "ISO ClaimSearch",
                             "gavel",
                             "The contributory P&C claims database and fraud-scoring network SIU and adjusters check every loss against.",
                             "iso-claimsearch",
+                            cat="Contributory Claims Database & Fraud Network",
+                            what="Contributory P&C claims database and fraud-scoring network every loss is matched against for prior-claims links and organised-fraud detection.",
+                            users="SIU & Fraud, Claims Leadership and special-investigation teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-4 GB/day matches + scores", "Daily + on-demand"),
+                                stream=flow(["semi-structured"], "tens of match calls/sec", "Continuous (API at FNOL)")),
                         ),
                     ],
                 },
@@ -149,24 +235,44 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             "iot",
                             "Catastrophe models for hurricane, earthquake and flood: event sets, exceedance curves and PML by peril and region.",
                             "moodys-rms",
+                            cat="Catastrophe Modeling Platform",
+                            what="Runs catastrophe models for hurricane, earthquake and flood, producing event sets, exceedance curves and PML by peril and region.",
+                            users="Underwriting Office, cat modelling and Finance & Reinsurance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-100 GB/model run", "Periodic model runs + on-event")),
                         ),
                         tile(
                             "Verisk Touchstone",
                             "market",
                             "Catastrophe risk modelling platform for exposure, loss estimation and portfolio accumulation across perils.",
                             "verisk-touchstone",
+                            cat="Catastrophe Modeling Platform",
+                            what="Models exposure, loss estimation and portfolio accumulation across perils, producing modelled losses and accumulation views for the book.",
+                            users="Underwriting Office, cat modelling and portfolio management teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-80 GB/model run", "Periodic model runs + on-event")),
                         ),
                         tile(
                             "CoreLogic Hazard",
                             "globe",
                             "Property characteristics and peril hazard data used to underwrite exposure at the address and geocode level.",
                             "corelogic",
+                            cat="Property & Hazard Data Provider",
+                            what="Supplies property characteristics and peril hazard data used to underwrite exposure at the address and geocode level.",
+                            users="Underwriting Office, cat modelling and property-underwriting teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs (property + hazard reference)", "Periodic refresh + on-demand")),
                         ),
                     ],
                 },
                 fed_group(
                     "Actuarial & Reserving",
                     "Reserving triangles, actuarial marts and reinsurance bordereaux left where they are and queried in place under Unity Catalog, which avoids a second copy of the booked reserves.",
+                    cat="Actuarial Data Warehouse",
+                    what="Legacy reserving triangles, actuarial marts and reinsurance bordereaux kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                    users="Actuarial & Pricing, reserving actuaries and Finance & Reinsurance teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -176,18 +282,33 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                         "iot",
                         "Streaming driving events from the telematics provider: trips, hard-braking and mileage powering usage-based rate and claims reconstruction.",
                         "cmt",
+                        cat="Telematics Data Provider",
+                        what="Streams driving events from the telematics provider, trips, hard-braking and mileage, powering usage-based rate and claims reconstruction.",
+                        users="Actuarial & Pricing, telematics/UBI and Claims Leadership teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "2-10k trip events/sec at peak", "Continuous trip stream")),
                     ),
                     tile(
                         "NOAA Weather Data",
                         "stream",
                         "Storm events, radar and peril feeds joined to exposure for catastrophe response and parametric triggers.",
                         "noaa",
+                        cat="Weather & Peril Data Feed",
+                        what="Supplies storm events, radar and peril feeds joined to exposure for catastrophe response and parametric trigger evaluation.",
+                        users="Underwriting Office, cat response and Claims Leadership teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "100s of events/sec during events", "Continuous feed (event-driven)")),
                     ),
                     tile(
                         "Xactimate Estimating",
                         "product",
                         "Property loss and restoration estimates from the industry estimating standard, feeding claim severity and reserves.",
                         "xactware",
+                        cat="Property Claims Estimating Platform",
+                        what="Produces property loss and restoration estimates from the industry estimating standard, feeding claim severity and reserve setting.",
+                        users="Claims Leadership, property adjusters and reserving teams.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "1-5 GB/day estimates", "Daily feed")),
                     ),
                 ]
             ),
@@ -409,7 +530,59 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Underwriting & Pricing", "Ask about portfolio mix, rate adequacy and loss ratio by segment in plain language.",
+                          feeds=["Guidewire PolicyCenter", "Earnix Rating", "Verisk ISO", "Loss ratio, reserves, cat PML"],
+                          teams=["Underwriting Office", "Actuarial & Pricing", "Chief Underwriting Officer"],
+                          questions=[
+                              "What is our loss ratio by line of business and segment this quarter?",
+                              "Which segments are showing the weakest rate adequacy right now?",
+                              "How has written premium grown by product versus last year?",
+                              "Which agencies are binding business off our stated appetite?",
+                              "What is the combined ratio trend by line over the last four quarters?"]),
+                    genie("Claims & Fraud", "Explore cycle time, severity, leakage and SIU referrals across the claims book.",
+                          feeds=["Guidewire ClaimCenter", "CCC Intelligent Sol.", "ISO ClaimSearch", "Conformed policy, claim, party"],
+                          teams=["Claims Leadership", "SIU & Fraud", "Field Adjusting"],
+                          questions=[
+                              "What is average claim cycle time by line and severity band?",
+                              "Which open claims have the highest fraud score right now?",
+                              "Where is leakage running above target across the book?",
+                              "How accurate are our initial reserves versus final paid by line?",
+                              "Which claims have ClaimSearch links to prior losses on other policies?"]),
+                    genie("Catastrophe & Reinsurance", "Ask about exposure, PML and ceded recoveries by peril and treaty.",
+                          feeds=["Moody's RMS", "Verisk Touchstone", "CoreLogic Hazard", "Loss ratio, reserves, cat PML"],
+                          teams=["Underwriting Office", "Finance & Reinsurance", "Reinsurance Buyer"],
+                          questions=[
+                              "What is our gross and net PML by peril and region today?",
+                              "Which counties drive the most hurricane accumulation in the book?",
+                              "How much ceded recovery is outstanding on the last cat event?",
+                              "What is our net position after the current reinsurance program?",
+                              "Where has exposure grown fastest against appetite this year?"]),
+                    genie("Distribution & Retention", "Answer agency production, quote-to-bind and retention questions across channels.",
+                          feeds=["Salesforce FSC", "Applied Epic", "Guidewire Billing", "Conformed policy, claim, party"],
+                          teams=["Distribution & Agency", "Agency Managers", "Direct & Digital"],
+                          questions=[
+                              "What is quote-to-bind by agency and product this month?",
+                              "Which agencies have the best retention and loss ratio combined?",
+                              "Where are policies lapsing for billing or delinquency reasons?",
+                              "Which policyholders look like cross-sell candidates by segment?",
+                              "What is quote conversion in the direct and digital channel?"]),
+                ],
+                dashboards=[
+                    dashboard("Combined Ratio & Rate Adequacy", "Loss and combined ratio, rate adequacy and premium on certified underwriting Metric Views.",
+                              kpis=["Loss ratio", "Combined ratio", "Rate adequacy", "Written premium", "Retention rate"],
+                              teams=["Underwriting Office", "Actuarial & Pricing", "Finance & Reinsurance"]),
+                    dashboard("Claims Performance", "Cycle time, loss-adjustment expense, leakage and reserve accuracy across the claims book.",
+                              kpis=["Cycle time", "Loss-adjustment expense", "Leakage", "Claim severity", "Reserve accuracy"],
+                              teams=["Claims Leadership", "Field Adjusting", "SIU & Fraud"]),
+                    dashboard("Catastrophe Exposure & PML", "Modelled PML, accumulation and ceded recoveries by peril and treaty.",
+                              kpis=["Gross PML", "Net PML", "Accumulation", "Ceded recoveries", "Reinstatement cost"],
+                              teams=["Underwriting Office", "Finance & Reinsurance", "Reinsurance Buyer"]),
+                    dashboard("Distribution & Growth", "Agency production, quote-to-bind, retention and loss ratio by agent.",
+                              kpis=["Quote-to-bind", "Retention rate", "Loss ratio by agent", "New business premium", "Customer lifetime value"],
+                              teams=["Distribution & Agency", "Agency Managers", "Chief Distribution Officer"]),
+                ],
             ),
         },
         "top": top_band(

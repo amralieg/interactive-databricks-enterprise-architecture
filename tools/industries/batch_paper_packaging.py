@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -30,57 +33,175 @@ INDUSTRIES_BATCH_PAPER_PACKAGING = {
                     "box": "Mill Process Control",
                     "ic": "compute",
                     "tiles": [
-                        tile("Valmet DNA DCS", "compute", "Valmet DNA distributed control system: the system of record for paper-machine, stock-prep and recovery-boiler set-points and the process time-series behind every run.", "valmet-dna"),
-                        tile("ABB 800xA DCS", "compute", "ABB Ability System 800xA distributed control system running the machine drives and process areas where ABB is the incumbent control backbone.", "abb-800xa"),
-                        tile("Honeywell Experion", "compute", "Honeywell Experion PKS process control for pulp and paper areas, carrying loop set-points, alarms and process state into the estate.", "honeywell-experion"),
-                        tile("AVEVA PI Historian", "iot", "AVEVA PI System process historian: the high-frequency tag store that underpins OEE, sheet-break analysis and predictive maintenance.", "avevapi"),
+                        tile("Valmet DNA DCS", "compute", "Valmet DNA distributed control system: the system of record for paper-machine, stock-prep and recovery-boiler set-points and the process time-series behind every run.", "valmet-dna",
+                             cat="Distributed Control System (DCS)",
+                             what="System of record for paper-machine, stock-prep and recovery-boiler set-points and the process time-series behind every run.",
+                             users="DCS operators, process engineering and Reliability.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous control telemetry"))),
+                        tile("ABB 800xA DCS", "compute", "ABB Ability System 800xA distributed control system running the machine drives and process areas where ABB is the incumbent control backbone.", "abb-800xa",
+                             cat="Distributed Control System (DCS)",
+                             what="Runs the machine drives and process areas where ABB Ability System 800xA is the incumbent control backbone.",
+                             users="DCS operators, controls engineering and Reliability.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous control telemetry"))),
+                        tile("Honeywell Experion", "compute", "Honeywell Experion PKS process control for pulp and paper areas, carrying loop set-points, alarms and process state into the estate.", "honeywell-experion",
+                             cat="Distributed Control System (DCS)",
+                             what="Process control for pulp and paper areas, carrying loop set-points, alarms and process state into the estate.",
+                             users="Control room operators, process engineering and Reliability.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "5-50k tags/sec", "Continuous control telemetry"))),
+                        tile("AVEVA PI Historian", "iot", "AVEVA PI System process historian: the high-frequency tag store that underpins OEE, sheet-break analysis and predictive maintenance.", "avevapi",
+                             cat="Process/Time-Series Historian",
+                             what="High-frequency process historian tag store underpinning OEE, sheet-break analysis and predictive maintenance.",
+                             users="Reliability engineering, process engineering and Data science.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous historian stream"))),
                     ],
                 },
                 {
                     "box": "Quality & MES",
                     "ic": "gauge",
                     "tiles": [
-                        tile("Valmet IQ QCS", "gauge", "Valmet IQ quality control system: scanners and profile controls for basis weight, moisture, caliper and strength across paper, board, tissue and converting.", "valmet-iq"),
-                        tile("Kiwiplan MES", "compute", "Kiwiplan production management and scheduling for corrugated and folding-carton plants: orders, machine schedules and converting genealogy.", "kiwiplan"),
-                        tile("Greycon opt-Studio", "sheet", "Greycon trim optimisation and mill production planning: cutting patterns, trim loss and machine sequencing for roll and sheet goods.", "greycon"),
+                        tile("Valmet IQ QCS", "gauge", "Valmet IQ quality control system: scanners and profile controls for basis weight, moisture, caliper and strength across paper, board, tissue and converting.", "valmet-iq",
+                             cat="Quality Control System (QCS)",
+                             what="Scanner and profile controls for basis weight, moisture, caliper and strength across paper, board, tissue and converting.",
+                             users="Quality, process engineering and DCS operators.",
+                             data_out=data_out(
+                                 stream=flow(["structured"], "1-10k measurements/sec", "Continuous scan telemetry"))),
+                        tile("Kiwiplan MES", "compute", "Kiwiplan production management and scheduling for corrugated and folding-carton plants: orders, machine schedules and converting genealogy.", "kiwiplan",
+                             cat="Packaging MES / Scheduling",
+                             what="Production management and scheduling for corrugated and folding-carton plants: orders, machine schedules and converting genealogy.",
+                             users="Converting operations, scheduling and Order-to-cash.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-8 GB/day", "Nightly + hourly deltas"),
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous converting events"))),
+                        tile("Greycon opt-Studio", "sheet", "Greycon trim optimisation and mill production planning: cutting patterns, trim loss and machine sequencing for roll and sheet goods.", "greycon",
+                             cat="Trim Optimization / Mill Planning",
+                             what="Trim optimization and mill production planning: cutting patterns, trim loss and machine sequencing for roll and sheet goods.",
+                             users="Mill planning, scheduling and Supply chain.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (patterns + plans)", "Planning cycles + on-demand"))),
                     ],
                 },
                 {
                     "box": "ERP & Order-to-Cash",
                     "ic": "erp",
                     "tiles": [
-                        tile("SAP S/4HANA", "erp", "The ERP of record for orders, production, inventory, procurement and finance across the pulp, paper and packaging business.", "sap"),
-                        tile("Amtech ERP", "erp", "Amtech corrugated and packaging ERP: order entry, scheduling, costing and shipping for box plants and sheet feeders.", "amtech"),
-                        tile("Salesforce CRM", "crm", "Commercial CRM for accounts, quotes and orders across brand-owner, converter and distributor customers.", "salesforce"),
-                        tile("Blue Yonder TMS", "orch", "Transportation management for load building, carrier selection and delivery execution behind OTIF to the customer.", "blueyonder"),
+                        tile("SAP S/4HANA", "erp", "The ERP of record for orders, production, inventory, procurement and finance across the pulp, paper and packaging business.", "sap",
+                             cat="Enterprise ERP",
+                             what="System of record for orders, production, inventory, procurement and finance across the pulp, paper and packaging business.",
+                             users="Order management, procurement, planning and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "20-80 GB/day", "Nightly batch + hourly deltas"),
+                                 stream=flow(["semi-structured"], "hundreds of postings/sec", "Continuous CDC"))),
+                        tile("Amtech ERP", "erp", "Amtech corrugated and packaging ERP: order entry, scheduling, costing and shipping for box plants and sheet feeders.", "amtech",
+                             cat="Packaging ERP",
+                             what="Corrugated and packaging ERP for order entry, scheduling, costing and shipping across box plants and sheet feeders.",
+                             users="Box plant operations, scheduling and Order-to-cash.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-8 GB/day", "Nightly + hourly deltas"))),
+                        tile("Salesforce CRM", "crm", "Commercial CRM for accounts, quotes and orders across brand-owner, converter and distributor customers.", "salesforce",
+                             cat="Commercial CRM",
+                             what="Commercial CRM for accounts, quotes and orders across brand-owner, converter and distributor customers.",
+                             users="Sales, commercial and Customer service.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                                 stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                        tile("Blue Yonder TMS", "orch", "Transportation management for load building, carrier selection and delivery execution behind OTIF to the customer.", "blueyonder",
+                             cat="Transportation Management (TMS)",
+                             what="Transportation management for load building, carrier selection and delivery execution behind OTIF to the customer.",
+                             users="Logistics, distribution and Customer service.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Hourly + event-driven"))),
                     ],
                 },
                 {
                     "box": "Forestry & Fiber",
                     "ic": "globe",
                     "tiles": [
-                        tile("Trimble Forestry", "globe", "Forest and fiber supply management: harvest planning, wood procurement, scaling and log-yard inventory feeding the mill's fiber line.", "trimble-forestry"),
-                        tile("Log Scaling & Weigh", "iot", "Weighbridge and scaling systems capturing wood and recovered-fiber deliveries by species, moisture and supplier at the gate."),
-                        tile("Recovered Fiber Feeds", "network", "Recovered-paper and OCC intake feeds: grades, contamination and yield for recycled containerboard and packaging furnish."),
-                        tile("EUDR / Fiber Trace", "gavel", "Fiber-origin and chain-of-custody records supporting EU Deforestation Regulation due diligence from forest to finished pulp.", "eudr"),
+                        tile("Trimble Forestry", "globe", "Forest and fiber supply management: harvest planning, wood procurement, scaling and log-yard inventory feeding the mill's fiber line.", "trimble-forestry",
+                             cat="Forestry & Fiber Supply Management",
+                             what="Manages harvest planning, wood procurement, scaling and log-yard inventory feeding the mill's fiber line.",
+                             users="Fiber sourcing, wood procurement and Forestry planning.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Daily + on-delivery"))),
+                        tile("Log Scaling & Weigh", "iot", "Weighbridge and scaling systems capturing wood and recovered-fiber deliveries by species, moisture and supplier at the gate.",
+                             cat="Weighbridge / Scaling System",
+                             what="Weighbridge and scaling systems capturing wood and recovered-fiber deliveries by species, moisture and supplier at the gate.",
+                             users="Wood yard, fiber sourcing and Procurement.",
+                             data_out=data_out(
+                                 stream=flow(["structured"], "10s-100s of tickets/hour", "Continuous gate events"))),
+                        tile("Recovered Fiber Feeds", "network", "Recovered-paper and OCC intake feeds: grades, contamination and yield for recycled containerboard and packaging furnish.",
+                             cat="Recovered Fiber Intake",
+                             what="Recovered-paper and OCC intake feeds capturing grades, contamination and yield for recycled containerboard and packaging furnish.",
+                             users="Fiber sourcing, recycling operations and Quality.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "100s of MB/day", "Per-delivery + daily"))),
+                        tile("EUDR / Fiber Trace", "gavel", "Fiber-origin and chain-of-custody records supporting EU Deforestation Regulation due diligence from forest to finished pulp.", "eudr",
+                             cat="Chain-of-Custody / Compliance",
+                             what="Fiber-origin and chain-of-custody records supporting EU Deforestation Regulation due diligence from forest to finished pulp.",
+                             users="Sustainability, fiber sourcing and Regulatory compliance.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "100s of MB/day", "Per-consignment + daily"))),
                     ],
                 },
                 {
                     "box": "Energy & Maintenance",
                     "ic": "zplug",
                     "tiles": [
-                        tile("IBM Maximo EAM", "orch", "Enterprise asset management: work orders, PM schedules and asset history for the machines and utilities the mill runs on.", "maximo"),
-                        tile("SAP Plant Maint", "erp", "SAP Plant Maintenance work orders and notifications where PM is run inside the ERP against the same asset master.", "sap"),
-                        tile("Recovery Boiler DCS", "compute", "Recovery boiler and power-island control data: steam, black-liquor firing and generation behind the mill's energy balance."),
-                        tile("Energy & Utilities", "gauge", "Steam, power, gas and water metering across the mill, the basis for energy intensity per tonne and emissions accounting."),
+                        tile("IBM Maximo EAM", "orch", "Enterprise asset management: work orders, PM schedules and asset history for the machines and utilities the mill runs on.", "maximo",
+                             cat="Enterprise Asset Management (EAM)",
+                             what="Manages maintenance work orders, PM schedules and asset history for the machines and utilities the mill runs on.",
+                             users="Reliability engineering, maintenance planning and Storeroom.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "Nightly + event-driven"))),
+                        tile("SAP Plant Maint", "erp", "SAP Plant Maintenance work orders and notifications where PM is run inside the ERP against the same asset master.", "sap",
+                             cat="Plant Maintenance (EAM)",
+                             what="Runs maintenance work orders and notifications inside the ERP against the same asset master where PM is centralized.",
+                             users="Maintenance planning, reliability and Plant operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-4 GB/day", "Nightly batch"))),
+                        tile("Recovery Boiler DCS", "compute", "Recovery boiler and power-island control data: steam, black-liquor firing and generation behind the mill's energy balance.",
+                             cat="Boiler / Power-Island Control",
+                             what="Recovery boiler and power-island control data: steam, black-liquor firing and generation behind the mill's energy balance.",
+                             users="Energy management, boiler operations and Reliability.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "5-50k tags/sec", "Continuous control telemetry"))),
+                        tile("Energy & Utilities", "gauge", "Steam, power, gas and water metering across the mill, the basis for energy intensity per tonne and emissions accounting.",
+                             cat="Energy & Utility Metering",
+                             what="Steam, power, gas and water metering across the mill, the basis for energy intensity per tonne and emissions accounting.",
+                             users="Energy management, ESG and Finance.",
+                             data_out=data_out(
+                                 stream=flow(["structured"], "100s-1000s of readings/sec", "Continuous metering"))),
                     ],
                 },
-                fed_group("Cost & ESG Marts", "Historical cost, emissions and quality marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers."),
+                fed_group("Cost & ESG Marts", "Historical cost, emissions and quality marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.",
+                          cat="Enterprise Data Warehouse",
+                          what="Historical cost, emissions and quality marts kept in the incumbent warehouse and queried in place through federation instead of copied.",
+                          users="Finance, ESG reporting and Executive analytics.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("OPC UA / MQTT Events", "stream", "Mill DCS, historian and converting-machine events over OPC UA and MQTT, parsed on arrival and landed as structured events."),
-                tile("Pulp Price Indices", "market", "Pulp, containerboard and recovered-paper price benchmarks joined to orders and margin for commercial and buying decisions."),
-                tile("Weather & Freight", "globe", "External weather and freight-rate feeds used for logistics planning, energy demand and OTIF risk."),
+                tile("OPC UA / MQTT Events", "stream", "Mill DCS, historian and converting-machine events over OPC UA and MQTT, parsed on arrival and landed as structured events.",
+                     cat="OT Protocol Gateway",
+                     what="Carries mill DCS, historian and converting-machine events over OPC UA and MQTT, parsed on arrival and landed as structured events.",
+                     users="OT/IT integration, controls engineering and Streaming data teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "10-100k events/sec", "Continuous OT telemetry"))),
+                tile("Pulp Price Indices", "market", "Pulp, containerboard and recovered-paper price benchmarks joined to orders and margin for commercial and buying decisions.",
+                     cat="Commodity Price Benchmarks",
+                     what="Supplies pulp, containerboard and recovered-paper price benchmarks joined to orders and margin for commercial and buying decisions.",
+                     users="Commercial, buying and Margin analytics.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "10s of MB", "Periodic price assessments"))),
+                tile("Weather & Freight", "globe", "External weather and freight-rate feeds used for logistics planning, energy demand and OTIF risk.",
+                     cat="External Weather & Freight Data",
+                     what="Provides external weather and freight-rate feeds used for logistics planning, energy demand and OTIF risk modeling.",
+                     users="Logistics, energy management and Supply chain planning.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "100s of MB/day", "Daily + intraday updates"))),
             ]),
             "ppl": ppl2([
                 biz("Executive Team", "Genie One",
@@ -169,6 +290,56 @@ INDUSTRIES_BATCH_PAPER_PACKAGING = {
                     tile("Data Products", "product", "Published, contracted mill, quality and supply-chain products discoverable in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Converters, brand owners and fiber partners reading live tables with no copy and no egress duplication."),
                 ]},
+            ], genie_spaces=[
+                genie("Mill OEE & Downtime", "Ask about OEE, downtime and throughput by machine and line in plain language.",
+                      feeds=["Valmet DNA DCS", "AVEVA PI Historian", "Kiwiplan MES", "OEE, yield, OTIF, emissions"],
+                      teams=["Mill Operations", "Executive Team", "Shift & DCS operators"],
+                      questions=[
+                          "What was OEE by machine and line yesterday, and where did downtime go?",
+                          "Which downtime reasons cost the most tonnes this week?",
+                          "What is throughput by grade against plan right now?",
+                          "Which machines had the most sheet breaks this shift?",
+                          "What is unit cost by machine and grade last week?"]),
+                genie("Quality & Grade", "Explore basis weight, moisture, defects and grade give-away by reel.",
+                      feeds=["Valmet IQ QCS", "AVEVA PI Historian", "Greycon opt-Studio", "Conformed reel, order, asset"],
+                      teams=["Process & QA", "Quality", "Process engineering"],
+                      questions=[
+                          "What is first-pass yield and grade give-away by grade this month?",
+                          "Which reels are trending off-spec on basis weight or moisture?",
+                          "Which defect types are most common by machine and grade?",
+                          "Where is trim loss highest across the order book?",
+                          "Which set-points correlate with the current quality drift?"]),
+                genie("Supply Chain & OTIF", "Answer demand, order-cycle and OTIF-risk questions across the network.",
+                      feeds=["SAP S/4HANA", "Blue Yonder TMS", "Amtech ERP", "OEE, yield, OTIF, emissions"],
+                      teams=["Supply Chain", "Demand & S&OP", "Logistics"],
+                      questions=[
+                          "Which orders are at risk of missing OTIF this week?",
+                          "What is order cycle time by grade and customer?",
+                          "Where is demand outrunning available machine time and trim?",
+                          "Which customers drive the most claims and short shipments?",
+                          "What is forecast accuracy by grade versus last quarter?"]),
+                genie("Energy & ESG", "Ask about energy intensity, emissions and fiber-origin compliance.",
+                      feeds=["Recovery Boiler DCS", "Energy & Utilities", "EUDR / Fiber Trace", "OEE, yield, OTIF, emissions"],
+                      teams=["Energy & ESG", "Energy management", "Fiber sourcing"],
+                      questions=[
+                          "What is energy intensity per tonne by mill and grade this month?",
+                          "Which mill and grade drove this month's Scope 1-2 emissions?",
+                          "Where can recovery-boiler and steam set-points cut energy cost?",
+                          "Which fiber consignments lack complete EUDR chain-of-custody?",
+                          "What is Scope 3 emissions per tonne by fiber source?"]),
+            ], dashboards=[
+                dashboard("Mill OEE & Downtime", "OEE, downtime pareto and throughput by machine and line on certified Metric Views.",
+                          kpis=["OEE", "Downtime by reason", "Throughput", "Sheet breaks", "Unit cost"],
+                          teams=["Mill Operations", "Executive Team", "Reliability eng"]),
+                dashboard("Quality & Grade", "First-pass yield, grade give-away, defects and trim loss by reel.",
+                          kpis=["First-pass yield", "Grade give-away", "Defect rate", "Trim loss", "Break rate"],
+                          teams=["Process & QA", "Quality", "R&D & fiber"]),
+                dashboard("Supply Chain & OTIF", "Demand, order cycle time and OTIF risk across the order book.",
+                          kpis=["OTIF", "Order cycle time", "Forecast accuracy", "Claims rate", "Plan attainment"],
+                          teams=["Supply Chain", "Demand & S&OP", "Logistics"]),
+                dashboard("Energy & Emissions", "Energy intensity, Scope 1-3 emissions and fiber-origin compliance.",
+                          kpis=["Energy intensity per tonne", "Scope 1-2 emissions", "Scope 3 per tonne", "Recovery-boiler efficiency", "EUDR coverage"],
+                          teams=["Energy & ESG", "Energy management", "Fiber sourcing"]),
             ]),
         },
         "top": top_band(

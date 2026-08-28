@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,117 @@ INDUSTRIES_BATCH_EDUCATION = {
         "rails": {
             "src": [
                 {"box": "Student Information", "ic": "erp", "tiles": [
-                    tile("Ellucian Banner", "erp", "Student information system of record: enrollments, registrations, grades, degree progress and transcript history.", "ellucian-banner"),
-                    tile("Workday Student", "erp", "Cloud SIS for academic records, advising holds, program completion and residency rules.", "workday-student"),
-                    tile("PowerSchool SIS", "erp", "Dominant K-12 student information system: enrollments, attendance, grades and state reporting across districts.", "peoplesoft-campus")
+                    tile("Ellucian Banner", "erp", "Student information system of record: enrollments, registrations, grades, degree progress and transcript history.", "ellucian-banner",
+                         cat="Student Information System (SIS)",
+                         what="System-of-record for enrollments, registrations, grades, degree progress and transcript history across the institution.",
+                         users="Registrar, Advising and Institutional research teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Nightly batch + intraday deltas"))),
+                    tile("Workday Student", "erp", "Cloud SIS for academic records, advising holds, program completion and residency rules.", "workday-student",
+                         cat="Student Information System (SIS)",
+                         what="Cloud SIS holding academic records, advising holds, program completion and residency rules.",
+                         users="Registrar, Advising and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-15 GB/day", "Nightly batch"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("PowerSchool SIS", "erp", "Dominant K-12 student information system: enrollments, attendance, grades and state reporting across districts.", "peoplesoft-campus",
+                         cat="Student Information System (SIS)",
+                         what="K-12 SIS covering enrollments, attendance, grades and mandated state reporting across districts.",
+                         users="District administration, State reporting and Attendance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-10 GB/day", "Nightly batch"))),
                 ]},
                 {"box": "Learning & Content", "ic": "notebook", "tiles": [
-                    tile("Canvas LMS", "notebook", "Course shells, assignments, discussion activity and outcome mastery data from the primary learning environment.", "canvas-lms"),
-                    tile("Blackboard Learn", "notebook", "LMS engagement, assessment attempts and content access for institutions on the Blackboard estate.", "blackboard"),
-                    tile("Panopto Lecture Capture", "stream", "Recorded lecture views, watch time and search queries joined to course enrollment for engagement analysis.", "panopto")
+                    tile("Canvas LMS", "notebook", "Course shells, assignments, discussion activity and outcome mastery data from the primary learning environment.", "canvas-lms",
+                         cat="Learning Management System (LMS)",
+                         what="Primary learning environment emitting course activity, assignment submissions, discussion events and outcome mastery data.",
+                         users="Student success, Faculty and Learning analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "10-50 GB/day activity logs", "Hourly / nightly"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous (activity events)"))),
+                    tile("Blackboard Learn", "notebook", "LMS engagement, assessment attempts and content access for institutions on the Blackboard estate.", "blackboard",
+                         cat="Learning Management System (LMS)",
+                         what="LMS engagement, assessment attempts and content access for institutions running on the Blackboard estate.",
+                         users="Student success, Faculty and Learning analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "5-30 GB/day", "Hourly / nightly"))),
+                    tile("Panopto Lecture Capture", "stream", "Recorded lecture views, watch time and search queries joined to course enrollment for engagement analysis.", "panopto",
+                         cat="Lecture Capture / Video Platform",
+                         what="Captures lecture recordings and emits view, watch-time and search events joined to enrollment for engagement analysis.",
+                         users="Learning analytics, Faculty and Instructional design teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs of video + view logs", "Continuous / daily"))),
                 ]},
                 {"box": "Admissions & CRM", "ic": "partner", "tiles": [
-                    tile("Slate by Technolutions", "partner", "Inquiry, application, decision and yield events from the admissions CRM the recruitment team works in.", "slate"),
-                    tile("Salesforce Education Cloud", "custlake", "Prospect journeys, recruiter activities and conversion funnels for institutions on Education Cloud.", "sf-edu-cloud"),
-                    tile("National Student Clearinghouse", "share", "Enrollment verification, degree completion and transfer research files exchanged with peer institutions.", "nsc")
+                    tile("Slate by Technolutions", "partner", "Inquiry, application, decision and yield events from the admissions CRM the recruitment team works in.", "slate",
+                         cat="Admissions CRM",
+                         what="Admissions CRM capturing inquiry, application, decision and yield events across the recruitment funnel.",
+                         users="Admissions, Recruitment operations and Enrollment management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly / nightly sync"))),
+                    tile("Salesforce Education Cloud", "custlake", "Prospect journeys, recruiter activities and conversion funnels for institutions on Education Cloud.", "sf-edu-cloud",
+                         cat="Education CRM",
+                         what="Holds prospect journeys, recruiter activities and conversion funnels for institutions on Education Cloud.",
+                         users="Admissions, Marketing and Enrollment management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("National Student Clearinghouse", "share", "Enrollment verification, degree completion and transfer research files exchanged with peer institutions.", "nsc",
+                         cat="Enrollment Verification Exchange",
+                         what="Exchanges enrollment verification, degree completion and transfer research files with peer institutions.",
+                         users="Registrar, Institutional research and Enrollment management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "sub-GB per exchange", "Periodic file exchanges"))),
                 ]},
                 {"box": "Finance & Student Aid", "ic": "market", "tiles": [
-                    tile("PowerFAIDS", "market", "Need analysis, packaging rules and ISIR-driven award letters the financial aid office certifies.", "powerfaids"),
-                    tile("Nelnet Campus Commerce", "erp", "Tuition billing, payment plans and bursar receivables reconciled against enrollment status.", "nelnet"),
-                    tile("Web & Portal Clickstream", "observ", "Prospect and student portal events from search through registration, joined to applications and enrollments.")
+                    tile("PowerFAIDS", "market", "Need analysis, packaging rules and ISIR-driven award letters the financial aid office certifies.", "powerfaids",
+                         cat="Financial Aid Management System",
+                         what="Runs need analysis, packaging rules and ISIR-driven award letters the financial aid office certifies under Title IV.",
+                         users="Financial aid, Bursar and Compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day awards + ISIR", "Nightly batch + award cycles"))),
+                    tile("Nelnet Campus Commerce", "erp", "Tuition billing, payment plans and bursar receivables reconciled against enrollment status.", "nelnet",
+                         cat="Tuition Billing & Payments",
+                         what="Handles tuition billing, payment plans and bursar receivables reconciled against enrollment status.",
+                         users="Bursar, Student accounts and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly batch + intraday deltas"))),
+                    tile("Web & Portal Clickstream", "observ", "Prospect and student portal events from search through registration, joined to applications and enrollments.",
+                         cat="Web & Portal Clickstream",
+                         what="Captures prospect and student portal events from search through registration, joined to applications and enrollments.",
+                         users="Admissions, Marketing and Learning analytics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec at peak", "Continuous clickstream"))),
                 ]},
                 fed_group(
                     "Research Grants Ledger",
                     "Sponsored research accounting and effort certification marts left where they are and queried in place under Unity Catalog.",
+                    cat="Sponsored Research Data Warehouse",
+                    what="Sponsored-research accounting and effort-certification marts kept in the incumbent system and queried in place through federation.",
+                    users="Sponsored programs, Research finance and Compliance teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale ledgers", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("Ed-Fi Data Standard", "api", "Interoperable student and assessment APIs normalised on ingest for state reporting and district exchange.", "ed-fi"),
-                tile("IMS Global LTI", "api", "Learning tool interoperability launches and grade passback events from third-party publishers.", "ims-lti"),
-                tile("IPEDS / State Reporting", "gavel", "Federal and state compliance file layouts consumed inbound for validation before submission season.", "ipeds")
+                tile("Ed-Fi Data Standard", "api", "Interoperable student and assessment APIs normalised on ingest for state reporting and district exchange.", "ed-fi",
+                     cat="Education Data Standard / API",
+                     what="Provides interoperable student and assessment APIs normalised on ingest for state reporting and district data exchange.",
+                     users="Integration engineering, State reporting and District data teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Nightly / on schedule"))),
+                tile("IMS Global LTI", "api", "Learning tool interoperability launches and grade passback events from third-party publishers.", "ims-lti",
+                     cat="Learning Interoperability Standard (LTI)",
+                     what="Carries learning-tool launch and grade-passback events between the LMS and third-party publisher tools.",
+                     users="Learning platforms, Integration engineering and Faculty teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "tens-hundreds of events/sec at peak", "Continuous (launch / passback)"))),
+                tile("IPEDS / State Reporting", "gavel", "Federal and state compliance file layouts consumed inbound for validation before submission season.", "ipeds",
+                     cat="Regulatory Reporting Data",
+                     what="Supplies federal and state compliance file layouts consumed for validation before submission season.",
+                     users="Institutional research, Compliance and Finance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "sub-GB per submission", "Per reporting cycle"))),
             ]),
             "ppl": ppl2([
                 biz("President & Provost", "Genie One", "The president and provost on enrollment health, first-year retention and six-year completion, and the trade between access and net-tuition sustainability.",
@@ -148,6 +234,56 @@ INDUSTRIES_BATCH_EDUCATION = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Consortia, researchers and state agencies reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Enrollment & Yield", "Ask about the funnel, yield and melt against target across cycles in plain language.",
+                      feeds=["Slate by Technolutions", "Salesforce Education Cloud", "Ellucian Banner", "Retention, enrollment, outcomes"],
+                      teams=["Admissions & Enrollment", "Director of Admissions", "Enrollment Management"],
+                      questions=[
+                          "What does fall enrollment look like against target right now?",
+                          "Which channels and territories convert inquiry to deposit best?",
+                          "How much melt is occurring between deposit and day one?",
+                          "Which programs are behind on their enrollment goal this cycle?",
+                          "How does yield compare to the same point last cycle?"]),
+                genie("Student Success & Retention", "Explore persistence risk, LMS activity and early-alert outreach across cohorts.",
+                      feeds=["Canvas LMS", "Blackboard Learn", "Ellucian Banner", "Conformed student, course"],
+                      teams=["Student Success", "Advising & Coaching", "Early Alert Coordinators"],
+                      questions=[
+                          "Which students show rising stop-out risk before census?",
+                          "Which courses have the most students with LMS inactivity this week?",
+                          "Where is grade slippage concentrated by program and term?",
+                          "Which advising interventions correlate with improved persistence?",
+                          "Which cohorts are below their expected retention rate?"]),
+                genie("Learning Outcomes", "Answer questions on mastery, completion and course effectiveness across programs.",
+                      feeds=["Canvas LMS", "Panopto Lecture Capture", "Ellucian Banner", "Retention, enrollment, outcomes"],
+                      teams=["President & Provost", "Institutional Research", "Registrar & Records"],
+                      questions=[
+                          "Which courses have the lowest outcome-mastery attainment this term?",
+                          "How does completion differ by course modality?",
+                          "Which pathways bottleneck time-to-degree?",
+                          "How does lecture-capture engagement relate to course grades?",
+                          "Which programs improved learning outcomes year over year?"]),
+                genie("Aid & Finance", "Ask about the aid discount rate, net tuition and Title IV packaging compliance.",
+                      feeds=["PowerFAIDS", "Nelnet Campus Commerce", "IPEDS / State Reporting", "Retention, enrollment, outcomes"],
+                      teams=["Finance & Financial Aid", "Financial Aid Director", "Bursar"],
+                      questions=[
+                          "What is the aid discount rate this cycle versus last?",
+                          "Which award packages are drifting outside Title IV rules?",
+                          "How does net tuition revenue track against budget by program?",
+                          "Which students have unresolved bursar holds affecting enrollment?",
+                          "How does packaging affect yield across need bands?"]),
+            ], dashboards=[
+                dashboard("Enrollment & Yield", "Funnel, yield, melt and net tuition on certified Metric Views.",
+                          kpis=["Enrollment vs target", "Yield rate", "Melt rate", "Net tuition revenue", "Aid discount rate"],
+                          teams=["Admissions & Enrollment", "President & Provost", "Finance & Financial Aid"]),
+                dashboard("Retention & Persistence", "Cohort persistence, stop-out risk and early-alert outreach.",
+                          kpis=["Retention rate", "Persistence rate", "Stop-out risk", "Early-alert volume", "Outreach completion"],
+                          teams=["Student Success", "Advising & Coaching", "Institutional Research"]),
+                dashboard("Learning Outcomes", "Mastery attainment, completion and course effectiveness across programs.",
+                          kpis=["Outcome mastery", "Completion rate", "Time-to-degree", "Modality effectiveness", "Course pass rate"],
+                          teams=["President & Provost", "Registrar & Records", "Institutional Research"]),
+                dashboard("Aid & Finance", "Discount rate, net tuition and packaging compliance on governed tables.",
+                          kpis=["Aid discount rate", "Net tuition revenue", "Packaging compliance", "Receivables aging", "Cost per enrolled student"],
+                          teams=["Finance & Financial Aid", "Financial Aid Director", "Bursar"]),
             ]),
         },
         "top": top_band(

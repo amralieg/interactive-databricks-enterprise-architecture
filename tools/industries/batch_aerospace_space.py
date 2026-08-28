@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -30,56 +33,166 @@ INDUSTRIES_BATCH_AEROSPACE_SPACE = {
                     "box": "PLM & Engineering",
                     "ic": "dev",
                     "tiles": [
-                        tile("CATIA / 3DEXPERIENCE", "dev", "Dassault Systèmes design and MBSE backbone: the system of record for CAD, requirements and the model-based definition of the vehicle.", "catia"),
-                        tile("Siemens Teamcenter", "erp", "PLM for BOM, requirements, change orders and configuration management where Teamcenter is the incumbent digital thread.", "teamcenter"),
-                        tile("PTC Windchill", "dev", "Product lifecycle management for design data, change control and the as-designed configuration on programs standardised on Windchill.", "windchill"),
-                        tile("Ansys Simulation", "compute", "Structural, thermal and CFD simulation results and reduced-order models validated against physical test.", "ansys"),
+                        tile("CATIA / 3DEXPERIENCE", "dev", "Dassault Systèmes design and MBSE backbone: the system of record for CAD, requirements and the model-based definition of the vehicle.", "catia",
+                             cat="CAD / MBSE Platform",
+                             what="System of record for CAD geometry, requirements and the model-based definition of the vehicle across the digital thread.",
+                             users="Systems engineering, design and MBSE teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "GBs (CAD + MBSE models)", "On design release"))),
+                        tile("Siemens Teamcenter", "erp", "PLM for BOM, requirements, change orders and configuration management where Teamcenter is the incumbent digital thread.", "teamcenter",
+                             cat="PLM System",
+                             what="Manages BOM, requirements, change orders and configuration management as the incumbent digital thread.",
+                             users="Configuration management, engineering and Change control.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "5-20 GB/day", "On change release + nightly"))),
+                        tile("PTC Windchill", "dev", "Product lifecycle management for design data, change control and the as-designed configuration on programs standardised on Windchill.", "windchill",
+                             cat="PLM System",
+                             what="Holds design data, change control and the as-designed configuration on programs standardized on Windchill.",
+                             users="Design engineering, configuration management and Change control.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/day", "On change release + nightly"))),
+                        tile("Ansys Simulation", "compute", "Structural, thermal and CFD simulation results and reduced-order models validated against physical test.", "ansys",
+                             cat="Engineering Simulation (CAE)",
+                             what="Produces structural, thermal and CFD simulation results and reduced-order models validated against physical test.",
+                             users="Simulation and analysis engineers and Design reviews.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "GBs-TBs per study", "Per simulation run"))),
                     ],
                 },
                 {
                     "box": "Manufacturing & ERP",
                     "ic": "erp",
                     "tiles": [
-                        tile("Siemens Opcenter MES", "compute", "Manufacturing execution: electronic work instructions, as-built records, genealogy and in-line quality on the pulse line.", "opcenter"),
-                        tile("DELMIA Apriso", "compute", "MES for production, quality and traceability across discrete aerostructures and assembly where Apriso is the incumbent.", "apriso"),
-                        tile("SAP S/4HANA", "erp", "The ERP of record for procurement, inventory, production orders and finance across the aerospace and space business.", "sap"),
-                        tile("AVEVA PI Historian", "iot", "Process and test historian: equipment, engine and test-stand time-series underpinning SPC, OEE and anomaly detection.", "avevapi"),
+                        tile("Siemens Opcenter MES", "compute", "Manufacturing execution: electronic work instructions, as-built records, genealogy and in-line quality on the pulse line.", "opcenter",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Executes electronic work instructions and captures as-built records, genealogy and in-line quality on the pulse line.",
+                             users="Production, assembly operators and Manufacturing engineering.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "500-5k events/sec", "Continuous station events"))),
+                        tile("DELMIA Apriso", "compute", "MES for production, quality and traceability across discrete aerostructures and assembly where Apriso is the incumbent.", "apriso",
+                             cat="Manufacturing Execution System (MES)",
+                             what="Runs production, quality and traceability across discrete aerostructures and assembly where Apriso is the incumbent MES.",
+                             users="Production, quality and Traceability teams.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous production events"))),
+                        tile("SAP S/4HANA", "erp", "The ERP of record for procurement, inventory, production orders and finance across the aerospace and space business.", "sap",
+                             cat="Enterprise ERP",
+                             what="System of record for procurement, inventory, production orders and finance across the aerospace and space business.",
+                             users="Procurement, production planning and Finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "20-80 GB/day", "Nightly batch + hourly deltas"))),
+                        tile("AVEVA PI Historian", "iot", "Process and test historian: equipment, engine and test-stand time-series underpinning SPC, OEE and anomaly detection.", "avevapi",
+                             cat="Process/Time-Series Historian",
+                             what="Stores equipment, engine and test-stand time-series underpinning SPC, OEE and anomaly detection.",
+                             users="Reliability engineering, test engineering and Data science.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous historian stream"))),
                     ],
                 },
                 {
                     "box": "Program & EVM",
                     "ic": "sheet",
                     "tiles": [
-                        tile("Deltek Cobra EVM", "sheet", "Earned-value management: the cost and schedule performance baseline, control accounts and variance the customer contract is measured against.", "cobra"),
-                        tile("Oracle Primavera P6", "sheet", "Integrated master schedule: activities, critical path and resource loading across the program and its suppliers.", "primavera"),
-                        tile("Deltek Costpoint", "erp", "Government-contracting ERP for project accounting, timekeeping and DCAA-compliant cost tracking on defense and space programs.", "costpoint"),
+                        tile("Deltek Cobra EVM", "sheet", "Earned-value management: the cost and schedule performance baseline, control accounts and variance the customer contract is measured against.", "cobra",
+                             cat="Earned Value Management (EVM) System",
+                             what="Holds the cost and schedule performance baseline, control accounts and variance the customer contract is measured against.",
+                             users="Program controls, project controllers and Program directors.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "1-5 GB/cycle", "Weekly + monthly reporting cycles"))),
+                        tile("Oracle Primavera P6", "sheet", "Integrated master schedule: activities, critical path and resource loading across the program and its suppliers.", "primavera",
+                             cat="Project Scheduling (IMS)",
+                             what="Maintains the integrated master schedule: activities, critical path and resource loading across the program and suppliers.",
+                             users="Program schedulers, planners and Program directors.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (schedule data)", "Weekly schedule updates"))),
+                        tile("Deltek Costpoint", "erp", "Government-contracting ERP for project accounting, timekeeping and DCAA-compliant cost tracking on defense and space programs.", "costpoint",
+                             cat="Government-Contracting ERP",
+                             what="Runs project accounting, timekeeping and DCAA-compliant cost tracking on defense and space programs.",
+                             users="Program finance, project accounting and Contracts.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day", "Nightly batch"))),
                     ],
                 },
                 {
                     "box": "Satellite & Ground",
                     "ic": "stream",
                     "tiles": [
-                        tile("Kratos OpenSpace", "stream", "Software-defined satellite ground system: telemetry, tracking and command and the orchestration of the ground segment.", "kratos"),
-                        tile("Ansys STK", "globe", "Systems Tool Kit: orbit, coverage and mission analysis, the reference for where a satellite is and what it can see.", "stk"),
-                        tile("CCSDS Telemetry", "stream", "Space-standard telemetry and command frames from the spacecraft, decommutated on arrival and landed as structured events.", "ccsds"),
-                        tile("GMV Ground Segment", "network", "Flight dynamics and satellite control ground software feeding orbit, health and manoeuvre state into the estate.", "gmv"),
+                        tile("Kratos OpenSpace", "stream", "Software-defined satellite ground system: telemetry, tracking and command and the orchestration of the ground segment.", "kratos",
+                             cat="Satellite Ground System (TT&C)",
+                             what="Software-defined ground system carrying telemetry, tracking and command and orchestrating the ground segment.",
+                             users="Mission operations, ground segment and Satellite controllers.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-50k frames/sec per pass", "Continuous during contacts"))),
+                        tile("Ansys STK", "globe", "Systems Tool Kit: orbit, coverage and mission analysis, the reference for where a satellite is and what it can see.", "stk",
+                             cat="Mission Analysis / Orbit Modeling",
+                             what="Computes orbit, coverage and mission analysis, the reference for where a satellite is and what it can see.",
+                             users="Mission analysts, flight dynamics and Mission planning.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "GBs (ephemeris + analysis)", "Per analysis run + scheduled"))),
+                        tile("CCSDS Telemetry", "stream", "Space-standard telemetry and command frames from the spacecraft, decommutated on arrival and landed as structured events.", "ccsds",
+                             cat="Spacecraft Telemetry (CCSDS)",
+                             what="Space-standard telemetry and command frames from the spacecraft, decommutated on arrival and landed as structured events.",
+                             users="Mission operations, spacecraft engineering and Anomaly response.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "10-100k params/sec per pass", "Continuous during contacts"))),
+                        tile("GMV Ground Segment", "network", "Flight dynamics and satellite control ground software feeding orbit, health and manoeuvre state into the estate.", "gmv",
+                             cat="Flight Dynamics / Ground Software",
+                             what="Flight dynamics and satellite control ground software feeding orbit, health and manoeuvre state into the estate.",
+                             users="Flight dynamics, mission operations and Constellation ops.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous ground-segment state"))),
                     ],
                 },
                 {
                     "box": "MRO & Reliability",
                     "ic": "orch",
                     "tiles": [
-                        tile("IFS Maintenix", "orch", "Aviation maintenance of record: work orders, component lifing, service bulletins and the reliability history against each serial.", "maintenix"),
-                        tile("Engine Health Monitor", "iot", "On-wing engine condition monitoring: vibration, temperature and performance parameters streamed from the delivered fleet."),
-                        tile("Test & Flight Data", "iot", "Flight-test, DFDR and test-stand instrumentation, the ground truth for qualification, reliability and anomaly investigation."),
+                        tile("IFS Maintenix", "orch", "Aviation maintenance of record: work orders, component lifing, service bulletins and the reliability history against each serial.", "maintenix",
+                             cat="Aviation MRO / M&E System",
+                             what="Maintenance of record for work orders, component lifing, service bulletins and reliability history against each serial.",
+                             users="Fleet reliability, maintenance planning and MRO operations.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "2-8 GB/day", "Nightly + hourly deltas"))),
+                        tile("Engine Health Monitor", "iot", "On-wing engine condition monitoring: vibration, temperature and performance parameters streamed from the delivered fleet.",
+                             cat="Engine Condition Monitoring",
+                             what="On-wing engine condition monitoring: vibration, temperature and performance parameters streamed from the delivered fleet.",
+                             users="Fleet reliability, engine engineering and Data science.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "1-20k params/sec (fleet)", "Continuous in-flight telemetry"))),
+                        tile("Test & Flight Data", "iot", "Flight-test, DFDR and test-stand instrumentation, the ground truth for qualification, reliability and anomaly investigation.",
+                             cat="Test & Flight Instrumentation",
+                             what="Flight-test, DFDR and test-stand instrumentation, the ground truth for qualification, reliability and anomaly investigation.",
+                             users="Flight test, test engineering and Reliability engineering.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured", "unstructured"], "TBs per test campaign", "High-rate during test + batch"))),
                     ],
                 },
-                fed_group("EVM & Cost Marts", "Historical earned-value, cost and program marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers."),
+                fed_group("EVM & Cost Marts", "Historical earned-value, cost and program marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.",
+                          cat="Enterprise Data Warehouse",
+                          what="Historical earned-value, cost and program marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.",
+                          users="Program finance, controls and Executive reporting.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Ground Station Feeds", "stream", "Telemetry, tracking and command downlink from KSAT and teleport networks, parsed on arrival and landed as CCSDS frames and structured events.", "ksat"),
-                tile("Supplier EDI / Ariba", "api", "Supplier EDI, advance-ship-notice and purchase-order messages from the extended supply base exchanged through SAP Ariba and integration hubs.", "ariba"),
-                tile("Test & Telemetry Bus", "stream", "MQTT and Kafka topics carrying engine, test-stand and satellite telemetry, landed incrementally as structured events."),
+                tile("Ground Station Feeds", "stream", "Telemetry, tracking and command downlink from KSAT and teleport networks, parsed on arrival and landed as CCSDS frames and structured events.", "ksat",
+                     cat="Ground Network Services",
+                     what="Telemetry, tracking and command downlink from KSAT and teleport networks, parsed on arrival and landed as CCSDS frames and structured events.",
+                     users="Mission operations, ground segment and Telemetry engineering.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "10-100k frames/sec per pass", "Continuous during contacts"))),
+                tile("Supplier EDI / Ariba", "api", "Supplier EDI, advance-ship-notice and purchase-order messages from the extended supply base exchanged through SAP Ariba and integration hubs.", "ariba",
+                     cat="Supplier EDI / Procurement Network",
+                     what="Supplier EDI, advance-ship-notice and purchase-order messages from the extended supply base exchanged through SAP Ariba and integration hubs.",
+                     users="Procurement, supply chain and Supplier management.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured", "structured"], "100s of MB/day", "Continuous EDI messages"))),
+                tile("Test & Telemetry Bus", "stream", "MQTT and Kafka topics carrying engine, test-stand and satellite telemetry, landed incrementally as structured events.",
+                     cat="Telemetry Streaming Bus",
+                     what="MQTT and Kafka topics carrying engine, test-stand and satellite telemetry, landed incrementally as structured events.",
+                     users="Telemetry engineering, test engineering and Streaming data teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "GBs/hour of telemetry", "Continuous streaming"))),
             ]),
             "ppl": ppl2([
                 biz("Program Leaders", "Genie One",
@@ -179,6 +292,56 @@ INDUSTRIES_BATCH_AEROSPACE_SPACE = {
                     tile("ITAR & Export Filing", "gavel", "Export-control markings, license usage and technical-data-access records produced from governed tables under Unity Catalog."),
                     tile("AS9100 Compliance", "gavel", "Quality, airworthiness and first-article records assembled for AS9100 and airworthiness audit from certified Gold."),
                 ]},
+            ], genie_spaces=[
+                genie("Program EVM & Risk", "Ask about cost and schedule variance and program risk by control account in plain language.",
+                      feeds=["Deltek Cobra EVM", "Oracle Primavera P6", "Deltek Costpoint", "EVM, yield, fleet reliability"],
+                      teams=["Program Leaders", "Program directors", "CFO & finance"],
+                      questions=[
+                          "What drove this month's cost variance by control account?",
+                          "Which control accounts have the worst schedule variance right now?",
+                          "What is the estimate-at-completion trend for this program?",
+                          "Which suppliers are contributing most to schedule slip?",
+                          "Where is cost of quality highest across the portfolio?"]),
+                genie("Digital Thread", "Explore requirements, change orders and as-built configuration across PLM and MES.",
+                      feeds=["CATIA / 3DEXPERIENCE", "Siemens Teamcenter", "Siemens Opcenter MES", "Conformed program, part, vehicle"],
+                      teams=["Eng & Design", "Systems engineering", "Design & MBSE"],
+                      questions=[
+                          "Which requirements are not yet traced to an as-built serial?",
+                          "What open change orders affect this configuration item?",
+                          "Which serials were built to a superseded revision?",
+                          "Where does the as-built diverge from the as-designed configuration?",
+                          "Which parts have open nonconformances against this program?"]),
+                genie("Mission & Fleet Health", "Answer satellite health, anomaly and fleet-reliability questions from telemetry.",
+                      feeds=["CCSDS Telemetry", "Engine Health Monitor", "AVEVA PI Historian", "EVM, yield, fleet reliability"],
+                      teams=["Mission & Fleet", "Mission operations", "Fleet reliability"],
+                      questions=[
+                          "Which satellites show anomaly signatures this pass?",
+                          "Which engines are predicted for removal in the next 30 days?",
+                          "What is fleet reliability by subsystem this quarter?",
+                          "Which telemetry parameters are trending out of limits?",
+                          "What is the anomaly and removal rate by vehicle?"]),
+                genie("Yield & Supply Chain", "Ask about first-pass yield, nonconformance and supplier risk across the supply base.",
+                      feeds=["DELMIA Apriso", "SAP S/4HANA", "Supplier EDI / Ariba", "Conformed program, part, vehicle"],
+                      teams=["Mfg & Quality", "Production & assembly", "Supply chain"],
+                      questions=[
+                          "What is first-pass yield by line and station this month?",
+                          "Which suppliers or components are most exposed to shortage?",
+                          "Which nonconformances are open in MRB right now?",
+                          "Which parts are single-source across the supply base?",
+                          "Where is OEE lowest and why on the pulse line?"]),
+            ], dashboards=[
+                dashboard("Program EVM & Schedule", "Earned-value cost and schedule variance by control account on certified Metric Views.",
+                          kpis=["Cost variance", "Schedule variance", "CPI", "SPI", "Estimate at completion"],
+                          teams=["Program Leaders", "Program directors", "CFO & finance"]),
+                dashboard("Digital Thread & Configuration", "Requirement traceability, open changes and as-built conformance.",
+                          kpis=["Requirement traceability", "Open change orders", "As-built conformance", "Nonconformance count", "First-article status"],
+                          teams=["Eng & Design", "Systems engineering", "Design & MBSE"]),
+                dashboard("Mission & Fleet Reliability", "Satellite health, anomaly rates and predicted engine removals.",
+                          kpis=["Fleet reliability", "Anomaly rate", "Predicted removals", "Telemetry out-of-limits", "Mean time between removals"],
+                          teams=["Mission & Fleet", "Mission operations", "Fleet reliability"]),
+                dashboard("Manufacturing Yield & Supply", "First-pass yield, OEE, nonconformance and supplier risk.",
+                          kpis=["First-pass yield", "OEE", "Nonconformance rate", "Supplier risk score", "Single-source exposure"],
+                          teams=["Mfg & Quality", "Production & assembly", "Supply chain"]),
             ]),
         },
         "top": top_band(

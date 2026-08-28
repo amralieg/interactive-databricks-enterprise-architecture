@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,131 @@ INDUSTRIES_BATCH_WATER_UTILITIES = {
         "rails": {
             "src": [
                 {"box": "CIS & Billing", "ic": "erp", "tiles": [
-                    tile("Oracle Utilities C2M", "erp", "Customer information, billing, payments and credit collections.", "oracle-c2m"),
-                    tile("SAP IS-U", "market", "Utility billing and device management for multi-commodity utilities.", "sap-isu"),
-                    tile("VertexOne CIS", "chart", "Cloud CIS for water and wastewater with customer self-service.", "vertexone"),
+                    tile("Oracle Utilities C2M", "erp", "Customer information, billing, payments and credit collections.", "oracle-c2m",
+                         cat="Customer Information System (CIS)",
+                         what="Holds customer information, billing, payments and credit collections across the meter-to-cash process.",
+                         users="Billing analysts, contact centre and credit & collections teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Nightly batch + billing cycles"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("SAP IS-U", "market", "Utility billing and device management for multi-commodity utilities.", "sap-isu",
+                         cat="Utility Customer Information System (CIS)",
+                         what="Runs utility billing and device management for multi-commodity utilities on the SAP IS-U core.",
+                         users="Billing operations, device management and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Nightly batch + billing cycles"))),
+                    tile("VertexOne CIS", "chart", "Cloud CIS for water and wastewater with customer self-service.", "vertexone",
+                         cat="Cloud Customer Information System (CIS)",
+                         what="Cloud CIS for water and wastewater with customer self-service, billing and engagement.",
+                         users="Billing analysts, customer operations and digital teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"))),
                 ]},
                 {"box": "SCADA & Operations", "ic": "stream", "tiles": [
-                    tile("AVEVA PI System", "stream", "Historian for pumps, tanks, pressure and flow across the distribution network.", "aveva-pi"),
-                    tile("Ignition SCADA", "iot", "Plant and remote site SCADA for treatment and pumping stations.", "ignition"),
-                    tile("Schneider EcoStruxure", "partner", "Edge control and telemetry for lift stations and PRVs.", "schneider-eco"),
+                    tile("AVEVA PI System", "stream", "Historian for pumps, tanks, pressure and flow across the distribution network.", "aveva-pi",
+                         cat="Process/Time-Series Historian",
+                         what="Stores pump, tank, pressure and flow tags across the distribution network as the operational time-series system of record.",
+                         users="Control-room operators, pump & energy leads and hydraulic modellers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day tag history", "Hourly aggregates"),
+                             stream=flow(["semi-structured"], "10-100k tags/sec", "Continuous (sub-second)"))),
+                    tile("Ignition SCADA", "iot", "Plant and remote site SCADA for treatment and pumping stations.", "ignition",
+                         cat="SCADA / Control System",
+                         what="Plant and remote-site SCADA for treatment and pumping stations, emitting analogs, states and alarms.",
+                         users="Plant operators, control-room operators and instrumentation teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-20k signals/sec", "Continuous (sub-second)"))),
+                    tile("Schneider EcoStruxure", "partner", "Edge control and telemetry for lift stations and PRVs.", "schneider-eco",
+                         cat="Edge Control & Telemetry Platform",
+                         what="Edge control and telemetry for lift stations and pressure-reducing valves across the network.",
+                         users="Distribution operations, pressure management and field teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of readings/sec", "Continuous telemetry"))),
                 ]},
                 {"box": "AMI & Metering", "ic": "iot", "tiles": [
-                    tile("Itron OpenWay", "iot", "Advanced metering infrastructure: interval reads, tamper and leak flags.", "itron"),
-                    tile("Sensus FlexNet", "api", "AMI head-end for residential and commercial meter populations.", "sensus"),
-                    tile("Badger Beacon", "db", "Encoder registers and mobile collection for legacy meter routes.", "badger"),
+                    tile("Itron OpenWay", "iot", "Advanced metering infrastructure: interval reads, tamper and leak flags.", "itron",
+                         cat="AMI Head-End System",
+                         what="Collects interval meter reads, tamper flags and leak alerts from the advanced metering estate.",
+                         users="Metering operations, leak & NRW team and billing analysts.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-60 GB/day interval reads", "Hourly / daily reads"),
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous meter events"))),
+                    tile("Sensus FlexNet", "api", "AMI head-end for residential and commercial meter populations.", "sensus",
+                         cat="AMI Head-End System",
+                         what="RF-mesh AMI head-end collecting reads and endpoint alarms for residential and commercial meter populations.",
+                         users="Metering operations and leak & NRW analytics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Hourly reads"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous endpoint alarms"))),
+                    tile("Badger Beacon", "db", "Encoder registers and mobile collection for legacy meter routes.", "badger",
+                         cat="Meter Data Collection System",
+                         what="Encoder registers and mobile/drive-by collection for legacy meter routes feeding billing determinants.",
+                         users="Metering operations, meter readers and billing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Route cycle (daily/monthly)"))),
                 ]},
                 {"box": "GIS & Assets", "ic": "db", "tiles": [
-                    tile("Esri ArcGIS Utility", "globe", "Pipe network, valves, hydrants and service connections geospatially modeled.", "esri-utility"),
-                    tile("IBM Maximo", "erp", "Asset registry, work orders and preventive maintenance for treatment plants.", "maximo"),
-                    tile("Cityworks AMS", "sheet", "Work management for mains breaks, service line replacements and inspections.", "cityworks"),
+                    tile("Esri ArcGIS Utility", "globe", "Pipe network, valves, hydrants and service connections geospatially modeled.", "esri-utility",
+                         cat="Geographic Information System (GIS)",
+                         what="Holds the pipe network, valves, hydrants and service connections geospatially modelled for planning and risk analysis.",
+                         users="GIS & asset data, reliability engineers and distribution planning.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "5-20 GB network model", "Daily / weekly model syncs"))),
+                    tile("IBM Maximo", "erp", "Asset registry, work orders and preventive maintenance for treatment plants.", "maximo",
+                         cat="Enterprise Asset Management (EAM)",
+                         what="Manages the asset registry, work orders and preventive maintenance for treatment plants and network assets.",
+                         users="Reliability engineers, maintenance planning and asset management.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly batch")),
+                         ),
+                    tile("Cityworks AMS", "sheet", "Work management for mains breaks, service line replacements and inspections.", "cityworks",
+                         cat="Work & Asset Management System",
+                         what="Work management for mains breaks, service-line replacements and inspections across the distribution network.",
+                         users="Field service dispatch, capital planning and operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Continuous work orders + daily batch"))),
                 ]},
                 {"box": "Lab & Quality", "ic": "gavel", "tiles": [
-                    tile("Hach WIMS", "gavel", "Water quality lab results, chain of custody and regulatory limits.", "hach-wims"),
-                    tile("KISTERS WISKI", "chart", "Hydrological and water quality time series for source water monitoring.", "kisters"),
+                    tile("Hach WIMS", "gavel", "Water quality lab results, chain of custody and regulatory limits.", "hach-wims",
+                         cat="Water Quality LIMS",
+                         what="Manages water-quality lab results, chain of custody and regulatory limits for drinking-water compliance.",
+                         users="Compliance officers, water-quality lab and public-notification teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day results", "Per-sample + daily"))),
+                    tile("KISTERS WISKI", "chart", "Hydrological and water quality time series for source water monitoring.", "kisters",
+                         cat="Hydrological Time-Series System",
+                         what="Stores hydrological and water-quality time series for source-water monitoring and quality analytics.",
+                         users="Source water team, compliance officers and hydrologists.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Hourly / daily"),
+                             stream=flow(["semi-structured"], "tens-hundreds of readings/sec", "Continuous sensor series"))),
                 ]},
-                fed_group("Regional Agency Marts", "Wholesale and intertie flow marts queried in place under Unity Catalog."),
+                fed_group("Regional Agency Marts", "Wholesale and intertie flow marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Wholesale and intertie flow marts kept in the regional-agency warehouse and queried in place through federation rather than copied.",
+                          users="Source water team, operations planning and regulatory teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("EPA SDWIS Feed", "gavel", "Safe Drinking Water Information System reference for compliance benchmarking.", "epa-sdwis"),
-                tile("NOAA Hydrology API", "stream", "River flow and drought indices for source water planning.", "noaa"),
-                tile("Weather Forecast API", "observ", "Demand and infiltration forecasting inputs from meteorological services.", "noaa"),
+                tile("EPA SDWIS Feed", "gavel", "Safe Drinking Water Information System reference for compliance benchmarking.", "epa-sdwis",
+                     cat="Regulatory Reference Data",
+                     what="Safe Drinking Water Information System reference data used for compliance benchmarking and reporting.",
+                     users="Compliance officers and regulatory affairs teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs reference data", "Periodic (regulatory updates)"))),
+                tile("NOAA Hydrology API", "stream", "River flow and drought indices for source water planning.", "noaa",
+                     cat="Hydrology & Drought Data Provider",
+                     what="River flow, reservoir and drought-index feeds used for source-water planning and drought contingency.",
+                     users="Source water team and GM & executive office.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day", "Hourly / daily updates"))),
+                tile("Weather Forecast API", "observ", "Demand and infiltration forecasting inputs from meteorological services.", "noaa",
+                     cat="Weather & Climate Data Provider",
+                     what="Forecast temperature and precipitation feeds used as inputs to demand and infiltration forecasting models.",
+                     users="Demand forecasting, distribution operations and planning teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day gridded forecasts", "Multiple forecast cycles daily"))),
             ]),
             "ppl": ppl2([
                 biz("GM & Executive Office", "Genie One", "The general manager on cost per gallon and the capital plan; the COO on non-revenue water and the response time on a distribution outage.",
@@ -149,6 +248,56 @@ INDUSTRIES_BATCH_WATER_UTILITIES = {
                     tile("Data Products", "product", "Network and quality products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Regional agencies reading live flow via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Network & NRW", "Ask about pressure, non-revenue water, leaks and pump energy across the network in plain language.",
+                      feeds=["AVEVA PI System", "Itron OpenWay", "Schneider EcoStruxure", "NRW, pressure, compliance"],
+                      teams=["Distribution Ops", "Leak & NRW Team", "Pump & Energy Lead"],
+                      questions=[
+                          "What was non-revenue water by district last month?",
+                          "Which zones show the largest night-flow anomalies right now?",
+                          "Where is pressure out of compliance across the network?",
+                          "How much pumping energy did we use against tariff windows this week?",
+                          "Which areas should crews investigate first for leaks?"]),
+                genie("Customer & Billing", "Explore outages, high-bill disputes and consumption from AMI intervals.",
+                      feeds=["Oracle Utilities C2M", "Itron OpenWay", "Cityworks AMS", "Conformed meter, asset, account"],
+                      teams=["Customer Operations", "Call Centre Agents", "Billing Analysts"],
+                      questions=[
+                          "Which accounts have open high-bill disputes right now?",
+                          "What is the restoration ETA for the current outages?",
+                          "Which premises show consumption spikes that look like private-side leaks?",
+                          "What is first-call resolution in the contact centre this week?",
+                          "How many service orders are open past their SLA?"]),
+                genie("Asset & Capital", "Answer questions on main-break risk, pump health and replacement priority.",
+                      feeds=["Esri ArcGIS Utility", "IBM Maximo", "AVEVA PI System", "Conformed meter, asset, account"],
+                      teams=["Asset Management", "Reliability Engineers", "Capital Planning"],
+                      questions=[
+                          "Which mains exceed our break-rate threshold this year?",
+                          "Where is main-break risk highest by material and soil type?",
+                          "Which pumps are showing the worst condition trend?",
+                          "What replacement candidates give the most risk reduction per dollar?",
+                          "What is remaining life on our aging cast-iron mains?"]),
+                genie("Water Quality", "Ask about sample results, exceedances and source-water risk against regulatory limits.",
+                      feeds=["Hach WIMS", "KISTERS WISKI", "EPA SDWIS Feed", "NRW, pressure, compliance"],
+                      teams=["Water Quality", "Compliance Officers", "Source Water Team"],
+                      questions=[
+                          "Which sample results are approaching a regulatory limit right now?",
+                          "Are there any exceedances that need public notification today?",
+                          "How is source-water quality trending against drought conditions?",
+                          "Which sites are behind on their sampling schedule?",
+                          "What is our chlorine residual trend across the distribution system?"]),
+            ], dashboards=[
+                dashboard("Network & NRW", "Non-revenue water, pressure compliance, leak activity and pump energy on certified Metric Views.",
+                          kpis=["Non-revenue water", "Pressure compliance", "Night-flow anomalies", "Pump energy cost", "Leak repairs"],
+                          teams=["Distribution Ops", "Leak & NRW Team", "Pump & Energy Lead"]),
+                dashboard("Customer & Outages", "Outage restoration, high-bill disputes, first-call resolution and service orders.",
+                          kpis=["Estimated restoration time", "High-bill disputes", "First-call resolution", "Open service orders", "Customers affected"],
+                          teams=["Customer Operations", "Call Centre Agents", "Field Service Dispatch"]),
+                dashboard("Asset Health & Capital", "Main-break risk, pump health, work-order backlog and replacement priority.",
+                          kpis=["Main-break risk", "Break rate", "Pump condition", "Work-order backlog", "Risk reduction per capital dollar"],
+                          teams=["Asset Management", "Reliability Engineers", "Capital Planning"]),
+                dashboard("Water Quality & Compliance", "Sample results against limits, exceedances and sampling completeness.",
+                          kpis=["Exceedance count", "Samples vs limit", "Sampling completeness", "Chlorine residual", "Notification timeliness"],
+                          teams=["Water Quality", "Compliance Officers", "Source Water Team"]),
             ]),
         },
         "top": top_band(

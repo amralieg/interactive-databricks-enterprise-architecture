@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,45 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             "erp",
                             "Schneider Electric EcoStruxure IT DCIM: the system of record for assets, power chains, rack and space allocation and environmental monitoring across the estate.",
                             "schneider",
+                            cat="DCIM (Data Center Infrastructure Mgmt)",
+                            what="System of record for assets, power chains, rack and space allocation and environmental monitoring across the estate.",
+                            users="Data-center operations, capacity planners and facilities engineers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Nightly"),
+                                stream=flow(["semi-structured"], "1-10k readings/sec", "Continuous")),
                         ),
                         tile(
                             "Nlyte DCIM",
                             "erp",
                             "Carrier Nlyte data-center infrastructure management: asset lifecycle, workflow and capacity records, the incumbent inventory of what is racked where and on which circuit.",
                             "nlyte",
+                            cat="DCIM / Asset Lifecycle",
+                            what="Asset lifecycle, workflow and capacity records; the incumbent inventory of what is racked where and on which circuit.",
+                            users="Capacity planners, asset and facilities teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Nightly")),
                         ),
                         tile(
                             "Sunbird dcTrack",
                             "sheet",
                             "Sunbird dcTrack DCIM: rack elevations, power-port and network-port connectivity and capacity, the source for space, power and cooling headroom by cabinet.",
                             "sunbird",
+                            cat="DCIM / Capacity Management",
+                            what="Rack elevations, power-port and network-port connectivity and capacity; the source for space, power and cooling headroom by cabinet.",
+                            users="Capacity planners and facilities engineers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Nightly")),
                         ),
                         tile(
                             "Vertiv Environet",
                             "observ",
                             "Vertiv Environet monitoring: real-time power, cooling and environmental alarms and trends across critical infrastructure, the operator's view of live facility health.",
                             "vertiv-env",
+                            cat="Critical Facility Monitoring",
+                            what="Real-time power, cooling and environmental alarms and trends across critical infrastructure; the operator's live view of facility health.",
+                            users="NOC operators and critical-facility engineers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k readings/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -65,24 +89,44 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             "iot",
                             "Johnson Controls Metasys building automation: the BMS that runs cooling plant, air handling and building systems and publishes the setpoints and status the floor operates on.",
                             "jci",
+                            cat="Building Management System (BMS)",
+                            what="Runs cooling plant, air handling and building systems and publishes the setpoints and status the floor operates on.",
+                            users="Controls engineers and critical-facility operations.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k BACnet points/sec", "Continuous")),
                         ),
                         tile(
                             "Siemens Desigo CC",
                             "iot",
                             "Siemens Desigo CC building management: a common BMS platform for HVAC, power and environmental supervision where Metasys is not the incumbent, feeding the same point data.",
                             "siemens",
+                            cat="Building Management System (BMS)",
+                            what="Common BMS platform for HVAC, power and environmental supervision where Metasys is not the incumbent, feeding the same point data.",
+                            users="Controls engineers and facilities operations.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k points/sec", "Continuous")),
                         ),
                         tile(
                             "Vertiv Liebert iCOM",
                             "iot",
                             "Vertiv Liebert thermal controls and CRAC/CRAH units: chilled-water and DX cooling status, fan speed and return-air temperature, the raw signal for cooling optimisation.",
                             "liebert",
+                            cat="Precision Cooling Controls",
+                            what="Chilled-water and DX cooling status, fan speed and return-air temperature; the raw signal for cooling optimisation.",
+                            users="Mechanical engineers and cooling-optimisation teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100s-1000s of points/sec", "Continuous")),
                         ),
                         tile(
                             "Schneider PowerLogic",
                             "gauge",
                             "Schneider PowerLogic power monitoring: switchgear, UPS and branch-circuit metering across the power chain, the electrical ground truth behind PUE and billing.",
                             "powerlogic",
+                            cat="Power Metering & Monitoring",
+                            what="Switchgear, UPS and branch-circuit metering across the power chain; the electrical ground truth behind PUE and billing.",
+                            users="Electrical engineers, sustainability and billing teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100s-1000s of meter reads/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -95,18 +139,34 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             "stream",
                             "Temperature, humidity, differential-pressure and leak sensors published over the BACnet and Modbus protocols the building estate speaks, parsed on arrival as structured events.",
                             "bacnet",
+                            cat="Building / Industrial Protocol",
+                            what="Temperature, humidity, differential-pressure and leak sensors published over BACnet and Modbus, parsed on arrival as structured events.",
+                            users="Controls engineers and facilities data engineers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k sensor points/sec", "Continuous")),
                         ),
                         tile(
                             "Ignition SCADA",
                             "iot",
                             "Inductive Automation Ignition SCADA: supervisory control and historian for electrical and mechanical plant, the tag store many operators standardise facility telemetry on.",
                             "ignition",
+                            cat="SCADA / Historian",
+                            what="Supervisory control and historian for electrical and mechanical plant; the tag store many operators standardise facility telemetry on.",
+                            users="Controls engineers and facilities data engineers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs/day historian", "Hourly"),
+                                stream=flow(["semi-structured"], "1-10k tags/sec", "Continuous")),
                         ),
                         tile(
                             "PDU Branch Metering",
                             "gauge",
                             "Intelligent rack PDUs from Raritan and Server Technology reporting per-outlet and branch-circuit power, the meter behind tenant billing and stranded-capacity analysis.",
                             "raritan",
+                            cat="Rack Power Metering (PDU)",
+                            what="Intelligent rack PDUs reporting per-outlet and branch-circuit power; the meter behind tenant billing and stranded-capacity analysis.",
+                            users="Capacity planners, billing and facilities teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-10k per-outlet reads/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -119,24 +179,45 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             "network",
                             "Equinix Fabric software-defined interconnection: cross-connects, virtual connections and fabric ports, the record of who is connected to whom across the meet-me room.",
                             "equinix",
+                            cat="Interconnection Platform",
+                            what="Software-defined interconnection: cross-connects, virtual connections and fabric ports; the record of who is connected to whom in the meet-me room.",
+                            users="Interconnection product managers and capacity teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Daily"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous")),
                         ),
                         tile(
                             "Digital Realty Fabric",
                             "network",
                             "Digital Realty PlatformDIGITAL ServiceFabric: interconnection and connectivity records where Digital Realty is the operator, feeding the same utilisation and revenue view.",
                             "digitalrealty",
+                            cat="Interconnection Platform",
+                            what="Interconnection and connectivity records where Digital Realty is the operator, feeding the same utilisation and revenue view.",
+                            users="Interconnection product managers and commercial teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Daily")),
                         ),
                         tile(
                             "SolarWinds NPM",
                             "observ",
                             "SolarWinds Network Performance Monitor: SNMP-polled device health, interface utilisation and up/down state across the facility network fabric.",
                             "solarwinds",
+                            cat="Network Performance Monitoring",
+                            what="SNMP-polled device health, interface utilisation and up/down state across the facility network fabric.",
+                            users="Network operations and NOC teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100s-1000s of polls/sec", "Continuous")),
                         ),
                         tile(
                             "Kentik NPM",
                             "network",
                             "Kentik network observability: flow, BGP and traffic-engineering telemetry, the demand signal that justifies interconnection capacity and pricing.",
                             "kentik",
+                            cat="Network Observability / Flow",
+                            what="Flow, BGP and traffic-engineering telemetry; the demand signal that justifies interconnection capacity and pricing.",
+                            users="Network engineering and interconnection product teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k flow records/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -149,29 +230,56 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             "opdb",
                             "ServiceNow IT Service Management: incidents, changes and work orders raised against facility and IT assets, the process record from alarm to resolved ticket.",
                             "servicenow",
+                            cat="IT Service Management (ITSM)",
+                            what="Incidents, changes and work orders raised against facility and IT assets; the process record from alarm to resolved ticket.",
+                            users="Incident and change managers, NOC and facilities ops.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous")),
                         ),
                         tile(
                             "Genetec Security",
                             "zshield",
                             "Genetec Security Center: unified access control and video surveillance across the perimeter, halls and cages, the source of who entered where and when.",
                             "genetec",
+                            cat="Physical Security (Access & Video)",
+                            what="Unified access control and video surveillance across perimeter, halls and cages; the source of who entered where and when.",
+                            users="Physical security and facilities teams.",
+                            data_out=data_out(
+                                batch=flow(["unstructured"], "GBs-TB/day video", "Continuous"),
+                                stream=flow(["semi-structured"], "tens of access events/sec", "Continuous")),
                         ),
                         tile(
                             "Lenel OnGuard",
                             "key",
                             "LenelS2 OnGuard access control: badge, door and alarm events across the physical estate where OnGuard is the incumbent, feeding the same physical-security view.",
                             "lenel",
+                            cat="Physical Access Control (PACS)",
+                            what="Badge, door and alarm events across the physical estate where OnGuard is the incumbent, feeding the same physical-security view.",
+                            users="Physical security and facilities teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "tens of access events/sec", "Continuous")),
                         ),
                         tile(
                             "Tenant Billing",
                             "market",
                             "The colocation billing and contract system carrying committed power and space, metered usage rules and SLA terms, reconciled against the meters that actually recorded draw.",
+                            cat="Colocation Billing & Contracts",
+                            what="Committed power and space, metered usage rules and SLA terms, reconciled against the meters that recorded actual draw.",
+                            users="Tenant success, billing and commercial teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Daily / monthly billing cycles")),
                         ),
                     ],
                 },
                 fed_group(
                     "Utility & Energy Mkts",
                     "Utility interval-meter reads, wholesale energy-market prices and renewable-energy-certificate and PPA registries left in their existing warehouses and queried in place under Unity Catalog, so cost and carbon attribution join facility telemetry without a second copy.",
+                    cat="Energy Market & Utility Data",
+                    what="Utility interval-meter reads, wholesale energy-market prices and REC/PPA registries kept in existing warehouses and queried in place through federation.",
+                    users="Energy procurement, sustainability and finance teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale market + meter history", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -181,18 +289,33 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                         "stream",
                         "SNMP traps, syslog and NetFlow from power, cooling and network gear polled continuously and landed as governed events for real-time facility and network analysis.",
                         "snmp",
+                        cat="Network / Facility Telemetry",
+                        what="SNMP traps, syslog and NetFlow from power, cooling and network gear polled continuously and landed as governed events.",
+                        users="NOC, network and facilities data engineers.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "1-10k events/sec", "Continuous")),
                     ),
                     tile(
                         "Kafka Sensor Bus",
                         "eventbus",
                         "High-frequency BMS, PDU and environmental events carried on existing Kafka topics, consumed continuously into the lakehouse for near-real-time cooling and power analytics.",
                         "kafka",
+                        cat="Event Streaming Platform",
+                        what="High-frequency BMS, PDU and environmental events carried on existing Kafka topics, consumed continuously for near-real-time analytics.",
+                        users="Facilities data engineers and streaming teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "10-100k events/sec", "Continuous")),
                     ),
                     tile(
                         "MQTT Gateway",
                         "iot",
                         "Edge sensor and controller telemetry published to an MQTT broker at the site, bridged into the lakehouse so hall-level readings arrive at the cadence they are sampled.",
                         "mqtt",
+                        cat="IoT Messaging (MQTT)",
+                        what="Edge sensor and controller telemetry published to a site MQTT broker and bridged into the lakehouse at sampling cadence.",
+                        users="Edge/IoT and facilities data engineers.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "1-50k edge readings/sec", "Continuous")),
                     ),
                 ]
             ),
@@ -419,7 +542,59 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Facility Operations", "Ask about live power, cooling and alarms across the floor in plain language.",
+                          feeds=["JCI Metasys", "Vertiv Environet", "SNMP & Telemetry", "PUE, uptime, capacity"],
+                          teams=["Facilities Ops", "Executive Team", "Optimization Eng"],
+                          questions=[
+                              "Which halls are running hottest against their thermal envelope right now?",
+                              "What is current PUE by site and how is it trending today?",
+                              "Which cooling units are drawing the most power for the least effect?",
+                              "Where are active critical alarms concentrated?",
+                              "Which power chains are closest to their capacity limit?"]),
+                    genie("Capacity & Interconnection", "Explore power, cooling and space headroom and cross-connect utilisation.",
+                          feeds=["Sunbird dcTrack", "Schneider PowerLogic", "Equinix Fabric", "Conformed site, asset, tenant"],
+                          teams=["Capacity & IX", "Executive Team", "Facilities Ops"],
+                          questions=[
+                              "Where do we have stranded power capacity by hall?",
+                              "Which cabinets have space but no available power?",
+                              "What is cross-connect utilisation across the meet-me room?",
+                              "Where will the next megawatt of demand land?",
+                              "Which sites are closest to selling out of cooling?"]),
+                    genie("Energy & Sustainability", "Answer PUE, WUE, energy-cost and carbon questions across the estate.",
+                          feeds=["Schneider PowerLogic", "PDU Branch Metering", "Utility & Energy Mkts", "PUE, uptime, capacity"],
+                          teams=["Sustainability", "Executive Team", "Facilities Ops"],
+                          questions=[
+                              "What is PUE and WUE by site this month versus last?",
+                              "How much power did we buy on spot versus contract this week?",
+                              "What are Scope 1-3 emissions by site quarter to date?",
+                              "Which sites have the best carbon-intensity buying windows today?",
+                              "Where is energy spend growing fastest relative to load?"]),
+                    genie("Service & Tenant", "Ask about SLAs, tenant power, incidents and physical access in plain language.",
+                          feeds=["ServiceNow ITSM", "Genetec Security", "Tenant Billing", "Conformed site, asset, tenant"],
+                          teams=["Service & Sec", "Capacity & IX", "Executive Team"],
+                          questions=[
+                              "Which tenants are closest to breaching an uptime SLA?",
+                              "What is metered power draw versus committed power by tenant?",
+                              "Which incidents are open past their SLA right now?",
+                              "Where did anomalous after-hours access occur this week?",
+                              "Which change records carry the highest risk this window?"]),
+                ],
+                dashboards=[
+                    dashboard("PUE & Efficiency", "Site PUE, WUE and cooling energy on certified Metric Views.",
+                              kpis=["PUE", "WUE", "Cooling energy share", "Setpoint compliance", "Free-cooling hours"],
+                              teams=["Sustainability", "Facilities Ops", "Executive Team"]),
+                    dashboard("Capacity & Headroom", "Power, cooling and space headroom and stranded capacity by hall.",
+                              kpis=["Power headroom", "Cooling headroom", "Space utilisation", "Stranded capacity", "Interconnect utilisation"],
+                              teams=["Capacity & IX", "Executive Team", "Facilities Ops"]),
+                    dashboard("Uptime & Reliability", "Availability, alarms and predicted-failure risk across critical plant.",
+                              kpis=["Uptime %", "SLA compliance", "Open critical alarms", "MTTR", "Predicted failures"],
+                              teams=["Facilities Ops", "Service & Sec", "Executive Team"]),
+                    dashboard("Energy & Carbon", "Energy cost, spot-versus-contract mix and Scope 1-3 emissions by site.",
+                              kpis=["Energy cost", "Spot vs contract mix", "Scope 1-3 emissions", "Carbon intensity", "Demand-response savings"],
+                              teams=["Sustainability", "Executive Team", "Facilities Ops"]),
+                ],
             ),
         },
         "top": top_band(

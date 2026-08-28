@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,129 @@ INDUSTRIES_BATCH_ECOMMERCE = {
         "rails": {
             "src": [
                 {"box": "Commerce Platform", "ic": "apps", "tiles": [
-                    tile("Shopify Plus", "apps", "Catalog, carts, checkouts and customer accounts.", "shopify-ec"),
-                    tile("Salesforce Commerce Cloud", "partner", "B2C and B2B storefronts with promotions.", "sfcc"),
-                    tile("Adobe Commerce", "product", "Magento catalog, pricing and multi-site config.", "adobe-commerce"),
+                    tile("Shopify Plus", "apps", "Catalog, carts, checkouts and customer accounts.", "shopify-ec",
+                         cat="E-Commerce Platform",
+                         what="Runs the catalog, carts, checkouts and customer accounts, emitting the clickstream and order events behind the storefront.",
+                         users="E-commerce, Growth Marketing and Merchandising teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-20k events/sec at peak", "Continuous clickstream + orders"))),
+                    tile("Salesforce Commerce Cloud", "partner", "B2C and B2B storefronts with promotions.", "sfcc",
+                         cat="E-Commerce Platform",
+                         what="Powers B2C and B2B storefronts with promotions and catalog, capturing browse, cart and order events across sites.",
+                         users="E-commerce, Merchandising and B2B Sales teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly order sync"),
+                             stream=flow(["semi-structured"], "thousands of events/sec", "Continuous clickstream"))),
+                    tile("Adobe Commerce", "product", "Magento catalog, pricing and multi-site config.", "adobe-commerce",
+                         cat="E-Commerce Platform",
+                         what="Magento-based catalog, pricing and multi-site configuration, emitting product, price and order data across storefronts.",
+                         users="Merchandising, E-commerce and Site Operations teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly / nightly sync"))),
                 ]},
                 {"box": "OMS & Payments", "ic": "erp", "tiles": [
-                    tile("Manhattan Active Omni", "erp", "Order orchestration, promising and returns.", "manhattan"),
-                    tile("Stripe Payments", "market", "Payment intents, disputes and payout reconciliation.", "stripe"),
-                    tile("Adyen Platform", "partner", "Global acquiring, risk and settlement.", "adyen"),
+                    tile("Manhattan Active Omni", "erp", "Order orchestration, promising and returns.", "manhattan",
+                         cat="Order Management System (OMS)",
+                         what="Orchestrates orders, order promising and returns across nodes, emitting the fulfillment and ATP events behind the promise.",
+                         users="Operations, Fulfillment and Customer Experience teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of order events/sec", "Continuous orchestration events"))),
+                    tile("Stripe Payments", "market", "Payment intents, disputes and payout reconciliation.", "stripe",
+                         cat="Payment Gateway / Processor",
+                         what="Captures payment intents, disputes and payouts, returning the transaction and chargeback data behind revenue and fraud.",
+                         users="Finance, Fraud & Risk and Growth teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day payouts", "Daily reconciliation"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous (API / webhook)"))),
+                    tile("Adyen Platform", "partner", "Global acquiring, risk and settlement.", "adyen",
+                         cat="Payment Gateway / Processor",
+                         what="Provides global acquiring, risk scoring and settlement, emitting authorization, capture and settlement events across markets.",
+                         users="Finance, Payments and Fraud & Risk teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-3 GB/day settlement", "Daily settlement files"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous (API)"))),
                 ]},
                 {"box": "Fulfillment & WMS", "ic": "stream", "tiles": [
-                    tile("ShipBob WMS", "stream", "Pick, pack and carrier manifests.", "shipbob"),
-                    tile("Flexport Logistics", "globe", "Inbound containers, customs and drayage.", "flexport"),
-                    tile("Narvar Post-Purchase", "partner", "Tracking, returns and WISMO experiences.", "narvar"),
+                    tile("ShipBob WMS", "stream", "Pick, pack and carrier manifests.", "shipbob",
+                         cat="Warehouse Management System (WMS)",
+                         what="Runs pick, pack and carrier manifesting across fulfillment centres, emitting shipment and inventory movement events.",
+                         users="Fulfillment Operations and Logistics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous fulfillment events"))),
+                    tile("Flexport Logistics", "globe", "Inbound containers, customs and drayage.", "flexport",
+                         cat="Freight Forwarding / Logistics Platform",
+                         what="Tracks inbound containers, customs and drayage so planners see landed inventory and inbound delays before they hit stock.",
+                         users="Supply Chain, Inventory Planning and Logistics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs/day", "Daily + milestone events"))),
+                    tile("Narvar Post-Purchase", "partner", "Tracking, returns and WISMO experiences.", "narvar",
+                         cat="Post-Purchase Experience Platform",
+                         what="Manages tracking, returns and where-is-my-order experiences, emitting delivery and return events tied to the order.",
+                         users="Customer Experience, Returns and Logistics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of events/sec", "Continuous tracking events"))),
                 ]},
                 {"box": "Marketing & CRM", "ic": "custlake", "tiles": [
-                    tile("Klaviyo", "custlake", "Email, SMS and lifecycle segments.", "klaviyo"),
-                    tile("Braze", "partner", "Cross-channel campaigns and canvas journeys.", "braze"),
-                    tile("Google Analytics 4", "observ", "Session, funnel and attribution events.", "ga4"),
+                    tile("Klaviyo", "custlake", "Email, SMS and lifecycle segments.", "klaviyo",
+                         cat="Marketing Automation / CRM Platform",
+                         what="Runs email, SMS and lifecycle journeys on segments, emitting send, open, click and conversion events for lifecycle analytics.",
+                         users="Lifecycle & CRM and Growth Marketing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Hourly sync"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous engagement events"))),
+                    tile("Braze", "partner", "Cross-channel campaigns and canvas journeys.", "braze",
+                         cat="Customer Engagement Platform",
+                         what="Orchestrates cross-channel campaigns and canvas journeys across push, email and in-app, emitting engagement and conversion events.",
+                         users="Lifecycle & CRM and Growth Marketing teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous campaign events"))),
+                    tile("Google Analytics 4", "observ", "Session, funnel and attribution events.", "ga4",
+                         cat="Web / Digital Analytics Platform",
+                         what="Captures session, funnel and attribution events across web and app for traffic, conversion and channel-mix analytics.",
+                         users="Growth Marketing, SEO and Analytics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "5-20k events/sec at peak", "Continuous event stream"))),
                 ]},
                 {"box": "Marketplaces", "ic": "market", "tiles": [
-                    tile("Amazon Seller Central", "market", "Marketplace orders, fees and advertising.", "amazon-sc"),
-                    tile("eBay Managed Payments", "partner", "Third-party marketplace transactions.", "ebay"),
+                    tile("Amazon Seller Central", "market", "Marketplace orders, fees and advertising.", "amazon-sc",
+                         cat="Marketplace Seller Platform",
+                         what="Provides marketplace orders, fees and advertising data so teams can reconcile price, stock and per-channel profit on Amazon.",
+                         users="Marketplace, Merchandising and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily reports + hourly orders"))),
+                    tile("eBay Managed Payments", "partner", "Third-party marketplace transactions.", "ebay",
+                         cat="Marketplace Seller Platform",
+                         what="Supplies third-party marketplace transactions and payouts, feeding per-channel order, fee and settlement reconciliation.",
+                         users="Marketplace and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs/day", "Daily order + payout feed"))),
                 ]},
-                fed_group("Finance Revenue Mart", "Revenue recognition marts queried in place under Unity Catalog."),
+                fed_group("Finance Revenue Mart", "Revenue recognition marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="Revenue-recognition marts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                          users="Finance and Revenue Operations analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Similarweb Digital", "observ", "Competitive traffic and channel mix benchmarks.", "similarweb"),
-                tile("Jungle Scout", "market", "Marketplace share and keyword intelligence.", "jungle-scout"),
-                tile("ShipStation Rates", "api", "Carrier rate shopping and delivery promises.", "shipstation"),
+                tile("Similarweb Digital", "observ", "Competitive traffic and channel mix benchmarks.", "similarweb",
+                     cat="Digital Market Intelligence Provider",
+                     what="Supplies competitive traffic and channel-mix benchmarks so growth teams can size their share against competitors.",
+                     users="Growth Marketing, SEO and Strategy teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/week", "Weekly benchmark feed"))),
+                tile("Jungle Scout", "market", "Marketplace share and keyword intelligence.", "jungle-scout",
+                     cat="Marketplace Intelligence Provider",
+                     what="Provides marketplace share and keyword intelligence used to tune Amazon listings, price and ad spend.",
+                     users="Marketplace and Merchandising teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs/day", "Daily feed"))),
+                tile("ShipStation Rates", "api", "Carrier rate shopping and delivery promises.", "shipstation",
+                     cat="Shipping / Rate Shopping API",
+                     what="Returns carrier rate shopping and delivery promises consumed inbound to route orders to the lowest-cost node that meets SLA.",
+                     users="Operations, Fulfillment and Logistics teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds of API calls/sec", "Continuous (API)"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Growth CFO", "Genie One",
@@ -157,6 +254,56 @@ INDUSTRIES_BATCH_ECOMMERCE = {
                     tile("Data Products", "product", "Customer and order products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Brand partners via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Growth & Revenue", "Ask about conversion, revenue, CAC and channel performance in plain language.",
+                      feeds=["Shopify Plus", "Google Analytics 4", "Klaviyo", "Conversion, AOV, LTV"],
+                      teams=["Growth Marketing", "CEO & Growth CFO", "Merchandising"],
+                      questions=[
+                          "What was yesterday's conversion rate by channel?",
+                          "What is blended CAC and LTV-to-CAC by acquisition channel?",
+                          "Which campaigns drove the most incremental revenue this week?",
+                          "How is AOV trending across paid, owned and marketplace?",
+                          "What is return on ad spend by channel and campaign?"]),
+                genie("Fulfillment & Inventory", "Explore delivery SLA, available-to-promise and cost to serve across nodes.",
+                      feeds=["Manhattan Active Omni", "ShipBob WMS", "Flexport Logistics", "Conformed customers and orders"],
+                      teams=["Operations", "Customer Experience", "Growth Marketing"],
+                      questions=[
+                          "What is on-time delivery by node and carrier right now?",
+                          "Where is available-to-promise drifting from actual stock?",
+                          "What is cost to serve per order by fulfillment node?",
+                          "Which orders are at risk of missing the promise date?",
+                          "Which nodes have the highest split-shipment rate?"]),
+                genie("Payments & Fraud", "Answer questions on payment success, disputes and checkout fraud.",
+                      feeds=["Stripe Payments", "Adyen Platform", "Manhattan Active Omni"],
+                      teams=["CEO & Growth CFO", "Operations", "Customer Experience"],
+                      questions=[
+                          "What is our payment authorization rate by processor?",
+                          "How is the chargeback rate trending this month?",
+                          "Which fraud patterns are driving the most declines?",
+                          "What is dispute volume by reason code and market?",
+                          "Where are false-positive declines costing us good orders?"]),
+                genie("Customer & Lifecycle", "Ask about retention, LTV segments and CX health across cohorts.",
+                      feeds=["Klaviyo", "Braze", "Narvar Post-Purchase"],
+                      teams=["Customer Experience", "Growth Marketing", "CEO & Growth CFO"],
+                      questions=[
+                          "What is repeat purchase rate by acquisition cohort?",
+                          "Which LTV segments respond best to lifecycle journeys?",
+                          "What is our return rate by category and reason?",
+                          "How does CSAT compare across support channels?",
+                          "Which cohorts are at highest churn risk right now?"]),
+            ], dashboards=[
+                dashboard("Growth & Conversion", "Conversion, AOV, revenue and channel performance on certified Metric Views.",
+                          kpis=["Conversion rate", "AOV", "GMV", "Blended CAC", "Return on ad spend"],
+                          teams=["Growth Marketing", "CEO & Growth CFO", "Merchandising"]),
+                dashboard("Fulfillment & SLA", "On-time delivery, fill rate and cost to serve across nodes and carriers.",
+                          kpis=["On-time delivery", "Fill rate", "Cost to serve", "Split-shipment rate", "ATP accuracy"],
+                          teams=["Operations", "Customer Experience", "Growth Marketing"]),
+                dashboard("Payments & Fraud", "Authorization rate, chargebacks and fraud loss across processors.",
+                          kpis=["Authorization rate", "Chargeback rate", "Fraud loss rate", "Dispute volume", "False-positive rate"],
+                          teams=["CEO & Growth CFO", "Operations", "Customer Experience"]),
+                dashboard("Retention & LTV", "Repeat rate, lifetime value and CX health across cohorts.",
+                          kpis=["Repeat rate", "Customer lifetime value", "Return rate", "CSAT", "Churn risk"],
+                          teams=["Customer Experience", "Growth Marketing", "CEO & Growth CFO"]),
             ]),
         },
         "top": top_band(

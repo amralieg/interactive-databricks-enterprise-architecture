@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,117 @@ INDUSTRIES_BATCH_GAMING = {
         "rails": {
             "src": [
                 {"box": "Game Platform & Live", "ic": "stream", "tiles": [
-                    tile("Unity Gaming Services", "api", "Player authentication, economy transactions and live ops configuration events.", "unity-gaming"),
-                    tile("PlayFab Backend", "db", "Title data, inventory, matchmaking and leaderboard state for cross-platform games.", "playfab"),
-                    tile("Custom Game Servers", "iot", "Authoritative match and session logs from dedicated and listen servers at tick resolution.")
+                    tile("Unity Gaming Services", "api", "Player authentication, economy transactions and live ops configuration events.", "unity-gaming",
+                         cat="Game Backend / LiveOps Platform",
+                         what="Provides player authentication, economy transactions and live-ops configuration, emitting the events behind sessions and monetisation.",
+                         users="Live Ops, Product analytics and Backend engineering teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "10-100k events/sec at peak", "Continuous telemetry"))),
+                    tile("PlayFab Backend", "db", "Title data, inventory, matchmaking and leaderboard state for cross-platform games.", "playfab",
+                         cat="Game Backend-as-a-Service",
+                         what="Holds title data, player inventory, matchmaking and leaderboard state for cross-platform titles.",
+                         users="Live Ops, Economy designers and Backend engineering teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-20k events/sec", "Continuous"),
+                             batch=flow(["structured"], "10-100 GB/day", "Hourly / nightly extracts"))),
+                    tile("Custom Game Servers", "iot", "Authoritative match and session logs from dedicated and listen servers at tick resolution.",
+                         cat="Authoritative Game Servers",
+                         what="Emit authoritative match and session logs at tick resolution from dedicated and listen servers for fairness and telemetry.",
+                         users="Matchmaking scientists, Live Ops and Backend engineering teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "50-500k events/sec at peak", "Continuous (tick-level logs)")))
                 ]},
                 {"box": "Payments & Wallet", "ic": "market", "tiles": [
-                    tile("Adyen Payments", "market", "Card, wallet and local payment method authorisations, chargebacks and settlements.", "adyen"),
-                    tile("Paysafe Skrill", "partner", "Digital wallet deposits and withdrawals for regulated iGaming markets.", "paysafe"),
-                    tile("Pragmatic Play RGS", "product", "Remote game server rounds, bet outcomes and jackpot contributions for casino content.", "pragmatic")
+                    tile("Adyen Payments", "market", "Card, wallet and local payment method authorisations, chargebacks and settlements.", "adyen",
+                         cat="Payment Service Provider (PSP)",
+                         what="Processes card, wallet and local-method authorisations and returns chargeback and settlement data across markets.",
+                         users="Payments, Fraud and Finance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k auths/sec at peak", "Continuous (sub-second)"),
+                             batch=flow(["structured"], "5-30 GB/day settlement + chargebacks", "Multiple settlement cycles daily"))),
+                    tile("Paysafe Skrill", "partner", "Digital wallet deposits and withdrawals for regulated iGaming markets.", "paysafe",
+                         cat="Digital Wallet / Payment Provider",
+                         what="Handles digital-wallet deposits and withdrawals for regulated iGaming markets with payout controls.",
+                         users="Payments, Fraud and Compliance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of txns/sec at peak", "Continuous (deposit / withdrawal events)"))),
+                    tile("Pragmatic Play RGS", "product", "Remote game server rounds, bet outcomes and jackpot contributions for casino content.", "pragmatic",
+                         cat="Remote Game Server (RGS)",
+                         what="Runs casino content rounds and returns bet outcomes and jackpot contributions used for GGR and royalty calculation.",
+                         users="Risk & Compliance, Finance and Content-partnership teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of rounds/sec at peak", "Continuous (round-level)"))),
                 ]},
                 {"box": "Player CRM & Support", "ic": "custlake", "tiles": [
-                    tile("Salesforce Gaming CRM", "custlake", "Player segments, campaign responses and VIP host notes.", "sf-gaming"),
-                    tile("Zendesk Player Support", "chat", "Tickets, chat transcripts and refund disputes tied to player accounts.", "zendesk"),
-                    tile("Braze Lifecycle", "partner", "Push, email and in-app message sends with delivery and conversion events.", "braze")
+                    tile("Salesforce Gaming CRM", "custlake", "Player segments, campaign responses and VIP host notes.", "sf-gaming",
+                         cat="Player CRM",
+                         what="Holds player segments, campaign responses and VIP host notes used to target lifecycle and retention.",
+                         users="CRM, VIP host and Marketing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
+                    tile("Zendesk Player Support", "chat", "Tickets, chat transcripts and refund disputes tied to player accounts.", "zendesk",
+                         cat="Customer Support Platform",
+                         what="Captures support tickets, chat transcripts and refund disputes tied to player accounts, a leading churn and harm signal.",
+                         users="Player support, Community and Responsible-gaming teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GBs of tickets + transcripts", "Continuous / hourly"))),
+                    tile("Braze Lifecycle", "partner", "Push, email and in-app message sends with delivery and conversion events.", "braze",
+                         cat="Customer Engagement / Messaging",
+                         what="Sends push, email and in-app messages and returns delivery and conversion events for lifecycle campaigns.",
+                         users="CRM, Lifecycle marketing and Retention teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec at peak", "Continuous (send / engagement events)"))),
                 ]},
                 {"box": "Fraud & Compliance", "ic": "gavel", "tiles": [
-                    tile("SEON Fraud Prevention", "gauge", "Device fingerprinting, velocity rules and chargeback signals at registration and deposit.", "seon"),
-                    tile("Onfido Identity", "people", "Document verification and biometric checks for KYC and age gating.", "onfido"),
-                    tile("GeoComply Location", "globe", "Geolocation compliance pings proving the player is in an permitted jurisdiction.", "geocomply")
+                    tile("SEON Fraud Prevention", "gauge", "Device fingerprinting, velocity rules and chargeback signals at registration and deposit.", "seon",
+                         cat="Fraud Prevention Platform",
+                         what="Fingerprints devices and applies velocity and enrichment rules at registration and deposit, returning fraud signals.",
+                         users="Fraud analysts and Risk operations teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds-thousands of checks/sec at peak", "Continuous (sub-second)"))),
+                    tile("Onfido Identity", "people", "Document verification and biometric checks for KYC and age gating.", "onfido",
+                         cat="Identity Verification (KYC)",
+                         what="Verifies identity documents and biometrics for KYC and age-gating at onboarding and payout.",
+                         users="KYC, Compliance and Onboarding teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs/day verification results", "Continuous / on-demand"))),
+                    tile("GeoComply Location", "globe", "Geolocation compliance pings proving the player is in an permitted jurisdiction.", "geocomply",
+                         cat="Geolocation Compliance",
+                         what="Emits geolocation compliance pings that prove the player is in a permitted jurisdiction before wagering.",
+                         users="Compliance, Risk and Regulatory reporting teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of pings/sec at peak", "Continuous (location checks)"))),
                 ]},
                 fed_group(
                     "Publisher Revenue Share",
                     "Third-party title royalty ledgers left at partners and queried in place under Unity Catalog.",
+                    cat="Partner Royalty Data Warehouse",
+                    what="Third-party title royalty ledgers kept at partners and queried in place through federation instead of copied in.",
+                    users="Finance, Content-partnership and Studio-royalty teams.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale ledgers", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("AppsFlyer Attribution", "api", "Install and in-app event attribution consumed inbound for UA spend optimisation.", "appsflyer"),
-                tile("Steam & Console APIs", "partner", "Platform achievement, entitlement and sales reports normalised on ingest."),
-                tile("Regulator GGR Feeds", "gavel", "Jurisdictional gross gaming revenue file layouts validated before submission windows.")
+                tile("AppsFlyer Attribution", "api", "Install and in-app event attribution consumed inbound for UA spend optimisation.", "appsflyer",
+                     cat="Mobile Attribution (MMP)",
+                     what="Attributes installs and in-app events to acquisition channels and creatives for UA spend optimisation.",
+                     users="User acquisition, Growth marketing and Marketing analytics teams.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "hundreds-thousands of events/sec at peak", "Continuous (attribution postbacks)"))),
+                tile("Steam & Console APIs", "partner", "Platform achievement, entitlement and sales reports normalised on ingest.",
+                     cat="Platform Store & Entitlement Data",
+                     what="Supplies achievement, entitlement and sales reports from Steam and console stores, normalised on ingest.",
+                     users="Publishing, Finance and Product analytics teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "1-10 GB/day", "Daily platform reports"))),
+                tile("Regulator GGR Feeds", "gavel", "Jurisdictional gross gaming revenue file layouts validated before submission windows.",
+                     cat="Regulatory Reporting Data",
+                     what="Carries jurisdictional gross-gaming-revenue file layouts validated against schema before submission windows.",
+                     users="Compliance, Regulatory reporting and Finance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "sub-GB per filing", "Per regulatory cycle"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & CFO", "Genie One", "The CEO on MAU, payer conversion and studio ROI; the CFO on gross gaming revenue, hold percentage and chargeback loss rate.",
@@ -148,6 +234,56 @@ INDUSTRIES_BATCH_GAMING = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Studios, affiliates and regulators reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Live Ops & Engagement", "Ask about ARPDAU, retention, funnels and economy health per title in plain language.",
+                      feeds=["Unity Gaming Services", "PlayFab Backend", "Custom Game Servers", "ARPDAU, LTV, churn"],
+                      teams=["Live Ops & Product", "Live Ops Manager", "Economy Designer"],
+                      questions=[
+                          "What was ARPDAU by title yesterday versus last week?",
+                          "Which cohorts are dropping off fastest after the last content release?",
+                          "How did the latest event move retention and spend?",
+                          "Which currency sinks and sources are out of balance right now?",
+                          "What is payer conversion by title and platform this week?"]),
+                genie("Player 360 & CRM", "Explore player spend, support history and lifecycle across the base.",
+                      feeds=["Salesforce Gaming CRM", "Braze Lifecycle", "Zendesk Player Support", "Conformed player, session"],
+                      teams=["Player Experience", "VIP Host", "CRM Lifecycle Lead"],
+                      questions=[
+                          "Which VIP accounts opened support tickets after the last update?",
+                          "Which high-value players show early churn signals this week?",
+                          "What is the response rate on the current win-back campaign?",
+                          "Which segments have the highest lifetime value and lowest churn?",
+                          "Which players hit a deposit limit or harm marker in the last week?"]),
+                genie("Fraud & Compliance", "Answer questions on chargebacks, bonus abuse, AML and jurisdictional filings.",
+                      feeds=["SEON Fraud Prevention", "Adyen Payments", "GeoComply Location", "Regulator GGR Feeds"],
+                      teams=["Risk & Compliance", "Fraud Analyst", "AML & SAR Investigator"],
+                      questions=[
+                          "What is our chargeback loss rate this month versus last?",
+                          "Which device or payment clusters look like coordinated bonus abuse?",
+                          "How many withdrawals are held pending fraud review, and for how long?",
+                          "Which jurisdictions are approaching a GGR filing deadline?",
+                          "What is the alert-to-SAR conversion rate by investigator?"]),
+                genie("Acquisition & LTV", "Ask about UA spend, ROAS, CPI and predicted LTV by channel and geography.",
+                      feeds=["AppsFlyer Attribution", "Adyen Payments", "Salesforce Gaming CRM", "ARPDAU, LTV, churn"],
+                      teams=["Marketing & UA", "UA Manager", "Growth Marketer"],
+                      questions=[
+                          "What is ROAS by channel and geography for the last 30 days?",
+                          "Which campaigns have the best predicted LTV against CPI?",
+                          "Where should the next dollar of UA spend go today?",
+                          "How does cohort payback compare across acquisition channels?",
+                          "Which creatives are driving the highest-value installs this week?"]),
+            ], dashboards=[
+                dashboard("Monetisation & Retention", "ARPDAU, payer conversion, cohort LTV and churn on certified Metric Views.",
+                          kpis=["ARPDAU", "Payer conversion", "Cohort LTV", "Churn rate", "DAU / MAU"],
+                          teams=["CEO & CFO", "Live Ops & Product", "Marketing & UA"]),
+                dashboard("Fraud & Chargebacks", "Chargeback loss, bonus abuse and payout-hold throughput across markets.",
+                          kpis=["Chargeback loss rate", "Bonus-abuse rate", "Fraud false-positive rate", "Payout hold rate", "Alert-to-SAR conversion"],
+                          teams=["Risk & Compliance", "Fraud Analyst", "CEO & CFO"]),
+                dashboard("Acquisition & LTV", "UA spend, ROAS, CPI and predicted LTV by channel and geography.",
+                          kpis=["CPI", "ROAS", "Predicted LTV", "Cohort payback", "Install volume"],
+                          teams=["Marketing & UA", "UA Manager", "Growth Marketer"]),
+                dashboard("Regulatory & GGR", "Gross gaming revenue, hold percentage and responsible-gaming metrics by jurisdiction.",
+                          kpis=["Gross gaming revenue", "Hold percentage", "GGR by jurisdiction", "Self-exclusion enforcement", "Filing timeliness"],
+                          teams=["Risk & Compliance", "Compliance Officer", "CEO & CFO"]),
             ]),
         },
         "top": top_band(

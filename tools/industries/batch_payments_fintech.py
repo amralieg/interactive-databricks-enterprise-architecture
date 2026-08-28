@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl_rail2(business_tiles, tech_tiles):
@@ -28,31 +31,119 @@ INDUSTRIES_BATCH_PAYMENTS_FINTECH = {
         "rails": {
             "src": [
                 {"box": "Core & Ledger", "ic": "erp", "tiles": [
-                        tile("Temenos Transact", "erp", "Deposits, loans, GL and end-of-day across retail and commercial banking.", "temenos"),
-                        tile("Mambu Core Banking", "db", "Cloud-native accounts, products and interest accrual for digital banks.", "mambu"),
-                        tile("FIS Modern Banking", "erp", "Legacy core postings, statements and regulatory extracts.", "fis-core"),
+                        tile("Temenos Transact", "erp", "Deposits, loans, GL and end-of-day across retail and commercial banking.", "temenos",
+                             cat="Core Banking System",
+                             what="Deposits, loans, general ledger and end-of-day processing across retail and commercial banking.",
+                             users="Core banking operations, finance and product.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "50-200 GB/day postings + EOD", "Nightly batch + intraday CDC"))),
+                        tile("Mambu Core Banking", "db", "Cloud-native accounts, products and interest accrual for digital banks.", "mambu",
+                             cat="Core Banking System",
+                             what="Cloud-native accounts, product definitions and interest accrual for digital banks.",
+                             users="Digital banking product, core operations and finance.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "10-50 GB/day accounts + accruals", "Continuous CDC (near real-time)"))),
+                        tile("FIS Modern Banking", "erp", "Legacy core postings, statements and regulatory extracts.", "fis-core",
+                             cat="Core Banking System",
+                             what="Legacy core postings, statements and regulatory extracts across the deposit and loan book.",
+                             users="Core banking operations, finance and regulatory reporting.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "50-200 GB/day postings + extracts", "Nightly batch"))),
                     ]},
                 {"box": "Acquiring & Issuing", "ic": "market", "tiles": [
-                        tile("Adyen Platform", "market", "Unified acquiring authorisations, settlements and dispute events.", "adyen"),
-                        tile("Stripe Payments", "partner", "Merchant payment intents, connect payouts and radar fraud signals.", "stripe"),
-                        tile("Marqeta Card Issuing", "api", "Card programmes, spend controls and tokenisation lifecycle.", "marqeta"),
+                        tile("Adyen Platform", "market", "Unified acquiring authorisations, settlements and dispute events.", "adyen",
+                             cat="Payment Acquiring / PSP",
+                             what="Unified acquiring platform carrying authorisation, settlement and dispute events across channels.",
+                             users="Payments product, fraud and settlement operations.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "5-50k auth events/sec at peak", "Continuous (real-time)"),
+                                 batch=flow(["structured"], "Settlement + dispute files", "Multiple settlement cycles daily"))),
+                        tile("Stripe Payments", "partner", "Merchant payment intents, connect payouts and radar fraud signals.", "stripe",
+                             cat="Payment Gateway / PSP",
+                             what="Merchant payment intents, Connect payouts and Radar fraud signals across online payments.",
+                             users="Payments product, growth and fraud.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "Payment + payout events", "Continuous (webhooks)"),
+                                 batch=flow(["structured"], "Payout + reconciliation files", "Daily batch"))),
+                        tile("Marqeta Card Issuing", "api", "Card programmes, spend controls and tokenisation lifecycle.", "marqeta",
+                             cat="Card Issuing Processor",
+                             what="Card programme management, spend controls and tokenisation lifecycle for issued cards.",
+                             users="Card product, issuing operations and fraud.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "Card auth + token events", "Continuous (real-time)"),
+                                 batch=flow(["structured"], "Programme + spend files", "Daily batch"))),
                     ]},
                 {"box": "Fraud & Compliance", "ic": "gavel", "tiles": [
-                        tile("NICE Actimize", "gauge", "AML alerts, SAR workflows and transaction monitoring rules.", "actimize"),
-                        tile("Onfido Identity", "people", "Document verification and biometric checks at onboarding.", "onfido"),
-                        tile("AML Screening", "gavel", "Sanctions, PEP and adverse media screening on parties and merchants.", "complyadvantage"),
+                        tile("NICE Actimize", "gauge", "AML alerts, SAR workflows and transaction monitoring rules.", "actimize",
+                             cat="Financial Crime / AML Platform",
+                             what="AML alert generation, SAR workflows and transaction-monitoring rules across the book.",
+                             users="AML and financial crime, compliance and investigations.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "semi-structured"], "Alerts + case records", "Intraday batch"),
+                                 stream=flow(["semi-structured"], "Alert events", "Continuous (near real-time)"))),
+                        tile("Onfido Identity", "people", "Document verification and biometric checks at onboarding.", "onfido",
+                             cat="Identity Verification (KYC)",
+                             what="Document verification and biometric identity checks performed at customer and merchant onboarding.",
+                             users="Onboarding, KYB and financial crime.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured", "unstructured"], "Verification results + documents", "Continuous (API)"))),
+                        tile("AML Screening", "gavel", "Sanctions, PEP and adverse media screening on parties and merchants.", "complyadvantage",
+                             cat="Sanctions & Screening Provider",
+                             what="Sanctions, PEP and adverse-media screening on parties and merchants at onboarding and monitoring.",
+                             users="Financial crime, compliance and onboarding.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "Screening API responses", "Continuous (API)"),
+                                 batch=flow(["structured"], "Watchlist deltas", "Daily refresh"))),
                     ]},
                 {"box": "Merchant & CRM", "ic": "custlake", "tiles": [
-                        tile("Salesforce Fintech CRM", "custlake", "Merchant sales pipeline, onboarding cases and support history.", "sf-fintech"),
-                        tile("Zendesk Merchant Care", "chat", "Tickets, chat transcripts and refund disputes tied to merchant accounts.", "zendesk"),
-                        tile("Braze Lifecycle", "partner", "Activation and retention campaigns with delivery and conversion events.", "braze"),
+                        tile("Salesforce Fintech CRM", "custlake", "Merchant sales pipeline, onboarding cases and support history.", "sf-fintech",
+                             cat="CRM Platform",
+                             what="Merchant sales pipeline, onboarding cases and support history across the commercial relationship.",
+                             users="Merchant sales, merchant success and onboarding.",
+                             data_out=data_out(
+                                 batch=flow(["structured"], "5-20 GB/day accounts + cases", "Nightly CDC"),
+                                 stream=flow(["semi-structured"], "Activity + case events", "Continuous (API/events)"))),
+                        tile("Zendesk Merchant Care", "chat", "Tickets, chat transcripts and refund disputes tied to merchant accounts.", "zendesk",
+                             cat="Customer Support Platform",
+                             what="Support tickets, chat transcripts and refund disputes tied to merchant accounts.",
+                             users="Merchant success, support and dispute teams.",
+                             data_out=data_out(
+                                 batch=flow(["structured", "unstructured"], "Tickets + transcripts", "Nightly batch"),
+                                 stream=flow(["semi-structured"], "Ticket events", "Continuous (webhooks)"))),
+                        tile("Braze Lifecycle", "partner", "Activation and retention campaigns with delivery and conversion events.", "braze",
+                             cat="Customer Engagement Platform",
+                             what="Activation and retention campaigns with delivery, open and conversion events across channels.",
+                             users="Growth marketing and merchant success.",
+                             data_out=data_out(
+                                 stream=flow(["semi-structured"], "Campaign + engagement events", "Continuous (events)"))),
                     ]},
-                fed_group("Card Network Mart", "Scheme reporting and interchange marts queried in place under Unity Catalog."),
+                fed_group("Card Network Mart", "Scheme reporting and interchange marts queried in place under Unity Catalog.",
+                          cat="Scheme / Interchange Data Mart",
+                          what="Scheme reporting and interchange marts kept in the incumbent warehouse and queried in place, giving one view of interchange and settlement.",
+                          users="Settlement operations, finance and the payments business.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale interchange + settlement history", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("SWIFT ISO 20022", "api", "Cross-border payment messages parsed into structured settlement events.", "swift-iso"),
-                tile("Visa / Mastercard BIN", "partner", "Issuer and product metadata consumed inbound for routing and fraud.", "visa-developer"),
-                tile("Open Banking Feeds", "stream", "Account aggregation and consent-based transaction imports for lending.", "open-banking"),
+                tile("SWIFT ISO 20022", "api", "Cross-border payment messages parsed into structured settlement events.", "swift-iso",
+                     cat="Payment Messaging Standard",
+                     what="Cross-border payment messages parsed on arrival into structured settlement events.",
+                     users="Settlement operations, treasury and data engineering.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "Payment messages", "Continuous (message queue)"),
+                         batch=flow(["structured"], "Settlement message batches", "Multiple settlement cycles daily"))),
+                tile("Visa / Mastercard BIN", "partner", "Issuer and product metadata consumed inbound for routing and fraud.", "visa-developer",
+                     cat="Card Network Reference Data",
+                     what="Issuer identification and product metadata consumed inbound for routing decisions and fraud enrichment.",
+                     users="Payments product, routing engineering and fraud.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "BIN + product reference", "Daily/weekly updates"))),
+                tile("Open Banking Feeds", "stream", "Account aggregation and consent-based transaction imports for lending.", "open-banking",
+                     cat="Open Banking Aggregation API",
+                     what="Consent-based account aggregation and transaction imports used for lending and affordability.",
+                     users="Lending product, credit data science and data engineering.",
+                     data_out=data_out(
+                         stream=flow(["semi-structured"], "Account + transaction events", "Continuous (consent-based)"))),
             ]),
             "ppl": ppl_rail2([
                 biz("Payments Leadership", "Genie One", "The CEO on payment volume growth and take rate; the CFO on fraud loss and funding cost when interest rates and scheme fees move against the book.", [["Genie One", "Ask what yesterday's net payment volume was by product without waiting on finance."], ["AI/BI", "Volume, loss and margin on one certified set of Metric Views."], ["Unity Catalog", "Certification so \"volume\" means one thing across core and acquirer."]],
@@ -137,6 +228,58 @@ INDUSTRIES_BATCH_PAYMENTS_FINTECH = {
                         tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                         tile("Sharing Recipients", "share", "Sponsors, auditors and partners reading live tables with no copy."),
                     ]},
+            ],
+            genie_spaces=[
+                genie("Payments & Volume", "Ask about payment volume, take rate and authorisation performance by product in plain language.",
+                      feeds=["Adyen Platform", "Stripe Payments", "Volume, loss, NIM"],
+                      teams=["Payments Leadership", "Product & Payments", "Chief Payments Officer"],
+                      questions=[
+                          "What was net payment volume by product yesterday?",
+                          "How has authorisation success rate moved this week by route?",
+                          "Where is take rate strongest and weakest across products?",
+                          "Which BINs or networks are driving the most declines?",
+                          "How does volume growth compare to last quarter by segment?"]),
+                genie("Fraud & Disputes", "Ask about fraud loss, chargebacks and alert queues across the book in plain language.",
+                      feeds=["NICE Actimize", "Adyen Platform", "Conformed account, txn"],
+                      teams=["Risk & Fraud", "Head of Fraud", "Dispute & Chargeback"],
+                      questions=[
+                          "Which merchants spiked chargebacks last week?",
+                          "What is our fraud loss and false-positive rate today?",
+                          "Where are device clusters or mule patterns concentrated right now?",
+                          "How large is the AML alert backlog and what is ageing?",
+                          "What is our representment win rate before scheme deadlines?"]),
+                genie("Merchant Growth", "Ask about the onboarding funnel, merchant revenue and churn signals in plain language.",
+                      feeds=["Salesforce Fintech CRM", "Zendesk Merchant Care", "Conformed account, txn"],
+                      teams=["Merchant Growth", "Merchant Sales", "Merchant Success"],
+                      questions=[
+                          "Where do merchants drop off in the onboarding funnel?",
+                          "Which merchants are quietly routing volume elsewhere?",
+                          "What is revenue per merchant by segment this quarter?",
+                          "Which merchants have rising support load and disputes?",
+                          "What is time-to-first-transaction for new signups?"]),
+                genie("Treasury & Settlement", "Ask about settlement floats, funding and interchange revenue in plain language.",
+                      feeds=["SWIFT ISO 20022", "Card Network Mart", "Volume, loss, NIM"],
+                      teams=["Finance & Treasury", "Group Treasurer", "Head of Settlement"],
+                      questions=[
+                          "What is our expected settlement float before the next window?",
+                          "How much interchange revenue did each product generate this month?",
+                          "Where are scheme fees diverging from reconciliation?",
+                          "What funding do we need before month-end close?",
+                          "How has net interest margin moved with rates this quarter?"]),
+            ],
+            dashboards=[
+                dashboard("Payment Volume & Take Rate", "Volume, take rate and authorisation performance across products on certified Metric Views.",
+                          kpis=["Payment volume", "Take rate", "Authorisation rate", "Decline rate", "Net interest margin"],
+                          teams=["Payments Leadership", "Product & Payments", "Finance & Treasury"]),
+                dashboard("Fraud & Chargebacks", "Fraud loss, chargebacks and alert posture across acquiring and issuing.",
+                          kpis=["Fraud loss", "Chargeback rate", "False-positive rate", "Alert volume", "Representment win rate"],
+                          teams=["Risk & Fraud", "Head of Fraud", "Dispute & Chargeback"]),
+                dashboard("Merchant Health", "Onboarding funnel, revenue and churn across the merchant book.",
+                          kpis=["Time-to-first-transaction", "Merchant activation", "Revenue per merchant", "Merchant churn", "Support load"],
+                          teams=["Merchant Growth", "Merchant Sales", "Merchant Success"]),
+                dashboard("Treasury & Settlement", "Float, funding and interchange revenue across settlement cycles.",
+                          kpis=["Settlement float", "Funding cost", "Interchange revenue", "Liquidity buffer", "Scheme fee reconciliation"],
+                          teams=["Finance & Treasury", "Group Treasurer", "Head of Settlement"]),
             ]),
         },
         "top": top_band(

@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,117 @@ INDUSTRIES_BATCH_GROCERY = {
         "rails": {
             "src": [
                 {"box": "Store & POS", "ic": "market", "tiles": [
-                    tile("NCR Voyix POS", "market", "Lane transactions, tenders, voids and item-level scans from store registers.", "ncr-voyix"),
-                    tile("Toshiba ACE POS", "erp", "Front-end and self-checkout events with department and weight-scale integration.", "toshiba-ace"),
-                    tile("Trax Shelf Analytics", "iot", "On-shelf availability and planogram compliance from in-aisle image recognition.", "trax")
+                    tile("NCR Voyix POS", "market", "Lane transactions, tenders, voids and item-level scans from store registers.", "ncr-voyix",
+                         cat="Point-of-Sale (POS) System",
+                         what="Captures lane transactions, tenders, voids and item-level scans across store registers, the base signal for baskets, shrink and availability.",
+                         users="Store Operations, Front-End teams and Loss Prevention.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-80 GB/day", "End-of-day polling"),
+                             stream=flow(["semi-structured"], "2-8k scans/sec at peak", "Continuous (near real-time)"))),
+                    tile("Toshiba ACE POS", "erp", "Front-end and self-checkout events with department and weight-scale integration.", "toshiba-ace",
+                         cat="Point-of-Sale (POS) System",
+                         what="Runs front-end and self-checkout with department and weight-scale integration, emitting checkout and scale events per lane.",
+                         users="Store Operations and Front-End teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-40 GB/day", "End-of-day batch"),
+                             stream=flow(["semi-structured"], "1-5k events/sec at peak", "Continuous checkout events"))),
+                    tile("Trax Shelf Analytics", "iot", "On-shelf availability and planogram compliance from in-aisle image recognition.", "trax",
+                         cat="Shelf Monitoring / Computer Vision",
+                         what="Reads on-shelf availability and planogram compliance from in-aisle image recognition, flagging gaps and phantom inventory.",
+                         users="Store Operations, Merchandising and Space Planning teams.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured", "unstructured"], "GBs/day images + reads", "Multiple scans per day"))),
                 ]},
                 {"box": "Merchandising & Promo", "ic": "sheet", "tiles": [
-                    tile("Relex Space Planning", "sheet", "Planograms, facings and space-to-sales assignments by store cluster.", "relex"),
-                    tile("SymphonyAI IRIS", "chart", "Promotion planning, lift forecasts and vendor funding accruals.", "symphony-iris"),
-                    tile("Dunnhumby Customer Data", "custlake", "Loyalty baskets, segments and propensity scores from the science partner.", "dunnhumby")
+                    tile("Relex Space Planning", "sheet", "Planograms, facings and space-to-sales assignments by store cluster.", "relex",
+                         cat="Space & Assortment Planning System",
+                         what="Builds planograms, facings and space-to-sales assignments by store cluster so range matches local sell-through.",
+                         users="Space Planners, Category Managers and Merchandising teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly batch + plan saves"))),
+                    tile("SymphonyAI IRIS", "chart", "Promotion planning, lift forecasts and vendor funding accruals.", "symphony-iris",
+                         cat="Retail AI / Promotion Analytics",
+                         what="Plans promotions, forecasts lift and accrues vendor funding so category teams know which deals fund the next circular.",
+                         users="Pricing & Promotions, Merchandising and Category teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily model runs"))),
+                    tile("Dunnhumby Customer Data", "custlake", "Loyalty baskets, segments and propensity scores from the science partner.", "dunnhumby",
+                         cat="Customer Science / Loyalty Analytics",
+                         what="Supplies loyalty baskets, segments and propensity scores from the customer-science partner for personalisation and category work.",
+                         users="Loyalty & Marketing and Personalisation Science teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "Daily / weekly feed"))),
                 ]},
                 {"box": "Supply & Fresh", "ic": "stream", "tiles": [
-                    tile("Blue Yonder Replenishment", "stream", "Store and DC orders, forecasts and service-level exceptions.", "blue-yonder-repl"),
-                    tile("Sensitech Fresh Chain", "iot", "Temperature monitoring for dairy, meat and produce from DC to store backroom.", "sensitech"),
-                    tile("Invafresh Fresh Platform", "product", "Markdown, production planning and waste tracking for bakery, deli and produce.", "invafresh")
+                    tile("Blue Yonder Replenishment", "stream", "Store and DC orders, forecasts and service-level exceptions.", "blue-yonder-repl",
+                         cat="Replenishment & Demand Planning System",
+                         what="Generates store and DC orders, forecasts and service-level exceptions, the backbone of grocery replenishment.",
+                         users="Replenishment Planners, DC Operations and Supply Chain teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Multiple daily order cycles"))),
+                    tile("Sensitech Fresh Chain", "iot", "Temperature monitoring for dairy, meat and produce from DC to store backroom.", "sensitech",
+                         cat="Cold-Chain Monitoring Platform",
+                         what="Monitors temperature for dairy, meat and produce from DC to store backroom, emitting the excursion signals behind fresh quality.",
+                         users="Fresh Operations, Logistics and Food Safety teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of sensor reads/sec", "Continuous telemetry"))),
+                    tile("Invafresh Fresh Platform", "product", "Markdown, production planning and waste tracking for bakery, deli and produce.", "invafresh",
+                         cat="Fresh Item Management System",
+                         what="Runs markdown, production planning and waste tracking for bakery, deli and produce against the code-date clock.",
+                         users="Fresh Managers, Store Operations and Merchandising teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily + intraday markdown runs"))),
                 ]},
                 {"box": "E-com & Fulfillment", "ic": "partner", "tiles": [
-                    tile("Instacart Marketplace", "partner", "Third-party pick, substitution and delivery events attributed to store inventory.", "instacart"),
-                    tile("Ocado Smart Platform", "api", "CFC pick accuracy, route density and on-time delivery for automated fulfillment.", "ocado"),
-                    tile("Web & App Clickstream", "observ", "Digital basket builds, search and coupon clips joined to in-store loyalty ID.")
+                    tile("Instacart Marketplace", "partner", "Third-party pick, substitution and delivery events attributed to store inventory.", "instacart",
+                         cat="Grocery Delivery Marketplace",
+                         what="Emits third-party pick, substitution and delivery events attributed to store inventory for online basket and substitution analytics.",
+                         users="Digital & E-commerce and Loyalty & Marketing teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of order events/sec", "Continuous order + pick events"))),
+                    tile("Ocado Smart Platform", "api", "CFC pick accuracy, route density and on-time delivery for automated fulfillment.", "ocado",
+                         cat="Automated Fulfillment Platform",
+                         what="Provides customer-fulfillment-centre pick accuracy, route density and on-time delivery for automated online grocery fulfillment.",
+                         users="E-commerce Operations and Logistics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs/day", "Hourly batch"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous fulfillment events"))),
+                    tile("Web & App Clickstream", "observ", "Digital basket builds, search and coupon clips joined to in-store loyalty ID.",
+                         cat="Digital Clickstream Source",
+                         what="Captures digital basket builds, search and coupon clips joined to the in-store loyalty ID to link online behaviour to the household.",
+                         users="Digital & E-commerce, Loyalty & Marketing and Analytics teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "2-10k events/sec at peak", "Continuous clickstream"))),
                 ]},
                 fed_group(
                     "Franchisee POS",
                     "Licensed store sales and inventory left at franchise operators and queried in place under Unity Catalog.",
+                    cat="Licensed Store Data Source",
+                    what="Licensed-store sales and inventory left at franchise operators and queried in place through federation instead of nightly flat-file collection.",
+                    users="Franchise Operations, Merchandising and Finance analysts.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "10s-100s GB (federated)", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("GS1 GDSN Product Data", "api", "Synchronised item attributes and packaging hierarchies consumed inbound for master data.", "gs1-gdsn"),
-                tile("NielsenIQ Store Read", "market", "Syndicated store-level performance for competitive benchmarking.", "nielseniq"),
-                tile("Weather & Local Events", "globe", "Forecast and event calendars for demand shaping on perishable categories.")
+                tile("GS1 GDSN Product Data", "api", "Synchronised item attributes and packaging hierarchies consumed inbound for master data.", "gs1-gdsn",
+                     cat="Product Data Synchronisation Network",
+                     what="Supplies synchronised item attributes and packaging hierarchies consumed inbound to keep master data aligned with suppliers.",
+                     users="Master Data, Merchandising and Category teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "GBs/day attribute updates", "Daily / on-change sync"))),
+                tile("NielsenIQ Store Read", "market", "Syndicated store-level performance for competitive benchmarking.", "nielseniq",
+                     cat="Syndicated Market Data Provider",
+                     what="Provides syndicated store-level performance so category teams can benchmark against the competitive market.",
+                     users="Category Managers, Merchandising and Insights teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "1-5 GB/week", "Weekly / monthly syndicated feed"))),
+                tile("Weather & Local Events", "globe", "Forecast and event calendars for demand shaping on perishable categories.",
+                     cat="External Signal / Weather Feed",
+                     what="Attaches forecast and event calendars as exogenous signals for demand shaping on perishable categories.",
+                     users="Demand Science, Replenishment and Store Operations teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/day", "Daily forecast refresh"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & COO", "Genie One", "The CEO on comparable-store sales and market share; the COO on shrink, labor productivity and on-shelf availability through the peak trading weeks.",
@@ -116,6 +202,56 @@ INDUSTRIES_BATCH_GROCERY = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "CPG vendors, franchisees and analysts reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Sales & Shrink", "Ask about comparable sales, shrink and margin by department in plain language.",
+                      feeds=["NCR Voyix POS", "Toshiba ACE POS", "Shrink, fill rate, basket"],
+                      teams=["CEO & COO", "Store Operations", "Merchandising"],
+                      questions=[
+                          "What were comparable sales yesterday by banner and department?",
+                          "What is shrink and waste by department this period?",
+                          "Which stores show the worst register and scan exceptions?",
+                          "How is basket size trending versus last year?",
+                          "Where is margin leaking against the plan by category?"]),
+                genie("Availability & Fresh", "Explore on-shelf availability and fresh waste across stores and departments.",
+                      feeds=["Trax Shelf Analytics", "Invafresh Fresh Platform", "Blue Yonder Replenishment", "Conformed SKU, store"],
+                      teams=["Store Operations", "Supply Chain", "Merchandising"],
+                      questions=[
+                          "What is on-shelf availability by store and category right now?",
+                          "Which fresh departments are driving the most waste?",
+                          "Where are out-of-stocks hiding behind phantom inventory?",
+                          "Which SKUs need a markdown before the code date closes?",
+                          "What is store and DC fill rate this week?"]),
+                genie("Replenishment & Supply", "Answer forecast, fill rate and days-of-supply questions across the network.",
+                      feeds=["Blue Yonder Replenishment", "NielsenIQ Store Read", "Franchisee POS"],
+                      teams=["Supply Chain", "Merchandising", "CEO & COO"],
+                      questions=[
+                          "Where is forecast bias worst by SKU and store?",
+                          "What is days of supply by category and DC?",
+                          "Which vendors are missing fill and lead-time targets?",
+                          "Where is DC capacity constraining replenishment?",
+                          "Which franchise stores diverge most from the banner?"]),
+                genie("Loyalty & Offers", "Ask about household penetration, offer response and substitution across channels.",
+                      feeds=["Dunnhumby Customer Data", "Instacart Marketplace", "Web & App Clickstream"],
+                      teams=["Loyalty & Marketing", "Merchandising", "Store Operations"],
+                      questions=[
+                          "What is loyalty penetration and offer response by segment?",
+                          "Which segments responded to last week's digital coupon?",
+                          "What is online basket size versus in-store by household?",
+                          "Which substitutions are customers rejecting most?",
+                          "Which households are cross-sell candidates for fresh?"]),
+            ], dashboards=[
+                dashboard("Sales, Shrink & Margin", "Comparable sales, shrink, waste and margin by department on certified Metric Views.",
+                          kpis=["Comparable sales", "Shrink rate", "Waste cost", "Basket size", "Gross margin"],
+                          teams=["CEO & COO", "Store Operations", "Merchandising"]),
+                dashboard("Availability & Fresh", "On-shelf availability, fresh waste and markdown recovery across stores.",
+                          kpis=["On-shelf availability", "Fresh waste", "Markdown recovery", "Out-of-stock rate", "Code-date compliance"],
+                          teams=["Store Operations", "Supply Chain", "Merchandising"]),
+                dashboard("Replenishment & Fill", "Forecast accuracy, fill rate and days of supply across stores and DCs.",
+                          kpis=["Forecast bias", "Store fill rate", "DC fill rate", "Days of supply", "Vendor OTIF"],
+                          teams=["Supply Chain", "Merchandising", "CEO & COO"]),
+                dashboard("Loyalty & Personalisation", "Household penetration, offer response and online basket across channels.",
+                          kpis=["Loyalty penetration", "Offer response rate", "Online basket size", "Substitution acceptance", "Fuel reward redemption"],
+                          teams=["Loyalty & Marketing", "Merchandising", "Store Operations"]),
             ]),
         },
         "top": top_band(

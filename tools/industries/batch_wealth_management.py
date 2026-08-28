@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,45 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             "partner",
                             "BNY Pershing's clearing and custody platform: the book of record for RIA and broker-dealer accounts, positions, cash and transactions.",
                             "pershing",
+                            cat="Custody & Clearing Platform",
+                            what="BNY Pershing's clearing and custody platform: the book of record for RIA and broker-dealer accounts, positions, cash and transactions.",
+                            users="Investment operations, custody teams and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-50 GB/day positions + transactions", "Nightly custodial files")),
                         ),
                         tile(
                             "Fidelity Wealthscape",
                             "partner",
                             "Fidelity Institutional's custody and brokerage platform holding accounts, positions and settlement for advisors and their clients.",
                             "fidelity-inst",
+                            cat="Custody & Clearing Platform",
+                            what="Fidelity Institutional's custody and brokerage platform holding accounts, positions and settlement records for advisors and their clients.",
+                            users="Investment operations, custody teams and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-50 GB/day positions + transactions", "Nightly custodial files")),
                         ),
                         tile(
                             "Schwab Advisor Svcs",
                             "partner",
                             "Charles Schwab's custody platform for independent advisors: account, position and cost-basis records feeding the wealth estate.",
                             "schwab-adv",
+                            cat="Custody & Clearing Platform",
+                            what="Charles Schwab's custody platform for independent advisors, carrying account, position and cost-basis records into the wealth estate.",
+                            users="Investment operations, custody teams and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-50 GB/day positions + cost basis", "Nightly custodial files")),
                         ),
                         tile(
                             "Apex Clearing",
                             "db",
                             "Digital-first clearing and custody powering robo and hybrid-advice platforms, the source of accounts and fractional-share positions.",
                             "apex",
+                            cat="Custody & Clearing Platform",
+                            what="API-first clearing and custody powering robo and hybrid-advice platforms, the source of digitally opened accounts and fractional-share positions.",
+                            users="Digital advice teams, investment operations and platform engineering.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day accounts + positions", "Nightly custodial files"),
+                                stream=flow(["semi-structured"], "Account + trade events", "Continuous (API/events)")),
                         ),
                     ],
                 },
@@ -65,24 +89,44 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             "chart",
                             "Portfolio management, aggregation and reporting for HNW and multi-custodial books, the source of consolidated positions, performance and exposures.",
                             "addepar-vendor",
+                            cat="Portfolio Management & Reporting",
+                            what="Portfolio management, aggregation and reporting for HNW and multi-custodial books, the source of consolidated positions, performance and exposures across the household.",
+                            users="Investments, performance reporting and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day positions + performance", "Nightly portfolio extracts")),
                         ),
                         tile(
                             "Orion Advisor Tech",
                             "chart",
                             "Portfolio accounting, performance and rebalancing for RIAs: the reconciled position and transaction ledger advisors bill and report against.",
                             "orion",
+                            cat="Portfolio Accounting & Rebalancing",
+                            what="Portfolio accounting, performance and rebalancing for RIAs, the reconciled position and transaction ledger advisors bill and report against.",
+                            users="Investment operations, portfolio construction and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day positions + transactions", "Nightly portfolio extracts")),
                         ),
                         tile(
                             "Envestnet Tamarac",
                             "sheet",
                             "RIA portfolio management, trading and rebalancing with model portfolios, the source of target weights and drift against household accounts.",
                             "tamarac",
+                            cat="Portfolio Management & Rebalancing",
+                            what="RIA portfolio management, trading and rebalancing with model portfolios, the source of target weights and drift against household accounts.",
+                            users="Portfolio construction, trading and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-40 GB/day models + drift", "Nightly portfolio extracts")),
                         ),
                         tile(
                             "SS&C Black Diamond",
                             "chart",
                             "Portfolio management and client reporting platform holding performance, holdings and billing for advisory firms.",
                             "black-diamond",
+                            cat="Portfolio Management & Reporting",
+                            what="Portfolio management and client reporting platform holding performance, holdings and billing records for advisory firms.",
+                            users="Performance reporting, billing operations and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-40 GB/day performance + billing", "Nightly portfolio extracts")),
                         ),
                     ],
                 },
@@ -95,24 +139,45 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             "crm",
                             "Salesforce Financial Services Cloud: the advisor desktop for households, relationships, activities and service cases across the book.",
                             "sfdc-fsc",
+                            cat="Wealth CRM",
+                            what="Salesforce Financial Services Cloud, the advisor desktop for households, relationships, activities and service cases across the book.",
+                            users="Advisory field, relationship managers and client associates.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-30 GB/day accounts + activities", "Nightly CDC"),
+                                stream=flow(["semi-structured"], "Activity + case events", "Continuous (API/events)")),
                         ),
                         tile(
                             "Redtail CRM",
                             "crm",
                             "Wealth-native CRM widely used by independent advisors: contacts, households, activities and workflow the practice runs on.",
                             "redtail",
+                            cat="Wealth CRM",
+                            what="Wealth-native CRM widely used by independent advisors, carrying contacts, households, activities and the workflow the practice runs on.",
+                            users="Advisory field, client associates and practice managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day contacts + activities", "Nightly CDC")),
                         ),
                         tile(
                             "Practifi",
                             "crm",
                             "Practice-management platform on the Salesforce stack for advice firms: pipeline, onboarding and service workflow.",
                             "practifi",
+                            cat="Practice Management (CRM)",
+                            what="Practice-management platform on the Salesforce stack for advice firms, carrying pipeline, onboarding and service workflow.",
+                            users="Practice managers, onboarding and advisory field.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day pipeline + workflow", "Nightly CDC")),
                         ),
                         tile(
                             "Wealthbox",
                             "crm",
                             "Modern advisor CRM for contacts, tasks and communications, feeding client activity and relationship context into the estate.",
                             "wealthbox",
+                            cat="Wealth CRM",
+                            what="Modern advisor CRM for contacts, tasks and communications, feeding client activity and relationship context into the estate.",
+                            users="Advisory field, client associates and practice managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day contacts + tasks", "Nightly CDC")),
                         ),
                     ],
                 },
@@ -125,24 +190,44 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             "sheet",
                             "Financial planning and client portal: goals, cash-flow plans, held-away accounts and net-worth aggregation for each household.",
                             "emoney",
+                            cat="Financial Planning Software",
+                            what="Financial planning and client portal carrying goals, cash-flow plans, held-away accounts and net-worth aggregation for each household.",
+                            users="Financial advisors, planning specialists and clients.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "5-20 GB/day plans + held-away", "Nightly plan extracts")),
                         ),
                         tile(
                             "MoneyGuide",
                             "sheet",
                             "Envestnet MoneyGuide goals-based planning: retirement, education and income plans the advice conversation is built around.",
                             "moneyguide",
+                            cat="Financial Planning Software",
+                            what="Goals-based planning covering retirement, education and income plans the advice conversation is built around.",
+                            users="Financial advisors and planning specialists.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "5-20 GB/day plans + goals", "Nightly plan extracts")),
                         ),
                         tile(
                             "RightCapital",
                             "sheet",
                             "Planning software for tax-efficient retirement and distribution strategies, the source of plan assumptions and goal progress.",
                             "rightcapital",
+                            cat="Financial Planning Software",
+                            what="Planning software for tax-efficient retirement and distribution strategies, the source of plan assumptions and goal progress.",
+                            users="Financial advisors and planning specialists.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-10 GB/day plans + assumptions", "Nightly plan extracts")),
                         ),
                         tile(
                             "Morningstar Advisor",
                             "market",
                             "Morningstar research, ratings and analytics for fund selection, model construction and investment due diligence.",
                             "morningstar-adv",
+                            cat="Investment Research & Analytics",
+                            what="Research, ratings and analytics for fund selection, model construction and investment due diligence.",
+                            users="Investment research, portfolio construction and advisors.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-30 GB/day ratings + analytics", "Daily research updates")),
                         ),
                     ],
                 },
@@ -155,30 +240,57 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             "docs",
                             "Electronic signature and agreement workflow for account opening, disclosures and advisory agreements across the household.",
                             "docusign",
+                            cat="eSignature / Agreement Platform",
+                            what="Electronic signature and agreement workflow for account opening, disclosures and advisory agreements across the household.",
+                            users="Onboarding, operations and compliance.",
+                            data_out=data_out(
+                                batch=flow(["structured", "unstructured"], "Signed agreements + envelope status", "Nightly batch"),
+                                stream=flow(["semi-structured"], "Envelope completion events", "Continuous (webhooks)")),
                         ),
                         tile(
                             "Fenergo Onboarding",
                             "identity",
                             "Client lifecycle management for KYC, entity data and account opening, the source of verified client and beneficial-owner records.",
                             "fenergo",
+                            cat="Client Lifecycle Management (KYC)",
+                            what="Client lifecycle management for KYC, entity data and account opening, the source of verified client and beneficial-owner records.",
+                            users="Onboarding, financial crime and compliance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day KYC + entity records", "Nightly batch")),
                         ),
                         tile(
                             "LexisNexis KYC",
                             "gavel",
                             "Identity verification, sanctions and PEP screening data used to onboard and periodically re-screen clients and their entities.",
                             "lexisnexis",
+                            cat="KYC & Screening Provider",
+                            what="Identity verification, sanctions and PEP screening data used to onboard and periodically re-screen clients and their entities.",
+                            users="Financial crime, compliance and onboarding.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "Screening results + watchlist deltas", "Daily screening refresh"),
+                                stream=flow(["semi-structured"], "Screening API responses", "Continuous (API)")),
                         ),
                         tile(
                             "Global Relay Archive",
                             "chat",
                             "Communications capture and archiving for email, chat and voice, the books-and-records source for supervision and surveillance.",
                             "global-relay",
+                            cat="Communications Archiving & Surveillance",
+                            what="Communications capture and archiving for email, chat and voice, the books-and-records source for supervision and surveillance.",
+                            users="Supervision, compliance and surveillance.",
+                            data_out=data_out(
+                                batch=flow(["unstructured", "semi-structured"], "50-200 GB/day messages + metadata", "Continuous capture, batch load")),
                         ),
                     ],
                 },
                 fed_group(
                     "Custodial BoR",
                     "Portfolio accounting and the custodial book of record left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled positions and cost basis.",
+                    cat="Custodial Book of Record",
+                    what="Portfolio accounting and the custodial book of record kept in the incumbent system and queried in place, giving one reconciled view of positions and cost basis.",
+                    users="Investment operations, fund accounting and finance.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical positions + cost basis", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -188,16 +300,32 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                         "stream",
                         "NSCC Fund/SERV and Networking files and DTCC position and transaction feeds parsed on arrival and landed as structured events.",
                         "dtcc",
+                        cat="Custodial File Feed (NSCC/DTCC)",
+                        what="NSCC Fund/SERV and Networking files and DTCC position and transaction feeds parsed on arrival and landed as structured events.",
+                        users="Investment operations and data engineering.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "10-50 GB/day files", "Multiple settlement cycles daily")),
                     ),
                     tile(
                         "Market & Fund Data",
                         "api",
                         "Pricing, quote and fund-reference APIs from Morningstar and market-data vendors consumed inbound through managed ELT connectors.",
+                        cat="Market & Fund Data API",
+                        what="Pricing, quote and fund-reference APIs from Morningstar and market-data vendors consumed inbound through managed ELT connectors.",
+                        users="Investments, performance reporting and data engineering.",
+                        data_out=data_out(
+                            batch=flow(["structured"], "5-30 GB/day prices + reference", "Intraday and end-of-day"),
+                            stream=flow(["semi-structured"], "Quote + price updates", "Continuous (API)")),
                     ),
                     tile(
                         "Advisor SaaS APIs",
                         "api",
                         "CRM, planning and custody request/response APIs, and existing Kafka topics carrying account and market events, land here and are drawn generically on the reference board.",
+                        cat="Advisor SaaS / Streaming API",
+                        what="CRM, planning and custody request/response APIs and existing Kafka topics carrying account and market events, landed generically on the reference board.",
+                        users="Data engineering, app developers and platform teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "Account + market events", "Continuous (API/Kafka)")),
                     ),
                 ]
             ),
@@ -414,7 +542,59 @@ INDUSTRIES_BATCH_WEALTH_MANAGEMENT = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Household & Relationship", "Ask about a household's value, held-away assets and relationship context in plain language.",
+                          feeds=["Salesforce FSC", "Addepar", "Pershing NetX360", "Conformed household, account, position"],
+                          teams=["Wealth Leadership", "Advisory Field", "Financial advisors"],
+                          questions=[
+                              "What is this household worth across every account and custodian?",
+                              "Which held-away assets could we bring onto the platform?",
+                              "How many households does each advisor manage and how active are they?",
+                              "Which relationships have grown or shrunk most this year?",
+                              "What service cases are open for this client right now?"]),
+                    genie("Performance & Fees", "Ask about returns, fee revenue and net flows across the book in plain language.",
+                          feeds=["Addepar", "SS&C Black Diamond", "AUM, fees, performance, flows"],
+                          teams=["Investments", "Wealth Leadership", "CFO"],
+                          questions=[
+                              "What did each household return last quarter after fees?",
+                              "What net new assets did each office bring in this month?",
+                              "Where is fee margin thinnest across the book?",
+                              "Which households have the largest net outflows this year?",
+                              "How does performance compare to benchmark by segment?"]),
+                    genie("Rebalancing & Tax", "Ask about model drift, rebalancing needs and tax-loss opportunities in plain language.",
+                          feeds=["Envestnet Tamarac", "Orion Advisor Tech", "Conformed household, account, position"],
+                          teams=["Investments", "Portfolio construction", "Chief investment office"],
+                          questions=[
+                              "Which households have drifted furthest from their model?",
+                              "Where are the largest tax-loss harvesting opportunities right now?",
+                              "How much cash is sitting undeployed across the book?",
+                              "Which accounts breach a concentration or mandate limit?",
+                              "What trades would a model change generate across households?"]),
+                    genie("Compliance & Suitability", "Ask about suitability exceptions, screening and surveillance alerts in plain language.",
+                          feeds=["LexisNexis KYC", "Global Relay Archive", "Conformed household, account, position"],
+                          teams=["Risk & Compliance", "Compliance", "Supervision"],
+                          questions=[
+                              "Which accounts show suitability exceptions this month?",
+                              "What is a client's account activity around this event?",
+                              "Which KYC refreshes are overdue across the book?",
+                              "Where did communications surveillance flag conduct risk?",
+                              "What is our Reg BI documentation coverage by advisor?"]),
+                ],
+                dashboards=[
+                    dashboard("AUM & Net Flows", "AUM, net new assets and flows across offices and advisors on certified Metric Views.",
+                              kpis=["AUM", "Net new assets", "Net flows", "Fee revenue", "Advisor productivity"],
+                              teams=["Wealth Leadership", "Investments", "CFO"]),
+                    dashboard("Advisor Productivity", "Advisor activity, book health and next-best-action conversion across the field.",
+                              kpis=["Households per advisor", "Revenue per advisor", "Meeting cadence", "Next-best-action conversion", "Client attrition rate"],
+                              teams=["Advisory Field", "Wealth Leadership", "Relationship managers"]),
+                    dashboard("Performance & Attribution", "Time-weighted return, attribution and drift on the same definitions advisors read to clients.",
+                              kpis=["Time-weighted return", "Attribution", "Benchmark tracking", "Model drift", "Fee margin"],
+                              teams=["Investments", "Chief investment office", "Portfolio construction"]),
+                    dashboard("Compliance & Suitability", "Suitability, screening and surveillance posture across the book.",
+                              kpis=["Suitability exceptions", "Alert volume", "Case backlog", "KYC refresh rate", "Reg BI coverage"],
+                              teams=["Risk & Compliance", "Compliance", "Supervision"]),
+                ],
             ),
         },
         "top": top_band(

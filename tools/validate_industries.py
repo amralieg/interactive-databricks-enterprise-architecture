@@ -89,6 +89,83 @@ def check_structure(merged):
     return errs
 
 
+DATA_SHAPES = {"structured", "semi-structured", "unstructured"}
+
+
+def _check_flow(errs, iid, where, flow):
+    if not isinstance(flow, dict):
+        errs.append(f"{iid}: {where} lane must be a dict")
+        return
+    types = flow.get("types")
+    if not isinstance(types, list) or not types:
+        errs.append(f"{iid}: {where} lane missing non-empty types")
+    else:
+        bad = [x for x in types if x not in DATA_SHAPES]
+        if bad:
+            errs.append(f"{iid}: {where} lane has bad data shape(s) {bad}")
+    if not flow.get("vol"):
+        errs.append(f"{iid}: {where} lane missing vol")
+    if not flow.get("interval"):
+        errs.append(f"{iid}: {where} lane missing interval")
+
+
+def _check_source_tile(errs, iid, box, t):
+    n = t.get("n")
+    for f in ("cat", "what", "users"):
+        if not t.get(f):
+            errs.append(f"{iid}: source {n!r} in {box!r} missing {f}")
+    do = t.get("dataOut")
+    if not isinstance(do, dict) or not (do.get("batch") or do.get("stream")):
+        errs.append(f"{iid}: source {n!r} in {box!r} missing dataOut (batch/stream)")
+        return
+    if do.get("batch"):
+        _check_flow(errs, iid, f"{n} batch", do["batch"])
+    if do.get("stream"):
+        _check_flow(errs, iid, f"{n} stream", do["stream"])
+
+
+def check_enrichment(merged):
+    """Every source system in the Sources rail and every 3rd-party ingest system
+    must carry the side-panel enrichment (cat / what / users / dataOut). Every
+    industry must publish exactly 4 Genie Spaces and 4 AI/BI Dashboards, each with
+    the fields the consumer detail panel renders."""
+    errs = []
+    for iid, ind in merged.items():
+        rails = ind["rails"]
+        for g in rails["src"]:
+            for t in g.get("tiles", []):
+                _check_source_tile(errs, iid, g.get("box", ""), t)
+        for g in rails["ing"]:
+            if g.get("box") == "Cloud ETL":
+                continue
+            for t in g.get("tiles", []):
+                _check_source_tile(errs, iid, g.get("box", ""), t)
+
+        genie = [g for g in rails["cons"] if g.get("box") == "Genie Spaces"]
+        dash = [g for g in rails["cons"] if g.get("box") == "AI/BI Dashboards"]
+        if not genie or len(genie[0]["tiles"]) != 4:
+            errs.append(f"{iid}: consumers must have a Genie Spaces group of exactly 4")
+        else:
+            for t in genie[0]["tiles"]:
+                n = t.get("n")
+                if not isinstance(t.get("feeds"), list) or not t["feeds"]:
+                    errs.append(f"{iid}: genie {n!r} missing feeds")
+                if not isinstance(t.get("teams"), list) or not t["teams"]:
+                    errs.append(f"{iid}: genie {n!r} missing teams")
+                if not isinstance(t.get("questions"), list) or len(t.get("questions", [])) != 5:
+                    errs.append(f"{iid}: genie {n!r} must have exactly 5 questions")
+        if not dash or len(dash[0]["tiles"]) != 4:
+            errs.append(f"{iid}: consumers must have an AI/BI Dashboards group of exactly 4")
+        else:
+            for t in dash[0]["tiles"]:
+                n = t.get("n")
+                if not isinstance(t.get("kpis"), list) or not t["kpis"]:
+                    errs.append(f"{iid}: dashboard {n!r} missing kpis")
+                if not isinstance(t.get("teams"), list) or not t["teams"]:
+                    errs.append(f"{iid}: dashboard {n!r} missing teams")
+    return errs
+
+
 def check_cites(merged):
     errs = []
     for iid, ind in merged.items():
@@ -153,10 +230,10 @@ def main():
     merged = load()
     print(f"industries: {len(merged)}")
 
-    errs = check_structure(merged) + check_cites(merged)
+    errs = check_structure(merged) + check_cites(merged) + check_enrichment(merged)
     for e in errs:
         print("  ERR", e)
-    print(f"structure+cite errors: {len(errs)}")
+    print(f"structure+cite+enrichment errors: {len(errs)}")
 
     url_fail = 0
     if args.urls:

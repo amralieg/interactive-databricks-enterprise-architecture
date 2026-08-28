@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,34 +31,115 @@ INDUSTRIES_BATCH_LEGAL = {
         "rails": {
             "src": [
                 {"box": "Document & DMS", "ic": "db", "tiles": [
-                    tile("iManage Work", "db", "Matter workspaces, document versions, metadata and ethical wall enforcement.", "imanage"),
-                    tile("NetDocuments", "sheet", "Cloud DMS profiles, collaboration and client matter security.", "netdocuments"),
-                    tile("Microsoft Purview", "gavel", "Records classification, retention labels and legal hold across M365 estates.", "purview")
+                    tile("iManage Work", "db", "Matter workspaces, document versions, metadata and ethical wall enforcement.", "imanage",
+                         cat="Document Management System (DMS)",
+                         what="Holds matter workspaces, document versions and metadata and enforces ethical walls as the DMS of record.",
+                         users="Attorneys, paralegals and knowledge management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "10-50 GB/day docs + metadata", "Nightly batch + hourly deltas"),
+                             stream=flow(["semi-structured"], "tens of document events/sec", "Continuous CDC"))),
+                    tile("NetDocuments", "sheet", "Cloud DMS profiles, collaboration and client matter security.", "netdocuments",
+                         cat="Document Management System (DMS)",
+                         what="Cloud DMS holding document profiles, collaboration and client-matter security across the firm.",
+                         users="Attorneys, paralegals and records teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "5-30 GB/day", "Nightly batch + hourly deltas"))),
+                    tile("Microsoft Purview", "gavel", "Records classification, retention labels and legal hold across M365 estates.", "purview",
+                         cat="Information Governance / Records Platform",
+                         what="Classifies records, applies retention labels and manages legal hold across the M365 estate.",
+                         users="Records, compliance and information governance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-8 GB/day classification + labels", "Nightly batch")))
                 ]},
                 {"box": "Practice & Billing", "ic": "erp", "tiles": [
-                    tile("Elite 3E", "erp", "Time entries, disbursements, WIP and matter accounting for large firms.", "elite-3e"),
-                    tile("Aderant Expert", "market", "Billing, collections and financial reporting across practice groups.", "aderant"),
-                    tile("Intapp", "apps", "Client and matter intake, conflicts clearance, time capture and risk management across the firm.", "clio")
+                    tile("Elite 3E", "erp", "Time entries, disbursements, WIP and matter accounting for large firms.", "elite-3e",
+                         cat="Legal Practice Management / Billing",
+                         what="System of record for time entries, disbursements, WIP and matter accounting at large firms.",
+                         users="Billing, finance and practice management teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "3-15 GB/day", "Nightly batch + billing cycles"))),
+                    tile("Aderant Expert", "market", "Billing, collections and financial reporting across practice groups.", "aderant",
+                         cat="Legal Practice Management / Billing",
+                         what="Runs billing, collections and financial reporting across practice groups for the firm.",
+                         users="Billing, collections and practice finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Nightly batch + billing cycles"))),
+                    tile("Intapp", "apps", "Client and matter intake, conflicts clearance, time capture and risk management across the firm.", "clio",
+                         cat="Intake, Conflicts & Risk Platform",
+                         what="Manages client and matter intake, conflicts clearance, time capture and risk across the firm.",
+                         users="New business intake, conflicts counsel and risk teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly / nightly sync")))
                 ]},
                 {"box": "E-Discovery", "ic": "gavel", "tiles": [
-                    tile("RelativityOne", "gavel", "Processing, review, analytics and production for litigation and investigations.", "relativity"),
-                    tile("Everlaw", "partner", "Collaborative review, storybuilder and deposition preparation workflows.", "everlaw"),
-                    tile("PACER Court Records", "api", "Federal docket filings, orders and party events from public court systems.", "pacer")
+                    tile("RelativityOne", "gavel", "Processing, review, analytics and production for litigation and investigations.", "relativity",
+                         cat="E-Discovery Platform",
+                         what="Handles processing, review, analytics and production for litigation and investigations across custodians.",
+                         users="E-discovery managers, review teams and litigation paralegals.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "TB-scale per matter", "Per-matter loads + nightly batch"))),
+                    tile("Everlaw", "partner", "Collaborative review, storybuilder and deposition preparation workflows.", "everlaw",
+                         cat="E-Discovery Platform",
+                         what="Provides collaborative review, storybuilder and deposition-preparation workflows for litigation teams.",
+                         users="Review teams, litigation associates and paralegals.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "GB-TB per matter", "Per-matter loads + nightly batch"))),
+                    tile("PACER Court Records", "api", "Federal docket filings, orders and party events from public court systems.", "pacer",
+                         cat="Court Docket / Public Records",
+                         what="Carries federal docket filings, orders and party events from public court systems for docket monitoring.",
+                         users="Litigation paralegals, docketing and case teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "docket events on filing", "Continuous (API polling)")))
                 ]},
                 {"box": "Contracts & Research", "ic": "sheet", "tiles": [
-                    tile("Ironclad CLM", "product", "Contract lifecycle management: intake, negotiation workflow and obligation tracking.", "ironclad"),
-                    tile("Thomson Reuters Westlaw", "globe", "Legal research corpus: case law, statutes and citator research with usage telemetry.", "westlaw"),
-                    tile("LexisNexis Guidance", "notebook", "Legal knowledge: practice notes, checklists and standard clauses referenced at drafting.", "lexis")
+                    tile("Ironclad CLM", "product", "Contract lifecycle management: intake, negotiation workflow and obligation tracking.", "ironclad",
+                         cat="Contract Lifecycle Management (CLM)",
+                         what="Manages contract intake, negotiation workflow and obligation tracking across the contract lifecycle.",
+                         users="Practice management, contract owners and knowledge management.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "1-6 GB/day contracts + metadata", "Nightly batch + hourly deltas"))),
+                    tile("Thomson Reuters Westlaw", "globe", "Legal research corpus: case law, statutes and citator research with usage telemetry.", "westlaw",
+                         cat="Legal Research Platform",
+                         what="Legal research corpus of case law, statutes and citator research, emitting usage telemetry per timekeeper and matter.",
+                         users="Attorneys, knowledge management and research analysts.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-3 GB/day usage telemetry", "Daily feed"))),
+                    tile("LexisNexis Guidance", "notebook", "Legal knowledge: practice notes, checklists and standard clauses referenced at drafting.", "lexis",
+                         cat="Legal Knowledge / Practical Guidance",
+                         what="Legal knowledge base of practice notes, checklists and standard clauses referenced at drafting.",
+                         users="Attorneys, knowledge management and drafting teams.",
+                         data_out=data_out(
+                             batch=flow(["semi-structured", "unstructured"], "GB-scale reference + usage", "Periodic + on-demand")))
                 ]},
                 fed_group(
                     "Client ERP Contract Mart",
                     "Corporate customer contract and vendor obligation marts left in place and queried under Unity Catalog.",
+                    cat="Corporate Contract / Obligation Mart",
+                    what="Corporate customer contract and vendor-obligation marts queried in place through federation instead of being copied.",
+                    users="Corporate legal, contract management and finance analysts.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "GB-scale contract marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail([
-                tile("EDRM XML Load Files", "api", "Standardised processing and review metadata consumed inbound for cross-tool portability.", "edrm"),
-                tile("LEDES Billing", "market", "Outside counsel invoice formats validated before accrual and payment.", "ledes"),
-                tile("Sanctions & PEP Lists", "gavel", "Watchlist updates consumed inbound for client intake screening.", "worldcheck")
+                tile("EDRM XML Load Files", "api", "Standardised processing and review metadata consumed inbound for cross-tool portability.", "edrm",
+                     cat="E-Discovery Interchange Format",
+                     what="Standardised processing and review metadata consumed inbound so evidence moves between e-discovery tools without loss.",
+                     users="E-discovery managers and litigation support engineers.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs per production", "Per-production loads"))),
+                tile("LEDES Billing", "market", "Outside counsel invoice formats validated before accrual and payment.", "ledes",
+                     cat="Legal E-Billing Format",
+                     what="Standardised outside-counsel invoice files validated before accrual and payment against matter budgets.",
+                     users="Billing, accounts payable and corporate legal operations.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs per cycle", "Billing cycles + on-receipt"))),
+                tile("Sanctions & PEP Lists", "gavel", "Watchlist updates consumed inbound for client intake screening.", "worldcheck",
+                     cat="Sanctions & PEP Screening Provider",
+                     what="Sanctions and politically-exposed-person watchlist updates consumed inbound for client-intake and conflicts screening.",
+                     users="Conflicts counsel, KYC/intake and risk teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs per update", "Daily + on-change")))
             ]),
             "ppl": ppl2([
                 biz("Managing Partner & GC", "Genie One", "The managing partner on realization rate and leverage; the general counsel on outside-counsel spend against budget and matter profitability by practice group.",
@@ -140,6 +224,56 @@ INDUSTRIES_BATCH_LEGAL = {
                     tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
                     tile("Sharing Recipients", "share", "Corporate clients and co-counsel reading live tables with no copy and no egress duplication.")
                 ]},
+            ], genie_spaces=[
+                genie("Matter Profitability", "Ask about realization, leverage and matter margin across the firm in plain language.",
+                      feeds=["Elite 3E", "Aderant Expert", "LEDES Billing", "Realization, risk, compliance"],
+                      teams=["Managing Partner & GC", "Practice Management", "Firm CFO"],
+                      questions=[
+                          "What is firm-wide realization this quarter versus last?",
+                          "Which matters are running over budget by phase?",
+                          "What is leverage and margin by practice group?",
+                          "Where is WIP ageing beyond target across matters?",
+                          "How does outside-counsel spend compare to budget by matter?"]),
+                genie("E-Discovery & Litigation", "Explore review throughput, custodian completeness and docket deadlines across matters.",
+                      feeds=["RelativityOne", "Everlaw", "PACER Court Records", "Conformed matter, client"],
+                      teams=["Litigation Support", "E-Discovery Manager", "Litigation Paralegal"],
+                      questions=[
+                          "What is reviewer throughput and cost per matter this week?",
+                          "Which custodians are still incomplete against the collection plan?",
+                          "Which matters have upcoming court deadlines from recent orders?",
+                          "How much data remains to review against the deadline?",
+                          "Which documents are flagged as likely privileged?"]),
+                genie("Contracts & Knowledge", "Answer questions on clause risk, obligations and research usage across the practice.",
+                      feeds=["Ironclad CLM", "Thomson Reuters Westlaw", "LexisNexis Guidance", "Conformed matter, client"],
+                      teams=["Practice Management", "Knowledge Management", "Matter Pricing"],
+                      questions=[
+                          "Which contracts contain non-standard clauses against the playbook?",
+                          "Which obligations and renewals are due in the next 30 days?",
+                          "Which precedent work is most reused across the practice?",
+                          "Where does research spend not tie to a matter outcome?",
+                          "Which clauses drive the most negotiation cycles?"]),
+                genie("Conflicts & Compliance", "Ask about conflicts hits, sanctions screening and records retention at intake and beyond.",
+                      feeds=["Intapp", "Sanctions & PEP Lists", "Microsoft Purview", "Realization, risk, compliance"],
+                      teams=["Compliance", "Conflicts Counsel", "Ethics & Risk"],
+                      questions=[
+                          "Which new-business intakes have unresolved conflicts hits?",
+                          "Which parties match a sanctions or PEP watchlist?",
+                          "Which documents are past their retention policy?",
+                          "Which matters have active legal holds right now?",
+                          "Where are ethical walls required but not yet set?"]),
+            ], dashboards=[
+                dashboard("Practice Economics", "Realization, leverage, matter margin and WIP across practice groups on certified views.",
+                          kpis=["Realization rate", "Leverage", "Matter margin", "WIP ageing", "Collections rate"],
+                          teams=["Managing Partner & GC", "Practice Management", "Firm CFO"]),
+                dashboard("Litigation Operations", "Reviewer throughput, custodian completeness, review cost and docket-deadline risk.",
+                          kpis=["Review throughput", "Custodian completeness", "Review cost per matter", "Privilege call rate", "Deadline risk"],
+                          teams=["Litigation Support", "E-Discovery Manager", "Litigation Paralegal"]),
+                dashboard("Contract Intelligence", "Clause deviations, obligation calendars, renewal risk and research usage by matter.",
+                          kpis=["Non-standard clause rate", "Obligations due", "Renewal risk", "Negotiation cycles", "Research usage"],
+                          teams=["Practice Management", "Knowledge Management", "Matter Pricing"]),
+                dashboard("Risk & Compliance", "Conflicts hits, sanctions screening coverage, legal holds and retention exceptions.",
+                          kpis=["Open conflicts hits", "Screening coverage", "Active legal holds", "Retention exceptions", "Intake cycle time"],
+                          teams=["Compliance", "Conflicts Counsel", "Ethics & Risk"]),
             ]),
         },
         "top": top_band(

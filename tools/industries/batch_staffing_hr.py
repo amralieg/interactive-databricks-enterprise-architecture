@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,128 @@ INDUSTRIES_BATCH_STAFFING_HR = {
         "rails": {
             "src": [
                 {"box": "ATS & Recruiting", "ic": "erp", "tiles": [
-                    tile("Bullhorn ATS/CRM", "erp", "Candidate records, submissions, interviews and placement history for staffing firms.", "bullhorn"),
-                    tile("Workday Recruiting", "people", "Requisitions, offers and onboarding for corporate HR and RPO programs.", "workday-rec"),
-                    tile("Greenhouse", "sheet", "Structured hiring pipelines, scorecards and DEI reporting for enterprise clients.", "greenhouse"),
+                    tile("Bullhorn ATS/CRM", "erp", "Candidate records, submissions, interviews and placement history for staffing firms.", "bullhorn",
+                         cat="Applicant Tracking System (ATS/CRM)",
+                         what="System of record for candidate records, submissions, interviews and placement history at staffing firms.",
+                         users="Recruiters, account managers and sourcing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-10 GB/day", "Nightly batch + hourly deltas"),
+                             stream=flow(["semi-structured"], "tens of submission events/sec", "Continuous CDC"))),
+                    tile("Workday Recruiting", "people", "Requisitions, offers and onboarding for corporate HR and RPO programs.", "workday-rec",
+                         cat="Talent Acquisition / Recruiting",
+                         what="Manages requisitions, offers and onboarding for corporate HR and RPO programs.",
+                         users="RPO recruiters, HR and onboarding teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly batch + hourly deltas"))),
+                    tile("Greenhouse", "sheet", "Structured hiring pipelines, scorecards and DEI reporting for enterprise clients.", "greenhouse",
+                         cat="Applicant Tracking System (ATS)",
+                         what="Runs structured hiring pipelines, interview scorecards and DEI reporting for enterprise clients.",
+                         users="Recruiters, hiring managers and DEI/compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-3 GB/day", "Hourly / nightly sync"))),
                 ]},
                 {"box": "VMS & Contingent", "ic": "market", "tiles": [
-                    tile("Beeline VMS", "market", "Client requisitions, rate cards, approvals and supplier scorecards.", "beeline"),
-                    tile("SAP Fieldglass", "partner", "Contingent workforce procurement, statements of work and compliance tracking.", "fieldglass"),
-                    tile("Magnit VMS", "api", "MSP-managed programs: spend, tenure limits and conversion tracking.", "magnit"),
+                    tile("Beeline VMS", "market", "Client requisitions, rate cards, approvals and supplier scorecards.", "beeline",
+                         cat="Vendor Management System (VMS)",
+                         what="Holds client requisitions, rate cards, approvals and supplier scorecards for contingent labour programs.",
+                         users="Program managers, MSP teams and supplier managers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly batch + hourly deltas"),
+                             stream=flow(["semi-structured"], "tens of requisition events/sec", "Continuous CDC"))),
+                    tile("SAP Fieldglass", "partner", "Contingent workforce procurement, statements of work and compliance tracking.", "fieldglass",
+                         cat="Contingent Workforce Procurement (VMS)",
+                         what="Manages contingent workforce procurement, statements of work and compliance tracking.",
+                         users="Procurement, MSP and compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-6 GB/day", "Nightly batch"))),
+                    tile("Magnit VMS", "api", "MSP-managed programs: spend, tenure limits and conversion tracking.", "magnit",
+                         cat="Managed Service Provider (MSP/VMS)",
+                         what="Runs MSP-managed programs tracking spend, tenure limits and conversion across suppliers.",
+                         users="MSP program managers and procurement analysts.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Daily batch + on-demand API"))),
                 ]},
                 {"box": "Payroll & Time", "ic": "chart", "tiles": [
-                    tile("ADP Workforce Now", "erp", "Payroll, tax and benefits for placed workers across jurisdictions.", "adp"),
-                    tile("UKG Pro WFM", "people", "Time and attendance, scheduling and accruals for hourly placements.", "ukg-pro"),
-                    tile("Deel Global Payroll", "globe", "Contractor payments and compliance in international staffing programs.", "deel"),
+                    tile("ADP Workforce Now", "erp", "Payroll, tax and benefits for placed workers across jurisdictions.", "adp",
+                         cat="Payroll / HCM Suite",
+                         what="Runs payroll, tax and benefits for placed workers across jurisdictions.",
+                         users="Payroll operations, tax and benefits teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-15 GB/day", "Per pay run + nightly batch"))),
+                    tile("UKG Pro WFM", "people", "Time and attendance, scheduling and accruals for hourly placements.", "ukg-pro",
+                         cat="Workforce Management (Time & Attendance)",
+                         what="Captures time and attendance, scheduling and accruals for hourly placements.",
+                         users="Schedulers, field operations and payroll teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly batch"),
+                             stream=flow(["semi-structured"], "hundreds of punch events/sec", "Continuous (near real-time)"))),
+                    tile("Deel Global Payroll", "globe", "Contractor payments and compliance in international staffing programs.", "deel",
+                         cat="Global Payroll / EOR",
+                         what="Processes contractor payments and compliance for international staffing programs.",
+                         users="Global payroll, contractor operations and compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Per pay cycle + daily batch"))),
                 ]},
                 {"box": "Credentialing", "ic": "gavel", "tiles": [
-                    tile("Symplr Credentialing", "gavel", "Licence verification, expirations and privileging for healthcare staffing.", "symplr"),
-                    tile("Checkr Background", "partner", "Criminal, employment and education checks with adverse action workflow.", "checkr"),
-                    tile("Everify I-9", "gavel", "Employment eligibility verification and audit trail for US placements.", "everify"),
+                    tile("Symplr Credentialing", "gavel", "Licence verification, expirations and privileging for healthcare staffing.", "symplr",
+                         cat="Credentialing / Provider Enrolment",
+                         what="Manages licence verification, expirations and privileging for healthcare staffing.",
+                         users="Credentialing specialists and compliance officers.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Nightly batch"))),
+                    tile("Checkr Background", "partner", "Criminal, employment and education checks with adverse action workflow.", "checkr",
+                         cat="Background Screening Service",
+                         what="Runs criminal, employment and education checks with adverse-action workflow.",
+                         users="Screening, compliance and onboarding teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "On-demand + daily batch"))),
+                    tile("Everify I-9", "gavel", "Employment eligibility verification and audit trail for US placements.", "everify",
+                         cat="Employment Eligibility Verification",
+                         what="Performs employment eligibility verification and audit trail for US placements.",
+                         users="Onboarding, HR and compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs of verification records", "On-demand + daily batch"))),
                 ]},
                 {"box": "Learning & Skills", "ic": "product", "tiles": [
-                    tile("Cornerstone LMS", "product", "Client-mandated training completion and skills certifications.", "cornerstone"),
-                    tile("LinkedIn Talent Insights", "chart", "Labour market supply, demand and skill adjacency by geography.", "linkedin-ti"),
+                    tile("Cornerstone LMS", "product", "Client-mandated training completion and skills certifications.", "cornerstone",
+                         cat="Learning Management System (LMS)",
+                         what="Tracks client-mandated training completion and skills certifications.",
+                         users="Learning & development, compliance and recruiting teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Nightly batch"))),
+                    tile("LinkedIn Talent Insights", "chart", "Labour market supply, demand and skill adjacency by geography.", "linkedin-ti",
+                         cat="Labour Market Intelligence",
+                         what="Provides labour market supply, demand and skill adjacency by geography.",
+                         users="Talent intelligence, sourcing and strategy teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "GBs across datasets", "Weekly / on-demand API"))),
                 ]},
-                fed_group("Client HRIS Marts", "Client employee and cost centre marts queried in place under Unity Catalog."),
+                fed_group("Client HRIS Marts", "Client employee and cost centre marts queried in place under Unity Catalog.",
+                          cat="HRIS Data Warehouse / Marts",
+                          what="Client employee and cost-centre marts queried in place via federation under Unity Catalog.",
+                          users="HR analytics, finance and client reporting teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "GB-scale HRIS marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Indeed Job Feed", "api", "Job postings and application funnel metrics ingested for sourcing analytics.", "indeed"),
-                tile("Lightcast Labour Market", "chart", "Occupation demand, wage benchmarks and skills taxonomy updates.", "lightcast"),
-                tile("State Licence Boards", "gavel", "Professional licence status files consumed for credential monitoring.", "symplr"),
+                tile("Indeed Job Feed", "api", "Job postings and application funnel metrics ingested for sourcing analytics.", "indeed",
+                     cat="Job Board / Sourcing Feed",
+                     what="Supplies job postings and application funnel metrics for sourcing analytics.",
+                     users="Sourcing, recruitment marketing and analytics teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "GBs of posting and funnel data", "Daily + on-demand API"))),
+                tile("Lightcast Labour Market", "chart", "Occupation demand, wage benchmarks and skills taxonomy updates.", "lightcast",
+                     cat="Labour Market Intelligence",
+                     what="Provides occupation demand, wage benchmarks and skills taxonomy updates.",
+                     users="Pricing, talent intelligence and strategy teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "GBs of benchmark data", "Weekly / monthly refresh"))),
+                tile("State Licence Boards", "gavel", "Professional licence status files consumed for credential monitoring.", "symplr",
+                     cat="Regulatory Licence Registry",
+                     what="Publishes professional licence status files consumed for credential monitoring.",
+                     users="Credentialing and compliance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs of licence files", "Daily / weekly refresh"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Growth Office", "Genie One", "The CEO on gross margin and client concentration; the COO on fill rate, redeployment and the compliance exposure sitting in open placements.",
@@ -149,6 +245,60 @@ INDUSTRIES_BATCH_STAFFING_HR = {
                     tile("Data Products", "product", "Workforce analytics products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Clients reading live fill and spend metrics via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Fill & Pipeline", "Ask about requisition ageing, submittal quality and time-to-fill in plain language.",
+                      feeds=["Bullhorn ATS/CRM", "Beeline VMS", "Indeed Job Feed", "Conformed worker, req, client"],
+                      teams=["Recruiting & Sales", "Account Managers", "Sourcing"],
+                      questions=[
+                          "What is our average time-to-fill by client this quarter versus last?",
+                          "Which open requisitions have aged past 30 days without a submittal?",
+                          "Which recruiters have the highest submittal-to-interview conversion?",
+                          "Where are reqs stalling most, at client approval, sourcing or interview?",
+                          "Which skills have the fewest available candidates against open demand?",
+                      ]),
+                genie("Client Margin", "Explore gross margin, bill-pay spread and leakage across client accounts.",
+                      feeds=["ADP Workforce Now", "Beeline VMS", "Client HRIS Marts", "Fill rate, margin, compliance"],
+                      teams=["Payroll & Finance", "Billing & Invoicing", "Finance & Margin"],
+                      questions=[
+                          "Which clients are below target spread this month?",
+                          "Where is margin leaking through missed timecard approvals?",
+                          "What is gross margin by client and skill this quarter?",
+                          "Which rate cards are out of line with the market benchmark?",
+                          "How much did off-cycle adjustments cost us last pay run?",
+                      ]),
+                genie("Workforce Operations", "Ask about shift coverage, overtime and credential gaps at shift latency.",
+                      feeds=["UKG Pro WFM", "Symplr Credentialing", "State Licence Boards", "Conformed worker, req, client"],
+                      teams=["Workforce Operations", "Schedulers", "Redeployment"],
+                      questions=[
+                          "Which open shifts have no covered worker for tomorrow?",
+                          "Which workers are approaching an overtime threshold this week?",
+                          "Which placements have a credential expiring in the next 30 days?",
+                          "Which assignments are at highest risk of early termination?",
+                          "Where is overtime creep eroding margin by client?",
+                      ]),
+                genie("Compliance & Credentials", "Answer credential, background and eligibility questions across active placements.",
+                      feeds=["Symplr Credentialing", "Checkr Background", "Everify I-9", "Fill rate, margin, compliance"],
+                      teams=["Compliance & Risk", "Background & Screening", "Audit & Reporting"],
+                      questions=[
+                          "How many active placements have a lapsed licence right now?",
+                          "Which background checks are pending past SLA?",
+                          "Which placements are missing a completed I-9?",
+                          "What is our EEO pipeline diversity by client this quarter?",
+                          "Which credentials must renew before the next shift starts?",
+                      ]),
+            ], dashboards=[
+                dashboard("Fill & Time-to-Fill", "Requisition ageing, submittal quality and interview velocity on certified Metric Views.",
+                          kpis=["Time-to-fill", "Fill rate", "Submittal-to-interview rate", "Open req ageing", "Interview velocity"],
+                          teams=["Recruiting & Sales", "Account Managers", "Sourcing"]),
+                dashboard("Client Profitability", "Gross margin, bill-pay spread and leakage by client and skill.",
+                          kpis=["Gross margin by client", "Bill-pay spread", "Payroll leakage", "Rebates & chargebacks", "Rate-card variance"],
+                          teams=["Payroll & Finance", "Billing & Invoicing", "Finance & Margin"]),
+                dashboard("Workforce Coverage", "Shift coverage, overtime risk and redeployment across active assignments.",
+                          kpis=["Shift coverage", "Overtime hours", "Redeployment rate", "Attrition risk", "Open shifts"],
+                          teams=["Workforce Operations", "Schedulers", "Field Operations"]),
+                dashboard("Compliance & Credentials", "Credential, background and I-9 status by placement with expiry risk.",
+                          kpis=["Credential expiry risk", "Background check SLA", "I-9 completion rate", "Tenure-limit breaches", "DEI pipeline metrics"],
+                          teams=["Compliance & Risk", "Background & Screening", "Audit & Reporting"]),
             ]),
         },
         "top": top_band(

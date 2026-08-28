@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,44 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             "market",
                             "Nasdaq's INET matching engine and marketplace technology: the order book, matching and gateway layer that is the source of every order, quote and fill on the venue.",
                             "nasdaq-inet",
+                            cat="Matching Engine / Trading Platform",
+                            what="Nasdaq's INET matching engine and marketplace technology: the order book, matching and gateway layer that is the source of every order, quote and fill on the venue.",
+                            users="Matching-engine operations, market quality and trading systems teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100k-1M order/quote/fill messages/sec at peak", "Continuous (microsecond)")),
                         ),
                         tile(
                             "Deutsche Börse T7",
                             "market",
                             "The T7 trading platform behind Xetra and Eurex: order entry, matching and market-data generation for cash equities and derivatives.",
                             "t7",
+                            cat="Matching Engine / Trading Platform",
+                            what="The T7 trading platform behind Xetra and Eurex: order entry, matching and market-data generation for cash equities and derivatives.",
+                            users="Matching-engine operations, market quality and derivatives operations.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100k-1M order/quote messages/sec at peak", "Continuous (microsecond)")),
                         ),
                         tile(
                             "LSEG Millennium",
                             "market",
                             "MillenniumIT's Millennium Exchange matching platform: the low-latency order book and matching engine running the trading venue.",
                             "millennium",
+                            cat="Matching Engine / Trading Platform",
+                            what="MillenniumIT's Millennium Exchange matching platform: the low-latency order book and matching engine running the trading venue.",
+                            users="Matching-engine operations and market-quality teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "50k-500k order/quote messages/sec at peak", "Continuous (microsecond)")),
                         ),
                         tile(
                             "CME Globex",
                             "market",
                             "The Globex electronic trading platform for futures and options: the source of the order, quote and trade stream for the derivatives venue.",
                             "globex",
+                            cat="Derivatives Trading Platform",
+                            what="The Globex electronic trading platform for futures and options: the source of the order, quote and trade stream for the derivatives venue.",
+                            users="Derivatives market operations, matching-engine ops and clearing teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "100k-1M order/quote/trade messages/sec at peak", "Continuous (microsecond)")),
                         ),
                     ],
                 },
@@ -65,24 +88,44 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             "stream",
                             "Nasdaq's full order-by-order depth-of-book feed: every add, modify, cancel and execution, the raw ground truth for level 2 and level 3 market data.",
                             "itch",
+                            cat="Direct Market Data Feed (Depth of Book)",
+                            what="Nasdaq's full order-by-order depth-of-book feed carrying every add, modify, cancel and execution, the raw ground truth for level 2 and level 3 market data.",
+                            users="Feed engineering, market quality and quant subscribers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "1-5M messages/sec at peak", "Continuous (sub-millisecond)")),
                         ),
                         tile(
                             "OPRA Options Feed",
                             "stream",
                             "The Options Price Reporting Authority consolidated feed: quotes and trades across every US options exchange, the industry's highest-volume market-data stream.",
                             "opra",
+                            cat="Consolidated Options Data Feed",
+                            what="The Options Price Reporting Authority consolidated feed carrying quotes and trades across every US options exchange, the industry's highest-volume market-data stream.",
+                            users="Feed engineering, market-data operations and subscribers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "several million msgs/sec at peak", "Continuous (sub-millisecond)")),
                         ),
                         tile(
                             "CTA/UTP SIP",
                             "stream",
                             "The Securities Information Processors carrying the consolidated tape: best bid and offer and last sale across all US equity venues.",
                             "sip",
+                            cat="Consolidated Tape (SIP)",
+                            what="The Securities Information Processors carrying the consolidated tape: best bid and offer and last sale across all US equity venues.",
+                            users="Feed engineering, market-data operations and compliance.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of thousands of msgs/sec at peak", "Continuous streaming")),
                         ),
                         tile(
                             "LSEG Real-Time",
                             "stream",
                             "LSEG's real-time pricing and market-data platform distributing consolidated ticks, quotes and reference updates to subscribers worldwide.",
                             "rtds",
+                            cat="Real-Time Market Data Platform",
+                            what="LSEG's real-time pricing and market-data platform distributing consolidated ticks, quotes and reference updates to subscribers worldwide.",
+                            users="Feed engineering, data business and subscribers.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10k-100k ticks/sec", "Continuous streaming")),
                         ),
                     ],
                 },
@@ -95,24 +138,44 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             "db",
                             "SIX Financial Information's instrument, pricing and corporate-actions reference data, a golden source for terms, identifiers and events.",
                             "six",
+                            cat="Reference Data Provider",
+                            what="SIX Financial Information's instrument, pricing and corporate-actions reference data, a golden source for terms, identifiers and events.",
+                            users="Reference-data engineering, index calculation and operations.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "GBs of reference + corporate actions", "Daily + intraday corporate actions")),
                         ),
                         tile(
                             "ANNA DSB ISIN/UPI",
                             "db",
                             "The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the reference every instrument resolves against.",
                             "dsb",
+                            cat="Instrument Identifier Registry",
+                            what="The ANNA Derivatives Service Bureau allocating ISIN, CFI and UPI for OTC derivatives, the reference every instrument resolves against.",
+                            users="Reference-data engineering, regulatory reporting and operations.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of identifier records", "Daily + on-demand allocation")),
                         ),
                         tile(
                             "GLEIF LEI",
                             "identity",
                             "The Global LEI Foundation register: legal-entity identifiers linking issuers, counterparties and subscribers to one governed identity.",
                             "lei",
+                            cat="Legal Entity Identifier Registry",
+                            what="The Global LEI Foundation register of legal-entity identifiers linking issuers, counterparties and subscribers to one governed identity.",
+                            users="Reference-data engineering, compliance and entitlements teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of LEI records", "Daily refresh")),
                         ),
                         tile(
                             "Bloomberg FIGI",
                             "db",
                             "Bloomberg's open symbology (FIGI): a permanent instrument identifier that stitches vendor, venue and internal symbols to one security.",
                             "figi",
+                            cat="Instrument Symbology Provider",
+                            what="Bloomberg's open symbology (FIGI): a permanent instrument identifier that stitches vendor, venue and internal symbols to one security.",
+                            users="Reference-data engineering, feed engineering and data business.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of symbology mappings", "Daily refresh + on-demand")),
                         ),
                     ],
                 },
@@ -125,24 +188,44 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             "chart",
                             "S&P Dow Jones Indices methodology, constituents and levels, the benchmark franchise licensed to funds and ETFs.",
                             "spdji",
+                            cat="Index Provider / Benchmark Administrator",
+                            what="S&P Dow Jones Indices methodology, constituents and levels, the benchmark franchise licensed to funds and ETFs.",
+                            users="Index product managers, index calculation and licensing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of constituents + levels", "End-of-day + rebalance cycles")),
                         ),
                         tile(
                             "FTSE Russell",
                             "chart",
                             "FTSE Russell index methodology, constituent weights and rebalance schedules feeding the calculation and licensing estate.",
                             "ftse",
+                            cat="Index Provider / Benchmark Administrator",
+                            what="FTSE Russell index methodology, constituent weights and rebalance schedules feeding the calculation and licensing estate.",
+                            users="Index product managers, index calculation and benchmark governance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of constituents + weights", "End-of-day + rebalance cycles")),
                         ),
                         tile(
                             "MSCI Indexes",
                             "chart",
                             "MSCI global equity and factor indices: constituents, weights and review data behind benchmark and derivative products.",
                             "msci",
+                            cat="Index Provider / Benchmark Administrator",
+                            what="MSCI global equity and factor indices: constituents, weights and review data behind benchmark and derivative products.",
+                            users="Index product managers, index calculation and benchmark governance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of constituents + review data", "End-of-day + review cycles")),
                         ),
                         tile(
                             "Solactive",
                             "chart",
                             "Solactive's index engine for custom and thematic benchmarks: methodology and constituent data for bespoke index calculation.",
                             "solactive",
+                            cat="Index Calculation Engine",
+                            what="Solactive's index engine for custom and thematic benchmarks: methodology and constituent data for bespoke index calculation.",
+                            users="Index product managers, index quants and calculation teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of methodology + constituents", "End-of-day + rebalance cycles")),
                         ),
                     ],
                 },
@@ -155,30 +238,55 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             "gavel",
                             "Nasdaq's SMARTS market-surveillance platform: cross-market alerts for manipulation, spoofing and abuse against the venue's order flow.",
                             "smarts",
+                            cat="Market Surveillance Platform",
+                            what="Nasdaq's SMARTS market-surveillance platform generating cross-market alerts for manipulation, spoofing and abuse against the venue's order flow.",
+                            users="Market surveillance, market integrity and compliance analysts.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "GBs of alerts + cases/day", "Intraday + end-of-day")),
                         ),
                         tile(
                             "OCC Clearing",
                             "partner",
                             "The Options Clearing Corporation: clearing, margin and settlement for listed options and futures, the source of cleared-position and margin state.",
                             "occ",
+                            cat="Central Counterparty (Clearing House)",
+                            what="The Options Clearing Corporation clearing, margin and settlement for listed options and futures, the source of cleared-position and margin state.",
+                            users="Clearing and settlement operations and risk teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of cleared positions + margin", "Multiple clearing cycles daily")),
                         ),
                         tile(
                             "LCH / CCP",
                             "partner",
                             "LCH and central counterparty clearing: novated trades, margin calls and default-fund state across cleared markets.",
                             "lch",
+                            cat="Central Counterparty (Clearing House)",
+                            what="LCH and central counterparty clearing carrying novated trades, margin calls and default-fund state across cleared markets.",
+                            users="Clearing and settlement operations and risk teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of novated trades + margin", "Multiple clearing cycles daily")),
                         ),
                         tile(
                             "DTCC Settlement",
                             "partner",
                             "DTCC clearing, netting and settlement: matched trades, affirmations and settlement status for the post-trade lifecycle.",
                             "dtcc",
+                            cat="Clearing & Settlement Utility",
+                            what="DTCC clearing, netting and settlement carrying matched trades, affirmations and settlement status for the post-trade lifecycle.",
+                            users="Clearing and settlement operations and post-trade teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "GBs of confirms + settlement/day", "Multiple settlement cycles daily")),
                         ),
                     ],
                 },
                 fed_group(
                     "Market Data Billing",
                     "The market-data billing and revenue-accounting mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited subscription and usage numbers.",
+                    cat="Revenue / Billing Data Mart",
+                    what="The market-data billing and revenue-accounting mart kept in the incumbent warehouse and queried in place, giving one audited view of subscription and usage numbers.",
+                    users="Licensing and entitlements, finance and the data business.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale billing + usage history", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -188,17 +296,32 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                         "stream",
                         "Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.",
                         "itch",
+                        cat="Streaming Market Data Bus",
+                        what="Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.",
+                        users="Feed engineering and platform reliability.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "1-5M messages/sec at peak", "Continuous (sub-millisecond)")),
                     ),
                     tile(
                         "FIX / FAST Gateways",
                         "api",
                         "FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.",
                         "fix",
+                        cat="FIX/FAST Messaging Gateway",
+                        what="FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.",
+                        users="Feed engineering and market operations.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "10k-100k messages/sec at peak", "Continuous (sub-second)")),
                     ),
                     tile(
                         "Vendor Data APIs",
                         "api",
                         "Reference, corporate-actions and index-constituent request/response and file APIs consumed inbound through managed ELT connectors.",
+                        cat="Reference Data Vendor API",
+                        what="Reference, corporate-actions and index-constituent request/response and file APIs consumed inbound through managed ELT connectors.",
+                        users="Reference-data engineering and index calculation.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Daily + on-demand pulls")),
                     ),
                 ]
             ),
@@ -431,7 +554,59 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Market Quality & Latency", "Ask about matching latency, spreads, depth and fairness by symbol in plain language.",
+                          feeds=["Nasdaq Matching", "TotalView-ITCH", "Latency, quality, index, usage"],
+                          teams=["Market Ops", "Matching-engine ops", "Market quality"],
+                          questions=[
+                              "What is our matching latency by symbol right now versus yesterday?",
+                              "Which symbols show the widest spreads and thinnest depth today?",
+                              "Where did message rates spike and did any gateway degrade?",
+                              "Are there fairness concerns in fill sequencing for any symbol?",
+                              "Which gateways are closest to capacity at peak?"]),
+                    genie("Data Revenue & Entitlements", "Explore data-subscription revenue, usage and entitlement coverage.",
+                          feeds=["Market Data Billing", "LSEG Real-Time", "Latency, quality, index, usage"],
+                          teams=["Data Business", "Exchange Exec", "Licensing & entitlements"],
+                          questions=[
+                              "What did data-subscription revenue do last quarter by product?",
+                              "Which subscribers consume the most billable usage right now?",
+                              "Where is usage exceeding entitlement, and by how much?",
+                              "Which feeds have the strongest adoption this year?",
+                              "Which clients recently churned from a feed and what did they consume?"]),
+                    genie("Index & Benchmarks", "Ask about index levels, constituent weights and rebalance impact.",
+                          feeds=["S&P DJI Indices", "FTSE Russell", "MSCI Indexes", "Conformed books, instruments, indices"],
+                          teams=["Index Products", "Index calculation", "Benchmark governance"],
+                          questions=[
+                              "What are today's levels and the largest movers across our indices?",
+                              "What is the projected turnover for the next rebalance?",
+                              "Which constituents drive the most weight change this review?",
+                              "How many restatements occurred this quarter and why?",
+                              "Are all index calculations meeting their publication SLA?"]),
+                    genie("Surveillance & Integrity", "Investigate manipulation, member conduct and order-trail completeness.",
+                          feeds=["Nasdaq SMARTS", "CTA/UTP SIP", "Conformed books, instruments, indices"],
+                          teams=["Surveil & Reg", "Market surveillance", "Regulatory reporting"],
+                          questions=[
+                              "Which members showed spoofing or layering patterns this week?",
+                              "What was a member's activity around this print?",
+                              "Which alert types have the worst false-positive rate?",
+                              "How many surveillance cases are open past their SLA?",
+                              "Is our order and trade trail complete for the reporting period?"]),
+                ],
+                dashboards=[
+                    dashboard("Trading & Volume", "Matched volume, message rates and order-book health across the venue.",
+                              kpis=["Matched volume", "Message rate", "Fill rate", "Order-to-trade ratio", "Spread"],
+                              teams=["Exchange Exec", "Market Ops", "Chief Commercial Officer"]),
+                    dashboard("Data Monetization", "Data-subscription revenue, active subscribers and entitlement coverage.",
+                              kpis=["Data revenue", "Active subscribers", "Billable usage", "Entitlement coverage", "Feed adoption"],
+                              teams=["Data Business", "Exchange Exec", "Licensing & entitlements"]),
+                    dashboard("Index Operations", "Index levels, rebalance impact and calculation quality.",
+                              kpis=["Index levels", "Rebalance impact", "Constituent turnover", "Restatement count", "Calculation SLA"],
+                              teams=["Index Products", "Index calculation", "Benchmark governance"]),
+                    dashboard("Surveillance & Regulatory", "Alert quality, case backlog and regulatory reporting timeliness.",
+                              kpis=["Alert volume", "False-positive rate", "Case backlog", "Report timeliness", "Order-trail completeness"],
+                              teams=["Surveil & Reg", "Market surveillance", "Regulatory reporting"]),
+                ],
             ),
         },
         "top": top_band(

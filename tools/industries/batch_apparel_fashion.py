@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,129 @@ INDUSTRIES_BATCH_APPAREL_FASHION = {
         "rails": {
             "src": [
                 {"box": "PLM & Design", "ic": "product", "tiles": [
-                    tile("Centric PLM", "product", "Style masters, BOMs, colorways and sample approvals through development.", "centric-plm"),
-                    tile("Adobe Substance", "apps", "Material libraries and 3D render assets linked to style records.", "adobe-substance"),
-                    tile("CLO 3D", "apps", "Digital samples and fit iterations before physical proto.", "clo-3d"),
+                    tile("Centric PLM", "product", "Style masters, BOMs, colorways and sample approvals through development.", "centric-plm",
+                         cat="Product Lifecycle Management (PLM)",
+                         what="Holds style masters, BOMs, colorways and sample approvals through development, the system of record for the line as it takes shape.",
+                         users="Product Development, Design and Sourcing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "1-5 GB/day", "Hourly / nightly sync"))),
+                    tile("Adobe Substance", "apps", "Material libraries and 3D render assets linked to style records.", "adobe-substance",
+                         cat="3D Material / Design Software",
+                         what="Manages material libraries and 3D render assets linked to style records for digital design and virtual sampling.",
+                         users="Design and Product Development teams.",
+                         data_out=data_out(
+                             batch=flow(["unstructured"], "10s-100s GB (assets)", "On-save / nightly asset sync"))),
+                    tile("CLO 3D", "apps", "Digital samples and fit iterations before physical proto.", "clo-3d",
+                         cat="3D Sampling / Fit Simulation",
+                         what="Produces digital samples and fit iterations before a physical proto, cutting sample rounds from the calendar.",
+                         users="Product Development, Design and Fit teams.",
+                         data_out=data_out(
+                             batch=flow(["unstructured", "semi-structured"], "GBs/day (3D + fit)", "On-iteration / daily sync"))),
                 ]},
                 {"box": "ERP & Supply", "ic": "erp", "tiles": [
-                    tile("Infor CloudSuite Fashion", "erp", "Seasonal collections, purchasing and factory allocations.", "infor-fashion"),
-                    tile("SAP S/4HANA Retail", "erp", "Inventory, allocation and financial close for multi-brand houses.", "sap-retail"),
-                    tile("Blue Yonder WMS", "stream", "Warehouse execution, pick paths and store replenishment.", "blue-yonder-wms"),
+                    tile("Infor CloudSuite Fashion", "erp", "Seasonal collections, purchasing and factory allocations.", "infor-fashion",
+                         cat="Fashion ERP System",
+                         what="Runs seasonal collections, purchasing and factory allocations, the commercial system of record for buy and ownership.",
+                         users="Merchandising, Planning and Finance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "10-50 GB/day", "Nightly close + hourly deltas"))),
+                    tile("SAP S/4HANA Retail", "erp", "Inventory, allocation and financial close for multi-brand houses.", "sap-retail",
+                         cat="Retail ERP System",
+                         what="Holds inventory, allocation and the financial close for multi-brand houses, reconciling ownership and margin across banners.",
+                         users="Finance, Merchandising and Master Data teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "20-80 GB/day", "Nightly close + hourly deltas"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous CDC"))),
+                    tile("Blue Yonder WMS", "stream", "Warehouse execution, pick paths and store replenishment.", "blue-yonder-wms",
+                         cat="Warehouse Management System (WMS)",
+                         what="Runs distribution-centre execution, pick paths and store replenishment, emitting the movements behind door availability.",
+                         users="DC Operations, Store Replenishment and Logistics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-30 GB/day", "Multiple daily waves"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous movement events"))),
                 ]},
                 {"box": "Commerce & POS", "ic": "market", "tiles": [
-                    tile("Shopify Plus", "partner", "DTC orders, returns and customer profiles across owned sites.", "shopify"),
-                    tile("Salesforce Commerce Cloud", "partner", "Omnichannel carts, promotions and clienteling data.", "sf-commerce"),
-                    tile("Oracle Xstore POS", "market", "Store transactions, associates and endless aisle lookups.", "oracle-xstore"),
+                    tile("Shopify Plus", "partner", "DTC orders, returns and customer profiles across owned sites.", "shopify",
+                         cat="DTC E-Commerce Platform",
+                         what="Powers direct-to-consumer orders, returns and customer profiles across owned sites, emitting the digital demand signal.",
+                         users="Ecommerce, Digital & CRM teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Hourly order sync"),
+                             stream=flow(["semi-structured"], "hundreds-thousands of events/sec", "Continuous clickstream"))),
+                    tile("Salesforce Commerce Cloud", "partner", "Omnichannel carts, promotions and clienteling data.", "sf-commerce",
+                         cat="E-Commerce Platform",
+                         what="Runs omnichannel carts, promotions and clienteling, emitting the browse, cart and order events behind the online journey.",
+                         users="Ecommerce, Digital Merchandising and Marketing teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "thousands of events/sec at peak", "Continuous clickstream + orders"))),
+                    tile("Oracle Xstore POS", "market", "Store transactions, associates and endless aisle lookups.", "oracle-xstore",
+                         cat="Point-of-Sale (POS) System",
+                         what="Captures store transactions, associate actions and endless-aisle lookups across the store fleet for sell-through and clienteling.",
+                         users="Retail Store Operations and Digital & CRM teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "5-20 GB/day", "End-of-day polling"),
+                             stream=flow(["semi-structured"], "hundreds of transactions/sec at peak", "Continuous (near real-time)"))),
                 ]},
                 {"box": "Manufacturing", "ic": "zplug", "tiles": [
-                    tile("Lectra Fashion", "zplug", "Marker making, cutting room and factory KPIs.", "lectra"),
-                    tile("Gerber Technology", "iot", "Spreading, cutting and unit production tracking.", "gerber"),
-                    tile("Fast React Plan", "sheet", "Factory capacity, T&A calendars and critical path.", "fast-react"),
+                    tile("Lectra Fashion", "zplug", "Marker making, cutting room and factory KPIs.", "lectra",
+                         cat="Cutting Room / Manufacturing Software",
+                         what="Runs marker making, cutting-room execution and factory KPIs, emitting the production and utilisation data behind supply.",
+                         users="Sourcing, Production and Manufacturing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "GBs/day", "Daily batch"))),
+                    tile("Gerber Technology", "iot", "Spreading, cutting and unit production tracking.", "gerber",
+                         cat="Cutting / Production Automation",
+                         what="Tracks spreading, cutting and unit production on the factory floor, emitting throughput and WIP telemetry.",
+                         users="Production, Manufacturing and T&A teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous production events"))),
+                    tile("Fast React Plan", "sheet", "Factory capacity, T&A calendars and critical path.", "fast-react",
+                         cat="Production Planning System",
+                         what="Plans factory capacity, time-and-action calendars and the critical path so delay risk is visible before a launch window slips.",
+                         users="Production / T&A and Sourcing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily plan runs"))),
                 ]},
                 {"box": "Sustainability", "ic": "gavel", "tiles": [
-                    tile("Higg Index MSI", "gavel", "Material sustainability scores and facility social audits.", "higg"),
-                    tile("Textile Exchange", "partner", "Preferred fiber certifications and chain of custody.", "textile-exchange"),
+                    tile("Higg Index MSI", "gavel", "Material sustainability scores and facility social audits.", "higg",
+                         cat="Sustainability Scoring Platform",
+                         what="Supplies material sustainability scores and facility social audits used to score styles and factories on ESG.",
+                         users="Sourcing, Sustainability and Compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "MBs-GBs/month", "Monthly / on-audit refresh"))),
+                    tile("Textile Exchange", "partner", "Preferred fiber certifications and chain of custody.", "textile-exchange",
+                         cat="Materials Certification Registry",
+                         what="Provides preferred-fiber certifications and chain-of-custody records for due diligence and sustainability claims.",
+                         users="Sourcing, Sustainability and Compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "MBs/month", "Periodic certification updates"))),
                 ]},
-                fed_group("Wholesale Partner Mart", "Department store sell-in and chargeback marts queried in place under Unity Catalog."),
+                fed_group("Wholesale Partner Mart", "Department store sell-in and chargeback marts queried in place under Unity Catalog.",
+                          cat="Wholesale Data Mart",
+                          what="Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                          users="Wholesale, Finance and Merchandising analysts.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("Edited Retail Intel", "market", "Competitor pricing, assortment and markdown signals by market.", "edited"),
-                tile("WGSN Trend Forecast", "ztarget", "Macro trends, color and silhouette forecasts for line planning.", "wgsn"),
-                tile("Open Supply Hub", "globe", "Factory disclosure and supplier mapping for due diligence.", "opensupplyhub"),
+                tile("Edited Retail Intel", "market", "Competitor pricing, assortment and markdown signals by market.", "edited",
+                     cat="Retail Intelligence Provider",
+                     what="Supplies competitor pricing, assortment and markdown signals by market so merchandising can price and range against the field.",
+                     users="Merchandising, Pricing and Buying teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs-GBs/day", "Daily competitive feed"))),
+                tile("WGSN Trend Forecast", "ztarget", "Macro trends, color and silhouette forecasts for line planning.", "wgsn",
+                     cat="Trend Forecasting Service",
+                     what="Provides macro trend, color and silhouette forecasts that inform line planning and the seasonal buy.",
+                     users="Design, Merchandising and Planning teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured", "unstructured"], "MBs-GBs/season", "Seasonal + monthly updates"))),
+                tile("Open Supply Hub", "globe", "Factory disclosure and supplier mapping for due diligence.", "opensupplyhub",
+                     cat="Supplier Disclosure Registry",
+                     what="Supplies factory disclosure and supplier mapping consumed inbound for supply-chain due diligence and ESG.",
+                     users="Sourcing, Sustainability and Compliance teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs/month", "Periodic disclosure refresh"))),
             ]),
             "ppl": ppl2([
                 biz("Brand President & CFO", "Genie One",
@@ -157,6 +254,56 @@ INDUSTRIES_BATCH_APPAREL_FASHION = {
                     tile("Data Products", "product", "Style and sell-through products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Wholesale partners reading inventory via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Sell-Through & Margin", "Ask about sell-through, full-price rate and margin by collection in plain language.",
+                      feeds=["Oracle Xstore POS", "Shopify Plus", "Infor CloudSuite Fashion", "Sell-through, margin, OTB"],
+                      teams=["Merchandising", "Brand President & CFO", "Planning & Allocation"],
+                      questions=[
+                          "What was full-price sell-through for the last collection?",
+                          "Which styles are overstocked heading into markdown?",
+                          "What is gross margin and GMROI by category and door?",
+                          "How is weeks of supply trending versus the plan?",
+                          "Which styles need a markdown before margin erodes?"]),
+                genie("Planning & Allocation", "Explore open-to-buy, size curves and in-stock across doors and channels.",
+                      feeds=["Infor CloudSuite Fashion", "Blue Yonder WMS", "Conformed styles and channels"],
+                      teams=["Planning & Allocation", "Merchandising", "Brand President & CFO"],
+                      questions=[
+                          "What is open-to-buy remaining by department and collection?",
+                          "Which doors are short on the fastest-selling sizes?",
+                          "What is in-stock rate by door and style right now?",
+                          "Where is markdown liability building against the plan?",
+                          "Which size curves are misaligned to door demand?"]),
+                genie("Sourcing & Production", "Answer factory WIP, on-time delivery and sustainability questions across the supply base.",
+                      feeds=["Fast React Plan", "Centric PLM", "Lectra Fashion", "Higg Index MSI"],
+                      teams=["Sourcing & Production", "Merchandising", "Brand President & CFO"],
+                      questions=[
+                          "Which POs are at risk of missing the launch window?",
+                          "What is on-time delivery by factory and season?",
+                          "Where is WIP stalled against the critical path?",
+                          "Which styles have unresolved sustainability or audit flags?",
+                          "What is landed cost per unit trending by sourcing region?"]),
+                genie("Customer & Clienteling", "Ask about repeat rate, clienteled revenue and personalisation across channels.",
+                      feeds=["Salesforce Commerce Cloud", "Oracle Xstore POS", "Shopify Plus"],
+                      teams=["Digital & CRM", "Merchandising", "Brand President & CFO"],
+                      questions=[
+                          "What is repeat purchase rate by customer segment?",
+                          "How much revenue is clienteled versus walk-in?",
+                          "Which high-value customers have lapsed this season?",
+                          "What is DTC conversion by channel and device?",
+                          "Which segments respond best to personalised offers?"]),
+            ], dashboards=[
+                dashboard("Sell-Through & Margin", "Sell-through, full-price rate and margin by collection on certified Metric Views.",
+                          kpis=["Sell-through rate", "Full-price sell-through", "Gross margin", "GMROI", "Markdown rate"],
+                          teams=["Merchandising", "Brand President & CFO", "Planning & Allocation"]),
+                dashboard("Inventory & OTB", "Open-to-buy, weeks of supply and in-stock across doors and channels.",
+                          kpis=["Open-to-buy", "Weeks of supply", "In-stock rate", "Markdown liability", "Inventory turns"],
+                          teams=["Planning & Allocation", "Merchandising", "Brand President & CFO"]),
+                dashboard("Sourcing & Production", "Factory on-time delivery, WIP and landed cost across the supply base.",
+                          kpis=["On-time delivery", "WIP by PO", "Landed cost per unit", "T&A adherence", "Air-freight rate"],
+                          teams=["Sourcing & Production", "Merchandising", "Brand President & CFO"]),
+                dashboard("Customer & Clienteling", "Repeat rate, clienteled revenue and lifetime value across channels.",
+                          kpis=["Repeat rate", "Clienteled revenue", "Customer lifetime value", "DTC conversion", "Offer response rate"],
+                          teams=["Digital & CRM", "Merchandising", "Brand President & CFO"]),
             ]),
         },
         "top": top_band(

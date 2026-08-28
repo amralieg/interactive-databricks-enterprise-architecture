@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,129 @@ INDUSTRIES_BATCH_CLINICAL_TRIALS = {
         "rails": {
             "src": [
                 {"box": "EDC & eSource", "ic": "db", "tiles": [
-                    tile("Medidata Rave EDC", "db", "Case report forms, queries and audit trails by subject.", "medidata-rave"),
-                    tile("Veeva Vault CDMS", "db", "Unified clinical data management and remote monitoring.", "veeva-cdms"),
-                    tile("Oracle Clinical One", "db", "Unified platform for randomization and data capture.", "oracle-clinical"),
+                    tile("Medidata Rave EDC", "db", "Case report forms, queries and audit trails by subject.", "medidata-rave",
+                         cat="Electronic Data Capture (EDC)",
+                         what="Captures case report form data, edit-check queries and a per-subject audit trail across sites, the operational system of record for clinical data collection.",
+                         users="Clinical Data Management, CRAs / monitors and site coordinators.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-10 GB/day per study", "Nightly extracts + intraday query cycles"),
+                             stream=flow(["semi-structured"], "tens of form events/sec at peak", "Continuous CDC on eCRF saves"))),
+                    tile("Veeva Vault CDMS", "db", "Unified clinical data management and remote monitoring.", "veeva-cdms",
+                         cat="Clinical Data Management System (CDMS)",
+                         what="Unifies data capture, cleaning and remote monitoring on one clinical data management platform so data managers work review and coding against a single subject record.",
+                         users="Clinical Data Management, Clinical Programmers and central monitors.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-8 GB/day per study", "Nightly batch + query refreshes"))),
+                    tile("Oracle Clinical One", "db", "Unified platform for randomization and data capture.", "oracle-clinical",
+                         cat="Clinical Data Management & Randomization Platform",
+                         what="Combines electronic data capture with randomization and trial supply management on one platform, so data capture and drug assignment share a subject model.",
+                         users="Clinical Data Management, Clinical Supply and Biostatistics.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-6 GB/day per study", "Nightly batch extracts"),
+                             stream=flow(["semi-structured"], "randomization events on demand", "Continuous at randomization"))),
                 ]},
                 {"box": "CTMS & Sites", "ic": "sheet", "tiles": [
-                    tile("Veeva CTMS", "sheet", "Site feasibility, activation and enrollment tracking.", "veeva-ctms"),
-                    tile("Medidata CTMS", "people", "Monitoring visits, action items and site payments.", "medidata-ctms"),
-                    tile("Signant SmartSupplies", "product", "IRT, drug supply and depot inventory.", "signant"),
+                    tile("Veeva CTMS", "sheet", "Site feasibility, activation and enrollment tracking.", "veeva-ctms",
+                         cat="Clinical Trial Management System (CTMS)",
+                         what="Tracks site feasibility, activation milestones, monitoring visits and enrollment against plan across the study's sites and countries.",
+                         users="Clinical Operations, Clinical Trial Managers and Site Management.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-3 GB/day", "Nightly sync + intraday updates"))),
+                    tile("Medidata CTMS", "people", "Monitoring visits, action items and site payments.", "medidata-ctms",
+                         cat="Clinical Trial Management System (CTMS)",
+                         what="Manages monitoring visit reports, action items and visit-based site payments, tying operational site activity to enrollment and quality.",
+                         users="Clinical Operations, CRAs / monitors and Site payments teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Nightly sync"))),
+                    tile("Signant SmartSupplies", "product", "IRT, drug supply and depot inventory.", "signant",
+                         cat="Interactive Response Technology (IRT/RTSM)",
+                         what="Randomizes subjects and manages drug supply, depot inventory and resupply triggers so the right kit reaches the right site as enrollment moves.",
+                         users="Clinical Supply, Clinical Operations and Depot / logistics teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.2-1 GB/day", "Nightly batch"),
+                             stream=flow(["semi-structured"], "randomization + dispensing events", "Continuous at dosing"))),
                 ]},
                 {"box": "Safety & PV", "ic": "gavel", "tiles": [
-                    tile("Argus Safety", "gavel", "SAE processing, MedDRA coding and expedited reporting.", "argus"),
-                    tile("Veeva Vault Safety", "gavel", "Case intake, narrative generation and submissions.", "veeva-safety"),
-                    tile("WHO Drug Dictionary", "product", "Medication coding for concomitant therapies.", "who-dd"),
+                    tile("Argus Safety", "gavel", "SAE processing, MedDRA coding and expedited reporting.", "argus",
+                         cat="Pharmacovigilance / Safety System",
+                         what="Processes individual case safety reports, codes events to MedDRA and drives expedited (E2B) regulatory reporting for adverse events.",
+                         users="Pharmacovigilance, Drug Safety Physicians and Medical Monitors.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "0.5-2 GB/day cases + narratives", "Hourly / daily case intake"))),
+                    tile("Veeva Vault Safety", "gavel", "Case intake, narrative generation and submissions.", "veeva-safety",
+                         cat="Pharmacovigilance / Safety System",
+                         what="Handles safety case intake, narrative generation and regulatory submissions on a cloud safety platform tied to the trial's adverse-event record.",
+                         users="Pharmacovigilance, Drug Safety Physicians and Regulatory reporting.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "0.5-2 GB/day", "Hourly / daily"))),
+                    tile("WHO Drug Dictionary", "product", "Medication coding for concomitant therapies.", "who-dd",
+                         cat="Drug Dictionary / Medical Coding Reference",
+                         what="Reference dictionary used to code concomitant medications to a standard so drug exposure and interactions are analysable across studies.",
+                         users="Clinical Data Management, Medical coders and Pharmacovigilance.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "MBs (reference dictionary)", "Quarterly version releases"))),
                 ]},
                 {"box": "Labs & Imaging", "ic": "stream", "tiles": [
-                    tile("LabCorp Central Lab", "stream", "Central lab results with reference ranges by visit.", "labcorp"),
-                    tile("Medidata Imaging", "iot", "DICOM reads and lesion measurements for oncology.", "medidata-imaging"),
-                    tile("Clario eCOA", "apps", "Patient-reported outcomes and eDiary entries.", "ert-ecoa"),
+                    tile("LabCorp Central Lab", "stream", "Central lab results with reference ranges by visit.", "labcorp",
+                         cat="Central Laboratory",
+                         what="Runs the trial's central laboratory testing and returns results with reference ranges and flags per subject visit for safety and efficacy review.",
+                         users="Clinical Data Management, Medical Monitors and Biostatistics.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-5 GB/day", "Daily result transfers"))),
+                    tile("Medidata Imaging", "iot", "DICOM reads and lesion measurements for oncology.", "medidata-imaging",
+                         cat="Medical Imaging / Imaging Core Lab",
+                         what="Manages DICOM image acquisition, blinded independent reads and lesion measurements (e.g. RECIST) for imaging endpoints in oncology trials.",
+                         users="Imaging core lab reviewers, Medical Monitors and Biostatistics.",
+                         data_out=data_out(
+                             batch=flow(["unstructured", "structured"], "10-100 GB/day (DICOM)", "Per-visit uploads + read cycles"))),
+                    tile("Clario eCOA", "apps", "Patient-reported outcomes and eDiary entries.", "ert-ecoa",
+                         cat="Electronic Clinical Outcome Assessment (eCOA)",
+                         what="Collects patient-reported outcomes, clinician assessments and eDiary entries on provisioned devices and apps for endpoint measurement.",
+                         users="Clinical Operations, Biostatistics and Site coordinators.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.2-1 GB/day", "Daily uploads"),
+                             stream=flow(["semi-structured"], "diary entries as completed", "Continuous device sync"))),
                 ]},
                 {"box": "Regulatory", "ic": "share", "tiles": [
-                    tile("Veeva RIM", "share", "Submissions, correspondence and health authority commitments.", "veeva-rim"),
-                    tile("CDISC Standards", "api", "SDTM and ADaM datasets for regulatory packages.", "cdisc"),
+                    tile("Veeva RIM", "share", "Submissions, correspondence and health authority commitments.", "veeva-rim",
+                         cat="Regulatory Information Management (RIM)",
+                         what="Tracks regulatory submissions, health-authority correspondence and commitments so the submission plan and its content stay aligned across regions.",
+                         users="Regulatory Affairs, Regulatory Operations and Data Management.",
+                         data_out=data_out(
+                             batch=flow(["structured", "unstructured"], "0.5-2 GB/day", "Nightly + submission milestones"))),
+                    tile("CDISC Standards", "api", "SDTM and ADaM datasets for regulatory packages.", "cdisc",
+                         cat="Clinical Data Standards (CDISC)",
+                         what="Defines the SDTM and ADaM dataset standards clinical data is mapped to for a compliant, traceable regulatory submission package.",
+                         users="Standards & CDISC, Clinical Programmers and Biostatistics.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "MBs (standards + controlled terminology)", "Periodic standard releases"))),
                 ]},
-                fed_group("Legacy SDTM Mart", "Historical submission datasets queried in place under Unity Catalog."),
+                fed_group("Legacy SDTM Mart", "Historical submission datasets queried in place under Unity Catalog.",
+                          cat="Clinical Data Warehouse / Submission Data Mart",
+                          what="Historical SDTM and ADaM submission datasets kept in the incumbent warehouse and queried in place through federation rather than copied.",
+                          users="Biostatistics, Statistical Programmers and Regulatory Affairs.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical datasets", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("ClinicalTrials.gov", "api", "Public trial registry metadata for competitive intelligence.", "clinicaltrials-gov"),
-                tile("IQVIA Real World", "partner", "External control arms and epidemiology for protocol design.", "iqvia-rwe"),
-                tile("Flatiron Oncology EHR", "custlake", "De-identified oncology records for external comparators.", "flatiron"),
+                tile("ClinicalTrials.gov", "api", "Public trial registry metadata for competitive intelligence.", "clinicaltrials-gov",
+                     cat="Public Clinical Trial Registry",
+                     what="Public registry of trial protocols, sites and status used for competitive intelligence and feasibility benchmarking.",
+                     users="Clinical Operations, Feasibility and Portfolio teams.",
+                     data_out=data_out(
+                         batch=flow(["semi-structured"], "100s of MB (registry extracts)", "Weekly / on-demand pulls"))),
+                tile("IQVIA Real World", "partner", "External control arms and epidemiology for protocol design.", "iqvia-rwe",
+                     cat="Real-World Data / Evidence Provider",
+                     what="Supplies real-world claims and clinical data for external control arms, epidemiology and protocol design and site targeting.",
+                     users="Biostatistics, Epidemiology and Feasibility teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "10-100 GB per cohort", "Periodic cohort refreshes"))),
+                tile("Flatiron Oncology EHR", "custlake", "De-identified oncology records for external comparators.", "flatiron",
+                     cat="Real-World Oncology Data (EHR-derived)",
+                     what="De-identified, curated oncology EHR data used for external comparator arms and real-world outcomes in cancer trials.",
+                     users="Biostatistics, Epidemiology and Medical & Safety.",
+                     data_out=data_out(
+                         batch=flow(["structured", "unstructured"], "10-50 GB per cohort", "Periodic curated refreshes"))),
             ]),
             "ppl": ppl2([
                 biz("Chief Medical & Clinical Ops", "Genie One",
@@ -157,6 +254,56 @@ INDUSTRIES_BATCH_CLINICAL_TRIALS = {
                     tile("Data Products", "product", "Trial and safety products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Partners and regulators via governed sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Enrollment & Site Performance", "Ask how enrollment is tracking to plan and which sites are at risk, in plain language.",
+                      feeds=["Veeva CTMS", "Medidata Rave EDC", "Conformed subjects and visits", "Enrollment, safety signals"],
+                      teams=["Chief Medical & Clinical Ops", "Clinical Operations", "Clinical Trial Manager"],
+                      questions=[
+                          "How is enrollment tracking to plan by country and site this month?",
+                          "Which sites are under-enrolling and at risk of closure?",
+                          "What is the screen-failure rate by site and protocol?",
+                          "How long is site activation taking from selection to first patient in?",
+                          "Which countries are driving the current enrollment shortfall?"]),
+                genie("Safety & Pharmacovigilance", "Explore adverse events, emerging signals and expedited-reporting timeliness across trials.",
+                      feeds=["Argus Safety", "Veeva Vault Safety", "WHO Drug Dictionary", "Enrollment, safety signals"],
+                      teams=["Medical & Safety", "Pharmacovigilance", "Drug Safety Physician"],
+                      questions=[
+                          "What is the SAE incidence by product and treatment arm this quarter?",
+                          "Which adverse events are showing an emerging signal across trials?",
+                          "How many expedited reports are approaching their reporting deadline?",
+                          "What is our time-to-signal for newly reported serious events?",
+                          "Which concomitant medications co-occur most with reported events?"]),
+                genie("Data Management & Quality", "Answer query-aging, completeness and lock-readiness questions across EDC and labs.",
+                      feeds=["Medidata Rave EDC", "LabCorp Central Lab", "CDISC Standards", "Conformed subjects and visits"],
+                      teams=["Data Management", "Lead Data Manager", "Standards & CDISC"],
+                      questions=[
+                          "Which sites have the oldest open queries right now?",
+                          "What is data completeness on critical variables by study?",
+                          "How many visits are missing or overdue by site?",
+                          "Where does SDTM conformance fail validation checks?",
+                          "How far are we from database-lock readiness this week?"]),
+                genie("Feasibility & Site Selection", "Rank sites and geographies for the next protocol from history, registries and real-world data.",
+                      feeds=["Veeva CTMS", "ClinicalTrials.gov", "IQVIA Real World", "Flatiron Oncology EHR"],
+                      teams=["Clinical Operations", "Chief Medical & Clinical Ops", "Site Management"],
+                      questions=[
+                          "Which sites historically enroll fastest for this indication?",
+                          "What is each candidate site's past data-quality track record?",
+                          "How many competing trials are recruiting the same population?",
+                          "What patient volume does real-world data suggest per region?",
+                          "Which sites combine high enrollment with low screen-failure rates?"]),
+            ], dashboards=[
+                dashboard("Enrollment & Milestones", "Enrollment velocity, screen-failure and activation against the study plan on certified Metric Views.",
+                          kpis=["Enrollment velocity", "Screen-failure rate", "Site activation cycle time", "Randomization rate", "Dropout rate"],
+                          teams=["Chief Medical & Clinical Ops", "Clinical Operations", "Clinical Trial Manager"]),
+                dashboard("Safety Surveillance", "SAE incidence, signal timeliness and expedited-report throughput across trials.",
+                          kpis=["SAE incidence", "Time-to-signal", "Expedited-report timeliness", "AE rate", "Case backlog"],
+                          teams=["Medical & Safety", "Pharmacovigilance", "Drug Safety Physician"]),
+                dashboard("Data Quality & Lock Readiness", "Open-query aging, completeness and SDTM conformance on the path to database lock.",
+                          kpis=["Open-query aging", "Data completeness", "Lock cycle time", "SDTM conformance", "Critical-variable coverage"],
+                          teams=["Data Management", "Biostatistics", "Standards & CDISC"]),
+                dashboard("Site Feasibility & Selection", "Historical site performance and data quality for feasibility and selection.",
+                          kpis=["Historical enrollment rate", "Data-quality score", "Startup cycle time", "Screen-failure rate", "Cost per patient"],
+                          teams=["Clinical Operations", "Chief Medical & Clinical Ops", "Site Management"]),
             ]),
         },
         "top": top_band(

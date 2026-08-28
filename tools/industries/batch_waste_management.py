@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -28,35 +31,127 @@ INDUSTRIES_BATCH_WASTE_MANAGEMENT = {
         "rails": {
             "src": [
                 {"box": "Billing & CRM", "ic": "erp", "tiles": [
-                    tile("AMCS Platform", "erp", "Customer accounts, service schedules, pricing and invoicing for haulers.", "amcs"),
-                    tile("Routeware Account", "market", "Commercial and residential billing with container asset tracking.", "routeware"),
-                    tile("Salesforce Service Cloud", "custlake", "Service cases, missed pickups and contract amendments.", "sf-service"),
+                    tile("AMCS Platform", "erp", "Customer accounts, service schedules, pricing and invoicing for haulers.", "amcs",
+                         cat="Waste ERP & Billing Platform",
+                         what="Holds customer accounts, service schedules, pricing and invoicing as the core billing platform for haulers.",
+                         users="Billing operations, account managers and pricing & revenue teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "2-8 GB/day", "Nightly batch + billing cycles"))),
+                    tile("Routeware Account", "market", "Commercial and residential billing with container asset tracking.", "routeware",
+                         cat="Waste Billing & Container Tracking",
+                         what="Commercial and residential billing with container asset tracking across the customer base.",
+                         users="Billing analysts, account managers and container asset teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "1-4 GB/day", "Nightly batch + billing cycles"))),
+                    tile("Salesforce Service Cloud", "custlake", "Service cases, missed pickups and contract amendments.", "sf-service",
+                         cat="Customer Service CRM",
+                         what="Manages service cases, missed-pickup reports and contract amendments across commercial and residential accounts.",
+                         users="Customer service, account managers and contract renewals teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                             stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC"))),
                 ]},
                 {"box": "Dispatch & Routes", "ic": "sheet", "tiles": [
-                    tile("RouteSmart", "sheet", "Route design, sequencing and balance for residential and commercial lines.", "routesmart"),
-                    tile("AMCS Dispatch", "stream", "Daily dispatch, turn-by-turn and completion confirmation.", "amcs-dispatch"),
-                    tile("Rubicon Route Assist", "partner", "Dynamic routing and contamination feedback from driver devices.", "rubicon"),
+                    tile("RouteSmart", "sheet", "Route design, sequencing and balance for residential and commercial lines.", "routesmart",
+                         cat="Route Optimization System",
+                         what="Designs, sequences and balances residential and commercial routes for the collection fleet.",
+                         users="Route managers, dispatch supervisors and operations planning.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day route plans", "Daily route builds"))),
+                    tile("AMCS Dispatch", "stream", "Daily dispatch, turn-by-turn and completion confirmation.", "amcs-dispatch",
+                         cat="Dispatch & Route Execution",
+                         what="Runs daily dispatch, turn-by-turn navigation and stop-completion confirmation for collection crews.",
+                         users="Dispatch supervisors, drivers and route managers.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s-1000s of events/sec", "Continuous (completion events)"))),
+                    tile("Rubicon Route Assist", "partner", "Dynamic routing and contamination feedback from driver devices.", "rubicon",
+                         cat="Digital Routing & Driver App",
+                         what="Provides dynamic routing and contamination feedback captured from driver devices in the field.",
+                         users="Dispatch supervisors, drivers and sustainability teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s of events/sec", "Continuous (driver events)"))),
                 ]},
                 {"box": "Fleet & Telematics", "ic": "iot", "tiles": [
-                    tile("Geotab Fleet", "iot", "Vehicle location, idle time, fuel and maintenance for collection fleets.", "geotab"),
-                    tile("Motive ELD", "stream", "Hours of service and safety events for CDL drivers.", "motive"),
-                    tile("Lift Sensors & RFID", "partner", "Automated lift counts and container identification on trucks.", "rubicon"),
+                    tile("Geotab Fleet", "iot", "Vehicle location, idle time, fuel and maintenance for collection fleets.", "geotab",
+                         cat="Fleet Telematics Platform",
+                         what="Streams vehicle location, idle time, fuel and engine/maintenance data for the collection fleet.",
+                         users="Fleet & safety, route managers and maintenance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "1-10k readings/sec", "Continuous (GPS + engine telemetry)"))),
+                    tile("Motive ELD", "stream", "Hours of service and safety events for CDL drivers.", "motive",
+                         cat="ELD & Driver Safety System",
+                         what="Captures hours-of-service compliance and driver safety events for CDL drivers on the fleet.",
+                         users="Fleet & safety, compliance and dispatch teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day logs", "Daily HOS logs"),
+                             stream=flow(["semi-structured"], "hundreds of events/sec", "Continuous safety events"))),
+                    tile("Lift Sensors & RFID", "partner", "Automated lift counts and container identification on trucks.", "rubicon",
+                         cat="Container Identification & Lift Sensors",
+                         what="Emits automated lift counts and container RFID identification from onboard truck sensors.",
+                         users="Route managers, billing verification and sustainability teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "100s-1000s of lifts/sec at peak", "Continuous (lift events)"))),
                 ]},
                 {"box": "Disposal & MRF", "ic": "db", "tiles": [
-                    tile("Paradigm Software", "db", "Inbound and outbound scale tickets, tare and moisture adjustments.", "scalehouse"),
-                    tile("Landfill Gas Monitor", "iot", "Gas extraction, flare and wellfield readings for compliance.", "landfill-gas"),
-                    tile("Machinex MRF SCADA", "stream", "Material recovery throughput, contamination and bale weights.", "machinex"),
+                    tile("Paradigm Software", "db", "Inbound and outbound scale tickets, tare and moisture adjustments.", "scalehouse",
+                         cat="Scalehouse / Weighbridge System",
+                         what="Records inbound and outbound scale tickets with tare and moisture adjustments at disposal and transfer sites.",
+                         users="Scalehouse leads, landfill managers and billing teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day tickets", "Continuous tickets + daily batch"))),
+                    tile("Landfill Gas Monitor", "iot", "Gas extraction, flare and wellfield readings for compliance.", "landfill-gas",
+                         cat="Landfill Gas Monitoring System",
+                         what="Monitors gas extraction, flare and wellfield readings across the landfill for compliance and capture optimisation.",
+                         users="Landfill managers, environmental and compliance teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "tens-hundreds of readings/sec", "Continuous wellfield monitoring"))),
+                    tile("Machinex MRF SCADA", "stream", "Material recovery throughput, contamination and bale weights.", "machinex",
+                         cat="MRF Plant SCADA",
+                         what="Captures material-recovery throughput, contamination and bale weights from the recycling plant.",
+                         users="MRF plant managers, operators and sustainability teams.",
+                         data_out=data_out(
+                             stream=flow(["semi-structured"], "hundreds of signals/sec", "Continuous (plant telemetry)"))),
                 ]},
                 {"box": "Compliance & ESG", "ic": "gavel", "tiles": [
-                    tile("Enablon EHS", "gavel", "Permits, inspections and incident reporting for disposal sites.", "enablon"),
-                    tile("Wastebits Reporting", "chart", "Diversion, recycling and landfill tonnage for municipal reporting.", "wastebits"),
+                    tile("Enablon EHS", "gavel", "Permits, inspections and incident reporting for disposal sites.", "enablon",
+                         cat="EHS Management System",
+                         what="Manages permits, inspections and incident reporting for landfills and disposal sites.",
+                         users="Regulatory affairs, environmental and site compliance teams.",
+                         data_out=data_out(
+                             batch=flow(["structured", "semi-structured"], "0.5-2 GB/day", "Hourly / daily"))),
+                    tile("Wastebits Reporting", "chart", "Diversion, recycling and landfill tonnage for municipal reporting.", "wastebits",
+                         cat="Diversion & Tonnage Reporting Platform",
+                         what="Aggregates diversion, recycling and landfill tonnage for municipal and regulatory reporting.",
+                         users="ESG reporting, regulatory affairs and municipal contract teams.",
+                         data_out=data_out(
+                             batch=flow(["structured"], "0.5-2 GB/day", "Daily + reporting cycles"))),
                 ]},
-                fed_group("Municipal Contract Marts", "City tonnage and franchise fee marts queried in place under Unity Catalog."),
+                fed_group("Municipal Contract Marts", "City tonnage and franchise fee marts queried in place under Unity Catalog.",
+                          cat="Enterprise Data Warehouse",
+                          what="City tonnage and franchise-fee marts kept in the incumbent finance warehouse and queried in place through federation rather than copied.",
+                          users="VP finance, contract renewals and ESG reporting teams.",
+                          data_out=data_out(
+                              batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)"))),
             ],
             "ing": ing_rail([
-                tile("EPA LMOP Data", "gavel", "Landfill gas and emissions reference data for compliance benchmarking.", "epa-lmop"),
-                tile("State Diversion Reports", "api", "Mandatory recycling reporting files consumed for municipal contracts.", "wastebits"),
-                tile("Recycling Market Indices", "market", "Commodity bale price indices for MRF revenue planning.", "machinex"),
+                tile("EPA LMOP Data", "gavel", "Landfill gas and emissions reference data for compliance benchmarking.", "epa-lmop",
+                     cat="Regulatory Reference Data",
+                     what="Landfill Methane Outreach Program gas and emissions reference data used for compliance benchmarking.",
+                     users="ESG reporting and regulatory affairs teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs reference data", "Periodic (regulatory updates)"))),
+                tile("State Diversion Reports", "api", "Mandatory recycling reporting files consumed for municipal contracts.", "wastebits",
+                     cat="Mandatory Recycling Reporting Feed",
+                     what="Mandatory state recycling and diversion reporting files consumed inbound to satisfy municipal contract obligations.",
+                     users="ESG reporting, regulatory affairs and municipal contract teams.",
+                     data_out=data_out(
+                         batch=flow(["structured", "semi-structured"], "MBs-GBs", "Monthly / quarterly filings"))),
+                tile("Recycling Market Indices", "market", "Commodity bale price indices for MRF revenue planning.", "machinex",
+                     cat="Commodity Price Index Provider",
+                     what="Commodity bale price indices used to forecast MRF revenue and time bale sales against the market.",
+                     users="MRF plant managers, pricing & revenue and sustainability teams.",
+                     data_out=data_out(
+                         batch=flow(["structured"], "MBs reference data", "Daily / weekly index updates"))),
             ]),
             "ppl": ppl2([
                 biz("CEO & Ops Office", "Genie One", "The CEO on margin per ton and contract renewal; the COO on route productivity, missed stops and the collection fleet's safety record.",
@@ -149,6 +244,56 @@ INDUSTRIES_BATCH_WASTE_MANAGEMENT = {
                     tile("Data Products", "product", "Diversion and route performance products in Unity Catalog Domains."),
                     tile("Sharing Recipients", "share", "Municipal clients reading live tonnage via Delta Sharing."),
                 ]},
+            ], genie_spaces=[
+                genie("Routes & Collection", "Ask about route completion, missed stops and productivity across the fleet in plain language.",
+                      feeds=["AMCS Dispatch", "Geotab Fleet", "RouteSmart", "Conformed customer, route"],
+                      teams=["Collection Ops", "Dispatch Supervisors", "Route Managers"],
+                      questions=[
+                          "Which routes are running behind schedule right now?",
+                          "How many stops are at risk of being missed today?",
+                          "Which routes have the highest cost per stop this week?",
+                          "Where are trucks idling the most across the fleet?",
+                          "How many service credits did missed stops cost us last month?"]),
+                genie("Disposal & MRF", "Explore inbound tonnage, landfill airspace, contamination and bale revenue.",
+                      feeds=["Paradigm Software", "Machinex MRF SCADA", "Landfill Gas Monitor", "Cost per ton, diversion"],
+                      teams=["Disposal & MRF", "Landfill Managers", "MRF Plant Managers"],
+                      questions=[
+                          "How much inbound tonnage did we take yesterday by material class?",
+                          "How fast is landfill airspace being consumed against permit?",
+                          "What is our contamination rate in the recycling stream this week?",
+                          "What is forecast bale revenue against current commodity indices?",
+                          "How is gas capture tracking across the wellfield?"]),
+                genie("Commercial & Churn", "Answer questions on account margin, pricing and churn risk across the book.",
+                      feeds=["AMCS Platform", "Salesforce Service Cloud", "Routeware Account", "Cost per ton, diversion"],
+                      teams=["Commercial Sales", "Account Managers", "Pricing & Revenue"],
+                      questions=[
+                          "Which accounts are below target margin right now?",
+                          "Which commercial accounts are at highest churn risk this quarter?",
+                          "How does cost-to-serve compare to price by segment?",
+                          "Which contracts are up for renewal in the next 90 days?",
+                          "Where would a price adjustment most improve margin without raising churn?"]),
+                genie("Sustainability & ESG", "Ask about diversion, methane and emissions against franchise commitments.",
+                      feeds=["Wastebits Reporting", "Landfill Gas Monitor", "EPA LMOP Data", "Machinex MRF SCADA"],
+                      teams=["Sustainability", "ESG Reporting", "Diversion & Circularity"],
+                      questions=[
+                          "What is our diversion rate by customer and site this month?",
+                          "How are landfill methane emissions trending this year?",
+                          "Which municipal contracts are behind on diversion targets?",
+                          "What is fleet carbon intensity per ton collected?",
+                          "How much recovered tonnage can we evidence for EPR obligations?"]),
+            ], dashboards=[
+                dashboard("Route Performance", "Route completion, missed stops, productivity and fleet utilisation on certified Metric Views.",
+                          kpis=["Missed stops", "Cost per stop", "Route productivity", "Idle time", "Service credits"],
+                          teams=["Collection Ops", "Dispatch Supervisors", "Route Managers"]),
+                dashboard("Disposal & MRF", "Inbound tonnage, landfill airspace, contamination and bale revenue.",
+                          kpis=["Inbound tonnage", "Airspace consumption", "Contamination rate", "Bale revenue", "Gas capture"],
+                          teams=["Disposal & MRF", "Landfill Managers", "MRF Plant Managers"]),
+                dashboard("Commercial Margin", "Account margin, cost-to-serve, churn risk and renewals.",
+                          kpis=["Margin per account", "Cost-to-serve", "Churn risk", "Contracts up for renewal", "Price realization"],
+                          teams=["Commercial Sales", "Account Managers", "Pricing & Revenue"]),
+                dashboard("Sustainability & ESG", "Diversion rate, methane emissions, carbon intensity and franchise compliance.",
+                          kpis=["Diversion rate", "Landfill methane", "Fleet carbon intensity", "Recovered tonnage", "Franchise compliance"],
+                          teams=["Sustainability", "ESG Reporting", "Diversion & Circularity"]),
             ]),
         },
         "top": top_band(

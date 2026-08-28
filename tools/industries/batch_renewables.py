@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,24 +38,46 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             "iot",
                             "The operational historian of record: high-frequency SCADA and PPC time-series from every turbine, inverter and plant controller, the source of availability and performance signals.",
                             "pi",
+                            cat="Process/Time-Series Historian",
+                            what="Stores high-frequency SCADA and plant-controller time-series from every turbine, inverter and site controller as the operational system of record for availability and performance.",
+                            users="Performance engineers, reliability engineers and production analysts.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-100 GB/day tag history", "Hourly / daily aggregates"),
+                                stream=flow(["semi-structured"], "50-500k tags/sec at peak", "Continuous (sub-second sampling)")),
                         ),
                         tile(
                             "GE Vernova SCADA",
                             "iot",
                             "Wind turbine SCADA and controls from the OEM: nacelle, drivetrain and pitch telemetry, alarms and availability states against each unit.",
                             "ge-vernova",
+                            cat="Turbine SCADA / OEM Control System",
+                            what="OEM wind-turbine SCADA and controls emitting nacelle, drivetrain and pitch telemetry, alarms and availability states for each unit.",
+                            users="Reliability engineers, performance engineers and O&M teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "10-100k signals/sec", "Continuous (sub-second)")),
                         ),
                         tile(
                             "Power Factors APM",
                             "gauge",
                             "Renewable asset performance management: production, availability and loss accounting across mixed-OEM solar, wind and storage fleets.",
                             "powerfactors",
+                            cat="Asset Performance Management (APM)",
+                            what="Renewable asset performance management aggregating production, availability and loss accounting across mixed-OEM solar, wind and storage fleets.",
+                            users="Performance engineers, production analysts and asset managers.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Hourly / daily performance rollups")),
                         ),
                         tile(
                             "Huawei FusionSolar",
                             "iot",
                             "String-level inverter and PV plant monitoring: DC and AC yield, string faults and soiling signals feeding solar performance analysis.",
                             "fusionsolar",
+                            cat="Solar Inverter Monitoring Platform",
+                            what="String-level inverter and PV plant monitoring emitting DC/AC yield, string faults and soiling signals for solar performance analysis.",
+                            users="Solar performance engineers and O&M technicians.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "15-minute / hourly yield reads"),
+                                stream=flow(["semi-structured"], "1-10k readings/sec", "Continuous inverter telemetry")),
                         ),
                     ],
                 },
@@ -65,24 +90,45 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             "market",
                             "ISO and RTO market participation: nodal prices, dispatch instructions and settlement, the systems bids, schedules and imbalance settle against.",
                             ["ercot", "caiso"],
+                            cat="ISO/RTO Market Operator",
+                            what="ISO and RTO market participation feeds: nodal prices, dispatch instructions and settlement that bids, schedules and imbalance are cleared against.",
+                            users="Power traders, battery schedulers and grid compliance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day price + settlement", "Settlement cycles daily"),
+                                stream=flow(["semi-structured"], "100s-1000s of signals/sec", "Continuous (5-minute dispatch)")),
                         ),
                         tile(
                             "ION Commodities ETRM",
                             "erp",
                             "Energy trading and risk management for power and PPA positions: deal capture, position, mark-to-market and settlement across the trading book.",
                             "ion",
+                            cat="Energy Trading & Risk Management (ETRM)",
+                            what="Captures power and PPA deals, positions, mark-to-market and settlement across the trading book.",
+                            users="Power traders, PPA originators and risk/middle office.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day deals + positions", "Intraday + end-of-day marks")),
                         ),
                         tile(
                             "Molecule ETRM",
                             "market",
                             "Cloud ETRM for power and renewables portfolios where lighter-weight position, PnL and risk reporting is the incumbent.",
                             "molecule",
+                            cat="Energy Trading & Risk Management (ETRM)",
+                            what="Cloud ETRM providing position, PnL and risk reporting for power and renewables portfolios where a lighter-weight incumbent is in place.",
+                            users="Power traders, portfolio managers and risk teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Intraday + end-of-day")),
                         ),
                         tile(
                             "ICE Power Markets",
                             "market",
                             "Forward power, gas and carbon curves and exchange-traded prices, the market reference PPA valuation and hedging are marked against.",
                             "ice",
+                            cat="Commodity Exchange & Price Reference",
+                            what="Forward power, gas and carbon curves and exchange-traded prices used as the market reference for PPA valuation and hedging.",
+                            users="Traders, PPA origination and risk teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "MBs-GBs reference curves", "Daily settlement + intraday")),
                         ),
                     ],
                 },
@@ -95,24 +141,45 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             "erp",
                             "Enterprise asset management: work orders, component lifing, spares and preventive maintenance schedules against every turbine and inverter.",
                             "maximo",
+                            cat="Enterprise Asset Management (EAM)",
+                            what="Manages work orders, component lifing, spares and preventive-maintenance schedules against every turbine and inverter.",
+                            users="O&M managers, reliability engineers and spares & logistics teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-4 GB/day", "Nightly batch + intraday work orders")),
                         ),
                         tile(
                             "SAP Asset Mgmt",
                             "erp",
                             "Plant maintenance and enterprise asset management where SAP is the incumbent core, feeding the same work-order and asset-register entities.",
                             "sap-eam",
+                            cat="Enterprise Asset Management (EAM)",
+                            what="Plant maintenance and enterprise asset management on the incumbent SAP core, feeding the same work-order and asset-register entities.",
+                            users="Maintenance planning, asset management and Finance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Nightly batch")),
                         ),
                         tile(
                             "Salesforce Field Svc",
                             "crm",
                             "Field service dispatch and scheduling: technician assignment, site visits and mobile job completion for O&M crews.",
                             "salesforce-fs",
+                            cat="Field Service Management (FSM)",
+                            what="Field service dispatch and scheduling: technician assignment, site visits and mobile job completion for O&M crews.",
+                            users="O&M dispatch, field technicians and service coordinators.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly sync"),
+                                stream=flow(["semi-structured"], "tens of events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "ServiceMax",
                             "product",
                             "Asset-centric field service for renewable O&M: warranty, entitlement and technician workflow tied to the installed base.",
                             "servicemax",
+                            cat="Field Service Management (FSM)",
+                            what="Asset-centric field service for renewable O&M covering warranty, entitlement and technician workflow tied to the installed base.",
+                            users="O&M managers, warranty administrators and field technicians.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "0.5-2 GB/day", "Hourly / nightly sync")),
                         ),
                     ],
                 },
@@ -124,18 +191,33 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             "Revenue Meters/MDM",
                             "db",
                             "Certified revenue-grade meter reads and the meter data management estate, the billed basis for generation, export and settlement.",
+                            cat="Revenue Metering / MDM",
+                            what="Certified revenue-grade meter reads and the meter data management estate, the billed basis for generation, export and settlement.",
+                            users="Settlement analysts, commercial operations and finance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day interval reads", "Interval reads (5-15 min) + daily settle")),
                         ),
                         tile(
                             "ISO Interconnection",
                             "network",
                             "Interconnection queue, agreements and grid-code compliance data from the ISO, the constraints a project is energised and dispatched under.",
                             "ferc",
+                            cat="Grid Interconnection Registry",
+                            what="Interconnection queue, agreements and grid-code compliance data from the ISO defining the constraints a project is energised and dispatched under.",
+                            users="Interconnection engineers, grid compliance and development teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "MBs-GBs documents + status", "Periodic (milestone-driven)")),
                         ),
                         tile(
                             "Itron MDM",
                             "db",
                             "Meter data management and grid-edge metering where Itron is the incumbent, feeding interval reads into settlement and loss analysis.",
                             "itron",
+                            cat="AMI Meter Data Management (MDMS)",
+                            what="Meter data management and grid-edge metering on the incumbent Itron estate, feeding interval reads into settlement and loss analysis.",
+                            users="Settlement analysts, metering operations and commercial teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-10 GB/day interval reads", "Hourly / daily reads")),
                         ),
                     ],
                 },
@@ -148,18 +230,33 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             "gavel",
                             "Renewable energy certificate and guarantee-of-origin registries (M-RETS and equivalents): issuance, transfer and retirement against metered generation.",
                             "mrets",
+                            cat="Environmental Certificate Registry",
+                            what="Renewable energy certificate and guarantee-of-origin registries tracking issuance, transfer and retirement against metered generation.",
+                            users="ESG and sustainability teams, commercial and finance.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "MBs-GBs certificates", "Monthly issuance + transfers")),
                         ),
                         tile(
                             "Watershed Carbon",
                             "globe",
                             "Carbon and emissions accounting: avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.",
                             "watershed",
+                            cat="Carbon & ESG Accounting Platform",
+                            what="Carbon and emissions accounting for avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.",
+                            users="Chief Sustainability Office, ESG reporting and finance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "MBs-GBs emissions data", "Monthly / quarterly reporting")),
                         ),
                     ],
                 },
                 fed_group(
                     "Project Finance",
                     "Project-finance models, asset ledgers and tax-equity and debt marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited returns.",
+                    cat="Enterprise Data Warehouse",
+                    what="Project-finance models, asset ledgers and tax-equity and debt marts kept in the incumbent finance warehouse and queried in place through federation rather than copied.",
+                    users="CFO & treasury, project finance and portfolio analysts.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -169,17 +266,32 @@ INDUSTRIES_BATCH_RENEWABLES = {
                         "globe",
                         "Irradiance, wind-speed and power forecasts from the meteorological provider, the exogenous driver every generation forecast is conditioned on.",
                         "solcast",
+                        cat="Weather & Irradiance Provider",
+                        what="Irradiance, wind-speed and power forecasts from the meteorological provider, the exogenous driver every generation forecast is conditioned on.",
+                        users="Forecasting ML, performance engineers and traders.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "GBs/day gridded forecasts", "Multiple forecast cycles daily")),
                     ),
                     tile(
                         "ISO Dispatch Signals",
                         "stream",
                         "Real-time dispatch, AGC and curtailment instructions from the ISO, streamed in so the plant controller and traders react at grid latency.",
                         "caiso",
+                        cat="ISO Dispatch & Curtailment Feed",
+                        what="Real-time dispatch, AGC and curtailment instructions from the ISO, streamed in so the plant controller and traders react at grid latency.",
+                        users="Plant controls, grid compliance and battery schedulers.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "100s-1000s of signals/sec", "Continuous (4-second AGC / dispatch)")),
                     ),
                     tile(
                         "Plant Sensor Stream",
                         "stream",
                         "High-frequency turbine, inverter and battery telemetry landed as structured events over Zerobus and existing Kafka topics for real-time performance analytics.",
+                        cat="Streaming Telemetry Bus",
+                        what="High-frequency turbine, inverter and battery telemetry landed as events over Zerobus and existing Kafka topics for real-time performance analytics.",
+                        users="Performance engineers, forecasting ML and reliability teams.",
+                        data_out=data_out(
+                            stream=flow(["semi-structured"], "50-500k events/sec at peak", "Continuous (sub-second)")),
                     ),
                 ]
             ),
@@ -400,7 +512,59 @@ INDUSTRIES_BATCH_RENEWABLES = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie("Fleet Performance", "Ask about availability, performance ratio and production-to-plan across the fleet in plain language.",
+                          feeds=["AVEVA PI System", "Power Factors APM", "GE Vernova SCADA", "Availability, PR, settlement"],
+                          teams=["Asset Ops", "Performance Engineers", "Executive Office"],
+                          questions=[
+                              "What was availability by site yesterday versus plan?",
+                              "Which assets are underperforming their P50 case this month?",
+                              "How much production have we lost to curtailment this week?",
+                              "Which sites show the largest soiling or degradation losses?",
+                              "What is fleet performance ratio by technology and OEM?"]),
+                    genie("Trading & PPA", "Explore positions, forecast generation, imbalance and PPA settlement across the portfolio.",
+                          feeds=["ION Commodities ETRM", "ICE Power Markets", "ERCOT / CAISO", "Revenue Meters/MDM"],
+                          teams=["Energy Trading", "PPA Origination", "Battery Schedulers"],
+                          questions=[
+                              "What is our open position by node for tomorrow?",
+                              "How much imbalance cost did we incur last settlement period?",
+                              "Which PPAs are most exposed to shape and price risk right now?",
+                              "What is battery arbitrage value captured this month?",
+                              "How does forecast generation compare to scheduled volume today?"]),
+                    genie("O&M & Reliability", "Answer questions on work orders, component health and mean-time-to-repair across the fleet.",
+                          feeds=["IBM Maximo EAM", "GE Vernova SCADA", "Salesforce Field Svc", "Conformed asset, meter, PPA"],
+                          teams=["O&M & Field", "Reliability Engineers", "Spares & Logistics"],
+                          questions=[
+                              "Which turbines have predicted component removals this quarter?",
+                              "What is mean-time-to-repair by fault type across the fleet?",
+                              "Which sites have the largest open work-order backlog?",
+                              "Where is truck-roll cost highest relative to generation?",
+                              "Which components are we most likely to run short of spares on?"]),
+                    genie("Grid & Curtailment", "Ask about dispatch, curtailment, interconnection and grid-code compliance in real time.",
+                          feeds=["ISO Dispatch Signals", "ISO Interconnection", "ERCOT / CAISO", "PPC Setpoints"],
+                          teams=["Grid Ops", "Interconnection Eng", "Plant Controls"],
+                          questions=[
+                              "How much generation are we curtailing right now and where?",
+                              "Which sites are at risk of a grid-code compliance breach?",
+                              "What is our curtailment recovery in settlement this month?",
+                              "Where do our interconnection queue milestones stand?",
+                              "How are PPC setpoints tracking against dispatch instructions today?"]),
+                ],
+                dashboards=[
+                    dashboard("Fleet Performance", "Availability, performance ratio, loss accounting and production-to-plan on certified Metric Views.",
+                              kpis=["Availability", "Performance ratio", "Production vs P50", "Curtailment loss", "Soiling loss"],
+                              teams=["Asset Ops", "Performance Engineers", "Executive Office"]),
+                    dashboard("Trading & Settlement", "Positions, forecast accuracy, imbalance cost and PPA settlement.",
+                              kpis=["Open position", "Forecast accuracy", "Imbalance cost", "PPA settlement", "Battery arbitrage value"],
+                              teams=["Energy Trading", "PPA Origination", "Battery Schedulers"]),
+                    dashboard("O&M & Reliability", "Work-order backlog, mean-time-to-repair, truck-roll cost and component health.",
+                              kpis=["Work-order backlog", "Mean-time-to-repair", "Truck-roll cost", "Predicted removals", "Warranty recovery"],
+                              teams=["O&M & Field", "Reliability Engineers", "Spares & Logistics"]),
+                    dashboard("ESG & Carbon", "REC issuance, guarantee-of-origin and avoided-emissions reconciled to metered generation.",
+                              kpis=["REC issuance", "Guarantees of origin", "Avoided emissions", "Metered generation", "Retirement volume"],
+                              teams=["Executive Office", "Grid Ops", "Asset Ops"]),
+                ],
             ),
         },
         "top": top_band(

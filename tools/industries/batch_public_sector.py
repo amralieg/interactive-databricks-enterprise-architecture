@@ -2,7 +2,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import app, biz, cons_rail, fed_group, ing_rail, medallion, tile, top_band, uc
+from common import (
+    app, biz, cons_rail, dashboard, data_out, fed_group, flow, genie, ing_rail,
+    medallion, tile, top_band, uc,
+)
 
 
 def ppl2(business_tiles, tech_tiles):
@@ -35,18 +38,35 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             "erp",
                             "Social program management: the system of record for eligibility rules, determinations and case management across benefits programs.",
                             "curam",
+                            cat="Social Program Management / Eligibility System",
+                            what="Holds the eligibility rules, determinations and benefits case records, so a determination can be replayed exactly as it stood for appeal and audit.",
+                            users="Caseworkers, eligibility determination staff and program integrity teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "20-80 GB/day", "Nightly batch + hourly deltas"),
+                                stream=flow(["semi-structured"], "tens of case events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "Gainwell MMIS",
                             "db",
                             "Medicaid Management Information System: claims, provider and member data for state health and human-services programs.",
                             "gainwell",
+                            cat="Medicaid Management Information System (MMIS)",
+                            what="Processes Medicaid claims and holds provider and member records for state health and human-services programs.",
+                            users="Medicaid program staff, provider enrollment and program integrity teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "50-200 GB/day claims + eligibility", "Nightly batch + weekly cycles")),
                         ),
                         tile(
                             "Conduent Benefits",
                             "people",
                             "Government benefits administration and EBT processing for food, cash and childcare assistance programs.",
                             "conduent",
+                            cat="Benefits Administration & EBT Platform",
+                            what="Administers benefits issuance and processes EBT card transactions for food, cash and childcare assistance programs.",
+                            users="Benefits operations, EBT program managers and payment integrity teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-30 GB/day", "Nightly batch"),
+                                stream=flow(["semi-structured"], "hundreds of EBT txns/sec at peak", "Continuous")),
                         ),
                     ],
                 },
@@ -59,18 +79,33 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             "market",
                             "Integrated tax administration used by many state revenue departments: registration, returns, payments and audit case management.",
                             "fast",
+                            cat="Integrated Tax Administration System",
+                            what="Runs registration, returns, payments and audit case management as the system of record for a revenue department.",
+                            users="Revenue and tax administration, audit selection and collections teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "10-60 GB/day", "Nightly batch + filing-season peaks")),
                         ),
                         tile(
                             "Tyler Property Tax",
                             "sheet",
                             "Computer-assisted mass appraisal and property tax billing: parcels, assessments, levies and collections.",
                             "tyler-ptax",
+                            cat="Property Assessment & Tax (CAMA) System",
+                            what="Values parcels through computer-assisted mass appraisal and bills, levies and collects property tax.",
+                            users="Assessors, property tax billing and collections teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "5-20 GB/day parcels + assessments", "Nightly batch + assessment cycles")),
                         ),
                         tile(
                             "RSI Revenue Premier",
                             "market",
                             "Revenue management and discovery: compliance case selection, collections and audit workflows for tax agencies.",
                             "rsi",
+                            cat="Revenue Management & Discovery System",
+                            what="Selects compliance cases, drives collections and runs audit workflows to close the tax gap for a revenue agency.",
+                            users="Compliance, collections and audit teams in revenue departments.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "2-10 GB/day cases + scores", "Nightly batch")),
                         ),
                     ],
                 },
@@ -83,18 +118,35 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             "gavel",
                             "Land management, permitting, licensing and code enforcement: the workflow of record for applications and inspections.",
                             "accela",
+                            cat="Permitting & Licensing System",
+                            what="Runs land management, permitting, licensing and code enforcement as the workflow of record for applications and inspections.",
+                            users="Permit technicians, plan reviewers, inspectors and code enforcement teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "3-15 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of application events/sec", "Continuous")),
                         ),
                         tile(
                             "Tyler EnerGov",
                             "gavel",
                             "Enterprise permitting and licensing for community development, plan review and business licensing.",
                             "tyler-energov",
+                            cat="Permitting & Licensing System",
+                            what="Handles community-development permitting, plan review and business licensing across the application lifecycle.",
+                            users="Community development, plan review and business licensing teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "3-12 GB/day", "Nightly batch + hourly deltas")),
                         ),
                         tile(
                             "OpenGov Permitting",
                             "appbuilder",
                             "Cloud permitting and licensing with online applications, plan review and citizen self-service.",
                             "opengov",
+                            cat="Cloud Permitting & Licensing System",
+                            what="Cloud permitting and licensing with online applications, plan review and citizen self-service portals.",
+                            users="Community development staff, applicants and citizen self-service teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-6 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of portal events/sec", "Continuous")),
                         ),
                     ],
                 },
@@ -107,18 +159,35 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             "crm",
                             "Public Sector Solutions: constituent case management, benefits intake and licensing on the government CRM.",
                             "sf-ps",
+                            cat="Government CRM / Case Management",
+                            what="Government CRM holding constituent case management, benefits intake and licensing interactions across channels.",
+                            users="Caseworkers, contact centre and constituent services teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Hourly / nightly sync"),
+                                stream=flow(["semi-structured"], "tens of case events/sec", "Continuous CDC")),
                         ),
                         tile(
                             "ServiceNow Gov",
                             "apps",
                             "Digital government services and workflow: request intake, routing and resolution across agency processes.",
                             "servicenow",
+                            cat="Digital Service Management / Workflow",
+                            what="Runs digital government service workflows: request intake, routing and resolution across agency processes.",
+                            users="Service desk, business process owners and IT operations teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "1-4 GB/day", "Hourly sync"),
+                                stream=flow(["semi-structured"], "tens of workflow events/sec", "Continuous")),
                         ),
                         tile(
                             "SeeClickFix 311",
                             "chat",
                             "Constituent 311 request reporting and non-emergency service tracking across the city.",
                             "seeclickfix",
+                            cat="311 / Constituent Request System",
+                            what="Captures 311 non-emergency service requests from residents and tracks them to resolution across city departments.",
+                            users="311 contact centre, public works and constituent services teams.",
+                            data_out=data_out(
+                                stream=flow(["semi-structured"], "hundreds of requests/hour", "Continuous (API / webhook)")),
                         ),
                     ],
                 },
@@ -131,24 +200,44 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             "globe",
                             "The GIS of record: parcels, addresses, service geographies and the spatial layers behind siting and response.",
                             "arcgis",
+                            cat="Geographic Information System (GIS)",
+                            what="System of record for parcels, addresses and service geographies, and the spatial layers behind siting, equity and response.",
+                            users="GIS analysts, planning and program teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "GB-scale spatial layers", "Nightly / on-change refresh")),
                         ),
                         tile(
                             "Workday HCM",
                             "people",
                             "Human capital and payroll for the government workforce: positions, hiring, time and personnel records.",
                             "workday",
+                            cat="HCM / Payroll Suite",
+                            what="Manages positions, hiring, time and payroll for the government workforce as the personnel system of record.",
+                            users="Human resources, payroll and workforce planning teams.",
+                            data_out=data_out(
+                                batch=flow(["structured"], "1-5 GB/day", "Nightly batch + payroll cycles")),
                         ),
                         tile(
                             "AmpliFund Grants",
                             "docs",
                             "Grants management: applications, awards, subrecipient monitoring and compliance reporting.",
                             "amplifund",
+                            cat="Grants Management System",
+                            what="Manages grant applications, awards, subrecipient monitoring and compliance reporting across the award lifecycle.",
+                            users="Grants management, finance and compliance teams.",
+                            data_out=data_out(
+                                batch=flow(["structured", "semi-structured"], "0.5-3 GB/day", "Daily + reporting cycles")),
                         ),
                     ],
                 },
                 fed_group(
                     "State Data Warehouse",
                     "Legacy agency data marts and mainframe extracts left where they are and queried in place under Unity Catalog, which avoids a second copy of records still under retention.",
+                    cat="Legacy Data Warehouse / Marts",
+                    what="Historical agency marts and mainframe extracts kept in the incumbent warehouse and queried in place through federation instead of being copied.",
+                    users="Program, finance and reporting analysts across agencies.",
+                    data_out=data_out(
+                        batch=flow(["structured"], "TB-scale historical marts", "Queried on demand (federated)")),
                 ),
             ],
             "ing": ing_rail(
@@ -158,18 +247,34 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                         "globe",
                         "Open-data platform APIs carrying public datasets and portal content, ingested for reconciliation against the governed source.",
                         "socrata",
+                        cat="Open Data Platform",
+                        what="Serves public datasets and portal content over APIs, ingested to reconcile the published portal against the governed source.",
+                        users="Open data, transparency and analytics teams.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "GBs across datasets", "Daily + on-demand API"),
+                            stream=flow(["semi-structured"], "API calls on demand", "Continuous (API)")),
                     ),
                     tile(
                         "Census Bureau APIs",
                         "api",
                         "Demographic, economic and geographic reference data from the U.S. Census Bureau, joined for benchmarking and equity analysis.",
                         "census",
+                        cat="Government Reference Data (Demographics)",
+                        what="Supplies demographic, economic and geographic reference data joined for benchmarking, targeting and equity analysis.",
+                        users="Policy analysts, equity and program planning teams.",
+                        data_out=data_out(
+                            batch=flow(["structured"], "GBs reference tables", "Periodic + on-demand API")),
                     ),
                     tile(
                         "Grants.gov / SAM.gov",
                         "gavel",
                         "Federal grant opportunity, award and entity registration feeds consumed for grants and subrecipient management.",
                         "grantsgov",
+                        cat="Federal Grants & Entity Registry",
+                        what="Carries federal grant opportunity, award and entity-registration feeds used for grants and subrecipient management.",
+                        users="Grants management, compliance and subrecipient monitoring teams.",
+                        data_out=data_out(
+                            batch=flow(["structured", "semi-structured"], "0.2-2 GB/day", "Daily feed + on-demand")),
                     ),
                 ]
             ),
@@ -390,7 +495,75 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             ),
                         ],
                     },
-                ]
+                ],
+                genie_spaces=[
+                    genie(
+                        "Program Integrity",
+                        "Ask about improper-payment exposure, eligibility risk and fraud signals across benefits programs in plain language.",
+                        feeds=["Merative Cúram SPM", "Gainwell MMIS", "Conduent Benefits", "Outcomes, integrity, service metrics"],
+                        teams=["Program Directors", "Budget & Finance", "Program Integrity"],
+                        questions=[
+                            "What is our improper-payment rate this quarter versus last, by program?",
+                            "Which caseloads show the fastest growth in high-risk determinations?",
+                            "How many payments are being held for review right now, and for which programs?",
+                            "Which providers or cohorts drive the most flagged claims?",
+                            "How has eligibility-risk exposure changed since last month and why?"]),
+                    genie(
+                        "Constituent 360",
+                        "Answer whole-person questions across benefits, tax, permitting and 311 records for a resident.",
+                        feeds=["Salesforce Pub Sector", "SeeClickFix 311", "Merative Cúram SPM", "Conformed constituent, case, parcel"],
+                        teams=["Constituent Services", "Chief Data Officer", "311 & Contact Centre"],
+                        questions=[
+                            "What is the full history of this resident across benefits, permits and 311?",
+                            "Which constituents have open cases across more than one agency?",
+                            "What is average resolution time for 311 requests by category and neighbourhood?",
+                            "Which residents are eligible for a benefit they have not enrolled in?",
+                            "Where are service requests concentrating this month across the city?"]),
+                    genie(
+                        "Revenue & Tax",
+                        "Explore filings, collections, audit selection and compliance yield across the revenue estate.",
+                        feeds=["FAST GenTax", "RSI Revenue Premier", "Tyler Property Tax", "Outcomes, integrity, service metrics"],
+                        teams=["Budget & Finance", "Revenue & Tax", "Agency Leadership"],
+                        questions=[
+                            "What is our tax compliance yield this cycle versus target?",
+                            "Which returns look anomalous and should be selected for audit?",
+                            "What is collections performance by tax type and region?",
+                            "Which property assessments moved the most this cycle?",
+                            "How much revenue is at risk in open compliance cases right now?"]),
+                    genie(
+                        "Permitting & Service",
+                        "Ask about permit cycle time, backlogs and constituent service levels across channels.",
+                        feeds=["Accela Civic Platform", "Tyler EnerGov", "OpenGov Permitting", "Outcomes, integrity, service metrics"],
+                        teams=["Constituent Services", "Permitting & Licensing", "Digital Services"],
+                        questions=[
+                            "What is average permit cycle time by permit type and department?",
+                            "Which applications are stalled between departments past their target date?",
+                            "How does permit throughput compare this month versus last?",
+                            "Where are the biggest bottlenecks in plan review right now?",
+                            "What is self-service completion rate by channel?"]),
+                ],
+                dashboards=[
+                    dashboard(
+                        "Payment Integrity",
+                        "Improper-payment rate, held payments and eligibility-risk exposure across benefits programs.",
+                        kpis=["Improper-payment rate", "Payments held for review", "Eligibility-risk exposure", "Recovery rate", "Fraud loss avoided"],
+                        teams=["Program Directors", "Budget & Finance", "Program Integrity"]),
+                    dashboard(
+                        "Program Outcomes",
+                        "Program outcomes by cohort, cost per outcome and service level across the agency.",
+                        kpis=["Outcome attainment", "Cost per outcome", "Cohort reach", "Service level", "Enrolment rate"],
+                        teams=["Agency Leadership", "Program Directors", "Performance Office"]),
+                    dashboard(
+                        "Revenue & Compliance",
+                        "Tax compliance yield, collections, audit selection and revenue at risk on certified views.",
+                        kpis=["Compliance yield", "Collections rate", "Audit hit rate", "Revenue at risk", "Days to collect"],
+                        teams=["Budget & Finance", "Revenue & Tax", "Agency Leadership"]),
+                    dashboard(
+                        "Permit & Service Delivery",
+                        "Permit cycle time, backlog, 311 resolution and digital service adoption by channel.",
+                        kpis=["Permit cycle time", "Application backlog", "311 resolution time", "Self-service adoption", "On-time rate"],
+                        teams=["Constituent Services", "Permitting & Licensing", "Digital Services"]),
+                ],
             ),
         },
         "top": top_band(
