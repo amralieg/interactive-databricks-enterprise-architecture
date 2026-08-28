@@ -2411,18 +2411,34 @@ const store = {
   del(k){ try { localStorage.removeItem(k); } catch(e){} },
 };
 const STATS_ON = /\.github\.io$/i.test(location.hostname) && !navigator.webdriver;
-const STATS_NS = "interactive-databricks-enterprise-architecture";
+const STATS_NS = "idea";
 function ideaSlug(s){
   return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9._-]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "unknown";
 }
+function ideaIndustryId(){
+  if(typeof ARCH !== "undefined" && ARCH.industry)
+    return ARCH.industry === "generic" ? "reference" : ARCH.industry;
+  try {
+    const q = new URLSearchParams(location.search).get("industry");
+    if(q) return q;
+  } catch(e){}
+  return "reference";
+}
+function ideaLabel(){
+  const ind = ideaIndustryId();
+  if(ind === "reference") return "Reference";
+  return (typeof industryLabel === "function") ? industryLabel(ind) : ind;
+}
 function ideaTrack(kind, extra){
   if(!STATS_ON) return;
-  const ind = (ARCH.industry && ARCH.industry !== "generic") ? ARCH.industry : "reference";
-  const cloud = (ARCH.cloud && ARCH.cloud.provider) || "unknown";
-  const path = "/" + [STATS_NS, kind, ind, cloud].concat(extra || []).map(ideaSlug).join("/");
+  const ind = ideaIndustryId();
+  const cloud = (typeof ARCH !== "undefined" && ARCH.cloud && ARCH.cloud.provider) || "unknown";
+  const bits = (extra || []).map(ideaSlug);
+  const path = "/" + [STATS_NS, ind, kind, cloud].concat(bits).map(ideaSlug).join("/");
+  const title = ["IDEA", ideaLabel(), kind].concat(bits).join(" · ");
   const hit = ()=>{
     if(window.goatcounter && typeof window.goatcounter.count === "function")
-      window.goatcounter.count({ path:path, title:kind, event:true });
+      window.goatcounter.count({ path:path, title:title, event:true });
   };
   if(window.goatcounter && window.goatcounter.count) hit();
   else setTimeout(hit, 600);
@@ -2431,12 +2447,10 @@ function ideaTrack(kind, extra){
   if(!STATS_ON) return;
   window.goatcounter = window.goatcounter || {};
   window.goatcounter.path = function(){
-    let ind = "reference";
-    try {
-      const q = new URLSearchParams(location.search).get("industry");
-      if(q) ind = q;
-    } catch(e){}
-    return "/" + STATS_NS + "/board/" + ideaSlug(ind);
+    return "/" + STATS_NS + "/" + ideaSlug(ideaIndustryId()) + "/board";
+  };
+  window.goatcounter.title = function(){
+    return "IDEA · " + ideaLabel();
   };
   const s = document.createElement("script");
   s.id = "idea-gc";
@@ -13101,7 +13115,20 @@ function applyIndustry(id, remember){
      name, which is a change to all six and to every industry that follows. */
   if(activeRef){ clearReference(); refBanner.classList.remove("show"); }
 
-  if(remember){ persistCustom(); ideaTrack("industry"); }
+  if(remember){
+    persistCustom();
+    ideaTrack("industry");
+    if(STATS_ON){
+      const path = "/" + STATS_NS + "/" + ideaSlug(ideaIndustryId()) + "/board";
+      const title = "IDEA · " + ideaLabel();
+      const hit = ()=>{
+        if(window.goatcounter && typeof window.goatcounter.count === "function")
+          window.goatcounter.count({ path:path, title:title, event:false });
+      };
+      if(window.goatcounter && window.goatcounter.count) hit();
+      else setTimeout(hit, 600);
+    }
+  }
   document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   build();
   paintIndustryMenu();
