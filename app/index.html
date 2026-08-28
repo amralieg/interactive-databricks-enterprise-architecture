@@ -1524,13 +1524,13 @@
     vertical-align:1.5px; color:var(--g-amber-ink); background:var(--g-amber-bg); }
 
   /* inner panel (Genie / Agent Bricks). Takes the band's group so it themes with
-     the selected palette: the fill reads as the palette hue via --gc-tile (one
-     elevation up from the band's own --gc-bg), and the border uses the band's OWN
-     soft weight (--gc-bd) rather than the saturated --gc-line, so the panel reads
-     as a card in the band's colour instead of out-saturating the band it sits in
-     (which looked amber-heavy against a dark band in Spectrum). Geometry is kept
-     exactly as before so the softening is colour-only and adds no height. */
-  .panel { display:flex; align-items:flex-start; gap:9px; background:var(--gc-tile);
+     the selected palette, but fills on the band's OWN background (--gc-bg) rather
+     than the warmer --gc-tile, so the panel sits at the same value as the band it
+     lives in instead of reading warmer/heavier than its surroundings. The soft
+     --gc-bd border (the band's own border weight) is the only card edge, so the
+     panel reads as an outline card in the band colour, not a warm block. Geometry
+     is unchanged, so the change is colour-only and adds no height. */
+  .panel { display:flex; align-items:flex-start; gap:9px; background:var(--gc-bg);
     border:1px solid var(--gc-bd); border-left:4px solid var(--gc-bd);
     border-radius:10px; padding:8px 9px 8px 8px; min-width:0; }
   .panel-head { flex:0 0 auto; min-width:100px; }
@@ -2266,13 +2266,14 @@
   <div class="dl-wrap" id="dl-wrap">
     <button class="hbtn" id="dl-btn" title="Download this architecture">⭳ Download</button>
     <div class="dl-menu" id="dl-menu">
-      <button data-dl="pdf">PDF <i>1 page</i></button>
-      <button data-dl="pptx">PowerPoint <i>pptx</i></button>
+      <button data-dl="pdf">PDF <i>deck</i></button>
+      <button data-dl="pptx">PowerPoint <i>deck</i></button>
       <button data-dl="png">Image <i>png</i></button>
       <button data-dl="gif">Animated <i>gif</i></button>
       <button data-dl="html">Interactive <i>html</i></button>
-      <div class="dl-note">PDF, PPTX and PNG capture the current view, including
-        <b>Platform only</b>. HTML stays interactive.</div>
+      <div class="dl-note">PPTX and PDF export a full deck: a contents page, the
+        architecture, then its use cases, Genie Agents, dashboards and apps. PNG and
+        GIF capture the current view, including <b>Platform only</b>. HTML stays interactive.</div>
     </div>
   </div>
   <button class="hbtn ico-only" id="tour-btn" type="button" aria-label="Take a guided tour of the board" title="Take a guided tour of the board"><span aria-hidden="true">◎</span></button>
@@ -2840,37 +2841,37 @@ const ARCH = {
       note:"Each source lands once. Federated sources are read where they are, without a copy.",
       groups:[
       { box:"Structured", ic:"sheet", tiles:[
-        { n:"Business Applications", ic:"erp", long:"Systems of record for finance, supply chain, HR and customers. Ingested with Lakeflow Connect or federated in place." },
-        { n:"Operational Databases", ic:"db", long:"OLTP databases captured with CDC through Lakeflow Connect." },
-        { n:"Data Warehouses", ic:"db", long:"Existing warehouses migrated with Lakebridge or federated through Lakehouse Federation." },
-        { n:"Mainframe & Legacy", ic:"mainframe", long:"Mainframe and legacy extracts, batch-landed then normalised in Lakeflow pipelines." },
+        { n:"Business Applications", ic:"erp", long:"Systems of record for finance, supply chain, HR and customers. Ingested with Lakeflow Connect or federated in place.", what:"Packaged systems of record (ERP, WMS, HRIS, CRM) that hold master data and the day-to-day transactions the business runs on, ingested with Lakeflow Connect or read in place with federation.", users:"Finance, supply chain, HR and sales-operations teams, and the data engineers who model their extracts.", dataOut:{ batch:{ types:["structured"], vol:"GBs/day of transactions + master data", interval:"Nightly extract + intraday deltas" }, stream:{ types:["semi-structured"], vol:"change events on key entities", interval:"Continuous CDC where available" } } },
+        { n:"Operational Databases", ic:"db", long:"OLTP databases captured with CDC through Lakeflow Connect.", what:"The OLTP databases behind live applications, captured row-by-row so the lakehouse mirrors production without loading the source system.", users:"Application and platform-engineering teams, and analysts who need current operational data.", dataOut:{ stream:{ types:["structured"], vol:"100s-1000s of row changes/sec", interval:"Continuous CDC (near real-time)" } } },
+        { n:"Data Warehouses", ic:"db", long:"Existing warehouses migrated with Lakebridge or federated through Lakehouse Federation.", what:"Incumbent enterprise warehouses holding historical marts and conformed dimensions, migrated with Lakebridge or read in place through Lakehouse Federation.", users:"BI, finance and analytics teams during and after migration.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale historical marts", interval:"Bulk migration, then queried on demand" } } },
+        { n:"Mainframe & Legacy", ic:"mainframe", long:"Mainframe and legacy extracts, batch-landed then normalised in Lakeflow pipelines.", what:"Mainframe and legacy systems (core banking, claims, billing) whose fixed-width and EBCDIC extracts are batch-landed and normalised in Lakeflow pipelines.", users:"Core operations, back-office and modernization teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"GBs/day fixed-width + VSAM extracts", interval:"Nightly batch windows" } } },
       ]},
       { box:"Semi-structured", ic:"zbraces", tiles:[
-        { n:"Files & Object Stores", ic:"file", long:"CSV, JSON, Parquet and archive files landed in cloud object storage and ingested with Auto Loader." },
-        { n:"Logs & Telemetry", ic:"observ", long:"Application, infrastructure, network and security logs feeding the lakehouse and Lakewatch." },
-        { n:"SaaS Applications", ic:"saas", long:"SaaS platforms ingested through the 100+ managed Lakeflow connectors." },
-        { n:"APIs & Webhooks", ic:"api", long:"REST, GraphQL and webhook payloads pulled on schedule or pushed on event." },
+        { n:"Files & Object Stores", ic:"file", long:"CSV, JSON, Parquet and archive files landed in cloud object storage and ingested with Auto Loader.", what:"Structured-ish files (CSV, JSON, Parquet, archives) dropped into cloud object storage and picked up incrementally by Auto Loader as they arrive.", users:"Data-engineering teams and partners exchanging file drops.", dataOut:{ batch:{ types:["semi-structured"], vol:"MBs-TBs per landing", interval:"On arrival (event-driven)" } } },
+        { n:"Logs & Telemetry", ic:"observ", long:"Application, infrastructure, network and security logs feeding the lakehouse and Lakewatch.", what:"Application, infrastructure, network and security logs streamed into the lakehouse for observability, security analytics and Lakewatch.", users:"Platform, SRE and security-operations teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"1000s of log events/sec", interval:"Continuous" } } },
+        { n:"SaaS Applications", ic:"saas", long:"SaaS platforms ingested through the 100+ managed Lakeflow connectors.", what:"Cloud SaaS platforms (marketing, support, finance, product) pulled through the 100+ managed Lakeflow connectors on a schedule.", users:"Revenue, marketing, support and finance analytics teams.", dataOut:{ batch:{ types:["semi-structured", "structured"], vol:"MBs-GBs/day via API", interval:"Scheduled connector syncs" } } },
+        { n:"APIs & Webhooks", ic:"api", long:"REST, GraphQL and webhook payloads pulled on schedule or pushed on event.", what:"REST, GraphQL and webhook payloads from internal and partner services, pulled on schedule or pushed on event.", users:"Integration engineers and product teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"variable, event-driven", interval:"On event / scheduled poll" } } },
       ]},
       { box:"Unstructured", ic:"file", tiles:[
-        { n:"Documents & Contracts", ic:"docs", long:"PDFs, contracts, forms and email parsed with Document Intelligence for agent grounding." },
-        { n:"Images & Video", ic:"media", long:"Inspection images, scans, video and geospatial rasters held as Unity Catalog volumes." },
-        { n:"Audio & Speech", ic:"audio", long:"Call recordings, voice notes and meeting audio transcribed and indexed for retrieval." },
-        { n:"Other Binary Files", ic:"file", long:"Any other binary payload the business keeps: archives, logs, CAD and design files, firmware dumps, scientific and proprietary formats. Landed as Unity Catalog volumes so the files carry the same permissions, lineage and audit as tables, and are parsed on demand." },
+        { n:"Documents & Contracts", ic:"docs", long:"PDFs, contracts, forms and email parsed with Document Intelligence for agent grounding.", what:"PDFs, contracts, forms and email parsed with Document Intelligence into text and structure so agents and search can ground on them.", users:"Legal, operations and GenAI teams building retrieval and extraction.", dataOut:{ batch:{ types:["unstructured"], vol:"1000s-millions of documents", interval:"On ingest + ongoing drops" } } },
+        { n:"Images & Video", ic:"media", long:"Inspection images, scans, video and geospatial rasters held as Unity Catalog volumes.", what:"Inspection images, scans, video and geospatial rasters held as Unity Catalog volumes for computer vision and review.", users:"Quality, field-operations and computer-vision teams.", dataOut:{ batch:{ types:["unstructured"], vol:"GBs-TBs of media", interval:"On capture / upload" } } },
+        { n:"Audio & Speech", ic:"audio", long:"Call recordings, voice notes and meeting audio transcribed and indexed for retrieval.", what:"Call recordings, voice notes and meeting audio transcribed and indexed so speech becomes searchable, analyzable text.", users:"Contact-center, compliance and customer-experience analytics teams.", dataOut:{ batch:{ types:["unstructured"], vol:"1000s of hours of audio", interval:"After each call / session" } } },
+        { n:"Other Binary Files", ic:"file", long:"Any other binary payload the business keeps: archives, logs, CAD and design files, firmware dumps, scientific and proprietary formats. Landed as Unity Catalog volumes so the files carry the same permissions, lineage and audit as tables, and are parsed on demand.", what:"Any other binary payload the business keeps (archives, CAD and design files, firmware dumps, scientific and proprietary formats), landed as Unity Catalog volumes and parsed on demand.", users:"Engineering, R&D and specialist domain teams.", dataOut:{ batch:{ types:["unstructured"], vol:"varies by payload", interval:"On ingest" } } },
       ]},
       { box:"Streaming & IoT", ic:"stream", tiles:[
-        { n:"Event Streams", ic:"stream", long:"Kafka, Event Hubs, Kinesis and Pub/Sub topics consumed by Lakeflow streaming pipelines." },
-        { n:"Device & Sensor Data", ic:"iot", long:"Machine, vehicle and sensor telemetry arriving through an IoT gateway or pushed directly with Zerobus." },
-        { n:"Change Data Capture", ic:"cdc", long:"Row-level change streams from operational databases, applied continuously to lakehouse tables." },
+        { n:"Event Streams", ic:"stream", long:"Kafka, Event Hubs, Kinesis and Pub/Sub topics consumed by Lakeflow streaming pipelines.", what:"Kafka, Event Hubs, Kinesis and Pub/Sub topics consumed directly by Lakeflow streaming pipelines for real-time processing.", users:"Streaming-platform and real-time analytics teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"1000s-100k events/sec", interval:"Continuous" } } },
+        { n:"Device & Sensor Data", ic:"iot", long:"Machine, vehicle and sensor telemetry arriving through an IoT gateway or pushed directly with Zerobus.", what:"Machine, vehicle and sensor telemetry arriving through an IoT gateway or pushed straight to the lakehouse with Zerobus.", users:"IoT, manufacturing and connected-product teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"high-frequency sensor readings", interval:"Continuous (sub-second to seconds)" } } },
+        { n:"Change Data Capture", ic:"cdc", long:"Row-level change streams from operational databases, applied continuously to lakehouse tables.", what:"Row-level insert/update/delete streams from operational databases, applied continuously so lakehouse tables track the source.", users:"Data-engineering teams keeping the lakehouse in sync with production.", dataOut:{ stream:{ types:["structured"], vol:"100s-1000s of changes/sec", interval:"Continuous" } } },
       ]},
       { box:"External & Partner", ic:"partner", tiles:[
-        { n:"Market & Reference Data", ic:"market", long:"Pricing, benchmark and reference feeds from external providers." },
-        { n:"Partner Feeds", ic:"partner", long:"Partner and supplier data received over Delta Sharing or Open Sharing." },
-        { n:"Public & Open Data", ic:"globe", long:"Open government, geospatial and demographic datasets." },
+        { n:"Market & Reference Data", ic:"market", long:"Pricing, benchmark and reference feeds from external providers.", what:"Pricing, benchmark and reference feeds bought from external data providers to enrich internal analytics.", users:"Trading, risk, finance and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"MBs-GBs/day", interval:"Scheduled (intraday to daily)" } } },
+        { n:"Partner Feeds", ic:"partner", long:"Partner and supplier data received over Delta Sharing or Open Sharing.", what:"Partner and supplier datasets received over Delta Sharing or Open Sharing, with no copy for Delta recipients.", users:"Supply-chain, partnerships and B2B analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"varies by partner", interval:"Shared / scheduled" } } },
+        { n:"Public & Open Data", ic:"globe", long:"Open government, geospatial and demographic datasets.", what:"Open government, geospatial and demographic datasets blended with internal data for context.", users:"Data-science, policy and market-analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"MBs-GBs per dataset", interval:"Periodic refresh" } } },
       ]},
       /* `from` appends the current cloud provider's tiles to this group, so one
          provider dataset feeds Sources, Ingest, Consumers and the bottom band. */
       { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
-        { n:"Other", ic:"fed", long:"Any other warehouse, database or catalog Lakehouse Federation can reach: Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server and more. Queried in place under Unity Catalog, with no copy." },
+        { n:"Other", ic:"fed", long:"Any other warehouse, database or catalog Lakehouse Federation can reach: Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server and more. Queried in place under Unity Catalog, with no copy.", what:"Any other warehouse, database or catalog Lakehouse Federation can reach (Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server), queried in place under Unity Catalog with no copy.", users:"BI and analytics teams spanning heterogeneous systems.", dataOut:{ batch:{ types:["structured"], vol:"queried in place, no copy", interval:"Query-time federation" } } },
       ]},
     ]},
 
@@ -3262,7 +3263,10 @@ const ARCH = {
     provider:"azure",
     /* vendor-neutral integrations, present whichever cloud is selected */
     extras:[
-      { n:"Anthropic", s:"Model provider", ic:"aisvc", long:"Claude models called through Unity Gateway, with the same spend caps, tracing and policy as any other model." },
+      { n:"Anthropic/OpenAI", s:"Model providers", ic:"aisvc", long:"Anthropic Claude and OpenAI GPT models called through Unity Gateway, with the same spend caps, tracing and policy as any other model.",
+        what:"Frontier commercial LLMs reached as governed model-serving endpoints: Anthropic Claude and OpenAI GPT are registered in Unity Gateway and called from notebooks, agents and Genie exactly like a Databricks-hosted model.",
+        users:"Data scientists and ML engineers building agents and GenAI features, and the platform team setting per-employee and per-agent spend caps.",
+        dataOut:{ stream:{ types:["unstructured"], vol:"prompt + completion tokens per call", interval:"On demand (synchronous)" } } },
       { n:"External Orchestrator", s:"Airflow / Dagster", ic:"orch", long:"Airflow, Dagster or an enterprise scheduler driving Lakeflow Jobs through the SDK or Terraform provider." },
       { n:"dbt & External Engines", s:"Transformation", ic:"etl", long:"dbt projects and other external transformation engines running their models on Databricks SQL warehouses, so the transformation layer a team already owns keeps its tests and its lineage while the compute and governance move to Unity Catalog." },
     ],
@@ -3270,9 +3274,9 @@ const ARCH = {
       azure: {
         label:"Azure",
         fed:[
-          { n:"Azure Synapse", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
-          { n:"Azure SQL Database", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
-          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration." },
+          { n:"Azure Synapse", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time.", what:"Synapse dedicated SQL pool tables read in place through Lakehouse Federation during migration, with Unity Catalog governance applied at query time.", users:"BI and data-warehouse migration teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale warehouse tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Azure SQL Database", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data.", what:"Azure SQL operational tables joined with lakehouse data in place, without moving or copying the source.", users:"Application and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"operational tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
         ],
         ingest:[
           { n:"Azure Data Factory", role:"etl", ic:"etl", long:"Existing ADF pipelines keep landing data; Databricks activities run notebooks and jobs inside the same orchestration." },
@@ -3307,9 +3311,9 @@ const ARCH = {
       aws: {
         label:"AWS",
         fed:[
-          { n:"Amazon Redshift", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
-          { n:"Amazon RDS / Aurora", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
-          { n:"AWS Glue Catalog", role:"fed-hms", ic:"fed", long:"Glue Data Catalog federated into Unity Catalog so existing tables stay queryable during migration." },
+          { n:"Amazon Redshift", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time.", what:"Redshift warehouse tables read in place through Lakehouse Federation during migration; pushdown is limited, so large joins pull data across the network.", users:"BI and data-warehouse migration teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale warehouse tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Amazon RDS / Aurora", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data.", what:"RDS and Aurora operational tables joined with lakehouse data in place, without moving or copying the source.", users:"Application and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"operational tables", interval:"Query-time federation (no copy)" } } },
+          { n:"AWS Glue Catalog", role:"fed-hms", ic:"fed", long:"Glue Data Catalog federated into Unity Catalog so existing tables stay queryable during migration.", what:"AWS Glue Data Catalog tables federated into Unity Catalog so existing S3 tables stay queryable during migration.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing Glue-cataloged tables", interval:"Query-time federation (no copy)" } } },
         ],
         ingest:[
           { n:"AWS Glue", role:"etl", ic:"etl", long:"Existing Glue ETL jobs keep landing data into S3 for Auto Loader and Lakeflow to pick up." },
@@ -3344,9 +3348,9 @@ const ARCH = {
       gcp: {
         label:"GCP",
         fed:[
-          { n:"BigQuery", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time." },
-          { n:"Cloud SQL", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data." },
-          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration." },
+          { n:"BigQuery", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time.", what:"BigQuery warehouse tables read in place through Lakehouse Federation, with Unity Catalog governance applied at query time and no copy.", users:"BI and data-warehouse migration teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale warehouse tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Cloud SQL", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data.", what:"Cloud SQL operational tables joined with lakehouse data in place, without moving or copying the source.", users:"Application and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"operational tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
         ],
         ingest:[
           { n:"Cloud Data Fusion", role:"etl", ic:"etl", long:"Existing Data Fusion pipelines keep landing data into GCS for Auto Loader and Lakeflow to pick up." },
@@ -13093,6 +13097,49 @@ function dispName(n){ return (displayMode === "category" && nameToCat[n]) ? name
    dispName (map-based) stays for chips, which resolve a bare NAME string after
    build() has fully populated the map. */
 function displayName(t){ return t ? ((displayMode === "category" && t.cat) ? t.cat : t.n) : ""; }
+/* Export/render copy of a tile with its commercial product references swapped
+   for their category labels when the board is in Categorical mode, so a
+   downloaded PPTX/PDF matches the on-screen display exactly. Never mutates the
+   live tile (it lives inside ARCH and is shared with the board). Only the
+   fields that hold source/consumer product NAMES are remapped: the title
+   (via displayName, which is cat-aware), and the atom-referencing lists
+   comps/feeds and the who line (via the same nameToCat map the drawer chips
+   use). Prose (long, problem, how, questions, stories) and non-product lists
+   (kpis, teams) are copied verbatim. */
+/* Prose relabeller: in Categorical mode, swap every commercial product name that
+   owns a category for that category, inside a free-text sentence (a use case's
+   "how it is built", a Genie question, a source's "what it does"). One pass over
+   the ORIGINAL string with a longest-name-first alternation, so "Nasdaq AxiomSL
+   Reg Reporting" wins over any shorter name sharing a prefix and a substituted
+   category is never re-scanned. Commercial mode and empty maps return the text
+   untouched. Uses reEsc (not the HTML `esc`) to escape regex metacharacters in
+   names that carry "/", "&" or "(". */
+function dispProse(text){
+  if(displayMode !== "category" || !text) return text;
+  const keys = Object.keys(nameToCat);
+  if(!keys.length) return text;
+  keys.sort((a, b) => b.length - a.length);
+  const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(keys.map(reEsc).join("|"), "g");
+  return text.replace(re, m => nameToCat[m] || m);
+}
+function dispTile(t){
+  if(!t) return t;
+  const mapArr = a => Array.isArray(a) ? a.map(dispName) : a;
+  const proseArr = a => Array.isArray(a) ? a.map(dispProse) : a;
+  return Object.assign({}, t, {
+    n: displayName(t),
+    comps: mapArr(t.comps),
+    feeds: mapArr(t.feeds),
+    who: t.who ? dispName(t.who) : t.who,
+    long: dispProse(t.long),
+    what: dispProse(t.what),
+    problem: dispProse(t.problem),
+    how: dispProse(t.how),
+    users: dispProse(t.users),
+    questions: proseArr(t.questions),
+  });
+}
 /* Which board is currently loaded into ARCH. The Reference tab and every "clone
    of ..." tab each own an independent board; switching tabs parks the one on
    screen and loads the other, so an edit to a clone never touches Reference. */
@@ -13438,7 +13485,11 @@ function renderRail(rail, target){
     const seenLabels = displayMode === "category" ? new Set() : null;
     slot.entries.forEach(({ tile, arr, cloudy }) => {
       const label = displayName(tile);
-      if(seenLabels){ if(seenLabels.has(label)) return; seenLabels.add(label); }
+      /* A deduped sibling is not rendered, so reg() never records its
+         name->category mapping. Register it here anyway: a use case or Genie
+         space may still reference the commercial name in its chips, and it must
+         resolve to the same category the rendered representative shows. */
+      if(seenLabels){ if(seenLabels.has(label)){ if(tile.cat) nameToCat[tile.n] = tile.cat; return; } seenLabels.add(label); }
       const b = document.createElement("button");
       b.className = "rtile" + (cloudy ? " cloudy" : "");
       b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(label)}</span>`;
@@ -13512,9 +13563,10 @@ function renderHBand(target, zone, chip, secs){
       b.className = "ctile";
       if(target.id === "topband")
         b.classList.add("ct-h-" + indHue[hueN++ % indHue.length]);
+      const ctSub = tile.s || genieDomain(tile);
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(tile.n)}</span>` +
-        (tile.s ? `<span class="ct-sub">${esc(tile.s)}</span>` : "") + `</span>`;
+        (ctSub ? `<span class="ct-sub">${esc(ctSub)}</span>` : "") + `</span>`;
       reg(b, tile, arr, s.title);
       body.appendChild(b);
     }));
@@ -13812,7 +13864,7 @@ const LINKS = {
   "Amazon RDS / Aurora": { url:"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html", dbx:"query-federation/postgresql/", site:"https://aws.amazon.com/rds/", note:"Operational databases read by federation or CDC ingestion; Aurora PostgreSQL and MySQL use the same connectors as their RDS equivalents." },
   "Amazon Redshift": { url:"https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html", dbx:"query-federation/redshift/", site:"https://aws.amazon.com/redshift/", note:"Query it in place with Lakehouse Federation during migration; pushdown is limited, so large joins pull data across the network." },
   "Amazon S3": { url:"https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html", dbx:"connect/unity-catalog/cloud-storage/s3/", site:"https://aws.amazon.com/s3/", note:"Holds all table data; access runs through a Unity Catalog storage credential backed by an IAM role, not through instance profiles." },
-  "Anthropic": { url:"https://platform.claude.com/docs/en/home", dbx:"machine-learning/model-serving/query-anthropic-messages/", site:"https://claude.com/product/overview", note:"Claude models are queryable through Databricks model serving, so prompts and responses stay inside the workspace governance and logging path." },
+  "Anthropic/OpenAI": { url:"https://platform.claude.com/docs/en/home", dbx:"machine-learning/foundation-models/external-models/", site:"https://claude.com/product/overview", note:"Anthropic Claude and OpenAI GPT are registered as external model endpoints and queried through Mosaic AI Gateway, so prompts and responses stay inside the workspace governance, spend-cap and logging path like any other model." },
   "Apache Iceberg": { doc:"iceberg/", site:"https://iceberg.apache.org/", blog:"https://www.databricks.com/blog/advancing-lakehouse-apache-iceberg-v3-databricks", note:"Managed Iceberg tables created in Unity Catalog are writable, but foreign Iceberg tables owned by an external catalog are read-only with limited platform support." },
   "Apache Spark": { doc:"spark/", site:"https://spark.apache.org/", blog:"https://www.databricks.com/blog/introducing-apache-spark-42", note:"Serverless compute and Databricks Connect run Spark in Connect mode, where SparkContext and the RDD APIs are unavailable, so classic cluster code may need changes." },
   "Apps": { doc:"dev-tools/databricks-apps/", site:"https://www.databricks.com/product/databricks-apps", blog:"https://www.databricks.com/blog/announcing-general-availability-databricks-apps", note:"Billed per hour of running compute based on provisioned capacity, and each workspace permits only a limited number of apps, so idle apps still cost money." },
@@ -14044,7 +14096,7 @@ function openDetail(id){
   const t = rec.tile;
   document.getElementById("d-eyebrow").textContent = rec.section;
   document.getElementById("d-title").innerHTML = titleIcon(t,"d-ic") + " " + esc(displayName(t));
-  document.getElementById("d-tagline").textContent = t.s || t.desc || "";
+  document.getElementById("d-tagline").textContent = t.s || t.desc || genieDomain(t) || "";
   document.getElementById("d-stage").innerHTML = stageBadge(t.st);
   let html = "";
   if(activeRef && activeRef.map[t.n]){
@@ -14055,12 +14107,12 @@ function openDetail(id){
      brand-flavoured `long` and the cited product pages are held back and the
      generic `what` leads instead; commercial mode shows both. */
   const catMode = (displayMode === "category" && !!t.cat);
-  if(!catMode) html += `<h4>What it is</h4><p>${esc(t.long || "No description yet.")}</p>`;
+  if(!catMode) html += `<h4>What it is</h4><p>${esc(dispProse(t.long) || "No description yet.")}</p>`;
   /* Source enrichment: what the system does, who runs it, and the data it emits
      split into Batch and Streaming, each with shape (structured / semi- /
      unstructured), a typical volume and a cadence. Absent fields render nothing. */
-  if(t.what) html += `<h4>What it does</h4><p>${esc(t.what)}</p>`;
-  if(t.users) html += `<h4>Who uses it</h4><p>${esc(t.users)}</p>`;
+  if(t.what) html += `<h4>What it does</h4><p>${esc(dispProse(t.what))}</p>`;
+  if(t.users) html += `<h4>Who uses it</h4><p>${esc(dispProse(t.users))}</p>`;
   if(t.dataOut){
     const seg = (label, d)=> d ? `<div class="d-dataseg"><span class="d-datalbl">${label}</span>` +
       `<div class="d-datatypes">${(d.types||[]).map(x=>`<span class="chip static">${esc(x)}</span>`).join("")}</div>` +
@@ -14075,20 +14127,20 @@ function openDetail(id){
   if(t.kpis && t.kpis.length) html += `<h4>Metrics &amp; KPIs</h4><div>${detailChips(t.kpis)}</div>`;
   if(t.teams && t.teams.length) html += `<h4>Interested teams</h4><div>${detailChips(t.teams)}</div>`;
   if(t.questions && t.questions.length) html += `<h4>Top questions it answers</h4><ul class="d-uses">` +
-    t.questions.map(qq=>`<li>${esc(qq)}</li>`).join("") + `</ul>`;
+    t.questions.map(qq=>`<li>${esc(dispProse(qq))}</li>`).join("") + `</ul>`;
   /* A use-case tile carries the reasoning behind it, not just a caption: the
      problem it exists to solve, who in the People box benefits, how it is built,
      the architecture it touches (as live chips into those atoms) and any
      verified Databricks customer stories. Absent fields simply render nothing,
      so this stays backward-compatible with tiles that only have a `long`. */
-  if(t.problem) html += `<h4>The problem it solves</h4><p>${esc(t.problem)}</p>`;
+  if(t.problem) html += `<h4>The problem it solves</h4><p>${esc(dispProse(t.problem))}</p>`;
   if(t.who){
     const to = resolveAtom(t.who);
     const chip = to ? `<span class="chip" data-go="${to}">${esc(t.who)}</span>`
                     : `<b>${esc(t.who)}</b>`;
     html += `<h4>Who benefits</h4><div>${chip}</div>`;
   }
-  if(t.how) html += `<h4>How it is built</h4><p>${esc(t.how)}</p>`;
+  if(t.how) html += `<h4>How it is built</h4><p>${esc(dispProse(t.how))}</p>`;
   if(t.comps && t.comps.length)
     html += `<h4>Architecture it uses</h4><div>${detailChips(t.comps)}</div>`;
   if(t.stories && t.stories.length){
@@ -14278,7 +14330,7 @@ const REFERENCES = [
       "Apps":["Agent front ends on App Spaces"],
       "External Agents (MCP)":["Vendor agents governed through the registry"],
       "App Developers":["Agent engineers"],
-      "Anthropic":["Claude models routed through Unity Gateway"],
+      "Anthropic/OpenAI":["Claude and GPT models routed through Unity Gateway"],
       "cloud:aisvc":["The cloud's own model endpoints, governed by the same gateway"],
       "External Orchestrator":["Existing scheduler triggering agent workflows"],
       "cloud:identity":["Employee identity the agents act on behalf of"],
@@ -14627,7 +14679,7 @@ paintSeg();
    real name stays its identity, so cites, highlights and related chips keep
    working. It is a page-wide preference, deliberately not per tab, exactly like
    theme and cloud. */
-const DISPLAY_MODES = [["commercial","Commercial"],["category","Categorical"]];
+const DISPLAY_MODES = [["commercial","Branded"],["category","Categorized"]];
 function paintDisplaySeg(){
   const seg = document.getElementById("display-seg");
   if(!seg) return;
@@ -15246,10 +15298,57 @@ const expLine  = ()=> mixHex(expInk(), expBg(), 0.86);
    (problem, who benefits, how it is built, the components it uses, and any
    customer stories as live links), and a closing slide. The PPTX and PDF
    writers share the data and the palette here so the two cannot drift. */
-function useCaseTiles(){
+/* ---------- deck section model ----------
+   Single source of truth for what a PPTX / PDF export contains and in what
+   order, so the Contents page, the section breaks, the PPTX slides and the PDF
+   pages can never disagree. Each helper reads its tiles from the live board
+   (ARCH), accepting BOTH the titles the board renders after inject_industries'
+   swap_layout ("Business Use Cases", "Genie Agents", "Databricks Apps",
+   "AI/BI Dashboards") AND the authoring titles, so the generic reference board
+   and every injected industry board resolve the same way. Sections with no
+   tiles are dropped; the board itself is always present. */
+function topSecTiles(names){
   const secs = (ARCH.top && ARCH.top.secs) || [];
-  const uc = secs.find(s=> s && s.title === "Use Cases");
-  return (uc && Array.isArray(uc.tiles)) ? uc.tiles.filter(t=> t && t.n) : [];
+  const s = secs.find(x=> x && names.indexOf(x.title) !== -1);
+  return (s && Array.isArray(s.tiles)) ? s.tiles.filter(t=> t && t.n) : [];
+}
+function consGroupTiles(names){
+  const groups = (ARCH.rails && ARCH.rails.cons && ARCH.rails.cons.groups) || [];
+  const g = groups.find(x=> x && names.indexOf(x.box) !== -1);
+  return (g && Array.isArray(g.tiles)) ? g.tiles.filter(t=> t && t.n) : [];
+}
+/* swap_layout renames "Use Cases" to "Business Use Cases" on inject and the
+   reference board authors it that way too, so both are accepted; same for the
+   Genie band, whose authoring box is "Genie Spaces". */
+function useCaseTiles(){ return topSecTiles(["Business Use Cases", "Use Cases"]); }
+function genieTiles(){ return topSecTiles(["Genie Agents", "Genie Spaces"]); }
+function dashboardTiles(){ return consGroupTiles(["AI/BI Dashboards", "AI/BI Dashboard", "Dashboards"]); }
+function appTiles(){ return consGroupTiles(["Databricks Apps", "Apps"]); }
+/* A Genie agent's name already encodes the domain it serves ("Customer & Revenue
+   Agent"), so its subtitle — the associated domain, mirroring the domain line the
+   use-case tiles beside it carry — is that name with the trailing role word
+   dropped. One helper feeds the live tile, the drawer tagline and both exports. */
+function genieDomain(t){
+  if(!t || t.ic !== "genie") return "";
+  return String(t.n || "").replace(/\s+(Genie\s+Space|Agent|Space)$/i, "").trim();
+}
+function deckSections(){
+  const ind = deckIndustry();
+  const secs = [{ key:"arch", kind:"board", eyebrow:"Architecture", title:"Architecture",
+    blurb:"The end-to-end " + ind + " architecture on the Databricks Data Intelligence Platform: sources, ingestion, the governed lakehouse and every path out." }];
+  const uc = useCaseTiles().map(dispTile);
+  if(uc.length) secs.push({ key:"uc", kind:"uc", eyebrow:"Use Cases", title:"Use Cases",
+    blurb:"The " + uc.length + " highest-value " + ind + " use cases: the problem each solves, who benefits, how it is built and the customers already live.", tiles:uc });
+  const gen = genieTiles().map(dispTile);
+  if(gen.length) secs.push({ key:"genie", kind:"genie", eyebrow:"Genie Agents", title:"Genie Agents",
+    blurb:"Ask the " + ind + " estate questions in plain language: what each agent explores, the governed data it reads and the teams it serves.", tiles:gen });
+  const dash = dashboardTiles().map(dispTile);
+  if(dash.length) secs.push({ key:"dash", kind:"dash", eyebrow:"AI/BI Dashboards", title:"AI/BI Dashboards",
+    blurb:"Certified AI/BI dashboards on governed Metric Views: the KPIs each tracks and the teams that run on them.", tiles:dash });
+  const apps = appTiles().map(dispTile);
+  if(apps.length) secs.push({ key:"app", kind:"app", eyebrow:"Databricks Apps", title:"Databricks Apps",
+    blurb:"Applications built on Databricks Apps over Lakebase: what each does for the business and the teams it serves.", tiles:apps });
+  return secs;
 }
 /* The closing slide's two links: the platform's own site, and the living board
    this deck was exported from (the same URL the cover carries). */
@@ -16119,6 +16218,27 @@ function pptxFillRect(id, x, y, w, h, hex, radiusEmu){
     '<a:solidFill><a:srgbClr val="' + hex2(hex).toUpperCase() + '"/></a:solidFill>' +
     '<a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>';
 }
+/* A single text box holding a dash-bulleted list: each item is its own
+   paragraph with an accent-coloured en-dash then the body text, hung-indented
+   so a wrapped line aligns under the text rather than under the dash. Used for
+   the Genie "questions it answers" list on the narrative slides. */
+function pptxBullets(id, x, y, w, h, items, size, inkHex, accentHex){
+  const sz = Math.round(size * 100), hang = Math.round(14 * 12700);
+  const run = (txt, hex, bold)=> '<a:r><a:rPr lang="en-US" sz="' + sz + '" b="' + (bold ? 1 : 0) +
+    '"><a:solidFill><a:srgbClr val="' + hex2(hex).toUpperCase() + '"/></a:solidFill>' +
+    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(txt) + '</a:t></a:r>';
+  const paras = (items || []).map(it=>
+    '<a:p><a:pPr algn="l" marL="' + hang + '" indent="-' + hang + '">' +
+    '<a:spcAft><a:spcPts val="600"/></a:spcAft></a:pPr>' +
+    run("\u2013  ", accentHex, true) + run(String(it), inkHex, false) + '</a:p>').join("");
+  return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="b' + id + '"/>' +
+    '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr>' +
+    '<a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t">' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/>' + paras + '</p:txBody></p:sp>';
+}
 /* Slide 1: what this is, which variant, and a live link back to the board it
    came from. A deck outlives the picture in it; the URL does not go stale. */
 function pptxCoverSlide(){
@@ -16391,7 +16511,7 @@ function pptxNarrativeSlides(){
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, "GENIE AGENT " + (i + 1) + " OF " + total);
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, "Ask in natural language over governed data");
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, genieDomain(t) || "Ask in natural language over governed data");
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it explores"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
@@ -16414,7 +16534,26 @@ function pptxNarrativeSlides(){
     return slide;
   };
 
-  /* --- one slide for a section shown as a 2x2 card grid (dashboards, apps):
+  /* --- one slide per AI/BI dashboard: what it tracks, the KPIs it depends on
+     and the teams that run on it. A dashboard is as content-rich as a Genie
+     agent, so it gets a full slide; a 2x2 grid cell on 16:9 is too short to
+     hold five KPI chips plus the team pills without spilling. --- */
+  const dashSlide = (t, i, total)=>{
+    const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, "DASHBOARD " + (i + 1) + " OF " + total);
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || "Certified AI/BI on governed Metric Views");
+    const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
+    let ly = topY;
+    if(t.long){ ly = label(ref, parts, M, ly, colW, "What it tracks"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
+    if(t.kpis && t.kpis.length){ ly = label(ref, parts, M, ly, colW, "KPIs it depends on"); ly = chipRow(ref, parts, M, ly, colW, t.kpis, 0); }
+    let ry = topY;
+    if(t.teams && t.teams.length){ ry = label(ref, parts, rx, ry, rW, "Teams that run on it"); ry = pillRow(ref, parts, rx, ry, rW, t.teams, brand); }
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  /* --- one slide for a section shown as a 2x2 card grid (apps):
      a coloured header per card, then the card's own detail --- */
   const gridSlide = (sec, roleBase)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
@@ -16490,6 +16629,7 @@ function pptxNarrativeSlides(){
     slides.push(sectionBreak(sec, role, si + 1));
     if(sec.kind === "uc") sec.tiles.forEach((t, i)=> slides.push(ucSlide(t, i, sec.tiles.length)));
     else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> slides.push(genieSlide(t, i, sec.tiles.length)));
+    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> slides.push(dashSlide(t, i, sec.tiles.length)));
     else slides.push(gridSlide(sec, si));
     si++;
   });
@@ -16842,7 +16982,7 @@ async function boardPdfBlob(){
   /* ---- page: one per Genie Agent (explores, reads, teams, questions) ---- */
   const geniePage = (t, i, total)=>{
     const c = []; chrome(c, "Genie Agent " + (i + 1) + " of " + total);
-    const cur = titleBlock(c, PH - 70, t.n, "Ask in natural language over governed data");
+    const cur = titleBlock(c, PH - 70, t.n, genieDomain(t) || "Ask in natural language over governed data");
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it explores"); ly = paraP(c, NM, ly, colW, t.long, 14); }
@@ -16856,7 +16996,23 @@ async function boardPdfBlob(){
     return { content:c.join(""), annots:[], usesImage:false };
   };
 
-  /* ---- page: a section as a 2x2 card grid (dashboards, apps) ---- */
+  /* ---- page: one per AI/BI dashboard (what it tracks, its KPIs, its teams).
+     A dashboard carries as much as a Genie agent (a paragraph, up to five KPIs
+     and its teams), so it gets its own page rather than a grid cell, which on a
+     16:9 slide is too short to hold the KPI chips without spilling. ---- */
+  const dashPage = (t, i, total)=>{
+    const c = []; chrome(c, "Dashboard " + (i + 1) + " of " + total);
+    const cur = titleBlock(c, PH - 70, t.n, t.s || "Certified AI/BI on governed Metric Views");
+    const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
+    let ly = cur;
+    if(t.long){ ly = labelP(c, NM, ly, "What it tracks"); ly = paraP(c, NM, ly, colW, t.long, 14); }
+    if(t.kpis && t.kpis.length){ ly = labelP(c, NM, ly, "KPIs it depends on"); ly = chipsP(c, NM, ly, colW, t.kpis, 0); }
+    let ry = cur;
+    if(t.teams && t.teams.length){ ry = labelP(c, rx, ry, "Teams that run on it"); ry = pillsP(c, rx, ry, rW, t.teams, expBrand()); }
+    return { content:c.join(""), annots:[], usesImage:false };
+  };
+
+  /* ---- page: a section as a 2x2 card grid (apps) ---- */
   const gridPage = (sec, roleBase)=>{
     const c = []; chrome(c, sec.eyebrow);
     const cur = titleBlock(c, PH - 70, sec.title, sec.blurb);
@@ -16915,6 +17071,7 @@ async function boardPdfBlob(){
     pages.push(sectionBreakPage(sec, role, si + 1));
     if(sec.kind === "uc") sec.tiles.forEach((t, i)=> pages.push(ucPage(t, i, sec.tiles.length)));
     else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> pages.push(geniePage(t, i, sec.tiles.length)));
+    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> pages.push(dashPage(t, i, sec.tiles.length)));
     else pages.push(gridPage(sec, si));
     si++;
   });
