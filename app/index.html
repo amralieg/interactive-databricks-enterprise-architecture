@@ -2410,6 +2410,41 @@ const store = {
   set(k, v){ try { localStorage.setItem(k, v); return true; } catch(e){ return false; } },
   del(k){ try { localStorage.removeItem(k); } catch(e){} },
 };
+const STATS_ON = /\.github\.io$/i.test(location.hostname) && !navigator.webdriver;
+const STATS_NS = "interactive-databricks-enterprise-architecture";
+function ideaSlug(s){
+  return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9._-]+/g, "_").replace(/^_|_$/g, "").slice(0, 80) || "unknown";
+}
+function ideaTrack(kind, extra){
+  if(!STATS_ON) return;
+  const ind = (ARCH.industry && ARCH.industry !== "generic") ? ARCH.industry : "reference";
+  const cloud = (ARCH.cloud && ARCH.cloud.provider) || "unknown";
+  const path = "/" + [STATS_NS, kind, ind, cloud].concat(extra || []).map(ideaSlug).join("/");
+  const hit = ()=>{
+    if(window.goatcounter && typeof window.goatcounter.count === "function")
+      window.goatcounter.count({ path:path, title:kind, event:true });
+  };
+  if(window.goatcounter && window.goatcounter.count) hit();
+  else setTimeout(hit, 600);
+}
+(function bootStats(){
+  if(!STATS_ON) return;
+  window.goatcounter = window.goatcounter || {};
+  window.goatcounter.path = function(){
+    let ind = "reference";
+    try {
+      const q = new URLSearchParams(location.search).get("industry");
+      if(q) ind = q;
+    } catch(e){}
+    return "/" + STATS_NS + "/board/" + ideaSlug(ind);
+  };
+  const s = document.createElement("script");
+  s.id = "idea-gc";
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.setAttribute("data-goatcounter", "https://amralieg.goatcounter.com/count");
+  document.head.appendChild(s);
+})();
 /* ==================================================================
    1. ICONS — inline 24x24 line/solid glyphs, stroke=currentColor
    ================================================================== */
@@ -13066,14 +13101,14 @@ function applyIndustry(id, remember){
      name, which is a change to all six and to every industry that follows. */
   if(activeRef){ clearReference(); refBanner.classList.remove("show"); }
 
-  if(remember) persistCustom();
+  if(remember){ persistCustom(); ideaTrack("industry"); }
   document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   build();
   paintIndustryMenu();
   syncIndustryBtn();
   /* build() rewrites every tile, so a drawer left open is pointing at a node
      that no longer exists and is captioned for the previous industry. */
-  if(openId && byId[openId]) openDetail(openId); else closeDrawer();
+  if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer();
   fitBoard();
 }
 
@@ -14096,9 +14131,10 @@ function detailChips(names){
               : `<span class="chip static">${esc(dispName(n))}</span>`;
   }).join("");
 }
-function openDetail(id){
+function openDetail(id, via){
   const rec = byId[id]; if(!rec) return;
   openId = id;
+  if(!via) ideaTrack("tile", [rec.tile && rec.tile.n]);
   const t = rec.tile;
   document.getElementById("d-eyebrow").textContent = rec.section;
   document.getElementById("d-title").innerHTML = titleIcon(t,"d-ic") + " " + esc(displayName(t));
@@ -14468,7 +14504,7 @@ function rebuildBoard(){
   document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   build();
   paintSeg(); paintDisplaySeg(); paintIndustryMenu(); syncIndustryBtn();
-  if(openId && byId[openId]) openDetail(openId); else closeDrawer();
+  if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer();
 }
 function selectTab(tab){
   const id = tab.dataset.tab;
@@ -14670,10 +14706,10 @@ function paintSeg(){
     const b = document.createElement("button");
     b.textContent = v.label;
     b.className = (ARCH.cloud.provider === k) ? "on" : "";
-    b.onclick = ()=>{ ARCH.cloud.provider = k; persistCustom(); paintSeg(); build();
+    b.onclick = ()=>{ ARCH.cloud.provider = k; persistCustom(); ideaTrack("cloud"); paintSeg(); build();
       /* build() rewrites the tiles, so a drawer left open would be pointing at
          a detached element and showing the previous cloud's documentation */
-      if(openId && byId[openId]) openDetail(openId); else closeDrawer(); };
+      if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer(); };
     seg.appendChild(b);
   });
 }
@@ -14696,7 +14732,7 @@ function paintDisplaySeg(){
     b.className = (displayMode === k) ? "on" : "";
     b.onclick = ()=>{ if(displayMode === k) return; displayMode = k; store.set(DISPLAY_LS, k);
       paintDisplaySeg(); build();
-      if(openId && byId[openId]) openDetail(openId); else closeDrawer(); };
+      if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer(); };
     seg.appendChild(b);
   });
 }
@@ -14839,7 +14875,7 @@ function applyPalette(k, remember){
   const had = currentPal();
   if(had) document.body.classList.remove("pal-" + had);
   if(k) document.body.classList.add("pal-" + k);
-  if(remember){ store.set(PAL_KEY, k); }
+  if(remember){ store.set(PAL_KEY, k); ideaTrack("palette", [k]); }
   paintPalMenu();
   /* tile borders and heading bars move by a fraction of a pixel between
      palettes, and both hand-over lines are measured, so re-fit */
@@ -15106,7 +15142,7 @@ function applyShape(k, remember){
   SHAPES.forEach(x=> b.classList.remove("shape-" + x.k));
   ["ul-top","ul-bot","ul-both","ur-top","ur-bot","ur-both"].forEach(c=> b.classList.remove(c));
   b.classList.add("shape-" + s.k, "ul-" + s.ul, "ur-" + s.ur);
-  if(remember){ store.set(SHAPE_STORE, s.k); }
+  if(remember){ store.set(SHAPE_STORE, s.k); ideaTrack("shape", [s.k]); }
   /* the arms change block, so this is a re-render and not a restyle */
   build();
   paintShapeMenu();
@@ -16714,6 +16750,7 @@ function exportHtmlDoc(){
     rails:ARCH.rails, top:ARCH.top, cloud:ARCH.cloud });
   const html = document.documentElement.cloneNode(true);
   html.querySelector("#frozen-state")?.remove();
+  html.querySelector("#idea-gc")?.remove();
   html.querySelector("head").appendChild(snap);
   html.querySelector("body")?.classList.remove("fitting");
   return "<!doctype html>\n" + html.outerHTML;
@@ -17154,6 +17191,7 @@ document.getElementById("dl-menu").addEventListener("click", async (e)=>{
   const b = e.target.closest("button[data-dl]"); if(!b) return;
   dlWrap.classList.remove("open");
   const kind = b.dataset.dl;
+  ideaTrack("download", [kind]);
   if(kind === "html") return exportHtml();
   dlBtn.classList.add("busy");
   try{
@@ -17639,7 +17677,7 @@ restoreActiveTab();
      atom on the board so the step never lands blank. */
   function openSampleDrawer(){
     var a = document.querySelector("#plat-top .atom") || document.querySelector(".atom");
-    if(a && a.dataset && a.dataset.id && typeof openDetail === "function") openDetail(a.dataset.id);
+    if(a && a.dataset && a.dataset.id && typeof openDetail === "function") openDetail(a.dataset.id, "tour");
   }
   function closeSampleDrawer(){ if(typeof closeDrawer === "function") closeDrawer(); }
 
@@ -17735,7 +17773,7 @@ restoreActiveTab();
     dir = d;
     const ni = idx + d;
     if(ni < 0) return;
-    if(ni >= STEPS.length){ stop(); return; }
+    if(ni >= STEPS.length){ if(typeof ideaTrack === "function") ideaTrack("tour", ["complete"]); stop(); return; }
     idx = ni;
     render();
   }
