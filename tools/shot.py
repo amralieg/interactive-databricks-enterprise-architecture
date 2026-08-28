@@ -32,6 +32,12 @@ SHOTS = {
                        "applyShape('h90', false);"),
     "screenshot-detail": ("document.body.classList.remove('theme-dark');"
                           "openDetail(nameIndex['Unity Catalog']);"),
+    "screenshot-source": ("document.body.classList.remove('theme-dark');"
+                          "openDetail(nameIndex['Business Applications']);"),
+    "screenshot-genie": ("document.body.classList.remove('theme-dark');"
+                         "openDetail(nameIndex['Customer & Revenue Agent']);"),
+    "screenshot-dashboard": ("document.body.classList.remove('theme-dark');"
+                             "openDetail(nameIndex['Revenue & Growth']);"),
 }
 
 

@@ -47,10 +47,13 @@ IDEA is the same architecture as a live document:
   button in the toolbar.
 - **It exports, and the export points back.** PDF and PowerPoint open on a cover
   carrying the title and a link to the exact live board the file was made from,
-  the architecture next, then a *Use Cases* section: one slide per use case
-  carrying the same detail the on-screen drawer shows, and a closing slide that
-  links back to the platform and the live board. Plus PNG, an animated GIF that
-  keeps the flow moving, and a standalone HTML copy.
+  then an index of the sections, the architecture, and one detailed page or slide
+  per item across four sections: *Use Cases*, *Genie Agents*, *AI/BI Dashboards*
+  and *Databricks Apps*, each carrying the same detail the on-screen drawer shows,
+  and a closing slide that links back to the platform and the live board. The deck
+  follows the theme and the Branded/Categorized choice on screen, so a categorized
+  dark board exports a categorized dark deck. Plus PNG, an animated GIF that keeps
+  the flow moving, and a standalone HTML copy.
 
 ![IDEA in dark theme](docs/screenshot-dark.png)
 
@@ -67,8 +70,8 @@ with the teams who use it and the cloud it runs on wrapped around the outside.
 | **Cloud and 3rd-party ingestion** | The cloud's own ETL services, and third-party ELT and streaming brokers that land data alongside the platform's native ingestion |
 | **Platform** | Ingest, Agentic Apps, Agentic Work, Unified Governance, Agentic Data, Open Infrastructure and the medallion layers, drawn as one outline traced by a moving ring |
 | **Teams** | The business and technical teams the platform is built for. A tile is a team, never a job title, and the roles inside it and the surfaces they touch are in the side panel |
-| **Consumers** | BI and productivity tools, MCP and APIs, published data products, partners and platforms, operational systems, and the agent harnesses that arrive from outside |
-| **Apps and use cases** | What the platform is used for: four apps and ten use cases on every board, industry-neutral by default |
+| **Consumers** | BI and productivity tools, MCP and APIs, published data products, partners and platforms, operational systems, four **AI/BI Dashboards** and four **Databricks Apps**, and the agent harnesses that arrive from outside |
+| **Use cases and Genie Agents** | What the platform is used for, in the band above the platform: ten use cases and four Genie Agents on every board, each Genie Agent labelled with the domain it serves, industry-neutral by default |
 | **Cloud services and integrations** | The account's own storage, compute, key vault, catalog, identity and observability services |
 
 ### How to read it
@@ -90,7 +93,7 @@ on the diagram itself.
 | Control | What it does |
 |---|---|
 | **Industry** | Sixty-three industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
-| **Commercial / Categorical** | Shows every product by its commercial brand name, or rooted back to its generic category, for a room that knows the category but not the product |
+| **Display: Branded / Categorized** | Shows every product by its commercial brand name (*Branded*), or rooted back to its generic category (*Categorized*, the default) for a room that knows the category but not the product, so SABRE reads as *Airline Reservation System*. The choice applies everywhere at once, the tiles, the detail drawers and every download, and it is remembered between visits |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
 | **Dark / Light** | Follows the operating system by default, and remembers an explicit choice. Downloads follow whatever is on screen |
 | **Palette** | Thirteen colour schemes in three groups |
@@ -105,9 +108,12 @@ so the toolbar cannot be used against nothing. Dark/Light and Cloud stay live,
 because they are global and are the two things worth setting before a diagram
 exists.
 
-Every one of those choices is also a URL parameter, so a board can be linked to
-in the state it was read in: `?industry=airlines&cloud=aws&shape=h90&pal=nordic&theme=light&platform=1`.
-That is the link the PDF and PowerPoint covers carry.
+Industry, cloud, shape, palette, theme and platform zoom are each a URL
+parameter, so a board can be linked to in the state it was read in:
+`?industry=airlines&cloud=aws&shape=h90&pal=nordic&theme=light&platform=1`. That
+is the link the PDF and PowerPoint covers carry. The Branded/Categorized choice
+is remembered locally rather than in the link, so a shared URL opens in the
+reader's own preferred naming.
 
 ### Industry: sixty-three models, and the same board size for each
 
@@ -229,8 +235,8 @@ reading is the honest one in front of a customer.
 
 | Format | What you get |
 |---|---|
-| **PDF** | A cover with the title, the industry and cloud, the sentence the board leads with, and clickable links to the exact live board and to the industry's data model; then the architecture, vector text, in the current theme and palette; then a *Use Cases* section break and one page per use case carrying its problem, beneficiary, build, components and story links; then a closing page linking to the platform and the live board. All in the theme on screen, light or dark |
-| **PowerPoint** | The same pages, as native slides: a cover, a board slide of editable shapes, text boxes and connectors, the *Use Cases* section break, a slide per use case, and a closing slide. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not. The deck follows the theme on screen, so a dark board exports a dark deck |
+| **PDF** | A cover with the title, the industry and cloud, the sentence the board leads with, and clickable links to the exact live board and to the industry's data model; an index page listing the sections; the architecture, vector text, in the current theme and palette; then four section breaks, each with one page per item, *Use Cases* (problem, beneficiary, build, components, story links), *Genie Agents* (the domain it serves, the data it reads, the teams and its top questions), *AI/BI Dashboards* (the KPIs it tracks and the teams that run on it) and *Databricks Apps*; then a closing page linking to the platform and the live board. All in the theme on screen and in Branded or Categorized names to match the board |
+| **PowerPoint** | The same pages, as native slides: a cover, an index slide, a board slide of editable shapes, text boxes and connectors, then the *Use Cases*, *Genie Agents*, *AI/BI Dashboards* and *Databricks Apps* sections a slide per item, and a closing slide. Pictures are used only where the artwork is a real logo. The platform ring exports as one shape, filtered or not. The deck follows the theme and the Branded/Categorized choice on screen, so a categorized dark board exports a categorized dark deck |
 | **PNG** | 2x raster of the current view |
 | **GIF** | A looping animation, 1400px wide, twelve frames, that keeps the travelling dashes and the platform ring moving. Roughly 200 KB, because only the moving pixels are stored per frame, in the palette and theme on screen |
 | **HTML** | A standalone copy of the page with your current choices baked in, which opens anywhere with no server |
@@ -271,6 +277,26 @@ A use case tile carries its own story: the problem it solves, who benefits (a
 team from the diagram, clickable), how it is built, the architecture components
 it uses (each clickable), and links to Databricks customer stories where they
 exist. On every board the use cases that have a story are shown first.
+
+A source tile is enriched beyond its name: what the system does, who uses it, and
+the data it produces, split into **Batch** and **Streaming**, each stamped with
+the data shape (structured, semi-structured or unstructured), a typical volume
+and a cadence. So a reader can see not just that a source feeds the platform but
+what shape and how much data lands, and how often.
+
+![An enriched source drawer, opened on Business Applications](docs/screenshot-source.png)
+
+A Genie Agent tile carries the domain it serves as its subtitle, the same way a
+use case carries its domain, then the governed data sources it reads (clickable
+chips), the teams it serves, and the top questions it answers in plain language.
+An AI/BI Dashboard tile names the KPIs and metrics it tracks and the teams that
+run on it. Both live in their own bands, Genie Agents beside the use cases above
+the platform, dashboards among the consumers, so the board says who asks the
+questions and who reads the answers, not just where the data goes.
+
+![A Genie Agent drawer, opened on the Customer & Revenue Agent](docs/screenshot-genie.png)
+
+![An AI/BI Dashboard drawer, opened on Revenue & Growth](docs/screenshot-dashboard.png)
 
 The three medallion layers open the data model for the industry on screen, so on
 an airline board that is the
@@ -407,6 +433,10 @@ tools/
   inject_industries.py     injects the per-industry definitions into index.html
   common.py                shared helpers the industry definitions are written with
   industries/              one file per industry (batch_<id>.py), authored to the reference schema
+  verify_exports.js        Playwright check that every export carries the index and all four sections
+  verify_all_sections.js   Playwright check that deckSections() is complete for every industry
+  verify_display_consistency.js  Playwright check that Categorized never leaks a branded name
+  verify_source_enrichment.js    Playwright check that every source tile is enriched
 ```
 
 ---
@@ -426,13 +456,16 @@ being editable.
 
 **Exports are written by hand.** The PDF, PowerPoint and GIF writers are in the
 file: object tables and cross-reference offsets for the PDF, the parts and
-relationships of an Office package for the PPTX, both carrying the cover, the
-board, a slide or page per use case and a closing slide, with clickable links
-throughout. The narrative pages are laid out from the same use-case data the
-on-screen drawer reads, so the deck and the drawer cannot drift, and both pick up
-the live theme so the export is light or dark to match. Pulling in a library for
-each format would be more code than the formats need, and would put the exports
-behind a network fetch that a workspace with no internet egress would fail on.
+relationships of an Office package for the PPTX, both carrying the cover, an
+index, the board, then a page or slide per item across the Use Cases, Genie
+Agents, AI/BI Dashboards and Databricks Apps sections, and a closing slide, with
+clickable links throughout. Every section is laid out from the same tile data the
+on-screen drawer reads, through one `deckSections()` source of truth, so the deck
+and the drawer cannot drift, and each tile is relabelled Branded or Categorized
+and picks up the live theme, so a categorized dark board exports a categorized
+dark deck. Pulling in a library for each format would be more code than the
+formats need, and would put the exports behind a network fetch that a workspace
+with no internet egress would fail on.
 
 **Colours are solved, not chosen.** `tools/palgen.py` takes a hue recipe per
 zone and walks lightness until every foreground clears WCAG AA against the
