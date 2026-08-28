@@ -127,8 +127,9 @@ def _check_source_tile(errs, iid, box, t):
 def check_enrichment(merged):
     """Every source system in the Sources rail and every 3rd-party ingest system
     must carry the side-panel enrichment (cat / what / users / dataOut). Every
-    industry must publish exactly 4 Genie Spaces and 4 AI/BI Dashboards, each with
-    the fields the consumer detail panel renders."""
+    industry must publish exactly 4 Genie Agents and 4 AI/BI Dashboards, each with
+    the fields the consumer detail panel renders. (Authoring shape: Genie Agents
+    are authored on the Consumers rail and lifted into the top band at inject.)"""
     errs = []
     for iid, ind in merged.items():
         rails = ind["rails"]
@@ -141,10 +142,10 @@ def check_enrichment(merged):
             for t in g.get("tiles", []):
                 _check_source_tile(errs, iid, g.get("box", ""), t)
 
-        genie = [g for g in rails["cons"] if g.get("box") == "Genie Spaces"]
+        genie = [g for g in rails["cons"] if g.get("box") == "Genie Agents"]
         dash = [g for g in rails["cons"] if g.get("box") == "AI/BI Dashboards"]
         if not genie or len(genie[0]["tiles"]) != 4:
-            errs.append(f"{iid}: consumers must have a Genie Spaces group of exactly 4")
+            errs.append(f"{iid}: consumers must have a Genie Agents group of exactly 4")
         else:
             for t in genie[0]["tiles"]:
                 n = t.get("n")

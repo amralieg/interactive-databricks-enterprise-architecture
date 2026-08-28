@@ -82,11 +82,15 @@ def ppl_rail(business_tiles, technical_tiles=None):
 
 
 def cons_rail(groups, genie_spaces=None, dashboards=None):
-    """Consumers rail = the industry's own consumer groups, then (top 4) Genie
-    Spaces, then (top 4) AI/BI Dashboards, then the shared Agent Harnesses."""
+    """Consumers rail = the industry's own consumer groups, then Genie Agents
+    (top 4), then AI/BI Dashboards (top 4), then the shared Agent Harnesses.
+
+    inject_industries.swap_layout() then lifts the Genie Agents box up into the
+    top band and drops the top band's Apps into the slot it vacated, so the
+    rendered rail reads: groups, Apps, AI/BI Dashboards, Agent Harnesses."""
     out = list(groups)
     if genie_spaces:
-        out.append({"box": "Genie Spaces", "ic": "genie", "tiles": genie_spaces})
+        out.append({"box": "Genie Agents", "ic": "genie", "tiles": genie_spaces})
     if dashboards:
         out.append({"box": "AI/BI Dashboards", "ic": "aibi", "tiles": dashboards})
     return out + [AGENT_HARNESSES]

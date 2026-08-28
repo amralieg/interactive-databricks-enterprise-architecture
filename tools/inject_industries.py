@@ -112,12 +112,16 @@ def emit_rails(rails: dict) -> str:
 
 
 def emit_top_tile(t: dict) -> str:
-    parts = [
-        f'n:{js_str(t["n"])}',
-        f's:{js_str(t["s"])}',
-        f'ic:{js_str(t["ic"])}',
-        f'long:{js_str(t["long"])}',
-    ]
+    # Field-driven so the top band can carry both app tiles (n/s/ic/long) and the
+    # Genie Agent tiles moved up from the Consumers rail, which instead carry
+    # feeds/teams/questions and no subtitle. Absent keys emit nothing.
+    parts = [f'n:{js_str(t["n"])}']
+    if t.get("s"):
+        parts.append(f's:{js_str(t["s"])}')
+    if t.get("ic"):
+        parts.append(f'ic:{js_str(t["ic"])}')
+    if t.get("long"):
+        parts.append(f'long:{js_str(t["long"])}')
     if t.get("problem"):
         parts.append(f'problem:{js_str(t["problem"])}')
     if t.get("who"):
@@ -127,6 +131,12 @@ def emit_top_tile(t: dict) -> str:
     if t.get("comps"):
         comps = ", ".join(js_str(c) for c in t["comps"])
         parts.append(f'comps:[{comps}]')
+    if t.get("feeds"):
+        parts.append(f'feeds:{js_arr(t["feeds"])}')
+    if t.get("teams"):
+        parts.append(f'teams:{js_arr(t["teams"])}')
+    if t.get("questions"):
+        parts.append(f'questions:{js_arr(t["questions"])}')
     if t.get("stories"):
         st = ", ".join(
             "{ t:%s, u:%s }" % (js_str(s["t"]), js_str(s["u"])) for s in t["stories"]
@@ -163,7 +173,44 @@ def emit_sources(sources: dict) -> str:
     return "\n".join(lines)
 
 
+def swap_layout(ind: dict) -> None:
+    """Map the authoring shape to the rendered shape (in place).
+
+    Authors still write Genie tiles into the Consumers rail (via cons_rail's
+    genie_spaces=) and app tiles into the top band (via top_band). The board
+    renders the opposite: Genie Agents lead the top band beside Business Use
+    Cases, and the apps drop to the Consumers rail where Genie used to sit. Doing
+    the swap here keeps all 63 batch files untouched and the mapping in one place.
+    Every Genie tile's name is suffixed with "Agent".
+    """
+    cons = ind["rails"]["cons"]
+    gi = next(
+        (i for i, g in enumerate(cons)
+         if g.get("ic") == "genie" or g.get("box") in ("Genie Spaces", "Genie Agents")),
+        None,
+    )
+    if gi is None:
+        return
+    genie_box = cons.pop(gi)
+    genie_tiles = genie_box.get("tiles", [])
+    for t in genie_tiles:
+        if not t["n"].endswith("Agent"):
+            t["n"] = t["n"] + " Agent"
+
+    top = ind["top"]
+    ai = next((i for i, s in enumerate(top) if s.get("title") == "Apps"), None)
+    apps_sec = top.pop(ai) if ai is not None else {"tiles": []}
+    for s in top:
+        if s.get("title") == "Use Cases":
+            s["title"] = "Business Use Cases"
+
+    top.insert(0, {"title": "Genie Agents", "ic": "genie", "span": 3, "cols": 2,
+                   "tiles": genie_tiles})
+    cons.insert(gi, {"box": "Databricks Apps", "ic": "apps", "tiles": apps_sec.get("tiles", [])})
+
+
 def emit_industry(iid: str, ind: dict) -> str:
+    swap_layout(ind)
     lines = [
         f"  {iid}: {{",
         f'    label:{js_str(ind["label"])},',
