@@ -1524,12 +1524,14 @@
     vertical-align:1.5px; color:var(--g-amber-ink); background:var(--g-amber-bg); }
 
   /* inner panel (Genie / Agent Bricks). Takes the band's group so it themes with
-     the selected palette. A saturated group border (--gc-line) plus a thicker left
-     accent make the box read as the palette colour even on the pale slots (neon,
-     default amber) where the tile fill alone looks near-white; the fill stays on
-     --gc-tile because the palette ladder only guarantees text contrast there. */
+     the selected palette: the fill reads as the palette hue via --gc-tile (one
+     elevation up from the band's own --gc-bg), and the border uses the band's OWN
+     soft weight (--gc-bd) rather than the saturated --gc-line, so the panel reads
+     as a card in the band's colour instead of out-saturating the band it sits in
+     (which looked amber-heavy against a dark band in Spectrum). Geometry is kept
+     exactly as before so the softening is colour-only and adds no height. */
   .panel { display:flex; align-items:flex-start; gap:9px; background:var(--gc-tile);
-    border:1px solid var(--gc-line); border-left:4px solid var(--gc-line);
+    border:1px solid var(--gc-bd); border-left:4px solid var(--gc-bd);
     border-radius:10px; padding:8px 9px 8px 8px; min-width:0; }
   .panel-head { flex:0 0 auto; min-width:100px; }
   .panel-head .pico { width:26px; height:26px; }
@@ -1554,7 +1556,7 @@
   .pcol:hover { border-color:var(--brand); background:var(--card); }
   .pc-top { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
   .tagpill { display:inline-flex; align-items:center; gap:4px;
-    border:1px solid var(--gc-line); background:var(--gc-tile); color:var(--gc-ink);
+    border:1px solid var(--gc-bd); background:var(--gc-tile); color:var(--gc-ink);
     border-radius:20px; padding:2px 7px 2px 5px; font-size:10px; font-weight:800; letter-spacing:.05em; }
   .tagpill svg { width:11px; height:11px; }
   .pcol .pc-desc { font-size:11px; color:var(--ink); line-height:1.32; }
@@ -1562,7 +1564,7 @@
   .schip svg { width:13px; height:13px; flex:0 0 13px; stroke:var(--brand); fill:none;
     stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
   .schip { display:flex; align-items:center; gap:5px; text-align:left;
-    border:1px solid var(--gc-line); background:var(--gc-tile); border-radius:7px; padding:4px 5px;
+    border:1px solid var(--gc-bd); background:var(--gc-tile); border-radius:7px; padding:4px 5px;
     font:inherit; font-size:10.5px; font-weight:700; color:var(--ink); cursor:pointer; text-align:center;
     line-height:1.22; transition:.12s; }
   .schip:hover { border-color:var(--brand); color:var(--brand); }
@@ -1612,7 +1614,7 @@
   .b-work .band-foot { justify-content:center; }
   .foot-chip { display:inline-flex; align-items:center; gap:7px; flex:0 0 auto;
     text-align:left; font:inherit; cursor:pointer; transition:.12s;
-    border:1px solid var(--gc-line); background:var(--gc-tile); border-radius:999px; padding:3px 12px; }
+    border:1px solid var(--gc-bd); background:var(--gc-tile); border-radius:999px; padding:3px 12px; }
   .foot-chip:hover { border-color:var(--brand); box-shadow:var(--shadow); }
   .foot-chip svg { width:16px; height:16px; color:var(--brand); flex:0 0 auto; }
   .foot-chip .fc-name { font-size:13px; font-weight:800; letter-spacing:-.01em; }
@@ -15261,7 +15263,7 @@ function closingLinks(){
    accents so they match the board, and they read on both palettes, so they are
    fixed rather than pulled live; only the card BODY is mixed toward the current
    background (deckTint) so the fill lands on-theme in light and in dark. */
-const DECK_ROLES = ["2272B4","00A972","B36311","FF3621","7A5CB8","1CA0B8"];
+const DECK_ROLES = ["2E6FE6","16A571","E8900C","E6117C","7C3AED","0AA6C2"];
 function hex2(v){ return String(v).replace("#",""); }
 function mixHex(a, b, t){
   a = hex2(a); b = hex2(b);
@@ -16191,6 +16193,60 @@ function pptxCoverSlide(){
   slide.body = parts.join("");
   return slide;
 }
+/* Slide 2: Contents. A numbered colour-band list of the sections this deck
+   carries (built from deckSections so it can never list a section the deck does
+   not actually contain), each row a tinted card with a role-coloured index chip,
+   the section title, an item count and a one-line blurb. */
+function pptxIndexSlide(){
+  const SW = PPT_SW, SH = PPT_SH, PTU = 12700;
+  const M = Math.round(SW * 0.062), W = SW - M * 2;
+  const ink = expInk(), mut = expMuted(), brand = expBrand();
+  const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+  const secs = deckSections();
+  parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+  /* chrome */
+  parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), Math.round(W * 0.6), Math.round(16 * PTU),
+    11, true, brand, "CONTENTS", null, "l", "t"));
+  parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), W, Math.round(16 * PTU),
+    11, true, mut, deckRunHeader(), null, "r", "t"));
+  const fy = Math.round(SH - M - 13 * PTU);
+  parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, creditText(), null, "l", "t"));
+  parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, deckRunHeader(), null, "r", "t"));
+  /* title */
+  let y = Math.round(SH * 0.135);
+  parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * PTU), 26, true, ink,
+    "What is inside this deck", null, "l", "t"));
+  parts.push(pptxFillRect(ref.id++, M, y + Math.round(36 * PTU), Math.round(W * 0.09), Math.round(4 * PTU), brand));
+  y += Math.round(56 * PTU);
+  /* rows */
+  const avail = Math.round(SH - M - 20 * PTU) - y;
+  const gap = Math.round(10 * PTU);
+  const rowH = Math.min(Math.round(76 * PTU), Math.round((avail - gap * (secs.length - 1)) / secs.length));
+  secs.forEach((sec, i)=>{
+    const role = DECK_ROLES[i % DECK_ROLES.length];
+    const ry = y + i * (rowH + gap);
+    parts.push(pptxFillRect(ref.id++, M, ry, W, rowH, deckTint(role), 40000));
+    parts.push(pptxFillRect(ref.id++, M, ry, Math.round(7 * PTU), rowH, role));
+    /* index chip */
+    const chip = Math.round(rowH * 0.52), cx = M + Math.round(20 * PTU), cy = ry + Math.round((rowH - chip) / 2);
+    parts.push(pptxFillRect(ref.id++, cx, cy, chip, chip, role, 20000));
+    parts.push(pptxTextEx(ref.id++, cx, cy, chip, chip, 15, true, onRoleInk(role), String(i + 1), null, "ctr", "ctr"));
+    const tx = cx + chip + Math.round(18 * PTU), tw = W - (tx - M) - Math.round(24 * PTU);
+    parts.push(pptxTextEx(ref.id++, tx, ry + Math.round(rowH * 0.20), tw, Math.round(20 * PTU),
+      15, true, ink, sec.title, null, "l", "t"));
+    parts.push(pptxTextEx(ref.id++, tx, ry + Math.round(rowH * 0.20) + Math.round(20 * PTU), tw, Math.round(18 * PTU),
+      12, false, mut, sec.blurb, null, "l", "t"));
+    const count = sec.kind === "board" ? "" :
+      sec.tiles.length + " " + (sec.kind === "uc" ? "use case" + (sec.tiles.length === 1 ? "" : "s")
+        : sec.kind === "genie" ? "agent" + (sec.tiles.length === 1 ? "" : "s")
+        : sec.kind === "dash" ? "dashboard" + (sec.tiles.length === 1 ? "" : "s")
+        : "app" + (sec.tiles.length === 1 ? "" : "s"));
+    if(count) parts.push(pptxTextEx(ref.id++, M, ry, W - Math.round(22 * PTU), rowH, 12, true,
+      mixHex(role, ink, 0.30), count, null, "r", "ctr"));
+  });
+  slide.body = parts.join("");
+  return slide;
+}
 /* ---------- narrative slides: section break, one per use case, closing ----------
    Built from boxes in EMU, theme-aware like the cover, and styled to match the
    reference deck: an eyebrow and a running header, a title with a brand rule, and
@@ -16201,7 +16257,6 @@ function pptxNarrativeSlides(){
   const M = Math.round(SW * 0.062), W = SW - M * 2;
   const ink = expInk(), mut = expMuted(), brand = expBrand();
   const ind = deckIndustry(), runHdr = deckRunHeader();
-  const tiles = useCaseTiles();
   const slides = [];
   const estRows = (text, sizePt, boxWpt)=>
     Math.max(1, Math.ceil(pdfTextW(String(text || ""), sizePt) / (boxWpt * 0.99)));
@@ -16228,75 +16283,95 @@ function pptxNarrativeSlides(){
     return ny + Math.round(16 * PTU);
   };
 
-  /* --- section break: "Use Cases" --- */
-  const section = ()=>{
+  /* Shared card primitives, hoisted so the use-case, Genie, dashboard and app
+     builders draw labelled paragraphs, tinted chips and solid pills the same
+     way. All take (ref, parts, ...) so each slide keeps its own id counter. */
+  const label = (ref, parts, x, y, w, s, colour)=>{
+    parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(14 * PTU), 10, true, colour || brand,
+      String(s).toUpperCase(), null, "l", "t"));
+    return y + Math.round(15 * PTU);
+  };
+  const para = (ref, parts, x, y, w, s, sizePt, colour)=>{
+    const hpt = estH(s, sizePt, w / PTU);
+    parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(hpt * PTU), sizePt, false, colour || ink, s, null, "l", "t"));
+    return y + Math.round((hpt + 7) * PTU);
+  };
+  /* Wrapping row of tinted, role-coloured chips (feeds, KPIs, components). */
+  const chipRow = (ref, parts, x, y, w, items, startRole)=>{
+    const hPt = 20, gapPt = 6; let px = x, py = y;
+    (items || []).forEach((c, ci)=>{
+      const wEmu = Math.min(w, (pdfTextW(c, 10) + 18) * PTU);
+      if(px > x && (px - x + wEmu) > w){ px = x; py += Math.round((hPt + gapPt) * PTU); }
+      const role = DECK_ROLES[((startRole || 0) + ci) % DECK_ROLES.length];
+      parts.push(pptxFillRect(ref.id++, px, py, wEmu, Math.round(hPt * PTU), deckTint(role), 50000));
+      parts.push(pptxTextEx(ref.id++, px, py, wEmu, Math.round(hPt * PTU), 10, true, mixHex(role, ink, 0.28), c, null, "ctr", "ctr"));
+      px += wEmu + Math.round(gapPt * PTU);
+    });
+    return py + Math.round((hPt + 12) * PTU);
+  };
+  /* Wrapping row of solid role-coloured pills (the teams a section serves). */
+  const pillRow = (ref, parts, x, y, w, items, roleHex)=>{
+    const hPt = 18, gapPt = 6; let px = x, py = y;
+    (items || []).forEach(c=>{
+      const wEmu = Math.min(w, (pdfTextW(c, 10) + 16) * PTU);
+      if(px > x && (px - x + wEmu) > w){ px = x; py += Math.round((hPt + gapPt) * PTU); }
+      parts.push(pptxFillRect(ref.id++, px, py, wEmu, Math.round(hPt * PTU), roleHex, 50000));
+      parts.push(pptxTextEx(ref.id++, px, py, wEmu, Math.round(hPt * PTU), 10, true, onRoleInk(roleHex), c, null, "ctr", "ctr"));
+      px += wEmu + Math.round(gapPt * PTU);
+    });
+    return py + Math.round((hPt + 10) * PTU);
+  };
+
+  /* --- section break: one per content section, coloured by its role, with a
+     "SECTION N" tab whose N matches the Contents page row --- */
+  const sectionBreak = (sec, roleHex, idx)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
-    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "SECTION");
-    let y = Math.round(SH * 0.34);
-    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(60 * PTU), 46, true, brand, "Use Cases", null, "l", "t"));
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, roleHex));
+    chrome(parts, ref, sec.eyebrow);
+    let y = Math.round(SH * 0.30);
+    const kick = "SECTION " + idx;
+    const kickW = pdfTextW(kick, 11) * PTU + Math.round(26 * PTU);
+    parts.push(pptxFillRect(ref.id++, M, y, kickW, Math.round(21 * PTU), roleHex));
+    parts.push(pptxTextEx(ref.id++, M + Math.round(13 * PTU), y + Math.round(4 * PTU),
+      kickW - Math.round(20 * PTU), Math.round(15 * PTU), 11, true, onRoleInk(roleHex), kick, null, "l", "t"));
+    y += Math.round(40 * PTU);
+    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(60 * PTU), 46, true, roleHex, sec.title, null, "l", "t"));
     y += Math.round(64 * PTU);
-    parts.push(pptxFillRect(ref.id++, M, y, Math.round(W * 0.12), Math.round(5 * PTU), brand));
+    parts.push(pptxFillRect(ref.id++, M, y, Math.round(W * 0.12), Math.round(5 * PTU), roleHex));
     y += Math.round(20 * PTU);
-    const n = tiles.length;
-    const sub = n + " use case" + (n === 1 ? "" : "s") + " for " + ind +
-      ": the problem each solves, who benefits, how it is built, and the components it uses.";
-    parts.push(pptxTextEx(ref.id++, M, y, Math.round(W * 0.82), Math.round(50 * PTU), 15, false, mut, sub, null, "l", "t"));
+    parts.push(pptxTextEx(ref.id++, M, y, Math.round(W * 0.82), Math.round(60 * PTU), 15, false, mut, sec.blurb, null, "l", "t"));
     slide.body = parts.join("");
     return slide;
   };
 
   /* --- one slide per use case, mirroring the drawer --- */
-  const ucSlide = (t, i)=>{
+  const ucSlide = (t, i, total)=>{
     const ref = { id:2 }, parts = [];
     const stories = (t.stories || []).slice(0, 4);
     const slide = { media:[], hlinks: stories.map(s=> s.u) };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "USE CASE " + (i + 1) + " OF " + tiles.length);
+    chrome(parts, ref, "USE CASE " + (i + 1) + " OF " + total);
     const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "");
     /* two columns: reasoning on the left, who / architecture / stories on the right */
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
-    const label = (parts, x, y, w, s, colour)=>{
-      parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(14 * PTU), 10, true, colour || brand,
-        String(s).toUpperCase(), null, "l", "t"));
-      return y + Math.round(15 * PTU);
-    };
-    const para = (parts, x, y, w, s, sizePt, colour)=>{
-      const wpt = w / PTU, hpt = estH(s, sizePt, wpt);
-      parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(hpt * PTU), sizePt, false, colour || ink, s, null, "l", "t"));
-      return y + Math.round((hpt + 7) * PTU);
-    };
-    /* left column */
     let ly = topY;
-    if(t.long){ ly = label(parts, M, ly, colW, "What it is"); ly = para(parts, M, ly, colW, t.long, 14, ink); }
-    if(t.problem){ ly = label(parts, M, ly, colW, "The problem it solves"); ly = para(parts, M, ly, colW, t.problem, 14, ink); }
-    if(t.how){ ly = label(parts, M, ly, colW, "How it is built"); ly = para(parts, M, ly, colW, t.how, 14, ink); }
-    /* right column */
+    if(t.long){ ly = label(ref, parts, M, ly, colW, "What it is"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
+    if(t.problem){ ly = label(ref, parts, M, ly, colW, "The problem it solves"); ly = para(ref, parts, M, ly, colW, t.problem, 14, ink); }
+    if(t.how){ ly = label(ref, parts, M, ly, colW, "How it is built"); ly = para(ref, parts, M, ly, colW, t.how, 14, ink); }
     let ry = topY;
     if(t.who){
-      ry = label(parts, rx, ry, rW, "Who benefits");
-      const wpt = pdfTextW(t.who, 11) + 20;
-      const pw = Math.min(rW, wpt * PTU);
+      ry = label(ref, parts, rx, ry, rW, "Who benefits");
+      const pw = Math.min(rW, (pdfTextW(t.who, 11) + 20) * PTU);
       parts.push(pptxFillRect(ref.id++, rx, ry, pw, Math.round(21 * PTU), deckTint(brand), 50000));
       parts.push(pptxTextEx(ref.id++, rx, ry, pw, Math.round(21 * PTU), 11, true, mixHex(brand, ink, 0.25), t.who, null, "ctr", "ctr"));
       ry += Math.round(31 * PTU);
     }
     if(t.comps && t.comps.length){
-      ry = label(parts, rx, ry, rW, "Architecture it uses");
-      const hPt = 20, gapPt = 6;
-      let px = rx, py = ry;
-      t.comps.forEach((c, ci)=>{
-        const wPt = pdfTextW(c, 10) + 18, wEmu = Math.min(rW, wPt * PTU);
-        if(px > rx && (px - rx + wEmu) > rW){ px = rx; py += Math.round((hPt + gapPt) * PTU); }
-        const role = DECK_ROLES[ci % DECK_ROLES.length];
-        parts.push(pptxFillRect(ref.id++, px, py, wEmu, Math.round(hPt * PTU), deckTint(role), 50000));
-        parts.push(pptxTextEx(ref.id++, px, py, wEmu, Math.round(hPt * PTU), 10, true, mixHex(role, ink, 0.28), c, null, "ctr", "ctr"));
-        px += wEmu + Math.round(gapPt * PTU);
-      });
-      ry = py + Math.round((hPt + 12) * PTU);
+      ry = label(ref, parts, rx, ry, rW, "Architecture it uses");
+      ry = chipRow(ref, parts, rx, ry, rW, t.comps, 0);
     }
     if(stories.length){
-      ry = label(parts, rx, ry, rW, "Customer stories");
+      ry = label(ref, parts, rx, ry, rW, "Customer stories");
       stories.forEach((s, si)=>{
         parts.push(pptxFillRect(ref.id++, rx, ry + Math.round(3 * PTU), Math.round(9 * PTU), Math.round(9 * PTU), brand));
         const tx = rx + Math.round(16 * PTU), tw = rW - Math.round(16 * PTU);
@@ -16306,6 +16381,69 @@ function pptxNarrativeSlides(){
         ry += Math.round((hpt + 8) * PTU);
       });
     }
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  /* --- one slide per Genie Agent: what it explores, the data it reads, the
+     teams it serves and the questions it answers, mirroring the drawer --- */
+  const genieSlide = (t, i, total)=>{
+    const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, "GENIE AGENT " + (i + 1) + " OF " + total);
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, "Ask in natural language over governed data");
+    const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
+    let ly = topY;
+    if(t.long){ ly = label(ref, parts, M, ly, colW, "What it explores"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
+    if(t.questions && t.questions.length){
+      ly = label(ref, parts, M, ly, colW, "Top questions it answers");
+      const qs = t.questions.slice(0, 5);
+      const hpt = qs.reduce((a, q)=> a + estH(q, 12, colW / PTU) + 4, 6);
+      parts.push(pptxBullets(ref.id++, M, ly, colW, Math.round(hpt * PTU), qs, 12, ink, brand));
+    }
+    let ry = topY;
+    if(t.feeds && t.feeds.length){
+      ry = label(ref, parts, rx, ry, rW, "Data it reads");
+      ry = chipRow(ref, parts, rx, ry, rW, t.feeds, 0);
+    }
+    if(t.teams && t.teams.length){
+      ry = label(ref, parts, rx, ry, rW, "Teams it serves");
+      ry = pillRow(ref, parts, rx, ry, rW, t.teams, brand);
+    }
+    slide.body = parts.join("");
+    return slide;
+  };
+
+  /* --- one slide for a section shown as a 2x2 card grid (dashboards, apps):
+     a coloured header per card, then the card's own detail --- */
+  const gridSlide = (sec, roleBase)=>{
+    const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
+    chrome(parts, ref, sec.eyebrow);
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), sec.title, sec.blurb);
+    const tiles2 = sec.tiles.slice(0, 4), cols = 2;
+    const gx = Math.round(20 * PTU), gy = Math.round(18 * PTU);
+    const cardW = Math.round((W - gx) / cols);
+    const gridTop = topY + Math.round(6 * PTU);
+    const nrows = Math.max(1, Math.ceil(tiles2.length / cols));
+    const cardH = Math.round((SH - M - 20 * PTU - gridTop - gy * (nrows - 1)) / nrows);
+    const hh = Math.round(30 * PTU);
+    tiles2.forEach((t, i)=>{
+      const role = DECK_ROLES[(roleBase + i) % DECK_ROLES.length];
+      const cx = M + (i % cols) * (cardW + gx);
+      const cy = gridTop + Math.floor(i / cols) * (cardH + gy);
+      parts.push(pptxFillRect(ref.id++, cx, cy, cardW, cardH, deckTint(role), 40000));
+      parts.push(pptxFillRect(ref.id++, cx, cy, cardW, hh, role, 40000));
+      parts.push(pptxFillRect(ref.id++, cx, cy + Math.round(hh / 2), cardW, Math.round(hh / 2), role));
+      parts.push(pptxTextEx(ref.id++, cx + Math.round(16 * PTU), cy, cardW - Math.round(28 * PTU), hh,
+        13, true, onRoleInk(role), t.n, null, "l", "ctr"));
+      const ix = cx + Math.round(16 * PTU), iw = cardW - Math.round(32 * PTU);
+      let iy = cy + hh + Math.round(12 * PTU);
+      if(t.s){ parts.push(pptxTextEx(ref.id++, ix, iy, iw, Math.round(15 * PTU), 11, true, mixHex(role, ink, 0.30), t.s, null, "l", "t")); iy += Math.round(17 * PTU); }
+      if(t.long){ iy = para(ref, parts, ix, iy, iw, t.long, 12, ink); }
+      if(t.kpis && t.kpis.length){ iy = label(ref, parts, ix, iy, iw, "KPIs", mixHex(role, ink, 0.30)); iy = chipRow(ref, parts, ix, iy, iw, t.kpis, roleBase + i); }
+      if(t.teams && t.teams.length){ iy = label(ref, parts, ix, iy, iw, "Teams", mixHex(role, ink, 0.30)); iy = pillRow(ref, parts, ix, iy, iw, t.teams, role); }
+    });
     slide.body = parts.join("");
     return slide;
   };
@@ -16340,10 +16478,21 @@ function pptxNarrativeSlides(){
     return slide;
   };
 
-  if(tiles.length){
-    slides.push(section());
-    tiles.forEach((t, i)=> slides.push(ucSlide(t, i)));
-  }
+  /* Assemble from the single source of truth: a coloured section break before
+     each content section, then that section's slides, in the deckSections order.
+     The board (kind "board") slide is added by exportPptx, so it is skipped
+     here, but it still advances the section index so the "SECTION N" tabs and
+     the Contents page rows carry the same numbers. */
+  let si = 0;
+  deckSections().forEach(sec=>{
+    if(sec.kind === "board"){ si++; return; }
+    const role = DECK_ROLES[si % DECK_ROLES.length];
+    slides.push(sectionBreak(sec, role, si + 1));
+    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> slides.push(ucSlide(t, i, sec.tiles.length)));
+    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> slides.push(genieSlide(t, i, sec.tiles.length)));
+    else slides.push(gridSlide(sec, si));
+    si++;
+  });
   slides.push(closing());
   return slides;
 }
@@ -16408,7 +16557,7 @@ async function exportPptx(){
     '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
   board.body = parts.join("");
-  return zipStore(pptxParts([pptxCoverSlide(), board].concat(pptxNarrativeSlides()), title));
+  return zipStore(pptxParts([pptxCoverSlide(), pptxIndexSlide(), board].concat(pptxNarrativeSlides()), title));
 }
 /* A copy of this page with the live state frozen in, so the download opens with
    the same edits and cloud provider the user is looking at. */
@@ -16515,6 +16664,50 @@ async function boardPdfBlob(){
     if(sub){ c.push(txt("F2", 11, mut, NM, cur - 11, sub)); cur -= 18; }
     c.push(rectF(brand, NM, cur - 2, 86, 3)); return cur - 16;
   };
+  /* Shared card primitives (PDF space: y is a baseline, growing upward, so each
+     helper decrements). Mirror the deck's chips/pills/bullets so the use-case,
+     Genie, dashboard and app pages draw the same way. `colour` is a pre-built
+     "r g b" string; role helpers convert with rg(). */
+  const labelP = (c, x, cy, s, colour)=>{
+    c.push(txt("F1", 8, colour || brand, x, cy - 8, String(s).toUpperCase())); return cy - 12;
+  };
+  const paraP = (c, x, cy, maxW, s, size, colour)=>{
+    pdfWrap(s, size, maxW).forEach(ln=>{ c.push(txt("F2", size, colour || ink, x, cy - size, ln)); cy -= size * 1.34; });
+    return cy - 6;
+  };
+  const chipsP = (c, x, cy, maxW, items, startRole)=>{
+    let px = x, yy = cy;
+    (items || []).forEach((cm, ci)=>{
+      const wpt = pdfTextW(cm, 9) + 14;
+      if(px > x && (px - x + wpt) > maxW){ px = x; yy -= 21; }
+      const role = DECK_ROLES[((startRole || 0) + ci) % DECK_ROLES.length];
+      c.push(rectF(rg(deckTint(role)), px, yy - 15, wpt, 16));
+      c.push(txt("F1", 9, rg(mixHex(role, expInk(), 0.28)), px + 7, yy - 11, cm));
+      px += wpt + 6;
+    });
+    return yy - 26;
+  };
+  const pillsP = (c, x, cy, maxW, items, roleHex)=>{
+    let px = x, yy = cy;
+    (items || []).forEach(cm=>{
+      const wpt = pdfTextW(cm, 9) + 12;
+      if(px > x && (px - x + wpt) > maxW){ px = x; yy -= 19; }
+      c.push(rectF(rg(roleHex), px, yy - 14, wpt, 15));
+      c.push(txt("F1", 9, rg(onRoleInk(roleHex)), px + 6, yy - 10, cm));
+      px += wpt + 6;
+    });
+    return yy - 24;
+  };
+  const bulletsP = (c, x, cy, maxW, items, size)=>{
+    (items || []).forEach(it=>{
+      pdfWrap(it, size, maxW - 14).forEach((ln, li)=>{
+        if(li === 0) c.push(txt("F1", size, brand, x, cy - size, "\u2013"));
+        c.push(txt("F2", size, ink, x + 14, cy - size, ln)); cy -= size * 1.32;
+      });
+      cy -= 4;
+    });
+    return cy - 4;
+  };
 
   /* ---- page: cover ---- */
   const coverPage = ()=>{
@@ -16556,16 +16749,59 @@ async function boardPdfBlob(){
     return { content:c, annots:[], usesImage:true };
   };
 
-  /* ---- page: "Use Cases" section break ---- */
-  const sectionPage = ()=>{
-    const c = []; chrome(c, "Section");
-    let y = PH - 210;
-    c.push(txt("F1", 40, brand, NM, y, "Use Cases")); y -= 34;
-    c.push(rectF(brand, NM, y, 120, 4)); y -= 26;
-    const n = useCaseTiles().length;
-    const sub = n + " use case" + (n === 1 ? "" : "s") + " for " + deckIndustry() +
-      ": the problem each solves, who benefits, how it is built, and the components it uses.";
-    pdfWrap(sub, 12, PW - NM * 2 - 40).forEach(l=>{ c.push(txt("F2", 12, mut, NM, y - 12, l)); y -= 17; });
+  /* ---- page: Contents / index, right after the cover ---- */
+  const indexPage = ()=>{
+    const c = [], secs = deckSections();
+    c.push(rectF(bgc, 0, 0, PW, PH));
+    c.push(rectF(brand, 0, 0, 10, PH));
+    c.push(txt("F1", 9, brand, NM, PH - 42, "CONTENTS"));
+    const rh = deckRunHeader();
+    c.push(txt("F1", 9, mut, PW - NM - pdfTextW(rh, 9), PH - 42, rh));
+    const cred = creditText();
+    c.push(txt("F2", 8, mut, NM, 26, cred));
+    c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
+    let y = titleBlock(c, PH - 62, "What is inside this deck", "") - 6;
+    const gap = 12, rowH = Math.min(60, (y - 44 - gap * (secs.length - 1)) / secs.length);
+    secs.forEach((sec, i)=>{
+      const role = DECK_ROLES[i % DECK_ROLES.length];
+      const top = y - i * (rowH + gap);
+      c.push(rectF(rg(deckTint(role)), NM, top - rowH, PW - NM * 2, rowH));
+      c.push(rectF(rg(role), NM, top - rowH, 6, rowH));
+      const chip = rowH * 0.5, cx = NM + 16, cyc = top - rowH / 2 - chip / 2;
+      c.push(rectF(rg(role), cx, cyc, chip, chip));
+      c.push(txt("F1", 15, rg(onRoleInk(role)), cx + chip / 2 - pdfTextW(String(i + 1), 15, true) / 2, cyc + chip / 2 - 5, String(i + 1)));
+      const tx = cx + chip + 16;
+      c.push(txt("F1", 14, ink, tx, top - 22, sec.title));
+      c.push(txt("F2", 11, mut, tx, top - 40, sec.blurb));
+      const count = sec.kind === "board" ? "" : sec.tiles.length + " " +
+        (sec.kind === "uc" ? "use cases" : sec.kind === "genie" ? "agents" :
+         sec.kind === "dash" ? "dashboards" : "apps");
+      if(count) c.push(txt("F1", 11, rg(mixHex(role, expInk(), 0.30)),
+        PW - NM - 16 - pdfTextW(count, 11, true), top - rowH / 2 - 4, count));
+    });
+    return { content:c.join(""), annots:[], usesImage:false };
+  };
+
+  /* ---- page: a section break, coloured by its role, with a "SECTION N" tab
+     whose N matches the Contents row ---- */
+  const sectionBreakPage = (sec, roleHex, idx)=>{
+    const c = [];
+    c.push(rectF(bgc, 0, 0, PW, PH));
+    c.push(rectF(rg(roleHex), 0, 0, 10, PH));
+    c.push(txt("F1", 9, rg(roleHex), NM, PH - 42, String(sec.eyebrow).toUpperCase()));
+    const rh = deckRunHeader();
+    c.push(txt("F1", 9, mut, PW - NM - pdfTextW(rh, 9), PH - 42, rh));
+    const cred = creditText();
+    c.push(txt("F2", 8, mut, NM, 26, cred));
+    c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
+    let y = PH - 190;
+    const kick = "SECTION " + idx, kw = pdfTextW(kick, 10) + 26;
+    c.push(rectF(rg(roleHex), NM, y - 6, kw, 23));
+    c.push(txt("F1", 10, rg(onRoleInk(roleHex)), NM + 13, y, kick));
+    y -= 46;
+    c.push(txt("F1", 40, rg(roleHex), NM, y, sec.title)); y -= 34;
+    c.push(rectF(rg(roleHex), NM, y, 120, 4)); y -= 26;
+    pdfWrap(sec.blurb, 12, PW - NM * 2 - 40).forEach(l=>{ c.push(txt("F2", 12, mut, NM, y - 12, l)); y -= 17; });
     return { content:c.join(""), annots:[], usesImage:false };
   };
 
@@ -16574,38 +16810,24 @@ async function boardPdfBlob(){
     const c = [], annots = []; chrome(c, "Use Case " + (i + 1) + " of " + total);
     const cur = titleBlock(c, PH - 70, t.n, t.s || t.desc || "");
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
-    const label = (x, cy, s)=>{ c.push(txt("F1", 8, brand, x, cy - 8, String(s).toUpperCase())); return cy - 12; };
-    const para = (x, cy, maxW, s, size)=>{
-      pdfWrap(s, size, maxW).forEach(ln=>{ c.push(txt("F2", size, ink, x, cy - size, ln)); cy -= size * 1.34; });
-      return cy - 6;
-    };
     let ly = cur;
-    if(t.long){ ly = label(NM, ly, "What it is"); ly = para(NM, ly, colW, t.long, 14); }
-    if(t.problem){ ly = label(NM, ly, "The problem it solves"); ly = para(NM, ly, colW, t.problem, 14); }
-    if(t.how){ ly = label(NM, ly, "How it is built"); ly = para(NM, ly, colW, t.how, 14); }
+    if(t.long){ ly = labelP(c, NM, ly, "What it is"); ly = paraP(c, NM, ly, colW, t.long, 14); }
+    if(t.problem){ ly = labelP(c, NM, ly, "The problem it solves"); ly = paraP(c, NM, ly, colW, t.problem, 14); }
+    if(t.how){ ly = labelP(c, NM, ly, "How it is built"); ly = paraP(c, NM, ly, colW, t.how, 14); }
     let ry = cur;
     if(t.who){
-      ry = label(rx, ry, "Who benefits");
+      ry = labelP(c, rx, ry, "Who benefits");
       const pw = Math.min(rW, pdfTextW(t.who, 10) + 16);
       c.push(rectF(rg(deckTint(expBrand())), rx, ry - 16, pw, 17));
       c.push(txt("F1", 10, rg(mixHex(expBrand(), expInk(), 0.25)), rx + 8, ry - 12, t.who));
       ry -= 28;
     }
     if(t.comps && t.comps.length){
-      ry = label(rx, ry, "Architecture it uses");
-      let pxp = rx, cy = ry;
-      t.comps.forEach((cm, ci)=>{
-        const wpt = pdfTextW(cm, 9) + 14;
-        if(pxp > rx && (pxp - rx + wpt) > rW){ pxp = rx; cy -= 21; }
-        const role = DECK_ROLES[ci % DECK_ROLES.length];
-        c.push(rectF(rg(deckTint(role)), pxp, cy - 15, wpt, 16));
-        c.push(txt("F1", 9, rg(mixHex(role, expInk(), 0.28)), pxp + 7, cy - 11, cm));
-        pxp += wpt + 6;
-      });
-      ry = cy - 26;
+      ry = labelP(c, rx, ry, "Architecture it uses");
+      ry = chipsP(c, rx, ry, rW, t.comps, 0);
     }
     if(t.stories && t.stories.length){
-      ry = label(rx, ry, "Customer stories");
+      ry = labelP(c, rx, ry, "Customer stories");
       t.stories.slice(0, 4).forEach(s=>{
         c.push(rectF(brand, rx, ry - 8, 8, 8));
         const lines = pdfWrap(s.t, 10, rW - 16); let ly2 = ry, maxw = 0;
@@ -16615,6 +16837,47 @@ async function boardPdfBlob(){
       });
     }
     return { content:c.join(""), annots, usesImage:false };
+  };
+
+  /* ---- page: one per Genie Agent (explores, reads, teams, questions) ---- */
+  const geniePage = (t, i, total)=>{
+    const c = []; chrome(c, "Genie Agent " + (i + 1) + " of " + total);
+    const cur = titleBlock(c, PH - 70, t.n, "Ask in natural language over governed data");
+    const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
+    let ly = cur;
+    if(t.long){ ly = labelP(c, NM, ly, "What it explores"); ly = paraP(c, NM, ly, colW, t.long, 14); }
+    if(t.questions && t.questions.length){
+      ly = labelP(c, NM, ly, "Top questions it answers");
+      ly = bulletsP(c, NM, ly, colW, t.questions.slice(0, 5), 12);
+    }
+    let ry = cur;
+    if(t.feeds && t.feeds.length){ ry = labelP(c, rx, ry, "Data it reads"); ry = chipsP(c, rx, ry, rW, t.feeds, 0); }
+    if(t.teams && t.teams.length){ ry = labelP(c, rx, ry, "Teams it serves"); ry = pillsP(c, rx, ry, rW, t.teams, expBrand()); }
+    return { content:c.join(""), annots:[], usesImage:false };
+  };
+
+  /* ---- page: a section as a 2x2 card grid (dashboards, apps) ---- */
+  const gridPage = (sec, roleBase)=>{
+    const c = []; chrome(c, sec.eyebrow);
+    const cur = titleBlock(c, PH - 70, sec.title, sec.blurb);
+    const tiles2 = sec.tiles.slice(0, 4), cols = 2, gx = 18, gy = 16;
+    const cardW = (PW - NM * 2 - gx) / cols, gridTop = cur - 6;
+    const nrows = Math.max(1, Math.ceil(tiles2.length / cols));
+    const cardH = (gridTop - 40 - gy * (nrows - 1)) / nrows, hh = 26;
+    tiles2.forEach((t, i)=>{
+      const role = DECK_ROLES[(roleBase + i) % DECK_ROLES.length];
+      const cx = NM + (i % cols) * (cardW + gx);
+      const top = gridTop - Math.floor(i / cols) * (cardH + gy);
+      c.push(rectF(rg(deckTint(role)), cx, top - cardH, cardW, cardH));
+      c.push(rectF(rg(role), cx, top - hh, cardW, hh));
+      c.push(txt("F1", 12, rg(onRoleInk(role)), cx + 12, top - 17, t.n));
+      const ix = cx + 12, iw = cardW - 24; let iy = top - hh - 12;
+      if(t.s){ c.push(txt("F1", 10, rg(mixHex(role, expInk(), 0.30)), ix, iy - 10, t.s)); iy -= 16; }
+      if(t.long){ iy = paraP(c, ix, iy, iw, t.long, 11); }
+      if(t.kpis && t.kpis.length){ iy = labelP(c, ix, iy, "KPIs", rg(mixHex(role, expInk(), 0.30))); iy = chipsP(c, ix, iy, iw, t.kpis, roleBase + i); }
+      if(t.teams && t.teams.length){ iy = labelP(c, ix, iy, "Teams", rg(mixHex(role, expInk(), 0.30))); iy = pillsP(c, ix, iy, iw, t.teams, role); }
+    });
+    return { content:c.join(""), annots:[], usesImage:false };
   };
 
   /* ---- page: closing ---- */
@@ -16639,10 +16902,22 @@ async function boardPdfBlob(){
     return { content:c.join(""), annots, usesImage:false };
   };
 
-  /* the page order: cover, board, then the use-case narrative, then the close */
-  const tiles = useCaseTiles();
-  const pages = [coverPage(), boardPage()];
-  if(tiles.length){ pages.push(sectionPage()); tiles.forEach((t, i)=> pages.push(ucPage(t, i, tiles.length))); }
+  /* the page order comes from the single source of truth, deckSections: cover,
+     contents, then a coloured section break before each content section and its
+     pages (the Architecture section is the board itself), then the close. The
+     "SECTION N" tab number matches the Contents row because the board section
+     still advances the index. */
+  const pages = [coverPage(), indexPage()];
+  let si = 0;
+  deckSections().forEach(sec=>{
+    if(sec.kind === "board"){ pages.push(boardPage()); si++; return; }
+    const role = DECK_ROLES[si % DECK_ROLES.length];
+    pages.push(sectionBreakPage(sec, role, si + 1));
+    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> pages.push(ucPage(t, i, sec.tiles.length)));
+    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> pages.push(geniePage(t, i, sec.tiles.length)));
+    else pages.push(gridPage(sec, si));
+    si++;
+  });
   pages.push(closingPage());
 
   /* Fixed objects 1..6 (catalog, pages, info, two fonts, the board image), then
