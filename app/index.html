@@ -1908,6 +1908,24 @@
   body.zoom .zsolo .zx { background:rgba(255,255,255,.34); border-color:rgba(255,255,255,.8); }
   body.zoom .zsolo .zx .zx-out { display:none; }
   body.zoom .zsolo .zx .zx-in { display:inline; }
+  /* The band-level zoom control (top Cloud Services band and bottom band) floats
+     in the band's right gutter over the band's OWN pale fill, not over an accent
+     header the way the Sources / Ingestion / Teams / Consumers controls do. The
+     base .zx is the reversed on-accent chip (white icon, white hairline) which
+     vanished on every light palette here. On the bands it takes the theme's ink
+     chip instead: a solid --card tile with an ink icon and hairline, so it reads
+     on any palette's band tint in light and flips correctly in dark. The zoom
+     selectors keep it right once the band becomes the zoomed solo. */
+  .hband > .zx,
+  body.zoom .zsolo .hband > .zx,
+  body.zoom .zsolo.hband > .zx {
+    color:var(--muted); background:var(--card);
+    border-color:var(--line-strong); box-shadow:var(--shadow-ico); }
+  .hband > .zx:hover,
+  body.zoom .zsolo .hband > .zx:hover,
+  body.zoom .zsolo.hband > .zx:hover {
+    color:var(--ink); background:var(--well); border-color:var(--sep); }
+  .hband > .zx:focus-visible { outline-color:var(--brand); }
   @media print { .zx { display:none; } }
 
   .zoom-exit { display:none; position:fixed; z-index:55; top:calc(var(--headerh,56px) + 12px); left:22px;
@@ -2550,7 +2568,7 @@ const ICONS = {
   agents:'<path d="M12 4v4M9.5 6h5"/><rect x="4.5" y="8.5" width="15" height="9.5" rx="2.4"/><circle cx="9.3" cy="13.2" r="1.05"/><circle cx="14.7" cy="13.2" r="1.05"/><path d="M9.8 16h4.4"/>',
   code:'<path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/>',
   bricks:'<rect x="3.5" y="4" width="7.5" height="6" rx="1.3"/><rect x="13" y="4" width="7.5" height="6" rx="1.3"/><rect x="3.5" y="12.5" width="7.5" height="6" rx="1.3"/><rect x="13" y="12.5" width="7.5" height="6" rx="1.3"/><path d="M11 7h2M11 15.5h2"/>',
-  omni:'<path d="M12 3l7 4.2v8.6L12 20l-7-4.2V7.2z"/><circle cx="12" cy="11.5" r="2.3"/><path d="M12 3v6.2M19 7.2l-5 3.1M5 7.2l5 3.1M12 13.8V20"/>',
+  omni:'<path d="M12 2 L14.7 8.28 L21.51 8.91 L16.38 13.42 L17.88 20.09 L12 16.6 L6.12 20.09 L7.62 13.42 L2.49 8.91 L9.3 8.28 Z" fill="#e6198c" stroke="none"/>',
   dev:'<rect x="3" y="4.5" width="18" height="15" rx="2.2"/><path d="M3 9h18"/><path d="M7.5 13l2 1.8-2 1.8M11.5 16.6h5"/>',
   ontology:'<circle cx="12" cy="5.5" r="2.1"/><circle cx="5" cy="12" r="2.1"/><circle cx="19" cy="12" r="2.1"/><circle cx="8.5" cy="19" r="2.1"/><circle cx="15.5" cy="19" r="2.1"/><path d="M10.4 6.7L6.6 10.3M13.6 6.7l3.8 3.6M6.1 13.8l1.6 3.4M17.9 13.8l-1.6 3.4M10.6 19h2.8"/>',
   zeroops:'<path d="M8.2 12a3.2 3.2 0 10-.1-.2 6.4 6.4 0 018.5-1 6.4 6.4 0 01-8.4 8.4A6.4 6.4 0 018.2 12z" opacity=".0"/><circle cx="7.6" cy="12" r="3.4"/><circle cx="16.4" cy="12" r="3.4"/><path d="M11 12h2"/>',
