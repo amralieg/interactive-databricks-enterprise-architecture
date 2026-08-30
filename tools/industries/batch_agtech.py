@@ -539,7 +539,7 @@ INDUSTRIES_BATCH_AGTECH = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",
@@ -761,8 +761,8 @@ INDUSTRIES_BATCH_AGTECH = {
                     "Following crop and input provenance from field to processor so deforestation-free and scope-3 claims are backed by governed evidence, not attestation.",
                     problem="Provenance evidence for regulations like EUDR and for scope-3 sourcing is scattered across ERP, field and partner systems, so due diligence is manual and hard to defend.",
                     who="Commercial",
-                    how="Field, ERP and partner data are conformed under Unity Catalog and published as governed data products shared to partners and regulators over Open Sharing.",
-                    comps=["SAP S/4HANA", "Unity Catalog", "Open Sharing", "Data Products", "Delta Lake"],
+                    how="Field, ERP and partner data are conformed under Unity Catalog and published as governed data products shared to partners and regulators over OpenSharing.",
+                    comps=["SAP S/4HANA", "Unity Catalog", "OpenSharing", "Data Products", "Delta Lake"],
                 ),
             ],
         ),

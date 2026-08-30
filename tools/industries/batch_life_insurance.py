@@ -231,7 +231,7 @@ INDUSTRIES_BATCH_LIFE_INSURANCE = {
                     tile("Experience Study Filing", "share", "Mortality and lapse studies filed from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Reinsurers, distributors and regulators reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -340,8 +340,8 @@ INDUSTRIES_BATCH_LIFE_INSURANCE = {
                 uc("Reinsurance Recovery", "Treaty", "partner", "Ceded claims and experience reconciled to bordereaux without manual disputes.",
                     problem="Ceded premium and claims are reconciled to reinsurer bordereaux by hand across treaties, so recoveries are missed, disputes drag on and the net position is never quite trusted.",
                     who="CEO & CFO",
-                    how="Bordereaux, ceded claims and treaty terms are conformed on Delta Lake under Unity Catalog and reconciled in AI/BI, then shared back to reinsurers over Open Sharing without file swaps.",
-                    comps=["Reinsurance Bordereaux", "Unity Catalog", "Delta Lake", "Open Sharing", "AI/BI"]),
+                    how="Bordereaux, ceded claims and treaty terms are conformed on Delta Lake under Unity Catalog and reconciled in AI/BI, then shared back to reinsurers over OpenSharing without file swaps.",
+                    comps=["Reinsurance Bordereaux", "Unity Catalog", "Delta Lake", "OpenSharing", "AI/BI"]),
                 uc("Cross-sell Propensity", "Growth", "custlake", "Annuity and supplemental offers scored from in-force household relationships.",
                     problem="In-force households hold obvious annuity and supplemental openings, but relationships are locked in CRM and admin silos, so agents chase cold lists instead of the next best offer.",
                     who="Distribution",

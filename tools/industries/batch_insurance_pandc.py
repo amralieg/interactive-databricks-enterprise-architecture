@@ -521,7 +521,7 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",
@@ -737,8 +737,8 @@ INDUSTRIES_BATCH_INSURANCE_PANDC = {
                     "Measuring ceded structure, treaty recoveries and net PML, and sharing exposure with reinsurers on live tables rather than spreadsheets.",
                     problem="Ceded exposure and treaty recoveries live in spreadsheets and file exchanges, so net position is unclear at renewal and recoveries are chased manually after the loss.",
                     who="Finance & Reinsurance",
-                    how="Gross exposure, cat output and recoveries are conformed in the lakehouse against the Actuarial & Reserving marts; net PML and treaty economics are analysed in AI/BI on Unity Catalog definitions and shared to reinsurers over Open Sharing.",
-                    comps=["Actuarial & Reserving", "Open Sharing", "AI/BI", "Unity Catalog", "Moody's RMS"],
+                    how="Gross exposure, cat output and recoveries are conformed in the lakehouse against the Actuarial & Reserving marts; net PML and treaty economics are analysed in AI/BI on Unity Catalog definitions and shared to reinsurers over OpenSharing.",
+                    comps=["Actuarial & Reserving", "OpenSharing", "AI/BI", "Unity Catalog", "Moody's RMS"],
                     stories=[
                         ["Milliman powers actuarial and risk analytics on Databricks", "https://www.databricks.com/customers/milliman"],
                         ["Design patterns for batch processing in financial services", "https://www.databricks.com/blog/2023/01/09/design-patterns-batch-processing-financial-services.html"],

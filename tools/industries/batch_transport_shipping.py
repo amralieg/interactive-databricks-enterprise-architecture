@@ -324,8 +324,8 @@ INDUSTRIES_BATCH_TRANSPORT_SHIPPING = {
              uc("Scope 3 Emissions", "Sustainability", "gavel", "Emissions per shipment calculated for shipper ESG reporting.",
                 problem="Shippers demand emissions per shipment, but the mileage, mode and fuel data needed sit across TMS and telematics, so carbon is estimated with crude averages that will not survive an audit.",
                 who="CEO & Network Office",
-                how="Shipment, mode and fuel data are conformed under Unity Catalog, emissions per load are computed on Delta Lake, and certified figures publish as Data Products shared to shippers over Open Sharing.",
-                comps=["Data Products", "Open Sharing", "Unity Catalog", "Delta Lake", "AI/BI"],
+                how="Shipment, mode and fuel data are conformed under Unity Catalog, emissions per load are computed on Delta Lake, and certified figures publish as Data Products shared to shippers over OpenSharing.",
+                comps=["Data Products", "OpenSharing", "Unity Catalog", "Delta Lake", "AI/BI"],
                 stories=[["How Dow Built a Carbon Footprint Ledger on Databricks", "https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale"], ["Michelin democratizes business insights with Databricks", "https://www.databricks.com/customers/michelin"]])],
         ),
         "sources": {

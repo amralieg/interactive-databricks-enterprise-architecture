@@ -539,7 +539,7 @@ INDUSTRIES_BATCH_EDTECH = {
                             tile(
                                 "Institution Products",
                                 "product",
-                                "Engagement and outcome products published in Unity Catalog Domains and shared with customer institutions over Open Sharing.",
+                                "Engagement and outcome products published in Unity Catalog Domains and shared with customer institutions over OpenSharing.",
                             ),
                             tile(
                                 "Publisher Sharing",

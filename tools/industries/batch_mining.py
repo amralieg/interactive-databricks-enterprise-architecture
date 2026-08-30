@@ -188,7 +188,7 @@ INDUSTRIES_BATCH_MINING = {
                         tile("Emissions & Tailings", "share", "Scope 1 and water disclosures filed from contracted Gold products.", "envirosuite"),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "Traders, smelters and joint-venture partners reading live tables with no copy."),
                     ]},
             ], genie_spaces=[

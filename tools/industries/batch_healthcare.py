@@ -232,7 +232,7 @@ INDUSTRIES_BATCH_HEALTHCARE = {
                     tile("State Reporting", "share", "Mandatory infection and utilization filings assembled from Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Researchers, payers and affiliates reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -348,8 +348,8 @@ INDUSTRIES_BATCH_HEALTHCARE = {
                 uc("Research Cohorts", "Evidence", "notebook", "De-identified cohorts built from governed EHR data under IRB protocols.",
                     problem="Building a study cohort means manual extracts and one-off scripts against the EHR, so researchers wait weeks, governance is unclear and de-identification is inconsistent across projects.",
                     who="Population Health",
-                    how="FHIR resources are conformed under Unity Catalog with governed de-identification, and cohorts are built in Notebooks & IDEs and shared to researchers over Open Sharing under IRB protocols.",
-                    comps=["Population Health Registry", "HL7 FHIR Bulk Data", "Unity Catalog", "Open Sharing", "Notebooks & IDEs"],
+                    how="FHIR resources are conformed under Unity Catalog with governed de-identification, and cohorts are built in Notebooks & IDEs and shared to researchers over OpenSharing under IRB protocols.",
+                    comps=["Population Health Registry", "HL7 FHIR Bulk Data", "Unity Catalog", "OpenSharing", "Notebooks & IDEs"],
                     stories=[["Albert Einstein Hospital builds radiology cohorts with Genie", "https://www.databricks.com/customers/albert-einstein-hospital/genie"]]),
             ],
         ),

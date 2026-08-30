@@ -529,7 +529,7 @@ INDUSTRIES_BATCH_SOFTWARE_TECHNOLOGY = {
                             tile(
                                 "Customer Data Products",
                                 "product",
-                                "Usage and benchmark products published in Unity Catalog Domains and shared over Open Sharing.",
+                                "Usage and benchmark products published in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Embedded Analytics",

@@ -525,7 +525,7 @@ INDUSTRIES_BATCH_CYBERSECURITY = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted security products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted security products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Threat Intel Sharing",

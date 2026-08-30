@@ -228,7 +228,7 @@ INDUSTRIES_BATCH_GENOMICS_BIOTECH = {
                     tile("FDA Submission Packages", "share", "Validation summaries and analysis reproducibility filed from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "CROs, pharma partners and consortia reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[

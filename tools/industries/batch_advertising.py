@@ -637,7 +637,7 @@ INDUSTRIES_BATCH_ADVERTISING = {
                     problem="Retail media runs in walled gardens, so brands buy sponsored placements blind to on-shelf availability and cannot tie the spend back to the sales it actually moved.",
                     who="Media Planning",
                     how="Retailer and sales signals join first-party data on Delta Lake, segments are built in Audience Studio, and audiences are shared to Amazon Ads via clean rooms with results read in AI/BI.",
-                    comps=["Audience Studio", "Amazon Ads", "LiveRamp Data Clean Room", "Open Sharing", "AI/BI"],
+                    comps=["Audience Studio", "Amazon Ads", "LiveRamp Data Clean Room", "OpenSharing", "AI/BI"],
                     stories=[
                         ["Magnite and Databricks transform ad data activation", "https://www.databricks.com/blog/magnite-and-databricks-announce-new-partnership-transform-ad-data-activation"],
                     ],
@@ -679,8 +679,8 @@ INDUSTRIES_BATCH_ADVERTISING = {
                     "Overlap and attribution computed without raw PII leaving either party.",
                     problem="Overlap and attribution with retailers and publishers need matched records, but neither side will hand over raw PII, so measurement stalls in legal review and manual file swaps.",
                     who="Performance Marketing",
-                    how="First-party data stays governed under Unity Catalog while overlap and attribution run in Audience Studio against partner data over Open Sharing, with no raw PII leaving either side.",
-                    comps=["Audience Studio", "LiveRamp Data Clean Room", "Unity Catalog", "Open Sharing", "Delta Lake"],
+                    how="First-party data stays governed under Unity Catalog while overlap and attribution run in Audience Studio against partner data over OpenSharing, with no raw PII leaving either side.",
+                    comps=["Audience Studio", "LiveRamp Data Clean Room", "Unity Catalog", "OpenSharing", "Delta Lake"],
                     stories=[
                         ["The Trade Desk and Databricks: secure identity collaboration in clean rooms", "https://www.databricks.com/blog/accelerating-secure-interoperable-identity-collaboration-trade-desk-and-databricks-partnership"],
                     ],

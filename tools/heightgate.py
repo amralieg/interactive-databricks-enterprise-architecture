@@ -2,8 +2,8 @@
 """Fail if any industry board is taller than the standard reference architecture.
 
 The board is fitted to the viewport by whichever of width or height binds first,
-and every board here is height-bound. The two corner pockets (People, Cloud &
-3rd-Party Ingestion) are single narrow columns, and the platform block beside a
+and every board here is height-bound. The two corner pockets (People, External
+Ingestion) are single narrow columns, and the platform block beside a
 pocket grows to whatever height the pocket needs. So a pocket row added by an
 industry is paid for by every label on the diagram: the airlines pocket at four
 groups and thirteen tiles took the board from 1126 design px to 1677 and the

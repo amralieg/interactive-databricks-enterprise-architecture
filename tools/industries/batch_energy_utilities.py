@@ -235,7 +235,7 @@ INDUSTRIES_BATCH_ENERGY_UTILITIES = {
                     tile("Rate Case Submissions", "share", "Cost-of-service and class revenue studies filed from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Municipalities, regulators and research partners reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[

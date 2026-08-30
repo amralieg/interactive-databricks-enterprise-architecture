@@ -274,7 +274,7 @@ INDUSTRIES_BATCH_PAPER_PACKAGING = {
                 ]},
                 {"box": "Customers & Partners", "ic": "partner", "tiles": [
                     tile("Customer & EDI Portals", "api", "Order, ASN and OTIF status served to brand owners and converters over EDI and portals."),
-                    tile("Converter & 3PL Share", "share", "Converting partners and 3PLs reading live schedule, inventory and delivery tables over Open Sharing."),
+                    tile("Converter & 3PL Share", "share", "Converting partners and 3PLs reading live schedule, inventory and delivery tables over OpenSharing."),
                     tile("Recyclers & Fiber", "globe", "Recovered-fiber suppliers and recyclers exchanging grade, volume and quality data with the mill."),
                 ]},
                 {"box": "Operational Writeback", "ic": "opdb", "tiles": [

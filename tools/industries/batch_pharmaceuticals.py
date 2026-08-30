@@ -221,7 +221,7 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                         tile("GxP Audit Evidence", "share", "Batch and clinical lineage evidence filed from contracted Gold products."),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "CROs, CMOs and regulators reading live tables with no copy."),
                     ]},
             ], genie_spaces=[
@@ -365,8 +365,8 @@ INDUSTRIES_BATCH_PHARMACEUTICALS = {
                 uc("Serialization Trace", "DSCSA", "api", "Saleable returns and suspect product investigations from EPCIS lineage.",
                     problem="Saleable-return verification and suspect-product checks need item-level history, but serialization events sit in the packaging line and partner systems, so a DSCSA query is a manual hunt.",
                     who="Mfg & Supply",
-                    how="EPCIS serialization events are conformed on Delta Lake under Unity Catalog and served as transaction statements over Open Sharing, so returns and suspect-product traces resolve from one lineage.",
-                    comps=["GS1 EPCIS Pharma", "Rockwell PharmaSuite", "Unity Catalog", "Delta Lake", "Open Sharing"],
+                    how="EPCIS serialization events are conformed on Delta Lake under Unity Catalog and served as transaction statements over OpenSharing, so returns and suspect-product traces resolve from one lineage.",
+                    comps=["GS1 EPCIS Pharma", "Rockwell PharmaSuite", "Unity Catalog", "Delta Lake", "OpenSharing"],
                     stories=[
                         ["How Johnson & Johnson uses data to optimize its supply chain", "https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html"],
                         ["Managing recalls with barcode traceability in the data lakehouse", "https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake"],

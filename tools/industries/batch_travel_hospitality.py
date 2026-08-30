@@ -371,8 +371,8 @@ INDUSTRIES_BATCH_TRAVEL_HOSPITALITY = {
              uc("Owner Reporting", "Finance", "erp", "Owner statements and STR index position from governed night audit.",
                  problem="Owner statements and STR index positions are assembled by hand from night-audit exports, so owners wait days for numbers and every management company reconciles a slightly different figure.",
                  who="CEO & Brand Office",
-                 how="Night-audit and benchmark data are conformed under Unity Catalog and published as governed Data Products shared to owners and brands over Open Sharing, so everyone reads one live figure.",
-                 comps=["Ownership Group Marts", "STR Benchmark Feed", "Unity Catalog", "Data Products", "Open Sharing"])],
+                 how="Night-audit and benchmark data are conformed under Unity Catalog and published as governed Data Products shared to owners and brands over OpenSharing, so everyone reads one live figure.",
+                 comps=["Ownership Group Marts", "STR Benchmark Feed", "Unity Catalog", "Data Products", "OpenSharing"])],
         ),
         "sources": {
             "opera-cloud": {"t": "Oracle OPERA Cloud", "u": "https://www.oracle.com/hospitality/hotel-property-management/"},

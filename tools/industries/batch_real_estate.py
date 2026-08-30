@@ -217,7 +217,7 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
                         tile("IFRS 16 / ASC 842", "share", "Lease liability schedules from contracted Gold products.", "sap-rem"),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "Investors, lenders and partners reading live tables with no copy."),
                     ]},
             ],
@@ -349,8 +349,8 @@ INDUSTRIES_BATCH_REAL_ESTATE = {
                 uc("Investor Reporting", "Funds", "share", "NAV and waterfall metrics produced from the same tables finance closes on.",
                     problem="Fund NAV and waterfalls are rebuilt in spreadsheets each quarter from data finance already closed, so investor reporting lags weeks behind and every number is reconciled twice.",
                     who="Fund & Asset Leadership",
-                    how="NAV and waterfall marts are queried in place from the Investor Reporting Mart under Unity Catalog and shared to investors over Open Sharing instead of quarterly PDFs.",
-                    comps=["Investor Reporting Mart", "Unity Catalog", "Open Sharing", "Data Products", "AI/BI"],
+                    how="NAV and waterfall marts are queried in place from the Investor Reporting Mart under Unity Catalog and shared to investors over OpenSharing instead of quarterly PDFs.",
+                    comps=["Investor Reporting Mart", "Unity Catalog", "OpenSharing", "Data Products", "AI/BI"],
                     stories=[
                         ["JLL modernizes its data stack and analytics with Databricks", "https://www.databricks.com/customers/jll/training-and-certification"],
                     ]),

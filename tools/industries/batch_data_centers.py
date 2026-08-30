@@ -528,7 +528,7 @@ INDUSTRIES_BATCH_DATA_CENTERS = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted facility and tenant products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted facility and tenant products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Tenant Data Sharing",

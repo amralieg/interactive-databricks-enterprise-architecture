@@ -219,7 +219,7 @@ INDUSTRIES_BATCH_OIL_GAS = {
                         tile("Production Tax Royalty", "share", "Royalty and severance filings from contracted Gold products.", "enablon"),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "JV partners, regulators and traders reading live tables with no copy."),
                     ]},
             ], genie_spaces=[

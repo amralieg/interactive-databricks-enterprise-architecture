@@ -365,7 +365,7 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                         "The Chief Data Officer on the market-data and reference-data catalogue; data product managers packaging tick, depth and corporate-actions feeds; the licensing and entitlements team metering consumption and billing subscribers for what they actually use.",
                         [
                             ["Data Products", "Tick, depth, reference and corporate-actions feeds published as contracted, discoverable products."],
-                            ["Open Sharing", "Live feeds delivered to subscribers and vendors with no copy and no egress duplication."],
+                            ["OpenSharing", "Live feeds delivered to subscribers and vendors with no copy and no egress duplication."],
                             ["Unity Catalog", "Entitlements, lineage and usage governed from the same catalogue the products live in."],
                         ],
                         sub=[
@@ -545,7 +545,7 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted market-data and index products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted market-data and index products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",
@@ -700,8 +700,8 @@ INDUSTRIES_BATCH_MARKET_DATA_EXCHANGES = {
                     "Packaging tick, reference, corporate-actions and index data as contracted products and selling them to subscribers over sharing and marketplaces instead of bespoke file feeds.",
                     problem="Every new data product is a custom extract-and-FTP build, so time-to-launch is long, copies proliferate, and the venue cannot see who consumes what or prove entitlement.",
                     who="Exchange Exec",
-                    how="Curated feeds are published as contracted Data Products, discoverable in Unity Catalog and delivered over Open Sharing and Cloud Marketplaces to entitled Sharing Recipients with no copy.",
-                    comps=["Data Products", "Sharing Recipients", "Open Sharing", "Cloud Marketplaces", "Unity Catalog"],
+                    how="Curated feeds are published as contracted Data Products, discoverable in Unity Catalog and delivered over OpenSharing and Cloud Marketplaces to entitled Sharing Recipients with no copy.",
+                    comps=["Data Products", "Sharing Recipients", "OpenSharing", "Cloud Marketplaces", "Unity Catalog"],
                     stories=[
                         ["LSEG and Databricks partner on AI-ready data via Delta Sharing", "https://www.lseg.com/en/media-centre/press-releases/2025/lseg-databricks-partner-bring-ai-ready-financial-data-natively-analytics-ai-apps-agents"],
                         ["S&P Global unifies data intelligence", "https://www.databricks.com/customers/sp-global"],

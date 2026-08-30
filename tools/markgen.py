@@ -55,12 +55,12 @@ MARKS = {
     "Marketplace Listings": "https://www.databricks.com/sites/default/files/2026-06/dataMarketplaceIcon.svg",
     "Model Serving": "https://www.databricks.com/sites/default/files/2025-05/CloudModelIcon.svg",
     "Notebooks & IDEs": "https://www.databricks.com/sites/default/files/2026-03/notebookIcon.svg",
-    "Open Sharing": "https://www.databricks.com/sites/default/files/2026-03/primary-icon-orange-open-source.svg",
+    "OpenSharing": "https://www.databricks.com/sites/default/files/2026-03/primary-icon-orange-open-source.svg",
     "SQL Warehouses": "https://www.databricks.com/sites/default/files/2026-06/TableLightningIcon.svg",
     "System Tables": "https://www.databricks.com/sites/default/files/2026-02/visibleIcon.svg",
     "Unity Catalog": "https://www.databricks.com/sites/default/files/2026-01/icon-unity-catalog.svg",
     "Unity Catalog OSS": "https://www.databricks.com/sites/default/files/2026-01/icon-unity-catalog.svg",
-    "Unity Gateway": "https://www.databricks.com/sites/default/files/2024-10/primary-icon-orange-authentication-service.svg",
+    "Unity AI Gateway": "https://www.databricks.com/sites/default/files/2024-10/primary-icon-orange-authentication-service.svg",
     "Zerobus": "https://www.databricks.com/sites/default/files/2025-04/primary-icon-orange-input-ingest_.svg",
 }
 
@@ -243,8 +243,8 @@ HAIRLINE = {
     "Lakehouse//RT",                 # 0.128
     "Lakewatch",                     # 0.088
     "MLflow",                        # 0.107
-    "Open Sharing",                  # 0.098
-    "Unity Gateway",                 # 0.061
+    "OpenSharing",                  # 0.098
+    "Unity AI Gateway",                 # 0.061
     "Zerobus",                       # 0.091
     "Delta Lake",                    # 0.030
 }

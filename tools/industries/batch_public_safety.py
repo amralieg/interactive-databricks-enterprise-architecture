@@ -512,7 +512,7 @@ INDUSTRIES_BATCH_PUBLIC_SAFETY = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",

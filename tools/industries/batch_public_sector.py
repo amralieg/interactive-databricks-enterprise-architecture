@@ -318,7 +318,7 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                         "The office accountable for data governance, open-data publishing and cross-agency sharing: one catalogue, one set of access rules, and a public that can trust the numbers.",
                         [
                             ["Unity Catalog", "One governed catalogue and lineage across every agency domain."],
-                            ["Open Sharing", "Cross-agency and public data shared live without copies or egress."],
+                            ["OpenSharing", "Cross-agency and public data shared live without copies or egress."],
                             ["AI/BI", "Published, certified products the portal and analysts read from the same source."],
                         ],
                         sub=[
@@ -486,7 +486,7 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",
@@ -629,8 +629,8 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                     "Linking service records to downstream results across agency silos so programs are judged on outcomes for residents, not activity counts.",
                     problem="Programs report activity, not outcomes, because linking service records to downstream results means crossing agency silos that rarely share data.",
                     who="Program Directors",
-                    how="Cross-agency records are linked under Unity Catalog and shared via Open Sharing; outcome cohorts are built in AI/BI on certified Metric Views.",
-                    comps=["Program Outcome Studio", "AI/BI", "Unity Catalog", "Open Sharing", "Genie One"],
+                    how="Cross-agency records are linked under Unity Catalog and shared via OpenSharing; outcome cohorts are built in AI/BI on certified Metric Views.",
+                    comps=["Program Outcome Studio", "AI/BI", "Unity Catalog", "OpenSharing", "Genie One"],
                     stories=[
                         ["DC OCTO links education and workforce data for outcomes", "https://www.databricks.com/customers/dc-octo"],
                     ],
@@ -669,7 +669,7 @@ INDUSTRIES_BATCH_PUBLIC_SECTOR = {
                     problem="Publishing open data means hand-built extracts that go stale, and the public portal drifts from the governed source it was copied from.",
                     who="Chief Data Officer",
                     how="Curated Gold tables are published as data products and served to the portal and to residents through Genie and Public & Open Data, governed by Unity Catalog.",
-                    comps=["Socrata Open Data", "Data Products", "Genie One", "Unity Catalog", "Open Sharing"],
+                    comps=["Socrata Open Data", "Data Products", "Genie One", "Unity Catalog", "OpenSharing"],
                     stories=[
                         ["How World Bank Group uses Databricks to share knowledge", "https://www.databricks.com/blog/how-world-bank-group-uses-databricks-eradicate-poverty-through-shared-knowledge"],
                     ],

@@ -386,7 +386,7 @@ INDUSTRIES_BATCH_CLINICAL_TRIALS = {
              uc("Regulatory Submissions", "RIM", "share", "eCTD packages produced from governed clinical datasets.",
                 problem="eCTD packages are assembled by hand from datasets scattered across data management, biostats and safety, so submissions are slow and every health-authority query reopens the hunt.",
                 who="Data Management",
-                how="Governed SDTM and ADaM products are built on Delta Lake under Unity Catalog and published to Veeva RIM and regulators as data products shared over Open Sharing with full lineage.",
+                how="Governed SDTM and ADaM products are built on Delta Lake under Unity Catalog and published to Veeva RIM and regulators as data products shared over OpenSharing with full lineage.",
                 comps=["Veeva RIM", "CDISC Standards", "Unity Catalog", "Data Products", "Delta Lake"])],
         ),
         "sources": {

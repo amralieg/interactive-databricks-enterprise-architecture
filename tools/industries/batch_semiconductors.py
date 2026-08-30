@@ -322,8 +322,8 @@ INDUSTRIES_BATCH_SEMICONDUCTORS = {
              uc("Customer Quality CoA", "Ship release", "product", "Certificates of analysis and ship-hold logic joined to final test gates.",
                 problem="Certificates of analysis and ship-hold calls are stitched by hand from test, MES and returns systems, so releases slow and a field return is hard to trace back to its fab lot.",
                 who="Quality & Reliability",
-                how="Final-test gates, genealogy and returns conform under Unity Catalog in the FA Correlation Lab, and certified quality products ship to customers over Open Sharing as Data Products.",
-                comps=["FA Correlation Lab", "SAP S/4HANA", "Unity Catalog", "Open Sharing", "Data Products"],
+                how="Final-test gates, genealogy and returns conform under Unity Catalog in the FA Correlation Lab, and certified quality products ship to customers over OpenSharing as Data Products.",
+                comps=["FA Correlation Lab", "SAP S/4HANA", "Unity Catalog", "OpenSharing", "Data Products"],
                 stories=[["HP cuts consumable traceability from days to minutes with Unity Catalog", "https://www.databricks.com/customers/hp-indigo"]])],
         ),
         "sources": {

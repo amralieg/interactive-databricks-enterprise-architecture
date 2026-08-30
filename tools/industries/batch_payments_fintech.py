@@ -225,7 +225,7 @@ INDUSTRIES_BATCH_PAYMENTS_FINTECH = {
                         tile("PCI & Scheme Compliance", "share", "Control evidence and attestation data from contracted Gold products."),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "Sponsors, auditors and partners reading live tables with no copy."),
                     ]},
             ],

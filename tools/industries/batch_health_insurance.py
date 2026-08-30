@@ -211,7 +211,7 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
                     tile("State Filing Packages", "share", "Rate and form filings assembled from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Employers, providers and regulators reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -346,8 +346,8 @@ INDUSTRIES_BATCH_HEALTH_INSURANCE = {
                 uc("Value-Based Contracts", "Provider", "partner", "Shared savings and quality bonuses calculated from governed claims and clinical data.",
                     problem="Shared-savings and quality bonuses settle months late from claims and clinical data that never line up, so providers dispute the numbers and neither side trusts the scorecard.",
                     who="Provider Relations",
-                    how="Claims, quality and attribution data are conformed as governed Data Products under Unity Catalog and shared with providers over Open Sharing, surfaced in the Provider Scorecard.",
-                    comps=["Provider Scorecard", "Data Products", "Unity Catalog", "Open Sharing", "Delta Lake"],
+                    how="Claims, quality and attribution data are conformed as governed Data Products under Unity Catalog and shared with providers over OpenSharing, surfaced in the Provider Scorecard.",
+                    comps=["Provider Scorecard", "Data Products", "Unity Catalog", "OpenSharing", "Delta Lake"],
                     stories=[
                         ["Empowering smarter decisions to transform healthcare outcomes", "https://www.databricks.com/customers/abacus-insights"],
                     ]),

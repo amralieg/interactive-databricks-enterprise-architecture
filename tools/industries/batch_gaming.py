@@ -231,7 +231,7 @@ INDUSTRIES_BATCH_GAMING = {
                     tile("AML & SAR Reporting", "share", "Suspicious activity metrics filed from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Studios, affiliates and regulators reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -367,8 +367,8 @@ INDUSTRIES_BATCH_GAMING = {
                 uc("Studio Royalty", "Partners", "product", "Third-party title revenue share calculated from governed round and jackpot data.",
                     problem="Third-party title revenue share is calculated from partner ledgers and manual round exports, so royalties are slow, disputed and hard to reconcile against what actually happened in the game.",
                     who="CEO & CFO",
-                    how="Round and jackpot data are conformed on Delta Lake and shared as governed products over Open Sharing, so studio royalties compute from the platform's own record and reconcile with partners.",
-                    comps=["Pragmatic Play RGS", "Publisher Revenue Share", "Delta Lake", "Open Sharing", "Data Products", "Unity Catalog"]),
+                    how="Round and jackpot data are conformed on Delta Lake and shared as governed products over OpenSharing, so studio royalties compute from the platform's own record and reconcile with partners.",
+                    comps=["Pragmatic Play RGS", "Publisher Revenue Share", "Delta Lake", "OpenSharing", "Data Products", "Unity Catalog"]),
             ],
         ),
         "sources": {

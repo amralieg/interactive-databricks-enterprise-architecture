@@ -486,7 +486,7 @@ INDUSTRIES_BATCH_CRYPTO_DIGITAL_ASSETS = {
                             tile(
                                 "Market Data Sharing",
                                 "share",
-                                "Enriched trade, order-book and on-chain datasets shared with funds and partners over Open Sharing rather than copied file exports.",
+                                "Enriched trade, order-book and on-chain datasets shared with funds and partners over OpenSharing rather than copied file exports.",
                             ),
                             tile(
                                 "Client Portals",
@@ -546,7 +546,7 @@ INDUSTRIES_BATCH_CRYPTO_DIGITAL_ASSETS = {
                             tile(
                                 "Data Products",
                                 "product",
-                                "Published, contracted market, on-chain and risk products discoverable in Unity Catalog Domains and shared over Open Sharing.",
+                                "Published, contracted market, on-chain and risk products discoverable in Unity Catalog Domains and shared over OpenSharing.",
                             ),
                             tile(
                                 "Sharing Recipients",

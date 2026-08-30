@@ -171,7 +171,7 @@ INDUSTRIES_BATCH_RESTAURANTS = {
                         tile("Franchise Disclosure", "share", "Unit economic summaries filed from contracted Gold products.", "sap-b1"),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "Franchisees, auditors and partners reading live tables with no copy."),
                     ]},
             ], genie_spaces=[

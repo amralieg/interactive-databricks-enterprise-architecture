@@ -294,7 +294,7 @@ INDUSTRIES_BATCH_RAIL_TRANSIT = {
                     tile("Energy & ESG Report", "share", "Traction energy and emissions accounting and the network's sustainability reporting, filed from contracted Gold products."),
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Lessors, maintenance partners and infrastructure owners reading live tables with no copy and no egress duplication."),
                 ]},
             ], genie_spaces=[

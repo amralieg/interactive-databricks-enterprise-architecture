@@ -199,7 +199,7 @@ INDUSTRIES_BATCH_GROCERY = {
                     tile("Vendor Funding Audit", "share", "Promotion accruals and scan-based trade reconciliations filed from Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "CPG vendors, franchisees and analysts reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -328,8 +328,8 @@ INDUSTRIES_BATCH_GROCERY = {
                 uc("Vendor Collaboration", "CPG", "share", "Joint business planning on shared forecast and inventory positions.",
                    problem="Joint business planning runs on emailed spreadsheets, so grocer and CPG supplier argue over whose forecast and inventory numbers are right instead of planning the promotion or the fill.",
                    who="Supply Chain",
-                   how="Conformed forecast and inventory positions are published as governed Data Products and shared to suppliers over Open Sharing, so both sides plan against one live set of numbers with no file exchange.",
-                   comps=["Open Sharing", "Data Products", "Delta Lake", "Unity Catalog", "Blue Yonder Replenishment"]),
+                   how="Conformed forecast and inventory positions are published as governed Data Products and shared to suppliers over OpenSharing, so both sides plan against one live set of numbers with no file exchange.",
+                   comps=["OpenSharing", "Data Products", "Delta Lake", "Unity Catalog", "Blue Yonder Replenishment"]),
                 uc("Shrink Attribution", "Loss prevention", "chart", "Theft, spoilage and scanning errors separated by department and store pattern.",
                    problem="Shrink shows up as one lump on the P&L, so theft, spoilage and scan errors are impossible to separate and the store never knows which lever, security, process or training, actually moves it.",
                    who="CEO & COO",

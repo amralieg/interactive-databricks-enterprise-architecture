@@ -199,7 +199,7 @@ INDUSTRIES_BATCH_FOOD_BEVERAGE = {
                     tile("Nutrition Label Compliance", "share", "Label claims and allergen controls filed from contracted Gold products.")
                 ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                    tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                     tile("Sharing Recipients", "share", "Retailers, co-packers and auditors reading live tables with no copy and no egress duplication.")
                 ]},
             ], genie_spaces=[
@@ -334,8 +334,8 @@ INDUSTRIES_BATCH_FOOD_BEVERAGE = {
                 uc("Sustainable Sourcing", "ESG", "globe", "Ingredient provenance and carbon intensity traced from farm through finished goods.",
                     problem="Ingredient provenance and carbon intensity sit in disconnected spreadsheets, so scope-3 and sourcing claims cannot be traced from farm to finished goods when a buyer or regulator asks.",
                     who="CEO & COO",
-                    how="Supplier, ERP and commodity data are conformed into governed data products under Unity Catalog and shared to partners and auditors over Open Sharing with lineage intact.",
-                    comps=["SAP S/4HANA PP", "Weather & Commodity", "Unity Catalog", "Data Products", "Open Sharing"],
+                    how="Supplier, ERP and commodity data are conformed into governed data products under Unity Catalog and shared to partners and auditors over OpenSharing with lineage intact.",
+                    comps=["SAP S/4HANA PP", "Weather & Commodity", "Unity Catalog", "Data Products", "OpenSharing"],
                     stories=[
                         ["Mondelez facilitates model experimentation at enterprise scale", "https://www.databricks.com/customers/mondelez"],
                         ["How Dow built a carbon footprint ledger to accelerate sustainability at scale", "https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale"],

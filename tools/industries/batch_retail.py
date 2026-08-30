@@ -222,7 +222,7 @@ INDUSTRIES_BATCH_RETAIL = {
                         tile("ESG Product Passport", "share", "Sourcing and sustainability attributes filed from contracted Gold products."),
                     ]},
                 {"box": "Published Products", "ic": "product", "tiles": [
-                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over Open Sharing."),
+                        tile("Data Products", "product", "Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing."),
                         tile("Sharing Recipients", "share", "Suppliers, marketplaces and auditors reading live tables with no copy."),
                     ]},
             ], genie_spaces=[
