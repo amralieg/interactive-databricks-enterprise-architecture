@@ -620,9 +620,6 @@
 
   .ref-banner { max-width:var(--designw); margin:12px auto 0; padding:0 20px; display:none; }
   .ref-banner.show { display:block; }
-  .board-purpose { max-width:var(--designw); margin:12px auto 0; padding:0 20px; font-size:12.5px; color:var(--muted); text-align:center; line-height:1.45; }
-  .board-purpose b { color:var(--brand); font-weight:700; }
-  body.printing .board-purpose { display:none; }
   .ref-card { background:var(--card); border:1px solid var(--line); border-left:5px solid var(--brand);
     border-radius:11px; padding:12px 16px; box-shadow:var(--shadow); }
   .ref-card h3 { margin:0 0 3px; font-size:15px; }
@@ -1947,24 +1944,27 @@
   body.zoom .zoom-exit { display:inline-flex; }
   @media print { .zoom-exit { display:none !important; } }
 
-  body.zoom .scrim { display:none !important; }
-  body.zoom .drawer { transform:none; box-shadow:none; border-left:1px solid var(--line);
+  body.zoom .scrim, body.docked .scrim { display:none !important; }
+  body.zoom .drawer, body.docked .drawer { transform:none; box-shadow:none; border-left:1px solid var(--line);
     width:var(--dock-w); top:var(--headerh,56px); height:calc(100% - var(--headerh,56px)); }
-  body.zoom .drawer .d-close { display:none; }
+  body.zoom .drawer .d-close, body.docked .drawer .d-close { display:none; }
   .d-empty { display:none; flex:1 1 auto; flex-direction:column; align-items:center; justify-content:center;
     gap:13px; padding:40px 30px; text-align:center; color:var(--muted); font-size:14px; line-height:1.55; }
   .d-empty svg { width:38px; height:38px; color:var(--faint); }
   body.zoom:not(.detail-open) .drawer .d-head,
-  body.zoom:not(.detail-open) .drawer .d-body { display:none; }
-  body.zoom:not(.detail-open) .drawer .d-empty { display:flex; }
+  body.zoom:not(.detail-open) .drawer .d-body,
+  body.docked:not(.detail-open) .drawer .d-head,
+  body.docked:not(.detail-open) .drawer .d-body { display:none; }
+  body.zoom:not(.detail-open) .drawer .d-empty,
+  body.docked:not(.detail-open) .drawer .d-empty { display:flex; }
   /* with the panel docked the board's corner credit is hidden, so it moves into
      the panel as a footer where it is always visible */
   .d-credit { display:none; }
-  body.zoom .d-credit { display:block; position:absolute; left:0; right:0; bottom:0;
+  body.zoom .d-credit, body.docked .d-credit { display:block; position:absolute; left:0; right:0; bottom:0;
     padding:9px 24px; text-align:center; font-size:11px; font-weight:650; letter-spacing:.02em;
     color:var(--muted); background:var(--card); border-top:1px solid var(--line); }
-  body.zoom .drawer .d-body { padding-bottom:48px; }
-  body.zoom .credit { display:none; }
+  body.zoom .drawer .d-body, body.docked .drawer .d-body { padding-bottom:48px; }
+  body.zoom .credit, body.docked .credit { display:none; }
 
   body.zoom:not(.plat-only) .board > .hband.top:not(.zsolo),
   body.zoom:not(.plat-only) .board > .cloudwrap:not(.zsolo),
@@ -2168,6 +2168,19 @@
   .chip.static { cursor:default; } .chip.static:hover { border-color:var(--line); color:var(--ink); }
   .d-close { position:absolute; top:14px; right:16px; border:none; background:var(--well); width:29px; height:29px;
     border-radius:8px; cursor:pointer; font-size:15px; color:var(--muted); }
+  /* Pin the overlay panel open as a side dock. Sits left of the close button in
+     overlay mode; once docked the close button is hidden and the pin slides into
+     its slot, becoming the control that releases the panel back to an overlay. */
+  .d-dock { position:absolute; top:14px; right:52px; border:none; background:var(--well); width:29px; height:29px;
+    border-radius:8px; cursor:pointer; color:var(--muted); padding:0;
+    display:inline-flex; align-items:center; justify-content:center; }
+  .d-dock svg { width:16px; height:16px; display:block; }
+  .d-dock:hover { color:var(--ink); }
+  body.docked .d-dock { right:16px; color:var(--brand); background:var(--brand-wash); }
+  /* Docking only makes sense in the fit layout: the stacked view has no board
+     width to reserve, and zoom manages its own docking. */
+  body:not(.fitting) .d-dock, body.zoom .d-dock { display:none; }
+  @media print { .d-dock { display:none; } }
   .d-refbox { background:var(--brand-wash); border:1px solid var(--brand-soft); border-radius:9px; padding:9px 12px; }
   /* No bullet glyph: the leading chip already marks where each row starts, and a
      disc in front of it read as a second, competing marker. */
@@ -2382,7 +2395,6 @@
 </header>
 
 <div class="fit" id="fit"><div class="fit-in" id="fit-in">
-<div class="board-purpose" id="board-purpose">A standard Databricks reference architecture, specialised per industry: for <b>architects and field teams</b> to align on one design and tailor it with customers. It maps how the platform, data sources, teams and consumers fit together, not a product feature list.</div>
 <div class="ref-banner" id="ref-banner">
   <div class="ref-card">
     <h3 id="ref-name"></h3>
@@ -2481,6 +2493,7 @@
 <div class="scrim" id="scrim"></div>
 <button class="zoom-exit" id="zoom-exit" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5M5 8h7"/></svg>Back</button>
 <aside class="drawer" id="drawer">
+  <button class="d-dock" id="ddock" type="button" title="Dock panel to the side" aria-label="Dock panel to the side" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></button>
   <button class="d-close" id="dclose">✕</button>
   <div class="d-head">
     <div class="d-eyebrow" id="d-eyebrow"></div>
@@ -14396,6 +14409,20 @@ function openDetail(id, via){
 function closeDrawer(){ openId = null; scrim.classList.remove("show"); drawer.classList.remove("show"); document.body.classList.remove("detail-open"); clearHits(); }
 function clearHits(){ document.querySelectorAll(".hit").forEach(e=>e.classList.remove("hit")); }
 document.getElementById("dclose").onclick = closeDrawer;
+/* Pin the panel open as a right-hand dock. Docked, it stays visible showing the
+   empty state when nothing is selected (the zoom view already works this way),
+   and the board reserves --dock-w and scales into the width that is left. */
+const ddock = document.getElementById("ddock");
+function setDocked(on){
+  document.body.classList.toggle("docked", on);
+  ddock.title = on ? "Undock panel" : "Dock panel to the side";
+  ddock.setAttribute("aria-label", ddock.title);
+  ddock.setAttribute("aria-pressed", on ? "true" : "false");
+  if(on) drawer.classList.add("show");
+  else if(!document.body.classList.contains("detail-open")) drawer.classList.remove("show");
+  scheduleFit();
+}
+ddock.onclick = ()=> setDocked(!document.body.classList.contains("docked"));
 scrim.onclick = closeDrawer;
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
 
@@ -14675,8 +14702,6 @@ function selectTab(tab){
   document.body.classList.toggle("tab-alt", isBuilder);
   builderEl.classList.toggle("show", isBuilder);
   syncToolbar(isBuilder);
-  const bp = document.getElementById("board-purpose");
-  if(bp) bp.style.display = isBuilder ? "none" : "";
   if(isBuilder) refBanner.classList.remove("show");
   else if(activeRef) refBanner.classList.add("show");
   else refBanner.classList.remove("show");
@@ -17768,6 +17793,14 @@ function fitLayout(){
   fitEl.style.height = "";
   document.body.dataset.fit = "1";
   document.body.classList.toggle("fitting", window.innerWidth >= FIT_FROM_W);
+  /* the dock is a fit-layout affordance and its toggle hides when the layout
+     stacks, so release a pinned panel here rather than stranding it as an
+     overlay the reader can no longer undock; a docked-but-empty panel closes
+     outright so it does not linger as a blank overlay */
+  if(window.innerWidth < FIT_FROM_W && document.body.classList.contains("docked")){
+    document.body.classList.remove("docked");
+    if(!document.body.classList.contains("detail-open")) drawer.classList.remove("show");
+  }
   const hdr = document.querySelector("header.top");
   if(hdr) document.body.style.setProperty("--headerh", hdr.offsetHeight + "px");
   /* a user-made tab has no board to fit: the builder is a normal-sized form, so
@@ -17787,9 +17820,10 @@ function fitLayout(){
   /* floored, and reserved in full below, so the page ends exactly at the viewport
      without a rounding scrollbar and without an odd strip under the board */
   const availH = Math.floor(window.innerHeight - top);
-  /* a zoomed region docks the detail panel on the right, so the board scales
-     into the width that is left rather than sliding underneath it */
-  const dockW = document.body.classList.contains("zoom")
+  /* a zoomed region, or a panel the reader has pinned open, docks the detail
+     panel on the right, so the board scales into the width that is left rather
+     than sliding underneath it */
+  const dockW = (document.body.classList.contains("zoom") || document.body.classList.contains("docked"))
     ? (parseFloat(getComputedStyle(document.body).getPropertyValue("--dock-w")) || 0) : 0;
   const availW = fitEl.clientWidth - SIDE_PAD * 2 - dockW;
   if(availH < 240) return;
