@@ -620,6 +620,9 @@
 
   .ref-banner { max-width:var(--designw); margin:12px auto 0; padding:0 20px; display:none; }
   .ref-banner.show { display:block; }
+  .board-purpose { max-width:var(--designw); margin:12px auto 0; padding:0 20px; font-size:12.5px; color:var(--muted); text-align:center; line-height:1.45; }
+  .board-purpose b { color:var(--brand); font-weight:700; }
+  body.printing .board-purpose { display:none; }
   .ref-card { background:var(--card); border:1px solid var(--line); border-left:5px solid var(--brand);
     border-radius:11px; padding:12px 16px; box-shadow:var(--shadow); }
   .ref-card h3 { margin:0 0 3px; font-size:15px; }
@@ -1148,7 +1151,7 @@
   .arm { flex:0 0 calc(var(--armw) - 8px); min-width:0; display:flex; }
   .arm > .band { flex:1 1 auto; flex-direction:column; gap:6px; padding:7px 8px; }
   .arm .band-lbl { flex:0 0 auto; padding-top:0; }
-  .arm .band-lbl .bl-name { font-size:12.5px; }
+  .arm .band-lbl .bl-name { font-size:15px; }
 
   /* ---------- platform style: Z, S, T, T180, H90 ----------
      Four shapes out of two independent facts, so nothing here is written four
@@ -1489,6 +1492,13 @@
   .band-rlbl:hover { border-color:var(--brand); background:var(--card); }
   .band-rlbl .bl-name { justify-content:flex-end; }
   .band-rlbl .bl-sub { text-align:right; }
+  /* left bookend: the clickable-atom twin of band-rlbl on the left edge. Keeps the
+     band-lbl layout/basis but adds the interactive chrome (transparent border that
+     lights on hover, pointer) so Agentic Work reads and behaves as the opening peer
+     of Agentic Dev rather than a lookalike title that does nothing when clicked. */
+  .band-llbl { padding:4px 5px; border:1px solid transparent; border-radius:9px;
+    background:transparent; font:inherit; cursor:pointer; transition:.12s; }
+  .band-llbl:hover { border-color:var(--brand); background:var(--card); }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* Equal-height tiles in a card row so their top-anchored icons land on one
@@ -2372,6 +2382,7 @@
 </header>
 
 <div class="fit" id="fit"><div class="fit-in" id="fit-in">
+<div class="board-purpose" id="board-purpose">A standard Databricks reference architecture, specialised per industry: for <b>architects and field teams</b> to align on one design and tailor it with customers. It maps how the platform, data sources, teams and consumers fit together, not a product feature list.</div>
 <div class="ref-banner" id="ref-banner">
   <div class="ref-card">
     <h3 id="ref-name"></h3>
@@ -2854,7 +2865,7 @@ const ARCH = {
               long:"AI-powered application builder that uses Genie context and inherits Unity Catalog governance, so generated apps are governed by construction.",
               rel:["Apps","Genie Ontology"] },
             { n:"Lakeflow Designer", ic:"flow", st:"GA",
-              long:"No-code, Genie-powered data preparation that generates Spark Declarative Pipelines, so business users build pipelines that engineers can own.",
+              long:"No-code visual data prep on a drag-and-drop canvas. Each flow is saved as a special notebook (.designer.ipynb) whose output nodes compile to Spark Declarative Pipelines and materialized views, so engineers can own it in Git and Jobs. Genie Code assists but is optional.",
               rel:["Lakeflow"] },
           ]},
         /* Agent Bricks mirrors Genie as the second rectangle on the Agentic Work
@@ -2884,6 +2895,14 @@ const ARCH = {
               caps:["ai_classify","Zero-shot labels","In-SQL"], rel:["Agent Bricks","AI Functions"] },
           ] },
       ]} ],
+      /* Agentic Work is the left bookend and a clickable atom in its own right (the
+         opening twin of Agentic Dev): reg() gives the band's own label the same
+         drawer every tile has, so it no longer reads as a clickable peer of Agentic
+         Dev while doing nothing. It names the business-facing half of the platform
+         that Genie and Agent Bricks make up. */
+      llbl:{ n:"Agentic Work", s:"Data-smart coworkers for every employee", ic:"agents",
+        long:"The business-facing half of the agentic platform. Genie and Agent Bricks turn Databricks into data-smart coworkers, so every employee — not only engineers — can ask questions, build and run agents and automate work, all grounded in governed data and Genie Ontology.",
+        caps:["Genie","Agent Bricks","Grounded in Genie Ontology","For every employee"], rel:["Genie","Agent Bricks","Agentic Dev"] },
       /* Agentic Dev is the right bookend, mirroring Agentic Work on the left, so the
          Genie Ontology rule below spans only the two middle panels (Genie and Agent
          Bricks) exactly as the reference slide shows. It is still a clickable atom:
@@ -3412,7 +3431,7 @@ const ARCH = {
         ],
         ingest:[
           { n:"Azure Data Factory", role:"etl", ic:"etl", long:"Existing ADF pipelines keep landing data; Databricks activities run notebooks and jobs inside the same orchestration." },
-          { n:"Fabric Data Factory", role:"etl2", ic:"etl", long:"Fabric-era pipelines landing data into ADLS Gen2 for Auto Loader and Lakeflow to pick up." },
+          { n:"Fabric Data Factory", role:"etl2", ic:"etl", long:"Fabric-era pipelines landing data into ADLS Gen2 for Auto Loader and Lakeflow to pick up, and can also trigger Databricks Jobs inside the same orchestration." },
           { n:"Azure Event Hubs", role:"streaming", ic:"eventbus", long:"Kafka-compatible event ingress consumed by Lakeflow streaming pipelines and Zerobus." },
           { n:"Azure IoT Hub", role:"iot", ic:"iot", long:"Device telemetry and bi-directional device messaging feeding real-time pipelines." },
         ],
@@ -13478,11 +13497,27 @@ function renderBand(band, target){
   const el = document.createElement("div");
   el.className = "band b-" + band.id + " t-" + band.tone + (band.inline ? " inline-lbl" : "");
 
-  const lbl = document.createElement("div");
-  lbl.className = "band-lbl";
-  lbl.innerHTML = `<div class="bl-name">${band.ic ? svg(band.ic,"bl-ic") : ""}` +
-      `<span>${esc(band.name)}</span></div>` +
-    (band.sub ? `<div class="bl-sub">${esc(band.sub)}</div>` : "");
+  /* The left label is a plain title on every band, EXCEPT where the band declares
+     an `llbl` atom (Agentic Work): there it becomes a clickable bookend registered
+     via reg(), the opening twin of the `rlbl` bookend (Agentic Dev), so both edge
+     labels open the same drawer every tile does instead of one being a dead
+     lookalike of the other. */
+  let lbl;
+  if(band.llbl){
+    lbl = document.createElement("button");
+    lbl.type = "button";
+    lbl.className = "band-lbl band-llbl";
+    lbl.innerHTML = `<div class="bl-name">${band.llbl.ic ? svg(band.llbl.ic,"bl-ic") : ""}` +
+        `<span>${esc(band.llbl.n)}</span></div>` +
+      (band.llbl.s ? `<div class="bl-sub">${esc(band.llbl.s)}</div>` : "");
+    reg(lbl, band.llbl, null, band.name);
+  } else {
+    lbl = document.createElement("div");
+    lbl.className = "band-lbl";
+    lbl.innerHTML = `<div class="bl-name">${band.ic ? svg(band.ic,"bl-ic") : ""}` +
+        `<span>${esc(band.name)}</span></div>` +
+      (band.sub ? `<div class="bl-sub">${esc(band.sub)}</div>` : "");
+  }
   el.appendChild(lbl);
 
   const body = document.createElement("div");
@@ -14318,7 +14353,7 @@ function openDetail(id, via){
       t.sub.map(p=>`<li><b>${esc(p.n)}</b> ${esc(p.cares)}</li>`).join("") + `</ul>`;
   }
   if(t.ucs && t.ucs.length)
-    html += `<h4>Use cases they drive</h4><div>${detailChips(t.ucs)}</div>`;
+    html += `<h4>Use cases</h4><div>${detailChips(t.ucs)}</div>`;
   /* A team tile answers two different questions, and running them together as one
      paragraph made the second one unreadable: who these people are, and which
      surface of the platform they actually touch. `uses` carries the second as
@@ -14327,7 +14362,7 @@ function openDetail(id, via){
      the product it depends on, and the existing .chip[data-go] wiring below
      picks those up with no extra handler. */
   if(t.uses && t.uses.length){
-    html += `<h4>What they use</h4><ul class="d-uses">` + t.uses.map(u=>{
+    html += `<h4>Databricks capabilities used</h4><ul class="d-uses">` + t.uses.map(u=>{
       const s = Array.isArray(u) ? u[0] : u, txt = Array.isArray(u) ? (u[1] || "") : "";
       const to = nameIndex[s];
       const head = to ? `<span class="chip" data-go="${to}">${esc(s)}</span>`
@@ -14640,6 +14675,8 @@ function selectTab(tab){
   document.body.classList.toggle("tab-alt", isBuilder);
   builderEl.classList.toggle("show", isBuilder);
   syncToolbar(isBuilder);
+  const bp = document.getElementById("board-purpose");
+  if(bp) bp.style.display = isBuilder ? "none" : "";
   if(isBuilder) refBanner.classList.remove("show");
   else if(activeRef) refBanner.classList.add("show");
   else refBanner.classList.remove("show");
