@@ -1489,13 +1489,16 @@
   .band-rlbl:hover { border-color:var(--brand); background:var(--card); }
   .band-rlbl .bl-name { justify-content:flex-end; }
   .band-rlbl .bl-sub { text-align:right; }
-  /* left bookend: the clickable-atom twin of band-rlbl on the left edge. Keeps the
-     band-lbl layout/basis but adds the interactive chrome (transparent border that
-     lights on hover, pointer) so Agentic Work reads and behaves as the opening peer
-     of Agentic Dev rather than a lookalike title that does nothing when clicked. */
-  .band-llbl { padding:4px 5px; border:1px solid transparent; border-radius:9px;
-    background:transparent; font:inherit; cursor:pointer; transition:.12s; }
-  .band-llbl:hover { border-color:var(--brand); background:var(--card); }
+  /* Section titles registered as atoms (registerTitleAtoms) get the .atom class.
+     They become clickable like any tile: pointer cursor, and a brand outline on
+     hover/focus. Outline (not border/padding) is used deliberately so adding the
+     affordance shifts NO layout and the board height is unchanged. */
+  .band-lbl.atom, .cloud-lbl.atom, .colhead.atom, .pockhead.atom, .oi-lbl.atom { cursor:pointer; }
+  .band-lbl.atom:hover, .cloud-lbl.atom:hover, .colhead.atom:hover,
+  .pockhead.atom:hover, .oi-lbl.atom:hover,
+  .band-lbl.atom:focus-visible, .cloud-lbl.atom:focus-visible, .colhead.atom:focus-visible,
+  .pockhead.atom:focus-visible, .oi-lbl.atom:focus-visible {
+    outline:2px solid var(--brand); outline-offset:-2px; border-radius:8px; }
   .band-body { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:6px; justify-content:center; }
   .band-row { display:flex; gap:8px; align-items:center; flex-wrap:nowrap; }
   /* Equal-height tiles in a card row so their top-anchored icons land on one
@@ -2908,18 +2911,11 @@ const ARCH = {
               caps:["ai_classify","Zero-shot labels","In-SQL"], rel:["Agent Bricks","AI Functions"] },
           ] },
       ]} ],
-      /* Agentic Work is the left bookend and a clickable atom in its own right (the
-         opening twin of Agentic Dev): reg() gives the band's own label the same
-         drawer every tile has, so it no longer reads as a clickable peer of Agentic
-         Dev while doing nothing. It names the business-facing half of the platform
-         that Genie and Agent Bricks make up. */
-      llbl:{ n:"Agentic Work", s:"Data-smart coworkers for every employee", ic:"agents",
-        long:"The business-facing half of the agentic platform. Genie and Agent Bricks turn Databricks into data-smart coworkers, so every employee — not only engineers — can ask questions, build and run agents and automate work, all grounded in governed data and Genie Ontology.",
-        caps:["Genie","Agent Bricks","Grounded in Genie Ontology","For every employee"], rel:["Genie","Agent Bricks","Agentic Dev"] },
-      /* Agentic Dev is the right bookend, mirroring Agentic Work on the left, so the
+      /* Agentic Work (the left title) and Agentic Dev (the right bookend) are both
+         clickable atoms. Agentic Work is registered from its band title by
+         registerTitleAtoms(); Agentic Dev keeps its own `rlbl` bookend here so the
          Genie Ontology rule below spans only the two middle panels (Genie and Agent
-         Bricks) exactly as the reference slide shows. It is still a clickable atom:
-         reg() gives it the same drawer every tile has. */
+         Bricks) exactly as the reference slide shows. */
       rlbl:{ n:"Agentic Dev", s:"Develop and deploy agents, apps, and models", ic:"dev",
         long:"The developer surface of the platform: notebooks, IDE integrations, MLflow, AI Runtime serverless GPU compute and Declarative Automation Bundles (formerly Databricks Asset Bundles) for shipping agents, apps and models to production.",
         caps:["MLflow","AI Runtime (serverless GPU)","Automation Bundles","IDE + notebooks"], rel:["Agent Bricks","Unity AI Gateway"] },
@@ -13510,27 +13506,14 @@ function renderBand(band, target){
   const el = document.createElement("div");
   el.className = "band b-" + band.id + " t-" + band.tone + (band.inline ? " inline-lbl" : "");
 
-  /* The left label is a plain title on every band, EXCEPT where the band declares
-     an `llbl` atom (Agentic Work): there it becomes a clickable bookend registered
-     via reg(), the opening twin of the `rlbl` bookend (Agentic Dev), so both edge
-     labels open the same drawer every tile does instead of one being a dead
-     lookalike of the other. */
-  let lbl;
-  if(band.llbl){
-    lbl = document.createElement("button");
-    lbl.type = "button";
-    lbl.className = "band-lbl band-llbl";
-    lbl.innerHTML = `<div class="bl-name">${band.llbl.ic ? svg(band.llbl.ic,"bl-ic") : ""}` +
-        `<span>${esc(band.llbl.n)}</span></div>` +
-      (band.llbl.s ? `<div class="bl-sub">${esc(band.llbl.s)}</div>` : "");
-    reg(lbl, band.llbl, null, band.name);
-  } else {
-    lbl = document.createElement("div");
-    lbl.className = "band-lbl";
-    lbl.innerHTML = `<div class="bl-name">${band.ic ? svg(band.ic,"bl-ic") : ""}` +
-        `<span>${esc(band.name)}</span></div>` +
-      (band.sub ? `<div class="bl-sub">${esc(band.sub)}</div>` : "");
-  }
+  /* Every band's left label is the band title. It is registered as a clickable
+     atom AFTER build by registerTitleAtoms() when TITLE_TILES carries grounded
+     detail for it, so the wiring lives in one place instead of a per-band branch. */
+  const lbl = document.createElement("div");
+  lbl.className = "band-lbl";
+  lbl.innerHTML = `<div class="bl-name">${band.ic ? svg(band.ic,"bl-ic") : ""}` +
+      `<span>${esc(band.name)}</span></div>` +
+    (band.sub ? `<div class="bl-sub">${esc(band.sub)}</div>` : "");
   el.appendChild(lbl);
 
   const body = document.createElement("div");
@@ -13976,6 +13959,82 @@ function halveBand(band){
   return [part(0, cut, true), part(cut, items.length, false)];
 }
 
+/* ==================================================================
+   3a. SECTION-TITLE ATOMS
+   ==================================================================
+   Every band, column, pocket and cloud title is a clickable atom, grounded
+   the same way tiles are: the prose ("long") lives here, the citation links
+   and the honest "Worth knowing" note live in LINKS[name], and openDetail
+   renders both. Several titles name an architecture ROLE, not a single SKU;
+   the LINKS note says so, matching how Medallion and Agentic Dev already do. */
+const TITLE_TILES = {
+  "Databricks Data Intelligence Platform": { n:"Databricks Data Intelligence Platform", s:"One open platform for data, analytics and AI",
+    long:"The whole platform in one box: a unified, open platform for building, deploying, sharing and maintaining enterprise data, analytics and AI. It uses AI to understand the semantics of your data, optimises performance and infrastructure automatically, and keeps your data in your own cloud storage." },
+  "Agentic Apps": { n:"Agentic Apps", ic:"apps", s:"Deploy agents at scale to transform work",
+    long:"The delivery layer of the platform: the surfaces that put agents and data in front of end users, Databricks Apps for governed custom apps, AI/BI dashboards, and served agent and model endpoints. Each is billed and governed as its own product; 'Agentic Apps' is the architecture role they share, not a single SKU." },
+  "Agentic Work": { n:"Agentic Work", ic:"agents", s:"Data-smart coworkers for every employee",
+    long:"The business-facing half of the platform. Genie and Agent Bricks turn Databricks into data-smart coworkers, so every employee, not only engineers, can ask questions, build and run agents and automate work, all grounded in governed data and Genie Ontology." },
+  "Unified Governance": { n:"Unified Governance", ic:"zshield", s:"Data + AI control and cost management",
+    long:"Unity Catalog is the single governance layer over data and AI. Tables, models, MCP servers, functions and connections are all securables under the same grants and attribute-based policies, with lineage, discovery and cost controls on top." },
+  "Agentic Data": { n:"Agentic Data", ic:"lakehouse", s:"Unified, real-time data foundation",
+    long:"The data foundation: Lakeflow ingests and transforms data, open Delta and Iceberg tables store one copy, and Lakebase adds a managed Postgres OLTP path, so analytical and operational workloads run side by side on the same governed data." },
+  "Open Infrastructure": { n:"Open Infrastructure", ic:"zopen", s:"Open source at the core, one open copy of your data",
+    long:"The open core of the lakehouse: Delta Lake and Apache Iceberg table formats, Apache Spark compute and open Unity Catalog, so one copy of your data is readable by Databricks and outside engines without lock-in or a second copy." },
+  "Ingest": { n:"Ingest", ic:"autoload", s:"Databricks-native landing paths",
+    long:"The Databricks-native ways data lands in the lakehouse: Lakeflow Connect managed connectors, Auto Loader for cloud files and Zerobus for direct telemetry writes, feeding the Delta tables the rest of the platform reads." },
+  "Serve": { n:"Serve", ic:"export", s:"Governed paths out",
+    long:"The governed paths data takes out of the platform: SQL warehouses for BI, OpenSharing and Marketplace for external sharing, Databricks Apps and Lakebase for applications, and MCP and APIs for agents, each enforcing the same Unity Catalog grants." },
+  "Genie Agents & Business Use Cases": { n:"Genie Agents & Business Use Cases", ic:"zapps", s:"What the platform is used for",
+    long:"The top band names what the platform is used for: the business use cases and the Genie agents that serve them. It is generic by default, and an industry view specialises it with that sector's use cases." },
+  "Cloud Services & Integrations": { n:"Cloud Services & Integrations", ic:"zcloudgear", s:"Your data stays in your own cloud",
+    long:"The cloud your workspace runs in and the outside systems it connects to: object storage, identity, security and monitoring from AWS, Azure or Google, plus catalog, AI, CI/CD and partner integrations. Your table data stays in your own cloud account." },
+  "Sources": { n:"Sources", ic:"zsrc", s:"Where the architecture reads from",
+    long:"The upstream systems the architecture reads from: databases, files, streaming and IoT, SaaS and partner data, and catalogs queried in place by federation. Each source lands once and is governed by Unity Catalog from the first hop." },
+  "Consumers": { n:"Consumers", ic:"zcons", s:"Who reads what the platform produces",
+    long:"The people and systems that read what the platform produces: BI and productivity tools, MCP clients and APIs, published data products, operational systems, Databricks Apps, AI/BI dashboards and agent harnesses. Every path out enforces the same Unity Catalog permissions." },
+  "External Ingestion": { n:"External Ingestion", ic:"zfunnel", s:"Non-native landing paths",
+    long:"Non-native ingestion paths that land data for Databricks to pick up: cloud ETL services and third-party ELT tools that write to object storage or push through partner connectors, running on the cloud services below." },
+  "Teams": { n:"Teams", ic:"people", s:"The people who use the platform",
+    long:"The people who use the platform: business teams who ask questions and act on answers, and technical teams who build and run the data and AI systems. A persona grouping that shows who each surface serves, not a Databricks feature." },
+  "Medallion Architecture": { n:"Medallion Architecture", s:"Bronze, silver, gold refinement",
+    long:"The bronze, silver and gold layering pattern for refining data: raw ingested data in bronze, cleaned and conformed data in silver, business-level aggregates in gold. It is a design convention you implement with pipelines and naming." },
+};
+
+/* Read the human title out of a section-header element whatever its markup:
+   band and cloud titles keep the name in an inner span; column, pocket and
+   Open-Infrastructure headers carry it as their own text node beside an icon
+   and a zoom button. */
+function titleName(el){
+  const span = el.querySelector(".bl-name > span, .cl-name > span");
+  if(span) return (span.textContent || "").trim();
+  return Array.from(el.childNodes).filter(n=> n.nodeType === 3)
+    .map(n=> n.textContent).join("").replace(/\s+/g, " ").trim();
+}
+
+/* Turn each grounded section title into a clickable atom. Runs at the end of
+   build(): the band and cloud titles are freshly rendered, and the static
+   column/pocket/platform headers are re-linked to the new byId (their DOM
+   persists across rebuilds, but byId is cleared, so they must be re-registered
+   every build or their click would resolve to a stale id). */
+function registerTitleAtoms(){
+  document.querySelectorAll(
+    ".band > .band-lbl, .cloud-lbl, .colhead, .pockhead, .band-row.medallion .oi-lbl"
+  ).forEach(el=>{
+    const t = TITLE_TILES[titleName(el)];
+    if(!t) return;                    // only titles with grounded detail become atoms
+    el.setAttribute("role", "button");
+    el.tabIndex = 0;
+    /* section "Section" (not the title's own name) is the drawer eyebrow and the
+       grouping key. A distinct value keeps title atoms out of every content
+       section's namespace, so section-scoped logic (e.g. source-tile enrichment
+       checks that group by section === "Sources") never miscounts a title. */
+    reg(el, t, null, "Section");      // arr=null: a title is not part of an ARCH array, like rlbl/foot
+    /* onkeydown assignment (not addEventListener) so re-registering the static
+       headers each build never stacks duplicate handlers. */
+    el.onkeydown = e=>{ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); el.click(); } };
+  });
+}
+
 function build(){
   Object.keys(byId).forEach(k=> delete byId[k]);
   Object.keys(nameIndex).forEach(k=> delete nameIndex[k]);
@@ -14016,6 +14075,7 @@ function build(){
     if(h.querySelector("svg")) return;
     h.insertAdjacentHTML("afterbegin", svg(h.dataset.ic, ""));
   });
+  registerTitleAtoms();
   if(activeRef) paintRef(activeRef);
   /* the filter is a property of the view, not of the model, so it is re-applied
      to the fresh DOM here rather than at each of build()'s callers */
@@ -14060,6 +14120,26 @@ const MEDALLION_ALSO = [
   ["Vibe Data Modeling agent", "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/model-agent"],
 ];
 const LINKS = {
+  /* ---- Section titles (bands, column/pocket heads, cloud bands, platform) ----
+     Every section title is a clickable atom grounded here the same way tiles are:
+     a real Databricks docs path plus an honest note. Several titles name an
+     architecture ROLE rather than a single SKU, and the note says so, matching how
+     Medallion and Agentic Dev already declare "convention" / "not one product". */
+  "Databricks Data Intelligence Platform": { doc:"introduction/", site:"https://www.databricks.com/product/data-intelligence-platform", note:"The umbrella product name for everything in this box. It is one platform over a single copy of your data that stays in your own cloud account; ingestion, storage, governance, AI and serving are parts of it, not separate products." },
+  "Agentic Apps": { doc:"dev-tools/databricks-apps/", site:"https://www.databricks.com/product/databricks-apps", blog:"https://www.databricks.com/blog/announcing-general-availability-databricks-apps", note:"An architecture role, not one SKU: the surfaces that deliver agents to users (Databricks Apps, AI/BI, served agent and model endpoints). Databricks Apps bill per hour of provisioned serverless compute and each workspace allows only a limited number." },
+  "Agentic Work": { doc:"genie/", site:"https://www.databricks.com/genie", blog:"https://www.databricks.com/blog/introducing-genie-one-genie-ontology-and-genie-agents", note:"A platform pillar spanning Genie and Agent Bricks, not a single product. Genie has no seat pricing; each user gets up to 10 US dollars of free monthly usage and you pay only for AI consumed beyond that." },
+  "Unified Governance": { doc:"data-governance/unity-catalog/", site:"https://www.databricks.com/product/unity-catalog", blog:"https://www.databricks.com/blog/whats-new-unity-catalog-data-ai-summit-2026", note:"The product is Unity Catalog; 'Unified Governance' is the role it plays. Tables, models, MCP servers, functions and connections are all securables, but transactional Lakebase access is still governed by Postgres GRANTs." },
+  "Agentic Data": { doc:"data-engineering/", site:"https://www.databricks.com/product/data-engineering", blog:"https://www.databricks.com/blog/announcing-general-availability-databricks-lakeflow", note:"A pillar spanning Lakeflow, open Delta/Iceberg storage and Lakebase, not one product. The pipelines engine is now open-source Spark Declarative Pipelines." },
+  "Open Infrastructure": { doc:"lakehouse/", site:"https://www.databricks.com/product/data-lakehouse", blog:"https://www.databricks.com/blog/advancing-lakehouse-apache-iceberg-v3-databricks", note:"The open core: Delta Lake, Apache Iceberg, Apache Spark and open Unity Catalog. Managed Iceberg tables in Unity Catalog are writable, but foreign Iceberg tables owned by an external catalog are read-only." },
+  "Ingest": { doc:"ingestion/", site:"https://www.databricks.com/product/data-engineering/lakeflow-connect", blog:"https://www.databricks.com/blog/announcing-general-availability-lakeflow-connect", note:"An architecture stage, not one product: Lakeflow Connect, Auto Loader and Zerobus. Lakeflow Connect managed connectors run only on serverless compute and Lakeflow pipelines, and connectors sit at different release states." },
+  "Serve": { doc:"compute/sql-warehouse/", site:"https://www.databricks.com/product/databricks-sql", blog:"https://www.databricks.com/blog/introducing-opensharing-next-evolution-delta-sharing-agentic-era", note:"An architecture stage covering BI, sharing, apps and APIs, not one product. Every path out inherits the caller's Unity Catalog permissions, so governance decides what each consumer can read." },
+  "Genie Agents & Business Use Cases": { doc:"genie-agents/", site:"https://www.databricks.com/product/genie/agents", blog:"https://www.databricks.com/blog/designing-effective-genie-agents-single-prompt", note:"This band names what the platform is used for. Genie agent answer quality depends on the datasets, sample queries and instructions you curate for each agent, so setup effort matters more than model choice." },
+  "Cloud Services & Integrations": { doc:"compute/", site:"https://www.databricks.com/product/data-intelligence-platform", note:"The cloud your workspace runs in and the outside systems it connects to. Classic compute runs in your own cloud account; serverless runs in the Databricks account, so 'your data stays in your perimeter' is fully true only for classic compute." },
+  "Sources": { doc:"connect/", site:"https://www.databricks.com/product/data-intelligence-platform", note:"An architecture grouping of upstream systems, not a Databricks product. Access runs through Unity Catalog connections and storage credentials, and federated sources are queried in place rather than copied." },
+  "Consumers": { doc:"opensharing/", site:"https://www.databricks.com/product/data-intelligence-platform", note:"An architecture grouping of downstream readers, not a product. Each consumer inherits the caller's Unity Catalog grants, so what a report, app or agent can read is decided by governance, not by the tool." },
+  "External Ingestion": { doc:"ingestion/lakeflow-connect/", site:"https://www.databricks.com/product/data-engineering/lakeflow-connect", note:"A grouping of non-Databricks pipelines (cloud ETL and third-party ELT), not one product. Partner ELT is billed separately per connector or row, and Lakeflow Connect now offers managed connectors for many of the same sources." },
+  "Teams": { doc:"admin/users-groups/", note:"An architecture grouping of the people who use Databricks (business and technical), not a product or governed object. Real access is managed through Unity Catalog groups synced from your identity provider." },
+  "Medallion Architecture": { doc:"lakehouse/medallion/", blog:"https://www.databricks.com/blog/what-is-medallion-architecture-article", note:"A layering convention (bronze, silver, gold) with no platform enforcement. You implement it through pipelines and naming, and Unity Catalog does not validate or police layer boundaries." },
   "ADLS Gen2": { url:"https://learn.microsoft.com/azure/storage/blobs/data-lake-storage-introduction", dbx:"connect/storage/azure-storage/", site:"https://azure.microsoft.com/products/storage/data-lake-storage", note:"Primary table storage; access goes through Unity Catalog storage credentials and external locations, and requires hierarchical namespace enabled." },
   "AI/BI": { doc:"ai-bi/", site:"https://www.databricks.com/product/business-intelligence/ai-bi-dashboards", blog:"https://www.databricks.com/blog/next-level-interactivity-aibi-dashboards", note:"Dashboards execute on SQL warehouses and support Slack and Teams subscriptions, but external embedding has to be enabled by an admin before it works." },
   "AWS DMS": { url:"https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html", site:"https://aws.amazon.com/dms/", note:"Lands database change data as files in S3 that Databricks picks up with Auto Loader; ordering depends on the DMS commit timestamp columns." },
@@ -15126,7 +15206,7 @@ function applyZoom(key){
 
 function toggleZoom(key){ applyZoom(zoomKey === key ? null : key); }
 
-platMaxBtn.onclick = ()=> toggleZoom("plat");
+platMaxBtn.onclick = (e)=>{ e.stopPropagation(); toggleZoom("plat"); };
 document.addEventListener("click", e=>{
   const zb = e.target.closest && e.target.closest(".zx");
   if(zb){ e.stopPropagation(); toggleZoom(zb.dataset.zoom); }
