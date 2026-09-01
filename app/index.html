@@ -480,8 +480,49 @@
 
   * { box-sizing:border-box; }
   html,body { margin:0; padding:0; }
-  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  :root { --ui-stack:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  body { font-family:var(--ui-stack);
     background:var(--bg); color:var(--ink); line-height:1.4; -webkit-font-smoothing:antialiased; font-size:14px; }
+  /* Non-Latin scripts fall back to poor default glyphs in the Latin UI stack, so
+     each language that leaves the Latin script gets a system font that actually
+     draws it well (no web fonts: the board downloads and renders offline). The
+     script font leads, then the Latin stack covers any brand/product token that
+     stays in English inside a translated sentence via per-glyph fallback. The
+     English toolbar chrome is reset back to the Latin stack below so it is
+     pixel-identical whatever the content language. Cyrillic (sr) is covered by
+     the Latin stack already, so it needs no override. */
+  html[data-lang="ar"] body { --ui-stack:"Noto Sans Arabic","Geeza Pro","Segoe UI",Tahoma,"Arial",sans-serif; }
+  html[data-lang="hi"] body { --ui-stack:"Noto Sans Devanagari","Kohinoor Devanagari","Nirmala UI","Mangal",sans-serif; }
+  html[data-lang="zh"] body { --ui-stack:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Noto Sans SC",sans-serif; }
+  html[data-lang="ar"] body, html[data-lang="hi"] body, html[data-lang="zh"] body { font-family:var(--ui-stack); }
+  /* RTL bidi for Arabic content only. The board grid stays LTR (geometry is
+     unchanged); we flip the reading direction of the text-bearing chrome so a
+     line that mixes Arabic prose with an English brand token ("منصة Databricks
+     لذكاء البيانات") orders correctly instead of scrambling under an LTR
+     paragraph. Centred headers take container-level rtl (the lead mark moves to
+     the natural reading side); tile and band labels take leaf-level rtl so the
+     icon beside them keeps its place. */
+  html[data-lang="ar"] .plat-head,
+  html[data-lang="ar"] .colhead,
+  html[data-lang="ar"] .pockhead { direction:rtl; }
+  html[data-lang="ar"] .t-name,
+  html[data-lang="ar"] .ct-name,
+  html[data-lang="ar"] .ct-sub,
+  html[data-lang="ar"] .band-lbl .bl-name > span,
+  html[data-lang="ar"] .band-lbl .bl-sub,
+  html[data-lang="ar"] .cloud-lbl .cl-name > span,
+  html[data-lang="ar"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
+  /* Detail panel is a self-contained column, so it flips wholesale in Arabic:
+     the head + body read right-to-left (dir is stamped on #d-head/#d-body), and
+     the close/dock controls move to the natural RTL side (top-left) so the
+     right-aligned title no longer collides with them. The panel keeps its
+     right-edge anchor; only its internal reading order flips. */
+  html[data-lang="ar"] .d-close { right:auto; left:16px; }
+  html[data-lang="ar"] .d-dock { right:auto; left:52px; }
+  html[data-lang="ar"] body.docked .d-dock { left:16px; }
+  /* Toolbar stays English chrome: force the Latin stack regardless of content
+     language. Native language names in the picker still fall back per-glyph. */
+  header.top { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
   /* Every tile in the diagram is a BUTTON, and a button does not inherit colour:
      the user agent gives it the `buttontext` system colour, which is pure black
      under a light `color-scheme` and pure white under a dark one. So the tile
@@ -502,44 +543,61 @@
      theme, palette and download simply vanished. The toolbar is now a single
      unshrinkable group and the tab strip is the only thing allowed to give way,
      by scrolling. */
-  header.top { --hpadv:7px; --hgap:12px;
-    display:flex; align-items:center; gap:var(--hgap); padding:var(--hpadv) 22px; background:var(--card);
+  header.top { --hpadv:6px; --hgap:9px;
+    display:flex; align-items:center; gap:var(--hgap); padding:var(--hpadv) 12px; background:var(--card);
     border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30; flex-wrap:nowrap; }
-  .logo { display:flex; align-items:center; gap:9px; font-weight:800; font-size:18px;
+  .logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:15px;
     letter-spacing:-.02em; flex:0 0 auto; }
   .logo .mark { width:22px; height:22px; flex:0 0 auto; color:var(--brand); }
   /* flex:0 0 auto and nowrap together are the protection: whatever the tabs do,
      these controls keep their width and their place */
   .htools { display:flex; align-items:center; gap:var(--hgap); flex:0 0 auto; margin-left:auto; }
 
-  .hbtn { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:var(--card);
-    font:inherit; font-size:12.5px; font-weight:650; color:var(--muted); border-radius:9px; padding:7px 11px; cursor:pointer; }
+  .hbtn { display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;
+    height:28px; border:1px solid var(--line); background:var(--card);
+    font:inherit; font-size:11px; font-weight:700; color:var(--muted); border-radius:7px; padding:0 9px; cursor:pointer; }
   .hbtn:hover { color:var(--ink); border-color:var(--line-strong); }
   .hbtn.on { background:var(--brand); border-color:var(--brand); color:var(--on-accent); }
-  /* Tour is a replay affordance, not a primary control: it collapses to its
-     glyph so the bar reads Industry-first and the icon still opens the tour. */
-  .hbtn.ico-only { padding:7px 9px; gap:0; }
+  /* Icon-only controls collapse to a square glyph button (reference .iconbtn:
+     30x28, 9px radius) so the bar reads Industry-first. */
+  .hbtn.ico-only { width:30px; padding:0; gap:0; border-radius:9px; font-size:14px; }
+  .hbtn.ico-only .btn-lbl { display:none; }
+  /* The palette's identity IS its five swatches, so it keeps them as its glyph
+     and sizes to fit them rather than the fixed 30px square, which was clipping
+     the last swatch. */
+  #pal-btn.ico-only { width:auto; padding:0 7px; }
+  /* Line-drawn glyphs (download, stage, language) sized to sit level with the
+     unicode glyphs and the text controls in a 28px-tall bar. */
+  .ico-svg { width:15px; height:15px; display:block; fill:none; stroke:currentColor;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   /* Industry decides what the whole board is about, so it leads the bar as a
      wider, emphasised control rather than one chip among equals. */
   #ind-btn { font-weight:750; color:var(--ink); border-color:var(--line-strong); }
-  .seg { display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:var(--card); }
-  .seg button { border:none; background:none; font:inherit; font-size:12px; font-weight:650; color:var(--muted);
-    padding:7px 10px; cursor:pointer; border-right:1px solid var(--line); }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:7px; overflow:hidden; background:var(--card); }
+  .seg button { display:inline-flex; align-items:center; height:28px; box-sizing:border-box;
+    border:none; background:none; font:inherit; font-size:11px; font-weight:700; color:var(--muted);
+    padding:0 11px; cursor:pointer; border-right:1px solid var(--line); }
   .seg button:last-child { border-right:none; }
   .seg button.on { background:var(--g-amber-line); color:var(--on-accent); }
+  /* Nothing to switch on this board (e.g. the generic reference board): the
+     control is greyed and inert rather than flipping the mode with no visible
+     effect, which read as broken. */
+  .seg.seg-off { opacity:.45; }
+  .seg.seg-off button { cursor:default; }
   /* One header row is worth ~40px of board height, and the controls only just fit
      on a 1512-wide laptop: tighten them rather than let the bar wrap. */
   @media (max-width:1820px) {
-    header.top { --hpadv:6px; --hgap:8px; padding:var(--hpadv) 14px; }
-    .hbtn { padding:7px 9px; gap:5px; }
+    header.top { --hgap:8px; }
+    .hbtn { padding:0 8px; gap:5px; }
     .tab { padding:6px 11px 7px; }
-    .logo { font-size:16px; }
+    .logo { font-size:15px; }
   }
   @media (max-width:1560px) {
-    header.top { --hpadv:6px; --hgap:6px; padding:var(--hpadv) 11px; }
-    .hbtn { padding:7px 8px; font-size:12px; }
+    header.top { --hgap:6px; }
+    .hbtn { padding:0 7px; }
+    .hbtn.ico-only { width:28px; }
     .tab { padding:6px 9px 7px; font-size:12px; }
-    .logo { font-size:15px; } .logo .mark { width:19px; height:19px; }
+    .logo { font-size:14px; } .logo .mark { width:19px; height:19px; }
   }
   /* Tabs sit on the header's bottom edge and the active one is filled with the
      page colour, so the sheet below reads as that tab's own surface. The
@@ -595,6 +653,9 @@
   /* The + is the only way to discover the builder, so it is drawn as an open
      invitation rather than a glyph: a dashed brand outline that fills in and
      lifts under the cursor, offset clear of the active tab's shoulder. */
+  /* Edit / clone-to-tab affordance hidden for now (overrides the inline display
+     that updateEditVisibility() sets, so the button never appears). */
+  #tab-add { display:none !important; }
   .tab-add { display:flex; align-items:center; justify-content:center; gap:5px;
     border:1.5px dashed var(--brand-bd); background:var(--brand-wash); font:inherit;
     font-size:12.5px; font-weight:700; color:var(--brand); height:27px; padding:0 10px;
@@ -921,6 +982,11 @@
      style, which is the state the export is meant to capture. */
   body.exp-static *, body.exp-static *::before, body.exp-static *::after {
     animation:none !important; transition:none !important; }
+  /* Zoom (.zx) and platform-maximise (.ph-max) are on-screen interface, not
+     architecture: the raster path deletes them from its clone, and the vector
+     (PPTX/PDF) path reads the live DOM, so they are hidden here too. walk()
+     skips display:none, so this keeps both maximise glyphs out of static assets. */
+  body.exp-static .zx, body.exp-static .ph-max { display:none !important; }
   /* The band connectors touch BOTH ends: 2px seam against the band and 2px against
      the platform box, so neither the arrowhead nor the tail floats. (Previously the
      platform end kept a --zo gap, which read as a disconnected arrow.) */
@@ -1089,7 +1155,7 @@
   .rail.ing  .rtile .ic, .rail.ing  .rtile svg.mark { color:var(--g-teal-ink); }
   .rail.ppl  .rtile .ic, .rail.ppl  .rtile svg.mark { color:var(--g-violet-ink); }
   .rtile.cloudy .ic, .rtile.cloudy svg.mark { color:var(--g-amber-ink); }
-  .rtile .t-name { font-size:11px; font-weight:650; line-height:1.2; min-width:0; }
+  .rtile .t-name { font-size:11px; font-weight:650; line-height:1.2; min-width:0; overflow-wrap:break-word; }
   /* ---------- platform (Z shape) ---------- */
   /* Two elements draw one box. The corners that meet are square and the shared
      border is erased by .plat-body::before across the overlap only, so the pair
@@ -1614,6 +1680,15 @@
   .b-work .band-lbl .bl-name { align-items:flex-start; white-space:normal; }
   .b-work .band-lbl .bl-name > span { min-width:0; }
   .b-work .band-rlbl { flex:0 0 96px; align-self:center; }
+  /* Both bookends are a fixed 96px column carrying a two-word label that stacks
+     onto two lines. English ("Agentic"/"Work", "Agentic"/"Dev") fits, but a long
+     single word in another language (French "Développement", 13 chars) is wider
+     than the column and used to spill past the board's right edge. Let the label
+     wrap inside a word and hyphenate on the content language (set as the real
+     lang attribute in applyLang), so long words break cleanly instead of
+     clipping. English words are short enough that this never triggers. */
+  .b-work .band-lbl .bl-name > span,
+  .b-work .band-rlbl .bl-name > span { min-width:0; overflow-wrap:break-word; hyphens:auto; }
   /* The two rectangles (Genie, Agent Bricks) stretch to one shared height and
      top-align their contents, so the boxes line up as a pair even though Genie
      carries a chip rail Agent Bricks does not. */
@@ -1785,7 +1860,7 @@
   .ctile:hover { border-color:var(--cloud-accent); box-shadow:var(--shadow); transform:translateY(-1px); }
   .ctile .ic { width:15px; height:15px; flex:0 0 auto; color:var(--cloud-accent); }
   .ctile .ct { min-width:0; }
-  .ctile .ct-name { display:block; font-size:11.5px; font-weight:700; line-height:1.2; }
+  .ctile .ct-name { display:block; font-size:11.5px; font-weight:700; line-height:1.2; overflow-wrap:break-word; }
   /* The group's own ink, not the neutral grey. Grey reads fine on a white card and
      it does not survive the chip being tinted: on the denser palettes it fell to
      3.7 against the fill it now sits on. The ink is the one colour solved against
@@ -2059,7 +2134,7 @@
   .pal-menu button i { margin-left:auto; font-style:normal; font-size:9.5px;
     font-weight:650; color:var(--faint); }
   .pal-menu button.cnt.on::after { margin-left:6px; }
-  .pal-menu .men-hd { font-size:9.5px; font-weight:750; letter-spacing:.07em;
+  .pal-menu .men-hd, .dl-menu .men-hd { font-size:9.5px; font-weight:750; letter-spacing:.07em;
     text-transform:uppercase; color:var(--faint); padding:6px 9px 3px; }
   /* the shape thumbnails are drawn from the same tokens as the platform itself,
      so a palette or theme change carries into the menu without a second table */
@@ -2151,7 +2226,7 @@
   .d-body h4 { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin:17px 0 7px; font-weight:800; }
   .d-body h4:first-child { margin-top:0; }
   .d-body p { font-size:13.5px; margin:0 0 9px; }
-  .d-body ul { margin:0; padding-left:17px; font-size:13.5px; }
+  .d-body ul { margin:0; padding-inline-start:17px; font-size:13.5px; }
   .d-body li { margin-bottom:3px; }
   .d-note { color:var(--muted); }
   /* One row per reference, each naming where it goes, because "Documentation"
@@ -2367,22 +2442,23 @@
   </div>
   <div class="seg" id="display-seg" title="Show products by commercial brand name, or rooted back to their generic category"></div>
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
-  <button class="hbtn" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl">Dark</span></button>
+  <button class="hbtn ico-only" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl" class="btn-lbl">Dark</span></button>
   <div class="pal-wrap" id="pal-wrap">
-    <button class="hbtn" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span> Palette</button>
+    <button class="hbtn ico-only" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span></button>
     <div class="pal-menu" id="pal-menu"></div>
   </div>
   <div class="pal-wrap" id="shape-wrap">
-    <button class="hbtn" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span> Style</button>
+    <button class="hbtn ico-only" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span></button>
     <div class="pal-menu" id="shape-menu"></div>
   </div>
   <div class="pal-wrap" id="stage-wrap">
-    <button class="hbtn" id="stage-btn" title="Choose which release stages the platform box shows">▤ <span id="stage-lbl">Stage</span></button>
+    <button class="hbtn ico-only" id="stage-btn" title="Choose which release stages the platform box shows"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg> <span id="stage-lbl" class="btn-lbl">Stage</span></button>
     <div class="pal-menu" id="stage-menu"></div>
   </div>
   <div class="dl-wrap" id="dl-wrap">
-    <button class="hbtn" id="dl-btn" title="Download this architecture">⭳ Download</button>
+    <button class="hbtn ico-only" id="dl-btn" title="Download this architecture"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
     <div class="dl-menu" id="dl-menu">
+      <div class="men-hd">Download</div>
       <button data-dl="pdf">PDF <i>deck</i></button>
       <button data-dl="pptx">PowerPoint <i>deck</i></button>
       <button data-dl="png">Image <i>png</i></button>
@@ -2393,7 +2469,12 @@
         GIF capture the current view, including <b>Platform only</b>. HTML stays interactive.</div>
     </div>
   </div>
-  <button class="hbtn ico-only" id="tour-btn" type="button" aria-label="Take a guided tour of the board" title="Take a guided tour of the board"><span aria-hidden="true">◎</span></button>
+  <button class="hbtn ico-only" id="side-btn" type="button" title="Show the details panel docked on the side" aria-label="Show the details panel docked on the side" aria-pressed="false"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+  <div class="pal-wrap" id="lang-wrap">
+    <button class="hbtn ico-only" id="lang-btn" title="Translate the architecture content. The toolbar and menus stay in English; product and brand names are never translated."><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg></button>
+    <div class="pal-menu" id="lang-menu"></div>
+  </div>
+  <button class="hbtn ico-only" id="tour-btn" type="button" aria-label="Take a guided tour of the board" title="Take a guided tour of the board"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z"/></svg></button>
   </div>
 </header>
 
@@ -2436,7 +2517,7 @@
     </div>
     <div class="gutter g1"><span class="flow"></span></div>
     <div class="gutter g0"><span class="flow"></span></div>
-    <div class="colhead plat-head">
+    <div class="colhead plat-head" data-en="Databricks Data Intelligence Platform">
       <svg class="ph-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z"/></svg>
       Databricks Data Intelligence Platform
       <button class="ph-max" id="plat-max" type="button" aria-pressed="false" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="ph-max-out" d="M6 2H2v4M10 2h4v4M10 14h4v-4M6 14H2v-4"/><path class="ph-max-in" d="M2 6h4V2M14 6h-4V2M14 10h-4v4M2 10h4v4"/></svg></button>
@@ -2498,7 +2579,7 @@
 <aside class="drawer" id="drawer">
   <button class="d-dock" id="ddock" type="button" title="Dock panel to the side" aria-label="Dock panel to the side" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></button>
   <button class="d-close" id="dclose">✕</button>
-  <div class="d-head">
+  <div class="d-head" id="d-head">
     <div class="d-eyebrow" id="d-eyebrow"></div>
     <div class="d-title" id="d-title"></div>
     <div class="d-tagline" id="d-tagline"></div>
@@ -13261,15 +13342,133 @@ const roleIndex = {};   /* provider-neutral cloud handles, e.g. "cloud:storage" 
    are currently on the board. The Display switch reads it to root a commercial
    product back to its category without disturbing the tile's real identity. */
 const nameToCat = {};
+
+/* ==================================================================
+   i18n — architecture-content translation layer
+   ==================================================================
+   The app CHROME (toolbar, menus, tour, edit form, download note) stays in
+   English at all times. Only the architecture CONTENT — band/section labels,
+   tile categories, drawer prose, tooltips, the reference banner — is
+   translated, into the language of every country with a Databricks office.
+
+   T() translates a SOURCE English string via the active-language dictionary.
+   Product and brand names were never added to those dictionaries (tools/
+   build_i18n.js protects them with a glossary), so a brand has no entry and
+   T() returns it unchanged — English inside an otherwise-translated sentence. */
+const LANG_LS = "dbxarch.lang";
+const LANGS = [
+  { code:"en", native:"English",  dir:"ltr" },
+  { code:"fr", native:"Français", dir:"ltr" },
+  { code:"es", native:"Español",  dir:"ltr" },
+  { code:"zh", native:"中文",      dir:"ltr" },
+  { code:"ar", native:"العربية",    dir:"rtl" },
+  { code:"hi", native:"हिन्दी",      dir:"ltr" },
+];
+const I18N = { lang:"en", dir:"ltr", dict:{}, loaded:{ en:{} } };
+function T(s){
+  if(typeof s !== "string" || I18N.lang === "en") return s;
+  const t = I18N.dict[s];
+  return (typeof t === "string" && t) ? t : s;
+}
+/* An offline HTML export inlines its dictionary here so the file translates
+   with no network. Populated by exportHtml(); read once at boot. */
+function frozenLangDict(){
+  try {
+    const el = document.getElementById("frozen-lang");
+    if(el && el.textContent.trim()) return JSON.parse(el.textContent);
+  } catch(e){}
+  return null;
+}
+async function loadLang(code){
+  if(code === "en"){ I18N.dict = {}; return; }
+  if(I18N.loaded[code]){ I18N.dict = I18N.loaded[code]; return; }
+  const frozen = frozenLangDict();
+  if(frozen && frozen[code]){ I18N.loaded[code] = frozen[code]; I18N.dict = frozen[code]; return; }
+  try {
+    const r = await fetch("i18n/" + code + ".json", { cache:"no-store" });
+    const d = r.ok ? await r.json() : {};
+    I18N.loaded[code] = d; I18N.dict = d;
+  } catch(e){ I18N.loaded[code] = {}; I18N.dict = {}; }
+}
+async function applyLang(code, persist){
+  const meta = LANGS.find(l => l.code === code) || LANGS[0];
+  await loadLang(meta.code);
+  I18N.lang = meta.code; I18N.dir = meta.dir;
+  if(persist) store.set(LANG_LS, meta.code);
+  document.documentElement.setAttribute("data-lang", meta.code);
+  /* The real lang attribute (not just data-lang) is what CSS hyphens:auto keys
+     off for language-correct word breaks, and it improves a11y/screen-reader
+     pronunciation. data-lang stays as the styling hook the rest of the CSS uses. */
+  document.documentElement.setAttribute("lang", meta.code);
+  if(typeof syncLangMenu === "function") syncLangMenu();
+  if(typeof build === "function") build();
+  if(typeof fitBoard === "function") fitBoard();
+  if(typeof translateContent === "function") translateContent();
+}
+/* Static board content that lives in the HTML (not rebuilt by build()): the
+   four outer column headings plus the platform heading. "Databricks Data
+   Intelligence Platform" IS translated now (the brand token "Databricks" stays
+   English via the glossary; the generic "Data Intelligence Platform" localises),
+   and its click identity is preserved by the data-en stamped on .plat-head. */
+const STATIC_HEADS = { zsrc:"Sources", zcons:"Consumers", zfunnel:"External Ingestion", people:"Teams" };
+function setLeadText(el, english){
+  for(const n of el.childNodes){
+    if(n.nodeType === 3 && n.textContent.trim()){ n.textContent = T(english); return; }
+  }
+}
+/* Prose-heavy content blocks read right-to-left in Arabic/Hebrew; the board
+   grid and the English chrome stay left-to-right so the diagram is unchanged. */
+function applyContentDir(){
+  const d = I18N.dir;
+  ["d-head", "d-body", "tip", "ref-name", "ref-blurb"].forEach(id => {
+    const el = document.getElementById(id); if(el) el.setAttribute("dir", d);
+  });
+}
+/* One-off static blocks that live in the HTML shell (not rebuilt by build()):
+   the reference legend and the Edit-tab placeholder. The English original is
+   captured once so switching back to English restores it verbatim (the legend
+   keeps its bold section markers; translated languages show a clean sentence). */
+const STATIC_BLOCKS = [
+  { sel:".ref-legend", key:"Highlighted components are used by this solution, across the platform, the Genie Agents & Business Use Cases band, the Sources, External Ingestion, Teams and Consumers boxes and the Cloud Services & Integrations band. Hover a highlight for how it is used; click for full detail." },
+  { sel:".bld-soon", key:"Coming Soon" },
+  { sel:".bld-sub", key:"Describing a customer in words and having this architecture drawn for them is not implemented yet. The Reference Architecture tab is live: pick an industry, a cloud, a shape and a palette there, and download it." },
+  { sel:"#d-empty span", key:"Click any box to see its details here." }
+];
+let _staticOrigHTML = null;
+function translateContent(){
+  document.querySelectorAll(".colhead[data-ic], .pockhead[data-ic]").forEach(el => {
+    const k = el.getAttribute("data-ic");
+    if(STATIC_HEADS[k]) setLeadText(el, STATIC_HEADS[k]);
+  });
+  /* The platform heading is a static text node too, but keyed by its data-en
+     identity rather than a data-ic (it carries a mark svg, not a section icon).
+     T() keeps "Databricks" English and localises the rest; on English it is a
+     no-op that restores the source. */
+  const ph = document.querySelector(".plat-head[data-en]");
+  if(ph) setLeadText(ph, ph.getAttribute("data-en"));
+  if(!_staticOrigHTML){
+    _staticOrigHTML = {};
+    STATIC_BLOCKS.forEach(b => { const el = document.querySelector(b.sel); if(el) _staticOrigHTML[b.sel] = el.innerHTML; });
+  }
+  const en = I18N.lang === "en";
+  STATIC_BLOCKS.forEach(b => {
+    const el = document.querySelector(b.sel); if(!el) return;
+    if(en) el.innerHTML = _staticOrigHTML[b.sel];
+    else { el.textContent = T(b.key); el.setAttribute("dir", I18N.dir); }
+    if(en) el.removeAttribute("dir");
+  });
+  applyContentDir();
+}
+
 const DISPLAY_LS = "dbxarch.dais2026.display";
 let displayMode = (function(){ const v = store.get(DISPLAY_LS); return v === "commercial" ? "commercial" : "category"; })();
-function dispName(n){ return (displayMode === "category" && nameToCat[n]) ? nameToCat[n] : n; }
+function dispName(n){ const label = (displayMode === "category" && nameToCat[n]) ? nameToCat[n] : n; return T(label); }
 /* A tile's own label reads its `cat` straight off the object, not through the
    nameToCat map: renderRail computes the label before reg() has filled the map
    for the current build, so the map lookup would still hold the previous render.
    dispName (map-based) stays for chips, which resolve a bare NAME string after
    build() has fully populated the map. */
-function displayName(t){ return t ? ((displayMode === "category" && t.cat) ? t.cat : t.n) : ""; }
+function displayName(t){ if(!t) return ""; const label = (displayMode === "category" && t.cat) ? t.cat : t.n; return T(label); }
 /* Export/render copy of a tile with its commercial product references swapped
    for their category labels when the board is in Categorical mode, so a
    downloaded PPTX/PDF matches the on-screen display exactly. Never mutates the
@@ -13277,8 +13476,9 @@ function displayName(t){ return t ? ((displayMode === "category" && t.cat) ? t.c
    fields that hold source/consumer product NAMES are remapped: the title
    (via displayName, which is cat-aware), and the atom-referencing lists
    comps/feeds and the who line (via the same nameToCat map the drawer chips
-   use). Prose (long, problem, how, questions, stories) and non-product lists
-   (kpis, teams) are copied verbatim. */
+   use). The sub/desc taglines, KPI and team labels localise the same way the
+   drawer does (dispProse / dispName -> T) so a translated deck carries them;
+   customer stories stay verbatim (proper names). */
 /* Prose relabeller: in Categorical mode, swap every commercial product name that
    owns a category for that category, inside a free-text sentence (a use case's
    "how it is built", a Genie question, a source's "what it does"). One pass over
@@ -13288,7 +13488,12 @@ function displayName(t){ return t ? ((displayMode === "category" && t.cat) ? t.c
    untouched. Uses reEsc (not the HTML `esc`) to escape regex metacharacters in
    names that carry "/", "&" or "(". */
 function dispProse(text){
-  if(displayMode !== "category" || !text) return text;
+  if(!text) return text;
+  /* Non-English: translate the ORIGINAL sentence (the dictionaries are keyed on
+     it) and skip category substitution, so any product name the sentence names
+     stays in English inside the translated prose. */
+  if(I18N.lang !== "en") return T(text);
+  if(displayMode !== "category") return text;
   const keys = Object.keys(nameToCat);
   if(!keys.length) return text;
   keys.sort((a, b) => b.length - a.length);
@@ -13302,8 +13507,12 @@ function dispTile(t){
   const proseArr = a => Array.isArray(a) ? a.map(dispProse) : a;
   return Object.assign({}, t, {
     n: displayName(t),
+    s: t.s ? dispProse(t.s) : t.s,
+    desc: t.desc ? dispProse(t.desc) : t.desc,
     comps: mapArr(t.comps),
     feeds: mapArr(t.feeds),
+    kpis: mapArr(t.kpis),
+    teams: mapArr(t.teams),
     who: t.who ? dispName(t.who) : t.who,
     long: dispProse(t.long),
     what: dispProse(t.what),
@@ -13326,7 +13535,15 @@ function reg(el, tile, arr, sectionName){
   const id = "a" + (++uid);
   el.dataset.id = id;
   el.classList.add("atom");
-  el.onclick = (e)=>{ e.stopPropagation(); editMode ? openEdit(id) : openDetail(id); };
+  el.onclick = (e)=>{
+    /* A section header (Sources/Teams/Ingest/Consumers/cloud/platform) is a
+       clickable atom that also holds a zoom (.zx) or maximise (.ph-max) control.
+       Those are handled by their own listeners (the .zx one is delegated on
+       document), so when the click lands on them this atom must NOT open its
+       drawer AND must NOT stop propagation, or the zoom/maximise never fires. */
+    if(e.target.closest && e.target.closest(".zx, .ph-max")) return;
+    e.stopPropagation(); editMode ? openEdit(id) : openDetail(id);
+  };
   /* the release-stage filter reads this attribute off the DOM, so every atom
      gets it in the one place every atom is created */
   const sk = stageKey(tile.st);
@@ -13350,7 +13567,7 @@ function resolveAtom(name){ return nameIndex[name] || roleIndex[name] || null; }
    overflows the card on narrow viewports. */
 function capsHtml(list){
   if(!list || !list.length) return "";
-  return `<span class="p-caps">${list.map(esc).join(' <i aria-hidden="true">|</i> ')}</span>`;
+  return `<span class="p-caps">${list.map(x=>esc(T(x))).join(' <i aria-hidden="true">|</i> ')}</span>`;
 }
 function addBtn(arr, section, host, wide){
   if(!editMode) return;
@@ -13370,7 +13587,7 @@ function productCard(t, arr, section, grow){
     `<span class="pico">${titleIcon(t,"")}</span>` +
     `<span class="ptxt">` +
       `<span class="p-name">${escWrap(t.n)}</span>` +
-      (t.s ? `<span class="p-sub">${esc(t.s)}</span>` : "") +
+      (t.s ? `<span class="p-sub">${esc(T(t.s))}</span>` : "") +
       capsHtml(t.caps) +
     `</span>`;
   reg(b, t, arr, section);
@@ -13390,8 +13607,8 @@ function panelEl(g, section){
   hb.className = "phead";
   hb.innerHTML =
     `<span class="ph-top"><span class="pico">${titleIcon(g.head,"")}</span>` +
-      `<span class="ph-name">${esc(g.head.n)}</span></span>` +
-    (g.head.s ? `<span class="ph-sub">${esc(g.head.s)}</span>` : "");
+      `<span class="ph-name">${esc(T(g.head.n))}</span></span>` +
+    (g.head.s ? `<span class="ph-sub">${esc(T(g.head.s))}</span>` : "");
   reg(hb, g.head, null, section);
   head.appendChild(hb);
   p.appendChild(head);
@@ -13402,8 +13619,8 @@ function panelEl(g, section){
     const col = document.createElement("button");
     col.className = "pcol";
     col.innerHTML =
-      `<span class="pc-top"><span class="tagpill">${titleIcon(c,"")}${esc(c.tag || c.n)}</span></span>` +
-      (c.desc ? `<span class="pc-desc">${esc(c.desc)}</span>` : "");
+      `<span class="pc-top"><span class="tagpill">${titleIcon(c,"")}${esc(T(c.tag || c.n))}</span></span>` +
+      (c.desc ? `<span class="pc-desc">${esc(T(c.desc))}</span>` : "");
     reg(col, c, g.cols, section);
     cols.appendChild(col);
   });
@@ -13436,8 +13653,8 @@ function plainCol(item, arr, section){
   if(item.flex) b.style.flex = item.flex;
   b.innerHTML =
     `<span class="pl-name">${item.ic ? titleIcon(item,"pl-ic") : ""}` +
-      `<span>${esc(item.n)}</span></span>` +
-    (item.s ? `<span class="pl-sub">${esc(item.s)}</span>` : "");
+      `<span>${esc(T(item.n))}</span></span>` +
+    (item.s ? `<span class="pl-sub">${esc(T(item.s))}</span>` : "");
   reg(b, item, arr, section);
   return b;
 }
@@ -13451,7 +13668,8 @@ function infraRow(row, section){
   if(row.label){
     const lbl = document.createElement("span");
     lbl.className = "oi-lbl";
-    lbl.textContent = row.label;
+    lbl.dataset.en = row.label;
+    lbl.textContent = T(row.label);
     wrap.appendChild(lbl);
   }
 
@@ -13490,7 +13708,7 @@ function infraRow(row, section){
       /* name above the store, caption under it: the layer name reads first, the
          cylinder sits in the middle, and the description closes the stage */
       b.innerHTML = `<span class="ms-n">${esc(s.n)}</span>` + svg(s.ic,"") +
-        (s.s ? `<span class="ms-s">${esc(s.s)}</span>` : "");
+        (s.s ? `<span class="ms-s">${esc(T(s.s))}</span>` : "");
       reg(b, s, row.stages, section);
       st.appendChild(b);
     });
@@ -13511,9 +13729,10 @@ function renderBand(band, target){
      detail for it, so the wiring lives in one place instead of a per-band branch. */
   const lbl = document.createElement("div");
   lbl.className = "band-lbl";
+  lbl.dataset.en = band.name;
   lbl.innerHTML = `<div class="bl-name">${band.ic ? svg(band.ic,"bl-ic") : ""}` +
-      `<span>${esc(band.name)}</span></div>` +
-    (band.sub ? `<div class="bl-sub">${esc(band.sub)}</div>` : "");
+      `<span>${esc(T(band.name))}</span></div>` +
+    (band.sub ? `<div class="bl-sub">${esc(T(band.sub))}</div>` : "");
   el.appendChild(lbl);
 
   const body = document.createElement("div");
@@ -13559,7 +13778,7 @@ function renderBand(band, target){
     chip.className = "foot-chip";
     chip.innerHTML = (band.foot.ic ? svg(band.foot.ic, "") : "") +
       `<span class="fc-name">${esc(band.foot.n)}</span>` +
-      (band.foot.st ? `<span class="fc-stage">${esc(band.foot.st)}</span>` : "");
+      (band.foot.st ? `<span class="fc-stage">${esc(T(band.foot.st))}</span>` : "");
     reg(chip, band.foot, null, band.name);
     const r1 = document.createElement("span"); r1.className = "rule";
     const r2 = document.createElement("span"); r2.className = "rule";
@@ -13578,9 +13797,10 @@ function renderBand(band, target){
     const rl = document.createElement("button");
     rl.type = "button";
     rl.className = "band-lbl band-rlbl";
+    rl.dataset.en = band.rlbl.n;
     rl.innerHTML = `<div class="bl-name">${band.rlbl.ic ? svg(band.rlbl.ic,"bl-ic") : ""}` +
-        `<span>${esc(band.rlbl.n)}</span></div>` +
-      (band.rlbl.s ? `<div class="bl-sub">${esc(band.rlbl.s)}</div>` : "");
+        `<span>${esc(T(band.rlbl.n))}</span></div>` +
+      (band.rlbl.s ? `<div class="bl-sub">${esc(T(band.rlbl.s))}</div>` : "");
     reg(rl, band.rlbl, null, band.name);
     el.appendChild(rl);
   }
@@ -13649,7 +13869,7 @@ function renderRail(rail, target){
     const t = document.createElement("div");
     t.className = "rgroup-t";
     t.innerHTML = (slot.ic ? svg(slot.ic,"rg-ic") : "") +
-      `<span class="rg-label">${esc(slot.box)}</span>`;
+      `<span class="rg-label">${esc(T(slot.box))}</span>`;
     wrap.appendChild(t);
     const box = document.createElement("div");
     box.className = "rtiles";
@@ -13684,7 +13904,7 @@ function renderRail(rail, target){
   if(rail.note){
     const n = document.createElement("p");
     n.className = "rail-note";
-    n.textContent = rail.note;
+    n.textContent = T(rail.note);
     target.appendChild(n);
   }
 }
@@ -13715,10 +13935,11 @@ function renderHBand(target, zone, chip, secs){
   target.innerHTML = "";
   const lbl = document.createElement("div");
   lbl.className = "cloud-lbl";
+  lbl.dataset.en = zone.name;
   lbl.innerHTML = `<div class="cl-name">` + (zone.ic ? svg(zone.ic,"cl-ic") : "") +
-    `<span>${esc(zone.name)}</span>` +
+    `<span>${esc(T(zone.name))}</span>` +
     (chip ? `<span class="provchip">${esc(chip)}</span>` : "") + `</div>` +
-    `<div class="cl-sub">${esc(zone.sub)}</div>`;
+    `<div class="cl-sub">${esc(T(zone.sub))}</div>`;
   target.appendChild(lbl);
 
   const cols = document.createElement("div");
@@ -13728,7 +13949,7 @@ function renderHBand(target, zone, chip, secs){
     sec.className = "cloud-sec";
     sec.style.flex = `${s.span} 1 0`;
     sec.innerHTML = `<div class="rgroup-t">` + (s.ic ? svg(s.ic,"rg-ic") : "") +
-      `<span class="rg-label">${esc(s.title)}</span></div>`;
+      `<span class="rg-label">${esc(T(s.title))}</span></div>`;
     const body = document.createElement("div");
     body.className = "cloud-body";
     const total = s.sets.reduce((n,a)=> n + a.length, 0);
@@ -13741,8 +13962,8 @@ function renderHBand(target, zone, chip, secs){
         b.classList.add("ct-h-" + indHue[hueN++ % indHue.length]);
       const ctSub = tile.s || genieDomain(tile);
       b.innerHTML = titleIcon(tile,"ic") +
-        `<span class="ct"><span class="ct-name">${esc(tile.n)}</span>` +
-        (ctSub ? `<span class="ct-sub">${esc(ctSub)}</span>` : "") + `</span>`;
+        `<span class="ct"><span class="ct-name">${esc(displayName(tile))}</span>` +
+        (ctSub ? `<span class="ct-sub">${esc(T(ctSub))}</span>` : "") + `</span>`;
       reg(b, tile, arr, s.title);
       body.appendChild(b);
     }));
@@ -14005,6 +14226,15 @@ const TITLE_TILES = {
    Open-Infrastructure headers carry it as their own text node beside an icon
    and a zoom button. */
 function titleName(el){
+  /* Titles render already-translated (build() wraps every title in T()), so the
+     grounding key must be the English identity, never the displayed text — a
+     translated string would miss TITLE_TILES, the title would not re-register,
+     and its stale data-id from the previous build would open the wrong drawer.
+     Dynamic titles stamp data-en at render; the four static column/pocket heads
+     carry a data-ic that maps to their English name. */
+  if(el.dataset && el.dataset.en) return el.dataset.en;
+  const ic = el.getAttribute && el.getAttribute("data-ic");
+  if(ic && STATIC_HEADS[ic]) return STATIC_HEADS[ic];
   const span = el.querySelector(".bl-name > span, .cl-name > span");
   if(span) return (span.textContent || "").trim();
   return Array.from(el.childNodes).filter(n=> n.nodeType === 3)
@@ -14072,7 +14302,12 @@ function build(){
   /* the four zone bars are static markup, so their marks are declared as
      data-ic and filled from the same ICONS table everything else draws from */
   document.querySelectorAll("[data-ic]").forEach(h=>{
-    if(h.querySelector("svg")) return;
+    /* Skip only if the LEAD icon (a direct-child svg) is already there. The four
+       section headers each carry a nested zoom control (.zx > svg); a plain
+       querySelector("svg") match on that grandchild made the guard fire and the
+       section icon was never injected, so Sources/External Ingestion/Teams/
+       Consumers rendered icon-less. Scope the check to direct children. */
+    if(h.querySelector(":scope > svg")) return;
     h.insertAdjacentHTML("afterbegin", svg(h.dataset.ic, ""));
   });
   registerTitleAtoms();
@@ -14082,6 +14317,9 @@ function build(){
   applyStageFilter();
   document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   if(typeof syncZoomBtns === "function") syncZoomBtns();
+  /* The board just changed (industry, tab, or mode), so re-evaluate whether the
+     Branded/Categorized switch has anything to switch and enable/disable it. */
+  if(typeof paintDisplaySeg === "function") paintDisplaySeg();
 }
 
 /* ==================================================================
@@ -14305,9 +14543,9 @@ function detailLinks(name){
   const dcloud = h => h + ", " + cloud;
   /* Databricks docs first for a Databricks box, vendor docs first for a cloud
      service: whichever one the reader actually needs is the one at the top. */
-  if(L.doc) rows.push(linkRow(docUrl(L.doc), "Documentation", dcloud(host(docUrl(L.doc)))));
-  if(L.url) rows.push(linkRow(L.url, "Vendor documentation", host(L.url)));
-  if(L.dbx) rows.push(linkRow(docUrl(L.dbx), "Connecting it to Databricks", dcloud(host(docUrl(L.dbx)))));
+  if(L.doc) rows.push(linkRow(docUrl(L.doc), T("Documentation"), dcloud(host(docUrl(L.doc)))));
+  if(L.url) rows.push(linkRow(L.url, T("Vendor documentation"), host(L.url)));
+  if(L.dbx) rows.push(linkRow(docUrl(L.dbx), T("Connecting it to Databricks"), dcloud(host(docUrl(L.dbx)))));
   /* A `doc` path is what marks a box as a Databricks product, and for those the
      cloud's own page belongs above the generic one: a reader on Azure is buying
      Azure Databricks, not Databricks. */
@@ -14315,11 +14553,11 @@ function detailLinks(name){
     const p = PLATFORM_PAGE[ARCH.cloud.provider];
     rows.push(linkRow(p, "Databricks on " + cloud, host(p)));
   }
-  if(L.site) rows.push(linkRow(L.site, "Product page", host(L.site)));
-  if(L.blog) rows.push(linkRow(L.blog, "Blog and deep dive", host(L.blog)));
-  (L.also || []).forEach(([label, url])=> rows.push(linkRow(url, label, host(url))));
+  if(L.site) rows.push(linkRow(L.site, T("Product page"), host(L.site)));
+  if(L.blog) rows.push(linkRow(L.blog, T("Blog and deep dive"), host(L.blog)));
+  (L.also || []).forEach(([label, url])=> rows.push(linkRow(url, T(label), host(url))));
   if(!rows.length) return "";
-  return `<h4>Learn more</h4><div class="d-links">${rows.join("")}</div>`;
+  return `<h4>${esc(T("Learn more"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
 
@@ -14337,9 +14575,9 @@ function modelUrl(id){
    to point at, so it lands on the index of all forty. */
 function modelLinks(){
   const id = ARCH.industry, own = id !== "generic";
-  return `<h4>Data model</h4><div class="d-links">` + linkRow(modelUrl(id),
+  return `<h4>${esc(T("Data model"))}</h4><div class="d-links">` + linkRow(modelUrl(id),
     own ? "Open " + industryLabel(id) + " Industry Data Model"
-                 : "Databricks Industry Data Models",
+                 : T("Databricks Industry Data Models"),
     own ? "github.com, entities and columns per layer" : "github.com, forty industry models") +
     `</div>`;
 }
@@ -14352,7 +14590,7 @@ function stageBadge(st){
   if(!st) return "";
   const ga = /^ga$/i.test(st.trim());
   return `<span class="d-stage ${ga ? "ga" : "pre"}">${esc(st)}` +
-    `<em>${ga ? "available now" : "not yet generally available"}</em></span>`;
+    `<em>${esc(T(ga ? "available now" : "not yet generally available"))}</em></span>`;
 }
 
 /* An industry tile that names a commercial product carries the ids of the
@@ -14366,7 +14604,7 @@ function citeLinks(t){
   const rows = t.cite.map(k=> tbl[k]).filter(Boolean)
     .map(r=> linkRow(r.u, r.t, host(r.u)));
   if(!rows.length) return "";
-  return `<h4>Sources</h4><div class="d-links">${rows.join("")}</div>`;
+  return `<h4>${esc(T("Sources"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
 
 /* Names resolve to whichever atom owns them (a platform component, a use case,
@@ -14386,67 +14624,69 @@ function openDetail(id, via){
   openId = id;
   if(!via) ideaTrack("tile", [rec.tile && rec.tile.n]);
   const t = rec.tile;
-  document.getElementById("d-eyebrow").textContent = rec.section;
+  document.getElementById("d-eyebrow").textContent = T(rec.section);
   document.getElementById("d-title").innerHTML = titleIcon(t,"d-ic") + " " + esc(displayName(t));
-  document.getElementById("d-tagline").textContent = t.s || t.desc || genieDomain(t) || "";
+  document.getElementById("d-tagline").textContent = T(t.s || t.desc || genieDomain(t) || "");
   document.getElementById("d-stage").innerHTML = stageBadge(t.st);
+  const dbody = document.getElementById("d-body");
+  if(dbody) dbody.setAttribute("dir", I18N.dir);
   let html = "";
   if(activeRef && activeRef.map[t.n]){
-    html += `<h4>How it is used in this architecture</h4><div class="d-refbox"><ul>` +
-      activeRef.map[t.n].map(x=>`<li>${esc(x)}</li>`).join("") + `</ul></div>`;
+    html += `<h4>${T("How it is used in this architecture")}</h4><div class="d-refbox"><ul>` +
+      activeRef.map[t.n].map(x=>`<li>${esc(T(x))}</li>`).join("") + `</ul></div>`;
   }
   /* In category mode a commercial source shows as its generic category, so the
      brand-flavoured `long` and the cited product pages are held back and the
      generic `what` leads instead; commercial mode shows both. */
   const catMode = (displayMode === "category" && !!t.cat);
-  if(!catMode) html += `<h4>What it is</h4><p>${esc(dispProse(t.long) || "No description yet.")}</p>`;
+  if(!catMode) html += `<h4>${esc(T("What it is"))}</h4><p>${esc(dispProse(t.long) || T("No description yet."))}</p>`;
   /* Source enrichment: what the system does, who runs it, and the data it emits
      split into Batch and Streaming, each with shape (structured / semi- /
      unstructured), a typical volume and a cadence. Absent fields render nothing. */
-  if(t.what) html += `<h4>What it does</h4><p>${esc(dispProse(t.what))}</p>`;
-  if(t.users) html += `<h4>Who uses it</h4><p>${esc(dispProse(t.users))}</p>`;
+  if(t.what) html += `<h4>${esc(T("What it does"))}</h4><p>${esc(dispProse(t.what))}</p>`;
+  if(t.users) html += `<h4>${esc(T("Who uses it"))}</h4><p>${esc(dispProse(t.users))}</p>`;
   if(t.dataOut){
     const seg = (label, d)=> d ? `<div class="d-dataseg"><span class="d-datalbl">${label}</span>` +
-      `<div class="d-datatypes">${(d.types||[]).map(x=>`<span class="chip static">${esc(x)}</span>`).join("")}</div>` +
-      `<div class="d-datmeta">${[d.vol, d.interval].filter(Boolean).map(esc).join(" &middot; ")}</div></div>` : "";
-    const body = seg("Batch", t.dataOut.batch) + seg("Streaming", t.dataOut.stream);
-    if(body) html += `<h4>Data it produces</h4><div class="d-data">${body}</div>`;
+      `<div class="d-datatypes">${(d.types||[]).map(x=>`<span class="chip static">${esc(T(x))}</span>`).join("")}</div>` +
+      `<div class="d-datmeta">${[d.vol, d.interval].filter(Boolean).map(x=>esc(T(x))).join(" &middot; ")}</div></div>` : "";
+    const body = seg(T("Batch"), t.dataOut.batch) + seg(T("Streaming"), t.dataOut.stream);
+    if(body) html += `<h4>${esc(T("Data it produces"))}</h4><div class="d-data">${body}</div>`;
   }
   /* A Genie space names the data it is grounded on, the teams that live in it and
      the questions it answers; an AI/BI dashboard names its metrics and the teams
      that read it. Names resolve to live chips wherever a tile owns them. */
-  if(t.feeds && t.feeds.length) html += `<h4>Data sources it reads</h4><div>${detailChips(t.feeds)}</div>`;
-  if(t.kpis && t.kpis.length) html += `<h4>Metrics &amp; KPIs</h4><div>${detailChips(t.kpis)}</div>`;
-  if(t.teams && t.teams.length) html += `<h4>Interested teams</h4><div>${detailChips(t.teams)}</div>`;
-  if(t.questions && t.questions.length) html += `<h4>Top questions it answers</h4><ul class="d-uses">` +
+  if(t.feeds && t.feeds.length) html += `<h4>${esc(T("Data sources it reads"))}</h4><div>${detailChips(t.feeds)}</div>`;
+  if(t.kpis && t.kpis.length) html += `<h4>${esc(T("Metrics & KPIs"))}</h4><div>${detailChips(t.kpis)}</div>`;
+  if(t.teams && t.teams.length) html += `<h4>${esc(T("Interested teams"))}</h4><div>${detailChips(t.teams)}</div>`;
+  if(t.questions && t.questions.length) html += `<h4>${esc(T("Top questions it answers"))}</h4><ul class="d-uses">` +
     t.questions.map(qq=>`<li>${esc(dispProse(qq))}</li>`).join("") + `</ul>`;
   /* A use-case tile carries the reasoning behind it, not just a caption: the
      problem it exists to solve, who in the People box benefits, how it is built,
      the architecture it touches (as live chips into those atoms) and any
      verified Databricks customer stories. Absent fields simply render nothing,
      so this stays backward-compatible with tiles that only have a `long`. */
-  if(t.problem) html += `<h4>The problem it solves</h4><p>${esc(dispProse(t.problem))}</p>`;
+  if(t.problem) html += `<h4>${esc(T("The problem it solves"))}</h4><p>${esc(dispProse(t.problem))}</p>`;
   if(t.who){
     const to = resolveAtom(t.who);
-    const chip = to ? `<span class="chip" data-go="${to}">${esc(t.who)}</span>`
-                    : `<b>${esc(t.who)}</b>`;
-    html += `<h4>Who benefits</h4><div>${chip}</div>`;
+    const chip = to ? `<span class="chip" data-go="${to}">${esc(T(t.who))}</span>`
+                    : `<b>${esc(T(t.who))}</b>`;
+    html += `<h4>${esc(T("Who benefits"))}</h4><div>${chip}</div>`;
   }
-  if(t.how) html += `<h4>How it is built</h4><p>${esc(dispProse(t.how))}</p>`;
+  if(t.how) html += `<h4>${esc(T("How it is built"))}</h4><p>${esc(dispProse(t.how))}</p>`;
   if(t.comps && t.comps.length)
-    html += `<h4>Architecture it uses</h4><div>${detailChips(t.comps)}</div>`;
+    html += `<h4>${esc(T("Architecture it uses"))}</h4><div>${detailChips(t.comps)}</div>`;
   if(t.stories && t.stories.length){
-    html += `<h4>Databricks customer stories</h4><div class="d-links">` +
-      t.stories.map(s=> linkRow(s.u, s.t, s.sub)).join("") + `</div>`;
+    html += `<h4>${esc(T("Databricks customer stories"))}</h4><div class="d-links">` +
+      t.stories.map(s=> linkRow(s.u, T(s.t), T(s.sub))).join("") + `</div>`;
   }
   /* A team tile names the sub-personas inside it and what each cares about, then
      the use cases the team drives as live chips into those use-case atoms. */
   if(t.sub && t.sub.length){
-    html += `<h4>Who is in this team</h4><ul class="d-uses">` +
-      t.sub.map(p=>`<li><b>${esc(p.n)}</b> ${esc(p.cares)}</li>`).join("") + `</ul>`;
+    html += `<h4>${esc(T("Who is in this team"))}</h4><ul class="d-uses">` +
+      t.sub.map(p=>`<li><b>${esc(T(p.n))}</b> ${esc(T(p.cares))}</li>`).join("") + `</ul>`;
   }
   if(t.ucs && t.ucs.length)
-    html += `<h4>Use cases</h4><div>${detailChips(t.ucs)}</div>`;
+    html += `<h4>${esc(T("Use cases"))}</h4><div>${detailChips(t.ucs)}</div>`;
   /* A team tile answers two different questions, and running them together as one
      paragraph made the second one unreadable: who these people are, and which
      surface of the platform they actually touch. `uses` carries the second as
@@ -14455,19 +14695,19 @@ function openDetail(id, via){
      the product it depends on, and the existing .chip[data-go] wiring below
      picks those up with no extra handler. */
   if(t.uses && t.uses.length){
-    html += `<h4>Databricks capabilities used</h4><ul class="d-uses">` + t.uses.map(u=>{
+    html += `<h4>${esc(T("Databricks capabilities used"))}</h4><ul class="d-uses">` + t.uses.map(u=>{
       const s = Array.isArray(u) ? u[0] : u, txt = Array.isArray(u) ? (u[1] || "") : "";
       const to = nameIndex[s];
       const head = to ? `<span class="chip" data-go="${to}">${esc(s)}</span>`
                       : `<b>${esc(s)}</b>`;
-      return `<li>${head} ${esc(txt)}</li>`;
+      return `<li>${head} ${esc(T(txt))}</li>`;
     }).join("") + `</ul>`;
   }
   const L = LINKS[t.n];
-  if(L && L.note) html += `<h4>Worth knowing</h4><p class="d-note">${esc(L.note)}</p>`;
+  if(L && L.note) html += `<h4>${esc(T("Worth knowing"))}</h4><p class="d-note">${esc(T(L.note))}</p>`;
   const caps = [].concat(t.caps||[], t.caps2||[]);
   if(caps.length){
-    html += `<h4>Capabilities</h4><div>` + caps.map(c=>`<span class="chip static">${esc(c)}</span>`).join("") + `</div>`;
+    html += `<h4>${esc(T("Capabilities"))}</h4><div>` + caps.map(c=>`<span class="chip static">${esc(T(c))}</span>`).join("") + `</div>`;
   }
   /* `arr` is the live array the atom was registered from, so identity against the
      stages array is what identifies a medallion stage. Cheaper and harder to get
@@ -14477,7 +14717,7 @@ function openDetail(id, via){
   if(!catMode) html += citeLinks(t);
   if(t.rel && t.rel.length){
     const chips = t.rel.filter(r=>nameIndex[r]).map(r=>`<span class="chip" data-go="${nameIndex[r]}">${esc(dispName(r))}</span>`).join("");
-    if(chips) html += `<h4>Related</h4><div>${chips}</div>`;
+    if(chips) html += `<h4>${esc(T("Related"))}</h4><div>${chips}</div>`;
   }
   document.getElementById("d-body").innerHTML = html;
   document.querySelectorAll(".chip[data-go]").forEach(c=> c.onclick = ()=> openDetail(c.dataset.go));
@@ -14493,16 +14733,26 @@ document.getElementById("dclose").onclick = closeDrawer;
    empty state when nothing is selected (the zoom view already works this way),
    and the board reserves --dock-w and scales into the width that is left. */
 const ddock = document.getElementById("ddock");
+const sideBtn = document.getElementById("side-btn");
 function setDocked(on){
   document.body.classList.toggle("docked", on);
   ddock.title = on ? "Undock panel" : "Dock panel to the side";
   ddock.setAttribute("aria-label", ddock.title);
   ddock.setAttribute("aria-pressed", on ? "true" : "false");
+  /* The toolbar side-panel toggle mirrors the in-drawer dock pin: same state,
+     two entry points. */
+  if(sideBtn){
+    sideBtn.classList.toggle("on", on);
+    sideBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    sideBtn.title = on ? "Hide the side details panel" : "Show the details panel docked on the side";
+    sideBtn.setAttribute("aria-label", sideBtn.title);
+  }
   if(on) drawer.classList.add("show");
   else if(!document.body.classList.contains("detail-open")) drawer.classList.remove("show");
   scheduleFit();
 }
 ddock.onclick = ()=> setDocked(!document.body.classList.contains("docked"));
+if(sideBtn) sideBtn.onclick = ()=> setDocked(!document.body.classList.contains("docked"));
 scrim.onclick = closeDrawer;
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDrawer(); });
 
@@ -14699,8 +14949,8 @@ function paintRef(ref){
 }
 function applyReference(ref){
   activeRef = ref;
-  document.getElementById("ref-name").textContent = ref.name;
-  document.getElementById("ref-blurb").textContent = ref.blurb;
+  document.getElementById("ref-name").textContent = T(ref.name);
+  document.getElementById("ref-blurb").textContent = T(ref.blurb);
   refBanner.classList.add("show");
   paintRef(ref);
 }
@@ -14987,15 +15237,30 @@ paintSeg();
    working. It is a page-wide preference, deliberately not per tab, exactly like
    theme and cloud. */
 const DISPLAY_MODES = [["commercial","Branded"],["category","Categorized"]];
+/* The Branded/Categorized switch only does something when the board carries
+   commercial products that own a generic category. The generic reference board
+   has none (every tile is already a generic label), so the toggle would flip
+   the mode without changing a single label and read as broken. On any board
+   with nothing to switch it is disabled and greyed instead. */
+function boardHasBrands(){
+  for(const k in byId){ const t = byId[k].tile; if(t && t.cat) return true; }
+  return false;
+}
 function paintDisplaySeg(){
   const seg = document.getElementById("display-seg");
   if(!seg) return;
+  const live = boardHasBrands();
+  seg.classList.toggle("seg-off", !live);
+  seg.title = live
+    ? "Show products by commercial brand name, or rooted back to their generic category"
+    : "Pick an industry to switch between brand and category names";
   seg.innerHTML = "";
   DISPLAY_MODES.forEach(([k,label])=>{
     const b = document.createElement("button");
     b.textContent = label;
     b.className = (displayMode === k) ? "on" : "";
-    b.onclick = ()=>{ if(displayMode === k) return; displayMode = k; store.set(DISPLAY_LS, k);
+    b.disabled = !live;
+    b.onclick = ()=>{ if(!live || displayMode === k) return; displayMode = k; store.set(DISPLAY_LS, k);
       paintDisplaySeg(); build();
       if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer(); };
     seg.appendChild(b);
@@ -15157,6 +15422,26 @@ document.addEventListener("click", e=>{
 });
 paintPalMenu();
 
+/* ---- Language selector (chrome stays English; only the menu lists native
+   language names so a reader finds their own). Reuses .pal-wrap/.pal-menu and
+   the one delegated close listener above. ---- */
+const langWrap = document.getElementById("lang-wrap");
+const langMenu = document.getElementById("lang-menu");
+function syncLangMenu(){
+  langMenu.innerHTML = '<div class="men-hd">Language</div>' + LANGS.map(l =>
+    '<button data-lang="' + l.code + '" class="' + (l.code === I18N.lang ? "on" : "") + '"' +
+    (l.dir === "rtl" ? ' dir="rtl"' : '') + '>' +
+    '<span>' + l.native + '</span></button>').join("");
+  langMenu.querySelectorAll("button").forEach(b =>
+    b.onclick = ()=>{ applyLang(b.dataset.lang, true); langWrap.classList.remove("open"); });
+  /* The toolbar is chrome and stays English at all times; the active language is
+     shown by the check-mark inside the menu, not by relabelling the button. */
+}
+document.getElementById("lang-btn").onclick = e=>{
+  e.stopPropagation(); langWrap.classList.toggle("open");
+};
+syncLangMenu();
+
 /* Split out from the click handler so a link that arrives with platform=1 gets
    the same button state as a click, rather than a zoomed board behind a button
    still offering to zoom it. */
@@ -15239,13 +15524,14 @@ function paintIndustryMenu(){
   const cur = ARCH.industry;
   const q = indFilter.trim().toLowerCase();
   const rows = INDUSTRY_CATALOG
-    .filter(([id, label])=> !q || label.toLowerCase().indexOf(q) >= 0 || id.indexOf(q) >= 0);
+    .filter(([id, label])=> !q || label.toLowerCase().indexOf(q) >= 0 || id.indexOf(q) >= 0 ||
+      String(T(label)).toLowerCase().indexOf(q) >= 0);
 
   const rowHtml = ([id, label])=>{
     const built = !!INDUSTRIES[id];
     return '<button data-ind="' + id + '"' + (built ? "" : " disabled") +
-      ' class="' + (id === cur ? "on" : "") + '"><span>' + label + "</span>" +
-      (built ? "" : "<i>soon</i>") + "</button>";
+      ' class="' + (id === cur ? "on" : "") + '"><span>' + esc(T(label)) + "</span>" +
+      (built ? "" : "<i>" + esc(T("soon")) + "</i>") + "</button>";
   };
 
   indMenu.innerHTML =
@@ -15254,7 +15540,7 @@ function paintIndustryMenu(){
       'placeholder="Filter industries" value="' + indFilter.replace(/"/g, "&quot;") + '">' +
     '<div class="ind-list">' +
       '<button data-ind="generic" class="' + (cur === "generic" ? "on" : "") +
-        '"><span>Standard Reference Architecture</span></button>' +
+        '"><span>' + esc(T("Standard Reference Architecture")) + "</span></button>" +
       (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
     "</div>" +
     '<div class="dl-note">Replaces Sources, Ingestion, Teams, Consumers and the ' +
@@ -15510,8 +15796,8 @@ paintShapeMenu();
    and its cloud variant once it is out of the browser. */
 function docTitle(){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
-  const ind = ARCH.industry !== "generic" ? industryLabel(ARCH.industry) + " " : "";
-  return "Databricks " + ind + "Reference Architecture - " + ((p && p.label) || ARCH.cloud.provider);
+  const ind = ARCH.industry !== "generic" ? T(industryLabel(ARCH.industry)) + " " : "";
+  return "Databricks " + ind + T("Reference Architecture") + " - " + ((p && p.label) || ARCH.cloud.provider);
 }
 /* The published copy of this page. Only a fallback: an export made from the live
    site links back to the live site, so a fork or a Databricks App deployment
@@ -15550,8 +15836,19 @@ function creditText(){
    printed page cannot open the Industry, Cloud and Style menus to find out. */
 function coverMeta(){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
-  return [ARCH.industry !== "generic" ? industryLabel(ARCH.industry) : "Standard reference architecture",
+  return [ARCH.industry !== "generic" ? T(industryLabel(ARCH.industry)) : T("Standard reference architecture"),
     (p && p.label) || ARCH.cloud.provider].filter(Boolean).join(" \u00b7 ");
+}
+/* The cover headline, shared by every cover (PPTX/PDF/HTML) so the three cannot
+   drift: "<platform> for <industry>" on the title line (the platform name keeps
+   the Databricks brand, everything else localises) and the cloud on its own
+   line beneath it. Generic boards read "... for Every Industry". */
+function coverTitle(){
+  return dt("closeTitle", { plat:T("Databricks Data Intelligence Platform"), ind:deckIndustry() });
+}
+function coverCloudLine(){
+  const p = ARCH.cloud.providers[ARCH.cloud.provider];
+  return dt("cloudLine", { cloud:(p && p.label) || ARCH.cloud.provider });
 }
 /* The cover's link rows, shared by the PDF and the deck so the two covers cannot
    drift. First the living version of this exact board, then the data model the
@@ -15559,16 +15856,21 @@ function coverMeta(){
 function coverLinks(){
   const own = ARCH.industry !== "generic";
   return [
-    { label:"Open the live diagram", url:liveUrl() },
-    { label: own ? industryLabel(ARCH.industry) + " industry data model"
-                 : "Databricks industry data models", url:modelUrl(ARCH.industry) },
+    { label:T("Open the live diagram"), url:liveUrl() },
+    { label: own ? dt("modelOwn", { ind:T(industryLabel(ARCH.industry)) })
+                 : T("Databricks industry data models"), url:modelUrl(ARCH.industry) },
   ];
 }
 function dlName(ext){
   const tab = document.querySelector(".tab.active");
   const ind = ARCH.industry !== "generic" ? ARCH.industry.replace(/_/g, "-") + "-" : "";
   const base = "databricks-" + ind + ((tab && tab.dataset.tab) || "reference") + "-architecture";
-  return base + (document.body.classList.contains("plat-only") ? "-platform" : "") + "." + ext;
+  /* Downloaded assets carry the content language as a suffix (_ar, _fr, ...) so
+     a folder of exports is self-describing; English is the default and stays
+     bare. Reads the live selected language, not the OS locale. */
+  const lang = (typeof I18N !== "undefined" && I18N.lang) || "en";
+  const langSfx = lang && lang !== "en" ? "_" + lang : "";
+  return base + (document.body.classList.contains("plat-only") ? "-platform" : "") + langSfx + "." + ext;
 }
 function dlBlob(blob, name){
   const a = document.createElement("a");
@@ -15585,9 +15887,19 @@ function exportCss(){
   /* An SVG used as an image is frozen at time zero, so every load-reveal would
      export at its `from` frame: clipped and near-transparent. Killing animation
      lands each zone on its static state, which is the finished one. */
-  return [...document.querySelectorAll("style")].map(s=>s.textContent).join("\n")
-    .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body") +
-    "\n*,*::before,*::after{animation:none!important;transition:none!important;}\n";
+  let css = [...document.querySelectorAll("style")].map(s=>s.textContent).join("\n");
+  /* The active language lives on <html data-lang>, which does not exist inside
+     the foreignObject (its root is the .exp-body wrapper, which carries the
+     data-lang instead). Re-scope the language rules onto that wrapper so the
+     Arabic font stack + RTL reach the rasterised board; without this the board
+     renders LTR in a Latin fallback font and the wider Arabic runs spill outside
+     their boxes. The `html[...] body` rules land ON the wrapper itself; the
+     descendant rules scope under it. Both run before the plain-body rewrite so
+     the already-rescoped selectors are left alone. */
+  css = css.replace(/html\[data-lang="([a-z-]+)"\]\s+body\b/g, '.exp-body[data-lang="$1"]')
+           .replace(/html\[data-lang="([a-z-]+)"\]/g, '.exp-body[data-lang="$1"]')
+           .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body");
+  return css + "\n*,*::before,*::after{animation:none!important;transition:none!important;}\n";
 }
 /* `phase` is the 0..1 dash position the frame should be drawn at. It is set on
    the wrapper rather than on the live page because the foreignObject is its own
@@ -15598,6 +15910,17 @@ function boardSvgMarkup(phase){
   const w = bd.offsetWidth, h = bd.offsetHeight;
   const wrap = document.createElement("div");
   wrap.setAttribute("class", "exp-body " + [...document.body.classList].join(" "));
+  /* data-lang travels so the re-scoped html[data-lang] rules fire on the wrapper.
+     Direction, however, must match the LIVE board root, which is always ltr: the
+     app applies RTL only to leaf text (.plat-head/.t-name/.band-lbl/... via the
+     html[data-lang="ar"] rules), never to the board itself. Stamping dir="rtl"
+     on the wrapper turned the .mid grid RTL, so grid-column-start:3/4 placed the
+     platform blocks mirrored (upper block overhanging the wrong side) while the
+     zring path — measured against the live ltr placement — stayed put, leaving
+     the dashed ring drifted ~235px off the boxes. Matching the live ltr root
+     keeps the grid identical to screen; the leaf RTL text rules still apply. */
+  wrap.setAttribute("data-lang", (typeof I18N !== "undefined" && I18N.lang) || "en");
+  wrap.setAttribute("dir", document.documentElement.getAttribute("dir") || "ltr");
   wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";" +
     (phase == null ? "" : "--dash-t:" + phase + ";"));
   const st = document.createElement("style"); st.textContent = exportCss();
@@ -15682,30 +16005,139 @@ function genieDomain(t){
   if(!t || t.ic !== "genie") return "";
   return String(t.n || "").replace(/\s+(Genie\s+Space|Agent|Space)$/i, "").trim();
 }
+/* Deck prose that carries an industry name or a count cannot go through the
+   value-keyed T() (every {ind}/{n} would be a new key), so the five section
+   blurbs, the item-count captions and the "{ind} industry data model" cover link
+   are authored as placeholder templates, one block per language. dt() fills the
+   placeholders after the language lookup, and falls back to English so a missing
+   entry degrades to the source sentence rather than to a blank. The section
+   titles/eyebrows and every fixed deck label localise through T() instead. */
+const DECK_TPL = {
+  en: {
+    archBlurb:"The end-to-end {ind} architecture on the Databricks Data Intelligence Platform: sources, ingestion, the governed lakehouse and every path out.",
+    ucBlurb:"The {n} highest-value {ind} use cases: the problem each solves, who benefits, how it is built and the customers already live.",
+    genieBlurb:"Ask the {ind} estate questions in plain language: what each agent explores, the governed data it reads and the teams it serves.",
+    dashBlurb:"Certified AI/BI dashboards on governed Metric Views: the KPIs each tracks and the teams that run on them.",
+    appBlurb:"Applications built on Databricks Apps over Lakebase: what each does for the business and the teams it serves.",
+    ucCount:"{n} use cases", ucCount1:"{n} use case",
+    genieCount:"{n} agents", genieCount1:"{n} agent",
+    dashCount:"{n} dashboards", dashCount1:"{n} dashboard",
+    appCount:"{n} apps", appCount1:"{n} app",
+    modelOwn:"{ind} industry data model",
+    closeTitle:"{plat} for {ind}",
+    cloudLine:"Cloud: {cloud}"
+  },
+  fr: {
+    archBlurb:"L\u2019architecture {ind} de bout en bout sur la plateforme Databricks Data Intelligence : sources, ingestion, le lakehouse gouvern\u00e9 et tous les chemins de sortie.",
+    ucBlurb:"Les {n} cas d\u2019usage {ind} \u00e0 plus forte valeur : le probl\u00e8me que chacun r\u00e9sout, \u00e0 qui il profite, comment il est con\u00e7u et les clients d\u00e9j\u00e0 en production.",
+    genieBlurb:"Interrogez le patrimoine {ind} en langage naturel : ce que chaque agent explore, les donn\u00e9es gouvern\u00e9es qu\u2019il lit et les \u00e9quipes qu\u2019il sert.",
+    dashBlurb:"Tableaux de bord AI/BI certifi\u00e9s sur des Metric Views gouvern\u00e9es : les indicateurs suivis par chacun et les \u00e9quipes qui s\u2019en servent.",
+    appBlurb:"Applications b\u00e2ties sur Databricks Apps au-dessus de Lakebase : ce que chacune apporte \u00e0 l\u2019entreprise et les \u00e9quipes qu\u2019elle sert.",
+    ucCount:"{n} cas d\u2019usage", ucCount1:"{n} cas d\u2019usage",
+    genieCount:"{n} agents", genieCount1:"{n} agent",
+    dashCount:"{n} tableaux de bord", dashCount1:"{n} tableau de bord",
+    appCount:"{n} applications", appCount1:"{n} application",
+    modelOwn:"Mod\u00e8le de donn\u00e9es du secteur {ind}",
+    closeTitle:"{plat} pour {ind}",
+    cloudLine:"Cloud : {cloud}"
+  },
+  es: {
+    archBlurb:"La arquitectura {ind} de extremo a extremo sobre la plataforma Databricks Data Intelligence: or\u00edgenes, ingesta, el lakehouse gobernado y cada v\u00eda de salida.",
+    ucBlurb:"Los {n} casos de uso {ind} de mayor valor: el problema que resuelve cada uno, a qui\u00e9n beneficia, c\u00f3mo se construye y los clientes ya en producci\u00f3n.",
+    genieBlurb:"Consulta el entorno {ind} en lenguaje natural: qu\u00e9 explora cada agente, los datos gobernados que lee y los equipos a los que sirve.",
+    dashBlurb:"Paneles de AI/BI certificados sobre Metric Views gobernadas: los KPI que sigue cada uno y los equipos que los usan.",
+    appBlurb:"Aplicaciones creadas sobre Databricks Apps con Lakebase: qu\u00e9 aporta cada una al negocio y los equipos a los que sirve.",
+    ucCount:"{n} casos de uso", ucCount1:"{n} caso de uso",
+    genieCount:"{n} agentes", genieCount1:"{n} agente",
+    dashCount:"{n} paneles", dashCount1:"{n} panel",
+    appCount:"{n} aplicaciones", appCount1:"{n} aplicaci\u00f3n",
+    modelOwn:"Modelo de datos del sector {ind}",
+    closeTitle:"{plat} para {ind}",
+    cloudLine:"Nube: {cloud}"
+  },
+  zh: {
+    archBlurb:"\u7aef\u5230\u7aef\u7684{ind}\u67b6\u6784\uff0c\u6784\u5efa\u4e8e Databricks \u6570\u636e\u667a\u80fd\u5e73\u53f0\u4e4b\u4e0a\uff1a\u6570\u636e\u6e90\u3001\u6570\u636e\u6444\u53d6\u3001\u53d7\u6cbb\u7406\u7684 lakehouse \u4ee5\u53ca\u6bcf\u4e00\u6761\u8f93\u51fa\u8def\u5f84\u3002",
+    ucBlurb:"{n} \u4e2a\u4ef7\u503c\u6700\u9ad8\u7684{ind}\u7528\u4f8b\uff1a\u5404\u81ea\u89e3\u51b3\u7684\u95ee\u9898\u3001\u53d7\u76ca\u8005\u3001\u6784\u5efa\u65b9\u5f0f\uff0c\u4ee5\u53ca\u5df2\u4e0a\u7ebf\u7684\u5ba2\u6237\u3002",
+    genieBlurb:"\u7528\u81ea\u7136\u8bed\u8a00\u8be2\u95ee{ind}\u6570\u636e\u8d44\u4ea7\uff1a\u6bcf\u4e2a\u667a\u80fd\u4f53\u63a2\u7d22\u4ec0\u4e48\u3001\u8bfb\u53d6\u54ea\u4e9b\u53d7\u6cbb\u7406\u6570\u636e\uff0c\u4ee5\u53ca\u670d\u52a1\u4e8e\u54ea\u4e9b\u56e2\u961f\u3002",
+    dashBlurb:"\u57fa\u4e8e\u53d7\u6cbb\u7406 Metric Views \u7684\u8ba4\u8bc1 AI/BI \u4eea\u8868\u677f\uff1a\u5404\u81ea\u8ddf\u8e2a\u7684 KPI \u4ee5\u53ca\u4f9d\u8d56\u5b83\u4eec\u7684\u56e2\u961f\u3002",
+    appBlurb:"\u57fa\u4e8e Databricks Apps \u4e0e Lakebase \u6784\u5efa\u7684\u5e94\u7528\uff1a\u5404\u81ea\u4e3a\u4e1a\u52a1\u5e26\u6765\u7684\u4ef7\u503c\u4ee5\u53ca\u6240\u670d\u52a1\u7684\u56e2\u961f\u3002",
+    ucCount:"{n} \u4e2a\u7528\u4f8b", ucCount1:"{n} \u4e2a\u7528\u4f8b",
+    genieCount:"{n} \u4e2a\u667a\u80fd\u4f53", genieCount1:"{n} \u4e2a\u667a\u80fd\u4f53",
+    dashCount:"{n} \u4e2a\u4eea\u8868\u677f", dashCount1:"{n} \u4e2a\u4eea\u8868\u677f",
+    appCount:"{n} \u4e2a\u5e94\u7528", appCount1:"{n} \u4e2a\u5e94\u7528",
+    modelOwn:"{ind}\u884c\u4e1a\u6570\u636e\u6a21\u578b",
+    closeTitle:"\u9762\u5411{ind}\u7684{plat}",
+    cloudLine:"\u4e91\uff1a{cloud}"
+  },
+  ar: {
+    archBlurb:"\u0645\u0639\u0645\u0627\u0631\u064a\u0629 {ind} \u0627\u0644\u0634\u0627\u0645\u0644\u0629 \u0639\u0644\u0649 \u0645\u0646\u0635\u0629 Databricks \u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a: \u0627\u0644\u0645\u0635\u0627\u062f\u0631 \u0648\u0627\u0644\u0627\u0633\u062a\u064a\u0639\u0627\u0628 \u0648\u0640 lakehouse \u0627\u0644\u0645\u062d\u0648\u0643\u0645 \u0648\u0643\u0644 \u0645\u0633\u0627\u0631 \u0644\u0644\u062e\u0631\u0648\u062c.",
+    ucBlurb:"\u0623\u0647\u0645 {n} \u062d\u0627\u0644\u0629 \u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u0641\u064a \u0642\u0637\u0627\u0639 {ind}: \u0627\u0644\u0645\u0634\u0643\u0644\u0629 \u0627\u0644\u062a\u064a \u062a\u062d\u0644\u0647\u0627 \u0643\u0644 \u062d\u0627\u0644\u0629\u060c \u0648\u0645\u0646 \u064a\u0633\u062a\u0641\u064a\u062f \u0645\u0646\u0647\u0627\u060c \u0648\u0643\u064a\u0641 \u062a\u064f\u0628\u0646\u0649\u060c \u0648\u0627\u0644\u0639\u0645\u0644\u0627\u0621 \u0627\u0644\u0630\u064a\u0646 \u064a\u0639\u0645\u0644\u0648\u0646 \u0628\u0647\u0627 \u0628\u0627\u0644\u0641\u0639\u0644.",
+    genieBlurb:"\u0627\u0633\u0623\u0644 \u0628\u064a\u0627\u0646\u0627\u062a \u0642\u0637\u0627\u0639 {ind} \u0628\u0644\u063a\u0629 \u0637\u0628\u064a\u0639\u064a\u0629: \u0645\u0627 \u0627\u0644\u0630\u064a \u064a\u0633\u062a\u0643\u0634\u0641\u0647 \u0643\u0644 \u0648\u0643\u064a\u0644\u060c \u0648\u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u062d\u0648\u0643\u0645\u0629 \u0627\u0644\u062a\u064a \u064a\u0642\u0631\u0623\u0647\u0627\u060c \u0648\u0627\u0644\u0641\u0631\u0642 \u0627\u0644\u062a\u064a \u064a\u062e\u062f\u0645\u0647\u0627.",
+    dashBlurb:"\u0644\u0648\u062d\u0627\u062a \u0645\u0639\u0644\u0648\u0645\u0627\u062a AI/BI \u0645\u0639\u062a\u0645\u062f\u0629 \u0639\u0644\u0649 Metric Views \u0645\u062d\u0648\u0643\u0645\u0629: \u0627\u0644\u0645\u0624\u0634\u0631\u0627\u062a \u0627\u0644\u062a\u064a \u062a\u062a\u0627\u0628\u0639\u0647\u0627 \u0643\u0644 \u0644\u0648\u062d\u0629 \u0648\u0627\u0644\u0641\u0631\u0642 \u0627\u0644\u062a\u064a \u062a\u0639\u062a\u0645\u062f \u0639\u0644\u064a\u0647\u0627.",
+    appBlurb:"\u062a\u0637\u0628\u064a\u0642\u0627\u062a \u0645\u0628\u0646\u064a\u0629 \u0639\u0644\u0649 Databricks Apps \u0641\u0648\u0642 Lakebase: \u0645\u0627 \u062a\u0642\u062f\u0645\u0647 \u0643\u0644 \u0645\u0646\u0647\u0627 \u0644\u0644\u0623\u0639\u0645\u0627\u0644 \u0648\u0627\u0644\u0641\u0631\u0642 \u0627\u0644\u062a\u064a \u062a\u062e\u062f\u0645\u0647\u0627.",
+    ucCount:"{n} \u062d\u0627\u0644\u0629 \u0627\u0633\u062a\u062e\u062f\u0627\u0645", ucCount1:"{n} \u062d\u0627\u0644\u0629 \u0627\u0633\u062a\u062e\u062f\u0627\u0645",
+    genieCount:"{n} \u0648\u0643\u0644\u0627\u0621", genieCount1:"{n} \u0648\u0643\u064a\u0644",
+    dashCount:"{n} \u0644\u0648\u062d\u0627\u062a", dashCount1:"{n} \u0644\u0648\u062d\u0629",
+    appCount:"{n} \u062a\u0637\u0628\u064a\u0642\u0627\u062a", appCount1:"{n} \u062a\u0637\u0628\u064a\u0642",
+    modelOwn:"\u0646\u0645\u0648\u0630\u062c \u0628\u064a\u0627\u0646\u0627\u062a \u0642\u0637\u0627\u0639 {ind}",
+    closeTitle:"{plat} \u0644\u0642\u0637\u0627\u0639 {ind}",
+    cloudLine:"\u0627\u0644\u0633\u062d\u0627\u0628\u0629: {cloud}"
+  },
+  hi: {
+    archBlurb:"Databricks \u0921\u0947\u091f\u093e \u0907\u0902\u091f\u0947\u0932\u093f\u091c\u0947\u0902\u0938 \u092a\u094d\u0932\u0947\u091f\u092b\u093c\u0949\u0930\u094d\u092e \u092a\u0930 \u0938\u0902\u092a\u0942\u0930\u094d\u0923 {ind} \u0906\u0930\u094d\u0915\u093f\u091f\u0947\u0915\u094d\u091a\u0930: \u0938\u094d\u0930\u094b\u0924, \u0907\u0902\u091c\u0947\u0936\u0928, \u0917\u0935\u0930\u094d\u0928 \u0915\u093f\u092f\u093e \u0917\u092f\u093e lakehouse \u0914\u0930 \u0939\u0930 \u0906\u0909\u091f\u092a\u0941\u091f \u092a\u0925\u0964",
+    ucBlurb:"\u0938\u0930\u094d\u0935\u093e\u0927\u093f\u0915 \u092e\u0942\u0932\u094d\u092f\u0935\u093e\u0928 {n} {ind} \u0909\u092a\u092f\u094b\u0917-\u092a\u094d\u0930\u0915\u0930\u0923: \u0939\u0930 \u090f\u0915 \u091c\u094b \u0938\u092e\u0938\u094d\u092f\u093e \u0939\u0932 \u0915\u0930\u0924\u093e \u0939\u0948, \u0915\u093f\u0938\u0947 \u0932\u093e\u092d \u0939\u094b\u0924\u093e \u0939\u0948, \u0907\u0938\u0947 \u0915\u0948\u0938\u0947 \u092c\u0928\u093e\u092f\u093e \u091c\u093e\u0924\u093e \u0939\u0948, \u0914\u0930 \u0935\u0947 \u0917\u094d\u0930\u093e\u0939\u0915 \u091c\u094b \u092a\u0939\u0932\u0947 \u0938\u0947 \u0932\u093e\u0907\u0935 \u0939\u0948\u0902\u0964",
+    genieBlurb:"{ind} \u0921\u0947\u091f\u093e \u0915\u094b \u0938\u093e\u092e\u093e\u0928\u094d\u092f \u092d\u093e\u0937\u093e \u092e\u0947\u0902 \u092a\u0942\u091b\u0947\u0902: \u0939\u0930 \u090f\u091c\u0947\u0902\u091f \u0915\u094d\u092f\u093e \u0916\u094b\u091c\u0924\u093e \u0939\u0948, \u0915\u094c\u0928-\u0938\u093e \u0917\u0935\u0930\u094d\u0928 \u0915\u093f\u092f\u093e \u0917\u092f\u093e \u0921\u0947\u091f\u093e \u092a\u0922\u093c\u0924\u093e \u0939\u0948, \u0914\u0930 \u0915\u093f\u0928 \u091f\u0940\u092e\u094b\u0902 \u0915\u0940 \u0938\u0947\u0935\u093e \u0915\u0930\u0924\u093e \u0939\u0948\u0964",
+    dashBlurb:"\u0917\u0935\u0930\u094d\u0928 \u0915\u0940 \u0917\u0908 Metric Views \u092a\u0930 \u092a\u094d\u0930\u092e\u093e\u0923\u093f\u0924 AI/BI \u0921\u0948\u0936\u092c\u094b\u0930\u094d\u0921: \u0939\u0930 \u090f\u0915 \u091c\u094b KPI \u091f\u094d\u0930\u0948\u0915 \u0915\u0930\u0924\u093e \u0939\u0948 \u0914\u0930 \u091c\u094b \u091f\u0940\u092e\u0947\u0902 \u0909\u0928 \u092a\u0930 \u091a\u0932\u0924\u0940 \u0939\u0948\u0902\u0964",
+    appBlurb:"Lakebase \u092a\u0930 Databricks Apps \u0938\u0947 \u092c\u0928\u0947 \u0910\u092a\u094d\u0932\u093f\u0915\u0947\u0936\u0928: \u0939\u0930 \u090f\u0915 \u0935\u094d\u092f\u0935\u0938\u093e\u092f \u0915\u0947 \u0932\u093f\u090f \u0915\u094d\u092f\u093e \u0915\u0930\u0924\u093e \u0939\u0948 \u0914\u0930 \u0915\u093f\u0928 \u091f\u0940\u092e\u094b\u0902 \u0915\u0940 \u0938\u0947\u0935\u093e \u0915\u0930\u0924\u093e \u0939\u0948\u0964",
+    ucCount:"{n} \u0909\u092a\u092f\u094b\u0917-\u092a\u094d\u0930\u0915\u0930\u0923", ucCount1:"{n} \u0909\u092a\u092f\u094b\u0917-\u092a\u094d\u0930\u0915\u0930\u0923",
+    genieCount:"{n} \u090f\u091c\u0947\u0902\u091f", genieCount1:"{n} \u090f\u091c\u0947\u0902\u091f",
+    dashCount:"{n} \u0921\u0948\u0936\u092c\u094b\u0930\u094d\u0921", dashCount1:"{n} \u0921\u0948\u0936\u092c\u094b\u0930\u094d\u0921",
+    appCount:"{n} \u0910\u092a\u094d\u0932\u093f\u0915\u0947\u0936\u0928", appCount1:"{n} \u0910\u092a\u094d\u0932\u093f\u0915\u0947\u0936\u0928",
+    modelOwn:"{ind} \u0909\u0926\u094d\u092f\u094b\u0917 \u0921\u0947\u091f\u093e \u092e\u0949\u0921\u0932",
+    closeTitle:"{ind} \u0915\u0947 \u0932\u093f\u090f {plat}",
+    cloudLine:"\u0915\u094d\u0932\u093e\u0909\u0921: {cloud}"
+  }
+};
+function dt(key, vars){
+  const lang = (typeof I18N !== "undefined" && I18N.lang) || "en";
+  const pack = (DECK_TPL[lang] && DECK_TPL[lang][key] != null) ? DECK_TPL[lang] : DECK_TPL.en;
+  let s = pack[key] != null ? pack[key] : (DECK_TPL.en[key] || "");
+  if(vars) for(const k in vars) s = s.split("{" + k + "}").join(vars[k]);
+  return s;
+}
+/* Count caption for a content section, pluralised in the source language. */
+function deckCount(kind, n){
+  const one = n === 1;
+  const key = kind === "uc" ? (one ? "ucCount1" : "ucCount")
+    : kind === "genie" ? (one ? "genieCount1" : "genieCount")
+    : kind === "dash" ? (one ? "dashCount1" : "dashCount")
+    : (one ? "appCount1" : "appCount");
+  return dt(key, { n:n });
+}
 function deckSections(){
   const ind = deckIndustry();
-  const secs = [{ key:"arch", kind:"board", eyebrow:"Architecture", title:"Architecture",
-    blurb:"The end-to-end " + ind + " architecture on the Databricks Data Intelligence Platform: sources, ingestion, the governed lakehouse and every path out." }];
+  const secs = [{ key:"arch", kind:"board", eyebrow:T("Architecture"), title:T("Architecture"),
+    blurb:dt("archBlurb", { ind:ind }) }];
   const uc = useCaseTiles().map(dispTile);
-  if(uc.length) secs.push({ key:"uc", kind:"uc", eyebrow:"Use Cases", title:"Use Cases",
-    blurb:"The " + uc.length + " highest-value " + ind + " use cases: the problem each solves, who benefits, how it is built and the customers already live.", tiles:uc });
+  if(uc.length) secs.push({ key:"uc", kind:"uc", eyebrow:T("Use Cases"), title:T("Use Cases"),
+    blurb:dt("ucBlurb", { n:uc.length, ind:ind }), tiles:uc });
   const gen = genieTiles().map(dispTile);
-  if(gen.length) secs.push({ key:"genie", kind:"genie", eyebrow:"Genie Agents", title:"Genie Agents",
-    blurb:"Ask the " + ind + " estate questions in plain language: what each agent explores, the governed data it reads and the teams it serves.", tiles:gen });
+  if(gen.length) secs.push({ key:"genie", kind:"genie", eyebrow:T("Genie Agents"), title:T("Genie Agents"),
+    blurb:dt("genieBlurb", { ind:ind }), tiles:gen });
   const dash = dashboardTiles().map(dispTile);
-  if(dash.length) secs.push({ key:"dash", kind:"dash", eyebrow:"AI/BI Dashboards", title:"AI/BI Dashboards",
-    blurb:"Certified AI/BI dashboards on governed Metric Views: the KPIs each tracks and the teams that run on them.", tiles:dash });
+  if(dash.length) secs.push({ key:"dash", kind:"dash", eyebrow:T("AI/BI Dashboards"), title:T("AI/BI Dashboards"),
+    blurb:dt("dashBlurb"), tiles:dash });
   const apps = appTiles().map(dispTile);
-  if(apps.length) secs.push({ key:"app", kind:"app", eyebrow:"Databricks Apps", title:"Databricks Apps",
-    blurb:"Applications built on Databricks Apps over Lakebase: what each does for the business and the teams it serves.", tiles:apps });
+  if(apps.length) secs.push({ key:"app", kind:"app", eyebrow:T("Databricks Apps"), title:T("Databricks Apps"),
+    blurb:dt("appBlurb"), tiles:apps });
   return secs;
 }
 /* The closing slide's two links: the platform's own site, and the living board
    this deck was exported from (the same URL the cover carries). */
 function closingLinks(){
   return [
-    { label:"Explore the Databricks Data Intelligence Platform", url:"https://www.databricks.com" },
-    { label:"Open the live architecture", url:liveUrl() },
+    { label:T("Explore the Databricks Data Intelligence Platform"), url:"https://www.databricks.com" },
+    { label:T("Open the live architecture"), url:liveUrl() },
   ];
 }
 /* Six role colours for the section-card headers. Taken from the deck theme's own
@@ -15733,10 +16165,10 @@ function onRoleInk(role){
 }
 /* The industry this deck is about, for slide titles and running headers. */
 function deckIndustry(){
-  return ARCH.industry !== "generic" ? industryLabel(ARCH.industry) : "Every Industry";
+  return ARCH.industry !== "generic" ? T(industryLabel(ARCH.industry)) : T("Every Industry");
 }
 function deckRunHeader(){
-  return (ARCH.industry !== "generic" ? industryLabel(ARCH.industry).toUpperCase() + " \u00b7 " : "") +
+  return (ARCH.industry !== "generic" ? T(industryLabel(ARCH.industry)).toUpperCase() + " \u00b7 " : "") +
     "DATABRICKS";
 }
 async function boardCanvas(scale, phase){
@@ -15750,14 +16182,22 @@ async function boardCanvas(scale, phase){
   g.fillStyle = expBg(); g.fillRect(0, 0, c.width, c.height);
   g.setTransform(scale, 0, 0, scale, 0, 0);
   g.drawImage(img, 0, 0, w, h);
-  return { canvas:c, w:c.width, h:c.height };
+  return { canvas:c, w:c.width, h:c.height, cssW:w, cssH:h };
 }
 async function boardPngBlob(scale){
   const { canvas, w, h } = await boardCanvas(scale);
   const blob = await new Promise(res=> canvas.toBlob(res, "image/png"));
   return { blob, w, h };
 }
-
+/* The board as raw PNG bytes plus its CSS width/height, for embedding straight
+   into a container (the .pptx board slide) rather than downloading. */
+async function boardPngU8(scale){
+  const { canvas, cssW, cssH } = await boardCanvas(scale);
+  const b64 = canvas.toDataURL("image/png").split(",")[1];
+  const raw = atob(b64), u8 = new Uint8Array(raw.length);
+  for(let i = 0; i < raw.length; i++) u8[i] = raw.charCodeAt(i);
+  return { u8, w:cssW, h:cssH };
+}
 /* ---------- animated GIF ----------
    The still exports lose the thing the diagram is actually about: the direction
    data travels. A GIF is the one format that carries the movement into a slide,
@@ -16013,6 +16453,21 @@ function pptxTheme(){
 
 const PPT_SW = 12192000, PPT_SH = 6858000;   /* 13.333in x 7.5in, 16:9 */
 const PPT_FONT = "Calibri";
+/* Every run carries the Latin face plus, when the content language needs a
+   different script, the matching complex-script (cs, Arabic/Devanagari) or
+   East-Asian (ea, CJK) face. Calibri has no Arabic/Hindi/Chinese glyphs, so
+   without these PowerPoint would fall back per-glyph to whatever it guesses;
+   naming widely installed script fonts keeps the deck legible and editable
+   rather than rasterised. A missing font degrades to PowerPoint's own
+   substitute, never to broken text. */
+function pptxRunFonts(){
+  const lang = (typeof I18N !== "undefined" && I18N.lang) || "en";
+  const cs = lang === "ar" ? "Arial" : lang === "hi" ? "Nirmala UI" : "";
+  const ea = lang === "zh" ? "Microsoft YaHei" : "";
+  return '<a:latin typeface="' + PPT_FONT + '"/>' +
+    (ea ? '<a:ea typeface="' + ea + '"/>' : "") +
+    (cs ? '<a:cs typeface="' + cs + '"/>' : "");
+}
 /* the connector colours live in CSS on ::before / ::after, which a DOM walk
    cannot read, so the four cases are mirrored here (see the .flow rules) */
 const FLOW_COLOUR = { right:"7D8794", left:"7D8794", down:"C07F3F", up:"8A7FA8", ppl:"8A7FA8" };
@@ -16250,24 +16705,48 @@ function collectBoardInner(){
         line:{ col:oc.hex, w:ow, dash:dashKind(cs.outlineStyle) } });
     }
 
-    /* text: measured per text node, so wrapped and inline runs keep their box */
+    /* text. A run the browser drew on ONE line is emitted as a TIGHT box drawn
+       wrap="none" (see pptxShapeXml): English proves this reproduces the board
+       exactly, and it is also what keeps a short brand label ("Auto Loader",
+       "Lakehouse") a single un-wrapped line - the moment such a label was allowed
+       to wrap it reshaped a hair wider under the export font and broke onto the
+       caption beneath it. A run the browser WRAPPED to several lines is instead
+       emitted ONCE at the width of its layout CONTAINER and drawn wrap="square":
+       a long descriptive name ("Système de point de vente (POS)") reshapes a
+       touch wider under Calibri/Arial/YaHei, so a tight no-wrap box spilled past
+       its narrow tile and was occluded by the neighbour. Given the real container
+       width it re-flows inside the box just like the web instead of spilling.
+       RTL is handled purely at run level (ooxmlRtlAttr), never by resizing. */
     el.childNodes.forEach(n=>{
       if(n.nodeType !== 3) return;
       const raw = n.nodeValue;
       if(!raw || !raw.trim()) return;
       const col = cssRgb(cs.color);
-      lineRuns(n, raw).forEach(ln=>{
-        const tb = rel(ln.rect);
-        shapes.push({ t:"text",
-          box:{ x:tb.x - 1, y:tb.y - 1, w:tb.w + 2, h:tb.h + 2 },
-          txt:applyCase(ln.txt, cs.textTransform),
-          size:parseFloat(cs.fontSize) || 12,
-          bold:(parseInt(cs.fontWeight, 10) || 400) >= 600,
-          italic:cs.fontStyle === "italic",
-          col:col ? col.hex : "1B1F24",
-          spc:parseFloat(cs.letterSpacing) || 0,
-          algn:cs.textAlign === "center" ? "ctr" : cs.textAlign === "right" ? "r" : "l" });
-      });
+      const base = {
+        size:parseFloat(cs.fontSize) || 12,
+        bold:(parseInt(cs.fontWeight, 10) || 400) >= 600,
+        italic:cs.fontStyle === "italic",
+        col:col ? col.hex : "1B1F24",
+        spc:parseFloat(cs.letterSpacing) || 0,
+        algn:cs.textAlign === "center" ? "ctr" : cs.textAlign === "right" ? "r" : "l" };
+      const runs = lineRuns(n, raw);
+      if(runs.length <= 1){
+        runs.forEach(ln=>{ const tb = rel(ln.rect);
+          shapes.push(Object.assign({ t:"text", wrap:false,
+            box:{ x:tb.x - 1, y:tb.y - 1, w:tb.w + 2, h:tb.h + 2 },
+            txt:applyCase(ln.txt, cs.textTransform) }, base)); });
+        return;
+      }
+      const er = rel(el.getBoundingClientRect());
+      const padL = (parseFloat(cs.paddingLeft) || 0) * fitK;
+      const padR = (parseFloat(cs.paddingRight) || 0) * fitK;
+      let top = Infinity, bot = -Infinity;
+      runs.forEach(ln=>{ const tb = rel(ln.rect);
+        if(tb.y < top) top = tb.y; if(tb.y + tb.h > bot) bot = tb.y + tb.h; });
+      shapes.push(Object.assign({ t:"text", wrap:true,
+        box:{ x:er.x + padL, y:top - 1,
+              w:Math.max(4, er.w - padL - padR), h:(bot - top) + 2 },
+        txt:applyCase(runs.map(l=> l.txt).join(" "), cs.textTransform) }, base));
     });
 
     /* pseudo-element decoration: a connector shaft (a solid wire carrying a
@@ -16325,7 +16804,15 @@ function collectBoardInner(){
     const k = mr.width / (mid.offsetWidth || 1);
     const pts = stackPoints(blocks, off(platHeadEl).t, zo - 1).map(p=> ({
       x:(mr.left - B.left) + p.x * k, y:(mr.top - B.top) + p.y * k }));
-    shapes.push({ t:"poly", pts, col:"FF3621", w:2, dash:"dash" });
+    /* The screen ring is roundPoly(..., Z_R + zo) with a 2 layout-px stroke and a
+       15/9 dash. The native export used to trace the SHARP corners with
+       PowerPoint's coarse "dash" preset, so the exported ring read as a jagged,
+       wrong-rhythm rectangle next to the app. Carry the same corner radius and a
+       width-relative custom dash (15/2 on, 9/2 off => 750%/450%) so the vector
+       ring is app-identical; the stroke and radius are scaled to on-screen px
+       (like the points) so E() lands them in the right EMU. */
+    shapes.push({ t:"poly", pts, col:"FF3621", w:2 * k, round:(Z_R + zo) * k,
+      dashPct:[750000, 450000] });
   }
 
   return { shapes, svgs, W:B.width, H:B.height };
@@ -16373,31 +16860,69 @@ function pptxShapeXml(sh, id, k, ox, oy, embed){
     const bx = Math.min.apply(null, xs), by = Math.min.apply(null, ys);
     const bw = Math.max(1, E(Math.max.apply(null, xs) - bx)), bh = Math.max(1, E(Math.max.apply(null, ys) - by));
     const pt = p=> '<a:pt x="' + E(p.x - bx) + '" y="' + E(p.y - by) + '"/>';
-    const path = '<a:path w="' + bw + '" h="' + bh + '"><a:moveTo>' + pt(sh.pts[0]) + "</a:moveTo>" +
-      sh.pts.slice(1).map(p=> "<a:lnTo>" + pt(p) + "</a:lnTo>").join("") +
-      "<a:close/></a:path>";
+    let path;
+    if(sh.round){
+      /* Rounded corners rebuilt exactly like roundPoly() on screen: for each
+         corner, step back along both incident edges by the radius (clamped to
+         half the shorter edge) and sweep the turn with a quadratic whose control
+         point is the corner itself. moveTo the first entry point, then lnTo the
+         next corner's entry + quadBezTo its exit, all the way round, and close.
+         This is what stops the exported ring from being a sharp-cornered box. */
+      const n = sh.pts.length;
+      const len = (a, b)=> Math.hypot(b.x - a.x, b.y - a.y);
+      const walk = (a, b, d)=>{ const L = len(a, b) || 1; return { x:a.x + (b.x - a.x) * d / L, y:a.y + (b.y - a.y) * d / L }; };
+      const seg = [];
+      for(let i = 0; i < n; i++){
+        const p = sh.pts[i], prev = sh.pts[(i - 1 + n) % n], next = sh.pts[(i + 1) % n];
+        const a = walk(p, prev, Math.min(sh.round, len(p, prev) / 2));
+        const b = walk(p, next, Math.min(sh.round, len(p, next) / 2));
+        seg.push(i ? "<a:lnTo>" + pt(a) + "</a:lnTo>" : "<a:moveTo>" + pt(a) + "</a:moveTo>");
+        seg.push("<a:quadBezTo>" + pt(p) + pt(b) + "</a:quadBezTo>");
+      }
+      path = '<a:path w="' + bw + '" h="' + bh + '">' + seg.join("") + "<a:close/></a:path>";
+    }else{
+      path = '<a:path w="' + bw + '" h="' + bh + '"><a:moveTo>' + pt(sh.pts[0]) + "</a:moveTo>" +
+        sh.pts.slice(1).map(p=> "<a:lnTo>" + pt(p) + "</a:lnTo>").join("") +
+        "<a:close/></a:path>";
+    }
+    /* Width-relative custom dash (750% on / 450% off) reproduces the screen's
+       15/9 dash against the 2-layout-px stroke, regardless of export scale. */
+    const dashXml = sh.dashPct
+      ? '<a:custDash><a:ds d="' + sh.dashPct[0] + '" sp="' + sh.dashPct[1] + '"/></a:custDash>'
+      : (sh.dash ? '<a:prstDash val="' + sh.dash + '"/>' : "");
     return '<p:sp><p:nvSpPr>' + nv("Platform outline", "<p:cNvSpPr/><p:nvPr/>") + "</p:nvSpPr><p:spPr>" +
       '<a:xfrm><a:off x="' + X(bx) + '" y="' + Y(by) + '"/><a:ext cx="' + bw + '" cy="' + bh +
       '"/></a:xfrm><a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>' +
       '<a:rect l="0" t="0" r="' + bw + '" b="' + bh + '"/><a:pathLst>' + path + "</a:pathLst></a:custGeom><a:noFill/>" +
       '<a:ln w="' + Math.max(3175, E(sh.w)) + '"><a:solidFill><a:srgbClr val="' + sh.col +
-      '"/></a:solidFill>' + (sh.dash ? '<a:prstDash val="' + sh.dash + '"/>' : "") +
+      '"/></a:solidFill>' + dashXml +
       "</a:ln></p:spPr></p:sp>";
   }
 
   if(sh.t === "text"){
     const pt = Math.max(100, Math.round(sh.size * k / 12700 * 100));
     const spc = sh.spc ? ' spc="' + Math.round(sh.spc * k / 12700 * 100) + '"' : "";
-    const rPr = '<a:rPr lang="en-US" sz="' + pt + '" b="' + (sh.bold ? 1 : 0) + '" i="' +
+    const rPr = '<a:rPr lang="' + ooxmlLang() + '" sz="' + pt + '" b="' + (sh.bold ? 1 : 0) + '" i="' +
       (sh.italic ? 1 : 0) + '"' + spc + ' dirty="0"><a:solidFill><a:srgbClr val="' + sh.col +
-      '"/></a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr>';
+      '"/></a:solidFill>' + pptxRunFonts() + '</a:rPr>';
+    /* A single-line label is a tight box drawn wrap="none" with no autofit - the
+       treatment the English deck proves renders one clean, un-wrapped line in
+       PowerPoint/Keynote/LibreOffice alike, and what keeps a short brand name from
+       ever wrapping onto the caption below it. A label the browser already WRAPPED
+       (sh.wrap) is drawn wrap="square" at its container width with normAutofit, so
+       a name reshaped a hair wider under the export font re-flows inside the box
+       instead of spilling past a narrow tile and being occluded by its neighbour.
+       rtl="1" is added per run only when the run is genuinely RTL, so an Arabic
+       label flips while a Latin brand name stays LTR like English. */
+    const bodyPr = sh.wrap
+      ? '<a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr"><a:normAutofit/></a:bodyPr>'
+      : '<a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr"><a:noAutofit/></a:bodyPr>';
     return '<p:sp><p:nvSpPr>' + nv("text", '<p:cNvSpPr txBox="1"/><p:nvPr/>') + "</p:nvSpPr><p:spPr>" +
       '<a:xfrm><a:off x="' + X(sh.box.x) + '" y="' + Y(sh.box.y) + '"/>' +
       '<a:ext cx="' + Math.max(1, E(sh.box.w)) + '" cy="' + Math.max(1, E(sh.box.h)) +
       '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
-      '<p:txBody><a:bodyPr wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr">' +
-      "<a:noAutofit/></a:bodyPr><a:lstStyle/>" +
-      '<a:p><a:pPr algn="' + sh.algn + '"/><a:r>' + rPr +
+      '<p:txBody>' + bodyPr + '<a:lstStyle/>' +
+      '<a:p><a:pPr algn="' + sh.algn + '"' + ooxmlRtlAttr(sh.txt) + '/><a:r>' + rPr +
       "<a:t>" + xmlEsc(sh.txt) + "</a:t></a:r></a:p></p:txBody></p:sp>";
   }
 
@@ -16537,20 +17062,34 @@ async function exportGif(){
 /* One text run in its own box, positioned in EMU. The cover and the narrative
    slides are type in boxes rather than a DOM walk, so both are built from this.
    `algn` is l/ctr/r, `anchor` is t/ctr/b; a link makes the run a hyperlink. */
+/* Horizontal position of a shape's left edge, mirrored for RTL. The cover,
+   contents and narrative slides are laid out with absolute EMU x-offsets in
+   reading order (chip on the left, count on the right, reasoning column left of
+   the detail column, ...). That is correct for LTR, but for RTL the whole slide
+   must mirror the way the live app / HTML / PDF do (dir=rtl on the containers),
+   or positioned rows collide - e.g. the Contents count caption landing on top of
+   the index chip. Flipping every shape's x here (and letting ooxmlAlgn flip the
+   text) mirrors the layout wholesale while every element stays a native,
+   editable shape. The board slide never routes through these emitters (it is raw
+   OOXML measured from the always-LTR board), so it is untouched. */
+function pptxMirrorX(x, w){
+  const rx = Math.round(x);
+  return ooxmlRtl() ? (PPT_SW - rx - Math.round(w)) : rx;
+}
 function pptxTextEx(id, x, y, w, h, size, bold, colour, s, link, algn, anchor, italic){
-  const rPr = '<a:rPr lang="en-US" sz="' + Math.round(size * 100) + '" b="' + (bold ? 1 : 0) +
+  const rPr = '<a:rPr lang="' + ooxmlLang() + '" sz="' + Math.round(size * 100) + '" b="' + (bold ? 1 : 0) +
     '" i="' + (italic ? 1 : 0) + '"><a:solidFill><a:srgbClr val="' + hex2(colour).toUpperCase() +
     '"/></a:solidFill>' +
     (link ? '<a:hlinkClick xmlns:r="' + PPTX_NS.r + '" r:id="' + link + '"/>' : "") +
-    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr>';
+    pptxRunFonts() + '</a:rPr>';
   return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="t' + id + '"/>' +
     '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr>' +
-    '<a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '<a:xfrm><a:off x="' + pptxMirrorX(x, w) + '" y="' + Math.round(y) + '"/>' +
     '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
     '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="' +
     (anchor || "t") + '"><a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="' +
-    (algn || "l") + '"/><a:r>' + rPr + "<a:t>" + xmlEsc(s) + "</a:t></a:r></a:p></p:txBody></p:sp>";
+    ooxmlAlgn(algn) + '"' + ooxmlRtlAttr(s) + '/><a:r>' + rPr + "<a:t>" + xmlEsc(s) + "</a:t></a:r></a:p></p:txBody></p:sp>";
 }
 function pptxCoverText(id, x, y, w, h, size, bold, colour, s, link){
   return pptxTextEx(id, x, y, w, h, size, bold, colour, s, link, "l", "t", false);
@@ -16563,7 +17102,7 @@ function pptxFillRect(id, x, y, w, h, hex, radiusEmu){
       Math.min(50000, Math.round(radiusEmu)) + '"/></a:avLst></a:prstGeom>'
     : '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
   return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="r' + id + '"/><p:cNvSpPr/><p:nvPr/>' +
-    '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + pptxMirrorX(x, w) + '" y="' + Math.round(y) + '"/>' +
     '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' + geom +
     '<a:solidFill><a:srgbClr val="' + hex2(hex).toUpperCase() + '"/></a:solidFill>' +
     '<a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p/></p:txBody></p:sp>';
@@ -16574,16 +17113,16 @@ function pptxFillRect(id, x, y, w, h, hex, radiusEmu){
    the Genie "questions it answers" list on the narrative slides. */
 function pptxBullets(id, x, y, w, h, items, size, inkHex, accentHex){
   const sz = Math.round(size * 100), hang = Math.round(14 * 12700);
-  const run = (txt, hex, bold)=> '<a:r><a:rPr lang="en-US" sz="' + sz + '" b="' + (bold ? 1 : 0) +
+  const run = (txt, hex, bold)=> '<a:r><a:rPr lang="' + ooxmlLang() + '" sz="' + sz + '" b="' + (bold ? 1 : 0) +
     '"><a:solidFill><a:srgbClr val="' + hex2(hex).toUpperCase() + '"/></a:solidFill>' +
-    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(txt) + '</a:t></a:r>';
+    pptxRunFonts() + '</a:rPr><a:t>' + xmlEsc(txt) + '</a:t></a:r>';
   const paras = (items || []).map(it=>
-    '<a:p><a:pPr algn="l" marL="' + hang + '" indent="-' + hang + '">' +
+    '<a:p><a:pPr algn="' + ooxmlAlgn("l") + '"' + ooxmlRtlAttr(String(it)) + ' marL="' + hang + '" indent="-' + hang + '">' +
     '<a:spcAft><a:spcPts val="600"/></a:spcAft></a:pPr>' +
     run("\u2013  ", accentHex, true) + run(String(it), inkHex, false) + '</a:p>').join("");
   return '<p:sp><p:nvSpPr><p:cNvPr id="' + id + '" name="b' + id + '"/>' +
     '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr>' +
-    '<a:xfrm><a:off x="' + Math.round(x) + '" y="' + Math.round(y) + '"/>' +
+    '<a:xfrm><a:off x="' + pptxMirrorX(x, w) + '" y="' + Math.round(y) + '"/>' +
     '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
     '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t">' +
@@ -16606,7 +17145,7 @@ function pptxCoverSlide(){
     const rid = id++;
     return '<p:sp><p:nvSpPr><p:cNvPr id="' + rid + '" name="r' + rid + '"/>' +
       '<p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm>' +
-      '<a:off x="' + Math.round(rx) + '" y="' + Math.round(ry) + '"/>' +
+      '<a:off x="' + pptxMirrorX(rx, rw) + '" y="' + Math.round(ry) + '"/>' +
       '<a:ext cx="' + Math.round(rw) + '" cy="' + Math.round(rh) + '"/></a:xfrm>' +
       '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="' +
       hex.replace("#", "").toUpperCase() + '"/></a:solidFill><a:ln><a:noFill/></a:ln>' +
@@ -16625,20 +17164,22 @@ function pptxCoverSlide(){
   parts.push(rectXml(M, y, kickW, kickH, lava));
   parts.push(pptxCoverText(id++, M + Math.round(9 * PT), y + Math.round(5 * PT),
     kickW - Math.round(18 * PT), kickH - Math.round(8 * PT), 11, true, "#ffffff",
-    "DATABRICKS DATA INTELLIGENCE PLATFORM"));
+    T("Reference Architecture").toUpperCase()));
   y += kickH + Math.round(16 * PT);
-  /* one row unless the title is wide enough to wrap, so a short title sits tight
-     above the rule instead of leaving the gap a fixed two-row box would open */
-  const titleRows = pdfTextW(docTitle(), 32) > (W / PT - 24) ? 2 : 1;
-  line(32, true, ink, docTitle(), null, titleRows);
+  /* the headline the reader asked for: "<platform> for <industry>", wrapping to a
+     second row only when it is too wide to sit on one above the rule */
+  const coverT = coverTitle();
+  const titleRows = pdfTextW(coverT, 32) > (W / PT - 24) ? 2 : 1;
+  line(32, true, ink, coverT, null, titleRows);
   y += Math.round(4 * PT);
   /* a short thick brand rule under the title: a deliberate accent, not a divider */
   parts.push(rectXml(M, y, Math.round(W * 0.15), Math.round(4 * PT), lava));
   y += Math.round(20 * PT);
-  line(14, false, mut, coverMeta());
+  /* the cloud provider on its own line, as requested */
+  line(14, false, mut, coverCloudLine());
   /* the same sentence the board carries above the top band, so the cover says what
      this architecture is for and not only which industry it belongs to */
-  if(ARCH.top && ARCH.top.sub) line(13, false, mut, ARCH.top.sub, null, 2);
+  if(ARCH.top && ARCH.top.sub) line(13, false, mut, T(ARCH.top.sub), null, 2);
   y += Math.round(22 * PT);
   /* each link is a brand marker plus its label as the hyperlink, and no raw URL
      on the slide: the label text is what the reader clicks */
@@ -16655,10 +17196,11 @@ function pptxCoverSlide(){
     '<a:ext cx="' + W + '" cy="' + Math.round(18 * PT) + '"/></a:xfrm>' +
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
     '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="b">' +
-    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="r"/><a:r>' +
-    '<a:rPr lang="en-US" sz="1000"><a:solidFill><a:srgbClr val="' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="' + ooxmlAlgn("r") + '"' +
+    ooxmlRtlAttr(creditText()) + '/><a:r>' +
+    '<a:rPr lang="' + ooxmlLang() + '" sz="1000"><a:solidFill><a:srgbClr val="' +
     mut.replace("#", "").toUpperCase() + '"/></a:solidFill>' +
-    '<a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(creditText()) +
+    pptxRunFonts() + '</a:rPr><a:t>' + xmlEsc(creditText()) +
     "</a:t></a:r></a:p></p:txBody></p:sp>");
   slide.body = parts.join("");
   return slide;
@@ -16676,7 +17218,7 @@ function pptxIndexSlide(){
   parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
   /* chrome */
   parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), Math.round(W * 0.6), Math.round(16 * PTU),
-    11, true, brand, "CONTENTS", null, "l", "t"));
+    11, true, brand, T("Contents").toUpperCase(), null, "l", "t"));
   parts.push(pptxTextEx(ref.id++, M, Math.round(SH * 0.055), W, Math.round(16 * PTU),
     11, true, mut, deckRunHeader(), null, "r", "t"));
   const fy = Math.round(SH - M - 13 * PTU);
@@ -16685,7 +17227,7 @@ function pptxIndexSlide(){
   /* title */
   let y = Math.round(SH * 0.135);
   parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * PTU), 26, true, ink,
-    "What is inside this deck", null, "l", "t"));
+    T("What is inside this deck"), null, "l", "t"));
   parts.push(pptxFillRect(ref.id++, M, y + Math.round(36 * PTU), Math.round(W * 0.09), Math.round(4 * PTU), brand));
   y += Math.round(56 * PTU);
   /* rows */
@@ -16706,11 +17248,7 @@ function pptxIndexSlide(){
       15, true, ink, sec.title, null, "l", "t"));
     parts.push(pptxTextEx(ref.id++, tx, ry + Math.round(rowH * 0.20) + Math.round(20 * PTU), tw, Math.round(18 * PTU),
       12, false, mut, sec.blurb, null, "l", "t"));
-    const count = sec.kind === "board" ? "" :
-      sec.tiles.length + " " + (sec.kind === "uc" ? "use case" + (sec.tiles.length === 1 ? "" : "s")
-        : sec.kind === "genie" ? "agent" + (sec.tiles.length === 1 ? "" : "s")
-        : sec.kind === "dash" ? "dashboard" + (sec.tiles.length === 1 ? "" : "s")
-        : "app" + (sec.tiles.length === 1 ? "" : "s"));
+    const count = sec.kind === "board" ? "" : deckCount(sec.kind, sec.tiles.length);
     if(count) parts.push(pptxTextEx(ref.id++, M, ry, W - Math.round(22 * PTU), rowH, 12, true,
       mixHex(role, ink, 0.30), count, null, "r", "ctr"));
   });
@@ -16758,7 +17296,7 @@ function pptxNarrativeSlides(){
      way. All take (ref, parts, ...) so each slide keeps its own id counter. */
   const label = (ref, parts, x, y, w, s, colour)=>{
     parts.push(pptxTextEx(ref.id++, x, y, w, Math.round(14 * PTU), 10, true, colour || brand,
-      String(s).toUpperCase(), null, "l", "t"));
+      String(T(s)).toUpperCase(), null, "l", "t"));
     return y + Math.round(15 * PTU);
   };
   const para = (ref, parts, x, y, w, s, sizePt, colour)=>{
@@ -16799,7 +17337,7 @@ function pptxNarrativeSlides(){
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, roleHex));
     chrome(parts, ref, sec.eyebrow);
     let y = Math.round(SH * 0.30);
-    const kick = "SECTION " + idx;
+    const kick = String(T("SECTION")).toUpperCase() + " " + idx;
     const kickW = pdfTextW(kick, 11) * PTU + Math.round(26 * PTU);
     parts.push(pptxFillRect(ref.id++, M, y, kickW, Math.round(21 * PTU), roleHex));
     parts.push(pptxTextEx(ref.id++, M + Math.round(13 * PTU), y + Math.round(4 * PTU),
@@ -16815,12 +17353,12 @@ function pptxNarrativeSlides(){
   };
 
   /* --- one slide per use case, mirroring the drawer --- */
-  const ucSlide = (t, i, total)=>{
+  const ucSlide = (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [];
     const stories = (t.stories || []).slice(0, 4);
     const slide = { media:[], hlinks: stories.map(s=> s.u) };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "USE CASE " + (i + 1) + " OF " + total);
+    chrome(parts, ref, String(eyebrow || "").toUpperCase());
     const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "");
     /* two columns: reasoning on the left, who / architecture / stories on the right */
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
@@ -16857,11 +17395,11 @@ function pptxNarrativeSlides(){
 
   /* --- one slide per Genie Agent: what it explores, the data it reads, the
      teams it serves and the questions it answers, mirroring the drawer --- */
-  const genieSlide = (t, i, total)=>{
+  const genieSlide = (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "GENIE AGENT " + (i + 1) + " OF " + total);
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, genieDomain(t) || "Ask in natural language over governed data");
+    chrome(parts, ref, String(eyebrow || "").toUpperCase());
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, genieDomain(t) || T("Ask in natural language over governed data"));
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it explores"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
@@ -16888,11 +17426,11 @@ function pptxNarrativeSlides(){
      and the teams that run on it. A dashboard is as content-rich as a Genie
      agent, so it gets a full slide; a 2x2 grid cell on 16:9 is too short to
      hold five KPI chips plus the team pills without spilling. --- */
-  const dashSlide = (t, i, total)=>{
+  const dashSlide = (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "DASHBOARD " + (i + 1) + " OF " + total);
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || "Certified AI/BI on governed Metric Views");
+    chrome(parts, ref, String(eyebrow || "").toUpperCase());
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || T("Certified AI/BI on governed Metric Views"));
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it tracks"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
@@ -16943,7 +17481,7 @@ function pptxNarrativeSlides(){
     const links = closingLinks();
     const slide = { media:[], hlinks: links.map(r=> r.url) };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
-    chrome(parts, ref, "IN SUMMARY");
+    chrome(parts, ref, String(T("In Summary")).toUpperCase());
     let y = Math.round(SH * 0.28);
     const kickW = pdfTextW("DATABRICKS DATA INTELLIGENCE PLATFORM", 11) * PTU + Math.round(26 * PTU);
     parts.push(pptxFillRect(ref.id++, M, y, kickW, Math.round(21 * PTU), brand));
@@ -16951,7 +17489,7 @@ function pptxNarrativeSlides(){
       kickW - Math.round(20 * PTU), Math.round(15 * PTU), 11, true, "FFFFFF",
       "DATABRICKS DATA INTELLIGENCE PLATFORM", null, "l", "t"));
     y += Math.round(38 * PTU);
-    const title = "Databricks Data Intelligence Platform for " + ind;
+    const title = dt("closeTitle", { plat:T("Databricks Data Intelligence Platform"), ind });
     const rows = pdfTextW(title, 30) > (W / PTU - 12) ? 2 : 1;
     parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * rows * PTU), 30, true, ink, title, null, "l", "t"));
     y += Math.round((34 * rows + 6) * PTU);
@@ -16977,9 +17515,9 @@ function pptxNarrativeSlides(){
     if(sec.kind === "board"){ si++; return; }
     const role = DECK_ROLES[si % DECK_ROLES.length];
     slides.push(sectionBreak(sec, role, si + 1));
-    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> slides.push(ucSlide(t, i, sec.tiles.length)));
-    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> slides.push(genieSlide(t, i, sec.tiles.length)));
-    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> slides.push(dashSlide(t, i, sec.tiles.length)));
+    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> slides.push(ucSlide(t, i, sec.tiles.length, sec.eyebrow)));
+    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> slides.push(genieSlide(t, i, sec.tiles.length, sec.eyebrow)));
+    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> slides.push(dashSlide(t, i, sec.tiles.length, sec.eyebrow)));
     else slides.push(gridSlide(sec, si));
     si++;
   });
@@ -16989,62 +17527,82 @@ function pptxNarrativeSlides(){
 /* The board slide is assembled from the live DOM: one shape per box, one text box
    per run, one connector per arrow, and a picture only where the artwork is a
    glyph or an official project logo. */
+/* The BCP-47 locale for OOXML text runs, so an exported deck declares the active
+   content language (spell-check, hyphenation, RTL) instead of always en-US. */
+function ooxmlLang(){
+  const M = { fr:"fr-FR", es:"es-ES", pt:"pt-BR", de:"de-DE", it:"it-IT", nl:"nl-NL",
+    sv:"sv-SE", he:"he-IL", ar:"ar-AE", hi:"hi-IN", ja:"ja-JP", ko:"ko-KR", sr:"sr-RS" };
+  return M[I18N.lang] || "en-US";
+}
+/* Arabic (and any RTL content language) needs the paragraph marked rtl in OOXML
+   or PowerPoint lays a line that mixes Arabic with a Latin brand token out
+   left-to-right and scrambles it. The base direction is what fixes the order;
+   we also flip physical left/right alignment so a title anchors to the reading
+   side. Chrome that stays English (running header, credit) is unaffected. */
+function ooxmlRtl(){ return (typeof I18N !== "undefined" && I18N.dir === "rtl"); }
+/* True only for a run that actually contains right-to-left script (Arabic /
+   Hebrew ranges). PowerPoint and Keynote apply a paragraph's rtl="1" to WHATEVER
+   it holds, so tagging a Latin brand run ("Auto Loader", "Lakehouse") rtl made
+   those viewers reorder and overlap its glyphs even though LibreOffice did not.
+   So rtl="1" is emitted per run, gated on the run being genuinely RTL - an
+   Arabic label flips, an English product name stays LTR exactly like the English
+   deck (which is pixel-correct). Mixed Arabic+Latin runs (a heading that keeps
+   "Databricks") count as RTL and let the bidi algorithm place the Latin span. */
+function isRtlText(s){
+  return /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(s || "");
+}
+function ooxmlRtlAttr(s){ return (ooxmlRtl() && isRtlText(s)) ? ' rtl="1"' : ""; }
+function ooxmlAlgn(algn){
+  if(!ooxmlRtl()) return algn || "l";
+  return algn === "l" ? "r" : algn === "r" ? "l" : (algn || "l");
+}
 async function exportPptx(){
   const SW = PPT_SW, SH = PPT_SH;
   const pad = 0.03;
   const title = docTitle();
-  const { shapes, svgs, W, H } = collectBoard();
+  /* The architecture/board page is shipped as a single rasterised image in EVERY
+     language, English included: it is a pixel-exact copy of the on-screen
+     diagram, so no divergence between the browser's fonts and the reader's
+     presentation fonts can overflow, occlude, wrap or reshape a label - the
+     recurring failure when the board was drawn as native text boxes, worst of
+     all for Arabic and the long French/Spanish names. The raster is taken from
+     the live, themed DOM (boardPngU8), so dark mode, RTL and every translation
+     come through exactly as seen. EVERY OTHER slide (cover, contents, use cases,
+     Genie, dashboards, closing) stays native, editable OOXML - the deck is still
+     a working .pptx, only the diagram itself, which no one edits shape-by-shape
+     anyway, is a locked image. */
+  const board = { media:[], body:null };
+  const png = await boardPngU8(3);
+  board.media.push(png.u8);
+  const W = png.w, H = png.h;
   /* the deck needs to say what it is once it leaves the browser, so the board
-     gives up a strip at the top rather than having the title laid over it */
-  const bandH = Math.round(SH * 0.072), availH = SH * (1 - pad * 2) - bandH;
+     gives up a thin strip at the very top rather than having the title laid over
+     it. The strip is kept tight and the board is top-aligned right beneath it
+     (not vertically centred) so the platform gets the maximum height to zoom
+     into instead of floating with a gap above and below. */
+  const bandH = Math.round(SH * 0.052), availH = SH * (1 - pad * 2) - bandH;
   const k = Math.min(SW * (1 - pad * 2) / W, availH / H);
   const ox = Math.round((SW - W * k) / 2);
-  const oy = Math.round(SH * pad + bandH + (availH - H * k) / 2);
-
-  /* one media part per distinct glyph at its rendered size, reused everywhere
-     that glyph appears, so ~200 icons collapse to a few dozen images */
-  const media = [], cache = new Map();
-  for(const sh of shapes){
-    if(sh.t !== "img") continue;
-    const it = svgs[sh.ref];
-    const key = it.el.outerHTML + "@" + Math.round(it.box.w) + "x" + Math.round(it.box.h) +
-      "@" + getComputedStyle(it.el).color;
-    let idx = cache.get(key);
-    if(idx === undefined){
-      try{
-        media.push(await rasterSvg(it.el, it.box.w, it.box.h, 6));
-        idx = media.length; cache.set(key, idx);
-      }catch(e){ idx = 0; cache.set(key, 0); }
-    }
-    sh.embed = idx;
-  }
+  const oy = Math.round(SH * pad + bandH);
 
   let id = 2;
-  /* built now so the shape loop can ask pptxSlideRel for its image ids instead
-     of repeating the numbering rule the .rels writer uses */
-  const board = { media, body:null };
-  const bgHex = expBg().replace("#", "").toUpperCase();
-  const parts = ['<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Canvas"/><p:cNvSpPr/><p:nvPr/>' +
-    '</p:nvSpPr><p:spPr><a:xfrm><a:off x="' + ox + '" y="' + oy + '"/>' +
-    '<a:ext cx="' + Math.round(W * k) + '" cy="' + Math.round(H * k) + '"/></a:xfrm>' +
-    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="' + bgHex +
-    '"/></a:solidFill><a:ln><a:noFill/></a:ln></p:spPr></p:sp>'];
-  shapes.forEach(sh=>{
-    if(sh.t === "img" && !sh.embed) return;            /* a glyph that would not rasterise */
-    const xml = pptxShapeXml(sh, id, k, ox, oy,
-      sh.embed ? pptxSlideRel(board, "img", sh.embed - 1) : null);
-    if(xml){ parts.push(xml); id++; }
-  });
+  const parts = ['<p:pic><p:nvPicPr><p:cNvPr id="' + (id++) + '" name="Architecture"/>' +
+    '<p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
+    '<p:blipFill><a:blip r:embed="' + pptxSlideRel(board, "img", 0) + '"/>' +
+    '<a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="' + ox +
+    '" y="' + oy + '"/><a:ext cx="' + Math.round(W * k) + '" cy="' + Math.round(H * k) +
+    '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>'];
   parts.push('<p:sp><p:nvSpPr><p:cNvPr id="' + (id++) + '" name="Title"/>' +
     '<p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="' +
     Math.round(SW * pad) + '" y="' + Math.round(SH * pad) + '"/><a:ext cx="' +
     Math.round(SW * (1 - pad * 2)) + '" cy="' + bandH + '"/></a:xfrm>' +
     '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/></p:spPr>' +
-    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr">' +
-    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="l"/>' +
-    '<a:r><a:rPr lang="en-US" sz="1800" b="1"><a:solidFill><a:srgbClr val="' +
+    '<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="t">' +
+    '<a:noAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="' + ooxmlAlgn("l") + '"' +
+    ooxmlRtlAttr(title) + '/>' +
+    '<a:r><a:rPr lang="' + ooxmlLang() + '" sz="1800" b="1"><a:solidFill><a:srgbClr val="' +
     expInk().replace("#", "").toUpperCase() + '"/>' +
-    '</a:solidFill><a:latin typeface="' + PPT_FONT + '"/></a:rPr><a:t>' + xmlEsc(title) +
+    '</a:solidFill>' + pptxRunFonts() + '</a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
   board.body = parts.join("");
   return zipStore(pptxParts([pptxCoverSlide(), pptxIndexSlide(), board].concat(pptxNarrativeSlides()), title));
@@ -17059,7 +17617,21 @@ function exportHtmlDoc(){
   const html = document.documentElement.cloneNode(true);
   html.querySelector("#frozen-state")?.remove();
   html.querySelector("#idea-gc")?.remove();
+  html.querySelector("#frozen-lang")?.remove();
+  html.querySelector("#frozen-lang-code")?.remove();
   html.querySelector("head").appendChild(snap);
+  /* Freeze the active content language into the file so a downloaded copy opens
+     in the same language offline, with its dictionary inlined (no network). */
+  if(I18N.lang !== "en"){
+    const langDict = document.createElement("script");
+    langDict.type = "application/json"; langDict.id = "frozen-lang";
+    langDict.textContent = JSON.stringify({ [I18N.lang]: I18N.dict });
+    const langCode = document.createElement("script");
+    langCode.type = "text/plain"; langCode.id = "frozen-lang-code";
+    langCode.textContent = I18N.lang;
+    html.querySelector("head").appendChild(langDict);
+    html.querySelector("head").appendChild(langCode);
+  }
   html.querySelector("body")?.classList.remove("fitting");
   return "<!doctype html>\n" + html.outerHTML;
 }
@@ -17113,6 +17685,242 @@ function pdfWrap(s, size, max){
   if(line) out.push(line);
   return out;
 }
+/* ---------- pdf: non-Latin rasterised deck pages ----------
+   The hand-rolled PDF above draws text with the base-14 Helvetica/WinAnsi
+   fonts, which can only render Latin-1. Arabic, Chinese and Hindi carry no
+   glyphs in that encoding, so those runs come out blank. Rather than embed a
+   CID TrueType subset and a shaping engine (thousands of lines for RTL joining
+   and CJK), the cover / contents / section / narrative / closing pages are
+   built as HTML, rendered by the browser (which shapes every script and honours
+   dir=rtl) and rasterised into the PDF as full-page images. The board page is
+   already an image, and Latin languages keep the crisp vector text. */
+function pdfNeedsRaster(){
+  const lang = (typeof I18N !== "undefined" && I18N.lang) || "en";
+  if(lang === "en") return false;
+  if(typeof I18N !== "undefined" && I18N.dir === "rtl") return true;
+  /* scripts outside Latin-1 that the base-14 fonts cannot draw */
+  return /^(zh|ja|ko|hi|bn|ta|te|th|ru|uk|el|he|fa|ur|hy|ka)/.test(lang);
+}
+/* concrete hex (with #) for a role/palette value that may or may not carry one */
+const HX = v => "#" + hex2(v);
+/* Render one deck slide's HTML to raw RGB bytes for the PDF. Mirrors the board
+   raster: an SVG foreignObject wrapping the slide markup, drawn once and read
+   back. A broad multi-script font stack lets the browser pick an installed face
+   for Arabic / CJK / Devanagari; dir travels on the wrapper so RTL orders. */
+/* Wrap a deck slide's inner HTML in a positioned, themed, direction-aware root
+   and serialise it as an <svg><foreignObject> at W x H CSS px. Shared by the PDF
+   raster path (A4) and the PPTX raster path (16:9) so both measure and mirror
+   text through the browser identically — the single source of correct shaping. */
+function deckSlideSvg(inner, W, H){
+  const wrap = document.createElement("div");
+  if(typeof I18N !== "undefined") wrap.setAttribute("dir", I18N.dir || "ltr");
+  wrap.setAttribute("style", "position:relative;width:" + W + "px;height:" + H +
+    "px;overflow:hidden;background:" + HX(expBg()) + ";color:" + HX(expInk()) +
+    ";font-family:'SF Pro Text','Helvetica Neue',Arial,'PingFang SC','Hiragino Sans GB'," +
+    "'Heiti SC','Microsoft YaHei','Noto Sans','Noto Sans Arabic','Geeza Pro'," +
+    "'Kohinoor Devanagari','Noto Sans Devanagari',sans-serif;");
+  const st = document.createElement("style"); st.textContent = DECK_SLIDE_CSS();
+  wrap.appendChild(st);
+  const body = document.createElement("div");
+  body.setAttribute("style", "position:absolute;inset:0;");
+  body.innerHTML = inner;
+  wrap.appendChild(body);
+  const walk = document.createTreeWalker(wrap, NodeFilter.SHOW_COMMENT);
+  const dead = []; while(walk.nextNode()) dead.push(walk.currentNode); dead.forEach(n=> n.remove());
+  const xml = new XMLSerializer().serializeToString(wrap);
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H +
+    '"><foreignObject x="0" y="0" width="' + W + '" height="' + H + '">' + xml +
+    "</foreignObject></svg>";
+}
+async function deckSlideRGB(inner){
+  const W = 1123, H = 794, SCALE = 2;                 /* A4 landscape @96dpi x2 */
+  const img = new Image();
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(deckSlideSvg(inner, W, H));
+  await img.decode();
+  const c = document.createElement("canvas"); c.width = W * SCALE; c.height = H * SCALE;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = HX(expBg()); ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  const px = ctx.getImageData(0, 0, c.width, c.height).data;
+  const rgb = new Uint8Array(c.width * c.height * 3);
+  for(let i = 0, j = 0; i < px.length; i += 4){ rgb[j++] = px[i]; rgb[j++] = px[i + 1]; rgb[j++] = px[i + 2]; }
+  return { rgb, w:c.width, h:c.height };
+}
+function DECK_SLIDE_CSS(){ return "" +
+  ".ds-bar{position:absolute;inset-block:0;inset-inline-start:0;width:14px;}" +
+  ".ds-bar-wide{width:18px;}" +
+  ".ds-pad{position:absolute;inset:0;padding:48px 64px;display:flex;flex-direction:column;box-sizing:border-box;}" +
+  ".ds-top{display:flex;justify-content:space-between;font:700 13px/1.2 inherit;letter-spacing:.06em;}" +
+  ".ds-foot{margin-top:auto;display:flex;justify-content:space-between;font:400 11px/1.2 inherit;padding-top:12px;}" +
+  ".ds-h{margin:22px 0 6px;}" +
+  ".ds-title{font:700 30px/1.15 inherit;margin:0;}" +
+  ".ds-sub{font:400 15px/1.3 inherit;margin-top:6px;}" +
+  ".ds-rule{width:120px;height:4px;margin-top:12px;border-radius:2px;}" +
+  ".ds-cols{display:grid;grid-template-columns:1.35fr 1fr;gap:34px;margin-top:20px;}" +
+  ".ds-label{font:700 12px/1.2 inherit;letter-spacing:.07em;margin:16px 0 7px;}" +
+  ".ds-para{font:400 15px/1.45 inherit;margin:0 0 6px;}" +
+  ".ds-bul{margin:0;padding:0;list-style:none;}" +
+  ".ds-bul li{font:400 14px/1.4 inherit;position:relative;padding-inline-start:16px;margin-bottom:6px;}" +
+  ".ds-bul li::before{content:'\\2013';position:absolute;inset-inline-start:0;}" +
+  ".ds-chips{display:flex;flex-wrap:wrap;gap:7px;}" +
+  ".ds-chipi{font:700 12px/1 inherit;padding:5px 9px;border-radius:5px;}" +
+  ".ds-pills{display:flex;flex-wrap:wrap;gap:7px;}" +
+  ".ds-pill{font:700 12px/1 inherit;padding:5px 9px;border-radius:12px;}" +
+  ".ds-crows{display:flex;flex-direction:column;gap:12px;margin-top:16px;}" +
+  ".ds-crow{position:relative;display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:8px;overflow:hidden;}" +
+  ".ds-cbar{position:absolute;inset-block:0;inset-inline-start:0;width:6px;}" +
+  ".ds-cnum{flex:none;width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font:700 17px/1 inherit;margin-inline-start:6px;}" +
+  ".ds-ctext{display:flex;flex-direction:column;gap:3px;flex:1;}" +
+  ".ds-ctitle{font:700 16px/1.2 inherit;}" +
+  ".ds-cblurb{font:400 12px/1.35 inherit;}" +
+  ".ds-ccount{font:700 13px/1 inherit;white-space:nowrap;}" +
+  ".ds-kick{display:inline-block;font:700 13px/1 inherit;letter-spacing:.06em;padding:7px 13px;border-radius:4px;}" +
+  ".ds-sectitle{font:700 44px/1.1 inherit;margin:22px 0 0;}" +
+  ".ds-secblurb{font:400 15px/1.45 inherit;margin-top:16px;max-width:72%;}" +
+  ".ds-secwrap{margin-top:70px;}" +
+  ".ds-cover{justify-content:center;}" +
+  ".ds-cover-title{font:700 40px/1.12 inherit;margin:26px 0 0;max-width:88%;}" +
+  ".ds-cover-meta{font:400 15px/1.3 inherit;margin-top:14px;}" +
+  ".ds-cover-sub{font:400 15px/1.4 inherit;margin-top:8px;max-width:82%;}" +
+  ".ds-links{margin-top:30px;display:flex;flex-direction:column;gap:14px;}" +
+  ".ds-link{display:flex;align-items:center;gap:12px;font:700 15px/1.2 inherit;}" +
+  ".ds-dot{width:9px;height:9px;flex:none;}" +
+  ".ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}" +
+  ".ds-card{border-radius:9px;overflow:hidden;display:flex;flex-direction:column;}" +
+  ".ds-card-h{font:700 14px/1.2 inherit;padding:11px 14px;}" +
+  ".ds-card-b{padding:12px 14px;}" +
+  ".ds-csub{font:700 12px/1.2 inherit;margin-bottom:6px;}" +
+  ".ds-stories{display:flex;flex-direction:column;gap:7px;}" +
+  ".ds-story{position:relative;font:700 13px/1.3 inherit;padding-inline-start:16px;}" +
+  ".ds-sdot{position:absolute;inset-inline-start:0;top:5px;width:8px;height:8px;}"; }
+/* --- HTML component helpers (mirror the vector pdf primitives) --- */
+function dsCols(){ return { bg:HX(expBg()), ink:HX(expInk()), mut:HX(expMuted()), brand:HX(expBrand()) }; }
+function dsLabelH(s, colHex){ return '<div class="ds-label" style="color:' + (colHex || dsCols().brand) +
+  '">' + xmlEsc(String(T(s)).toUpperCase()) + '</div>'; }
+function dsParaH(s){ return '<p class="ds-para">' + xmlEsc(s) + '</p>'; }
+function dsBulletsH(items){ return '<ul class="ds-bul">' + (items || []).map(it=>
+  '<li>' + xmlEsc(it) + '</li>').join("") + '</ul>'; }
+function dsChipsH(items, start){ start = start || 0;
+  return '<div class="ds-chips">' + (items || []).map((cm, ci)=>{
+    const role = DECK_ROLES[(start + ci) % DECK_ROLES.length];
+    return '<span class="ds-chipi" style="background:' + HX(deckTint(role)) + ';color:' +
+      HX(mixHex(role, expInk(), 0.28)) + '">' + xmlEsc(cm) + '</span>';
+  }).join("") + '</div>'; }
+function dsPillsH(items, roleHex){ return '<div class="ds-pills">' + (items || []).map(cm=>
+  '<span class="ds-pill" style="background:' + HX(roleHex) + ';color:' + HX(onRoleInk(roleHex)) +
+  '">' + xmlEsc(cm) + '</span>').join("") + '</div>'; }
+function dsShellH(eyebrow, bodyHtml, roleHex){
+  const col = dsCols(), accent = roleHex ? HX(roleHex) : col.brand;
+  const rh = xmlEsc(deckRunHeader()), cred = xmlEsc(creditText());
+  return '<div class="ds-bar" style="background:' + accent + '"></div>' +
+    '<div class="ds-pad">' +
+      '<div class="ds-top"><span style="color:' + accent + '">' + eyebrow + '</span>' +
+        '<span style="color:' + col.mut + '">' + rh + '</span></div>' +
+      bodyHtml +
+      '<div class="ds-foot"><span style="color:' + col.mut + '">' + cred + '</span>' +
+        '<span style="color:' + col.mut + '">' + rh + '</span></div>' +
+    '</div>'; }
+function dsTitleH(title, sub){ const col = dsCols();
+  return '<div class="ds-h"><h1 class="ds-title" style="color:' + col.ink + '">' + xmlEsc(title) + '</h1>' +
+    (sub ? '<div class="ds-sub" style="color:' + col.mut + '">' + xmlEsc(sub) + '</div>' : "") +
+    '<div class="ds-rule" style="background:' + col.brand + '"></div></div>'; }
+function dsDetailH(eyebrow, title, sub, leftHtml, rightHtml){
+  const body = '<div class="ds-cols"><div>' + leftHtml + '</div><div>' + rightHtml + '</div></div>';
+  return dsShellH(xmlEsc(String(eyebrow).toUpperCase()), dsTitleH(title, sub) + body); }
+function dsCover(){ const col = dsCols(), links = coverLinks();
+  return '<div class="ds-bar ds-bar-wide" style="background:' + col.brand + '"></div>' +
+    '<div class="ds-pad ds-cover">' +
+      '<span class="ds-kick" style="background:' + col.brand + ';color:#fff">' + xmlEsc(T("Reference Architecture").toUpperCase()) + '</span>' +
+      '<h1 class="ds-cover-title" style="color:' + col.ink + '">' + xmlEsc(coverTitle()) + '</h1>' +
+      '<div class="ds-rule" style="background:' + col.brand + '"></div>' +
+      '<div class="ds-cover-meta" style="color:' + col.mut + '">' + xmlEsc(coverCloudLine()) + '</div>' +
+      ((ARCH.top && ARCH.top.sub) ? '<div class="ds-cover-sub" style="color:' + col.mut + '">' +
+        xmlEsc(T(ARCH.top.sub)) + '</div>' : "") +
+      '<div class="ds-links">' + links.map(r=> '<div class="ds-link" style="color:' + col.ink +
+        '"><span class="ds-dot" style="background:' + col.brand + '"></span>' + xmlEsc(r.label) + '</div>').join("") +
+      '</div></div>'; }
+function dsIndex(){ const col = dsCols(), secs = deckSections();
+  const rows = secs.map((sec, i)=>{ const role = DECK_ROLES[i % DECK_ROLES.length];
+    const count = sec.kind === "board" ? "" : deckCount(sec.kind, sec.tiles.length);
+    return '<div class="ds-crow" style="background:' + HX(deckTint(role)) + '">' +
+      '<span class="ds-cbar" style="background:' + HX(role) + '"></span>' +
+      '<span class="ds-cnum" style="background:' + HX(role) + ';color:' + HX(onRoleInk(role)) + '">' + (i + 1) + '</span>' +
+      '<span class="ds-ctext"><span class="ds-ctitle" style="color:' + col.ink + '">' + xmlEsc(sec.title) + '</span>' +
+      '<span class="ds-cblurb" style="color:' + col.mut + '">' + xmlEsc(sec.blurb) + '</span></span>' +
+      (count ? '<span class="ds-ccount" style="color:' + HX(mixHex(role, expInk(), 0.30)) + '">' + xmlEsc(count) + '</span>' : "") +
+      '</div>';
+  }).join("");
+  return dsShellH(xmlEsc(String(T("Contents")).toUpperCase()),
+    dsTitleH(T("What is inside this deck"), "") + '<div class="ds-crows">' + rows + '</div>'); }
+function dsSection(sec, role, idx){ const col = dsCols();
+  const body = '<div class="ds-secwrap">' +
+    '<span class="ds-kick" style="background:' + HX(role) + ';color:' + HX(onRoleInk(role)) + '">' +
+      xmlEsc(String(T("SECTION")).toUpperCase() + " " + idx) + '</span>' +
+    '<h1 class="ds-sectitle" style="color:' + HX(role) + '">' + xmlEsc(sec.title) + '</h1>' +
+    '<div class="ds-rule" style="background:' + HX(role) + '"></div>' +
+    '<p class="ds-secblurb" style="color:' + col.mut + '">' + xmlEsc(sec.blurb) + '</p></div>';
+  return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()), body, role); }
+function dsUC(t, eyebrow){ let L = "", R = "";
+  if(t.long){ L += dsLabelH("What it is") + dsParaH(t.long); }
+  if(t.problem){ L += dsLabelH("The problem it solves") + dsParaH(t.problem); }
+  if(t.how){ L += dsLabelH("How it is built") + dsParaH(t.how); }
+  if(t.who){ R += dsLabelH("Who benefits") + dsChipsH([t.who], 0); }
+  if(t.comps && t.comps.length){ R += dsLabelH("Architecture it uses") + dsChipsH(t.comps, 0); }
+  if(t.stories && t.stories.length){ R += dsLabelH("Customer stories") + '<div class="ds-stories">' +
+    t.stories.slice(0, 4).map(s=> '<div class="ds-story" style="color:' + dsCols().brand +
+      '"><span class="ds-sdot" style="background:' + dsCols().brand + '"></span>' + xmlEsc(s.t) + '</div>').join("") +
+    '</div>'; }
+  return dsDetailH(eyebrow, t.n, t.s || t.desc || "", L, R); }
+function dsGenie(t, eyebrow){ let L = "", R = "";
+  if(t.long){ L += dsLabelH("What it explores") + dsParaH(t.long); }
+  if(t.questions && t.questions.length){ L += dsLabelH("Top questions it answers") + dsBulletsH(t.questions.slice(0, 5)); }
+  if(t.feeds && t.feeds.length){ R += dsLabelH("Data it reads") + dsChipsH(t.feeds, 0); }
+  if(t.teams && t.teams.length){ R += dsLabelH("Teams it serves") + dsPillsH(t.teams, expBrand()); }
+  return dsDetailH(eyebrow, t.n, genieDomain(t) || T("Ask in natural language over governed data"), L, R); }
+function dsDash(t, eyebrow){ let L = "", R = "";
+  if(t.long){ L += dsLabelH("What it tracks") + dsParaH(t.long); }
+  if(t.kpis && t.kpis.length){ L += dsLabelH("KPIs it depends on") + dsChipsH(t.kpis, 0); }
+  if(t.teams && t.teams.length){ R += dsLabelH("Teams that run on it") + dsPillsH(t.teams, expBrand()); }
+  return dsDetailH(eyebrow, t.n, t.s || T("Certified AI/BI on governed Metric Views"), L, R); }
+function dsGrid(sec, si){
+  const cards = sec.tiles.slice(0, 4).map((t, i)=>{ const role = DECK_ROLES[(si + i) % DECK_ROLES.length];
+    let inner = "";
+    if(t.s) inner += '<div class="ds-csub" style="color:' + HX(mixHex(role, expInk(), 0.30)) + '">' + xmlEsc(t.s) + '</div>';
+    if(t.long) inner += dsParaH(t.long);
+    if(t.kpis && t.kpis.length) inner += dsLabelH("KPIs", HX(mixHex(role, expInk(), 0.30))) + dsChipsH(t.kpis, si + i);
+    if(t.teams && t.teams.length) inner += dsLabelH("Teams", HX(mixHex(role, expInk(), 0.30))) + dsPillsH(t.teams, role);
+    return '<div class="ds-card" style="background:' + HX(deckTint(role)) + '">' +
+      '<div class="ds-card-h" style="background:' + HX(role) + ';color:' + HX(onRoleInk(role)) + '">' + xmlEsc(t.n) + '</div>' +
+      '<div class="ds-card-b">' + inner + '</div></div>';
+  }).join("");
+  return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()),
+    dsTitleH(sec.title, sec.blurb) + '<div class="ds-grid">' + cards + '</div>'); }
+function dsClosing(){ const col = dsCols(), links = closingLinks();
+  const body = '<div class="ds-secwrap">' +
+    '<span class="ds-kick" style="background:' + col.brand + ';color:#fff">DATABRICKS DATA INTELLIGENCE PLATFORM</span>' +
+    '<h1 class="ds-sectitle" style="color:' + col.ink + '">' +
+      xmlEsc(dt("closeTitle", { plat:T("Databricks Data Intelligence Platform"), ind:deckIndustry() })) + '</h1>' +
+    '<div class="ds-rule" style="background:' + col.brand + '"></div>' +
+    '<div class="ds-links">' + links.map(r=> '<div class="ds-link" style="color:' + col.brand +
+      '"><span class="ds-dot" style="background:' + col.brand + '"></span>' + xmlEsc(r.label) + '</div>').join("") +
+    '</div></div>';
+  return dsShellH(xmlEsc(String(T("In Summary")).toUpperCase()), body); }
+/* The board PAGE for a non-Latin language: the board is already a correct raster
+   (Arabic/CJK/Hindi shape + RTL come from the re-scoped export CSS), but its
+   title sits on the PDF page as base-14 vector text that cannot draw those
+   scripts. So for raster languages the whole board page is built as HTML — a
+   browser-shaped title over the board image — and rasterised like the other
+   non-Latin pages. Latin languages keep the crisp vector boardPage(). */
+function dsBoard(durl){
+  const rtl = (typeof I18N !== "undefined" && I18N.dir === "rtl");
+  return '<div style="position:absolute;inset:0;display:flex;flex-direction:column;' +
+    'padding:22px 26px 16px;box-sizing:border-box;">' +
+    '<div style="font-weight:800;font-size:26px;line-height:1.15;margin:0 0 10px;' +
+    (rtl ? "text-align:right;" : "") + '">' + xmlEsc(docTitle()) + '</div>' +
+    '<div style="flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;">' +
+    '<img src="' + durl + '" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"/>' +
+    '</div></div>';
+}
 async function boardPdfBlob(){
   const { canvas, w, h } = await boardCanvas(1.6);
   const px = canvas.getContext("2d").getImageData(0, 0, w, h).data;
@@ -17160,7 +17968,7 @@ async function boardPdfBlob(){
      Genie, dashboard and app pages draw the same way. `colour` is a pre-built
      "r g b" string; role helpers convert with rg(). */
   const labelP = (c, x, cy, s, colour)=>{
-    c.push(txt("F1", 8, colour || brand, x, cy - 8, String(s).toUpperCase())); return cy - 12;
+    c.push(txt("F1", 8, colour || brand, x, cy - 8, String(T(s)).toUpperCase())); return cy - 12;
   };
   const paraP = (c, x, cy, maxW, s, size, colour)=>{
     pdfWrap(s, size, maxW).forEach(ln=>{ c.push(txt("F2", size, colour || ink, x, cy - size, ln)); cy -= size * 1.34; });
@@ -17206,14 +18014,14 @@ async function boardPdfBlob(){
     c.push(rectF(bgc, 0, 0, PW, PH));
     c.push(rectF(brand, 0, 0, 14, PH));
     let y = PH - 150;
-    const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM", kw = pdfTextW(kick, 10) + 26;
+    const kick = T("Reference Architecture").toUpperCase(), kw = pdfTextW(kick, 10) + 26;
     c.push(rectF(brand, CM, y - 6, kw, 23));
     c.push(txt("F1", 10, "1 1 1", CM + 13, y, kick));
     y -= 50;
-    pdfWrap(docTitle(), 28, PW - CM * 2 - 20).forEach((ln, i)=>{ if(i) y -= 33; c.push(txt("F1", 28, ink, CM, y, ln)); });
+    pdfWrap(coverTitle(), 28, PW - CM * 2 - 20).forEach((ln, i)=>{ if(i) y -= 33; c.push(txt("F1", 28, ink, CM, y, ln)); });
     y -= 16; c.push(rectF(brand, CM, y, 120, 4)); y -= 26;
-    c.push(txt("F2", 12, mut, CM, y, coverMeta()));
-    (ARCH.top && ARCH.top.sub ? pdfWrap(ARCH.top.sub, 12, PW - CM * 2 - 20).slice(0, 2) : [])
+    c.push(txt("F2", 12, mut, CM, y, coverCloudLine()));
+    (ARCH.top && ARCH.top.sub ? pdfWrap(T(ARCH.top.sub), 12, PW - CM * 2 - 20).slice(0, 2) : [])
       .forEach(line=>{ y -= 18; c.push(txt("F2", 12, mut, CM, y, line)); });
     y -= 44;
     links.forEach(row=>{
@@ -17232,12 +18040,20 @@ async function boardPdfBlob(){
 
   /* ---- page: the board as it stands ---- */
   const boardPage = ()=>{
-    const k = Math.min((PW - M * 2) / w, (PH - M * 2 - TB) / h);
-    const dw = w * k, dh = h * k, dx = (PW - dw) / 2, dy = M + (PH - M * 2 - TB - dh) / 2;
+    /* Title hugs the very top edge and the board is top-aligned right beneath it
+       with tight side/bottom margins, so the platform reads as large as the page
+       allows instead of floating centred behind a wide margin (more zoom room).
+       The board title anchors to the reading side (right for RTL content). */
+    const TT = 24;                          /* title band from the top edge */
+    const BM = 6;                           /* tight side/bottom board margin */
+    const availW = PW - BM * 2, availH = PH - TT - BM;
+    const k = Math.min(availW / w, availH / h);
+    const dw = w * k, dh = h * k, dx = (PW - dw) / 2, dy = (PH - TT) - dh;
+    const tx = ooxmlRtl() ? (PW - M - pdfTextW(docTitle(), 14)) : M;
     const c = rectF(bgc, 0, 0, PW, PH) +
       "q " + dw.toFixed(2) + " 0 0 " + dh.toFixed(2) + " " + dx.toFixed(2) + " " + dy.toFixed(2) +
-      " cm /Im0 Do Q\n" + txt("F1", 14, ink, M, PH - M - 14, docTitle());
-    return { content:c, annots:[], usesImage:true };
+      " cm /Im0 Do Q\n" + txt("F1", 14, ink, tx, PH - 20, docTitle());
+    return { content:c, annots:[], usesImage:true, imgIndex:0 };
   };
 
   /* ---- page: Contents / index, right after the cover ---- */
@@ -17245,14 +18061,14 @@ async function boardPdfBlob(){
     const c = [], secs = deckSections();
     c.push(rectF(bgc, 0, 0, PW, PH));
     c.push(rectF(brand, 0, 0, 10, PH));
-    c.push(txt("F1", 9, brand, NM, PH - 42, "CONTENTS"));
+    c.push(txt("F1", 9, brand, NM, PH - 42, String(T("Contents")).toUpperCase()));
     const rh = deckRunHeader();
     c.push(txt("F1", 9, mut, PW - NM - pdfTextW(rh, 9), PH - 42, rh));
     const cred = creditText();
     c.push(txt("F2", 8, mut, NM, 26, cred));
     c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
-    let y = titleBlock(c, PH - 62, "What is inside this deck", "") - 6;
-    const gap = 12, rowH = Math.min(60, (y - 44 - gap * (secs.length - 1)) / secs.length);
+    let y = titleBlock(c, PH - 62, T("What is inside this deck"), "") - 6;
+    const gap = 12, rowH = Math.min(80, (y - 44 - gap * (secs.length - 1)) / secs.length);
     secs.forEach((sec, i)=>{
       const role = DECK_ROLES[i % DECK_ROLES.length];
       const top = y - i * (rowH + gap);
@@ -17263,12 +18079,24 @@ async function boardPdfBlob(){
       c.push(txt("F1", 15, rg(onRoleInk(role)), cx + chip / 2 - pdfTextW(String(i + 1), 15, true) / 2, cyc + chip / 2 - 5, String(i + 1)));
       const tx = cx + chip + 16;
       c.push(txt("F1", 14, ink, tx, top - 22, sec.title));
-      c.push(txt("F2", 11, mut, tx, top - 40, sec.blurb));
-      const count = sec.kind === "board" ? "" : sec.tiles.length + " " +
-        (sec.kind === "uc" ? "use cases" : sec.kind === "genie" ? "agents" :
-         sec.kind === "dash" ? "dashboards" : "apps");
+      const count = sec.kind === "board" ? "" : deckCount(sec.kind, sec.tiles.length);
+      const countW = count ? pdfTextW(count, 11, true) : 0;
+      /* the blurb wraps inside the row and stops short of the count chip on the
+         right, so the two never collide. It used to be one un-wrapped line that
+         ran off the page edge and under the count. If the wrap needs more lines
+         than the row is tall, the blurb steps down one font size rather than
+         spilling below the row. */
+      const blurbMax = (PW - NM - 16) - tx - (countW ? countW + 18 : 0);
+      const yTop = top - 38, bBot = top - rowH + 8;
+      let bsz = 11, lead = bsz * 1.2, bl = pdfWrap(sec.blurb, bsz, blurbMax);
+      let maxLines = Math.max(1, Math.floor((yTop - bBot) / lead) + 1);
+      if(bl.length > maxLines){ bsz = 9.5; lead = bsz * 1.2;
+        maxLines = Math.max(1, Math.floor((yTop - bBot) / lead) + 1);
+        bl = pdfWrap(sec.blurb, bsz, blurbMax); }
+      let byy = yTop;
+      bl.slice(0, maxLines).forEach(ln=>{ c.push(txt("F2", bsz, mut, tx, byy, ln)); byy -= lead; });
       if(count) c.push(txt("F1", 11, rg(mixHex(role, expInk(), 0.30)),
-        PW - NM - 16 - pdfTextW(count, 11, true), top - rowH / 2 - 4, count));
+        PW - NM - 16 - countW, top - rowH / 2 - 4, count));
     });
     return { content:c.join(""), annots:[], usesImage:false };
   };
@@ -17286,7 +18114,7 @@ async function boardPdfBlob(){
     c.push(txt("F2", 8, mut, NM, 26, cred));
     c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
     let y = PH - 190;
-    const kick = "SECTION " + idx, kw = pdfTextW(kick, 10) + 26;
+    const kick = String(T("SECTION")).toUpperCase() + " " + idx, kw = pdfTextW(kick, 10) + 26;
     c.push(rectF(rg(roleHex), NM, y - 6, kw, 23));
     c.push(txt("F1", 10, rg(onRoleInk(roleHex)), NM + 13, y, kick));
     y -= 46;
@@ -17297,8 +18125,8 @@ async function boardPdfBlob(){
   };
 
   /* ---- page: one per use case, mirroring the drawer ---- */
-  const ucPage = (t, i, total)=>{
-    const c = [], annots = []; chrome(c, "Use Case " + (i + 1) + " of " + total);
+  const ucPage = (t, i, total, eyebrow)=>{
+    const c = [], annots = []; chrome(c, eyebrow || "");
     const cur = titleBlock(c, PH - 70, t.n, t.s || t.desc || "");
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
@@ -17331,9 +18159,9 @@ async function boardPdfBlob(){
   };
 
   /* ---- page: one per Genie Agent (explores, reads, teams, questions) ---- */
-  const geniePage = (t, i, total)=>{
-    const c = []; chrome(c, "Genie Agent " + (i + 1) + " of " + total);
-    const cur = titleBlock(c, PH - 70, t.n, genieDomain(t) || "Ask in natural language over governed data");
+  const geniePage = (t, i, total, eyebrow)=>{
+    const c = []; chrome(c, eyebrow || "");
+    const cur = titleBlock(c, PH - 70, t.n, genieDomain(t) || T("Ask in natural language over governed data"));
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it explores"); ly = paraP(c, NM, ly, colW, t.long, 14); }
@@ -17351,9 +18179,9 @@ async function boardPdfBlob(){
      A dashboard carries as much as a Genie agent (a paragraph, up to five KPIs
      and its teams), so it gets its own page rather than a grid cell, which on a
      16:9 slide is too short to hold the KPI chips without spilling. ---- */
-  const dashPage = (t, i, total)=>{
-    const c = []; chrome(c, "Dashboard " + (i + 1) + " of " + total);
-    const cur = titleBlock(c, PH - 70, t.n, t.s || "Certified AI/BI on governed Metric Views");
+  const dashPage = (t, i, total, eyebrow)=>{
+    const c = []; chrome(c, eyebrow || "");
+    const cur = titleBlock(c, PH - 70, t.n, t.s || T("Certified AI/BI on governed Metric Views"));
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it tracks"); ly = paraP(c, NM, ly, colW, t.long, 14); }
@@ -17390,11 +18218,11 @@ async function boardPdfBlob(){
   /* ---- page: closing ---- */
   const closingPage = ()=>{
     const c = [], annots = [], links = closingLinks();
-    chrome(c, "In Summary");
+    chrome(c, T("In Summary"));
     let y = PH - 170;
     const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM", kw = pdfTextW(kick, 10) + 26;
     c.push(rectF(brand, NM, y - 6, kw, 23)); c.push(txt("F1", 10, "1 1 1", NM + 13, y, kick)); y -= 44;
-    const title = "Databricks Data Intelligence Platform for " + deckIndustry();
+    const title = dt("closeTitle", { plat:T("Databricks Data Intelligence Platform"), ind:deckIndustry() });
     pdfWrap(title, 26, PW - NM * 2 - 20).forEach((ln, i)=>{ if(i) y -= 31; c.push(txt("F1", 26, ink, NM, y, ln)); });
     y -= 16; c.push(rectF(brand, NM, y, 120, 4)); y -= 30;
     links.forEach(row=>{
@@ -17414,43 +18242,81 @@ async function boardPdfBlob(){
      pages (the Architecture section is the board itself), then the close. The
      "SECTION N" tab number matches the Contents row because the board section
      still advances the index. */
-  const pages = [coverPage(), indexPage()];
+  /* For a language the base-14 fonts cannot render (Arabic, Chinese, Hindi,...),
+     every text page is built as HTML and rasterised so the browser shapes the
+     script and honours RTL; the board page stays the board image, and Latin
+     languages keep the vector text. `P` picks the vector builder or queues an
+     HTML slide for raster accordingly. */
+  const RAST = pdfNeedsRaster();
+  const pages = [];
+  const P = (vecFn, html)=> pages.push(RAST ? { raster:true, html:html } : vecFn());
+  P(coverPage, dsCover());
+  P(indexPage, dsIndex());
   let si = 0;
   deckSections().forEach(sec=>{
-    if(sec.kind === "board"){ pages.push(boardPage()); si++; return; }
+    if(sec.kind === "board"){
+      pages.push(RAST ? { raster:true, html:dsBoard(canvas.toDataURL("image/png")) } : boardPage());
+      si++; return;
+    }
     const role = DECK_ROLES[si % DECK_ROLES.length];
-    pages.push(sectionBreakPage(sec, role, si + 1));
-    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> pages.push(ucPage(t, i, sec.tiles.length)));
-    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> pages.push(geniePage(t, i, sec.tiles.length)));
-    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> pages.push(dashPage(t, i, sec.tiles.length)));
-    else pages.push(gridPage(sec, si));
+    const eb = sec.eyebrow, idx = si + 1, scope = sec;
+    P(()=> sectionBreakPage(scope, role, idx), dsSection(scope, role, idx));
+    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> P(()=> ucPage(t, i, scope.tiles.length, eb), dsUC(t, eb)));
+    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> P(()=> geniePage(t, i, scope.tiles.length, eb), dsGenie(t, eb)));
+    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> P(()=> dashPage(t, i, scope.tiles.length, eb), dsDash(t, eb)));
+    else P(()=> gridPage(scope, si), dsGrid(scope, si));
     si++;
   });
-  pages.push(closingPage());
+  P(closingPage, dsClosing());
 
-  /* Fixed objects 1..6 (catalog, pages, info, two fonts, the board image), then
-     two objects per page (the page and its content stream). Page N is object
-     7+2N and its content is 8+2N, so the image and fonts keep stable numbers
-     however many use-case pages sit in between. */
+  /* Image XObjects: the board first (Im index 0, stable object 6), then one per
+     rasterised slide. Rasterisation is async, so it happens here after the page
+     list is fixed; each raster page records the index of its own image. */
+  const images = [{ stream:img, w:w, h:h }];
+  if(RAST){
+    for(const p of pages){
+      if(!p.raster) continue;
+      const slide = await deckSlideRGB(p.html);
+      const senc = await flate(slide.rgb);
+      if(!senc) return null;
+      p.imgIndex = images.length;
+      images.push({ stream:senc, w:slide.w, h:slide.h });
+    }
+  }
+
+  /* Objects 1..5 are catalog, pages, info and the two fonts; then one object per
+     image; then two per page (the page dict and its content stream). Page i is
+     object firstPage+2i and its content firstPage+2i+1, so numbers stay stable
+     however many images sit in between. */
   const nPages = pages.length;
-  const pageNums = pages.map((p, i)=> 7 + i * 2);
+  const fixed = 5;
+  const firstPage = fixed + 1 + images.length;
+  const pageNums = pages.map((p, i)=> firstPage + i * 2);
   const objs = [
     enc.encode("<</Type/Catalog/Pages 2 0 R>>"),
     enc.encode("<</Type/Pages/Kids[" + pageNums.map(n=> n + " 0 R").join(" ") + "]/Count " + nPages + ">>"),
     enc.encode("<</Title (" + pdfStr(docTitle()) + ")/Producer (Databricks Reference Architecture)>>"),
     enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica-Bold/Encoding/WinAnsiEncoding>>"),
     enc.encode("<</Type/Font/Subtype/Type1/BaseFont/Helvetica/Encoding/WinAnsiEncoding>>"),
-    { dict:"<</Type/XObject/Subtype/Image/Width " + w + "/Height " + h +
-      "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + img.length + ">>", stream:img },
   ];
+  images.forEach(im=> objs.push({ dict:"<</Type/XObject/Subtype/Image/Width " + im.w + "/Height " + im.h +
+    "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + im.stream.length + ">>", stream:im.stream }));
   pages.forEach((p, i)=>{
-    const cs = enc.encode(p.content);
-    const res = p.usesImage
-      ? "/Resources<</XObject<</Im0 6 0 R>>/Font<</F1 4 0 R/F2 5 0 R>>>>"
+    let content, usesImage = false, imgObjNum = null, annots = "";
+    if(p.raster){
+      imgObjNum = fixed + 1 + p.imgIndex; usesImage = true;
+      content = "q " + PW + " 0 0 " + PH + " 0 0 cm /Im0 Do Q\n";
+    } else {
+      content = p.content;
+      if(p.usesImage){ usesImage = true; imgObjNum = fixed + 1 + (p.imgIndex || 0); }
+      if(p.annots && p.annots.length) annots = "/Annots[" + p.annots.join("") + "]";
+    }
+    const cs = enc.encode(content);
+    const res = usesImage
+      ? "/Resources<</XObject<</Im0 " + imgObjNum + " 0 R>>/Font<</F1 4 0 R/F2 5 0 R>>>>"
       : "/Resources<</Font<</F1 4 0 R/F2 5 0 R>>>>";
-    const annots = p.annots && p.annots.length ? "/Annots[" + p.annots.join("") + "]" : "";
     objs.push(enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH + "]" +
-      res + "/Contents " + (8 + i * 2) + " 0 R" + annots + ">>"));
+      res + "/Contents " + (firstPage + i * 2 + 1) + " 0 R" + annots + ">>"));
     objs.push({ dict:"<</Length " + cs.length + ">>", stream:cs });
   });
 
@@ -17610,8 +18476,9 @@ function setEditMode(on){
     if(!notes || !notes.length) return;
     clearTimeout(hideT);
     tip.innerHTML = `<div class="tip-name">${svg(rec.tile.ic||"dot","")}${esc(rec.tile.n)}</div>` +
-      `<ul>${notes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>` +
-      `<div class="tip-hint">Click for full detail</div>`;
+      `<ul>${notes.map(x=>`<li>${esc(T(x))}</li>`).join("")}</ul>` +
+      `<div class="tip-hint">${esc(T("Click for full detail"))}</div>`;
+    tip.setAttribute("dir", I18N.dir);
     tip.classList.add("show");
     const r = el.getBoundingClientRect();
     const tw = tip.offsetWidth, th = tip.offsetHeight, gap = 10, pad = 8;
@@ -17980,6 +18847,20 @@ if(!seedFromUrl()){
 }
 fitBoard();
 restoreActiveTab();
+
+/* Re-apply a remembered content language after the first board is on screen, so
+   a returning reader sees the architecture in their language. English (default)
+   only runs the static-heading pass, which is a no-op. */
+(function bootLang(){
+  /* A downloaded HTML copy pins its language in #frozen-lang-code; it wins over
+     whatever this browser last saved, so the file opens as it was exported. */
+  let saved = null;
+  try { const el = document.getElementById("frozen-lang-code"); if(el) saved = el.textContent.trim(); } catch(e){}
+  if(!saved) saved = store.get(LANG_LS);
+  const meta = LANGS.find(l => l.code === saved);
+  if(meta && meta.code !== "en"){ applyLang(meta.code, false); }
+  else { syncLangMenu(); translateContent(); }
+})();
 </script>
 
 
@@ -18008,34 +18889,41 @@ restoreActiveTab();
   }
   function closeSampleDrawer(){ if(typeof closeDrawer === "function") closeDrawer(); }
 
+  /* Order is spatial, not thematic: the spotlight sweeps the board left to right
+     (sources -> core -> teams -> panel), then glides straight back across the
+     toolbar right to left (language -> ... -> Edit). Consecutive targets are
+     neighbours on screen, so the animated spotlight travels a short distance each
+     step instead of ping-ponging across the page. */
   const STEPS = [
     { sel:"#ind-btn", place:"bottom", title:"Switch industry",
       body:"Start here. Pick any of 63 industries and everything around the platform respecialises at once: the sources, ingestion, teams, apps, use cases and consumers. Press <kbd>\u2318K</kbd> or <kbd>Ctrl&nbsp;K</kbd> to search them fast." },
     { sel:"#plat-top", place:"bottom", title:"Apps and use cases",
       body:"What the platform is used for. Click any use case to open its full story: the problem it solves, who benefits, how it is built, the components it uses, and real Databricks customer stories with links." },
-    { sel:"#drawer", place:"left", title:"The detail panel", settle:340,
-      enter:openSampleDrawer, exit:closeSampleDrawer,
-      body:"Click any box, product, team or use case and this panel slides in with the full story: what it is, who uses it, the components involved, and links to real Databricks customer stories. Every chip inside jumps to another part of the board." },
-    { sel:".pocket.ppl", place:"left", title:"The teams",
-      body:"Who works on the platform. Click a team to see the personas inside it, what each one cares about, and the use cases they own. Every chip in the drawer is a link into the rest of the board." },
+    { sel:".col.src", place:"right", title:"Sources and consumers",
+      body:"Where data comes from is on the left; where governed answers go is on the right: BI tools, APIs, published data products, partners and operational systems." },
     { sel:"#platform", place:"top", title:"The platform core",
       body:"This is the Databricks Data Intelligence Platform. It stays the same in every industry; only the world around it changes. Click any product for detail." },
     { sel:"#plat-max", place:"bottom", title:"Zoom into the platform",
       body:"Present the platform on its own: this hides the sources, consumers, apps band and cloud services. Click again to bring the full board back." },
-    { sel:".col.src", place:"right", title:"Sources and consumers",
-      body:"Where data comes from is on the left; where governed answers go is on the right: BI tools, APIs, published data products, partners and operational systems." },
+    { sel:".pocket.ppl", place:"left", title:"The teams",
+      body:"Who works on the platform. Click a team to see the personas inside it, what each one cares about, and the use cases they own. Every chip in the drawer is a link into the rest of the board." },
+    { sel:"#drawer", place:"left", title:"The detail panel", settle:340,
+      enter:openSampleDrawer, exit:closeSampleDrawer,
+      body:"Click any box, product, team or use case and this panel slides in with the full story: what it is, who uses it, the components involved, and links to real Databricks customer stories. Every chip inside jumps to another part of the board." },
+    { sel:"#lang-btn", place:"bottom", title:"Read it in your language",
+      body:"Translate the whole architecture: labels, subtitles, use cases and side panel. Pick French, Spanish, Chinese, Arabic or Hindi. The toolbar stays in English, and product and brand names are never translated." },
+    { sel:"#side-btn", place:"bottom", title:"Dock the details panel",
+      body:"Pin the details panel beside the board instead of over it, so you can read one box and keep the whole architecture in view at the same time." },
+    { sel:"#dl-btn", place:"bottom", title:"Take it with you",
+      body:"Export the current view as a multi-page PDF or PowerPoint (a cover, the board, a slide per use case and closing links), or as a PNG, an animated GIF, or interactive HTML. Exports follow the theme and language on screen." },
+    { sel:"#shape-btn", place:"bottom", title:"Shape, palette and stage",
+      body:"Draw the platform as a Z, an I-beam and other shapes, recolour it to a palette that suits your screen or projector, and filter which release stages the platform shows." },
+    { sel:"#theme-btn", place:"bottom", title:"Light or dark",
+      body:"Switch between the light and dark palette. Whatever is on screen is exactly what your PDF, PowerPoint, PNG and GIF exports capture." },
     { sel:"#cloud-seg", place:"bottom", title:"Your cloud",
       body:"Switch the cloud services band between Azure, AWS and GCP. Federation sources, native ingest and the BI tools follow the choice." },
     { sel:"#display-seg", place:"bottom", title:"Brand or generic names",
       body:"Show every product by its commercial brand name, or rooted back to its generic category. Handy when the room knows the category but not the product name." },
-    { sel:"#theme-btn", place:"bottom", title:"Light or dark",
-      body:"Switch between the light and dark palette. Whatever is on screen is exactly what your PDF, PowerPoint, PNG and GIF exports capture." },
-    { sel:"#shape-btn", place:"bottom", title:"Shape, palette and stage",
-      body:"Draw the platform as a Z, an I-beam and other shapes, recolour it to a palette that suits your screen or projector, and filter which release stages the platform shows." },
-    { sel:"#tab-add", place:"bottom", title:"Make your own version",
-      body:"Clone the current board into your own tab: an independent copy you can point at a different industry, cloud, palette or shape and export on its own, without touching the reference. Rename it by double-click; it is kept in this browser." },
-    { sel:"#dl-btn", place:"bottom", title:"Take it with you",
-      body:"Export the current view as a multi-page PDF or PowerPoint (a cover, the board, a slide per use case and closing links), or as a PNG, an animated GIF, or interactive HTML. Downloads follow the theme on screen." },
   ];
 
   let idx = 0, dir = 1, open = false, shownIdx = -1;

@@ -2,3 +2,14 @@ __pycache__/
 tools/.markcache/
 node_modules/
 package-lock.json
+
+# i18n build scratch and tooling (not shipped; runtime loads only app/i18n/<code>.json)
+tools/i18n_work/
+tools/build_i18n.js
+tools/smoke_i18n.js
+_audit_i18n.js
+_shot_bar.js
+app/i18n/.cache/
+app/i18n/_*.json
+app/i18n/manifest.json
+app/i18n/overrides/
