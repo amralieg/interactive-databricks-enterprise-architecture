@@ -5,9 +5,27 @@
 <!-- GitHub Pages serves this repository from its root, and the board itself lives
      at app/index.html, where the Databricks App and the local server both expect
      it. This is a redirect and not a copy: two copies of a 490 KB file would
-     drift, and the one a visitor lands on would be the stale one. -->
+     drift, and the one a visitor lands on would be the stale one.
+
+     GitHub Pages sends `cache-control: max-age=600` on every file and gives us no
+     way to change that header, and there is no service worker, so a returning
+     visitor keeps a cached copy of the board and never sees a new deploy until
+     their browser cache expires on its own. The redirect target below carries an
+     hourly token computed in JS at load time (not baked into this file), so even
+     a cached copy of THIS page still forwards visitors to the current hour's URL.
+     A new hour is a new URL, which the browser must fetch fresh; within the hour
+     it still serves from cache. Staleness is bounded to at most one hour for
+     everyone without any per-deploy step. -->
 <link rel="canonical" href="app/index.html">
-<meta http-equiv="refresh" content="0; url=app/index.html">
+<script>
+  (function(){
+    var d = new Date(), p = function(n){ return String(n).padStart(2, "0"); };
+    var v = "" + d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) + p(d.getUTCHours());
+    location.replace("app/index.html?v=" + v);
+  })();
+</script>
+<!-- No-JS fallback only: plain redirect, still subject to the 10-minute cache. -->
+<noscript><meta http-equiv="refresh" content="0; url=app/index.html"></noscript>
 <style>
   body { margin:0; display:grid; place-items:center; min-height:100vh;
     font:15px/1.6 -apple-system, "Segoe UI", system-ui, sans-serif;
