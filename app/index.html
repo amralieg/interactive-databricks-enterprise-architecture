@@ -1142,7 +1142,7 @@
     padding:7px; border-radius:8px;
     background:var(--zone-tile, var(--card));
     box-shadow:0 0 0 1.5px var(--zone-bd, var(--g-accent)); }
-  .rtile { display:flex; align-items:center; gap:5px; width:100%; text-align:left; font:inherit;
+  .rtile { position:relative; display:flex; align-items:center; gap:5px; width:100%; text-align:left; font:inherit;
     border:1px solid var(--zone-bd, var(--line)); border-left:3px solid var(--rail-accent);
     border-radius:6px;
     background:var(--zone-tile, var(--card)); padding:4px 6px; cursor:pointer; transition:.12s; }
@@ -1854,7 +1854,7 @@
   /* A fixed column count keeps the last row balanced instead of leaving an orphan. */
   .cloud-body { min-width:0; display:grid; gap:7px;
     grid-template-columns:repeat(3, minmax(0,1fr)); align-content:start; }
-  .ctile { display:flex; align-items:center; gap:6px; min-width:0; text-align:left; font:inherit;
+  .ctile { position:relative; display:flex; align-items:center; gap:6px; min-width:0; text-align:left; font:inherit;
     border:1px solid var(--cloud-tbd, var(--line)); border-radius:7px;
     background:var(--cloud-tile, var(--card)); padding:3px 7px; cursor:pointer; transition:.12s; }
   .ctile:hover { border-color:var(--cloud-accent); box-shadow:var(--shadow); transform:translateY(-1px); }
@@ -1867,6 +1867,35 @@
      that fill, and the size and weight still carry the hierarchy. */
   .ctile .ct-sub { display:block; font-size:9.5px; color:var(--g-ink, var(--muted));
     line-height:1.25; margin-top:1px; }
+  /* A tile can carry a small glowing badge dot in its top corner: orange when the
+     use case has a Databricks Solution Accelerator, cyan when the source system has
+     a Lakeflow Connect connector. The detail panel spells out which and links to it.
+     The dot sits absolutely so it never changes the tile's box, keeping the band
+     shape intact. A steady coloured halo plus an expanding pulse ring keeps it
+     visible in both light and dark themes. Colour is driven by --bd so accel and
+     conn share one animation. */
+  .badge-dot { position:absolute; top:2.5px; right:2.5px; width:8px; height:8px; border-radius:50%;
+    background:var(--bd); pointer-events:none; z-index:3;
+    box-shadow:0 0 7px 2px var(--bd), 0 0 0 1px rgba(255,255,255,.55);
+    animation:badgePulse 1.6s ease-out infinite; }
+  .badge-dot.accel { --bd:#ff5f2e; }
+  .badge-dot.conn  { --bd:#12b6ef; }
+  @keyframes badgePulse {
+    0%   { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 var(--bd); }
+    70%  { box-shadow:0 0 7px 2px var(--bd), 0 0 0 7px transparent; }
+    100% { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 transparent; }
+  }
+  .d-badge { margin:4px 0 2px; padding:9px 11px; border:1px solid var(--bd); border-radius:8px;
+    background:var(--bdbg); }
+  .d-badge.accel { --bd:#ff5f2e; --bdbg:rgba(255,95,46,.08); }
+  .d-badge.conn  { --bd:#12b6ef; --bdbg:rgba(18,182,239,.09); }
+  .d-badge .db-h { display:flex; align-items:center; gap:7px; font-weight:800; font-size:12.5px;
+    letter-spacing:.01em; }
+  .d-badge .db-dot { width:9px; height:9px; border-radius:50%; background:var(--bd); flex:0 0 auto;
+    box-shadow:0 0 7px 1px var(--bd); animation:badgePulse 1.6s ease-out infinite; }
+  .d-badge p { margin:6px 0 8px; font-size:12.5px; }
+  .d-badge .d-links { gap:0; }
+  @media (prefers-reduced-motion: reduce){ .badge-dot, .d-badge .db-dot { animation:none; } }
   /* The top band reuses the bottom band's markup, renderer and stylesheet and
      only swaps the accent, so the two horizontal bands read as a pair. */
   .hband.top { --cloud-accent:var(--g-plum-line); --cloud-bd:var(--g-plum-line); --cloud-head:var(--g-plum-head);
@@ -2843,6 +2872,116 @@ function markSvg(name, cls){
   if(!g) return "";
   return `<svg class="mark ${cls||''}" viewBox="0 0 48 48" fill="none" aria-hidden="true">${g}</svg>`;
 }
+/* ---------- Databricks Solution Accelerators ----------
+   A use case that matches a published Databricks Solution Accelerator carries a
+   pulsing dot on its tile and a "Solution Accelerator Available" callout in the
+   detail panel, with a link to the accelerator. The map is keyed by use-case
+   NAME because the same use case (Real-Time Fraud, Customer 360, Demand
+   Forecasting) recurs across industries and maps to the same accelerator, so one
+   entry covers every board that runs it. A tile may still carry its own `accel`
+   to override for a one-off. `accelFor` only resolves for use-case-shaped tiles
+   (they carry `problem`), so a source or agent tile that happens to share a name
+   is never marked. Each URL is the accelerator's source repo in the
+   github.com/databricks-industry-solutions organisation. */
+const GX = "https://github.com/databricks-industry-solutions/";
+const ACCEL_BY_NAME = {
+  "Real-Time Fraud": { n:"Fraud Framework", u:GX+"fraud-orchestration", note:"Orchestrates rule-based and ML fraud detection over streaming transactions, so a proof of concept stands up in about two weeks." },
+  "Customer 360": { n:"Customer Entity Resolution", u:GX+"customer-er", note:"Resolves customer identity across systems into golden records using ML matching, the foundation of a governed single customer view." },
+  "Demand Forecasting": { n:"Fine-Grained Demand Forecasting", u:GX+"fine-grained-demand-forecasting", note:"Forecasts demand at the SKU-store grain at scale, so plans move on signal rather than aggregate history." },
+  "Demand Sensing": { n:"Fine-Grained Demand Forecasting", u:GX+"fine-grained-demand-forecasting", note:"Forecasts demand at the SKU-store grain at scale, so short-lifecycle plans move on signal rather than last year's like-for-like." },
+  "Predictive Quality": { n:"Product Quality Inspection", u:GX+"cv-quality-inspection", note:"Computer-vision quality inspection with real-time serverless inference, flagging defects before they leave the line." },
+  "Cross-Channel Attribution": { n:"Multi-Touch Attribution", u:GX+"multi-touch-attribution", note:"Connects marketing spend to sales across touchpoints so credit is assigned on evidence, not last click." },
+  "Programmatic Bid Optimization": { n:"Real-Time Bidding", u:GX+"real-time-bidding", note:"Predicts ad viewability to optimise real-time bidding, so budget follows inventory that will actually be seen." },
+  "Next-Best-Product": { n:"Propensity Scoring", u:GX+"propensity", note:"Reusable propensity-scoring pipelines that rank offers by likelihood to convert, feature-store backed and repeatable." },
+  "Customer Segmentation": { n:"Customer Segmentation", u:GX+"segmentation", note:"Builds behavioural customer clusters from sales, campaign and promotion data to target the right offer to the right household." },
+  "Churn & Retention": { n:"Churn Prediction", u:GX+"churn", note:"Models the customer lifecycle and pinpoints where churn happens, so retention is worked before the customer lapses." },
+  "Threat Detection": { n:"DNS Analytics", u:GX+"dns-analytics", note:"Enriches DNS and network logs with streaming threat intelligence and analytics to spot abnormalities across petabytes of history." },
+  "Personalization": { n:"Recommendation Engine (ALS)", u:GX+"als-recommender", note:"Collaborative-filtering recommender that ranks products per visitor to lift conversion." },
+  "LTV Segmentation": { n:"RFM Segmentation", u:GX+"rfm-segmentation", note:"Scores customers on recency, frequency and monetary value, so campaigns target high-value cohorts instead of one-time buyers." },
+  "Subscription Churn": { n:"Survivorship & Churn", u:GX+"survival", note:"Survival analysis that quantifies attrition risk and the factors that explain it, ahead of the renewal." },
+  "Subscriber Churn": { n:"Survivorship & Churn", u:GX+"survival", note:"Survival analysis that quantifies attrition risk and the factors that explain it, ahead of the renewal." },
+  "Player Churn Prediction": { n:"Survivorship & Churn", u:GX+"survival", note:"Survival analysis that quantifies attrition risk from behavioural signals, so at-risk players are worked before they lapse." },
+  "OEE & Downtime": { n:"Factory Optimization (OEE)", u:GX+"factory-optimization", note:"Scalable end-to-end equipment monitoring that turns line and downtime data into governed OEE." },
+  "Responsible Gaming": { n:"Responsible Gaming", u:GX+"responsible-gaming", note:"Detects harm markers from governed player state so deposit limits and self-exclusion enforce on evidence, auditable for regulators." },
+  "On-Shelf Availability": { n:"On-Shelf Availability", u:GX+"on-shelf-availability", note:"Solves out-of-stocks in real time from POS, inventory and shelf-vision signals, so gaps are caught before the customer notices." },
+  "Safety Signal Detection": { n:"Adverse Drug Events", u:GX+"adverse-drug-events", note:"Extracts and analyses adverse drug events from real-world text with NLP for post-market drug-safety monitoring." },
+  "Digital Twin & Industrial AI": { n:"Digital Twins", u:GX+"digital-twin", note:"Builds a live virtual model from IoT sensor data to monitor assets and simulate system dynamics in real time." },
+  "Inventory Optimization": { n:"Safety Stock Optimization", u:GX+"safety-stock", note:"Right-sizes safety stock by SKU against service-level and cost targets instead of a flat rule of thumb." },
+  "Inventory Right-Sizing": { n:"Safety Stock Optimization", u:GX+"safety-stock", note:"Right-sizes safety stock by SKU against service-level and cost targets instead of a flat rule of thumb." },
+  "Supply Chain Risk": { n:"Supply Chain Optimization", u:GX+"supply-chain-optimization", note:"Optimises supply and distribution across the network so buffers are moved before a shortage reaches the line." },
+  "Harvest Logistics": { n:"Route Optimization", u:GX+"routing", note:"Solves vehicle routing at scale to minimise wait and cost across the delivery network." },
+  "Real-World Evidence": { n:"NLP for Oncology", u:GX+"oncology", note:"Builds real-world-evidence cohorts from oncology records with NLP, linking treatment to outcomes under governance." },
+  "Risk Adjustment": { n:"Medicare Risk Adjustment", u:GX+"medicare-risk-adjustment", note:"Surfaces suspected HCC gaps from claims and clinical text so risk scores reflect true member acuity before submission." },
+  "Readmission Reduction": { n:"Patient-Level Risk Scoring", u:GX+"hls-patient-risk", note:"Scores patient risk from encounter history so discharge interventions trigger before the 30-day window opens." },
+  "Biomarker Discovery": { n:"Glow: Genomic Analysis", u:GX+"glow-solution-accelerator", note:"Runs genome-wide association studies at population scale to link genomic variants to phenotype." },
+  "Research Cohorts": { n:"dbignite (FHIR Interoperability)", u:GX+"dbignite", note:"Parses FHIR bundles into query-ready Delta tables and an OMOP-style common data model, so research cohorts are built on interoperable clinical data without a bespoke pipeline." }
+};
+function accelFor(t){ return (t && (t.accel || (t.problem && ACCEL_BY_NAME[t.n]))) || null; }
+
+/* ---------- Lakeflow Connect connectors ----------
+   A source system that Databricks ingests through a Lakeflow Connect managed (or
+   standard) connector carries a cyan glowing dot on its tile and a "Lakeflow
+   Connector Available" callout in the detail panel, linking to that connector's
+   own doc page. `connectorFor` is gated on `t.cat`, which only source tiles carry
+   (use cases carry `problem`, agents carry feeds, cloud services carry `role`), so
+   a use case, agent or cloud tile is never marked, and no tile carries both dots.
+   The link is cloud-correct: it follows the active cloud (ARCH.cloud.provider) so
+   AWS/GCP resolve on docs.databricks.com and Azure resolves on the Azure Databricks
+   docs (learn.microsoft.com/azure/databricks), never generic Microsoft docs. The
+   map is keyed by an internal id, not the slug, because two connectors without a
+   dedicated page (Marketing Cloud, Dynamics 365) both fall back to the SaaS overview
+   slug. Patterns are ordered specific-first (Marketing Cloud before Salesforce) and
+   Oracle is restricted to the true Oracle Database CDC connector so Oracle business
+   apps (Xstore, JD Edwards, Primavera, Health) are never mismarked. */
+const LFC = "ingestion/lakeflow-connect/";
+function connectorUrl(slug){
+  const cl = (typeof ARCH !== "undefined" && ARCH.cloud && ARCH.cloud.provider) || "aws";
+  if(cl === "azure") return "https://learn.microsoft.com/azure/databricks/" + LFC + slug;
+  return "https://docs.databricks.com/" + cl + "/en/" + LFC + slug;
+}
+const CONNECTORS = {
+  sfmc:       { re:/salesforce marketing/i, n:"Salesforce Marketing Cloud", slug:"saas-overview", note:"Managed Lakeflow Connect connector for Salesforce Marketing Cloud journeys, campaigns, emails and subscribers." },
+  salesforce: { re:/salesforce/i, n:"Salesforce", slug:"salesforce-concepts", note:"Managed Lakeflow Connect connector that ingests Salesforce CRM objects with incremental reads, so there is no custom extract job to maintain." },
+  workday:    { re:/workday/i, n:"Workday", slug:"workday-hcm-overview", note:"Managed Lakeflow Connect connector for Workday HR, payroll and workforce data." },
+  servicenow: { re:/servicenow/i, n:"ServiceNow", slug:"servicenow", note:"Managed Lakeflow Connect connector for ServiceNow IT service-management records and tickets." },
+  ga4:        { re:/google analytics|\bga4\b/i, n:"Google Analytics 4", slug:"google-analytics", note:"Managed Lakeflow Connect connector for Google Analytics 4 website traffic and user-behaviour data." },
+  hubspot:    { re:/\bhubspot\b/i, n:"HubSpot", slug:"hubspot-overview", note:"Managed Lakeflow Connect connector for HubSpot CRM, marketing and sales-activity data." },
+  jira:       { re:/\bjira\b/i, n:"Jira", slug:"jira", note:"Managed Lakeflow Connect connector for Atlassian Jira project and issue-tracking data." },
+  netsuite:   { re:/netsuite/i, n:"NetSuite", slug:"netsuite", note:"Managed Lakeflow Connect connector for Oracle NetSuite ERP and financial data." },
+  dynamics:   { re:/dynamics ?365/i, n:"Microsoft Dynamics 365", slug:"saas-overview", note:"Managed Lakeflow Connect connector for Dynamics 365 CRM and ERP data via Azure Synapse Link." },
+  zendesk:    { re:/zendesk/i, n:"Zendesk Support", slug:"zendesk-support-overview", note:"Managed Lakeflow Connect connector for Zendesk tickets, users and organisations." },
+  amplitude:  { re:/\bamplitude\b/i, n:"Amplitude", slug:"amplitude-overview", note:"Managed Lakeflow Connect connector for Amplitude product-analytics events and cohorts." },
+  github:     { re:/\bgithub\b/i, n:"GitHub", slug:"github-overview", note:"Managed Lakeflow Connect connector for GitHub commits, issues and pull-request data." },
+  metaads:    { re:/meta ads|facebook ads|instagram ads/i, n:"Meta Ads", slug:"meta-ads", note:"Managed Lakeflow Connect connector for Meta (Facebook and Instagram) advertising campaign data." },
+  linkedinads:{ re:/linkedin ads/i, n:"LinkedIn Ads", slug:"linkedin-ads", note:"Managed Lakeflow Connect connector for LinkedIn Ads campaign and performance data." },
+  tiktokads:  { re:/tiktok ads/i, n:"TikTok Ads", slug:"tiktok-ads", note:"Managed Lakeflow Connect connector for TikTok Ads advertising-performance data." },
+  pagerduty:  { re:/pagerduty/i, n:"PagerDuty", slug:"pagerduty", note:"Managed Lakeflow Connect connector for PagerDuty incident, on-call and service data." },
+  wiz:        { re:/\bwiz\b/i, n:"Wiz", slug:"wiz-audit-logs", note:"Managed Lakeflow Connect connector for Wiz audit logs, issues and vulnerability findings." },
+  square:     { re:/\bsquare\b(?!\s*enix)/i, n:"Square", slug:"square", note:"Managed Lakeflow Connect connector for Square point-of-sale payments, orders, catalog and inventory." },
+  sqlserver:  { re:/sql server/i, n:"Microsoft SQL Server", slug:"sql-server-overview", note:"Managed Lakeflow Connect CDC connector for Microsoft SQL Server." },
+  postgres:   { re:/postgres/i, n:"PostgreSQL", slug:"postgresql", note:"Managed Lakeflow Connect CDC connector for PostgreSQL." },
+  mysql:      { re:/\bmysql\b/i, n:"MySQL", slug:"mysql", note:"Managed Lakeflow Connect CDC connector for MySQL." },
+  oracledb:   { re:/oracle (database|db|exadata|rdbms|autonomous)/i, n:"Oracle Database", slug:"oracle-concepts", note:"Managed Lakeflow Connect CDC connector for Oracle Database via LogMiner." },
+  kafka:      { re:/\bkafka\b|confluent/i, n:"Apache Kafka", slug:"kafka", note:"Standard Lakeflow Connect connector for Apache Kafka and Confluent streaming topics." }
+};
+function connectorFor(t){
+  if(!t || !t.cat || typeof t.n !== "string") return null;
+  for(const id in CONNECTORS){ const c = CONNECTORS[id]; if(c.re.test(t.n)) return { n:c.n, note:c.note, u:connectorUrl(c.slug) }; }
+  return null;
+}
+/* Single resolver the tile dot, drawer callout and every export share, so accel
+   and connector marking stay in one place. Accelerator (use case) wins if both
+   somehow resolve, but they are disjoint by construction (problem vs cat). */
+function markBadge(t){
+  const a = accelFor(t);
+  if(a) return { kind:"accel", head:"Solution Accelerator Available", n:a.n, note:a.note, u:a.u };
+  const c = connectorFor(t);
+  if(c) return { kind:"conn", head:"Lakeflow Connector Available", n:c.n, note:c.note, u:c.u };
+  return null;
+}
+/* The tile-corner dot markup, shared by the source rail and the horizontal bands so
+   both surfaces mark accelerators and connectors identically. */
+function badgeDotHtml(t){ const b = markBadge(t); return b ? `<span class="badge-dot ${b.kind}" title="${esc(T(b.head))}" aria-hidden="true"></span>` : ""; }
 function titleIcon(t, cls){
   const m = t && (t.mark || t.n);
   return markSvg(m, cls) || svg((t && t.ic) || "dot", cls);
@@ -3682,7 +3821,7 @@ const INDUSTRY_CATALOG = [
   ["data_centers","Data Centers & Cloud"], ["diagnostics_labs","Diagnostics & Labs"],
   ["digital_health","Digital Health"],
   ["ecommerce","E-Commerce"], ["edtech","EdTech"], ["education","Education"],
-  ["energy_utilities","Energy & Utilities"],
+  ["energy_utilities","Energy & Utilities (Power & Utilities)"],
   ["food_beverage","Food & Beverage"], ["gaming","Gaming"], ["genomics_biotech","Genomics & Biotech"],
   ["grocery","Grocery"], ["health_insurance","Health Insurance"], ["healthcare","Healthcare"],
   ["insurance_pandc","Insurance (P&C)"],
@@ -7172,8 +7311,8 @@ const INDUSTRIES = {
     }
   },
   energy_utilities: {
-    label:"Energy & Utilities",
-    blurb:"Electric, gas and water utilities: AMI and SCADA, customer billing, grid operations, asset management and regulatory compliance.",
+    label:"Energy & Utilities (Power & Utilities)",
+    blurb:"Power and water distribution utilities: AMI and SCADA, customer billing, grid operations, DER management, asset management and regulatory compliance. Grid operators (TSO/DSO), generation and oil & gas run different systems.",
     medallion:{
       Bronze:{ s:"Raw meter and SCADA", long:"AMI interval reads, SCADA analogs and events, CIS billing extracts, OMS outage tickets and GIS asset records, landed exactly as received so a meter read or a protection trip can always be replayed." },
       Silver:{ s:"Conformed meter, premise", long:"Meters, premises, feeders and assets resolved into single conformed entities across AMI, CIS and GIS, with service point identifiers reconciled and outage events stitched to affected customers." },
@@ -7189,7 +7328,8 @@ const INDUSTRIES = {
         { box:"SCADA & Grid Ops", ic:"stream", tiles:[
             { n:"AVEVA PI Historian", ic:"db", long:"Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.", cite:["osisoft-pi"], cat:"Process/Time-Series Historian", what:"Stores substation analogs, breaker operations and equipment alarms at SCADA sampling rates as the grid time-series system of record.", users:"Control-centre operators, protection engineers and grid analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"20-100 GB/day tag history", interval:"Hourly aggregates" }, stream:{ types:["semi-structured"], vol:"10-100k samples/sec", interval:"Continuous (sub-second)" } } },
             { n:"GE Vernova ADMS", ic:"gauge", long:"Distribution management: fault location, switching orders and restoration state for the control centre.", cite:["ge-adms"], cat:"Advanced Distribution Management (ADMS)", what:"Runs distribution operations: fault location, switching orders and restoration state that the control centre acts on.", users:"Control-centre operators, distribution operations and storm coordinators.", dataOut:{ stream:{ types:["semi-structured"], vol:"100s-1000s of events/sec", interval:"Continuous (near real-time)" } } },
-            { n:"ABB Ellipse EAM", ic:"erp", long:"Enterprise asset management: work orders, inspections and equipment condition for grid plant.", cite:["abb-ellipse"], cat:"Enterprise Asset Management (EAM)", what:"Manages work orders, inspections and equipment condition for grid plant across the asset base.", users:"Reliability engineering, maintenance planning and asset management.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly batch" } } }
+            { n:"ABB Ellipse EAM", ic:"erp", long:"Enterprise asset management: work orders, inspections and equipment condition for grid plant.", cite:["abb-ellipse"], cat:"Enterprise Asset Management (EAM)", what:"Manages work orders, inspections and equipment condition for grid plant across the asset base.", users:"Reliability engineering, maintenance planning and asset management.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly batch" } } },
+            { n:"AutoGrid Flex DERMS", ic:"gauge", long:"Distributed energy resource management: forecasting, dispatch and control of behind-the-meter solar, storage and flexible load at the grid edge.", cat:"DER Management System (DERMS)", what:"Forecasts, dispatches and controls distributed energy resources (rooftop solar, batteries and flexible load) so the distribution grid stays within limits as DER penetration rises.", users:"DER operations, distribution planning and grid-edge teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"1-10k device signals/sec", interval:"Continuous (near real-time)" } } }
         ] },
         { box:"Customer & Billing", ic:"erp", tiles:[
             { n:"SAP IS-U", ic:"erp", long:"Utility customer master, rate schedules, billing determinants and payment history.", cite:["sap-isu"], cat:"Utility Customer Information System (CIS)", what:"Holds the customer master, rate schedules, billing determinants and payment history for the meter-to-cash process.", users:"Billing operations, credit and collections and Finance.", dataOut:{ batch:{ types:["structured"], vol:"5-20 GB/day", interval:"Nightly batch + billing cycles" } } },
@@ -7199,7 +7339,7 @@ const INDUSTRIES = {
         { box:"GIS & Outage Mgmt", ic:"globe", tiles:[
             { n:"Esri ArcGIS Utility", ic:"globe", long:"Network model, service territory and asset locations the field and planning teams navigate by.", cite:["esri-utility"], cat:"Geographic Information System (GIS)", what:"Holds the electric network model, service territory and asset locations the field and planning teams navigate and analyse by.", users:"Distribution planning, GIS/asset data and field engineering teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"5-30 GB network model", interval:"Daily / weekly model syncs" } } },
             { n:"Milsoft OMS", ic:"gauge", long:"Outage management: trouble tickets, crew dispatch and ETR communicated to customers.", cite:["milsoft-oms"], cat:"Outage Management System (OMS)", what:"Manages outage trouble tickets, crew dispatch and estimated restoration times communicated to customers.", users:"Control-centre operators, storm coordinators and customer operations.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day (higher on storm days)", interval:"Continuous during events" }, stream:{ types:["semi-structured"], vol:"100s-1000s of events/sec on storm days", interval:"Continuous (event-driven)" } } },
-            { n:"Weather & DER Telemetry", ic:"iot", long:"Forecast feeds and behind-the-meter solar and battery inverter telemetry for net load planning.", cat:"DER & Weather Telemetry Feed", what:"Forecast feeds plus behind-the-meter solar and battery inverter telemetry used for net-load planning and DER coordination.", users:"Distribution planning, DER operations and forecasting teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"1-10k readings/sec", interval:"Continuous inverter telemetry" } } }
+            { n:"Weather Telemetry", ic:"stream", long:"Forecast and actual weather feeds by service territory, the exogenous driver behind net-load and demand forecasting.", cat:"Weather & Climate Data Feed", what:"Forecast and actual temperature and weather feeds by service territory, used as the exogenous driver for net-load and demand forecasting.", users:"Load forecasting, distribution planning and grid operations teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"gridded forecast updates", interval:"Multiple forecast cycles daily" } } }
         ] },
         { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
             { n:"Regulatory Cost Accounting", ic:"fed", long:"FERC and state jurisdictional cost ledgers left where they are and queried in place under Unity Catalog.", cat:"Enterprise Data Warehouse", what:"FERC and state jurisdictional cost-of-service ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.", users:"Regulatory affairs, rate design and cost-of-service teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale historical ledgers", interval:"Queried on demand (federated)" } } }
@@ -7212,7 +7352,8 @@ const INDUSTRIES = {
         { box:"3rd Party", ic:"zplug", tiles:[
             { n:"Green Button Connect", ic:"api", long:"Customer-authorised interval usage from retailers and neighbouring utilities via Green Button standards.", cite:["green-button"], cat:"Customer Usage Data Exchange", what:"Customer-authorised interval usage exchanged with retailers and neighbouring utilities under the Green Button standard.", users:"Customer analytics, energy-efficiency programs and digital teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"0.5-3 GB/day", interval:"Daily + on-demand exports" } } },
             { n:"IEEE 2030.5 SEP2", ic:"stream", long:"Smart Energy Profile demand-response events and thermostat enrollments parsed on arrival.", cite:["ieee-2030"], cat:"DER Control & Demand-Response Protocol", what:"Smart Energy Profile demand-response events and thermostat/DER enrollments parsed on arrival for grid-edge coordination.", users:"DER operations, demand-response program and grid-edge teams.", dataOut:{ stream:{ types:["semi-structured"], vol:"100s-1000s of events/sec", interval:"Continuous (event-driven)" } } },
-            { n:"Weather Data Services", ic:"globe", long:"Forecast and actual temperature feeds consumed inbound for load forecasting models.", cat:"Weather & Climate Data Provider", what:"Forecast and actual temperature and weather feeds consumed inbound as the exogenous driver for load-forecasting models.", users:"Load forecasting, grid operations and planning teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"GBs/day gridded forecasts", interval:"Multiple forecast cycles daily" } } }
+            { n:"Weather Data Services", ic:"globe", long:"Forecast and actual temperature feeds consumed inbound for load forecasting models.", cat:"Weather & Climate Data Provider", what:"Forecast and actual temperature and weather feeds consumed inbound as the exogenous driver for load-forecasting models.", users:"Load forecasting, grid operations and planning teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"GBs/day gridded forecasts", interval:"Multiple forecast cycles daily" } } },
+            { n:"TSO/DSO Market Integration", ic:"api", long:"Wholesale market signals at the transmission-distribution interface: locational prices, dispatch instructions and settlement for market participation.", cat:"Wholesale Market / TSO-DSO Integration", what:"Ingests ISO/RTO and TSO/DSO market data (locational marginal prices, dispatch instructions and settlement) for market participation and DER coordination at the transmission-distribution interface.", users:"Energy trading, DER operations and settlement teams.", dataOut:{ batch:{ types:["structured"], vol:"GBs/day market data", interval:"Market intervals (5-60 min) + daily settlement" } } }
         ] }
       ],
       ppl:[
@@ -8022,7 +8163,8 @@ const INDUSTRIES = {
         { box:"EHR & Clinical", ic:"erp", tiles:[
             { n:"Epic Caboodle", ic:"db", long:"Orders, results, notes and billing extracts from the hospital EHR of record.", cite:["epic"], cat:"Electronic Health Record (EHR)", what:"Emits orders, results, clinical notes and billing extracts from the hospital EHR of record via its Caboodle data warehouse.", users:"Clinical Operations, Revenue Cycle and Population Health teams.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"100-400 GB/day incl. notes", interval:"Nightly Caboodle refresh + intraday deltas" }, stream:{ types:["semi-structured"], vol:"hundreds of HL7 msgs/sec at peak", interval:"Continuous HL7/FHIR feed" } } },
             { n:"Oracle Health Millennium", ic:"erp", long:"Inpatient and ambulatory clinical, scheduling and documentation for Cerner estates.", cite:["oracle-millennium"], cat:"Electronic Health Record (EHR)", what:"Runs inpatient and ambulatory clinical care, scheduling and documentation on Cerner-based estates, feeding clinical and encounter records.", users:"Clinical Operations, clinicians and Quality & Safety teams.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"50-200 GB/day", interval:"Nightly batch" }, stream:{ types:["semi-structured"], vol:"hundreds of HL7 msgs/sec at peak", interval:"Continuous HL7 feed" } } },
-            { n:"Meditech Expanse", ic:"sheet", long:"Acute and post-acute clinical records for community hospital networks.", cite:["meditech"], cat:"Electronic Health Record (EHR)", what:"Holds acute and post-acute clinical records for community hospital networks, emitting encounter, order and result data.", users:"Clinical Operations, community-hospital clinicians and Revenue Cycle teams.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"20-100 GB/day", interval:"Nightly batch" } } }
+            { n:"Meditech Expanse", ic:"sheet", long:"Acute and post-acute clinical records for community hospital networks.", cite:["meditech"], cat:"Electronic Health Record (EHR)", what:"Holds acute and post-acute clinical records for community hospital networks, emitting encounter, order and result data.", users:"Clinical Operations, community-hospital clinicians and Revenue Cycle teams.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"20-100 GB/day", interval:"Nightly batch" } } },
+            { n:"Code Sets & Terminology", ic:"gavel", long:"Seed and reference tables for the standard clinical code sets: ICD-10 diagnoses and procedures, CPT and HCPCS professional codes, J Codes for drugs, and NDC drug identifiers.", cat:"Reference Terminology / Code Sets", what:"Provides governed seed and reference tables for ICD-10, CPT and HCPCS, J Codes and NDC, so coding, grouping and analytics resolve against one shared terminology.", users:"Revenue Cycle, coding, Quality & Safety and clinical-analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"MBs (reference sets)", interval:"Quarterly / on code-set release" } } }
         ] },
         { box:"Revenue Cycle", ic:"market", tiles:[
             { n:"R1 RCM Platform", ic:"market", long:"Charge capture, claims scrubbing, denials and patient collections workflow.", cite:["r1-rcm"], cat:"Revenue Cycle Management Platform", what:"Runs charge capture, claims scrubbing, denials and patient collections workflow, emitting charge, claim and denial transactions.", users:"Revenue Cycle, patient financial services and denial-management teams.", dataOut:{ batch:{ types:["structured"], vol:"10-50 GB/day", interval:"Nightly batch + intraday deltas" } } },
@@ -13904,7 +14046,7 @@ function renderRail(rail, target){
       if(seenLabels){ if(seenLabels.has(label)){ if(tile.cat) nameToCat[tile.n] = tile.cat; return; } seenLabels.add(label); }
       const b = document.createElement("button");
       b.className = "rtile" + (cloudy ? " cloudy" : "");
-      b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(label)}</span>`;
+      b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(label)}</span>` + badgeDotHtml(tile);
       reg(b, tile, arr, rail.name);
       box.appendChild(b);
     });
@@ -13979,7 +14121,8 @@ function renderHBand(target, zone, chip, secs){
       const ctSub = tile.s || genieDomain(tile);
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(displayName(tile))}</span>` +
-        (ctSub ? `<span class="ct-sub">${esc(T(ctSub))}</span>` : "") + `</span>`;
+        (ctSub ? `<span class="ct-sub">${esc(T(ctSub))}</span>` : "") + `</span>` +
+        badgeDotHtml(tile);
       reg(b, tile, arr, s.title);
       body.appendChild(b);
     }));
@@ -14414,7 +14557,7 @@ const LINKS = {
   "Apache Spark": { doc:"spark/", site:"https://spark.apache.org/", blog:"https://www.databricks.com/blog/introducing-apache-spark-42", note:"Serverless compute and Databricks Connect run Spark in Connect mode, where SparkContext and the RDD APIs are unavailable, so classic cluster code may need changes." },
   "Apps": { doc:"dev-tools/databricks-apps/", site:"https://www.databricks.com/product/databricks-apps", blog:"https://www.databricks.com/blog/announcing-general-availability-databricks-apps", note:"Billed per hour of running compute based on provisioned capacity, and each workspace permits only a limited number of apps, so idle apps still cost money." },
   "Auto Loader": { doc:"ingestion/cloud-object-storage/auto-loader/", site:"https://www.databricks.com/product/data-engineering/lakeflow-connect", blog:"https://www.databricks.com/blog/whats-new-zerobus-and-other-announcements-improve-data-ingestion-lakeflow-connect", note:"File events is now the recommended discovery mode, and it requires file events enabled on the Unity Catalog external location plus Databricks Runtime 14.3 LTS or above." },
-  "Azure Data Factory": { url:"https://learn.microsoft.com/azure/data-factory/introduction", site:"https://azure.microsoft.com/products/data-factory", note:"Orchestrates Databricks notebook and jar activities via a linked service; each activity can spin up a job cluster, so reuse pools to control cost." },
+  "Azure Data Factory": { url:"https://learn.microsoft.com/azure/data-factory/introduction", site:"https://azure.microsoft.com/products/data-factory", note:"Orchestrates Databricks notebook, jar and Jobs activities via a linked service; each activity can spin up a job cluster, so reuse pools to control cost." },
   "Azure DevOps": { url:"https://learn.microsoft.com/azure/devops/user-guide/what-is-azure-devops", dbx:"dev-tools/ci-cd/azure-devops/", site:"https://azure.microsoft.com/products/devops", note:"Runs pipelines that deploy Declarative Automation Bundles (formerly Databricks Asset Bundles); the service connection needs a service principal, not a personal access token." },
   "Azure Event Hubs": { url:"https://learn.microsoft.com/azure/event-hubs/event-hubs-about", dbx:"ldp/event-hubs/", site:"https://azure.microsoft.com/products/event-hubs", note:"Consumed with the Structured Streaming Kafka connector against the Kafka-compatible endpoint, which requires the Standard tier or above." },
   "Azure IoT Hub": { url:"https://learn.microsoft.com/azure/iot-hub/iot-concepts-and-iot-hub", site:"https://azure.microsoft.com/products/iot-hub", note:"Device ingestion front end; Databricks reads it through its built-in Event Hubs compatible endpoint rather than a dedicated connector." },
@@ -14659,6 +14802,13 @@ function openDetail(id, via){
      split into Batch and Streaming, each with shape (structured / semi- /
      unstructured), a typical volume and a cadence. Absent fields render nothing. */
   if(t.what) html += `<h4>${esc(T("What it does"))}</h4><p>${esc(dispProse(t.what))}</p>`;
+  const bdg = markBadge(t);
+  if(bdg){
+    html += `<div class="d-badge ${bdg.kind}"><div class="db-h"><span class="db-dot" aria-hidden="true"></span>` +
+      `${esc(T(bdg.head))}</div>` +
+      (bdg.note ? `<p>${esc(dispProse(bdg.note))}</p>` : "") +
+      `<div class="d-links">${linkRow(bdg.u, T(bdg.n), host(bdg.u))}</div></div>`;
+  }
   if(t.users) html += `<h4>${esc(T("Who uses it"))}</h4><p>${esc(dispProse(t.users))}</p>`;
   if(t.dataOut){
     const seg = (label, d)=> d ? `<div class="d-dataseg"><span class="d-datalbl">${label}</span>` +
@@ -17370,7 +17520,8 @@ function pptxNarrativeSlides(){
   const ucSlide = (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [];
     const stories = (t.stories || []).slice(0, 4);
-    const slide = { media:[], hlinks: stories.map(s=> s.u) };
+    const acc = accelFor(t);
+    const slide = { media:[], hlinks: stories.map(s=> s.u).concat(acc ? [acc.u] : []) };
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, String(eyebrow || "").toUpperCase());
     const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "");
@@ -17378,6 +17529,14 @@ function pptxNarrativeSlides(){
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it is"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
+    if(acc){
+      ly = label(ref, parts, M, ly, colW, "Solution Accelerator available");
+      const ah = estH(acc.n, 13, colW / PTU);
+      parts.push(pptxTextEx(ref.id++, M, ly, colW, Math.round(ah * PTU), 13, true, expBrand(), acc.n,
+        pptxSlideRel(slide, "link", stories.length), "l", "t"));
+      ly += Math.round((ah + 6) * PTU);
+      if(acc.note){ ly = para(ref, parts, M, ly, colW, acc.note, 12, ink); }
+    }
     if(t.problem){ ly = label(ref, parts, M, ly, colW, "The problem it solves"); ly = para(ref, parts, M, ly, colW, t.problem, 14, ink); }
     if(t.how){ ly = label(ref, parts, M, ly, colW, "How it is built"); ly = para(ref, parts, M, ly, colW, t.how, 14, ink); }
     let ry = topY;
@@ -17876,6 +18035,7 @@ function dsSection(sec, role, idx){ const col = dsCols();
   return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()), body, role); }
 function dsUC(t, eyebrow){ let L = "", R = "";
   if(t.long){ L += dsLabelH("What it is") + dsParaH(t.long); }
+  { const acc = accelFor(t); if(acc){ L += dsLabelH("Solution Accelerator available") + dsParaH(acc.n + (acc.note ? " \u2014 " + acc.note : "")); } }
   if(t.problem){ L += dsLabelH("The problem it solves") + dsParaH(t.problem); }
   if(t.how){ L += dsLabelH("How it is built") + dsParaH(t.how); }
   if(t.who){ R += dsLabelH("Who benefits") + dsChipsH([t.who], 0); }
@@ -18145,6 +18305,16 @@ async function boardPdfBlob(){
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it is"); ly = paraP(c, NM, ly, colW, t.long, 14); }
+    const acc = accelFor(t);
+    if(acc){
+      ly = labelP(c, NM, ly, "Solution Accelerator available");
+      const alines = pdfWrap(acc.n, 11, colW - 16); let aly = ly, amaxw = 0;
+      c.push(rectF(brand, NM, ly - 8, 8, 8));
+      alines.forEach(ln=>{ c.push(txt("F1", 11, brand, NM + 14, aly - 10, ln)); amaxw = Math.max(amaxw, pdfTextW(ln, 11)); aly -= 14; });
+      annots.push(linkAnnot(NM + 14, aly, NM + 14 + Math.min(colW - 16, amaxw), ly, acc.u));
+      ly = aly - 6;
+      if(acc.note){ ly = paraP(c, NM, ly, colW, acc.note, 12); }
+    }
     if(t.problem){ ly = labelP(c, NM, ly, "The problem it solves"); ly = paraP(c, NM, ly, colW, t.problem, 14); }
     if(t.how){ ly = labelP(c, NM, ly, "How it is built"); ly = paraP(c, NM, ly, colW, t.how, 14); }
     let ry = cur;
