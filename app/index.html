@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>IDEA: Interactive Databricks Enterprise Architecture</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF3621'/%3E%3Cpath transform='translate(4 4)' fill='%23fff' d='M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF3621'/%3E%3Cpath transform='translate(4 4)' fill='%23fff' d='M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z'/%3E%3C/svg%3E">
@@ -583,7 +586,7 @@
      control is greyed and inert rather than flipping the mode with no visible
      effect, which read as broken. */
   .seg.seg-off { opacity:.45; }
-  .seg.seg-off button { cursor:default; }
+  .seg.seg-off button { cursor:pointer; }
   /* One header row is worth ~40px of board height, and the controls only just fit
      on a 1512-wide laptop: tighten them rather than let the bar wrap. */
   @media (max-width:1820px) {
@@ -674,6 +677,7 @@
     0%,100% { box-shadow:0 0 0 0 transparent; }
     45%     { box-shadow:0 0 0 5px var(--brand-pulse); }
   }
+  .hint-pulse { animation:addhint 0.8s ease-in-out 3; border-color:var(--brand); }
   @media (max-width:1400px) { .tab-add .plus-lbl { display:none; } .tab-add { padding:0 8px; } }
   /* "Reference Architecture" plus a user tab plus + is a lot of header on a
      laptop: the second word goes before the row wraps */
@@ -5071,6 +5075,10 @@ const INDUSTRIES = {
             { n:"Dassault 3DEXPERIENCE", ic:"product", long:"CAD, simulation and manufacturing process definitions.", cite:["3dexperience"], cat:"CAD / PLM Platform", what:"Holds CAD geometry, simulation results and manufacturing process definitions for vehicle and component design.", users:"Design engineers, CAE/simulation and Manufacturing engineering.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"GBs (CAD + simulation)", interval:"On design release" } } },
             { n:"PTC Windchill", ic:"product", long:"Part masters, effectivity and supplier packages.", cite:["windchill"], cat:"PLM System", what:"Manages part masters, effectivity dates and supplier data packages across programs standardized on Windchill.", users:"Component engineering, Supplier engineering and Configuration management.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"On change release + nightly" } } }
         ] },
+        { box:"Procurement & ERP", ic:"erp", tiles:[
+            { n:"Ivalua", ic:"erp", long:"Source-to-contract and procure-to-pay across raw, partial and assembled parts.", cite:["ivalua"], cat:"Source-to-Pay / Procurement", what:"Runs source-to-contract and procure-to-pay across raw, partial and assembled parts, holding supplier contracts, purchase orders and lead-time commitments across the supply base.", users:"Procurement, Supplier management and Materials planning.", dataOut:{ batch:{ types:["structured"], vol:"2-8 GB/day", interval:"Nightly + hourly deltas" } } },
+            { n:"SAP S/4HANA", ic:"erp", long:"ERP of record for procurement, inventory, production orders and finance.", cite:["sap-s4auto"], cat:"Enterprise ERP", what:"System of record for procurement, inventory, production orders and finance across the automotive business, feeding cost, purchase-order and materials data to the plant.", users:"Procurement, Production planning and Finance.", dataOut:{ batch:{ types:["structured"], vol:"20-80 GB/day", interval:"Nightly batch + hourly deltas" } } }
+        ] },
         { box:"Manufacturing MES", ic:"iot", tiles:[
             { n:"Siemens Opcenter", ic:"iot", long:"Line sequencing, torque traces, andon events by station.", cite:["opcenter"], cat:"Manufacturing Execution System (MES)", what:"Runs line sequencing and captures torque traces, station cycle data and andon events across the assembly line.", users:"Plant operations, production engineering and Quality.", dataOut:{ stream:{ types:["semi-structured"], vol:"2-10k events/sec at peak", interval:"Continuous station events" } } },
             { n:"Rockwell FactoryTalk", ic:"iot", long:"PLC tags, quality checks and downtime reason codes.", cite:["factorytalk"], cat:"Industrial Automation / SCADA", what:"Streams PLC tags, in-line quality checks and downtime reason codes from controlled assembly and body-shop assets.", users:"Controls engineers, plant operations and Continuous improvement.", dataOut:{ stream:{ types:["semi-structured"], vol:"5-20k tags/sec", interval:"Continuous high-frequency telemetry" } } },
@@ -5179,7 +5187,8 @@ const INDUSTRIES = {
         { n:"Supplier PPM", s:"Quality", ic:"zplug", long:"Incoming quality scored and ranked across the supply base.", problem:"Incoming quality varies lot by lot, but supplier defect data is buried in inspection systems, so problem suppliers are ranked on gut feel long after bad parts reach the line.", who:"Quality Engineering", how:"Inspection, containment and line-defect data are conformed under Unity Catalog and scored in Quality Command and Model Serving, ranking supplier PPM so problem lots are caught early.", comps:["Quality Command", "Bosch Nexeed", "Model Serving", "AI/BI", "Unity Catalog"], stories:[{ t:"Predictive quality starts where defect detection stops", u:"https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops" }] },
         { n:"Conquest Marketing", s:"Sales", ic:"custlake", long:"Competitive owners targeted with governed registration data.", problem:"Winning a competitor's owner means knowing who is in-market and what they drive, but registration, CRM and campaign data sit apart, so campaigns spray broad and waste incentive budget.", who:"Sales & Marketing", how:"Registration and CRM data are conformed on Delta Lake and scored with AI Functions and Model Serving in the Incentive Optimizer, targeting competitive owners with the right offer.", comps:["Incentive Optimizer", "Polk Registration", "VinSolutions CRM", "Model Serving", "AI Functions"], stories:[{ t:"Porsche Holding unifies customer data with Databricks", u:"https://www.databricks.com/customers/porsche/lakeflow-connect" }] },
         { n:"Parts Forecasting", s:"Aftersales", ic:"product", long:"Dealer and DC parts stock against failure curves.", problem:"Dealers stock out of the parts customers actually need while capital sits in slow movers, because parts planning ignores the failure curves and field signals that predict real demand.", who:"Aftersales", how:"Failure, telematics and parts data are conformed on Delta Lake and scored in Model Serving with runs tracked in MLflow, positioning dealer and DC stock against predicted failure curves.", comps:["Service Advisor App", "SAP Aftermarket", "Model Serving", "MLflow", "OEM Telematics Gateway"], stories:[{ t:"Volvo Group increases inventory visibility with Databricks", u:"https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines" }] },
-        { n:"EV Battery Health", s:"Mobility", ic:"iot", long:"State of health scored for resale and fleet redeployment.", problem:"An EV's residual value and second-life potential hinge on battery state of health, but that signal is locked in raw telemetry, so resale and fleet redeployment decisions are made blind.", who:"Aftersales", how:"Battery telemetry streams into Lakehouse//RT; state-of-health models tracked in MLflow and served through Model Serving score each pack for resale, warranty and fleet redeployment.", comps:["OEM Telematics Gateway", "Model Serving", "Lakehouse//RT", "MLflow", "Feature Store"], stories:[{ t:"Mercedes-Benz transforms the car experience with Databricks", u:"https://www.databricks.com/customers/mercedes-benz" }] }
+        { n:"EV Battery Health", s:"Mobility", ic:"iot", long:"State of health scored for resale and fleet redeployment.", problem:"An EV's residual value and second-life potential hinge on battery state of health, but that signal is locked in raw telemetry, so resale and fleet redeployment decisions are made blind.", who:"Aftersales", how:"Battery telemetry streams into Lakehouse//RT; state-of-health models tracked in MLflow and served through Model Serving score each pack for resale, warranty and fleet redeployment.", comps:["OEM Telematics Gateway", "Model Serving", "Lakehouse//RT", "MLflow", "Feature Store"], stories:[{ t:"Mercedes-Benz transforms the car experience with Databricks", u:"https://www.databricks.com/customers/mercedes-benz" }] },
+        { n:"Supplier Lead-Time Risk", s:"Supply chain", ic:"network", long:"Supplier lead times and JIS/JIT risk scored before a late part starves the line.", problem:"Just-in-sequence and just-in-time builds depend on parts landing to a tight window, but lead-time and PO commitments sit in procurement and ERP apart from plant sequencing, so a slipping supplier is discovered when the line starves.", who:"Manufacturing", how:"Ivalua contract and PO lead times and SAP S/4HANA materials data are conformed on Delta Lake and scored in Model Serving against Bosch Nexeed sequencing, flagging JIS/JIT risk on the Plant Cockpit before a shortage stops the build.", comps:["Ivalua", "SAP S/4HANA", "Bosch Nexeed", "Model Serving", "Plant Cockpit"], stories:[{ t:"Supply chain and distribution optimization on Databricks", u:"https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization" }] }
       ]}
     ],
     sources:{
@@ -5196,6 +5205,8 @@ const INDUSTRIES = {
       "here-maps":{ t:"HERE Technologies", u:"https://www.here.com/platform" },
       "aptiv":{ t:"Aptiv", u:"https://www.aptiv.com/" },
       "sap-aftermarket":{ t:"SAP Automotive", u:"https://www.sap.com/industries/automotive.html" },
+      "ivalua":{ t:"Ivalua", u:"https://www.ivalua.com/" },
+      "sap-s4auto":{ t:"SAP S/4HANA", u:"https://www.sap.com/products/erp/s4hana.html" },
       "mitchell":{ t:"Mitchell International", u:"https://www.mitchell.com/" },
       "jdpower":{ t:"J.D. Power", u:"https://www.jdpower.com/business/automotive" },
       "polk":{ t:"S&P Global Mobility Polk", u:"https://www.spglobal.com/mobility/" },
@@ -15435,12 +15446,24 @@ function paintDisplaySeg(){
     const b = document.createElement("button");
     b.textContent = label;
     b.className = (displayMode === k) ? "on" : "";
-    b.disabled = !live;
-    b.onclick = ()=>{ if(!live || displayMode === k) return; displayMode = k; store.set(DISPLAY_LS, k);
+    b.setAttribute("aria-disabled", String(!live));
+    if(!live) b.title = "Pick an industry to enable the branded view";
+    b.onclick = ()=>{
+      if(!live){ pulseIndustry(); return; }
+      if(displayMode === k) return;
+      displayMode = k; store.set(DISPLAY_LS, k);
       paintDisplaySeg(); build();
       if(openId && byId[openId]) openDetail(openId, "keep"); else closeDrawer(); };
     seg.appendChild(b);
   });
+}
+function pulseIndustry(){
+  const el = document.getElementById("ind-btn");
+  if(!el) return;
+  el.classList.remove("hint-pulse");
+  void el.offsetWidth;
+  el.classList.add("hint-pulse");
+  setTimeout(()=> el.classList.remove("hint-pulse"), 2600);
 }
 paintDisplaySeg();
 
@@ -15823,8 +15846,12 @@ function applyStageFilter(){
   blocks.forEach(root=>{
     root.querySelectorAll("[data-stage]").forEach(el=>
       el.classList.toggle("st-off", off.has(el.dataset.stage)));
-    root.querySelectorAll(STAGE_BOXES).forEach(box=>
-      box.classList.toggle("st-off", !box.querySelector(".atom:not(.st-off)")));
+    root.querySelectorAll(STAGE_BOXES).forEach(box=>{
+      const staged = box.classList.contains("panel") && box.querySelector("[data-stage]");
+      box.classList.toggle("st-off",
+        staged ? !box.querySelector("[data-stage]:not(.st-off)")
+               : !box.querySelector(".atom:not(.st-off)"));
+    });
     root.classList.toggle("st-off", !root.querySelector(".atom:not(.st-off)"));
   });
   /* A filter narrow enough to empty one of the two blocks leaves no Z to draw,
