@@ -2465,6 +2465,7 @@
   <div class="htools">
   <!-- Industry leads the toolbar, ahead of the cloud switch: it decides what the
        whole board is about, where the cloud switch only decides one band. -->
+  <button class="hbtn" id="feedback-btn" title="Share your feedback on this reference architecture (opens a form in a new tab)"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg> <span id="feedback-lbl">Share feedback</span></button>
   <div class="pal-wrap" id="ind-wrap">
     <button class="hbtn" id="ind-btn" title="Specialise the boxes outside the platform for one industry: sources, ingestion, teams, use cases, apps and consumers"><span id="ind-ico">◈</span> <span id="ind-lbl">Pick an Industry (63 available)</span></button>
     <div class="pal-menu ind-menu" id="ind-menu"></div>
@@ -3024,8 +3025,8 @@ const ARCH = {
           long:"Direct push ingestion into the lakehouse at 10+ GB/s with no Kafka or Event Hubs cluster in between, for event and telemetry producers that can write straight to Databricks.",
           rel:["Lakeflow","Event Streams"] },
         { n:"Streaming", s:"Micro Batches & Realtime Mode", ic:"stream", st:"GA",
-          long:"Continuous ingestion from Kafka, Kinesis and Event Hubs straight into the lakehouse with Spark Structured Streaming. Real-Time Mode (Beta) pushes end-to-end streaming latency into the low hundreds of milliseconds, so real-time pipelines land on governed Delta tables without a separate streaming stack.",
-          caps2:["Kafka / Kinesis / Event Hubs","Real-Time Mode (Beta)","Exactly-once"], rel:["Lakeflow","Event Streams"] },
+          long:"Continuous ingestion from Kafka, Kinesis and Event Hubs straight into the lakehouse with Spark Structured Streaming. Real-Time Mode, generally available since March 2026, pushes end-to-end streaming latency into the low hundreds of milliseconds, so real-time pipelines land on governed Delta tables without a separate streaming stack.",
+          caps2:["Kafka / Kinesis / Event Hubs","Real-Time Mode","Exactly-once"], rel:["Lakeflow","Event Streams"] },
       ]} ]},
 
     /* --------- Serve: the Z's right arm, facing the people who read it -------
@@ -3045,7 +3046,7 @@ const ARCH = {
            platform exactly as a dashboard reading a warehouse is, and the arm is
            where a reader looks for what serves them. `alias` leaves the name
            pointing at the card in Agentic Data that owns the product. */
-        { n:"Lakebase", s:"Operational reads", ic:"lakebase", st:"GA", alias:true,
+        { n:"Lakebase", s:"Operational reads", ic:"lakebase", st:"GA", stByCloud:{gcp:"Beta"}, alias:true,
           long:"Serverless Postgres serving the applications and agents that need single-row reads and writes at transactional latency, on the same governed data the analytical estate reads. Unity Catalog governs analytical access while Postgres GRANT governs the transactional path.",
           rel:["Apps","LTAP"] },
         { n:"Model Serving", s:"Real-time endpoints", ic:"model", st:"GA",
@@ -3169,7 +3170,7 @@ const ARCH = {
           long:"Serverless SQL warehousing on open formats with the medallion architecture. DAIS 2026 added Lakehouse//RT, a new warehouse type for millisecond-latency analytics directly on Delta and Iceberg, powered by the new Reyden engine (Beta).",
           caps2:["Medallion: bronze / silver / gold"],
           rel:["Unity Catalog","Lakehouse//RT","AI/BI","Delta Lake","Apache Iceberg"] },
-        { n:"Lakebase", col:2, row:1, ic:"lakebase", st:"GA", caps:["Serverless Postgres"],
+        { n:"Lakebase", col:2, row:1, ic:"lakebase", st:"GA", stByCloud:{gcp:"Beta"}, caps:["Serverless Postgres"],
           long:"Serverless Postgres fused to the lakehouse for operational workloads. DAIS 2026 added cross-cloud and cross-region disaster recovery, git-style sub-second branching, autonomous operations, and Lakebase Search: hybrid vector plus full-text retrieval in Postgres with 32x compression and 1B+ vector indexes (Beta).",
           rel:["Apps","LTAP"] },
         { n:"Lakeflow", col:3, row:1, ic:"flow", st:"GA", caps:["Ingest • Transform • Orchestrate"],
@@ -10193,7 +10194,8 @@ const INDUSTRIES = {
         { box:"Safety & Commercial", ic:"custlake", tiles:[
             { n:"ArisGlobal LifeSphere", ic:"gavel", long:"Individual case safety reports, signal detection and regulatory submissions.", cite:["arisglobal"], cat:"Pharmacovigilance / Safety System", what:"Processes individual case safety reports, runs signal detection and drives regulatory safety submissions for marketed and investigational products.", users:"Pharmacovigilance, Medical Affairs and Regulatory Affairs.", dataOut:{ batch:{ types:["structured", "unstructured"], vol:"1-4 GB/day cases + narratives", interval:"Hourly / daily intake" } } },
             { n:"IQVIA OCE", ic:"partner", long:"Field force activity, sample accountability and call notes.", cite:["iqvia-oce"], cat:"Life Sciences CRM / Commercial Engagement", what:"Captures field-force activity, sample accountability and call notes for commercial engagement with healthcare professionals.", users:"Commercial Field, Sales Operations and Medical Affairs.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly sync + intraday" } } },
-            { n:"Veeva CRM", ic:"custlake", long:"HCP engagement, consent and medical inquiry workflows.", cite:["veeva-crm"], cat:"Life Sciences CRM (HCP Engagement)", what:"Runs HCP engagement, consent and medical-inquiry workflows across field and medical teams for compliant omnichannel outreach.", users:"Commercial Field, Medical Affairs and Compliance.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly sync" }, stream:{ types:["semi-structured"], vol:"engagement events as they occur", interval:"Continuous CDC" } } }
+            { n:"Veeva CRM", ic:"custlake", long:"HCP engagement, consent and medical inquiry workflows.", cite:["veeva-crm"], cat:"Life Sciences CRM (HCP Engagement)", what:"Runs HCP engagement, consent and medical-inquiry workflows across field and medical teams for compliant omnichannel outreach.", users:"Commercial Field, Medical Affairs and Compliance.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly sync" }, stream:{ types:["semi-structured"], vol:"engagement events as they occur", interval:"Continuous CDC" } } },
+            { n:"Salesforce Life Sciences Cloud", ic:"custlake", long:"Commercial CRM for field engagement, HCP and account management and market access, the go-to-market system of record for the commercial team.", cite:["sf-lsc"], cat:"Life Sciences CRM (Commercial)", what:"Runs commercial field engagement, HCP and account management and market-access workflows, the go-to-market CRM emitting call, sample and engagement activity for the commercial organisation kept separate from medical.", users:"Commercial Field, Sales Operations and Market Access teams.", dataOut:{ batch:{ types:["structured"], vol:"1-5 GB/day", interval:"Nightly sync + intraday" }, stream:{ types:["semi-structured"], vol:"engagement events as they occur", interval:"Continuous CDC" } } }
         ] },
         { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
             { n:"Partner CMO Inventory", ic:"fed", long:"Contract manufacturer batch status queried in place under Unity Catalog.", cat:"Contract Manufacturer (CMO) Inventory System", what:"Batch status and inventory held at contract manufacturers, queried in place through federation rather than copied into the platform.", users:"Supply Chain Planning, Manufacturing Operations and Quality Assurance.", dataOut:{ batch:{ types:["structured"], vol:"GB-scale partner inventory", interval:"Queried on demand (federated)" } } }
@@ -10215,7 +10217,8 @@ const INDUSTRIES = {
             { n:"Clinical Operations", mark:"AI/BI", long:"Study managers on enrollment versus plan, data quality and monitoring backlog, watching the protocol deviation rate before database lock.", uses:[["Trial Command Centre", "Site enrollment and query aging before database lock."], ["AI/BI", "Enrollment and protocol deviation on governed definitions."], ["Genie One", "Ask which sites are under-enrolling this month."]], sub:[{ n:"Clinical Trial Managers", cares:"enrollment versus plan, site activation and monitoring backlog." }, { n:"Clinical Data Management", cares:"query aging and data quality before database lock." }, { n:"Clinical Supply", cares:"drug supply forecast against enrollment and protocol demand." }], ucs:["Enrollment Forecast", "Protocol Deviation", "Demand & Supply"] },
             { n:"Mfg & Supply", mark:"Lakehouse//RT", long:"Plant and supply on batch release rate, yield and cold-chain integrity when a launch scales past the demand the supply plan forecast.", uses:[["Batch Release Cockpit", "Open deviations blocking release before ship."], ["Lakehouse//RT", "Line state at the latency a batch runs at."], ["Model Serving", "Yield models scored on historian and LIMS feeds."]], sub:[{ n:"Manufacturing Operations", cares:"batch release rate and yield across the GMP suites." }, { n:"Supply Chain Planning", cares:"launch supply, cold-chain lanes and shortage risk." }, { n:"Serialization & Distribution", cares:"DSCSA trace and saleable returns across partners." }], ucs:["Yield Optimisation", "Batch Genealogy", "Cold Chain Integrity", "Serialization Trace"] },
             { n:"Quality & Reg", mark:"Unity Catalog", long:"QA and RA on deviations, submissions and inspection readiness, tracking batch release rate and CAPA aging before FDA and EMA audits.", uses:[["Quality Command", "CAPA aging and repeat deviations before audits."], ["Unity Catalog", "Lineage from batch record to submission annex."], ["AI/BI", "Release rate and deviation rate on certified Metric Views."]], sub:[{ n:"Quality Assurance", cares:"deviations, CAPA aging and repeat findings before inspections." }, { n:"Regulatory Affairs", cares:"submissions and inspection readiness across FDA and EMA." }, { n:"Quality Control", cares:"release and stability testing turnaround from the LIMS." }], ucs:["Inspection Readiness", "Batch Genealogy", "Serialization Trace"] },
-            { n:"Medical & Comm", mark:"CustomerLake", long:"Medical affairs and field teams on safety narratives and HCP engagement, watching serious adverse event rates and compliant outreach coverage.", uses:[["Safety Signal Hub", "Emerging signals triaged before periodic reports."], ["CustomerLake", "HCP segments without copying CRM elsewhere."], ["Apps", "Medical inquiry workflows on governed data."]], sub:[{ n:"Pharmacovigilance", cares:"adverse-event signals and SAE rates before periodic reports." }, { n:"Medical Affairs", cares:"medical inquiries and scientific engagement with HCPs." }, { n:"Commercial Field", cares:"compliant outreach coverage and the next action per HCP." }], ucs:["Safety Signal Detect", "HCP Engagement", "Demand & Supply"] }
+            { n:"Medical & Safety", mark:"Model Serving", long:"Pharmacovigilance and medical affairs on safety narratives and scientific engagement, watching serious adverse event rates and signal timeliness, kept firewalled from commercial so medical stays non-promotional.", uses:[["Safety Signal Hub", "Emerging signals triaged before periodic reports."], ["Model Serving", "Disproportionality and signal models scored on case data."], ["Apps", "Medical inquiry workflows on governed data."]], sub:[{ n:"Pharmacovigilance", cares:"adverse-event signals and SAE rates before periodic reports." }, { n:"Medical Affairs", cares:"medical inquiries and non-promotional scientific engagement with HCPs." }, { n:"Drug Safety Physician", cares:"causality, labeling impact and the benefit-risk narrative." }], ucs:["Safety Signal Detect"] },
+            { n:"Commercial", mark:"CustomerLake", long:"The go-to-market side: field force, sales operations and market access on HCP engagement, launch uptake and payer coverage, firewalled from medical so promotional activity stays compliant.", uses:[["CustomerLake", "HCP segments and next-best-action without copying CRM elsewhere."], ["Model Serving", "Next-best-action and launch-uptake models scored into the field workflow."], ["AI/BI", "Launch uptake, coverage and field activity on certified Metric Views."]], sub:[{ n:"Commercial Field", cares:"compliant outreach coverage and the next action per HCP." }, { n:"Sales Operations", cares:"targeting, incentive compensation and field-force effectiveness." }, { n:"Market Access", cares:"payer coverage, contracting and launch uptake by market." }], ucs:["HCP Engagement", "Demand & Supply"] }
         ] },
         { box:"Technical", ic:"code", tiles:[
             { n:"Data Engineers", mark:"Lakeflow", long:"Land the EDC, LIMS, MES batch and safety-case feeds; own the Bronze to Silver path and the pager when a GxP pipeline breaks.", uses:[["Lakeflow Connect", "Managed connectors for EDC, LIMS and MES sources."], ["Lakeflow Designer", "Declarative pipelines with expectations on batch and safety-case feeds."], ["Lakewatch", "Freshness on the enrollment and release tables study teams read."]], sub:[{ n:"Ingestion Engineering", cares:"the EDC, LIMS, MES and safety-case connectors and their freshness." }, { n:"GxP Validation Engineering", cares:"validated pipelines and expectations that hold under audit." }, { n:"Streaming Platform", cares:"cold-chain and packaging-line events landed at batch latency." }], ucs:["Batch Genealogy", "Protocol Deviation", "Cold Chain Integrity"] },
@@ -10256,7 +10259,7 @@ const INDUSTRIES = {
         { box:"AI/BI Dashboards", ic:"aibi", tiles:[
             { n:"Trial Enrollment", ic:"aibi", long:"Enrollment versus plan, query aging and deviations across the clinical portfolio.", kpis:["Enrollment vs plan", "Site activation", "Query aging", "Protocol deviation rate", "Screen-failure rate"], teams:["Clinical Operations", "Biopharma Leaders", "Clinical Trial Managers"] },
             { n:"Batch Release & Yield", ic:"aibi", long:"Batch release rate, first-pass yield and open deviations on certified Metric Views.", kpis:["Batch release rate", "First-pass yield", "Open deviations", "LIMS TAT", "Right-first-time"], teams:["Mfg & Supply", "Quality & Reg", "Manufacturing Operations"] },
-            { n:"Pharmacovigilance", ic:"aibi", long:"SAE rates, signal counts and case throughput across the safety database.", kpis:["SAE rate", "Signal count", "ICSR backlog", "Expedited-report timeliness", "Case processing time"], teams:["Medical & Comm", "Quality & Reg", "Pharmacovigilance"] },
+            { n:"Pharmacovigilance", ic:"aibi", long:"SAE rates, signal counts and case throughput across the safety database.", kpis:["SAE rate", "Signal count", "ICSR backlog", "Expedited-report timeliness", "Case processing time"], teams:["Medical & Safety", "Quality & Reg", "Pharmacovigilance"] },
             { n:"Quality & Compliance", ic:"aibi", long:"CAPA aging, repeat deviations and inspection readiness across sites.", kpis:["CAPA aging", "Repeat deviations", "Right-first-time", "Inspection findings", "Change-control cycle time"], teams:["Quality & Reg", "Quality Assurance", "Regulatory Affairs"] }
         ] },
         { box:"Agent Harnesses", ic:"agents", tiles:[
@@ -10271,19 +10274,19 @@ const INDUSTRIES = {
       { title:"Genie Agents", ic:"genie", span:3, cols:2, tiles:[
         { n:"Enrollment & Trials Agent", ic:"genie", long:"Ask how enrollment is tracking and where data quality is at risk before database lock.", feeds:["Medidata Rave EDC", "Veeva Vault CTMS", "Oracle Clinical One", "Enrollment, yield, safety"], teams:["Clinical Operations", "Biopharma Leaders", "Clinical Trial Managers"], questions:["How is enrollment pacing versus protocol by site and country?", "Which sites are under-enrolling this month?", "What is query aging by site ahead of database lock?", "Where is the protocol-deviation rate trending up?", "Which studies are at risk of missing their readout date?"] },
         { n:"Manufacturing & Batch Release Agent", ic:"genie", long:"Explore batch release, yield and open deviations across the GMP suites.", feeds:["Werum PAS-X", "LabWare LIMS", "SAP S/4HANA PP", "Conformed subject, batch"], teams:["Mfg & Supply", "Manufacturing Operations", "Quality Control"], questions:["Which batches are held by open deviations right now?", "What is first-pass yield by product and line this month?", "Where is LIMS release testing behind schedule?", "Which lines have the most right-first-time failures?", "How does batch release rate compare to the plan?"] },
-        { n:"Safety Signals Agent", ic:"genie", long:"Answer adverse-event, signal and reporting-timeliness questions across the safety database.", feeds:["ArisGlobal LifeSphere", "FDA FAERS Feeds", "Enrollment, yield, safety"], teams:["Medical & Comm", "Pharmacovigilance", "Quality & Reg"], questions:["What is the SAE rate by product this quarter?", "Which events are disproportionate versus FAERS reference?", "How many ICSRs are in the processing backlog?", "Which expedited reports are near their reporting deadline?", "What is the average case-processing time this month?"] },
+        { n:"Safety Signals Agent", ic:"genie", long:"Answer adverse-event, signal and reporting-timeliness questions across the safety database.", feeds:["ArisGlobal LifeSphere", "FDA FAERS Feeds", "Enrollment, yield, safety"], teams:["Medical & Safety", "Pharmacovigilance", "Quality & Reg"], questions:["What is the SAE rate by product this quarter?", "Which events are disproportionate versus FAERS reference?", "How many ICSRs are in the processing backlog?", "Which expedited reports are near their reporting deadline?", "What is the average case-processing time this month?"] },
         { n:"Quality & Inspection Agent", ic:"genie", long:"Ask about CAPA aging, repeat deviations and lineage before FDA and EMA inspections.", feeds:["MasterControl QMS", "Veeva QualityDocs", "LabWare LIMS", "Conformed subject, batch"], teams:["Quality & Reg", "Quality Assurance", "Regulatory Affairs"], questions:["Which CAPAs are open past their target closure date?", "What deviations are repeating across sites and products?", "Can we trace this batch from record to submission annex?", "How long is change control taking to close?", "Which sites carry the most audit exposure right now?"] }
       ]},
       { title:"Business Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
         { n:"Enrollment Forecast", s:"Clinical", ic:"chart", long:"Site and country enrollment predicted against protocol timelines.", problem:"Enrollment slips against protocol timelines and nobody sees it until a site is months behind, so rescue sites and budget are approved late and the readout date drifts.", who:"Clinical Operations", how:"EDC and CTMS feeds land through Lakeflow and enrollment is modelled in Model Serving, surfaced site by site in the Trial Command Centre on Lakebase before database lock.", comps:["Trial Command Centre", "Medidata Rave EDC", "Lakeflow", "Model Serving", "AI/BI"], stories:[{ t:"Novo Nordisk transforms clinical trials with AI", u:"https://www.databricks.com/customers/novo-nordisk" }, { t:"How Amgen modernized analytics to speed drug development", u:"https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html" }] },
         { n:"Protocol Deviation", s:"Data quality", ic:"people", long:"Visit and dosing deviations surfaced before database lock.", problem:"Visit-window and dosing deviations hide inside EDC queries and monitoring notes, so data managers find them at database lock when a fix means reopening the study and re-monitoring sites.", who:"Clinical Operations", how:"Query, visit and dosing data are conformed on Delta Lake under Unity Catalog with expectations in Lakeflow, so deviations surface in the Trial Command Centre while the visit can still be fixed.", comps:["Trial Command Centre", "Medidata Rave EDC", "Veeva Vault CTMS", "Lakeflow", "Unity Catalog", "Delta Lake"], stories:[{ t:"Novo Nordisk transforms clinical trials with AI", u:"https://www.databricks.com/customers/novo-nordisk" }] },
-        { n:"Safety Signal Detect", s:"PV", ic:"gavel", long:"Disproportionality analysis on ICSRs before manual medical review queues swell.", problem:"Adverse events arrive as free text in calls, emails and literature and manual review queues swell, so a real signal can sit unseen while case volume climbs faster than reviewers can read.", who:"Medical & Comm", how:"ICSR and case text are processed with AI Functions and disproportionality models in Model Serving, ranked in the Safety Signal Hub so reviewers triage emerging signals before periodic reports.", comps:["Safety Signal Hub", "ArisGlobal LifeSphere", "FDA FAERS Feeds", "AI Functions", "Model Serving", "Unity Catalog"], stories:[{ t:"Improving drug safety with adverse event detection using NLP", u:"https://www.databricks.com/blog/2022/01/17/improving-drug-safety-with-adverse-event-detection-using-nlp.html" }] },
+        { n:"Safety Signal Detect", s:"PV", ic:"gavel", long:"Disproportionality analysis on ICSRs before manual medical review queues swell.", problem:"Adverse events arrive as free text in calls, emails and literature and manual review queues swell, so a real signal can sit unseen while case volume climbs faster than reviewers can read.", who:"Medical & Safety", how:"ICSR and case text are processed with AI Functions and disproportionality models in Model Serving, ranked in the Safety Signal Hub so reviewers triage emerging signals before periodic reports.", comps:["Safety Signal Hub", "ArisGlobal LifeSphere", "FDA FAERS Feeds", "AI Functions", "Model Serving", "Unity Catalog"], stories:[{ t:"Improving drug safety with adverse event detection using NLP", u:"https://www.databricks.com/blog/2022/01/17/improving-drug-safety-with-adverse-event-detection-using-nlp.html" }] },
         { n:"Batch Genealogy", s:"Traceability", ic:"stream", long:"Raw material to finished dose traced in minutes during quality holds.", problem:"When a quality hold hits, tracing raw-material lots to finished doses across MES, LIMS and ERP takes days of manual reconciliation, and every hour the batch sits is cost and supply risk.", who:"Mfg & Supply", how:"Batch records, LIMS results and material moves are conformed on Delta Lake under Unity Catalog, so genealogy from raw lot to finished dose resolves in minutes in the Batch Release Cockpit.", comps:["Batch Release Cockpit", "Werum PAS-X", "LabWare LIMS", "SAP S/4HANA PP", "Unity Catalog", "Delta Lake"], stories:[{ t:"Managing recalls with barcode traceability in the data lakehouse", u:"https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake" }, { t:"How TetraScience accelerates biopharma with production-ready data", u:"https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence" }] },
         { n:"Yield Optimisation", s:"Manufacturing", ic:"iot", long:"Process parameters scored on yield using historian and LIMS history.", problem:"Batch yield swings with process parameters nobody can correlate in time, so investigations run weeks after a low-yield lot and the same loss repeats on the next campaign.", who:"Mfg & Supply", how:"Historian and LIMS history feed yield models in Feature Store and Model Serving, with runs tracked in MLflow, so process parameters are scored against yield before the next batch runs.", comps:["Batch Release Cockpit", "Werum PAS-X", "LabWare LIMS", "Feature Store", "Model Serving", "MLflow"], stories:[{ t:"Smart Manufacturing Command Center by Tredence and Databricks", u:"https://www.databricks.com/company/partners/consulting-and-si/partner-solutions/tredence-smart-manufacturing-command-center" }, { t:"Agents for production lines: trusted decisions in real time", u:"https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time" }] },
         { n:"Cold Chain Integrity", s:"Distribution", ic:"observ", long:"Temperature excursions predicted and rerouted before product quality is lost.", problem:"Temperature excursions in transit are found after delivery when a shipment is already spoiled, so product is written off and patients wait while lanes that keep failing go unfixed.", who:"Mfg & Supply", how:"Shipment sensor and logistics events stream into Lakehouse//RT and excursion-risk models in Model Serving flag lanes early, so distribution reroutes before product quality is lost.", comps:["Lakehouse//RT", "Model Serving", "GS1 EPCIS Pharma", "SAP S/4HANA PP", "Delta Lake"], stories:[{ t:"How Johnson & Johnson uses data to optimize its supply chain", u:"https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html" }] },
         { n:"Demand & Supply", s:"Commercial", ic:"sheet", long:"Launch supply aligned to enrollment and country approval waves.", problem:"Launch demand and country approvals move faster than the supply plan, so a scaling launch either stocks out in a new market or writes off product the forecast never needed.", who:"Biopharma Leaders", how:"Enrollment, approval and commercial signals are conformed under Unity Catalog and demand models in Model Serving align launch supply to approval waves, read in AI/BI by planning and finance.", comps:["SAP S/4HANA PP", "Model Serving", "Unity Catalog", "AI/BI", "Genie One"], stories:[{ t:"How Amgen modernized analytics to speed drug development", u:"https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html" }, { t:"Integra Life Sciences gains supply and demand visibility", u:"https://www.databricks.com/customers/integra-life-sciences" }] },
         { n:"Inspection Readiness", s:"Quality", ic:"gavel", long:"Repeat deviations and open CAPAs ranked before FDA or EMA visits.", problem:"Repeat deviations and open CAPAs scatter across QMS and quality systems, so audit prep is a fire drill and a finding a prior inspection raised is still open when the next one lands.", who:"Quality & Reg", how:"Deviation, CAPA and batch data are conformed under Unity Catalog and ranked in the Quality Command app on Lakebase, so repeat issues and audit exposure are visible before FDA or EMA visits.", comps:["Quality Command", "MasterControl QMS", "Veeva QualityDocs", "Unity Catalog", "AI/BI", "Lakebase"], stories:[{ t:"Partner solutions built on Databricks Genie for pharma operations", u:"https://www.databricks.com/blog/transforming-industries-conversational-ai-partner-solutions-built-databricks-genie" }, { t:"How TetraScience accelerates biopharma with production-ready data", u:"https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence" }] },
-        { n:"HCP Engagement", s:"Commercial", ic:"custlake", long:"Field and medical touchpoints scored for compliant outreach prioritisation.", problem:"Field, medical and digital touchpoints sit in separate systems, so HCPs get uncoordinated, non-compliant outreach and reps cannot see which next action actually matters for each physician.", who:"Medical & Comm", how:"CRM, prescription and engagement signals are unified in CustomerLake and next-best-action models in Model Serving prioritise compliant outreach delivered into the field workflow.", comps:["Veeva CRM", "IQVIA OCE", "CustomerLake", "Model Serving", "AI Functions"], stories:[{ t:"Elevating customer experience with AI-enabled omnichannel Next Best Action", u:"https://www.databricks.com/blog/elevating-customer-experience-ai-enabled-omnichannel-next-best-action" }, { t:"Next Best Action for healthcare and life sciences", u:"https://www.databricks.com/solutions/accelerators/next-best-action-healthcare-and-life-sciences" }] },
+        { n:"HCP Engagement", s:"Commercial", ic:"custlake", long:"Field and medical touchpoints scored for compliant outreach prioritisation.", problem:"Field, medical and digital touchpoints sit in separate systems, so HCPs get uncoordinated, non-compliant outreach and reps cannot see which next action actually matters for each physician.", who:"Commercial", how:"CRM, prescription and engagement signals are unified in CustomerLake and next-best-action models in Model Serving prioritise compliant outreach delivered into the field workflow.", comps:["Veeva CRM", "IQVIA OCE", "CustomerLake", "Model Serving", "AI Functions"], stories:[{ t:"Elevating customer experience with AI-enabled omnichannel Next Best Action", u:"https://www.databricks.com/blog/elevating-customer-experience-ai-enabled-omnichannel-next-best-action" }, { t:"Next Best Action for healthcare and life sciences", u:"https://www.databricks.com/solutions/accelerators/next-best-action-healthcare-and-life-sciences" }] },
         { n:"Serialization Trace", s:"DSCSA", ic:"api", long:"Saleable returns and suspect product investigations from EPCIS lineage.", problem:"Saleable-return verification and suspect-product checks need item-level history, but serialization events sit in the packaging line and partner systems, so a DSCSA query is a manual hunt.", who:"Mfg & Supply", how:"EPCIS serialization events are conformed on Delta Lake under Unity Catalog and served as transaction statements over OpenSharing, so returns and suspect-product traces resolve from one lineage.", comps:["GS1 EPCIS Pharma", "Rockwell PharmaSuite", "Unity Catalog", "Delta Lake", "OpenSharing"], stories:[{ t:"How Johnson & Johnson uses data to optimize its supply chain", u:"https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html" }, { t:"Managing recalls with barcode traceability in the data lakehouse", u:"https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake" }] }
       ]}
     ],
@@ -10300,6 +10303,7 @@ const INDUSTRIES = {
       "arisglobal":{ t:"ArisGlobal LifeSphere", u:"https://www.arisglobal.com/lifesphere/" },
       "iqvia-oce":{ t:"IQVIA OCE", u:"https://www.iqvia.com/solutions/commercialization" },
       "veeva-crm":{ t:"Veeva CRM", u:"https://www.veeva.com/products/crm/" },
+      "sf-lsc":{ t:"Salesforce Life Sciences Cloud", u:"https://www.salesforce.com/industries/life-sciences/" },
       "cdisc":{ t:"CDISC standards", u:"https://www.cdisc.org/" },
       "fda-faers":{ t:"FDA FAERS", u:"https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers" },
       "gs1-epcis":{ t:"GS1 EPCIS", u:"https://www.gs1.org/standards/epcis" }
@@ -13704,7 +13708,7 @@ function reg(el, tile, arr, sectionName){
   };
   /* the release-stage filter reads this attribute off the DOM, so every atom
      gets it in the one place every atom is created */
-  const sk = stageKey(tile.st);
+  const sk = stageKey(stageFor(tile));
   if(sk) el.dataset.stage = sk;
   byId[id] = { tile, arr, section:sectionName, el };
   /* A product shown in two places declares `alias` on the second appearance, so
@@ -13936,7 +13940,7 @@ function renderBand(band, target){
     chip.className = "foot-chip";
     chip.innerHTML = (band.foot.ic ? svg(band.foot.ic, "") : "") +
       `<span class="fc-name">${esc(band.foot.n)}</span>` +
-      (band.foot.st ? `<span class="fc-stage">${esc(T(band.foot.st))}</span>` : "");
+      (stageFor(band.foot) ? `<span class="fc-stage">${esc(T(stageFor(band.foot)))}</span>` : "");
     reg(chip, band.foot, null, band.name);
     const r1 = document.createElement("span"); r1.className = "rule";
     const r2 = document.createElement("span"); r2.className = "rule";
@@ -13977,13 +13981,16 @@ function providerTiles(key){
 /* In h90 each pocket is two boxes side by side; five tiles is the per-box cap.
    Overflow spills into the next box without changing which tiles exist. */
 const H90_TILE_CAP = 5;
-/* The People pocket sets the top half's height, so an industry with seven
+/* The People pocket sets the top half's height, so an industry with too many
    business roles pads the whole upper block taller than its content and opens a
-   gap above the lower half. Capping the Business group to five keeps the pocket
-   short across every shape and industry. The cap is applied to the rendered
-   entries only, never to g.tiles, so edit mode still writes back to the live
-   array behind the first five tiles. */
-const PPL_BUSINESS_CAP = 5;
+   gap above the lower half. Capping the Business group keeps the pocket short
+   across every shape and industry. Six is the ceiling: with the Technical box at
+   three that is nine tiles, still well inside the upper block on every board
+   (measured pocket ~280px against a ~628px envelope), and pharma is the only
+   board that needs six (Medical and Commercial must stay separate for
+   compliance). The cap is applied to the rendered entries only, never to
+   g.tiles, so edit mode still writes back to the live array behind the tiles. */
+const PPL_BUSINESS_CAP = 6;
 function railGroupEntries(g){
   const extra = g.from ? providerTiles(g.from) : [];
   const own = g.tiles.map(tile => ({ tile, arr: g.tiles, cloudy: false }));
@@ -14151,7 +14158,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 26;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
+const SCHEMA = 27;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -14193,7 +14200,12 @@ const RAIL_IDS = ["src","ing","ppl","cons"];
    "Anthropic/OpenAI" and drops the enrichment drawer, the same stale-board
    confusion (this bump exists precisely because that stale tile survived a
    content-only edit that did not change shape), so it is discarded rather than
-   half-applied.
+   half-applied. v26 baked the ingest arm's fourth tile as "Lakebridge /
+   Migration": SCHEMA was bumped 25->26 while that tile was still Lakebridge, and
+   the later rename to the "Streaming" tile changed the persisted content without
+   bumping again, so a v26 board passes the shape check yet repaints Lakebridge
+   over the current Streaming tile for anyone who had saved one, the same
+   stale-board confusion, so it is discarded rather than half-applied.
    Restoring any of them renders empty columns or throws, so anything that fails
    this check is discarded rather than half-applied.
 
@@ -14785,7 +14797,7 @@ function openDetail(id, via){
   document.getElementById("d-eyebrow").textContent = T(rec.section);
   document.getElementById("d-title").innerHTML = titleIcon(t,"d-ic") + " " + esc(displayName(t));
   document.getElementById("d-tagline").textContent = T(t.s || t.desc || genieDomain(t) || "");
-  document.getElementById("d-stage").innerHTML = stageBadge(t.st);
+  document.getElementById("d-stage").innerHTML = stageBadge(stageFor(t));
   const dbody = document.getElementById("d-body");
   if(dbody) dbody.setAttribute("dir", I18N.dir);
   let html = "";
@@ -15771,6 +15783,19 @@ const STAGE_STORE = "dbx-arch-stages";
 const STAGE_OF = { "ga":"ga", "public preview":"pubpre", "beta":"beta",
   "private preview":"privpre", "coming soon":"soon" };
 function stageKey(st){ return STAGE_OF[String(st || "").trim().toLowerCase()] || ""; }
+/* Release stage can differ by cloud: a feature GA on AWS may still be Beta on
+   GCP. An optional `stByCloud:{aws,azure,gcp}` overrides `st` for the active
+   provider; when a cloud is absent from it, or the tile has no `stByCloud` at
+   all, plain `st` applies to every cloud. One resolver feeds the filter
+   attribute, the band-footer chip and the detail badge, so all three read the
+   same per-cloud truth, and a cloud switch (which rebuilds) re-resolves every
+   stage. Defined as a declaration so it hoists to the build path that runs
+   before this line. */
+function stageFor(t){
+  if(!t) return "";
+  const c = (typeof ARCH !== "undefined" && ARCH.cloud && ARCH.cloud.provider) || "aws";
+  return (t.stByCloud && t.stByCloud[c]) || t.st || "";
+}
 
 const stageWrap = document.getElementById("stage-wrap");
 const stageMenu = document.getElementById("stage-menu");
@@ -19252,6 +19277,10 @@ restoreActiveTab();
   const btn = document.getElementById("tour-btn");
   if(btn) btn.addEventListener("click", start);
   window.__startArchTour = start;
+
+  const feedbackBtn = document.getElementById("feedback-btn");
+  if(feedbackBtn) feedbackBtn.addEventListener("click", () =>
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSeBXneydhM79IZi6fzsmSveGmcuoWQZQCAbIkJk-4YZw0krtw/viewform", "_blank", "noopener"));
 
   function maybeAuto(){
     if(lsGet(KEY)) return;
