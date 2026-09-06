@@ -16,10 +16,18 @@ CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "app", "index.html")
 
+# Official Databricks YouTube channel author_name as reported by oEmbed. A video
+# in LINKS[name].videos is only legitimate if oEmbed says it lives here AND its
+# title carries the feature name (there is no human review step, so the gate is
+# the review). Anything else is a third-party upload and must be rejected.
+OFFICIAL_YT = {"Databricks"}
+
 # Medallion tiers are architecture concepts, not products with a landing page.
 SITE_EXEMPT = {"Bronze", "Silver", "Gold"}
-# Products added this pass that MUST have a full LINKS entry (doc/site/blog).
-REQUIRED_PRODUCTS = ["Document Parsing", "Knowledge Assistant", "Text Classification", "Omnigent OSS"]
+# Platform tiles that MUST carry a full LINKS entry (doc/site/blog). These are
+# real product tiles in ARCH.bands; "Omnigent" is intentionally NOT here because
+# it is an Apache-2.0 OSS project with a GitHub home and no Databricks doc path.
+REQUIRED_PRODUCTS = ["Streaming", "Knowledge Assistant", "Document Parsing", "Text Classification"]
 DOC_HOSTS = {"aws": "https://docs.databricks.com/aws/en/",
              "azure": "https://learn.microsoft.com/azure/databricks/",
              "gcp": "https://docs.databricks.com/gcp/en/"}
@@ -93,6 +101,8 @@ def collect_urls(d):
         for k in ("site", "blog", "url", "video"):
             if L.get(k):
                 add(L[k], f"LINKS[{name}].{k}")
+        # `videos` list is verified separately (check_video) for channel + title,
+        # not just liveness, so it is intentionally not added to the plain pool.
         for pair in (L.get("also") or []):
             if isinstance(pair, list) and len(pair) == 2:
                 add(pair[1], f"LINKS[{name}].also")
@@ -103,6 +113,41 @@ def collect_urls(d):
         for u in o["cites"]:
             add(u, f"{iid}:cite")
     return urls
+
+
+def _norm(s):
+    """Lowercase, strip everything but alphanumerics to single spaces, so
+    'AI/BI' matches 'AI BI' and 'Unity Catalog' matches 'unity  catalog'."""
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+
+def check_video(vid, feature, alias=None):
+    """oEmbed check for a LINKS videos entry: exists, lives on the official
+    Databricks channel, and its title carries the feature name OR a declared
+    alias (a renamed / prior product name, e.g. AI Search's 'Vector Search').
+    The alias is verified the same way (whole-phrase, official channel), so a
+    rename never opens the gate to an unrelated video. Returns (ok, detail):
+    detail is the real title on success or the reason on failure."""
+    url = "https://www.youtube.com/watch?v=" + vid
+    oe = "https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(url, safe="")
+    try:
+        req = urllib.request.Request(oe, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.status != 200:
+                return (False, f"oembed http {r.status}")
+            meta = json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        return (False, f"oembed error {str(e)[:50]}")
+    author = (meta.get("author_name") or "").strip()
+    title = meta.get("title") or ""
+    if author not in OFFICIAL_YT:
+        return (False, f"channel '{author}' not official Databricks")
+    hay = " " + _norm(title) + " "
+    terms = [feature] + ([alias] if alias else [])
+    if not any((" " + _norm(t) + " ") in hay for t in terms if _norm(t)):
+        want = "' / '".join(terms)
+        return (False, f"title lacks feature/alias '{want}': '{title}'")
+    return (True, title)
 
 
 def check_url(u):
@@ -133,8 +178,10 @@ import urllib.parse
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--urls", action="store_true", help="live-check every outbound URL")
+    ap.add_argument("--dump-file", help="read a pre-dumped ARCH/LINKS JSON (from tools/pw_dump.js) "
+                    "instead of launching Chrome; use when the default Chrome profile is locked")
     args = ap.parse_args()
-    d = dump()
+    d = json.load(open(args.dump_file)) if args.dump_file else dump()
     fails = []
 
     # ---- Products ----
@@ -151,6 +198,22 @@ def main():
         if not isinstance(L, dict) or not L.get("doc") or not L.get("site") or not L.get("blog"):
             fails.append(f"required product '{n}' missing LINKS doc/site/blog")
     print(f"products checked: {len(prod)} (doc-bearing) + {len(REQUIRED_PRODUCTS)} required")
+
+    # ---- See-also references must resolve to a real, linkable feature ----
+    sa_refs = 0
+    for name, L in LINKS.items():
+        if not isinstance(L, dict):
+            continue
+        for ref in (L.get("seealso") or []):
+            sa_refs += 1
+            tgt = LINKS.get(ref)
+            if not isinstance(tgt, dict):
+                fails.append(f"seealso '{ref}' (from '{name}') is not a LINKS feature")
+            elif not (tgt.get("doc") or tgt.get("dbx") or tgt.get("site") or tgt.get("url")):
+                fails.append(f"seealso '{ref}' (from '{name}') has no linkable URL")
+            elif ref == name:
+                fails.append(f"seealso '{ref}' points at itself")
+    print(f"see-also references checked: {sa_refs}")
 
     # ---- Generic sources ----
     gbad = [r["n"] for r in d["genSrc"] if not (r["what"] and r["users"] and r["dataOut"] and r["vol"])]
@@ -184,6 +247,29 @@ def main():
         for u, code, where in sorted(bad):
             fails.append(f"DEAD [{code}] {u}  <- {where}")
         print(f"dead URLs: {len(bad)}")
+
+        # ---- Databricks YouTube videos (channel + title, not just liveness) ----
+        vids = []  # (feature, id, title-as-declared, alias)
+        for name, L in LINKS.items():
+            if isinstance(L, dict):
+                for v in (L.get("videos") or []):
+                    if isinstance(v, dict) and v.get("id"):
+                        vids.append((name, v["id"], v.get("t", ""), v.get("a")))
+        vbad = 0
+        if vids:
+            print(f"verifying {len(vids)} Databricks YouTube videos ...")
+            with cf.ThreadPoolExecutor(max_workers=12) as ex:
+                futs = {ex.submit(check_video, vid, feat, alias): (feat, vid, decl) for feat, vid, decl, alias in vids}
+                for fut in cf.as_completed(futs):
+                    feat, vid, decl = futs[fut]
+                    ok, detail = fut.result()
+                    if not ok:
+                        vbad += 1
+                        fails.append(f"BAD VIDEO {vid} (LINKS[{feat}].videos): {detail}")
+                    elif decl and _norm(decl) != _norm(detail):
+                        vbad += 1
+                        fails.append(f"VIDEO TITLE DRIFT {vid} (LINKS[{feat}]): declared '{decl}' != oembed '{detail}'")
+        print(f"bad videos: {vbad}")
 
     print("\n" + "=" * 72)
     if fails:
