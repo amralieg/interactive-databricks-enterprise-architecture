@@ -16,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const APP_ROOT = path.join(__dirname, '..', 'app');
-const MIME = { '.html': 'text/html', '.json': 'application/json', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.yaml': 'text/yaml', '.yml': 'text/yaml' };
+const MIME = { '.html': 'text/html', '.json': 'application/json', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.yaml': 'text/yaml', '.yml': 'text/yaml', '.png': 'image/png' };
 
 // Start a server on an ephemeral port. Resolves to the http.Server; read its
 // port via server.address().port. Close it with server.close() when done.

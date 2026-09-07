@@ -33,6 +33,14 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
     return fb.nextElementSibling === sw;
   }));
 
+  // ---- default OG tags on index.html (the reference-board card LinkedIn scrapes) ----
+  const head = await page.evaluate(() => document.head.innerHTML);
+  check('index has default og:title', /property="og:title" content="Databricks Reference Architecture"/.test(head));
+  check('index has og:image (1200x630)',
+    /property="og:image" content="[^"]+assets\/og-cover\.png"/.test(head) && /property="og:image:width" content="1200"/.test(head), head.match(/og:image" content="([^"]+)"/) ? head.match(/og:image" content="([^"]+)"/)[1] : 'missing');
+  check('index has twitter summary_large_image', /name="twitter:card" content="summary_large_image"/.test(head));
+  check('og-cover.png is served', (await page.evaluate(async () => (await fetch('assets/og-cover.png')).status)) === 200);
+
   // ---- open an industry, open the menu, read the title + hrefs ----
   const IND = 'banking';
   const data = await page.evaluate(async (ind) => {
@@ -40,50 +48,60 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
     document.getElementById('share-btn').click();
     const menu = document.getElementById('share-menu');
     const title = menu.querySelector('.sh-title').textContent;
-    const url = liveUrl();
+    const land = shareLandingUrl();
     const rows = Array.from(menu.querySelectorAll('button[data-share]')).map(b => b.dataset.share);
-    // resolve each network href off the live target/title
-    const T = SHARE_TARGETS.reduce((a, t) => { a[t.k] = t.copy ? null : t.href(liveUrl(), shareTitle()); return a; }, {});
-    return { title, url, rows, hrefs: T, label: industryLabel(ind) };
+    const T = SHARE_TARGETS.reduce((a, t) => { a[t.k] = t.copy ? null : t.href(shareLandingUrl(), shareTitle()); return a; }, {});
+    return { title, land, rows, hrefs: T, label: industryLabel(ind) };
   }, IND);
 
   check('menu titles the post with the industry',
     data.title === 'Databricks Reference Architecture for ' + data.label, data.title);
-  check('deep link points at the industry', /[?&]industry=banking(&|$)/.test(data.url), data.url);
+  check('share link is the per-industry stub', /\/share\/banking\.html$/.test(data.land), data.land);
   const want = ['linkedin', 'x', 'facebook', 'reddit', 'hn', 'whatsapp', 'telegram', 'email', 'copy'];
   check('all networks present', want.every(k => data.rows.includes(k)), data.rows.join(','));
 
-  const enc = encodeURIComponent(data.url);
+  const enc = encodeURIComponent(data.land);
   const encT = encodeURIComponent('Databricks Reference Architecture for ' + data.label);
-  check('linkedin href carries the deep link', data.hrefs.linkedin.includes('share-offsite') && data.hrefs.linkedin.includes(enc), data.hrefs.linkedin);
-  check('x href carries title + deep link', data.hrefs.x.includes('intent/tweet') && data.hrefs.x.includes(encT) && data.hrefs.x.includes(enc));
-  check('facebook href carries the deep link', data.hrefs.facebook.includes('sharer') && data.hrefs.facebook.includes(enc));
-  check('reddit href carries title + deep link', data.hrefs.reddit.includes('reddit.com/submit') && data.hrefs.reddit.includes(encT) && data.hrefs.reddit.includes(enc));
-  check('hn href carries title + deep link', data.hrefs.hn.includes('ycombinator') && data.hrefs.hn.includes(encT) && data.hrefs.hn.includes(enc));
-  check('whatsapp href carries title + deep link', data.hrefs.whatsapp.includes('whatsapp') && data.hrefs.whatsapp.includes(encodeURIComponent('Databricks Reference Architecture for ' + data.label + ' ' + data.url)));
-  check('telegram href carries title + deep link', data.hrefs.telegram.includes('t.me/share') && data.hrefs.telegram.includes(encT) && data.hrefs.telegram.includes(enc));
-  check('email mailto carries title + deep link', data.hrefs.email.startsWith('mailto:') && data.hrefs.email.includes(encT) && data.hrefs.email.includes(enc));
+  check('linkedin href carries the stub link', data.hrefs.linkedin.includes('share-offsite') && data.hrefs.linkedin.includes(enc), data.hrefs.linkedin);
+  check('x href carries title + stub link', data.hrefs.x.includes('intent/tweet') && data.hrefs.x.includes(encT) && data.hrefs.x.includes(enc));
+  check('facebook href carries the stub link', data.hrefs.facebook.includes('sharer') && data.hrefs.facebook.includes(enc));
+  check('reddit href carries title + stub link', data.hrefs.reddit.includes('reddit.com/submit') && data.hrefs.reddit.includes(encT) && data.hrefs.reddit.includes(enc));
+  check('hn href carries title + stub link', data.hrefs.hn.includes('ycombinator') && data.hrefs.hn.includes(encT) && data.hrefs.hn.includes(enc));
+  check('whatsapp href carries title + stub link', data.hrefs.whatsapp.includes('whatsapp') && data.hrefs.whatsapp.includes(encodeURIComponent('Databricks Reference Architecture for ' + data.label + ' ' + data.land)));
+  check('telegram href carries title + stub link', data.hrefs.telegram.includes('t.me/share') && data.hrefs.telegram.includes(encT) && data.hrefs.telegram.includes(enc));
+  check('email mailto carries title + stub link', data.hrefs.email.startsWith('mailto:') && data.hrefs.email.includes(encT) && data.hrefs.email.includes(enc));
 
-  // ---- the deep link genuinely lands on the industry (seedFromUrl round-trip) ----
+  // ---- the stub carries per-industry OG tags AND redirects onto the board ----
+  //      Read the RAW bytes via fetch (navigating would execute its redirect script
+  //      and hand back index.html instead of the stub).
+  const stub = await page.evaluate(async () => {
+    const r = await fetch('share/banking.html');
+    return { status: r.status, html: await r.text() };
+  });
+  check('stub served (200)', stub.status === 200, 'status=' + stub.status);
+  check('stub has per-industry og:title', /og:title" content="Databricks Reference Architecture for Banking"/.test(stub.html));
+  check('stub has og:image', /og:image" content="[^"]+og-cover\.png"/.test(stub.html));
+
   const landed = await (async () => {
     const p2 = await browser.newPage();
     await p2.addInitScript(() => { try { localStorage.setItem('dbx-arch-tour-v1', '1'); } catch (e) {} });
-    await p2.goto('http://127.0.0.1:' + port + '/' + data.url.split('/').pop(), { waitUntil: 'networkidle' });
-    await p2.waitForTimeout(500);
-    const ind = await p2.evaluate(() => ARCH.industry);
+    await p2.goto('http://127.0.0.1:' + port + '/share/banking.html', { waitUntil: 'networkidle' });
+    await p2.waitForTimeout(600);
+    const ind = await p2.evaluate(() => (typeof ARCH !== 'undefined' ? ARCH.industry : null));
     await p2.close();
     return ind;
   })();
-  check('deep link reopens the industry', landed === IND, 'landed=' + landed);
+  check('stub redirects and reopens the industry', landed === IND, 'landed=' + landed);
 
   // ---- generic board titles without an industry ----
   const gen = await page.evaluate(async () => {
     await applyIndustry('generic', true);
     document.getElementById('share-wrap').classList.remove('open'); // close first (outside-click does this for a real user)
     document.getElementById('share-btn').click();                    // reopen -> rebuild with the current board
-    return document.getElementById('share-menu').querySelector('.sh-title').textContent;
+    return { title: document.getElementById('share-menu').querySelector('.sh-title').textContent, land: shareLandingUrl() };
   });
-  check('generic board titles without an industry', gen === 'Databricks Reference Architecture', gen);
+  check('generic board titles without an industry', gen.title === 'Databricks Reference Architecture', gen.title);
+  check('generic board shares index.html (not a stub)', /\/index\.html$/.test(gen.land) && !/\/share\//.test(gen.land), gen.land);
 
   check('no console errors', errors.length === 0, errors.slice(0, 3).join(' | '));
 
