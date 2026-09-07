@@ -82,6 +82,10 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
   check('stub has per-industry og:title', /og:title" content="Databricks Reference Architecture for Banking"/.test(stub.html));
   check('stub og:image is under /app/ (else it 404s on Pages)', /og:image" content="[^"]+\/app\/assets\/og-cover\.png"/.test(stub.html), (stub.html.match(/og:image" content="([^"]+)"/) || [])[1]);
   check('stub og:url is under /app/', /og:url" content="[^"]+\/app\/share\/banking\.html"/.test(stub.html), (stub.html.match(/og:url" content="([^"]+)"/) || [])[1]);
+  // A meta-refresh (or a canonical pointing at index.html) makes scrapers follow to
+  // index.html and scrape ITS default card, losing the per-industry title. Lock both.
+  check('stub has NO meta-refresh (scrapers follow it)', !/http-equiv=["']?refresh/i.test(stub.html));
+  check('stub is self-canonical (not index.html)', /rel="canonical" href="[^"]+\/app\/share\/banking\.html"/.test(stub.html) && !/rel="canonical" href="[^"]*index\.html/.test(stub.html));
 
   const landed = await (async () => {
     const p2 = await browser.newPage();

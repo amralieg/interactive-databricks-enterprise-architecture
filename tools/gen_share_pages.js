@@ -49,8 +49,12 @@ function stub(id, label, desc) {
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(desc)}">
 <meta name="twitter:image" content="${IMG}">
-<link rel="canonical" href="${esc(target)}">
-<meta http-equiv="refresh" content="0; url=${esc(target)}">
+<!-- Self-canonical, and deliberately no server/meta redirect: social scrapers
+     (LinkedIn, Facebook) follow a refresh redirect and a canonical that points
+     elsewhere, then scrape the TARGET page's tags instead of this stub's
+     per-industry card. They do not run JS, so the script below moves a human onto
+     the board while a scraper still reads this page's own Open Graph tags. -->
+<link rel="canonical" href="${esc(url)}">
 <script>location.replace(${JSON.stringify(target)} + location.hash);</script>
 </head>
 <body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#071820;color:#EAF2F5;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center">
