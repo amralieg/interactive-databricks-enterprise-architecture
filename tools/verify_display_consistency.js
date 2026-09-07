@@ -1,15 +1,20 @@
 const { chromium } = require("playwright");
-const path = require("path");
-const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
+const { serve } = require("./lib_serve");
 
 (async () => {
+  // Industries lazy-load from architectures/*.json, which fetch() cannot read
+  // over file://, so serve over HTTP and drive applyIndustry to populate each.
+  const server = await serve();
+  const base = "http://127.0.0.1:" + server.address().port + "/index.html";
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
-  await page.goto(FILE, { waitUntil: "load" });
+  await page.goto(base, { waitUntil: "networkidle" });
 
-  const ids = await page.evaluate(() => ["generic"].concat(Object.keys(INDUSTRIES)));
+  // INDUSTRIES is empty until an industry is applied; the full id list is the
+  // catalog. "generic" is the reference board (no industry overlay).
+  const ids = await page.evaluate(() => ["generic"].concat(INDUSTRY_CATALOG.map(x => x[0])));
 
   const violations = [];       // category mode: commercial name leaked into an export chip
   const proseViolations = [];  // category mode: commercial name leaked into an export sentence
@@ -17,7 +22,7 @@ const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
   let industriesWithMapping = 0;
 
   for (const id of ids) {
-    await page.evaluate((i) => { i === "generic" ? build() : applyIndustry(i, false); }, id);
+    await page.evaluate(async (i) => { i === "generic" ? build() : await applyIndustry(i, false); }, id);
 
     const r = await page.evaluate(() => {
       // Authoritative commercial->category map from the RAW industry definition,
@@ -69,6 +74,7 @@ const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
   }
 
   await browser.close();
+  server.close();
 
   console.log(`industries scanned: ${ids.length}`);
   console.log(`industries with commercial products (own a category): ${industriesWithMapping}`);

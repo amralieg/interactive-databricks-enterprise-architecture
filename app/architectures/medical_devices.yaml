@@ -1,0 +1,1001 @@
+name: Medical Devices
+description: 'Design, manufacture and post-market support of regulated medical devices: PLM and requirements, MES and quality, complaint and CAPA, connected-device telemetry, and regulatory submissions.'
+sources:
+  - name: PLM & Engineering
+    icon: dev
+    tiles:
+      - name: PTC Windchill
+        icon: dev
+        summary: 'Product lifecycle management: the system of record for device design, BOMs, change orders and the design history file.'
+        citations:
+          - windchill
+        category: Product Lifecycle Management (PLM)
+        what_it_is: The system of record for device design, BOMs, change orders and the design history file across the product's lifecycle.
+        who_uses_it: Design & systems eng, Verification & validation and Regulatory affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-5 GB/day
+            interval: Nightly batch + on change order
+      - name: Siemens Teamcenter
+        icon: erp
+        summary: PLM for BOM, requirements and change control where Teamcenter is the incumbent design backbone.
+        citations:
+          - teamcenter
+        category: Product Lifecycle Management (PLM)
+        what_it_is: PLM for BOM, requirements and change control where Teamcenter is the incumbent design backbone for the device portfolio.
+        who_uses_it: Design & systems eng, Reliability engineering and Supply chain.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-5 GB/day
+            interval: Nightly batch + on change
+      - name: Jama Connect
+        icon: docs
+        summary: Requirements, verification and validation traceability from design inputs to test evidence for regulated products.
+        citations:
+          - jama
+        category: Requirements Management / ALM
+        what_it_is: Traces requirements, verification and validation from design inputs to test evidence for regulated products.
+        who_uses_it: Verification & validation, Design & systems eng and Compliance & audit.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day
+            interval: Nightly sync
+  - name: Quality & Reg
+    icon: gavel
+    tiles:
+      - name: MasterControl QMS
+        icon: gavel
+        summary: 'Quality management: document control, training, nonconformances, CAPA and audit trails under 21 CFR Part 11.'
+        citations:
+          - mastercontrol
+        category: Quality Management System (QMS)
+        what_it_is: Manages document control, training, nonconformances, CAPA and audit trails under 21 CFR Part 11 across the quality system.
+        who_uses_it: Head of quality, Compliance & audit and Line quality.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.5-3 GB/day
+            interval: Nightly + event-driven
+      - name: Veeva Vault Quality
+        icon: gavel
+        summary: Cloud QMS and QualityDocs for complaint, deviation and CAPA workflows across sites.
+        citations:
+          - veeva
+        category: Quality Management System (QMS)
+        what_it_is: Cloud QMS and QualityDocs running complaint, deviation and CAPA workflows and controlled content across sites.
+        who_uses_it: Head of quality, Regulatory affairs and Compliance & audit.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.5-2 GB/day
+            interval: Nightly + on approval
+      - name: TrackWise Digital
+        icon: gavel
+        summary: 'Complaint management and CAPA of record: intake, MDR decisioning and adverse-event workflows.'
+        citations:
+          - trackwise
+        category: Complaint & CAPA Management (QMS)
+        what_it_is: 'The complaint and CAPA system of record: complaint intake, MDR decisioning and adverse-event workflows for the device portfolio.'
+        who_uses_it: Post-market surveillance, Head of quality and Regulatory affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.5-3 GB/day complaints + narratives
+            interval: Hourly / daily intake
+      - name: ETQ Reliance
+        icon: gavel
+        summary: Quality and EHS management for nonconformance, supplier quality and CAPA where ETQ is the incumbent.
+        citations:
+          - etq
+        category: Quality & EHS Management (QMS)
+        what_it_is: Manages nonconformance, supplier quality and CAPA (and EHS) where ETQ Reliance is the incumbent quality platform.
+        who_uses_it: Line quality, Supply chain and Compliance & audit.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day
+            interval: Nightly + event-driven
+  - name: Manufacturing & MES
+    icon: compute
+    tiles:
+      - name: Siemens Opcenter MES
+        icon: compute
+        summary: 'Manufacturing execution: electronic batch records, work orders, genealogy and in-line quality on the line.'
+        citations:
+          - opcenter
+        category: Manufacturing Execution System (MES)
+        what_it_is: Runs electronic batch records, work orders, genealogy and in-line quality on the line, the system of record for how a device was built.
+        who_uses_it: Process & plant eng, Line quality and Supply chain.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB/day
+            interval: Per-lot + shift batch
+          stream:
+            types:
+              - semi-structured
+            volume: line events at process latency
+            interval: Continuous on the line
+      - name: Rockwell Plex MES
+        icon: compute
+        summary: Cloud MES for production tracking, quality and genealogy across discrete device manufacturing.
+        citations:
+          - plex
+        category: Manufacturing Execution System (MES)
+        what_it_is: Cloud MES for production tracking, quality and genealogy across discrete device manufacturing.
+        who_uses_it: Process & plant eng, Line quality and Supply chain.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-15 GB/day
+            interval: Per-lot + shift batch
+          stream:
+            types:
+              - semi-structured
+            volume: production events on the line
+            interval: Continuous
+      - name: Tulip Frontline Ops
+        icon: apps
+        summary: Composable frontline operations and digital work instructions on the manufacturing floor.
+        citations:
+          - tulip
+        category: Frontline Operations / Digital Work Instructions
+        what_it_is: Composable frontline operations and digital work instructions on the manufacturing floor, capturing operator steps and station data.
+        who_uses_it: Line quality, Process & plant eng and Application Engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: station events as steps complete
+            interval: Continuous during shifts
+      - name: AVEVA PI Historian
+        icon: iot
+        summary: 'Process historian: equipment and process time-series that underpins SPC, OEE and anomaly detection.'
+        citations:
+          - avevapi
+        category: Process Historian (Time-Series)
+        what_it_is: Process historian holding equipment and process time-series that underpins SPC, OEE and anomaly detection on the line.
+        who_uses_it: Process & plant eng, Quality DS and Reliability engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1000s of tags/sec
+            interval: Continuous time-series
+  - name: ERP, Service & CRM
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: The ERP of record for procurement, inventory, production orders and finance across the device business.
+        citations:
+          - sap
+        category: ERP
+        what_it_is: The ERP of record for procurement, inventory, production orders and finance across the device business.
+        who_uses_it: Supply chain, Process & plant eng and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: ServiceMax
+        icon: orch
+        summary: 'Field service management: installed base, service contracts, work orders and parts for the device fleet.'
+        citations:
+          - servicemax
+        category: Field Service Management (FSM)
+        what_it_is: Manages the installed base, service contracts, work orders and parts for the device fleet in the field.
+        who_uses_it: Field service, Customer success and Sales & marketing.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + intraday
+      - name: Salesforce
+        icon: crm
+        summary: Commercial CRM for accounts, orders and device utilisation across sales and customer success.
+        citations:
+          - salesforce
+        category: CRM
+        what_it_is: Commercial CRM for accounts, orders and device utilisation across sales and customer success.
+        who_uses_it: Sales & marketing, Customer success and Field service.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: engagement events as they occur
+            interval: Continuous CDC
+      - name: LabWare LIMS
+        icon: db
+        summary: 'Laboratory information management: test results, specifications and out-of-spec dispositions for release.'
+        citations:
+          - labware
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Holds test results, specifications and out-of-spec dispositions that gate device and component release.
+        who_uses_it: Line quality, Process & plant eng and Head of quality.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch + result release
+  - name: Regulatory & Telemetry
+    icon: iot
+    tiles:
+      - name: FDA GUDID / UDI
+        icon: gavel
+        summary: Unique Device Identification records and the Global UDI Database, the reference for device identity and labelling.
+        citations:
+          - gudid
+        category: Device Identification Registry (UDI)
+        what_it_is: Unique Device Identification records and the Global UDI Database, the reference for device identity and labelling.
+        who_uses_it: Regulatory affairs, Compliance & audit and Supply chain.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs (UDI records)
+            interval: On registration + periodic sync
+      - name: FDA MAUDE Events
+        icon: gavel
+        summary: Manufacturer and User Facility Device Experience adverse-event reports, the public post-market safety record.
+        citations:
+          - maude
+        category: Public Adverse-Event Database (Devices)
+        what_it_is: Manufacturer and User Facility Device Experience adverse-event reports, the public post-market safety record used for signal benchmarking.
+        who_uses_it: Post-market surveillance, Medical affairs and Regulatory affairs.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs (periodic event files)
+            interval: Monthly reference releases
+      - name: Device Telemetry
+        icon: iot
+        summary: 'Connected-device and IoMT telemetry from the installed base: usage, alarms and sensor streams from every unit.'
+        category: Connected-Device / IoMT Telemetry
+        what_it_is: 'Connected-device and IoMT telemetry from the installed base: usage, alarms and sensor streams from every unit in the field.'
+        who_uses_it: Telemetry Eng, Field service and Reliability engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10s-100s of GB/day at fleet scale
+            interval: Continuous (MQTT / Kafka)
+      - name: HL7 FHIR Feeds
+        icon: api
+        summary: Interoperability feeds carrying device, observation and outcome resources to and from clinical systems.
+        citations:
+          - fhir
+        category: Clinical Interoperability Standard (FHIR)
+        what_it_is: Interoperability feeds carrying device, observation and outcome resources to and from clinical systems for real-world data.
+        who_uses_it: Clinical Affairs, Medical affairs and Application Engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10s-100s of resources/sec
+            interval: Continuous (API / event)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Complaint & RWE Marts
+        icon: fed
+        summary: Historical complaint, clinical and real-world evidence marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Complaint & Real-World Evidence Warehouse
+        what_it_is: Historical complaint, clinical and real-world evidence marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
+        who_uses_it: Clinical Affairs, Post-market surveillance and Health economics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: openFDA APIs
+        icon: api
+        summary: Device classification, recall and adverse-event data ingested from the FDA open data APIs for benchmarking.
+        citations:
+          - openfda
+        category: Public Device Data API (openFDA)
+        what_it_is: Device classification, recall and adverse-event data ingested from the FDA open data APIs for benchmarking and signal context.
+        who_uses_it: Post-market surveillance, Regulatory affairs and Quality DS.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs (API extracts)
+            interval: Weekly / on-demand pulls
+      - name: EU EUDAMED
+        icon: gavel
+        summary: European device registration, UDI and vigilance data exchanged with the EUDAMED database under EU MDR.
+        citations:
+          - eudamed
+        category: EU Device Registration & Vigilance (EUDAMED)
+        what_it_is: European device registration, UDI and vigilance data exchanged with the EUDAMED database under EU MDR.
+        who_uses_it: Regulatory affairs, Compliance & audit and Post-market surveillance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs (registration + vigilance)
+            interval: On registration + periodic sync
+      - name: Device Events
+        icon: stream
+        summary: MQTT and Kafka topics carrying connected-device telemetry, alarms and MES events, landed as structured events.
+        category: Device Event Stream (MQTT/Kafka)
+        what_it_is: MQTT and Kafka topics carrying connected-device telemetry, alarms and MES events, landed as structured events for real-time monitoring.
+        who_uses_it: Telemetry Eng, Field service and Line quality.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at fleet scale
+            interval: Continuous (MQTT / Kafka)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: R&D & Engineering
+        mark: AI/BI
+        summary: Design and systems engineering on product architecture and requirements in the design history file, verification and validation against design inputs, and reliability engineering turning field returns into design changes.
+        uses:
+          - - AI/BI
+            - Design-verification coverage and field reliability on certified Metric Views.
+          - - MLflow
+            - Reliability and failure-mode models tracked for design reviews and audit.
+          - - Unity Catalog
+            - Requirements, design history and change control governed with lineage across the estate.
+        sub:
+          - name: Design & systems eng
+            cares: product architecture and requirements in the DHF.
+          - name: Verification & validation
+            cares: test evidence against design inputs and requirements.
+          - name: Reliability engineering
+            cares: failure modes and field returns feeding design changes.
+        ucs:
+          - Design & Reliability
+          - Predictive Servicing
+          - Complaint & CAPA
+      - name: Quality & Reg
+        mark: Genie One
+        summary: The head of quality on complaint and CAPA backlog and audit readiness; regulatory affairs on submissions, UDI registration and MDR timeliness; compliance and audit on QSR, ISO 13485 and recall exposure.
+        uses:
+          - - Genie One
+            - Ask which lots and products drive this quarter's complaints without an analyst pull.
+          - - AI/BI
+            - Complaint rate, CAPA cycle time and submission status on one certified set of Metric Views.
+          - - Unity Catalog
+            - Audit trails and lineage supporting 21 CFR Part 11 and ISO 13485.
+        sub:
+          - name: Head of quality
+            cares: complaint and CAPA backlog and audit readiness.
+          - name: Regulatory affairs
+            cares: submissions, UDI registration and MDR timeliness.
+          - name: Compliance & audit
+            cares: QSR, ISO 13485 and recall exposure.
+        ucs:
+          - Complaint & CAPA
+          - Post-Market Vigilance
+          - Regulatory Submissions
+          - Traceability & Recall
+      - name: Manufacturing Ops
+        mark: Lakehouse//RT
+        summary: Process and plant engineering on first-pass yield, OEE and process capability, line quality on nonconformance and disposition, and supply chain on component availability and supplier quality.
+        uses:
+          - - Yield & OEE Cockpit
+            - Line yield and downtime flagged before a lot is at risk.
+          - - Lakehouse//RT
+            - Live MES and equipment state at the latency a line moves at.
+          - - Model Serving
+            - Defect and yield models scored against in-line inspection.
+        sub:
+          - name: Process & plant eng
+            cares: first-pass yield, OEE and process capability.
+          - name: Line quality
+            cares: nonconformance, disposition and SPC at the line.
+          - name: Supply chain
+            cares: component availability and supplier quality.
+        ucs:
+          - MES Yield & Quality
+          - Supply Chain Risk
+          - Traceability & Recall
+      - name: Commercial & Svc
+        mark: AI/BI
+        summary: Sales and marketing on territory attainment and device utilisation, the field service organisation on installed-base uptime and service contracts, and customer success on onboarding and consumable replenishment.
+        uses:
+          - - AI/BI
+            - Territory attainment, device utilisation and service SLAs on certified views.
+          - - Model Serving
+            - Service and churn models scored in the dispatch and account path.
+          - - Genie One
+            - Ask which accounts are below utilisation target this quarter.
+        sub:
+          - name: Sales & marketing
+            cares: territory attainment and device utilisation.
+          - name: Field service
+            cares: installed-base uptime and service contracts.
+          - name: Customer success
+            cares: onboarding and consumable replenishment.
+        ucs:
+          - Sales & Territory
+          - Predictive Servicing
+          - Supply Chain Risk
+      - name: Clinical Affairs
+        mark: Model Serving
+        summary: Medical affairs on real-world evidence and clinical value, post-market surveillance on complaint and adverse-event signal, and health economics on outcomes and value evidence.
+        uses:
+          - - Model Serving
+            - Safety-signal and outcome models scored across complaint, RWD and registry data.
+          - - AI Functions
+            - Adverse-event narratives and literature classified at scale from unstructured text.
+          - - AI/BI
+            - Signal trends and real-world outcomes on governed, certified views.
+        sub:
+          - name: Medical affairs
+            cares: real-world evidence and clinical value.
+          - name: Post-market surveillance
+            cares: complaint and adverse-event signal.
+          - name: Health economics
+            cares: outcomes and value evidence.
+        ucs:
+          - Post-Market Vigilance
+          - Real-World Evidence
+          - Complaint & CAPA
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Telemetry Eng
+        mark: Lakeflow
+        summary: Land connected-device and IoMT telemetry over MQTT and Kafka, complaint intake and MES events; own the Bronze to Silver path and the pager when the device-fleet tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for QMS, PLM, ERP and MES sources.
+          - - Auto Loader
+            - Device event and log files landed incrementally into Bronze.
+          - - Lakewatch
+            - Freshness on the fleet and complaint tables quality reads each morning.
+      - name: Quality DS
+        mark: MLflow
+        summary: Complaint text classification, adverse-event coding, anomaly detection on process and telemetry, and reliability models, and whether they still hold as products and processes change.
+        uses:
+          - - Feature Store
+            - Device, lot and complaint features read identically in training and serving.
+          - - MLflow
+            - Every classifier and reliability model tracked for audit and reproduction.
+          - - Model Serving
+            - Complaint triage and anomaly models scored in the quality path.
+      - name: Application Engineers
+        mark: Apps
+        summary: Ship the CAPA Command Center, Device Fleet Monitor and Submission Workbench apps quality and service teams work in, hosted next to governed device data.
+        uses:
+          - - Apps
+            - Device-connectivity and complaint-handling screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for CAPA state and disposition writes.
+          - - Agent Bricks
+            - Agents that draft complaint summaries against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and quality dashboards against serverless SQL with Unity Catalog permissions.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for complaint and yield answers in the channel quality already works in.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Engineering and data-science notebooks against governed device and quality data.
+  - name: Providers & Partners
+    icon: partner
+    tiles:
+      - name: Provider FHIR Exchange
+        icon: api
+        summary: Device and outcome data exchanged with hospital systems over HL7 FHIR.
+        citations:
+          - fhir
+      - name: Distributor Portals
+        icon: globe
+        summary: Inventory, UDI and field-action status shared to distributors and GPOs.
+      - name: Contract Mfg Sharing
+        icon: share
+        summary: CMOs and suppliers reading live quality and demand tables over Delta Sharing.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: QMS CAPA Writeback
+        icon: gavel
+        summary: CAPAs and dispositions written back into the QMS so the action reaches the system quality works in.
+        citations:
+          - mastercontrol
+      - name: MES Disposition
+        icon: compute
+        summary: Lot hold, release and rework decisions written back to the MES at the line.
+        citations:
+          - opcenter
+      - name: Field Service Orders
+        icon: orch
+        summary: Predicted service dispatch raised in the field-service system against the installed base.
+        citations:
+          - servicemax
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: FDA UDI & MDR Filing
+        icon: gavel
+        summary: UDI records and MDR reports filed to GUDID and MAUDE from governed device tables.
+        citations:
+          - gudid
+      - name: EU MDR / EUDAMED
+        icon: share
+        summary: Registration and vigilance reporting filed to EUDAMED under EU MDR from certified Gold.
+        citations:
+          - eudamed
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted device and quality products discoverable in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Suppliers, CMOs and registries reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: CAPA Command Center
+        icon: gavel
+        short: Complaint & CAPA
+        summary: Complaints, nonconformances and CAPAs triaged by risk with root-cause evidence assembled from QMS, MES and complaint text, on Databricks Apps over Lakebase.
+      - name: Device Fleet Monitor
+        icon: iot
+        short: Connected-device health
+        summary: Installed-base telemetry by device and site, flagging units trending to failure so service is dispatched before a field event.
+      - name: Yield & OEE Cockpit
+        icon: gauge
+        short: Line performance
+        summary: Live first-pass yield, downtime and SPC against the shift target, flagging lots and lines at risk before disposition.
+      - name: Submission Workbench
+        icon: docs
+        short: Regulatory & UDI
+        summary: Where regulatory affairs assembles UDI, 510(k) and MDR submissions from governed device, design-history and complaint tables.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Complaint & CAPA
+        icon: aibi
+        summary: Complaint and MDR rates, CAPA cycle time and backlog on certified Metric Views.
+        kpis:
+          - Complaint rate
+          - MDR rate
+          - CAPA cycle time
+          - CAPA backlog
+          - Repeat complaints
+        teams:
+          - Quality & Reg
+          - Clinical Affairs
+          - Head of quality
+      - name: Manufacturing Yield & OEE
+        icon: aibi
+        summary: First-pass yield, OEE and nonconformance across the lines.
+        kpis:
+          - First-pass yield
+          - OEE
+          - Scrap rate
+          - Nonconformance rate
+          - Line downtime
+        teams:
+          - Manufacturing Ops
+          - Quality & Reg
+          - Process & plant eng
+      - name: Field Service & Reliability
+        icon: aibi
+        summary: Installed-base uptime, reliability and service SLAs across the fleet.
+        kpis:
+          - Installed-base uptime
+          - MTBF
+          - Unplanned service calls
+          - SLA attainment
+          - Device utilisation
+        teams:
+          - Commercial & Svc
+          - R&D & Engineering
+          - Field service
+      - name: Regulatory & Vigilance
+        icon: aibi
+        summary: Submission status, UDI coverage and MDR timeliness across regions.
+        kpis:
+          - Submission status
+          - UDI registration coverage
+          - MDR timeliness
+          - Recall exposure
+          - Signal count
+        teams:
+          - Quality & Reg
+          - Clinical Affairs
+          - Regulatory affairs
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Complaints & CAPA Agent
+        icon: genie
+        summary: Ask which products and lots drive complaints and where CAPA is aging, in plain language.
+        feeds:
+          - TrackWise Digital
+          - MasterControl QMS
+          - FDA MAUDE Events
+          - Yield, complaint rate, CAPA
+        teams:
+          - Quality & Reg
+          - Head of quality
+          - Compliance & audit
+        questions:
+          - Which products and lots drive this quarter's complaints?
+          - What is the complaint and MDR rate by device family?
+          - Which CAPAs are open past their target closure date?
+          - Where are complaints repeating across sites and products?
+          - How does our complaint rate compare to MAUDE peers?
+      - name: Manufacturing Yield & Quality Agent
+        icon: genie
+        summary: Explore first-pass yield, OEE and nonconformance across the lines.
+        feeds:
+          - Siemens Opcenter MES
+          - AVEVA PI Historian
+          - LabWare LIMS
+          - Conformed device, lot, complaint
+        teams:
+          - Manufacturing Ops
+          - Process & plant eng
+          - Line quality
+        questions:
+          - What is first-pass yield by line and product this week?
+          - Which lines have the most downtime and why?
+          - Where is process capability drifting toward a limit?
+          - Which lots are held by out-of-spec LIMS results?
+          - What is the nonconformance rate by station?
+      - name: Connected Device Fleet Agent
+        icon: genie
+        summary: Answer uptime, utilisation and service questions across the installed base.
+        feeds:
+          - Device Telemetry
+          - ServiceMax
+          - HL7 FHIR Feeds
+          - Conformed device, lot, complaint
+        teams:
+          - Commercial & Svc
+          - Field service
+          - Telemetry Eng
+        questions:
+          - Which units are trending toward a field failure?
+          - What is installed-base uptime by device and site?
+          - Which accounts are below device-utilisation target?
+          - How many service calls were unplanned this month?
+          - Which consumables need replenishment across the fleet?
+      - name: Post-Market & RWE Agent
+        icon: genie
+        summary: Ask about emerging safety signals and real-world outcomes across complaints and telemetry.
+        feeds:
+          - FDA MAUDE Events
+          - Complaint & RWE Marts
+          - Device Telemetry
+          - Yield, complaint rate, CAPA
+        teams:
+          - Clinical Affairs
+          - Post-market surveillance
+          - Medical affairs
+        questions:
+          - Which device families show an emerging safety signal?
+          - What is the real-world failure rate versus the label?
+          - Which complaints correlate with telemetry anomalies?
+          - How is device performance trending by indication?
+          - Which signals are approaching a reportable threshold?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Complaint & CAPA
+        short: Quality
+        icon: gavel
+        summary: Complaints, nonconformances and MDR events triaged by severity and probable cause, with CAPA opened and tracked to closure.
+        problem: Complaints, nonconformances and MDR events sit in separate systems, so severity is judged inconsistently, root cause is reconstructed by hand and CAPA backlog ages toward the next audit.
+        who_benefits: Quality & Reg
+        how_built: Complaint intake, MES nonconformances and adverse-event feeds land in the lakehouse; text models triage severity and probable cause in Model Serving and open CAPAs from the CAPA Command Center on Lakebase.
+        components:
+          - CAPA Command Center
+          - TrackWise Digital
+          - MasterControl QMS
+          - Model Serving
+          - AI Functions
+          - Lakebase
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Post-Market Vigilance
+        short: Safety
+        icon: ztarget
+        summary: Emerging safety signal detected across complaints, adverse events and device telemetry before field exposure grows.
+        problem: Safety signal hides across complaints, adverse events, registries and device telemetry; by the time a trend clears a manual review the field exposure has already grown.
+        who_benefits: Clinical Affairs
+        how_built: Complaint, adverse-event and telemetry feeds are conformed to Gold; signal-detection models score emerging trends in Model Serving and surface them to surveillance before they become recalls.
+        components:
+          - FDA MAUDE Events
+          - Device Telemetry
+          - Model Serving
+          - AI/BI
+          - Complaint & RWE Marts
+        stories:
+          - title: Real-World Evidence Solution Accelerator
+            url: https://www.databricks.com/solutions/accelerators/real-world-evidence
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Predictive Servicing
+        short: Field service
+        icon: iot
+        summary: Connected devices scored on telemetry so service is dispatched before an unplanned failure in the field.
+        problem: Connected devices in the field fail between planned visits, and without telemetry the first signal is an unplanned service call or a complaint, not a prediction.
+        who_benefits: Commercial & Svc
+        how_built: IoMT telemetry streams into Lakehouse//RT; remaining-useful-life models score each unit in Model Serving and dispatch is raised in ServiceMax from the Device Fleet Monitor.
+        components:
+          - Device Fleet Monitor
+          - Device Telemetry
+          - Lakehouse//RT
+          - Model Serving
+          - ServiceMax
+          - MLflow
+        stories:
+          - title: 'Insulet: connected Omnipod device analytics on Databricks'
+            url: https://www.databricks.com/customers/insulet/lakeflow-connect
+          - title: GE Healthcare builds device and patient views on Databricks
+            url: https://www.databricks.com/company/newsroom/press-releases/databricks-introduces-lakehouse-for-the-healthcare-and-life-sciences-industries-to-drive-transformation-across-healthcare-ecosystem
+      - name: MES Yield & Quality
+        short: Manufacturing
+        icon: gauge
+        summary: First-pass yield and scrap attacked at the line with in-line defect scoring rather than at final inspection.
+        problem: First-pass yield and scrap are reviewed after the lot, so a drifting process is caught at final inspection or in the field instead of at the line.
+        who_benefits: Manufacturing Ops
+        how_built: MES, historian and inspection data are conformed to certified Metric Views; defect and yield models score in-line in Model Serving and the Yield & OEE Cockpit flags lots at risk before disposition.
+        components:
+          - Yield & OEE Cockpit
+          - Siemens Opcenter MES
+          - AVEVA PI Historian
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Insulet cuts manufacturing data latency on Databricks
+            url: https://www.databricks.com/customers/insulet/lakeflow-connect
+      - name: Supply Chain Risk
+        short: Supply chain
+        icon: network
+        summary: Supplier and component exposure scored so shortages and bad lots are moved before they stop a build or reach a device.
+        problem: Single-source components and opaque supplier quality mean a shortage or a bad lot is discovered at the line, after it has already stopped a build or reached a device.
+        who_benefits: Manufacturing Ops
+        how_built: ERP, supplier and MES feeds are joined in the lakehouse; risk models score supplier and component exposure so buffers and qualifications are moved before a shortage or nonconformance lands.
+        components:
+          - SAP S/4HANA
+          - Genie
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+        stories:
+          - title: Integra Life Sciences gains a global supply and demand view
+            url: https://www.databricks.com/customers/integra-life-sciences
+      - name: Regulatory Submissions
+        short: Regulatory
+        icon: docs
+        summary: UDI, 510(k) and MDR submissions assembled from governed device, design-history and complaint tables with lineage.
+        problem: UDI, 510(k) and MDR submissions are assembled by hand from PLM, QMS and complaint systems, so filing is slow and every regulator's format is a fresh manual export.
+        who_benefits: Quality & Reg
+        how_built: Device, design-history and complaint tables are governed under Unity Catalog; the Submission Workbench assembles UDI/GUDID and MDR packages with lineage from the same certified data.
+        components:
+          - Submission Workbench
+          - FDA GUDID / UDI
+          - EU EUDAMED
+          - Unity Catalog
+          - AI Functions
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Sales & Territory
+        short: Commercial
+        icon: market
+        summary: Territory attainment and consumable forecasting grounded in how the installed base is actually used, not just orders.
+        problem: Sales sees orders but not device utilisation, so territory calls and consumable forecasts are made blind to how the installed base is actually used.
+        who_benefits: Commercial & Svc
+        how_built: CRM, order and device-utilisation data are conformed to Gold; attainment and utilisation are read in AI/BI and Genie on the definitions the commercial team already reports.
+        components:
+          - Salesforce
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+      - name: Real-World Evidence
+        short: Clinical
+        icon: chart
+        summary: Real-world device performance assembled from registries, claims and telemetry for indications, value and safety.
+        problem: Device performance in the real world lives in registries, claims and telemetry that never meet, so evidence for indications, value and safety takes months to assemble.
+        who_benefits: Clinical Affairs
+        how_built: Real-world data from registries, claims and device telemetry is conformed on the lakehouse using the RWE accelerator; outcome and comparative-effectiveness models run in Model Serving.
+        components:
+          - HL7 FHIR Feeds
+          - Complaint & RWE Marts
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Real-World Evidence Solution Accelerator
+            url: https://www.databricks.com/solutions/accelerators/real-world-evidence
+          - title: Integra Life Sciences unifies data for patient care
+            url: https://www.databricks.com/customers/integra-life-sciences
+      - name: Traceability & Recall
+        short: Traceability
+        icon: share
+        summary: Device history and lot genealogy stitched so a recall is scoped from component to patient in minutes.
+        problem: When a lot is suspect, tracing every affected device from component to patient and scoping the recall is a manual genealogy hunt across MES, PLM and distribution.
+        who_benefits: Quality & Reg
+        how_built: Device history and lot genealogy are stitched in Silver from MES, PLM and distribution; a recall query scopes affected units in minutes and writes disposition back to the QMS.
+        components:
+          - Siemens Opcenter MES
+          - PTC Windchill
+          - MasterControl QMS
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Design & Reliability
+        short: Engineering
+        icon: dev
+        summary: Field returns, complaints and telemetry joined to requirements so reliability lessons reach design reviews directly.
+        problem: Field returns and complaints carry the design lessons, but they reach engineering as quarterly summaries, long after the next design freeze has passed.
+        who_benefits: R&D & Engineering
+        how_built: Complaint, return and telemetry signal is joined to requirements and design history in the lakehouse; failure-mode and reliability models in MLflow feed design reviews directly.
+        components:
+          - PTC Windchill
+          - Jama Connect
+          - Device Telemetry
+          - MLflow
+          - Model Serving
+          - Feature Store
+        stories:
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Insulet guides product updates with live device data
+            url: https://www.databricks.com/customers/insulet/lakeflow-connect
+medallion:
+  Bronze:
+    short: Raw device and quality feeds
+    summary: Complaint intake and MDR events, MES lot and process records, PLM change orders, LIMS results and connected-device telemetry, landed exactly as received so a complaint or a batch record can be replayed as it stood.
+  Silver:
+    short: Conformed device, lot, complaint
+    summary: Devices, lots, components and complaints resolved into single conformed entities across PLM, MES, QMS and field systems, with UDI-DI reconciled and device history stitched from component to finished good.
+  Gold:
+    short: Yield, complaint rate, CAPA
+    summary: 'Contracted products the quality and operations teams run on: first-pass yield and OEE by line, complaint and MDR rates by product and lot, CAPA cycle time, and field reliability by device family.'
+citation_index:
+  windchill:
+    title: PTC Windchill PLM
+    url: https://www.ptc.com/en/products/windchill
+  teamcenter:
+    title: Siemens Teamcenter PLM
+    url: https://plm.sw.siemens.com/en-US/teamcenter/
+  jama:
+    title: Jama Connect
+    url: https://www.jamasoftware.com/platform/jama-connect/
+  mastercontrol:
+    title: MasterControl QMS
+    url: https://www.mastercontrol.com/
+  veeva:
+    title: Veeva Vault Quality
+    url: https://www.veeva.com/products/vault-quality/
+  trackwise:
+    title: TrackWise Digital QMS
+    url: https://www.trackwise.com/
+  etq:
+    title: ETQ Reliance
+    url: https://www.etq.com/
+  opcenter:
+    title: Siemens Opcenter Execution MES
+    url: https://plm.sw.siemens.com/en-US/opcenter/
+  plex:
+    title: Rockwell Plex MES
+    url: https://www.plex.com/products/manufacturing-execution-system
+  tulip:
+    title: Tulip Frontline Operations
+    url: https://tulip.co/
+  avevapi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/aveva-pi-system/
+  sap:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  servicemax:
+    title: ServiceMax field service
+    url: https://www.servicemax.com/
+  salesforce:
+    title: Salesforce Health Cloud
+    url: https://www.salesforce.com/products/health-cloud/overview/
+  labware:
+    title: LabWare LIMS
+    url: https://www.labware.com/
+  gudid:
+    title: FDA GUDID (UDI database)
+    url: https://www.fda.gov/medical-devices/unique-device-identification-system-udi-system/global-unique-device-identification-database-gudid
+  maude:
+    title: FDA MAUDE adverse events
+    url: https://www.fda.gov/medical-devices/mandatory-reporting-requirements-manufacturers-importers-and-device-user-facilities/manufacturer-and-user-facility-device-experience-database-maude
+  fhir:
+    title: HL7 FHIR
+    url: https://www.hl7.org/fhir/
+  openfda:
+    title: openFDA device APIs
+    url: https://open.fda.gov/apis/device/
+  eudamed:
+    title: EU EUDAMED (EU MDR)
+    url: https://health.ec.europa.eu/medical-devices-eudamed_en

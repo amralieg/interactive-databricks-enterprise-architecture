@@ -1,176 +1,118 @@
 #!/usr/bin/env python3
-"""Emit INDUSTRIES entries from tools/industries/batch*.py into app/index.html."""
+"""Emit per-industry architecture modules from tools/industries/batch*.py.
+
+Since the data-modularisation split, index.html ships only the reference board;
+every industry lives in app/architectures/<id>.yaml (a readable descriptor) and is
+fetched on demand. This tool regenerates those YAML modules from the batch
+authoring files (the source of truth for the 62 generated industries). `airlines`
+is hand-authored and lives only as app/architectures/airlines.yaml, so it is not
+emitted here.
+
+The field selection mirrors what the runtime consumes: only the keys below are
+built, so an incidental authoring field never leaks into a shipped module. The
+same swap_layout() the board relied on (Genie Agents lead the top band; apps drop
+to the Consumers rail) is applied before emit. The terse dict is then converted to
+the readable YAML descriptor by tools/terse_to_yaml.js, so the terse<->readable
+schema lives in exactly one place (app/arch_schema.js) and never forks into Python.
+
+Usage:
+  inject_industries.py            # (re)write app/architectures/<id>.yaml
+  inject_industries.py --check    # compare against existing files, write nothing
+"""
 import importlib.util
+import json
 import pathlib
-import re
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-APP = ROOT / "app" / "index.html"
+ARCH_DIR = ROOT / "app" / "architectures"
 BATCH_DIR = ROOT / "tools" / "industries"
 
-BEGIN = "  airlines: {"
-END = "\n};\n\n/* Which industry is showing."
+
+# ---- dict builders (mirror the runtime-consumed shape, dropping absent keys) ----
+def build_flow(f: dict) -> dict:
+    return {"types": list(f.get("types", [])), "vol": f.get("vol", ""), "interval": f.get("interval", "")}
 
 
-def js_str(s: str) -> str:
-    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n") + '"'
-
-
-def js_arr(items) -> str:
-    return "[" + ", ".join(js_str(x) for x in items) + "]"
-
-
-def js_flow(f: dict) -> str:
-    return "{ types:%s, vol:%s, interval:%s }" % (
-        js_arr(f.get("types", [])), js_str(f.get("vol", "")), js_str(f.get("interval", "")))
-
-
-def js_data_out(do: dict) -> str:
-    lanes = []
+def build_data_out(do: dict) -> dict:
+    out = {}
     if do.get("batch"):
-        lanes.append("batch:" + js_flow(do["batch"]))
+        out["batch"] = build_flow(do["batch"])
     if do.get("stream"):
-        lanes.append("stream:" + js_flow(do["stream"]))
-    return "{ " + ", ".join(lanes) + " }"
+        out["stream"] = build_flow(do["stream"])
+    return out
 
 
-def emit_tile(tile: dict, indent: str, ppl: bool = False) -> str:
-    parts = [f'n:{js_str(tile["n"])}']
+def build_tile(tile: dict, ppl: bool = False) -> dict:
+    t = {"n": tile["n"]}
     if not ppl and tile.get("ic"):
-        parts.append(f'ic:{js_str(tile["ic"])}')
-    if tile.get("s"):
-        parts.append(f's:{js_str(tile["s"])}')
-    if tile.get("mark"):
-        parts.append(f'mark:{js_str(tile["mark"])}')
-    if tile.get("long"):
-        parts.append(f'long:{js_str(tile["long"])}')
+        t["ic"] = tile["ic"]
+    for k in ("s", "mark", "long"):
+        if tile.get(k):
+            t[k] = tile[k]
     if tile.get("cite"):
-        cites = ", ".join(js_str(c) for c in tile["cite"])
-        parts.append(f'cite:[{cites}]')
-    if tile.get("cat"):
-        parts.append(f'cat:{js_str(tile["cat"])}')
-    if tile.get("what"):
-        parts.append(f'what:{js_str(tile["what"])}')
-    if tile.get("users"):
-        parts.append(f'users:{js_str(tile["users"])}')
+        t["cite"] = list(tile["cite"])
+    for k in ("cat", "what", "users"):
+        if tile.get(k):
+            t[k] = tile[k]
     if tile.get("dataOut"):
-        parts.append(f'dataOut:{js_data_out(tile["dataOut"])}')
-    if tile.get("feeds"):
-        parts.append(f'feeds:{js_arr(tile["feeds"])}')
-    if tile.get("kpis"):
-        parts.append(f'kpis:{js_arr(tile["kpis"])}')
-    if tile.get("teams"):
-        parts.append(f'teams:{js_arr(tile["teams"])}')
-    if tile.get("questions"):
-        parts.append(f'questions:{js_arr(tile["questions"])}')
+        t["dataOut"] = build_data_out(tile["dataOut"])
+    for k in ("feeds", "kpis", "teams", "questions"):
+        if tile.get(k):
+            t[k] = list(tile[k])
     if tile.get("uses"):
-        uses = ", ".join(f'[{js_str(u[0])}, {js_str(u[1])}]' for u in tile["uses"])
-        parts.append(f'uses:[{uses}]')
-    if tile.get("caps"):
-        caps = ", ".join(js_str(c) for c in tile["caps"])
-        parts.append(f'caps:[{caps}]')
-    if tile.get("rel"):
-        rel = ", ".join(js_str(r) for r in tile["rel"])
-        parts.append(f'rel:[{rel}]')
+        t["uses"] = [[u[0], u[1]] for u in tile["uses"]]
+    for k in ("caps", "rel"):
+        if tile.get(k):
+            t[k] = list(tile[k])
     if tile.get("sub"):
-        sub = ", ".join(
-            "{ n:%s, cares:%s }" % (js_str(p["n"]), js_str(p["cares"]))
-            for p in tile["sub"]
-        )
-        parts.append(f'sub:[{sub}]')
+        t["sub"] = [{"n": p["n"], "cares": p["cares"]} for p in tile["sub"]]
     if tile.get("ucs"):
-        ucs = ", ".join(js_str(u) for u in tile["ucs"])
-        parts.append(f'ucs:[{ucs}]')
-    inner = ", ".join(parts)
-    return f"{indent}{{ {inner} }}"
+        t["ucs"] = list(tile["ucs"])
+    return t
 
 
-def emit_group(g: dict, indent: str, rail_id: str = "") -> str:
+def build_group(g: dict, rail_id: str = "") -> dict:
     ppl = rail_id == "ppl"
-    head = f'{{ box:{js_str(g["box"])}, ic:{js_str(g["ic"])}'
+    grp = {"box": g["box"], "ic": g["ic"]}
     if g.get("from"):
-        head += f', from:{js_str(g["from"])}'
+        grp["from"] = g["from"]
     if g.get("tail"):
-        head += ", tail:true"
-    tiles = g.get("tiles", [])
-    tile_js = ",\n".join(emit_tile(t, indent + "    ", ppl=ppl) for t in tiles)
-    return f"{indent}{head}, tiles:[\n{tile_js}\n{indent}] }}"
+        grp["tail"] = True
+    grp["tiles"] = [build_tile(t, ppl=ppl) for t in g.get("tiles", [])]
+    return grp
 
 
-def emit_rails(rails: dict) -> str:
-    lines = ["    rails:{"]
-    for rid in ("src", "ing", "ppl", "cons"):
-        groups = rails[rid]
-        lines.append(f"      {rid}:[")
-        for gi, g in enumerate(groups):
-            lines.append(emit_group(g, "        ", rid) + ("," if gi < len(groups) - 1 else ""))
-        lines.append("      ],")
-    lines[-1] = lines[-1].rstrip(",")
-    lines.append("    },")
-    return "\n".join(lines)
+def build_rails(rails: dict) -> dict:
+    return {rid: [build_group(g, rid) for g in rails[rid]] for rid in ("src", "ing", "ppl", "cons")}
 
 
-def emit_top_tile(t: dict) -> str:
-    # Field-driven so the top band can carry both app tiles (n/s/ic/long) and the
-    # Genie Agent tiles moved up from the Consumers rail, which instead carry
-    # feeds/teams/questions and no subtitle. Absent keys emit nothing.
-    parts = [f'n:{js_str(t["n"])}']
-    if t.get("s"):
-        parts.append(f's:{js_str(t["s"])}')
-    if t.get("ic"):
-        parts.append(f'ic:{js_str(t["ic"])}')
-    if t.get("long"):
-        parts.append(f'long:{js_str(t["long"])}')
-    if t.get("problem"):
-        parts.append(f'problem:{js_str(t["problem"])}')
-    if t.get("who"):
-        parts.append(f'who:{js_str(t["who"])}')
-    if t.get("how"):
-        parts.append(f'how:{js_str(t["how"])}')
+def build_top_tile(t: dict) -> dict:
+    o = {"n": t["n"]}
+    for k in ("s", "ic", "long", "problem", "who", "how"):
+        if t.get(k):
+            o[k] = t[k]
     if t.get("comps"):
-        comps = ", ".join(js_str(c) for c in t["comps"])
-        parts.append(f'comps:[{comps}]')
-    if t.get("feeds"):
-        parts.append(f'feeds:{js_arr(t["feeds"])}')
-    if t.get("teams"):
-        parts.append(f'teams:{js_arr(t["teams"])}')
-    if t.get("questions"):
-        parts.append(f'questions:{js_arr(t["questions"])}')
+        o["comps"] = list(t["comps"])
+    for k in ("feeds", "teams", "questions"):
+        if t.get(k):
+            o[k] = list(t[k])
     if t.get("stories"):
-        st = ", ".join(
-            "{ t:%s, u:%s }" % (js_str(s["t"]), js_str(s["u"])) for s in t["stories"]
-        )
-        parts.append(f'stories:[{st}]')
-    return "{ " + ", ".join(parts) + " }"
+        o["stories"] = [{"t": s["t"], "u": s["u"]} for s in t["stories"]]
+    return o
 
 
-def emit_top(top: list) -> str:
-    lines = ["    top:["]
-    for si, sec in enumerate(top):
-        lines.append(
-            f'      {{ title:{js_str(sec["title"])}, ic:{js_str(sec["ic"])}, '
-            f'span:{sec["span"]}, cols:{sec["cols"]}, tiles:['
-        )
-        for ti, t in enumerate(sec["tiles"]):
-            comma = "," if ti < len(sec["tiles"]) - 1 else ""
-            lines.append("        " + emit_top_tile(t) + comma)
-        lines.append("      ]}," if si == 0 else "      ]}")
-    lines.append("    ],")
-    return "\n".join(lines)
+def build_top(top: list) -> list:
+    return [
+        {"title": sec["title"], "ic": sec["ic"], "span": sec["span"], "cols": sec["cols"],
+         "tiles": [build_top_tile(t) for t in sec["tiles"]]}
+        for sec in top
+    ]
 
 
-def emit_sources(sources: dict) -> str:
-    lines = ["    sources:{"]
-    keys = list(sources.keys())
-    for i, k in enumerate(keys):
-        v = sources[k]
-        comma = "," if i < len(keys) - 1 else ""
-        lines.append(
-            f'      {js_str(k)}:{{ t:{js_str(v["t"])}, u:{js_str(v["u"])} }}{comma}'
-        )
-    lines.append("    },")
-    return "\n".join(lines)
+def build_sources(sources: dict) -> dict:
+    return {k: {"t": v["t"], "u": v["u"]} for k, v in sources.items()}
 
 
 def swap_layout(ind: dict) -> None:
@@ -180,7 +122,7 @@ def swap_layout(ind: dict) -> None:
     genie_spaces=) and app tiles into the top band (via top_band). The board
     renders the opposite: Genie Agents lead the top band beside Business Use
     Cases, and the apps drop to the Consumers rail where Genie used to sit. Doing
-    the swap here keeps all 63 batch files untouched and the mapping in one place.
+    the swap here keeps all batch files untouched and the mapping in one place.
     Every Genie tile's name is suffixed with "Agent".
     """
     cons = ind["rails"]["cons"]
@@ -209,25 +151,35 @@ def swap_layout(ind: dict) -> None:
     cons.insert(gi, {"box": "Databricks Apps", "ic": "apps", "tiles": apps_sec.get("tiles", [])})
 
 
-def emit_industry(iid: str, ind: dict) -> str:
+def render_industry(ind: dict) -> dict:
     swap_layout(ind)
-    lines = [
-        f"  {iid}: {{",
-        f'    label:{js_str(ind["label"])},',
-        f'    blurb:{js_str(ind["blurb"])},',
-        "    medallion:{",
-    ]
-    for stage in ("Bronze", "Silver", "Gold"):
-        m = ind["medallion"][stage]
-        lines.append(
-            f'      {stage}:{{ s:{js_str(m["s"])}, long:{js_str(m["long"])} }},'
-        )
-    lines.append("    },")
-    lines.append(emit_rails(ind["rails"]))
-    lines.append(emit_top(ind["top"]))
-    lines.append(emit_sources(ind["sources"]).rstrip(","))
-    lines.append("  },")
-    return "\n".join(lines)
+    med = ind["medallion"]
+    return {
+        "label": ind["label"],
+        "blurb": ind["blurb"],
+        "medallion": {stage: {"s": med[stage]["s"], "long": med[stage]["long"]}
+                      for stage in ("Bronze", "Silver", "Gold")},
+        "rails": build_rails(ind["rails"]),
+        "top": build_top(ind["top"]),
+        "sources": build_sources(ind["sources"]),
+    }
+
+
+BRIDGE = ROOT / "tools" / "terse_to_yaml.js"
+
+
+def terse_to_yaml(terse: dict) -> str:
+    """Readable YAML descriptor for a terse board, via the single JS transform."""
+    out = subprocess.run(["node", str(BRIDGE)], input=json.dumps(terse),
+                         capture_output=True, text=True, check=True)
+    return out.stdout
+
+
+def yaml_to_terse(fp: pathlib.Path) -> dict:
+    """Terse board rehydrated from an existing YAML descriptor, via the same JS transform."""
+    out = subprocess.run(["node", str(BRIDGE), "--terse", str(fp)],
+                         capture_output=True, text=True, check=True)
+    return json.loads(out.stdout)
 
 
 def load_batches():
@@ -243,31 +195,36 @@ def load_batches():
 
 
 def main():
-    text = APP.read_text(encoding="utf-8")
-    m_begin = text.find(BEGIN)
-    m_end = text.find(END)
-    if m_begin < 0 or m_end < 0:
-        sys.exit("Could not find INDUSTRIES block markers in app/index.html")
-
-    # airlines is the hand-authored reference and the only entry preserved
-    # verbatim. Everything between its closing brace and the object's closing
-    # `};` is regenerated from the batch files on every run, so re-injecting is
-    # idempotent instead of appending the batches again (which previously
-    # tripled the industry list and ballooned index.html to 21k lines).
-    a_close = text.find("\n  },\n", m_begin)
-    if a_close < 0 or a_close >= m_end:
-        sys.exit("Could not find end of the airlines reference block")
-    airlines_block = text[m_begin : a_close + len("\n  },")]
-
-    extra = load_batches()
-    if not extra:
-        print("No batch modules found yet.", file=sys.stderr)
+    check = "--check" in sys.argv
+    batches = load_batches()
+    if not batches:
+        print("No batch modules found.", file=sys.stderr)
         return 1
 
-    emitted = "\n".join(emit_industry(iid, ind) for iid, ind in sorted(extra.items()))
-    new_text = text[:m_begin] + airlines_block + "\n" + emitted + text[m_end:]
-    APP.write_text(new_text, encoding="utf-8")
-    print(f"Injected {len(extra)} industries into {APP}")
+    ARCH_DIR.mkdir(parents=True, exist_ok=True)
+    mismatches, written = [], 0
+    for iid, ind in sorted(batches.items()):
+        rendered = render_industry(ind)
+        fp = ARCH_DIR / f"{iid}.yaml"
+        if check:
+            # Compare on the terse structure, not the YAML text, so cosmetic
+            # formatting never causes a false mismatch: the descriptor is correct
+            # iff it rehydrates to the same board the batch source builds.
+            if not fp.exists():
+                mismatches.append(f"{iid} (missing file)")
+            elif yaml_to_terse(fp) != rendered:
+                mismatches.append(iid)
+        else:
+            fp.write_text(terse_to_yaml(rendered), encoding="utf-8")
+            written += 1
+
+    if check:
+        if mismatches:
+            print(f"MISMATCH ({len(mismatches)}): {', '.join(mismatches[:15])}", file=sys.stderr)
+            return 1
+        print(f"OK: {len(batches)} batch industries match app/architectures/*.yaml")
+        return 0
+    print(f"Wrote {written} industry modules to {ARCH_DIR}")
     return 0
 
 

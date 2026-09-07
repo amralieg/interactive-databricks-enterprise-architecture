@@ -1,0 +1,913 @@
+name: Media & Broadcasting
+description: 'Content production, rights and distribution: linear and streaming operations, ad sales and audience measurement across broadcasters and studios.'
+sources:
+  - name: Playout & MAM
+    icon: stream
+    tiles:
+      - name: Dalet Galaxy
+        icon: stream
+        summary: 'Newsroom, MAM and playout scheduling: rundowns, media assets and as-run logs from linear operations.'
+        citations:
+          - dalet
+        category: Media Asset Management (MAM) / Playout
+        what_it_is: 'Newsroom, MAM and playout scheduling: rundowns, media assets and as-run logs from linear operations.'
+        who_uses_it: Playout operations, News and Programming teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day as-run + metadata
+            interval: Hourly / per-run
+          stream:
+            types:
+              - semi-structured
+            volume: tens of playout events/sec
+            interval: Continuous
+      - name: Avid MediaCentral
+        icon: stream
+        summary: Edit decisions, proxy media and production metadata from craft editing and finishing.
+        citations:
+          - avid
+        category: Production Asset Management (PAM)
+        what_it_is: Edit decisions, proxy media and production metadata from craft editing and finishing.
+        who_uses_it: Production, Post and Craft editing teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: 0.5-3 GB/day metadata + proxies
+            interval: Daily
+      - name: Imagine Nexio
+        icon: iot
+        summary: Channel playout automation, primary and backup chain state and splice events.
+        citations:
+          - imagine
+        category: Playout Automation
+        what_it_is: Channel playout automation, primary and backup chain state and splice events.
+        who_uses_it: Broadcast operations and Master control.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of channel events/sec
+            interval: Continuous
+  - name: OTT & Streaming
+    icon: partner
+    tiles:
+      - name: Brightcove
+        icon: stream
+        summary: VOD and live streaming delivery, QoE metrics and viewer engagement by title.
+        citations:
+          - brightcove
+        category: Online Video Platform (OVP)
+        what_it_is: VOD and live streaming delivery, QoE metrics and viewer engagement by title.
+        who_uses_it: Streaming operations and Digital product teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k play events/sec
+            interval: Continuous
+      - name: Conviva Experience
+        icon: observ
+        summary: Startup time, rebuffering and device-level QoE for every stream session.
+        citations:
+          - conviva
+        category: Streaming QoE / Observability
+        what_it_is: Startup time, rebuffering and device-level QoE for every stream session.
+        who_uses_it: Streaming operations, CDN and Delivery teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k QoE events/sec
+            interval: Continuous
+      - name: Zuora Media
+        icon: market
+        summary: Subscription plans, renewals and billing events for direct-to-consumer offers.
+        citations:
+          - zuora
+        category: Subscription Billing
+        what_it_is: Subscription plans, renewals and billing events for direct-to-consumer offers.
+        who_uses_it: Direct-to-consumer, Retention and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: tens of billing events/sec
+            interval: Continuous CDC
+  - name: Ad Sales & Traffic
+    icon: market
+    tiles:
+      - name: WideOrbit WO Traffic
+        icon: market
+        summary: Inventory, orders and makegoods for linear ad sales and traffic.
+        citations:
+          - wideorbit
+        category: Ad Sales & Traffic (Linear)
+        what_it_is: Inventory, orders and makegoods for linear ad sales and traffic.
+        who_uses_it: Ad operations, Yield and Ad sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / nightly
+      - name: FreeWheel Ad Server
+        icon: stream
+        summary: Dynamic ad insertion, pod structure and impression delivery on streaming inventory.
+        citations:
+          - freewheel
+        category: Ad Server (Streaming / CTV)
+        what_it_is: Dynamic ad insertion, pod structure and impression delivery on streaming inventory.
+        who_uses_it: Ad operations and Yield teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k impressions/sec
+            interval: Continuous
+      - name: Operative One
+        icon: sheet
+        summary: Upfront deals, pacing and revenue recognition across linear and digital.
+        citations:
+          - operative
+        category: Ad Sales Order Management
+        what_it_is: Upfront deals, pacing and revenue recognition across linear and digital.
+        who_uses_it: Ad sales, Yield and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Daily
+  - name: Audience & Rights
+    icon: custlake
+    tiles:
+      - name: Nielsen One
+        icon: chart
+        summary: Cross-platform audience measurement and demographic ratings the sales team prices against.
+        citations:
+          - nielsen
+        category: Audience Measurement / Ratings
+        what_it_is: Cross-platform audience measurement and demographic ratings the sales team prices against.
+        who_uses_it: Research, Ad sales and Programming teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day panel + ratings
+            interval: Daily
+      - name: Comscore
+        icon: chart
+        summary: Digital audience panels and campaign validation for addressable and CTV.
+        citations:
+          - comscore
+        category: Digital Audience Measurement
+        what_it_is: Digital audience panels and campaign validation for addressable and CTV.
+        who_uses_it: Research and Ad sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Daily
+      - name: Rightsline
+        icon: gavel
+        summary: Title rights, windows and territory restrictions governing what can air where.
+        citations:
+          - rightsline
+        category: Rights & Royalties Management
+        what_it_is: Title rights, windows and territory restrictions governing what can air where.
+        who_uses_it: Legal, Rights and Programming teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.1-0.5 GB/day
+            interval: Daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Studio Cost Ledger
+        icon: fed
+        summary: Production accounting and amortisation marts queried in place under Unity Catalog for title P&L.
+        category: Production Finance Warehouse
+        what_it_is: Production accounting and amortisation marts kept in existing warehouses and queried in place through federation for title P&L.
+        who_uses_it: Finance, Production accounting and Content strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale cost history
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: SCTE-35 Ad Markers
+        icon: stream
+        summary: Splice insert and cue-out events parsed from transport streams for ad pod reconciliation.
+        citations:
+          - scte35
+        category: Ad Insertion Signalling (SCTE-35)
+        what_it_is: Splice insert and cue-out events parsed from transport streams for ad pod reconciliation.
+        who_uses_it: Ad operations and Broadcast operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of cue events/sec
+            interval: Continuous
+      - name: Roku / Samsung ACR
+        icon: partner
+        summary: Automatic content recognition feeds for incremental reach on CTV.
+        citations:
+          - roku-acr
+        category: Automatic Content Recognition (ACR)
+        what_it_is: Automatic content recognition feeds for incremental reach on CTV.
+        who_uses_it: Research and Ad sales teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k ACR events/sec
+            interval: Continuous
+      - name: Social Platform APIs
+        icon: api
+        summary: Clip views, shares and comment sentiment from owned and talent accounts.
+        citations:
+          - meta-graph
+        category: Social Media APIs
+        what_it_is: Clip views, shares and comment sentiment from owned and talent accounts.
+        who_uses_it: Social, Digital and News teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 0.2-1 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of engagement events/sec
+            interval: Continuous
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Network & Studio Chiefs
+        mark: Genie One
+        summary: The CEO on portfolio ROI and subscriber growth; the CRO on ad yield by daypart and upfront commitments against the reach actually delivered.
+        uses:
+          - - Genie One
+            - Ask what last night's prime delivered in reach without waiting on research.
+          - - AI/BI
+            - Reach, yield and churn on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "impression" means one thing across sales and ops.
+        sub:
+          - name: CEO
+            cares: portfolio ROI, subscriber growth and the mix of linear decline against streaming gain.
+          - name: Chief Revenue Officer
+            cares: ad yield by daypart and upfront commitments against the reach actually delivered.
+          - name: Head of Content
+            cares: greenlight and licensing bets and the return each title earns across platforms.
+        ucs:
+          - Content ROI
+          - Ad Yield Optimisation
+          - Subscriber Churn
+          - Audience Measurement
+      - name: Programming
+        mark: AI/BI
+        summary: Schedule architecture, premiere windows and catalog rotation scored on audience retention, completion rate and content ROI by title and platform.
+        uses:
+          - - Schedule Optimizer
+            - Daypart and title mix scored on reach and cost before the grid locks.
+          - - AI/BI
+            - Content ROI and completion rate on governed definitions.
+          - - Genie One
+            - Ask which titles drove the most new subscribers last month.
+        sub:
+          - name: VP Programming
+            cares: the prime grid, premiere windows and catalog rotation against audience retention.
+          - name: Scheduling
+            cares: daypart mix and lead-in strategy before the grid locks for air.
+          - name: Content Strategy
+            cares: which titles and genres to commission from completion and ROI signals.
+        ucs:
+          - Content ROI
+          - Personalised Recommend
+          - Audience Measurement
+      - name: Ad Sales
+        mark: CustomerLake
+        summary: Upfront guarantees, scatter pricing and makegood liability when delivery under-runs against the reach and frequency by demo the desk sold.
+        uses:
+          - - Yield Manager
+            - Rate cards and pacing exceptions before the quarter closes short.
+          - - CustomerLake
+            - Advertiser segments without copying CRM into a separate CDP.
+          - - AI/BI
+            - Delivery versus order on certified Metric Views.
+        sub:
+          - name: VP Ad Sales
+            cares: upfront guarantees and scatter pricing against the reach and frequency the desk sold.
+          - name: Yield & Pricing
+            cares: rate cards, pacing and makegood liability when delivery under-runs.
+          - name: Ad Operations
+            cares: pod structure, trafficking and delivery reconciliation across linear and streaming.
+        ucs:
+          - Ad Yield Optimisation
+          - Makegood Automation
+          - Audience Measurement
+      - name: Distribution
+        mark: Lakehouse//RT
+        summary: MVPD carriage, OTT app QoE and CDN cost per stream when a marquee live event spikes concurrency past the forecast the network planned for.
+        uses:
+          - - Live Ops Console
+            - Stream health and failover state during marquee broadcasts.
+          - - Lakehouse//RT
+            - QoE and concurrency at the latency a live event moves at.
+          - - Model Serving
+            - Churn risk scored on viewing and billing signals.
+        sub:
+          - name: Head of Streaming
+            cares: OTT growth, concurrency and QoE during marquee live events.
+          - name: CDN & Delivery
+            cares: cost per stream and failover when concurrency spikes past forecast.
+          - name: Retention
+            cares: subscriber churn scored from viewing, billing and service signals.
+        ucs:
+          - QoE Monitoring
+          - Subscriber Churn
+          - Live Event Scaling
+          - Personalised Recommend
+      - name: News & Production
+        mark: Apps
+        summary: Rundown execution, field feeds and rights clearance for breaking coverage, watched on time-to-air and the clearance exceptions that block a segment.
+        uses:
+          - - Newsroom Hub
+            - Story lifecycle from pitch through air with asset lineage.
+          - - Apps
+            - Assignment and approval screens on governed metadata.
+          - - Agent Bricks
+            - Agents that draft rundown suggestions from wire and social feeds.
+        sub:
+          - name: News Director
+            cares: time-to-air and the clearance exceptions that block a segment.
+          - name: Field & Assignment
+            cares: crew, feeds and rundown execution for breaking coverage.
+          - name: Social & Digital
+            cares: talent clips and owned-account reach scored back to parent titles.
+        ucs:
+          - Rights Compliance
+          - Social Clip Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the playout, OTT, ad server and measurement feeds; own the Bronze to Silver path and the pager when an as-run or impression pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for MAM, ad server and subscription sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on as-run and impression feeds.
+          - - Lakewatch
+            - Freshness on the reach and yield tables sales reads every morning.
+        sub:
+          - name: Streaming Data Eng
+            cares: landing as-run, playout and impression feeds with expectations on freshness.
+          - name: Ad & Subscription Eng
+            cares: ingesting ad server, traffic and billing sources for reach and yield tables.
+          - name: Platform Eng
+            cares: the Bronze-to-Silver path and the pager when a pipeline breaks before morning.
+        ucs:
+          - Audience Measurement
+          - QoE Monitoring
+          - Makegood Automation
+      - name: Data Scientists
+        mark: MLflow
+        summary: Subscriber churn, recommendation, ad-yield and reach-forecast models, and whether they still hold six months after deployment across linear and OTT.
+        uses:
+          - - Feature Store
+            - Viewing and billing features read identically in training and serving.
+          - - MLflow
+            - Every churn and yield run tracked for audit and reproduction.
+          - - Model Serving
+            - Recommendation and churn models scored in the streaming path.
+        sub:
+          - name: Churn & Retention Science
+            cares: cancel-risk models on viewing, billing and service contacts.
+          - name: Recommendation & Ranking
+            cares: affinity models ranking home-screen rails without copying profiles.
+          - name: Ad & Reach Forecasting
+            cares: yield and reach-forecast models across linear and OTT.
+        ucs:
+          - Subscriber Churn
+          - Personalised Recommend
+          - Ad Yield Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the live-ops, yield manager and newsroom applications programming and sales work in, hosted next to governed audience and rights data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for rundown state and governed writes.
+          - - Agent Bricks
+            - Agents that draft rundown suggestions against governed tools.
+        sub:
+          - name: Live Ops Dev
+            cares: stream-health and failover screens for marquee broadcasts.
+          - name: Yield & Newsroom Dev
+            cares: the yield manager and newsroom apps sales and news work in.
+          - name: Platform Dev
+            cares: governed writes and rundown state on serverless Postgres.
+        ucs:
+          - Live Event Scaling
+          - Makegood Automation
+          - Social Clip Analytics
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and live-event status in the channel news already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Traffic & Playout
+    icon: opdb
+    tiles:
+      - name: WideOrbit Order Sync
+        icon: db
+        summary: Revised orders and makegoods written back into traffic before the log locks.
+        citations:
+          - wideorbit
+      - name: Playout Playlist
+        icon: stream
+        summary: Approved schedules pushed to automation after rights clearance.
+        citations:
+          - imagine
+      - name: Ad Decisioning
+        icon: api
+        summary: Dynamic pod fills updated from governed yield rules on streaming endpoints.
+        citations:
+          - freewheel
+  - name: Partners & MVPDs
+    icon: partner
+    tiles:
+      - name: MVPD Schedule Exchange
+        icon: share
+        summary: Carriage schedules and metadata shared to distributors over Delta Sharing.
+        citations:
+          - dalet
+      - name: Agency Data Feeds
+        icon: api
+        summary: Post-campaign delivery and reach files served from governed products not email.
+        citations:
+          - nielsen
+      - name: Talent & Studio Portal
+        icon: globe
+        summary: Production status and rough-cut reviews on Apps reading governed MAM metadata.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: FCC / Ofcom Filing
+        icon: gavel
+        summary: Children's programming, political and sponsorship disclosures filed from governed as-run logs.
+        citations:
+          - scte35
+      - name: Music Rights Reporting
+        icon: share
+        summary: Performance and mechanical usage reported to PROs from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Agencies, studios and platforms reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Live Ops Console
+        icon: gauge
+        short: Stream health
+        summary: Concurrency, rebuffering and CDN failover during marquee live events on Databricks Apps over Lakebase.
+      - name: Yield Manager
+        icon: market
+        short: Ad pacing
+        summary: Order delivery versus guarantee with makegood options before the quarter closes.
+      - name: Schedule Optimizer
+        icon: sheet
+        short: Grid planning
+        summary: Title and daypart mix scored on reach, cost and rights before the schedule publishes.
+      - name: Newsroom Hub
+        icon: notebook
+        short: Story workflow
+        summary: Assignments, assets and clearance status from pitch through on-air.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Audience & Reach
+        icon: aibi
+        summary: Cross-platform reach, frequency and ratings on certified views.
+        kpis:
+          - Reach
+          - Frequency
+          - Rating by demo
+          - Duplicated reach
+          - Delivery vs guarantee
+        teams:
+          - Ad Sales
+          - Programming
+          - Network & Studio Chiefs
+      - name: Ad Revenue & Yield
+        icon: aibi
+        summary: Ad yield, pacing and makegood exposure across linear and streaming.
+        kpis:
+          - Ad yield by daypart
+          - Pacing
+          - Fill rate
+          - Makegood liability
+          - Scatter pricing
+        teams:
+          - Ad Sales
+          - Network & Studio Chiefs
+          - Data Scientists
+      - name: Content ROI
+        icon: aibi
+        summary: Title P&L, completion and content ROI on governed definitions.
+        kpis:
+          - Content ROI
+          - Completion rate
+          - Subscriber acquisition
+          - Title P&L
+          - Licensing revenue
+        teams:
+          - Programming
+          - Network & Studio Chiefs
+          - Data Scientists
+      - name: Streaming & Churn
+        icon: aibi
+        summary: QoE, concurrency and subscriber churn on certified streaming data.
+        kpis:
+          - Rebuffering rate
+          - Startup time
+          - Concurrency
+          - Churn rate
+          - Cost per stream
+        teams:
+          - Distribution
+          - Programming
+          - Data Engineers
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Audience & Reach Agent
+        icon: genie
+        summary: Ask about cross-platform reach, frequency and ratings in plain language.
+        feeds:
+          - Nielsen One
+          - Comscore
+          - Roku / Samsung ACR
+          - Reach, yield, churn
+        teams:
+          - Ad Sales
+          - Programming
+          - Data Scientists
+        questions:
+          - What reach and frequency did last night's prime deliver by demo?
+          - Which titles drove the most incremental reach on CTV?
+          - How does linear versus streaming reach compare this quarter?
+          - Which demos are we under-delivering against upfront guarantees?
+          - What is duplicated reach across linear, OTT and CTV panels?
+      - name: Ad Yield & Delivery Agent
+        icon: genie
+        summary: Explore pacing, delivery and makegood exposure across linear and streaming.
+        feeds:
+          - WideOrbit WO Traffic
+          - FreeWheel Ad Server
+          - Operative One
+          - Reach, yield, churn
+        teams:
+          - Ad Sales
+          - Network & Studio Chiefs
+          - App Developers
+        questions:
+          - Which campaigns are pacing to under-deliver this quarter?
+          - What is ad yield by daypart versus last year?
+          - Where is makegood liability accumulating right now?
+          - Which pods have the lowest fill rate on streaming?
+          - What scatter inventory is priced below market?
+      - name: Content & Programming Agent
+        icon: genie
+        summary: Answer content ROI, completion and title-performance questions on governed data.
+        feeds:
+          - Brightcove
+          - Studio Cost Ledger
+          - Nielsen One
+          - Conformed asset, viewer
+        teams:
+          - Programming
+          - Network & Studio Chiefs
+          - Data Scientists
+        questions:
+          - Which titles returned the most acquisition and retention last month?
+          - What is completion rate by genre this quarter?
+          - Which catalog titles are driving new subscribers?
+          - How does content ROI compare across platforms by title?
+          - Which premieres under-performed against their lead-in?
+      - name: Streaming & Churn Agent
+        icon: genie
+        summary: Ask about QoE, concurrency and subscriber churn risk in plain language.
+        feeds:
+          - Conviva Experience
+          - Brightcove
+          - Zuora Media
+          - Reach, yield, churn
+        teams:
+          - Distribution
+          - Programming
+          - Data Engineers
+        questions:
+          - Which regions have the worst rebuffering right now?
+          - What is concurrency versus forecast for tonight's live event?
+          - Which subscribers are at highest churn risk before renewal?
+          - How does QoE correlate with cancellations this month?
+          - Which devices show the highest startup failure rate?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Audience Measurement
+        short: Reach
+        icon: chart
+        summary: Cross-platform reach and frequency reconciled across linear, OTT and CTV panels.
+        problem: Reach and frequency live in Nielsen, Comscore and ACR panels that never agree, so the sales desk prices upfronts and proves delivery against numbers that shift by source.
+        who_benefits: Ad Sales
+        how_built: Panel, as-run and ACR feeds are conformed on Delta Lake under Unity Catalog, so reach and frequency by demo read from one certified set of Metric Views in AI/BI.
+        components:
+          - Nielsen One
+          - Comscore
+          - Roku / Samsung ACR
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: Seven West Media fuels audience growth and ad revenue with AI
+            url: https://www.databricks.com/customers/seven-west-media
+          - title: First-party audience data is the ad sales relationship now
+            url: https://www.databricks.com/blog/first-party-audience-data-ad-sales-relationship-now
+      - name: Ad Yield Optimisation
+        short: Revenue
+        icon: market
+        summary: Scatter pricing and pod structure tuned to delivery pace and audience composition.
+        problem: Scatter pricing and pod structure are set from stale pacing reports, so inventory sells too cheap or under-delivers and the lost yield only surfaces after the quarter closes.
+        who_benefits: Ad Sales
+        how_built: Delivery pace and audience composition are scored in Model Serving and surfaced in the Yield Manager app, so the desk tunes rate cards and pod fills against live delivery.
+        components:
+          - Yield Manager
+          - FreeWheel Ad Server
+          - Operative One
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Comcast Advertising powers campaign success with predictive insights
+            url: https://www.databricks.com/customers/comcast/databricks-apps
+      - name: Content ROI
+        short: Programming
+        icon: product
+        summary: Title investment scored on acquisition, retention and licensing revenue.
+        problem: Greenlight, licensing and marketing bets rest on gut and lagging ratings, so no one can say what a title truly returned in acquisition, retention and licensing across platforms.
+        who_benefits: Network & Studio Chiefs
+        how_built: Viewing, subscription and Studio Cost Ledger data are conformed under Unity Catalog and scored in Schedule Optimizer, so title P&L and content ROI read on governed definitions.
+        components:
+          - Schedule Optimizer
+          - Studio Cost Ledger
+          - AI/BI
+          - Unity Catalog
+          - Genie One
+        stories:
+          - title: Warner Bros. Discovery curates the viewer experience
+            url: https://www.databricks.com/customers/warner-bros-discovery
+          - title: Condé Nast delivers personalized content at global scale
+            url: https://www.databricks.com/customers/conde_nast
+      - name: Subscriber Churn
+        short: Retention
+        icon: custlake
+        summary: Cancel risk surfaced from viewing, billing and service contacts before renewal.
+        problem: Cancel intent shows up in viewing dips, billing events and support contacts that sit in separate systems, so retention learns a subscriber is leaving only when the cancellation lands.
+        who_benefits: Distribution
+        how_built: Viewing, billing and service features are engineered in Feature Store and scored through Model Serving with runs tracked in MLflow, so cancel risk surfaces before renewal, not after.
+        components:
+          - Model Serving
+          - CustomerLake
+          - Zuora Media
+          - Feature Store
+          - MLflow
+        stories:
+          - title: Showtime lowers churn with a view into the subscriber journey
+            url: https://www.databricks.com/customers/showtime
+          - title: Flagging at-risk subscribers for direct-to-consumer media
+            url: https://www.databricks.com/blog/2020/08/18/flagging-at-risk-subscribers-for-direct-to-consumer-media-services.html
+      - name: Rights Compliance
+        short: Legal
+        icon: gavel
+        summary: Window and territory violations flagged before playout or syndication.
+        problem: Rights windows and territory restrictions live in contracts apart from the schedule, so a title can be booked to air where or when a licence does not actually permit.
+        who_benefits: News & Production
+        how_built: Rightsline windows are conformed under Unity Catalog and checked with AI Functions in Schedule Optimizer, so window and territory violations flag before playout or syndication.
+        components:
+          - Rightsline
+          - Unity Catalog
+          - AI Functions
+          - Delta Lake
+          - Schedule Optimizer
+      - name: QoE Monitoring
+        short: Streaming
+        icon: stream
+        summary: Startup and rebuffer anomalies traced to CDN, device and title root cause.
+        problem: When a stream buffers or fails to start, the cause hides across CDN, device and title, so viewers churn on a bad session before anyone traces which link in the delivery chain broke.
+        who_benefits: Distribution
+        how_built: Player and CDN telemetry stream into Lakehouse//RT and are scored in Model Serving, so the Live Ops Console traces startup and rebuffer anomalies to CDN, device and title root cause.
+        components:
+          - Live Ops Console
+          - Conviva Experience
+          - Brightcove
+          - Lakehouse//RT
+          - Model Serving
+        stories:
+          - title: Building QoS analytics for streaming video services
+            url: https://www.databricks.com/blog/2020/05/06/how-to-build-a-quality-of-service-qos-analytics-solution-for-streaming-video-services.html
+      - name: Personalised Recommend
+        short: Engagement
+        icon: partner
+        summary: Home screen rails ranked on affinity without copying profiles off-platform.
+        problem: Home-screen rails default to editorial hunches or generic popularity, so viewers scroll past content they would watch and profiles get copied into outside tools to make it work.
+        who_benefits: Programming
+        how_built: Affinity models read viewing features from Feature Store and score in Model Serving on-platform, so home-screen rails rank to each household without copying profiles off the lakehouse.
+        components:
+          - Model Serving
+          - Feature Store
+          - CustomerLake
+          - Brightcove
+          - AI Functions
+        stories:
+          - title: Viacom18 personalizes viewing for 600M+ viewers
+            url: https://www.databricks.com/customers/viacom18
+          - title: Personalization strategies for media companies
+            url: https://www.databricks.com/blog/personalization-strategies-for-media
+      - name: Makegood Automation
+        short: Ad ops
+        icon: gauge
+        summary: Under-delivery offers priced and approved before account teams escalate.
+        problem: When a campaign under-delivers, makegoods are worked by hand across traffic and ad-server data, so liability piles up and account teams escalate before a fair replacement is priced.
+        who_benefits: Ad Sales
+        how_built: Order and delivery data from WideOrbit and FreeWheel are scored in Model Serving and surfaced in Yield Manager on Lakebase, so under-delivery offers are priced and approved before escalation.
+        components:
+          - Yield Manager
+          - WideOrbit WO Traffic
+          - FreeWheel Ad Server
+          - Model Serving
+          - Lakebase
+      - name: Social Clip Analytics
+        short: Distribution
+        icon: observ
+        summary: Talent and brand clips scored on reach and sentiment tied back to parent titles.
+        problem: Talent and brand clips scatter across social platforms with no line back to the titles they promote, so no one sees which clips drove reach or how sentiment moved around a show.
+        who_benefits: News & Production
+        how_built: Social feeds land through Social Platform APIs and are scored for reach and sentiment with AI Functions and Agent Bricks, so clip performance ties back to parent titles in AI/BI.
+        components:
+          - Social Platform APIs
+          - AI Functions
+          - Agent Bricks
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: SEGA lifts player retention with sentiment analysis
+            url: https://www.databricks.com/customers/sega
+      - name: Live Event Scaling
+        short: Operations
+        icon: iot
+        summary: Capacity and ad pod density planned from historical concurrency curves.
+        problem: A marquee live event can spike concurrency far past forecast, so capacity and ad pod density are guessed and the network risks a buffering meltdown or unsold, wasted inventory.
+        who_benefits: Distribution
+        how_built: Historical concurrency curves are processed with Apache Spark in Lakehouse//RT and read in Live Ops Console, so capacity and SCTE-35 pod density are planned from real demand.
+        components:
+          - Live Ops Console
+          - Conviva Experience
+          - SCTE-35 Ad Markers
+          - Lakehouse//RT
+          - Apache Spark
+        stories:
+          - title: FOX Sports reimagines the live fan experience
+            url: https://www.databricks.com/customers/fox-sports
+medallion:
+  Bronze:
+    short: Raw audience feeds
+    summary: As-run logs, playout automation events, ad server impressions, subscriber transactions and social engagement, landed exactly as received so a rating or a spot can always be replayed as it stood.
+  Silver:
+    short: Conformed asset, viewer
+    summary: Programs, episodes, rights windows and viewer households resolved into single conformed entities across playout, OTT and ad systems, with cross-device identifiers reconciled and campaign delivery stitched to one audience.
+  Gold:
+    short: Reach, yield, churn
+    summary: 'Contracted products sales and programming leaders run on: reach and frequency by demo, ad yield by daypart, subscriber churn and content ROI by title and platform.'
+citation_index:
+  dalet:
+    title: Dalet Galaxy
+    url: https://www.dalet.com/products/
+  avid:
+    title: Avid MediaCentral
+    url: https://www.avid.com/products/mediacentral
+  imagine:
+    title: Imagine Communications Nexio
+    url: https://www.imaginecommunications.com/
+  brightcove:
+    title: Brightcove
+    url: https://www.brightcove.com/
+  conviva:
+    title: Conviva
+    url: https://www.conviva.com/
+  zuora:
+    title: Zuora
+    url: https://www.zuora.com/
+  wideorbit:
+    title: WideOrbit WO Traffic
+    url: https://www.wideorbit.com/
+  freewheel:
+    title: FreeWheel
+    url: https://www.freewheel.com/
+  operative:
+    title: Operative One
+    url: https://www.operative.com/operative-one/
+  nielsen:
+    title: Nielsen One
+    url: https://www.nielsen.com/solutions/nielsen-one/
+  comscore:
+    title: Comscore
+    url: https://www.comscore.com/
+  rightsline:
+    title: Rightsline
+    url: https://www.rightsline.com/
+  scte35:
+    title: SCTE-35 digital program insertion
+    url: https://www.scte.org/standards/
+  roku-acr:
+    title: Roku advertising
+    url: https://advertising.roku.com/
+  meta-graph:
+    title: Meta Graph API
+    url: https://developers.facebook.com/docs/graph-api/

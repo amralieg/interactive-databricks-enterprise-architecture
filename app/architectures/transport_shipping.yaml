@@ -1,0 +1,932 @@
+name: Transport & Logistics
+description: 'Freight carriers and 3PLs: transportation management, warehouse execution, route optimisation, fleet telematics, and shipper visibility across road, rail and last mile.'
+sources:
+  - name: TMS & Planning
+    icon: erp
+    tiles:
+      - name: Oracle OTM
+        icon: erp
+        summary: Transportation planning, tendering, execution and freight payment.
+        citations:
+          - oracle-otm
+        category: Transportation Management System (TMS)
+        what_it_is: Plans and tenders loads, executes shipments across modes and settles freight, holding the system-of-record for orders, legs and carrier assignments.
+        who_uses_it: Transportation Ops, Dispatch and Carrier Procurement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Hourly extracts + nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous CDC on tender and status
+      - name: Blue Yonder TMS
+        icon: sheet
+        summary: Load building, mode selection and carrier assignment.
+        citations:
+          - blue-yonder-tms
+        category: Transportation Management System (TMS)
+        what_it_is: Builds loads, selects mode and assigns carriers against network constraints, feeding planned versus executed movement for consolidation analysis.
+        who_uses_it: Transportation Ops, Linehaul Planning and Commercial & Pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + intraday deltas
+      - name: MercuryGate TMS
+        icon: market
+        summary: Multi-modal rating, routing and carrier scorecards.
+        citations:
+          - mercurygate
+        category: Multi-Modal TMS & Rating
+        what_it_is: Rates and routes multi-modal freight and maintains carrier scorecards, the basis for spot-versus-contract rating and award decisions.
+        who_uses_it: Commercial & Pricing, Carrier Procurement and Bid & Sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Daily rating + scorecard refresh
+  - name: WMS & Fulfillment
+    icon: db
+    tiles:
+      - name: Manhattan Active WMS
+        icon: db
+        summary: Receiving, putaway, picking and shipping execution.
+        citations:
+          - manhattan-wms
+        category: Warehouse Management System (WMS)
+        what_it_is: Executes receiving, putaway, picking and shipping on the DC floor and emits the move events behind pick rate, slotting and labour analytics.
+        who_uses_it: Warehouse Ops, DC Managers and Inbound & Slotting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Hourly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of moves/sec at peak
+            interval: Continuous move events
+      - name: SAP EWM
+        icon: erp
+        summary: Warehouse management integrated to manufacturing and retail flows.
+        citations:
+          - sap-ewm
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs extended warehouse management tied into manufacturing and retail order flows, the source of stock movements and task confirmations.
+        who_uses_it: Warehouse Ops, Inbound & Slotting and Data Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Körber WMS
+        icon: stream
+        summary: High-bay and automated storage execution for 3PL campuses.
+        citations:
+          - korber-wms
+        category: Warehouse Management System (WMS)
+        what_it_is: Executes high-bay and automated storage across 3PL campuses, emitting equipment and task telemetry from ASRS and conveyor systems.
+        who_uses_it: Warehouse Ops, Yard & Dock and automation engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Hourly batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous automation telemetry
+  - name: Fleet & Telematics
+    icon: iot
+    tiles:
+      - name: Samsara Fleet
+        icon: iot
+        summary: GPS, ELD, dashcam and engine diagnostics for owned and leased fleets.
+        citations:
+          - samsara
+        category: Fleet Telematics & ELD
+        what_it_is: Streams GPS position, hours-of-service logs, dashcam events and engine diagnostics from the tractor and trailer fleet.
+        who_uses_it: Transportation Ops, Dispatch and Fleet maintenance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k pings/sec across fleet
+            interval: Continuous (seconds)
+      - name: Geotab Fleet
+        icon: stream
+        summary: Vehicle location, idle time and maintenance alerts.
+        citations:
+          - geotab
+        category: Fleet Telematics
+        what_it_is: Reports vehicle location, idle time, harsh-driving events and maintenance alerts from telematics devices across the fleet.
+        who_uses_it: Transportation Ops, Fleet maintenance and Safety teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of pings/sec
+            interval: Continuous (seconds)
+      - name: Omnitracs ELD
+        icon: partner
+        summary: Hours of service, route compliance and driver workflow.
+        citations:
+          - omnitracs
+        category: Electronic Logging Device (ELD) / HOS
+        what_it_is: Captures hours-of-service logs, route compliance and driver workflow events used for HOS compliance and dispatch feasibility.
+        who_uses_it: Transportation Ops, Safety & Compliance and Dispatch teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous (near real-time)
+  - name: Carrier & Freight
+    icon: partner
+    tiles:
+      - name: project44 Visibility
+        icon: api
+        summary: Real-time shipment tracking across LTL, TL and parcel networks.
+        citations:
+          - project44
+        category: Real-Time Transportation Visibility
+        what_it_is: Aggregates carrier tracking across LTL, TL and parcel into real-time shipment position and status events for ETA and exception management.
+        who_uses_it: Transportation Ops, In-Transit Exceptions and Customer service teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k status events/sec
+            interval: Continuous (API / webhook)
+      - name: FourKites
+        icon: globe
+        summary: Predictive ETA and exception management for shipper portals.
+        citations:
+          - fourkites
+        category: Real-Time Transportation Visibility
+        what_it_is: Provides predictive ETA and exception signals across the carrier network, fed to shipper portals and control-tower workflows.
+        who_uses_it: Transportation Ops, In-Transit Exceptions and Shipper account teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous (API / webhook)
+      - name: EDI VAN (Cleo)
+        icon: stream
+        summary: 204 tender, 214 status and 210 invoice messages with carriers.
+        citations:
+          - cleo-edi
+        category: EDI / B2B Integration Network
+        what_it_is: Exchanges 204 tender, 214 status and 210 invoice EDI messages with carriers, the trading-partner backbone for tender and settlement.
+        who_uses_it: Transportation Ops, Freight Audit & Pay and Integration Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Multiple daily batches
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of messages/sec
+            interval: Continuous message flow
+  - name: Finance & Claims
+    icon: chart
+    tiles:
+      - name: SAP TM Settlement
+        icon: market
+        summary: Freight accruals, audit and payment matched to proof of delivery.
+        citations:
+          - sap-tm-settle
+        category: Freight Audit & Payment
+        what_it_is: Accrues, audits and settles freight against contract rates and proof of delivery, the source of invoice-to-contract variance.
+        who_uses_it: Finance & Claims, Freight Audit & Pay and Detention & Accessorials teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Daily settlement cycles
+      - name: Transporeon
+        icon: partner
+        summary: Dock appointment, yard management and detention billing.
+        citations:
+          - transporeon
+        category: Dock Appointment & Yard Management
+        what_it_is: Manages dock appointments, yard slotting and detention billing, emitting arrival and departure events that drive the free-time clock.
+        who_uses_it: Warehouse Ops, Yard & Dock and Detention & Accessorials teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous gate / appointment events
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Shipper TMS Marts
+        icon: fed
+        summary: Shipper order and ASN marts queried in place under Unity Catalog.
+        category: Shipper Data Warehouse
+        what_it_is: Shipper-side order and ASN marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Commercial & Pricing, Shipper account and Finance & Claims analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: EDI X12 214/210
+        icon: stream
+        summary: Standard shipment status and freight invoice messages parsed on arrival.
+        citations:
+          - cleo-edi
+        category: EDI Transaction Messages
+        what_it_is: Standard X12 214 shipment status and 210 freight invoice messages parsed on arrival and joined to shipments for status and audit.
+        who_uses_it: Transportation Ops, Freight Audit & Pay and Integration Engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of messages/sec
+            interval: Continuous message flow
+      - name: FMCSA SAFER Feed
+        icon: gavel
+        summary: Carrier safety and authority status for onboarding checks.
+        citations:
+          - fmcsa
+        category: Carrier Safety & Authority Data
+        what_it_is: Provides carrier safety ratings, operating authority and insurance status used to vet carriers at onboarding and re-check.
+        who_uses_it: Carrier Procurement, Safety & Compliance and Onboarding teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB
+            interval: Weekly + on-demand pulls
+      - name: Fuel Index APIs
+        icon: market
+        summary: Weekly fuel surcharge indices consumed for rating updates.
+        citations:
+          - transporeon
+        category: Fuel Surcharge Index
+        what_it_is: Publishes weekly fuel-price indices consumed to update fuel surcharge schedules and landed-cost rating.
+        who_uses_it: Commercial & Pricing, Freight Audit & Pay and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs
+            interval: Weekly index refresh
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Network Office
+        mark: Genie One
+        summary: The CEO on margin per load; the COO on OTIF and fleet utilisation, trading empty miles and detention against the contracted service.
+        uses:
+          - - Genie One
+            - Ask what last week's lane margin was without analyst delay.
+          - - AI/BI
+            - OTIF and cost per mile on certified Metric Views.
+          - - Unity Catalog
+            - One shipment definition across TMS and WMS.
+        sub:
+          - name: Chief Executive
+            cares: margin per load and the network-wide trade between service and cost.
+          - name: Chief Operating Officer
+            cares: OTIF, fleet utilisation and the empty-mile and detention bill.
+          - name: Network Strategy
+            cares: lane design, capacity commitments and the network's carbon footprint.
+        ucs:
+          - Load Consolidation
+          - Carrier Scorecards
+          - Scope 3 Emissions
+          - Route Optimization
+      - name: Transportation Ops
+        mark: Lakehouse//RT
+        summary: Dispatchers on tender acceptance, in-transit exceptions and appointment compliance, moving loads before ETA risk becomes a detention charge.
+        uses:
+          - - Control Tower
+            - Live shipments, ETA risk and detention exposure on one map.
+          - - Lakehouse//RT
+            - ELD and TMS state at dispatch latency.
+        sub:
+          - name: Dispatch
+            cares: tender acceptance and getting the load covered before the appointment.
+          - name: Linehaul Planning
+            cares: multi-stop routing against driver-hour limits and delivery windows.
+          - name: In-Transit Exceptions
+            cares: ETA risk and the detention clock while freight is moving.
+        ucs:
+          - Route Optimization
+          - Predictive ETA
+          - Cold Chain Monitoring
+          - Detention Management
+      - name: Warehouse Ops
+        mark: Apps
+        summary: DC managers on pick rate, labour balance and outbound cut-off, releasing waves so the dock clears before the carrier appointment closes.
+        uses:
+          - - Warehouse Pulse
+            - Pick waves, dock doors and labour plan against cut-off.
+          - - Apps
+            - Floor apps hosted next to governed WMS data.
+        sub:
+          - name: DC Manager
+            cares: pick rate, dock capacity and hitting the outbound cut-off.
+          - name: Inbound & Slotting
+            cares: putaway, slot placement and how velocity drives the pick path.
+          - name: Yard & Dock
+            cares: trailer moves, dock-door assignment and yard turns.
+        ucs:
+          - Warehouse Slotting
+          - Yard Management
+          - Load Consolidation
+      - name: Commercial & Pricing
+        mark: Model Serving
+        summary: Pricing analysts on lane rates, accessorials and shipper contracts, scoring spot versus contract margin before a load is tendered.
+        uses:
+          - - Rate Engine Workbench
+            - Contract and spot rates before tender.
+          - - Model Serving
+            - Dynamic pricing models in the bid path.
+        sub:
+          - name: Pricing Analytics
+            cares: lane rates, accessorials and spot-versus-contract margin.
+          - name: Carrier Procurement
+            cares: carrier sourcing, scorecards and capacity commitments.
+          - name: Bid & Sales
+            cares: shipper RFPs and the contract book behind tendered volume.
+        ucs:
+          - Load Consolidation
+          - Carrier Scorecards
+          - Predictive ETA
+      - name: Finance & Claims
+        mark: AI/BI
+        summary: Freight audit and claims teams on detention, fuel surcharge recovery and accrual variance, matching each invoice to contract and POD.
+        uses:
+          - - AI/BI
+            - Accrual variance and audit findings on certified views.
+          - - Genie One
+            - Ask which carriers exceed detention thresholds.
+        sub:
+          - name: Freight Audit & Pay
+            cares: invoice-to-contract matching, duplicate charges and accrual variance.
+          - name: Detention & Accessorials
+            cares: free-time clocks, fuel surcharge and detention recovery.
+          - name: Claims
+            cares: loss, damage and the POD evidence behind each claim.
+        ucs:
+          - Freight Audit
+          - Detention Management
+          - Carrier Scorecards
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land TMS orders, WMS moves, ELD logs and carrier EDI; own Bronze to Silver and the pager when an OTIF or cost-per-mile table breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for TMS, WMS and telematics sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on EDI and ELD feeds.
+          - - Lakewatch
+            - Freshness on the OTIF tables the control tower reads through the day.
+        sub:
+          - name: Source Onboarding
+            cares: TMS, WMS, ELD and carrier EDI connectors and schemas.
+          - name: Pipeline & Quality
+            cares: Bronze-to-Silver expectations on EDI and telematics feeds.
+          - name: Platform Reliability
+            cares: the pager when an OTIF or cost-per-mile table breaks.
+        ucs:
+          - Predictive ETA
+          - Freight Audit
+          - Cold Chain Monitoring
+      - name: Data Scientists
+        mark: MLflow
+        summary: Predictive-ETA, route-optimisation, dynamic-pricing and carrier-scoring models, and whether they still hold as lanes and fuel indices shift.
+        uses:
+          - - Feature Store
+            - Shipment and lane features read identically in training and serving.
+          - - MLflow
+            - Every ETA and pricing experiment tracked for audit.
+          - - Model Serving
+            - ETA and pricing models scored in the dispatch and bid path.
+        sub:
+          - name: ETA & Routing Models
+            cares: predictive ETA and multi-stop optimisation as lanes shift.
+          - name: Pricing Science
+            cares: dynamic lane pricing and accessorial models in the bid path.
+          - name: Carrier & Network
+            cares: carrier scoring and network-flow models on shifting capacity.
+        ucs:
+          - Route Optimization
+          - Predictive ETA
+          - Carrier Scorecards
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Control Tower, Warehouse Pulse and Rate Engine apps operations and pricing teams work in, next to governed TMS and WMS data.
+        uses:
+          - - Apps
+            - Operations screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for appointment and wave state writes.
+          - - Agent Bricks
+            - Agents that draft tender responses against governed tools.
+        sub:
+          - name: Ops App Dev
+            cares: Control Tower and Warehouse Pulse next to governed data.
+          - name: Driver & Mobile
+            cares: stop sequence, POD capture and exception codes on devices.
+          - name: Agents & Writeback
+            cares: tender-response agents and appointment writeback on Lakebase.
+        ucs:
+          - Route Optimization
+          - Yard Management
+          - Warehouse Slotting
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Operations and finance dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for OTIF and detention questions in the control tower channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Network optimisation notebooks against governed TMS data.
+  - name: Shipper & Carrier
+    icon: partner
+    tiles:
+      - name: Shipper Visibility API
+        icon: api
+        summary: ETA and exception events shared to shipper TMS over Delta Sharing.
+        citations:
+          - project44
+      - name: Carrier Tender Portal
+        icon: market
+        summary: Loads tendered and accepted through governed APIs.
+        citations:
+          - mercurygate
+      - name: 3PL Billing Portal
+        icon: share
+        summary: Invoice backup and POD images delivered to shippers.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: TMS Appointment Update
+        icon: db
+        summary: Dock appointments written back to TMS and yard systems.
+        citations:
+          - oracle-otm
+      - name: Driver Mobile Tasks
+        icon: apps
+        summary: Stop sequence and document capture pushed to driver devices.
+        citations:
+          - samsara
+      - name: WMS Wave Release
+        icon: stream
+        summary: Pick waves released to the floor based on cut-off optimisation.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: HOS Compliance Reports
+        icon: gavel
+        summary: ELD violation summaries for safety audits.
+        citations:
+          - omnitracs
+      - name: Carbon & Scope 3
+        icon: share
+        summary: Emissions per shipment reported to shipper sustainability programs.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Visibility and lane performance products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Shippers reading live ETA via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Control Tower
+        icon: globe
+        short: Shipment visibility
+        summary: Live shipments, ETA risk and detention exposure on a map with exception workflows.
+      - name: Warehouse Pulse
+        icon: db
+        short: DC operations
+        summary: Pick waves, labour and dock capacity against outbound cut-off.
+      - name: Rate Engine Workbench
+        icon: market
+        short: Pricing
+        summary: Contract, spot and accessorial rates before tender and audit.
+      - name: Driver Mobile Hub
+        icon: apps
+        short: Last mile
+        summary: Stop sequence, POD capture and exception codes on driver devices.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: OTIF & Service Performance
+        icon: aibi
+        summary: On-time-in-full, dwell and exception rates across lanes and customers.
+        kpis:
+          - OTIF
+          - On-time %
+          - Dwell time
+          - Exception rate
+          - Appointment compliance
+        teams:
+          - Transportation Ops
+          - CEO & Network Office
+          - In-Transit Exceptions
+      - name: Cost per Mile & Freight Spend
+        icon: aibi
+        summary: Freight spend, cost per mile and accessorials with fuel surcharge recovery.
+        kpis:
+          - Cost per mile
+          - Freight spend
+          - Accessorial spend
+          - Empty miles
+          - Fuel surcharge recovery
+        teams:
+          - Commercial & Pricing
+          - Finance & Claims
+          - CEO & Network Office
+      - name: Warehouse Productivity
+        icon: aibi
+        summary: Pick rate, dock utilisation, labour and yard turns across the DC network.
+        kpis:
+          - Pick rate
+          - Dock utilisation
+          - Labour hours per unit
+          - Wave completion
+          - Yard turns
+        teams:
+          - Warehouse Ops
+          - DC Manager
+          - Yard & Dock
+      - name: Carrier Scorecards
+        icon: aibi
+        summary: Carrier OTIF, tender acceptance, claims and cost variance per lane.
+        kpis:
+          - Carrier OTIF
+          - Tender acceptance
+          - Claims rate
+          - Cost variance
+          - Capacity commitment
+        teams:
+          - Commercial & Pricing
+          - Carrier Procurement
+          - Bid & Sales
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Shipment Visibility & ETA Agent
+        icon: genie
+        summary: Ask where a load is, why it is late and which shipments are at ETA risk right now.
+        feeds:
+          - project44 Visibility
+          - FourKites
+          - Samsara Fleet
+          - Conformed shipment, leg, asset
+        teams:
+          - Transportation Ops
+          - Dispatch
+          - In-Transit Exceptions
+        questions:
+          - Which shipments are at risk of missing their delivery appointment today?
+          - What is our on-time delivery rate by lane this week versus last?
+          - Which loads are currently in a detention or dwell exception?
+          - How accurate has our predicted ETA been against actual arrival by carrier?
+          - Which customers have the most late shipments this month and why?
+      - name: Carrier Performance & Spend Agent
+        icon: genie
+        summary: Explore carrier OTIF, cost per mile and freight spend across lanes and modes.
+        feeds:
+          - MercuryGate TMS
+          - EDI VAN (Cleo)
+          - SAP TM Settlement
+          - OTIF, cost per mile
+        teams:
+          - Commercial & Pricing
+          - Carrier Procurement
+          - Finance & Claims
+        questions:
+          - Which carriers have the best OTIF and lowest cost per mile on our top lanes?
+          - What is our tender acceptance rate by carrier this quarter?
+          - Which lanes are running above contract rate on the spot market?
+          - How much freight spend goes to accessorials by carrier?
+          - Which carriers have the highest claims rate against tendered volume?
+      - name: Warehouse & Yard Operations Agent
+        icon: genie
+        summary: Answer pick rate, dock and yard questions across the DC network.
+        feeds:
+          - Manhattan Active WMS
+          - SAP EWM
+          - Transporeon
+          - Conformed shipment, leg, asset
+        teams:
+          - Warehouse Ops
+          - DC Manager
+          - Yard & Dock
+        questions:
+          - What is pick rate by DC and shift against the outbound cut-off?
+          - Which dock doors are the bottleneck for outbound loads today?
+          - How long are trailers dwelling in the yard before they are worked?
+          - Which waves are behind plan and at risk of missing the carrier appointment?
+          - What is labour utilisation versus the planned staffing by DC?
+      - name: Detention & Freight Audit Agent
+        icon: genie
+        summary: Ask about detention exposure, accessorials and invoice-to-contract variance.
+        feeds:
+          - Transporeon
+          - SAP TM Settlement
+          - EDI X12 214/210
+          - OTIF, cost per mile
+        teams:
+          - Finance & Claims
+          - Freight Audit & Pay
+          - Detention & Accessorials
+        questions:
+          - Which shipments are accruing detention past contracted free time right now?
+          - How much recoverable detention did we fail to bill last month?
+          - Which carriers show the most invoice-to-contract variance?
+          - What is our duplicate-charge rate on audited freight bills?
+          - How much fuel surcharge did we recover versus the index this quarter?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Route Optimization
+        short: Planning
+        icon: sheet
+        summary: Multi-stop routes optimised for miles, HOS and appointment windows.
+        problem: Multi-stop routes are built by hand against static maps, so miles, driver-hour limits and appointment windows never line up and every re-plan after a disruption is slow guesswork.
+        who_benefits: Transportation Ops
+        how_built: TMS orders land through Lakeflow onto Delta Lake, distance and time matrices are built with Apache Spark, and optimised stop sequences are scored in Model Serving and pushed to the Control Tower.
+        components:
+          - Control Tower
+          - Oracle OTM
+          - Apache Spark
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: Scalable Route Generation solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+          - title: iFood tests business hypotheses with Databricks and Tableau
+            url: https://www.databricks.com/customers/ifood
+          - title: Cleanaway optimises its collection fleet with Databricks
+            url: https://www.databricks.com/customers/cleanaway
+      - name: Predictive ETA
+        short: Visibility
+        icon: globe
+        summary: ETA refined from telematics, traffic and historical lane performance.
+        problem: Customers are quoted an ETA from a fixed transit table, so traffic, weather and dwell stay invisible until a load is already late and the shipper calls asking where it is.
+        who_benefits: Transportation Ops
+        how_built: Telematics and status events stream into Lakehouse//RT, lane and dwell features are read from Feature Store, and Model Serving refines an ETA surfaced live in the Control Tower and shipper feeds.
+        components:
+          - Control Tower
+          - project44 Visibility
+          - Lakehouse//RT
+          - Feature Store
+          - Model Serving
+        stories:
+          - title: 'Customer Story: J.B. Hunt'
+            url: https://www.databricks.com/customers/jbhunt
+      - name: Detention Management
+        short: Finance
+        icon: market
+        summary: Detention clock and claims raised before free time expires.
+        problem: Free-time clocks live in emails and driver texts, so detention is discovered after it accrues, claims miss the filing window and recoverable charges quietly become absorbed cost.
+        who_benefits: Finance & Claims
+        how_built: Arrival and departure events land through Lakeflow, dwell against contracted free time is computed on Delta Lake, and detention exposure and claims surface in the Control Tower and AI/BI.
+        components:
+          - Control Tower
+          - Transporeon
+          - Lakeflow
+          - Delta Lake
+          - AI/BI
+      - name: Load Consolidation
+        short: TMS
+        icon: erp
+        summary: LTL and partial loads combined to improve utilisation and margin.
+        problem: Partial and LTL loads are booked lane by lane with no view of what else moves nearby, so trucks run half full, empty miles pile up and margin leaks on every under-utilised move.
+        who_benefits: Commercial & Pricing
+        how_built: Order and tender data land on Delta Lake, candidate consolidations are scored with Apache Spark and Model Serving, and recommended load builds surface in the Control Tower before tender.
+        components:
+          - Control Tower
+          - Blue Yonder TMS
+          - Apache Spark
+          - Model Serving
+          - Delta Lake
+      - name: Warehouse Slotting
+        short: WMS
+        icon: db
+        summary: Pick path and slot placement tuned to velocity and seasonality.
+        problem: Slot assignments are set once and rarely revisited, so fast movers sit far from the dock, pick paths grow and labour is burned walking the floor as seasonal velocity shifts.
+        who_benefits: Warehouse Ops
+        how_built: WMS moves and order history land through Lakeflow, velocity and affinity features are built in Feature Store, and Model Serving proposes slot placement surfaced in Warehouse Pulse.
+        components:
+          - Warehouse Pulse
+          - Manhattan Active WMS
+          - Feature Store
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: Volvo Group increases inventory visibility with Databricks
+            url: https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines
+      - name: Carrier Scorecards
+        short: Procurement
+        icon: partner
+        summary: OTIF, cost and claims history scored per carrier and lane.
+        problem: Carrier performance is judged on memory and stale spreadsheets, so award decisions miss which carriers actually hit OTIF, ran clean on claims and held rate on a given lane.
+        who_benefits: Commercial & Pricing
+        how_built: TMS, EDI status and claims data are conformed under Unity Catalog, OTIF, cost and claims metrics are certified in AI/BI, and per-carrier scorecards are worked in the Rate Engine Workbench.
+        components:
+          - Rate Engine Workbench
+          - MercuryGate TMS
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: 'J.B. Hunt: dynamic freight matching at scale'
+            url: https://www.databricks.com/customers/jbhunt
+      - name: Freight Audit
+        short: Finance
+        icon: chart
+        summary: Invoices matched to contract, POD and accessorial rules before payment.
+        problem: Carrier invoices are checked by hand against contracts and accessorial rules, so overbilling slips through, duplicate charges get paid and the team only samples a fraction of freight bills.
+        who_benefits: Finance & Claims
+        how_built: Invoices, contracts and POD events land on Delta Lake, AI Functions match each charge to rate and accessorial rules under Unity Catalog, and exceptions surface in the Rate Engine Workbench.
+        components:
+          - Rate Engine Workbench
+          - SAP TM Settlement
+          - AI Functions
+          - Unity Catalog
+          - Delta Lake
+      - name: Cold Chain Monitoring
+        short: Compliance
+        icon: iot
+        summary: Temperature excursions flagged for food and pharma loads.
+        problem: Reefer temperature is checked only at pickup and delivery, so an excursion mid-transit is found after the food or pharma load is already spoiled and the whole shipment has to be written off.
+        who_benefits: Transportation Ops
+        how_built: Reefer and telematics readings stream in through Zerobus into Lakehouse//RT, thresholds are scored in Model Serving, and excursions raise alerts on the Control Tower before product is lost.
+        components:
+          - Control Tower
+          - Samsara Fleet
+          - Zerobus
+          - Lakehouse//RT
+          - Model Serving
+      - name: Yard Management
+        short: Operations
+        icon: stream
+        summary: Trailer location and dock door assignment to cut yard turns.
+        problem: Nobody knows which trailer sits at which door or where in the yard, so drivers hunt for equipment, dock doors stall and detention builds while the DC waits on trailers it has on site.
+        who_benefits: Warehouse Ops
+        how_built: Gate, telematics and appointment events land in Lakehouse//RT, dock and yard state is held in Lakebase, and door assignments and trailer moves are worked from Warehouse Pulse.
+        components:
+          - Warehouse Pulse
+          - Transporeon
+          - Lakehouse//RT
+          - Lakebase
+          - Model Serving
+      - name: Scope 3 Emissions
+        short: Sustainability
+        icon: gavel
+        summary: Emissions per shipment calculated for shipper ESG reporting.
+        problem: Shippers demand emissions per shipment, but the mileage, mode and fuel data needed sit across TMS and telematics, so carbon is estimated with crude averages that will not survive an audit.
+        who_benefits: CEO & Network Office
+        how_built: Shipment, mode and fuel data are conformed under Unity Catalog, emissions per load are computed on Delta Lake, and certified figures publish as Data Products shared to shippers over OpenSharing.
+        components:
+          - Data Products
+          - OpenSharing
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: How Dow Built a Carbon Footprint Ledger on Databricks
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+          - title: Michelin democratizes business insights with Databricks
+            url: https://www.databricks.com/customers/michelin
+medallion:
+  Bronze:
+    short: Raw shipment and fleet feeds
+    summary: TMS orders, WMS moves, ELD logs, carrier EDI and shipper tender events, landed exactly as received so a detention charge or a missed appointment can always be replayed.
+  Silver:
+    short: Conformed shipment, leg, asset
+    summary: Shipments, legs, stops and assets resolved into single conformed entities across TMS, WMS and telematics, with multi-stop routes stitched to one delivery.
+  Gold:
+    short: OTIF, cost per mile
+    summary: 'Contracted products operations and finance run on: on-time-in-full by lane, cost per mile, warehouse pick rate, detention and fuel surcharge recovery.'
+citation_index:
+  oracle-otm:
+    title: Oracle Transportation Management
+    url: https://www.oracle.com/scm/logistics/transportation-management/
+  blue-yonder-tms:
+    title: Blue Yonder TMS
+    url: https://blueyonder.com/solutions/transportation-management
+  mercurygate:
+    title: MercuryGate TMS
+    url: https://mercurygate.com/
+  manhattan-wms:
+    title: Manhattan Active WMS
+    url: https://www.manh.com/solutions/warehouse-management
+  sap-ewm:
+    title: SAP Extended Warehouse Management
+    url: https://www.sap.com/products/scm/extended-warehouse-management.html
+  korber-wms:
+    title: Körber WMS
+    url: https://www.koerber-supplychain.com/
+  samsara:
+    title: Samsara
+    url: https://www.samsara.com/
+  geotab:
+    title: Geotab
+    url: https://www.geotab.com/
+  omnitracs:
+    title: Omnitracs
+    url: https://www.omnitracs.com/
+  project44:
+    title: project44
+    url: https://www.project44.com/
+  fourkites:
+    title: FourKites
+    url: https://www.fourkites.com/
+  cleo-edi:
+    title: Cleo integration
+    url: https://www.cleo.com/
+  sap-tm-settle:
+    title: SAP TM settlement
+    url: https://www.sap.com/products/scm/transportation-logistics.html
+  transporeon:
+    title: Transporeon
+    url: https://www.transporeon.com/
+  fmcsa:
+    title: FMCSA SAFER
+    url: https://www.fmcsa.dot.gov/

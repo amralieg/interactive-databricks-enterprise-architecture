@@ -1,0 +1,890 @@
+name: Restaurants
+description: 'Restaurant and foodservice operators: POS and kitchen execution, inventory and labor, franchise performance and delivery marketplace integration.'
+sources:
+  - name: POS & Kitchen
+    icon: market
+    tiles:
+      - name: NCR Aloha POS
+        icon: market
+        summary: Guest checks, modifiers, voids and payment tenders from dine-in and bar.
+        citations:
+          - ncr-aloha
+        category: Restaurant POS
+        what_it_is: Captures guest checks, modifiers, voids, comps and payment tenders across dine-in, bar and counter service.
+        who_uses_it: Store operations, Shift managers and Loss prevention teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly polling extracts
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of checks/sec at peak
+            interval: Continuous (POS transactions)
+      - name: Toast Restaurant POS
+        icon: partner
+        summary: Full-service and QSR transactions with online ordering integration.
+        citations:
+          - toast
+        category: Restaurant POS
+        what_it_is: Cloud POS for full-service and QSR that unifies in-store checks with online and app ordering on one platform.
+        who_uses_it: Store operations, Digital ordering and Menu management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of orders/sec at peak
+            interval: Continuous (API / webhook)
+      - name: QSR Automations KDS
+        icon: stream
+        summary: Kitchen display timing, bump events and course sequencing.
+        citations:
+          - qsr-automations
+        category: Kitchen Display System (KDS)
+        what_it_is: Drives kitchen display timing, bump events and course sequencing so ticket and prep times can be measured.
+        who_uses_it: Kitchen operations, Speed-of-service and Operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of bump events/min at peak
+            interval: Continuous (kitchen events)
+  - name: Back Office & ERP
+    icon: erp
+    tiles:
+      - name: Restaurant365
+        icon: erp
+        summary: AP, inventory, scheduling and store P&L for multi-unit operators.
+        citations:
+          - r365
+        category: Restaurant Back-Office / ERP
+        what_it_is: Restaurant-specific ERP covering accounts payable, inventory, scheduling and store-level P&L for multi-unit operators.
+        who_uses_it: Finance, Controllers and Above-store operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-8 GB/day
+            interval: Nightly close + intraday deltas
+      - name: CrunchTime Inventory
+        icon: sheet
+        summary: Food counts, theoretical usage and waste tracking by store.
+        citations:
+          - crunchtime
+        category: Inventory & Food-Cost Management
+        what_it_is: Tracks food counts, theoretical versus actual usage and waste by store to drive food-cost control.
+        who_uses_it: Finance, Kitchen operations and Purchasing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day counts + usage
+            interval: Daily counts + period close
+      - name: SAP Business One
+        icon: db
+        summary: Franchise billing, royalties and consolidated financial close.
+        citations:
+          - sap-b1
+        category: Financial / ERP System
+        what_it_is: Handles franchise billing, royalty accruals and the consolidated financial close for the operator.
+        who_uses_it: Finance, Franchise accounting and Treasury teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch + period close
+  - name: Labor & Scheduling
+    icon: people
+    tiles:
+      - name: HotSchedules
+        icon: people
+        summary: Shift schedules, punches and labor compliance across locations.
+        citations:
+          - hotschedules
+        category: Workforce Scheduling System
+        what_it_is: Builds shift schedules, captures punches and enforces labor-compliance rules across store locations.
+        who_uses_it: Store managers, Above-store operations and HR compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB to 2 GB/day
+            interval: Hourly punch + schedule sync
+      - name: Deputy Workforce
+        icon: chart
+        summary: Time and attendance, leave and wage rules for hourly teams.
+        citations:
+          - deputy
+        category: Time & Attendance Platform
+        what_it_is: Records time and attendance, leave and wage rules for hourly teams and feeds payroll and labor analytics.
+        who_uses_it: Store managers, Payroll and HR teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Hourly / nightly sync
+      - name: Harri Talent Platform
+        icon: custlake
+        summary: Hiring, onboarding and turnover metrics by store and role.
+        citations:
+          - harri
+        category: HR & Talent Management
+        what_it_is: Manages hiring, onboarding and turnover tracking by store and role for high-churn hourly workforces.
+        who_uses_it: HR, Recruiting and Store operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Daily sync
+  - name: Delivery & Loyalty
+    icon: partner
+    tiles:
+      - name: DoorDash Marketplace
+        icon: partner
+        summary: Third-party delivery orders, fees and customer ratings by store.
+        citations:
+          - doordash
+        category: Delivery Marketplace
+        what_it_is: Third-party delivery marketplace supplying orders, commission and fee detail, refunds and customer ratings per store.
+        who_uses_it: Digital & delivery, Store operations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-3 GB/day orders + payouts
+            interval: Hourly orders + daily payout files
+      - name: Uber Eats Merchant
+        icon: api
+        summary: Delivery channel orders, adjustments and payout statements.
+        citations:
+          - uber-eats
+        category: Delivery Marketplace
+        what_it_is: Delivery channel supplying orders, adjustments and payout statements reconciled against store sales.
+        who_uses_it: Digital & delivery, Store operations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-3 GB/day
+            interval: Hourly orders + daily payouts
+      - name: Paytronix Loyalty
+        icon: custlake
+        summary: Guest profiles, offers redeemed and visit frequency.
+        citations:
+          - paytronix
+        category: Loyalty & Guest Engagement
+        what_it_is: Holds guest profiles, offer redemptions and visit frequency behind loyalty and win-back programs.
+        who_uses_it: Marketing, Loyalty and CRM teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (redemption events)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Franchisee P&L Mart
+        icon: fed
+        summary: Franchise unit economics left at franchisees and queried in place under Unity Catalog.
+        category: Franchise Financial Data Warehouse
+        what_it_is: Franchise unit-economics marts left at franchisees and queried in place through federation rather than centralised.
+        who_uses_it: Franchise business consultants, Finance and Franchise development teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale per franchisee
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Weather & Events API
+        icon: globe
+        summary: Local weather and event calendars consumed inbound for demand forecasting.
+        category: Weather & Events Data
+        what_it_is: Supplies local forecasts and event calendars used as demand-forecasting features for prep, ordering and staffing.
+        who_uses_it: Operations, Forecasting scientists and Store managers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: sub-GB/day
+            interval: Hourly / daily pulls
+      - name: Commodity Price Feeds
+        icon: market
+        summary: Protein and produce indices normalised for menu engineering alerts.
+        citations:
+          - usda-ams
+        category: Commodity Price Index
+        what_it_is: Normalises protein and produce price indices into food-cost and menu-engineering alerts.
+        who_uses_it: Finance, Purchasing and Menu strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Daily index files
+      - name: Health Dept Inspections
+        icon: gavel
+        summary: Municipal inspection scores parsed for franchise compliance monitoring.
+        category: Regulatory Inspection Data
+        what_it_is: Parses municipal health-inspection scores and violations for franchise food-safety and compliance monitoring.
+        who_uses_it: Franchise compliance, Food safety and Operations teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: sub-GB/day
+            interval: Weekly / on publication
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Brand Leadership
+        mark: Genie One
+        summary: The CEO on comparable sales and franchise growth; the CFO on food and labor cost percent when commodity prices and hourly wages spike.
+        uses:
+          - - Genie One
+            - Ask what yesterday's comp sales were by banner without waiting on operations.
+          - - AI/BI
+            - Sales, labor and margin on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "comp" means one thing across POS and ERP.
+        sub:
+          - name: CEO
+            cares: comparable sales, franchise growth and the trade between new units and unit margin.
+          - name: CFO
+            cares: prime cost, cash and food and labor exposure when commodities and wages spike.
+          - name: Chief Brand Officer
+            cares: menu strategy, LTO cadence and the guest brand promise across banners.
+        ucs:
+          - Menu Engineering
+          - Demand Forecasting
+          - New Store Analytics
+      - name: Operations
+        mark: Lakehouse//RT
+        summary: Regional directors on speed of service, void rates and shift execution, watching ticket times and order accuracy against the operations plan.
+        uses:
+          - - Store Performance
+            - Ticket times and void pareto before the ops call.
+          - - Lakehouse//RT
+            - Kitchen bump events at service latency.
+          - - AI/BI
+            - Speed and accuracy on governed definitions.
+        sub:
+          - name: VP Operations
+            cares: speed of service, order accuracy and execution against the operations plan.
+          - name: Regional Director
+            cares: store-level void rates, ticket times and shift execution on the ground.
+          - name: Above-Store Coach
+            cares: coaching underperforming stores on labor deployment and throughput.
+        ucs:
+          - Demand Forecasting
+          - Labor Optimisation
+          - Speed of Service
+      - name: Finance & Accounting
+        mark: AI/BI
+        summary: Controllers on food cost percent, cash over-short and franchise royalties, tracking prime cost against budget before period close.
+        uses:
+          - - Food Cost Dashboard
+            - Theoretical versus actual usage before period close.
+          - - AI/BI
+            - P&L and prime cost on certified Metric Views.
+          - - Genie One
+            - Ask which stores missed food cost budget last week.
+        sub:
+          - name: Controller
+            cares: food cost percent, prime cost and cash over-short against budget.
+          - name: FP&A
+            cares: store P&L forecasting and the variance behind every margin miss.
+          - name: Loss Prevention
+            cares: void, comp and refund patterns by employee and shift.
+        ucs:
+          - Food Cost Control
+          - Shrink & Void Control
+          - Menu Engineering
+      - name: Marketing & Loyalty
+        mark: CustomerLake
+        summary: Brand teams on offers, LTO performance and guest retention, tracking redemption lift and visit frequency across the loyalty base.
+        uses:
+          - - Loyalty Campaign Hub
+            - Offer redemption and lift before national promos launch.
+          - - CustomerLake
+            - Guest segments without copying loyalty DB elsewhere.
+          - - Model Serving
+            - Churn models scored on visit patterns.
+        sub:
+          - name: CMO
+            cares: brand campaigns, LTO performance and national promo return.
+          - name: Loyalty Manager
+            cares: redemption lift, visit frequency and points liability across the base.
+          - name: Digital & Delivery
+            cares: app orders, marketplace mix and third-party channel economics.
+        ucs:
+          - Guest Churn
+          - Delivery Channel Mix
+          - Menu Engineering
+      - name: Franchise Development
+        mark: Apps
+        summary: Franchise leadership on unit economics, compliance and new store pipeline, tracking unit-level P&L and audit scores by franchisee.
+        uses:
+          - - Franchise Scorecard
+            - Unit P&L and audit scores by franchisee.
+          - - Apps
+            - Compliance workflows on governed operations data.
+          - - Unity Catalog
+            - One store definition across franchise and corporate.
+        sub:
+          - name: VP Franchise Development
+            cares: the new-unit pipeline and franchisee selection and growth.
+          - name: Franchise Business Consultant
+            cares: unit economics, audit scores and compliance by franchisee.
+          - name: Site Selection
+            cares: trade-area analysis and the pro forma behind each new store.
+        ucs:
+          - Franchise Compliance
+          - New Store Analytics
+          - Food Cost Control
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the POS, KDS, inventory and delivery-platform feeds; own the Bronze to Silver path and the pager when a store pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for POS, back-office and delivery sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on check and punch feeds.
+          - - Lakewatch
+            - Freshness on the comp sales and food cost tables ops reads.
+        sub:
+          - name: Ingestion Engineer
+            cares: POS, KDS, inventory and delivery connectors and the Bronze landing.
+          - name: Pipeline Owner
+            cares: the Bronze to Silver path and the pager when a store feed breaks.
+          - name: Platform Admin
+            cares: Unity Catalog permissions and cost across store and franchise data.
+        ucs:
+          - Demand Forecasting
+          - Speed of Service
+          - Delivery Channel Mix
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand-forecast, labor-optimisation, menu-engineering and guest-churn models, and whether they still hold six months after deployment across stores.
+        uses:
+          - - Feature Store
+            - Traffic and weather features read identically in training and serving.
+          - - MLflow
+            - Every forecast and churn run tracked for audit and reproduction.
+          - - Model Serving
+            - Demand and churn models scored in the scheduling and loyalty path.
+        sub:
+          - name: Forecasting Scientist
+            cares: store and daypart demand and labor models tuned to weather and events.
+          - name: Personalisation Scientist
+            cares: guest churn and offer models scored on visit patterns.
+          - name: MLOps Engineer
+            cares: whether a forecast still holds six months on across hundreds of stores.
+        ucs:
+          - Demand Forecasting
+          - Labor Optimisation
+          - Guest Churn
+          - Menu Engineering
+      - name: App Developers
+        mark: Apps
+        summary: Ship the store performance, food cost and franchise applications operators and finance work in, hosted next to governed store data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for schedule state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a purchase order against governed tools.
+        sub:
+          - name: Full-Stack Developer
+            cares: the store performance, food cost and franchise screens teams work in.
+          - name: Platform Engineer
+            cares: Lakebase schedule state and governed writeback to stores.
+          - name: Agent Developer
+            cares: agents that draft a purchase order against governed tools.
+        ucs:
+          - Food Cost Control
+          - Franchise Compliance
+          - Speed of Service
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and shift updates in the channel ops already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Store Writeback
+    icon: opdb
+    tiles:
+      - name: POS Menu Push
+        icon: market
+        summary: Approved menu and price changes distributed to stores from governed configs.
+        citations:
+          - toast
+      - name: Schedule Publish
+        icon: people
+        summary: Optimised shift plans written back to scheduling before the week locks.
+        citations:
+          - hotschedules
+      - name: Inventory Orders
+        icon: erp
+        summary: Suggested purchase orders raised from theoretical usage variances.
+        citations:
+          - crunchtime
+  - name: Franchise & Delivery
+    icon: partner
+    tiles:
+      - name: Franchisee Portal
+        icon: share
+        summary: Scorecards and benchmarks shared to franchisees over Delta Sharing.
+        citations:
+          - r365
+      - name: Delivery Platform API
+        icon: api
+        summary: Menu availability and prep times synced to marketplaces from governed store state.
+        citations:
+          - doordash
+      - name: Supplier Portal
+        icon: partner
+        summary: Distributor case fills exchanged without emailed order spreadsheets.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Food Safety Audits
+        icon: gavel
+        summary: HACCP and health inspection records produced from governed operations tables.
+      - name: Franchise Disclosure
+        icon: share
+        summary: Unit economic summaries filed from contracted Gold products.
+        citations:
+          - sap-b1
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Franchisees, auditors and partners reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Store Performance
+        icon: gauge
+        short: Comp sales live
+        summary: Ticket times, voids and daypart sales on Databricks Apps over Lakebase.
+      - name: Food Cost Dashboard
+        icon: sheet
+        short: Prime cost
+        summary: Theoretical versus actual food cost before period close.
+      - name: Loyalty Campaign Hub
+        icon: custlake
+        short: Offer lift
+        summary: Redemption and incremental visits before national promos launch.
+      - name: Franchise Scorecard
+        icon: partner
+        short: Unit economics
+        summary: P&L, audit scores and compliance by franchisee on one surface.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Comp Sales & Operations
+        icon: aibi
+        summary: Comparable sales, speed of service and order accuracy on certified Metric Views.
+        kpis:
+          - Comparable sales
+          - Ticket time
+          - Order accuracy
+          - Void rate
+          - Transactions per hour
+        teams:
+          - Operations
+          - Brand Leadership
+          - Regional Director
+      - name: Prime Cost & Margin
+        icon: aibi
+        summary: Food cost, labor percent and prime cost against budget by store and period.
+        kpis:
+          - Food cost percent
+          - Labor percent
+          - Prime cost
+          - Waste percent
+          - Theoretical variance
+        teams:
+          - Finance & Accounting
+          - Controller
+          - FP&A
+      - name: Delivery & Loyalty
+        icon: aibi
+        summary: Channel mix, marketplace margin and loyalty engagement across the base.
+        kpis:
+          - Delivery channel mix
+          - Net margin per check
+          - Redemption lift
+          - Visit frequency
+          - Points liability
+        teams:
+          - Marketing & Loyalty
+          - Digital & Delivery
+          - Loyalty Manager
+      - name: Franchise Scorecard
+        icon: aibi
+        summary: Unit economics, audit scores and new-store ramp by franchisee.
+        kpis:
+          - Unit-level P&L
+          - Audit score
+          - Compliance rate
+          - New-store ramp
+          - Comparable sales
+        teams:
+          - Franchise Development
+          - Franchise Business Consultant
+          - Brand Leadership
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Store Performance Agent
+        icon: genie
+        summary: Ask about comp sales, ticket times and daypart performance across stores in plain language.
+        feeds:
+          - NCR Aloha POS
+          - Toast Restaurant POS
+          - QSR Automations KDS
+          - Sales, labor, margin
+        teams:
+          - Operations
+          - VP Operations
+          - Regional Director
+        questions:
+          - What were comp sales by store and daypart yesterday versus last year?
+          - Which stores have the slowest ticket times this week?
+          - Which stores missed their speed-of-service target during the lunch rush?
+          - How do voids and comps compare across stores this period?
+          - Which regions are trending down on order accuracy?
+      - name: Food Cost & Margin Agent
+        icon: genie
+        summary: Explore theoretical-versus-actual food cost, waste and prime cost across stores.
+        feeds:
+          - CrunchTime Inventory
+          - Restaurant365
+          - NCR Aloha POS
+          - Sales, labor, margin
+        teams:
+          - Finance & Accounting
+          - Controller
+          - Loss Prevention
+        questions:
+          - Which stores missed food-cost budget last week and by how much?
+          - What is the theoretical-versus-actual usage variance by item?
+          - Where is waste highest and which items drive it?
+          - How is prime cost tracking against budget by store?
+          - Which employees and shifts show unusual void and comp patterns?
+      - name: Delivery & Loyalty Agent
+        icon: genie
+        summary: Answer questions on delivery channel mix, marketplace economics and guest loyalty.
+        feeds:
+          - DoorDash Marketplace
+          - Uber Eats Merchant
+          - Paytronix Loyalty
+          - Conformed store, item
+        teams:
+          - Marketing & Loyalty
+          - Loyalty Manager
+          - Digital & Delivery
+        questions:
+          - What is net margin per delivered check by channel and store?
+          - Which delivery platform drives the most profitable orders this month?
+          - Which loyalty members are lapsing before their points expire?
+          - What is redemption lift on the current offer versus baseline?
+          - How does visit frequency differ between loyalty and non-loyalty guests?
+      - name: Franchise & Brand Agent
+        icon: genie
+        summary: Ask about franchise unit economics, audit scores and new-store performance.
+        feeds:
+          - Franchisee P&L Mart
+          - Health Dept Inspections
+          - Restaurant365
+          - Sales, labor, margin
+        teams:
+          - Franchise Development
+          - Franchise Business Consultant
+          - Brand Leadership
+        questions:
+          - Which franchisees are below system-average unit economics?
+          - Which units are at risk on their next field or health audit?
+          - How are new stores ramping against their pro forma?
+          - Which banners are driving comparable-sales growth this quarter?
+          - Where is franchisee compliance slipping across the system?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Demand Forecasting
+        short: Planning
+        icon: chart
+        summary: Store-level sales forecast tuned to weather, events and promos.
+        problem: Store managers guess covers from last year and gut feel, so prep, ordering and staffing are set blind to weather, local events and promotions, and every miss lands as waste or long waits.
+        who_benefits: Operations
+        how_built: POS sales, weather and event feeds land through Lakeflow, demand features are built in Feature Store and scored in Model Serving, and the forecast surfaces by store and daypart in Store Performance.
+        components:
+          - Store Performance
+          - Weather & Events API
+          - Feature Store
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Accelerate demand planning from 4.5 hours to under 1 hour with Databricks
+            url: https://www.databricks.com/blog/2021/01/28/how-to-accelerate-demand-planning-from-4-5-hours-to-under-1-hour-with-azure-databricks.html
+      - name: Labor Optimisation
+        short: Scheduling
+        icon: people
+        summary: Shift plans matched to forecasted traffic without overtime creep.
+        problem: Schedules are built on manager intuition days ahead, so peaks are understaffed and slow shifts carry idle labor, and overtime creeps in wherever the plan and real traffic drift apart.
+        who_benefits: Operations
+        how_built: Forecasted traffic scored in Model Serving drives shift plans that respect wage rules, written back to HotSchedules before the week locks with roster state held in Lakebase.
+        components:
+          - Store Performance
+          - HotSchedules
+          - Model Serving
+          - Feature Store
+          - Lakebase
+        stories:
+          - title: Dave & Buster's modernizes analytics to align labor with demand
+            url: https://www.databricks.com/blog/dave-and-busters-successful-analytics-platform-modernization
+      - name: Food Cost Control
+        short: Margin
+        icon: sheet
+        summary: Waste and portion variance attacked with theoretical usage evidence.
+        problem: Food cost is reconciled long after the period closes, so waste, over-portioning and yield loss are found in hindsight when the money is gone and no one can trace which store or item drove it.
+        who_benefits: Finance & Accounting
+        how_built: Counts, theoretical usage and purchases from CrunchTime Inventory conform on Delta Lake under Unity Catalog, and the Food Cost Dashboard shows theoretical-versus-actual variance by store before close.
+        components:
+          - Food Cost Dashboard
+          - CrunchTime Inventory
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Gousto gains near real-time inventory and fulfillment visibility on Databricks
+            url: https://www.databricks.com/customers/gousto
+      - name: Menu Engineering
+        short: Profitability
+        icon: product
+        summary: Items ranked by contribution margin and popularity not gut feel.
+        problem: Menu decisions lean on gut feel and last quarter's bestsellers, so low-margin items stay on the board and high-margin dishes go unpromoted because item sales and true recipe cost never meet in one place.
+        who_benefits: Brand Leadership
+        how_built: POS item sales joined to recipe cost on Delta Lake rank each item by contribution margin and popularity in AI/BI, so Genie One can answer which items to feature, reprice or cut.
+        components:
+          - Food Cost Dashboard
+          - NCR Aloha POS
+          - AI/BI
+          - Genie One
+          - Delta Lake
+        stories:
+          - title: PAR Technology builds AI-powered restaurant intelligence on Databricks
+            url: https://www.databricks.com/customers/par-technology/genie
+      - name: Speed of Service
+        short: Operations
+        icon: stream
+        summary: Kitchen and drive-thru times improved with bump-to-ticket analytics.
+        problem: Slow tickets and drive-thru lanes are only felt at the register, so managers coach on anecdotes while the bump and timing data that shows where seconds are lost stays trapped in the kitchen display.
+        who_benefits: Operations
+        how_built: Kitchen bump and drive-thru timing events stream from QSR Automations KDS into Lakehouse//RT, and Store Performance tracks ticket and lane times by store and daypart against the service target.
+        components:
+          - Store Performance
+          - QSR Automations KDS
+          - Lakehouse//RT
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Dave & Buster's improves speed of service with unified analytics
+            url: https://www.databricks.com/blog/dave-and-busters-successful-analytics-platform-modernization
+      - name: Delivery Channel Mix
+        short: Digital
+        icon: partner
+        summary: Marketplace fees and order mix optimised for net margin per store.
+        problem: Third-party delivery adds orders but commissions, promos and refunds bury the real margin, so operators cannot see which channel or store actually makes money on a delivered check.
+        who_benefits: Marketing & Loyalty
+        how_built: Order, fee and payout feeds from DoorDash Marketplace and Uber Eats Merchant conform on Delta Lake, and margin per channel and store is modeled so operators shift mix toward the platforms that net most.
+        components:
+          - DoorDash Marketplace
+          - Uber Eats Merchant
+          - AI/BI
+          - Delta Lake
+          - Model Serving
+        stories:
+          - title: iFood optimizes delivery economics with Databricks and Tableau
+            url: https://www.databricks.com/customers/ifood
+      - name: Guest Churn
+        short: Loyalty
+        icon: custlake
+        summary: Lapsed guests identified before loyalty points expire.
+        problem: Lapsing guests are noticed only once visits have already stopped, so loyalty points expire unredeemed and win-back offers land after the guest has moved on to a competitor.
+        who_benefits: Marketing & Loyalty
+        how_built: Visit and redemption history from Paytronix Loyalty land in CustomerLake, churn features are built in Feature Store and scored in Model Serving, and win-back offers fire from the Loyalty Campaign Hub before points lapse.
+        components:
+          - Loyalty Campaign Hub
+          - Paytronix Loyalty
+          - CustomerLake
+          - Model Serving
+          - Feature Store
+        stories:
+          - title: Kard drives customer loyalty with hyper-personalized rewards
+            url: https://www.databricks.com/customers/kard
+          - title: Databricks and Stitch turn data into QSR marketing performance
+            url: https://www.databricks.com/blog/databricks-and-stitch-marketing-activation
+      - name: Franchise Compliance
+        short: Audit
+        icon: gavel
+        summary: Food safety and ops standards scored before field audits.
+        problem: Food-safety and brand-standard gaps surface at the field audit or the health inspection, when a failing store is already a liability and there was no early signal to fix it in time.
+        who_benefits: Franchise Development
+        how_built: Inspection scores, brand-standard checks and store operations conform under Unity Catalog, and the Franchise Scorecard flags at-risk units so issues are corrected before the field audit lands.
+        components:
+          - Franchise Scorecard
+          - Health Dept Inspections
+          - Restaurant365
+          - Unity Catalog
+          - AI/BI
+      - name: Shrink & Void Control
+        short: Loss prevention
+        icon: gauge
+        summary: Suspicious void and comp patterns surfaced by employee and shift.
+        problem: Voids, comps and refunds are normal until they are not, so theft and sweethearting hide in the noise and a manager cannot tell an honest correction from a pattern worth investigating.
+        who_benefits: Finance & Accounting
+        how_built: Void, comp and refund events from NCR Aloha POS conform on Delta Lake and anomaly models in Model Serving surface suspicious patterns by employee, shift and store for loss-prevention review.
+        components:
+          - Store Performance
+          - NCR Aloha POS
+          - Model Serving
+          - AI Functions
+          - Delta Lake
+      - name: New Store Analytics
+        short: Growth
+        icon: globe
+        summary: Ramp curves and trade-area performance scored against pro forma.
+        problem: New units are judged on a pro forma built before opening, so a site that under-ramps looks fine for months and the trade-area and cannibalization signals that would explain it are never assembled.
+        who_benefits: Franchise Development
+        how_built: Ramp curves, trade-area traffic and comparable-store data conform on Delta Lake and models score each opening against its pro forma in the Franchise Scorecard so a slow ramp is caught early.
+        components:
+          - Franchise Scorecard
+          - Weather & Events API
+          - AI/BI
+          - Model Serving
+          - Delta Lake
+medallion:
+  Bronze:
+    short: Raw ticket and labor
+    summary: POS checks, kitchen display events, inventory counts, timeclock punches and delivery platform orders, landed exactly as received so a ticket or a shift can always be replayed as it stood.
+  Silver:
+    short: Conformed store, item
+    summary: Stores, menu items, employees and shifts resolved into single conformed entities across POS, back-office and delivery systems, with voids and comps reconciled and channel orders stitched to one guest check.
+  Gold:
+    short: Sales, labor, margin
+    summary: 'Contracted products operations and finance run on: comparable sales, labor percent and food cost percent by store and daypart.'
+citation_index:
+  ncr-aloha:
+    title: NCR Aloha POS
+    url: https://www.ncr.com/restaurants/aloha-pos
+  toast:
+    title: Toast POS
+    url: https://pos.toasttab.com/
+  qsr-automations:
+    title: QSR Automations
+    url: https://www.qsrautomations.com/
+  r365:
+    title: Restaurant365
+    url: https://www.restaurant365.com/
+  crunchtime:
+    title: CrunchTime
+    url: https://www.crunchtime.com/
+  sap-b1:
+    title: SAP Business One
+    url: https://www.sap.com/products/erp/business-one.html
+  hotschedules:
+    title: HotSchedules
+    url: https://www.hotschedules.com/
+  deputy:
+    title: Deputy
+    url: https://www.deputy.com/
+  harri:
+    title: Harri
+    url: https://harri.com/
+  doordash:
+    title: DoorDash for Merchants
+    url: https://merchants.doordash.com/
+  uber-eats:
+    title: Uber Eats Manager
+    url: https://merchants.ubereats.com/
+  paytronix:
+    title: Paytronix
+    url: https://www.paytronix.com/
+  usda-ams:
+    title: USDA AMS Market News
+    url: https://www.ams.usda.gov/market-news

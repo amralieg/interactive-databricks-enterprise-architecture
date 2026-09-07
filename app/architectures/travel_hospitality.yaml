@@ -1,0 +1,925 @@
+name: Travel & Hospitality
+description: 'Hotels, resorts and travel sellers: property management, central reservations, revenue management, guest loyalty, and distribution across direct and OTA channels.'
+sources:
+  - name: PMS & Operations
+    icon: erp
+    tiles:
+      - name: Oracle OPERA Cloud
+        icon: erp
+        summary: 'Property management: reservations, housekeeping, folios and night audit.'
+        citations:
+          - opera-cloud
+        category: Property Management System (PMS)
+        what_it_is: System-of-record for reservations, room inventory, housekeeping status and guest folios, and runs the night-audit cycle that closes each business day.
+        who_uses_it: Front office, Housekeeping, Night audit and Revenue teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Night audit + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of events/sec
+            interval: Continuous CDC (reservations, status)
+      - name: Mews PMS
+        icon: apps
+        summary: Cloud PMS for boutique and multi-property groups with open APIs.
+        citations:
+          - mews
+        category: Property Management System (PMS)
+        what_it_is: Cloud-native PMS for boutique and multi-property groups, exposing reservations, folios and guest profiles over open APIs.
+        who_uses_it: Front office and Operations teams at boutique and independent groups.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (API / webhook)
+      - name: Infor HMS
+        icon: db
+        summary: Hotel operations, group blocks and event catering for full-service properties.
+        citations:
+          - infor-hms
+        category: Property Management System (PMS)
+        what_it_is: Full-service hotel operations platform covering reservations, group blocks and event catering for larger properties.
+        who_uses_it: Front office, Group sales and Catering operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-15 GB/day
+            interval: Nightly batch + intraday deltas
+  - name: CRS & Distribution
+    icon: market
+    tiles:
+      - name: Amadeus iHotelier
+        icon: globe
+        summary: Central reservations, rate distribution and channel management.
+        citations:
+          - amadeus-ihotelier
+        category: Central Reservation System (CRS)
+        what_it_is: Holds central availability and rates, distributes them to channels and captures bookings from web, GDS and voice.
+        who_uses_it: Central reservations, Distribution and Revenue management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of booking msgs/sec at peak
+            interval: Continuous (booking notifications)
+      - name: Sabre SynXis
+        icon: partner
+        summary: CRS, booking engine and GDS connectivity for hotel brands.
+        citations:
+          - sabre-synxis
+        category: Central Reservation System (CRS)
+        what_it_is: Central reservation and booking-engine platform connecting brand websites and GDS to a single availability pool.
+        who_uses_it: Distribution, E-commerce and Brand reservations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous (reservation events)
+      - name: SiteMinder Channel
+        icon: api
+        summary: OTA and metasearch connectivity with parity monitoring.
+        citations:
+          - siteminder
+        category: Channel Manager
+        what_it_is: Pushes rates and availability to OTAs and metasearch and pulls bookings back, monitoring rate parity across channels.
+        who_uses_it: Distribution and Revenue management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of ARI + booking msgs/sec
+            interval: Continuous (ARI + bookings)
+  - name: Revenue Management
+    icon: chart
+    tiles:
+      - name: IDeaS G3 RMS
+        icon: market
+        summary: Forecasting, price recommendations and length-of-stay controls.
+        citations:
+          - ideas-rms
+        category: Revenue Management System (RMS)
+        what_it_is: Forecasts demand and recommends optimal rates and length-of-stay controls by segment for each property.
+        who_uses_it: Revenue management and Pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day forecasts + recommendations
+            interval: Multiple optimisation runs daily
+      - name: Duetto GameChanger
+        icon: sheet
+        summary: Open pricing and segment-level optimisation for casinos and resorts.
+        citations:
+          - duetto
+        category: Revenue Management System (RMS)
+        what_it_is: Open-pricing revenue platform optimising rate by segment and channel, tuned for casino and resort demand patterns.
+        who_uses_it: Revenue management and Casino marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Continuous optimisation cycles
+      - name: Lighthouse
+        icon: observ
+        summary: Competitive rate shopping and hotel market demand intelligence.
+        citations:
+          - ota-insight
+        category: Rate Shopping & Market Intelligence
+        what_it_is: Shops competitor rates and market demand signals to benchmark the property's price position against the compset.
+        who_uses_it: Revenue management and Commercial strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs of rate + demand data
+            interval: Multiple shops daily
+  - name: Guest & Loyalty
+    icon: custlake
+    tiles:
+      - name: Salesforce Loyalty
+        icon: custlake
+        summary: Tier status, points accrual and partner earn across the portfolio.
+        citations:
+          - sf-loyalty
+        category: Loyalty Management Platform
+        what_it_is: Manages member tiers, points accrual and redemption and partner-earn transactions across the portfolio.
+        who_uses_it: Loyalty, CRM and Marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (accrual events)
+      - name: Medallia Guest
+        icon: partner
+        summary: Post-stay surveys, sentiment and recovery workflows.
+        citations:
+          - medallia-guest
+        category: Guest Experience & Survey Platform
+        what_it_is: Collects post-stay surveys and sentiment and drives service-recovery workflows tied to the guest and stay.
+        who_uses_it: Guest experience, Front office and Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs of survey + verbatim text
+            interval: Continuous / daily
+      - name: SevenRooms CRM
+        icon: product
+        summary: Restaurant reservations and guest preferences for F&B outlets.
+        citations:
+          - sevenrooms
+        category: Restaurant Reservation & Guest CRM
+        what_it_is: Manages outlet reservations, waitlists and guest preferences for F&B venues within the property.
+        who_uses_it: F&B operations and Restaurant management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (reservation events)
+  - name: Spa & Ancillary
+    icon: product
+    tiles:
+      - name: Book4Time Spa
+        icon: apps
+        summary: Spa and activity scheduling, therapist utilisation and retail attach.
+        citations:
+          - book4time
+        category: Spa & Activity Management System
+        what_it_is: Schedules spa, wellness and activity appointments, tracks therapist utilisation and retail attach to the stay.
+        who_uses_it: Spa operations, Wellness and Ancillary revenue teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Hourly / nightly sync
+      - name: Agilysys InfoGenesis
+        icon: erp
+        summary: Outlet POS for restaurants, bars and room charges to folio.
+        citations:
+          - agilysys-pos
+        category: Food & Beverage POS
+        what_it_is: Point-of-sale for restaurants, bars and outlets, posting F&B checks and room charges back to the guest folio.
+        who_uses_it: F&B operations, Outlet managers and Front office (room charges).
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of checks/sec at peak
+            interval: Continuous (POS transactions)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Ownership Group Marts
+        icon: fed
+        summary: Owner reporting and STR benchmark marts queried in place under Unity Catalog.
+        category: Owner Reporting Data Warehouse
+        what_it_is: Owner-reporting and STR benchmark marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Asset management, Owner relations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: STR Benchmark Feed
+        icon: chart
+        summary: Smith Travel Research comp set occupancy and rate benchmarks.
+        citations:
+          - str
+        category: Hotel Benchmarking Data
+        what_it_is: Provides comp-set occupancy, ADR and RevPAR index benchmarks used to position the property against its competitive market.
+        who_uses_it: Revenue management, Commercial strategy and Owner reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Weekly + monthly benchmark files
+      - name: GDS Booking Messages
+        icon: stream
+        summary: Amadeus and Sabre hotel booking notifications parsed on arrival.
+        citations:
+          - amadeus-ihotelier
+        category: Global Distribution System (GDS)
+        what_it_is: Carries hotel booking, modification and cancellation notifications from travel-agency GDS channels, parsed on arrival.
+        who_uses_it: Distribution and Central reservations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of msgs/sec at peak
+            interval: Continuous message flow
+      - name: Review Aggregator APIs
+        icon: observ
+        summary: TripAdvisor and Google review feeds for reputation monitoring.
+        citations:
+          - medallia-guest
+        category: Online Reputation & Review Data
+        what_it_is: Aggregates public reviews and ratings from TripAdvisor, Google and OTAs for reputation monitoring and recovery.
+        who_uses_it: Guest experience, Marketing and Front office teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: GBs of review text
+            interval: Continuous / daily pulls
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Brand Office
+        mark: Genie One
+        summary: The CEO on RevPAR and gross operating profit; the COO on guest satisfaction and labour productivity across the property portfolio.
+        uses:
+          - - Genie One
+            - Ask what last weekend's RevPAR was without analyst delay.
+          - - AI/BI
+            - RevPAR and occupancy on certified Metric Views.
+          - - Unity Catalog
+            - One room night definition across PMS and finance.
+        sub:
+          - name: CEO
+            cares: portfolio RevPAR and gross operating profit, and the trade between growth and margin.
+          - name: COO
+            cares: guest satisfaction, labour productivity and service consistency across properties.
+          - name: Brand & Development
+            cares: brand standards, franchisee performance and the pipeline of new properties.
+        ucs:
+          - Owner Reporting
+          - Occupancy Forecast
+          - Dynamic Pricing
+      - name: Revenue Management
+        mark: Model Serving
+        summary: Revenue managers on price ladders, overrides and group displacement, defending ADR and occupancy against the compset before rates publish.
+        uses:
+          - - RMS Workbench
+            - Forecast, compset and recommendation history before override.
+          - - Model Serving
+            - Pricing models scored in the distribution path.
+        sub:
+          - name: Director of Revenue
+            cares: ADR, occupancy and RevPAR against the compset and the forecast.
+          - name: Pricing & Distribution
+            cares: rate ladders, channel mix and parity across OTA and direct.
+          - name: Group Revenue
+            cares: block pricing and displacement against transient demand.
+        ucs:
+          - Dynamic Pricing
+          - Occupancy Forecast
+          - Channel Parity
+          - Group Displacement
+      - name: Front Office & Ops
+        mark: Lakehouse//RT
+        summary: GMs and front office on arrivals, housekeeping turn and service recovery, clearing rooms and VIP flags before the guest reaches the desk.
+        uses:
+          - - Property Command
+            - Arrivals, VIP flags and housekeeping status on one screen.
+          - - Lakehouse//RT
+            - Room and task state at front-desk latency.
+        sub:
+          - name: General Manager
+            cares: arrivals, service recovery and the property's guest score.
+          - name: Front Office
+            cares: check-in flow, VIP flags and room readiness at the desk.
+          - name: Housekeeping & F&B Ops
+            cares: room turn, outlet covers and labour matched to forecast.
+        ucs:
+          - Labour Scheduling
+          - Reputation Recovery
+          - Guest Personalization
+      - name: Sales & Groups
+        mark: AI/BI
+        summary: Sales directors on group blocks, catering revenue and conversion, watching pickup pace and wash against the block before the cutoff date.
+        uses:
+          - - AI/BI
+            - Group pace and wash on certified views.
+          - - Genie One
+            - Ask which groups are below pickup pace.
+        sub:
+          - name: Director of Sales
+            cares: group pipeline, conversion and negotiated corporate rates.
+          - name: Group & Events
+            cares: block pickup, catering revenue and wash before the cutoff.
+          - name: Catering & Banquets
+            cares: event-space yield and F&B attach on group business.
+        ucs:
+          - Group Displacement
+          - Occupancy Forecast
+          - Ancillary Attach
+      - name: Marketing & Loyalty
+        mark: CustomerLake
+        summary: CRM teams on campaigns, tier economics and personalisation, scoring offer propensity and tier migration across the guest portfolio.
+        uses:
+          - - Loyalty Console
+            - Offer propensity and tier migration by segment.
+          - - CustomerLake
+            - Guest profiles without copying into a separate CDP.
+        sub:
+          - name: CRM & Loyalty
+            cares: tier economics, points liability and member retention.
+          - name: Guest Marketing
+            cares: segmentation, campaigns and pre-arrival personalisation.
+          - name: Ancillary & Partnerships
+            cares: spa, dining and partner-earn attach across the stay.
+        ucs:
+          - Guest Personalization
+          - Loyalty Tier Migration
+          - Ancillary Attach
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land PMS reservations, CRS availability, POS folios and loyalty transactions; own Bronze to Silver and the pager when a RevPAR table stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for PMS, CRS and loyalty sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on reservation and folio feeds.
+          - - Lakewatch
+            - Freshness on the RevPAR tables the revenue meeting reads.
+        sub:
+          - name: Ingestion Engineering
+            cares: PMS, CRS, POS and loyalty connectors and the Bronze-to-Silver path.
+          - name: Pipeline Reliability
+            cares: freshness and the pager when a RevPAR table stalls.
+          - name: Data Quality
+            cares: expectations on reservation and folio feeds before Gold publishes.
+        ucs:
+          - Dynamic Pricing
+          - Occupancy Forecast
+          - Owner Reporting
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand-forecast, dynamic-pricing, personalisation and group-displacement models, and whether they still hold as compset and channel mix shift.
+        uses:
+          - - Feature Store
+            - Guest and rate features read identically in training and serving.
+          - - MLflow
+            - Every forecast and pricing experiment tracked for audit.
+          - - Model Serving
+            - Pricing and offer models scored in the distribution path.
+        sub:
+          - name: Revenue Science
+            cares: demand-forecast and dynamic-pricing models against compset and mix.
+          - name: Personalisation Science
+            cares: offer-propensity and tier-migration models across the guest base.
+          - name: MLOps
+            cares: training-serving parity and whether a model still holds in season.
+        ucs:
+          - Occupancy Forecast
+          - Guest Personalization
+          - Loyalty Tier Migration
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Property Command, RMS Workbench and Loyalty Console apps revenue and front-office teams work in, next to governed PMS data.
+        uses:
+          - - Apps
+            - Property screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for arrival and offer state writes.
+          - - Agent Bricks
+            - Agents that draft rate moves against governed tools.
+        sub:
+          - name: Front-of-House Apps
+            cares: Property Command arrivals, VIP and housekeeping screens.
+          - name: Commercial Apps
+            cares: RMS Workbench and Group Sales Hub for revenue and sales teams.
+          - name: Guest & Loyalty Apps
+            cares: Loyalty Console offers and stay history on governed data.
+        ucs:
+          - Reputation Recovery
+          - Dynamic Pricing
+          - Ancillary Attach
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Portfolio and property dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for RevPAR and occupancy in the revenue meeting channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Revenue science notebooks against governed PMS and RMS data.
+  - name: Distribution & OTA
+    icon: partner
+    tiles:
+      - name: Channel Rate API
+        icon: api
+        summary: Rate and availability pushed to OTAs and metasearch.
+        citations:
+          - siteminder
+      - name: GDS Availability
+        icon: globe
+        summary: ARI updates to Amadeus and Sabre for travel agency bookings.
+        citations:
+          - sabre-synxis
+      - name: Corporate Travel Portal
+        icon: share
+        summary: Negotiated rates and booking rules shared to TMC partners.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: RMS Price Push
+        icon: market
+        summary: Recommended rates written back to CRS and channel manager.
+        citations:
+          - ideas-rms
+      - name: Housekeeping Tasks
+        icon: apps
+        summary: Room status and task lists pushed to attendant devices.
+        citations:
+          - opera-cloud
+      - name: Guest Pre-arrival
+        icon: custlake
+        summary: Upsell offers and preferences written to the arrival profile.
+        citations:
+          - mews
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Tourism Tax Filings
+        icon: gavel
+        summary: Occupancy and tourism taxes filed from night audit.
+        citations:
+          - opera-cloud
+      - name: Franchise Reporting
+        icon: share
+        summary: Brand-mandated KPIs submitted from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Portfolio performance products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Owners and brands reading live KPIs via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Property Command
+        icon: gauge
+        short: Front office
+        summary: Arrivals, VIP flags, housekeeping and service issues on Databricks Apps over Lakebase.
+      - name: RMS Workbench
+        icon: market
+        short: Pricing decisions
+        summary: Forecast, compset position and override history before rates publish.
+      - name: Loyalty Console
+        icon: custlake
+        short: Guest CRM
+        summary: Tier status, offer propensity and stay history for personalised engagement.
+      - name: Group Sales Hub
+        icon: sheet
+        short: Blocks & events
+        summary: Group pickup, catering revenue and wash risk before the cutoff date.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: RevPAR & Occupancy
+        icon: aibi
+        summary: Portfolio RevPAR, ADR and occupancy on certified revenue Metric Views.
+        kpis:
+          - RevPAR
+          - ADR
+          - Occupancy
+          - RevPAR index
+          - Booking pace
+        teams:
+          - Revenue Management
+          - CEO & Brand Office
+          - Sales & Groups
+      - name: Guest Experience & Reputation
+        icon: aibi
+        summary: Survey scores, sentiment and recovery throughput across properties.
+        kpis:
+          - Guest satisfaction score
+          - Net promoter score
+          - Detractor recovery rate
+          - Review rating
+          - Response time
+        teams:
+          - Front Office & Ops
+          - Marketing & Loyalty
+          - General Manager
+      - name: Loyalty & Ancillary
+        icon: aibi
+        summary: Loyalty tier movement, points liability and ancillary attach across the stay.
+        kpis:
+          - Active members
+          - Tier migration
+          - Points liability
+          - Ancillary attach rate
+          - Redemption rate
+        teams:
+          - Marketing & Loyalty
+          - CRM & Loyalty
+          - Ancillary & Partnerships
+      - name: Distribution & Channel
+        icon: aibi
+        summary: Channel mix, cost of distribution and parity across OTA, GDS and direct.
+        kpis:
+          - Channel mix
+          - Cost of distribution
+          - Direct booking share
+          - Net ADR by channel
+          - Parity breaches
+        teams:
+          - Revenue Management
+          - Pricing & Distribution
+          - CEO & Brand Office
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Revenue & Distribution Agent
+        icon: genie
+        summary: Ask about RevPAR, ADR, pace and channel mix across properties in plain language.
+        feeds:
+          - IDeaS G3 RMS
+          - SiteMinder Channel
+          - Amadeus iHotelier
+          - RevPAR, ADR, occupancy
+        teams:
+          - Revenue Management
+          - Director of Revenue
+          - Pricing & Distribution
+        questions:
+          - What was RevPAR by property and segment last weekend versus the same weekend last year?
+          - Which channels are driving the most bookings this week, and at what net ADR?
+          - Where is booking pace behind the forecast for the next 30 days?
+          - Which properties are out of rate parity against the compset right now?
+          - How does length-of-stay mix compare to the same period last year?
+      - name: Guest 360 & Loyalty Agent
+        icon: genie
+        summary: Explore guest profiles, loyalty tiers and stay history across the portfolio.
+        feeds:
+          - Salesforce Loyalty
+          - Oracle OPERA Cloud
+          - SevenRooms CRM
+          - Conformed guest, stay, room
+        teams:
+          - Marketing & Loyalty
+          - CRM & Loyalty
+          - Guest Marketing
+        questions:
+          - What is the total stay value of this guest across every property in the portfolio?
+          - Which loyalty members are at risk of tier downgrade before their renewal?
+          - Which high-value guests have an upcoming arrival with no upsell offered?
+          - What is points liability by tier and how has it moved this quarter?
+          - Which guests have strong ancillary attach but no spa booking on their next stay?
+      - name: Property Operations Agent
+        icon: genie
+        summary: Answer questions on arrivals, housekeeping, service recovery and outlet performance.
+        feeds:
+          - Oracle OPERA Cloud
+          - Agilysys InfoGenesis
+          - Medallia Guest
+          - Conformed guest, stay, room
+        teams:
+          - Front Office & Ops
+          - General Manager
+          - Housekeeping & F&B Ops
+        questions:
+          - How many VIP arrivals are due today and are their rooms ready?
+          - Which properties have the longest housekeeping turn times this week?
+          - What are the top guest-complaint drivers by property this month?
+          - How is outlet F&B revenue tracking against covers by daypart?
+          - Which detractor surveys are still open past their recovery SLA?
+      - name: Owner & Portfolio Agent
+        icon: genie
+        summary: Ask about owner statements, NOI and STR index position across the estate.
+        feeds:
+          - Ownership Group Marts
+          - STR Benchmark Feed
+          - RevPAR, ADR, occupancy
+        teams:
+          - CEO & Brand Office
+          - Brand & Development
+          - Revenue Management
+        questions:
+          - How does each property's RevPAR index compare to its compset this month?
+          - What is gross operating profit by property versus budget?
+          - Which owned assets are underperforming their STR fair-share?
+          - How has ancillary revenue per available room trended this year?
+          - What is portfolio occupancy forecast against target for the next quarter?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Dynamic Pricing
+        short: Revenue
+        icon: market
+        summary: Open pricing by segment and channel rather than fixed BAR ladders.
+        problem: Rates move on fixed BAR ladders set days ahead, so when demand or the compset shifts the price is already wrong and revenue managers chase it with manual overrides.
+        who_benefits: Revenue Management
+        how_built: Booking pace, PMS demand and rate-shopping feeds land in Delta Lake, are scored for optimal open pricing in Model Serving, and publish from the RMS Workbench to the channel.
+        components:
+          - RMS Workbench
+          - IDeaS G3 RMS
+          - Lighthouse
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: easyJet modernises airline revenue management on Databricks
+            url: https://www.databricks.com/customers/easyjet/lakebase
+          - title: Amadeus optimizes travel pricing and personalization
+            url: https://www.databricks.com/customers/amadeus
+      - name: Occupancy Forecast
+        short: Planning
+        icon: chart
+        summary: Demand forecast by property, segment and length of stay.
+        problem: Occupancy is projected from last year plus a manager's feel, so staffing, pricing and group decisions rest on a forecast that misses events, weather and shifting booking pace.
+        who_benefits: Revenue Management
+        how_built: Reservation, pace and STR benchmark history become features in Feature Store, scored by Model Serving into a property-segment-LOS forecast tracked in MLflow and read in the RMS Workbench.
+        components:
+          - RMS Workbench
+          - STR Benchmark Feed
+          - Feature Store
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Amadeus forecasts travel demand across the passenger journey
+            url: https://www.databricks.com/customers/amadeus
+          - title: JetBlue accelerates revenue and demand forecasting
+            url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
+      - name: Guest Personalization
+        short: CRM
+        icon: custlake
+        summary: Pre-arrival upsell and in-stay offers scored per guest profile.
+        problem: Booking, stay, spend and preference data sit in separate systems, so pre-arrival and in-stay offers are generic and the guest is treated as a stranger at every property in the portfolio.
+        who_benefits: Marketing & Loyalty
+        how_built: Guest profiles are unified in CustomerLake, offer-propensity features in Feature Store are scored by Model Serving, and ranked offers surface in the Loyalty Console and arrival profile.
+        components:
+          - Loyalty Console
+          - Salesforce Loyalty
+          - CustomerLake
+          - Model Serving
+          - Feature Store
+        stories:
+          - title: Hotels.com personalizes recommendations at scale
+            url: https://www.databricks.com/customers/hotels-com
+          - title: Hilton Grand Vacations unifies guest data for personalization
+            url: https://www.databricks.com/customers/hilton-grand-vacations
+      - name: Reputation Recovery
+        short: Service
+        icon: partner
+        summary: Negative reviews and survey detractors routed to recovery workflows.
+        problem: Negative reviews and survey detractors surface days later across scattered inboxes and portals, so recovery happens after the guest has left and the rating is already public.
+        who_benefits: Front Office & Ops
+        how_built: Review and survey feeds land continuously, AI Functions classify sentiment and severity, and Model Serving routes at-risk guests to recovery tasks in Property Command.
+        components:
+          - Property Command
+          - Medallia Guest
+          - Review Aggregator APIs
+          - AI Functions
+          - Model Serving
+        stories:
+          - title: How AI is redefining the travel and hospitality experience
+            url: https://www.databricks.com/blog/booking-bon-voyage-how-ai-redefining-travel-hospitality-experience
+      - name: Labour Scheduling
+        short: Operations
+        icon: people
+        summary: Housekeeping and F&B labour matched to forecast occupancy.
+        problem: Housekeeping and F&B rosters are built on static templates, so a demand swing leaves rooms unturned and outlets over- or understaffed, driving overtime and slow service recovery.
+        who_benefits: Front Office & Ops
+        how_built: Forecast occupancy and outlet covers from operations feeds are scored in Model Serving against labour standards, and the resulting shift plan is read in Property Command and AI/BI.
+        components:
+          - Property Command
+          - Oracle OPERA Cloud
+          - Agilysys InfoGenesis
+          - Model Serving
+          - AI/BI
+      - name: Channel Parity
+        short: Distribution
+        icon: api
+        summary: Rate and availability parity monitored across OTA and direct.
+        problem: Rates and availability drift out of parity across OTAs, metasearch and direct, so the brand loses the buy box, pays avoidable commission and confuses guests comparing prices.
+        who_benefits: Revenue Management
+        how_built: Distribution and rate-shopping feeds stream into Lakehouse//RT, where AI Functions flag parity breaks against Delta Lake and alert revenue teams before bookings shift.
+        components:
+          - SiteMinder Channel
+          - Lighthouse
+          - Lakehouse//RT
+          - AI Functions
+          - Delta Lake
+      - name: Group Displacement
+        short: Sales
+        icon: sheet
+        summary: Group blocks evaluated against transient opportunity cost.
+        problem: Group blocks are quoted without knowing what transient demand they push out, so sales books low-rate rooms on high-demand dates and displaces revenue the property would have earned.
+        who_benefits: Sales & Groups
+        how_built: Group requests are evaluated against the transient forecast and rate history in Model Serving, and displacement and catering value surface in the Group Sales Hub before the block is signed.
+        components:
+          - Group Sales Hub
+          - IDeaS G3 RMS
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+      - name: Ancillary Attach
+        short: F&B
+        icon: product
+        summary: Spa, dining and experience attach scored at booking and check-in.
+        problem: Spa, dining and experience revenue is left to chance at the desk, so high-intent guests are never offered the add-on that fits and ancillary spend trails the property's real potential.
+        who_benefits: Marketing & Loyalty
+        how_built: Stay and preference data feed attach-propensity features in Feature Store, scored by Model Serving to surface the right spa or dining offer in the Loyalty Console at check-in.
+        components:
+          - Loyalty Console
+          - Book4Time Spa
+          - SevenRooms CRM
+          - Model Serving
+          - Feature Store
+        stories:
+          - title: 'From booking to bon voyage: dynamic offers across the guest journey'
+            url: https://www.databricks.com/blog/booking-bon-voyage-how-ai-redefining-travel-hospitality-experience
+      - name: Loyalty Tier Migration
+        short: Loyalty
+        icon: custlake
+        summary: Tier upgrade and churn risk scored before renewal windows.
+        problem: Loyalty tiers are reviewed in slow batch cycles, so members drift toward downgrade or churn before anyone notices and high-value guests get the same generic nudge as everyone else.
+        who_benefits: Marketing & Loyalty
+        how_built: Accrual, stay and engagement data unify in CustomerLake, and tier-migration and churn models tracked in MLflow are scored by Model Serving into the Loyalty Console before the renewal window.
+        components:
+          - Loyalty Console
+          - Salesforce Loyalty
+          - CustomerLake
+          - Model Serving
+          - MLflow
+        stories:
+          - title: How AI redefines loyalty engagement in travel and hospitality
+            url: https://www.databricks.com/blog/booking-bon-voyage-how-ai-redefining-travel-hospitality-experience
+          - title: MakeMyTrip achieves millisecond personalization at scale
+            url: https://www.databricks.com/blog/how-makemytrip-achieved-millisecond-personalization-scale-databricks
+      - name: Owner Reporting
+        short: Finance
+        icon: erp
+        summary: Owner statements and STR index position from governed night audit.
+        problem: Owner statements and STR index positions are assembled by hand from night-audit exports, so owners wait days for numbers and every management company reconciles a slightly different figure.
+        who_benefits: CEO & Brand Office
+        how_built: Night-audit and benchmark data are conformed under Unity Catalog and published as governed Data Products shared to owners and brands over OpenSharing, so everyone reads one live figure.
+        components:
+          - Ownership Group Marts
+          - STR Benchmark Feed
+          - Unity Catalog
+          - Data Products
+          - OpenSharing
+medallion:
+  Bronze:
+    short: Raw guest and booking feeds
+    summary: PMS reservations, CRS availability, POS folios, loyalty transactions and OTA bookings, landed exactly as received so a rate or a stay can always be replayed.
+  Silver:
+    short: Conformed guest, stay, room
+    summary: Guests, stays, room nights and rate plans resolved into single conformed entities across PMS, CRS and loyalty, with multi-property journeys stitched to one profile.
+  Gold:
+    short: RevPAR, ADR, occupancy
+    summary: 'Contracted products commercial and operations teams run on: RevPAR and ADR by segment, occupancy forecast, guest satisfaction and ancillary attach rate.'
+citation_index:
+  opera-cloud:
+    title: Oracle OPERA Cloud
+    url: https://www.oracle.com/hospitality/hotel-property-management/
+  mews:
+    title: Mews PMS
+    url: https://www.mews.com/
+  infor-hms:
+    title: Infor HMS
+    url: https://www.infor.com/industries/hospitality
+  amadeus-ihotelier:
+    title: Amadeus iHotelier
+    url: https://amadeus.com/en/industries/hotels
+  sabre-synxis:
+    title: Sabre SynXis
+    url: https://www.sabrehospitality.com/
+  siteminder:
+    title: SiteMinder
+    url: https://www.siteminder.com/
+  ideas-rms:
+    title: IDeaS G3 RMS
+    url: https://ideas.com/
+  duetto:
+    title: Duetto
+    url: https://www.duettocloud.com/
+  ota-insight:
+    title: Lighthouse
+    url: https://www.mylighthouse.com/
+  sf-loyalty:
+    title: Salesforce Loyalty Management
+    url: https://www.salesforce.com/products/loyalty-management/
+  medallia-guest:
+    title: Medallia for hospitality
+    url: https://www.medallia.com/industries/hospitality/
+  sevenrooms:
+    title: SevenRooms
+    url: https://sevenrooms.com/
+  book4time:
+    title: Book4Time
+    url: https://www.book4time.com/
+  agilysys-pos:
+    title: Agilysys InfoGenesis
+    url: https://www.agilysys.com/
+  str:
+    title: STR benchmarks
+    url: https://str.com/

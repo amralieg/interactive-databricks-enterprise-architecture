@@ -1,0 +1,977 @@
+name: Advertising
+description: Media buying, campaign delivery, audience targeting, brand safety, and cross-channel attribution across linear, digital, and retail media.
+sources:
+  - name: Ad Platforms & DSP
+    icon: market
+    tiles:
+      - name: Google Campaign Manager
+        icon: erp
+        summary: Campaign trafficking, creative rotation and delivery reporting across display and video inventory.
+        citations:
+          - google-cm360
+        category: Ad Server / Campaign Management
+        what_it_is: Campaign trafficking, creative rotation and delivery reporting across display and video inventory.
+        who_uses_it: Ad operations and Media planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-50 GB/day delivery logs
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k impression events/sec
+            interval: Continuous
+      - name: The Trade Desk
+        icon: market
+        summary: Programmatic buying, audience segments and bid stream across open web and CTV.
+        citations:
+          - trade-desk
+        category: Demand-Side Platform (DSP)
+        what_it_is: Programmatic buying, audience segments and bid stream across open web and CTV.
+        who_uses_it: Programmatic trading and Performance marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day spend + delivery
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k bid events/sec
+            interval: Continuous
+      - name: Meta Ads Manager
+        icon: partner
+        summary: Paid social campaigns, creative variants and conversion events from Meta properties.
+        citations:
+          - meta-ads
+        category: Paid Social Platform
+        what_it_is: Paid social campaigns, creative variants and conversion events from Meta properties.
+        who_uses_it: Paid social and Performance marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of conversion events/sec
+            interval: Continuous
+      - name: Amazon Ads
+        icon: product
+        summary: Sponsored products, brands and display across retail media networks.
+        citations:
+          - amazon-ads
+        category: Retail Media Network
+        what_it_is: Sponsored products, brands and display across retail media networks.
+        who_uses_it: Retail media and Commerce marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day
+            interval: Daily
+  - name: SSP & Inventory
+    icon: stream
+    tiles:
+      - name: Google Ad Manager
+        icon: stream
+        summary: Publisher ad serving, yield management and direct-sold inventory for owned media.
+        citations:
+          - google-ad-manager
+        category: Publisher Ad Server / SSP
+        what_it_is: Publisher ad serving, yield management and direct-sold inventory for owned media.
+        who_uses_it: Publisher yield and Ad operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k ad requests/sec
+            interval: Continuous
+      - name: Magnite SSP
+        icon: market
+        summary: Supply-side auction data, deal IDs and publisher yield across CTV and open web.
+        citations:
+          - magnite
+        category: Supply-Side Platform (SSP)
+        what_it_is: Supply-side auction data, deal IDs and publisher yield across CTV and open web.
+        who_uses_it: Publisher yield and Programmatic teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k auction events/sec
+            interval: Continuous
+      - name: Index Exchange
+        icon: api
+        summary: Header bidding and private marketplace bid requests for premium inventory.
+        citations:
+          - index-exchange
+        category: Ad Exchange / Header Bidding
+        what_it_is: Header bidding and private marketplace bid requests for premium inventory.
+        who_uses_it: Programmatic and Publisher yield teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k bid requests/sec
+            interval: Continuous
+  - name: CRM & Identity
+    icon: custlake
+    tiles:
+      - name: Salesforce Marketing Cloud
+        icon: custlake
+        summary: Email, journey orchestration and first-party audience lists for activation.
+        citations:
+          - sf-marketing-cloud
+        category: Marketing Automation
+        what_it_is: Email, journey orchestration and first-party audience lists for activation.
+        who_uses_it: CRM marketing and Audience operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of engagement events/sec
+            interval: Continuous
+      - name: Adobe Experience Platform
+        icon: custlake
+        summary: Real-time customer profiles, segments and consent state for cross-channel targeting.
+        citations:
+          - adobe-aep
+        category: Customer Data Platform (CDP)
+        what_it_is: Real-time customer profiles, segments and consent state for cross-channel targeting.
+        who_uses_it: Audience operations and Performance marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day profiles + segments
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of profile events/sec
+            interval: Continuous
+      - name: LiveRamp RampID
+        icon: partner
+        summary: Identity resolution and onboarding for privacy-safe audience matching.
+        citations:
+          - liveramp
+        category: Identity Resolution
+        what_it_is: Identity resolution and onboarding for privacy-safe audience matching.
+        who_uses_it: Audience operations and Data science teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day identity graphs
+            interval: Daily
+  - name: Measurement & Safety
+    icon: chart
+    tiles:
+      - name: Nielsen ONE
+        icon: chart
+        summary: Cross-media reach and frequency measurement across linear and digital.
+        citations:
+          - nielsen-one
+        category: Audience Measurement / Ratings
+        what_it_is: Cross-media reach and frequency measurement across linear and digital.
+        who_uses_it: Media planning and Investment teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day panel + ratings
+            interval: Daily
+      - name: IAS Brand Safety
+        icon: gavel
+        summary: Viewability, invalid traffic and brand suitability scoring on every impression.
+        citations:
+          - ias
+        category: Ad Verification / Brand Safety
+        what_it_is: Viewability, invalid traffic and brand suitability scoring on every impression.
+        who_uses_it: Brand safety and Ad verification teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k verification events/sec
+            interval: Continuous
+      - name: AppsFlyer MMP
+        icon: observ
+        summary: Mobile attribution, SKAdNetwork postbacks and fraud signals.
+        citations:
+          - appsflyer
+        category: Mobile Measurement Partner (MMP)
+        what_it_is: Mobile attribution, SKAdNetwork postbacks and fraud signals.
+        who_uses_it: Performance marketing and Fraud operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of postbacks/sec
+            interval: Continuous
+      - name: Kantar Brand Lift
+        icon: ztarget
+        summary: Survey-based brand lift studies tied to exposed and control cohorts.
+        citations:
+          - kantar
+        category: Brand Lift / Survey Measurement
+        what_it_is: Survey-based brand lift studies tied to exposed and control cohorts.
+        who_uses_it: Brand and Marketing analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.1-0.5 GB/day survey results
+            interval: Daily
+  - name: Creative & DAM
+    icon: product
+    tiles:
+      - name: Bynder DAM
+        icon: product
+        summary: Creative assets, rights metadata and version history for trafficking.
+        citations:
+          - bynder
+        category: Digital Asset Management (DAM)
+        what_it_is: Creative assets, rights metadata and version history for trafficking.
+        who_uses_it: Creative operations and Ad operations teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: 0.5-3 GB/day assets + metadata
+            interval: Daily
+      - name: Celtra Creative
+        icon: apps
+        summary: Dynamic creative optimization variants and performance by element.
+        citations:
+          - celtra
+        category: Creative Management / DCO
+        what_it_is: Dynamic creative optimization variants and performance by element.
+        who_uses_it: Creative operations and Performance marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Billing Mart
+        icon: fed
+        summary: Agency billing, rebates and client invoicing marts left in place and queried under Unity Catalog.
+        category: Finance Data Warehouse
+        what_it_is: Agency billing, rebates and client invoicing marts kept in existing warehouses and queried in place through federation.
+        who_uses_it: Finance, Billing and Rebate teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale billing history
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: IAB Tech Lab OpenRTB
+        icon: api
+        summary: Bid request and response logs from programmatic exchanges, parsed into structured auction events.
+        citations:
+          - iab-openrtb
+        category: Programmatic Auction Logs (OpenRTB)
+        what_it_is: Bid request and response logs from programmatic exchanges, parsed into structured auction events.
+        who_uses_it: Programmatic trading and Data science teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M bid events/sec
+            interval: Continuous
+      - name: LiveRamp Data Clean Room
+        icon: partner
+        summary: Privacy-safe overlap and attribution queries against retailer and publisher partners.
+        citations:
+          - liveramp-cleanroom
+        category: Data Clean Room
+        what_it_is: Privacy-safe overlap and attribution queries against retailer and publisher partners.
+        who_uses_it: Audience operations and Measurement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day overlap results
+            interval: Daily
+      - name: Comscore Campaign Ratings
+        icon: chart
+        summary: Digital campaign delivery and demographic composition for guaranteed buys.
+        citations:
+          - comscore
+        category: Digital Audience Measurement
+        what_it_is: Digital campaign delivery and demographic composition for guaranteed buys.
+        who_uses_it: Media planning and Investment teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Daily
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CMO & CFO Office
+        mark: Genie One
+        summary: The CMO on brand share, working-media ratio and ROAS by channel; the CFO on agency fee efficiency and cost per acquisition.
+        uses:
+          - - Genie One
+            - Ask what last quarter's ROAS was by channel without booking analyst time.
+          - - AI/BI
+            - Reach, frequency and ROAS on certified Metric Views.
+          - - Unity Catalog
+            - One definition of spend and conversion across platforms.
+        sub:
+          - name: CMO
+            cares: brand share, working-media ratio and whether ROAS is improving quarter on quarter.
+          - name: CFO
+            cares: agency fee efficiency, cost per acquisition and where working media is leaking.
+          - name: VP Marketing Analytics
+            cares: one certified read on spend, reach and conversion across every platform.
+        ucs:
+          - Cross-Channel Attribution
+          - Brand Lift Measurement
+          - Agency Reconciliation
+      - name: Media Planning
+        mark: AI/BI
+        summary: Channel mix, flighting and budget allocation across linear, digital and retail media, judged on reach, effective CPM and incremental lift.
+        uses:
+          - - Media Mix Model
+            - Scenario planning on incremental lift by channel.
+          - - AI/BI
+            - Reach curves and budget pacing on governed data.
+        sub:
+          - name: Media Planning Director
+            cares: the channel mix and flighting that hit reach and lift at the lowest effective CPM.
+          - name: Investment Lead
+            cares: upfront commitments, guarantees and the trade between reach and frequency.
+          - name: Retail Media Strategist
+            cares: where retail media budget moves sales versus subsidising the retailer.
+        ucs:
+          - Frequency Management
+          - Retail Media Activation
+          - Cross-Channel Attribution
+      - name: Performance Marketing
+        mark: Model Serving
+        summary: Bid management, audience targeting and creative testing across programmatic and paid social, held to CPA, ROAS and viewability targets.
+        uses:
+          - - Bid Optimizer
+            - Real-time bid adjustments against CPA and ROAS targets.
+          - - Model Serving
+            - Conversion propensity scored in the bid path.
+        sub:
+          - name: Programmatic Trader
+            cares: bid modifiers, pacing and viewability against CPA and ROAS targets.
+          - name: Paid Social Lead
+            cares: creative testing and audience matching across Meta and social channels.
+          - name: Audience Ops
+            cares: segment build, suppression and privacy-safe matching for activation.
+        ucs:
+          - Programmatic Bid Optimization
+          - Audience Propensity
+          - Creative DCO
+      - name: Brand Safety
+        mark: Lakehouse//RT
+        summary: Suitability monitoring, invalid-traffic filtering and blocklists, tracked on IVT rate, viewability and brand-safety incident rate.
+        uses:
+          - - Brand Safety Console
+            - Incidents flagged before scale is reached.
+          - - Lakehouse//RT
+            - Live suitability scores at auction latency.
+        sub:
+          - name: Brand Safety Lead
+            cares: suitability, blocklists and keeping the brand off unsafe inventory.
+          - name: Ad Verification Analyst
+            cares: viewability, IVT rate and the incidents that reach scale.
+          - name: Fraud Operations
+            cares: spoofed inventory and bot traffic before it bills or skews models.
+        ucs:
+          - Fraud & IVT Detection
+          - Programmatic Bid Optimization
+      - name: Finance & Billing
+        mark: AI/BI
+        summary: Agency reconciliation, makegoods and client billing, watching over-pacing, rebate accruals and margin on booked media.
+        uses:
+          - - AI/BI
+            - Spend reconciliation and variance to plan.
+          - - Genie One
+            - Ask which campaigns are over-pacing without a finance pull.
+        sub:
+          - name: Billing Manager
+            cares: client invoicing, makegoods and reconciling delivery to the IO.
+          - name: Rebate Analyst
+            cares: agency rebate accruals and volume commitments across platforms.
+          - name: Revenue Controller
+            cares: over-pacing, margin on booked media and variance to plan.
+        ucs:
+          - Agency Reconciliation
+          - Cross-Channel Attribution
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the DSP bid stream, ad-server impression logs, clean-room overlaps and CRM audiences; own Bronze to Silver and the pager when pacing tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for ad servers, DSPs and SaaS marketing sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on impression and conversion feeds.
+          - - Lakewatch
+            - Freshness on the pacing tables planners refresh through the day.
+        sub:
+          - name: Pipeline Engineer
+            cares: Bronze-to-Silver on the bid stream, impression logs and CRM audiences.
+          - name: Streaming Ingest
+            cares: the DSP and ad-server feeds that must not drop during a flight.
+          - name: DataOps On-call
+            cares: the pager when the pacing tables planners refresh all day stall.
+        ucs:
+          - Programmatic Bid Optimization
+          - Cross-Channel Attribution
+          - Privacy-Safe Clean Rooms
+      - name: Data Scientists
+        mark: MLflow
+        summary: Bid-optimisation, conversion-propensity, lookalike and media-mix models, and whether they still hold once cookies deprecate and channels shift.
+        uses:
+          - - Feature Store
+            - Audience and context features read identically in training and the bidder.
+          - - MLflow
+            - Every bid and lift experiment tracked for audit and reproduction.
+          - - Model Serving
+            - Bid and propensity models scored inside the auction path.
+        sub:
+          - name: Bid & Propensity Modeler
+            cares: conversion propensity and bid models that hold in the auction.
+          - name: Media Mix Scientist
+            cares: incremental lift and budget allocation across channels.
+          - name: MLOps
+            cares: reproducible training and serving as cookies deprecate and channels shift.
+        ucs:
+          - Programmatic Bid Optimization
+          - Audience Propensity
+          - Brand Lift Measurement
+      - name: App Developers
+        mark: Apps
+        summary: Ship the campaign command, audience-studio and brand-safety apps the media and finance teams work in, hosted next to governed delivery data.
+        uses:
+          - - Apps
+            - Pacing and audience screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for pacing state and blocklist writes.
+          - - Agent Bricks
+            - Agents that draft budget shifts against governed tools.
+        sub:
+          - name: Full-stack App Dev
+            cares: the pacing, audience and brand-safety screens teams work in.
+          - name: Frontend Engineer
+            cares: fast, governed views over delivery and audience data.
+          - name: Platform DevOps
+            cares: hosting apps next to governed data with no separate web tier.
+        ucs:
+          - Fraud & IVT Detection
+          - Audience Propensity
+          - Agency Reconciliation
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and client dashboards against serverless SQL with Unity Catalog permissions.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for campaign performance answers in the channel planners already work in.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks and IDEs against governed audience and delivery data.
+  - name: Activation & Partners
+    icon: partner
+    tiles:
+      - name: DSP Bid Stream API
+        icon: api
+        summary: Optimized audiences and bid modifiers pushed back to The Trade Desk and DV360.
+        citations:
+          - trade-desk
+      - name: Retail Media Partners
+        icon: partner
+        summary: Audience segments shared to Amazon, Walmart and Instacart via clean room.
+        citations:
+          - amazon-ads
+      - name: Publisher PMP Deals
+        icon: globe
+        summary: Private marketplace packages activated from unified audience definitions.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Budget Pacing Alerts
+        icon: gauge
+        summary: Flight-level pacing adjustments written to trafficking systems before overspend.
+      - name: Creative Trafficking
+        icon: product
+        summary: Winning creative variants pushed to ad servers for rotation.
+        citations:
+          - google-cm360
+      - name: Blocklist Updates
+        icon: gavel
+        summary: Publisher and placement blocks synced to DSPs after safety incidents.
+        citations:
+          - ias
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Ad Transparency Reports
+        icon: gavel
+        summary: Political and issue ad disclosures filed from governed delivery tables.
+      - name: Client Delivery Reports
+        icon: share
+        summary: Guaranteed and bonus delivery reconciled for agency client billing.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Audience and performance products published in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Agency and brand partners reading live tables via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Campaign Command Center
+        icon: gauge
+        short: Cross-channel pacing
+        summary: Live spend, delivery and ROAS across every active flight, flagging flights that will miss guarantee before the IO closes.
+      - name: Audience Studio
+        icon: custlake
+        short: Segment builder
+        summary: First-party segments composed from CRM, web and retail signals, ready for activation.
+      - name: Brand Safety Console
+        icon: gavel
+        short: Suitability monitoring
+        summary: Incidents surfaced by severity with one-click blocklist propagation to buying platforms.
+      - name: Media Mix Workbench
+        icon: chart
+        short: Channel planning
+        summary: Incremental lift scenarios by channel before the annual plan is locked.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Campaign Performance
+        icon: aibi
+        summary: Spend, delivery and ROAS across every active flight on certified views.
+        kpis:
+          - ROAS
+          - CPA
+          - Delivery vs guarantee
+          - Pacing
+          - Working-media ratio
+        teams:
+          - Performance Marketing
+          - Media Planning
+          - CMO & CFO Office
+      - name: Attribution & Reach
+        icon: aibi
+        summary: Cross-channel attribution, reach and frequency on governed identity graphs.
+        kpis:
+          - Multi-touch credit
+          - Reach
+          - Frequency
+          - Incremental lift
+          - Cross-channel CPA
+        teams:
+          - CMO & CFO Office
+          - Media Planning
+          - Data Scientists
+      - name: Brand Safety & Quality
+        icon: aibi
+        summary: Viewability, IVT and suitability on live delivery data.
+        kpis:
+          - Viewability
+          - IVT rate
+          - Brand-safety incidents
+          - Suitability score
+          - Blocked spend
+        teams:
+          - Brand Safety
+          - Performance Marketing
+          - Data Scientists
+      - name: Finance & Reconciliation
+        icon: aibi
+        summary: Pacing, makegoods and margin reconciled to contracted IO terms.
+        kpis:
+          - Over-pacing
+          - Makegood liability
+          - Rebate accruals
+          - Margin on booked media
+          - Variance to plan
+        teams:
+          - Finance & Billing
+          - CMO & CFO Office
+          - App Developers
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Campaign Performance Agent
+        icon: genie
+        summary: Ask about spend, delivery and ROAS across every active flight in plain language.
+        feeds:
+          - Google Campaign Manager
+          - The Trade Desk
+          - Meta Ads Manager
+          - ROAS, reach and attribution
+        teams:
+          - Performance Marketing
+          - Media Planning
+          - Data Scientists
+        questions:
+          - Which flights will miss their guarantee before the IO closes?
+          - What is ROAS by channel this quarter versus last?
+          - Which campaigns are over-pacing right now?
+          - Where is working media leaking across platforms?
+          - Which creatives are driving the best CPA this week?
+      - name: Audience & Identity Agent
+        icon: genie
+        summary: Explore segments, overlap and match rates on governed first-party data.
+        feeds:
+          - Adobe Experience Platform
+          - LiveRamp RampID
+          - LiveRamp Data Clean Room
+          - Conformed campaigns and audiences
+        teams:
+          - Performance Marketing
+          - Media Planning
+          - Data Engineers
+        questions:
+          - What is our match rate with each retail media partner?
+          - Which lookalike segments convert best right now?
+          - How much audience overlap exists across our top campaigns?
+          - Which segments should be suppressed to cut waste?
+          - What consent state applies to each activation audience?
+      - name: Brand Safety & Fraud Agent
+        icon: genie
+        summary: Answer viewability, IVT and suitability questions on live delivery data.
+        feeds:
+          - IAS Brand Safety
+          - IAB Tech Lab OpenRTB
+          - AppsFlyer MMP
+          - ROAS, reach and attribution
+        teams:
+          - Brand Safety
+          - Performance Marketing
+          - Data Scientists
+        questions:
+          - What is our invalid-traffic rate by exchange today?
+          - Which placements breached brand-suitability thresholds?
+          - Where is viewability below the campaign floor?
+          - Which publishers show spoofed-inventory patterns?
+          - What spend is exposed to unsafe inventory right now?
+      - name: Finance & Reconciliation Agent
+        icon: genie
+        summary: Ask about pacing, makegoods and margin against contracted IO terms.
+        feeds:
+          - Finance & Billing Mart
+          - Google Campaign Manager
+          - Comscore Campaign Ratings
+          - ROAS, reach and attribution
+        teams:
+          - Finance & Billing
+          - CMO & CFO Office
+          - Media Planning
+        questions:
+          - Which campaigns are over-pacing against the IO?
+          - What makegood liability is accruing this quarter?
+          - How do agency rebate accruals compare to plan?
+          - Where is margin leaking on booked media?
+          - What is variance to plan by client this month?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Cross-Channel Attribution
+        short: Measurement
+        icon: chart
+        summary: Credit assigned across linear, digital and retail touchpoints using governed identity graphs.
+        problem: Every platform claims the same conversion, so credit is double-counted and last-click still wins, and no one sees the true contribution of each touch across linear, digital and retail.
+        who_benefits: CMO & CFO Office
+        how_built: Impression, click and conversion events land through Lakeflow, identity is resolved on a governed graph, and multi-touch credit is scored in Model Serving and read in the Campaign Command Center.
+        components:
+          - Campaign Command Center
+          - LiveRamp RampID
+          - Unity Catalog
+          - AI/BI
+          - Model Serving
+        stories:
+          - title: Comcast Advertising powers ad campaign success with predictive insights
+            url: https://www.databricks.com/customers/comcast/databricks-apps
+          - title: Publicis Groupe delivers real-time personalized campaigns
+            url: https://www.databricks.com/customers/publicis-groupe
+      - name: Programmatic Bid Optimization
+        short: Performance
+        icon: market
+        summary: Bids adjusted in real time against CPA, ROAS and incrementality targets.
+        problem: Bids are set on stale rules and yesterday's reports, so budget floods low-value inventory and CPA and ROAS targets slip while the auction has already moved on.
+        who_benefits: Performance Marketing
+        how_built: OpenRTB bid logs stream into Lakehouse//RT, propensity features come from Feature Store, and bid modifiers are scored in Model Serving and pushed to The Trade Desk in the auction path.
+        components:
+          - The Trade Desk
+          - IAB Tech Lab OpenRTB
+          - Model Serving
+          - Lakehouse//RT
+          - Feature Store
+        stories:
+          - title: The Trade Desk scales contextual targeting NLP with Databricks
+            url: https://www.databricks.com/customers/thetradedesk/data-science
+          - title: Agentic AI and the future of advertising
+            url: https://www.databricks.com/blog/agentic-ai-and-future-advertising-why-next-frontier-runs-unified-data
+      - name: Audience Propensity
+        short: Targeting
+        icon: custlake
+        summary: Lookalike and suppression audiences scored from first-party and partner signals.
+        problem: First-party signals sit in disconnected CRM, web and loyalty stores, so lookalike and suppression audiences are built from stale exports and miss the people most likely to convert.
+        who_benefits: Performance Marketing
+        how_built: CRM and web signals conform on Delta Lake, features land in Feature Store, and propensity and lookalike models scored in Model Serving compose segments in the Audience Studio for activation.
+        components:
+          - Audience Studio
+          - Adobe Experience Platform
+          - LiveRamp RampID
+          - Feature Store
+          - Model Serving
+        stories:
+          - title: Conde Nast unifies data for personalized experiences
+            url: https://www.databricks.com/customers/conde_nast
+          - title: Publicis Groupe delivers real-time personalized campaigns
+            url: https://www.databricks.com/customers/publicis-groupe
+      - name: Brand Lift Measurement
+        short: Brand
+        icon: ztarget
+        summary: Exposed versus control cohorts tied to survey lift and delivery logs.
+        problem: Exposed and control cohorts are stitched by hand from survey vendors and delivery logs, so brand lift lands weeks late and cannot be tied cleanly to who actually saw the campaign.
+        who_benefits: CMO & CFO Office
+        how_built: Delivery logs and survey panels conform under Unity Catalog, exposed versus control cohorts are matched, and lift is estimated in Model Serving and read in the Media Mix Workbench.
+        components:
+          - Media Mix Workbench
+          - Kantar Brand Lift
+          - Nielsen ONE
+          - Model Serving
+          - AI/BI
+      - name: Frequency Management
+        short: Reach
+        icon: stream
+        summary: Cross-platform frequency caps enforced before waste accumulates.
+        problem: Each platform caps frequency only against its own impressions, so the same household is hit far past the point of return and spend is wasted on people already saturated.
+        who_benefits: Media Planning
+        how_built: Cross-platform delivery lands through Lakeflow, identity is unified on a graph, and household frequency is reconciled on Delta Lake and enforced from the Campaign Command Center.
+        components:
+          - Campaign Command Center
+          - The Trade Desk
+          - LiveRamp RampID
+          - Lakehouse//RT
+          - Delta Lake
+        stories:
+          - title: Agentic AI and the future of advertising
+            url: https://www.databricks.com/blog/agentic-ai-and-future-advertising-why-next-frontier-runs-unified-data
+      - name: Retail Media Activation
+        short: Commerce
+        icon: product
+        summary: Sponsored search and display tuned against on-shelf availability.
+        problem: Retail media runs in walled gardens, so brands buy sponsored placements blind to on-shelf availability and cannot tie the spend back to the sales it actually moved.
+        who_benefits: Media Planning
+        how_built: Retailer and sales signals join first-party data on Delta Lake, segments are built in Audience Studio, and audiences are shared to Amazon Ads via clean rooms with results read in AI/BI.
+        components:
+          - Audience Studio
+          - Amazon Ads
+          - LiveRamp Data Clean Room
+          - OpenSharing
+          - AI/BI
+        stories:
+          - title: Magnite and Databricks transform ad data activation
+            url: https://www.databricks.com/blog/magnite-and-databricks-announce-new-partnership-transform-ad-data-activation
+      - name: Creative DCO
+        short: Creative
+        icon: apps
+        summary: Dynamic elements swapped by audience segment and performance.
+        problem: Creative variants multiply faster than anyone can test them, so winning combinations are guessed at and underperforming assets keep serving long after the data would have killed them.
+        who_benefits: Performance Marketing
+        how_built: Creative and performance-by-element data conform on Delta Lake, and AI Functions and Model Serving rank variants by segment so the best combinations rotate to the ad server.
+        components:
+          - Celtra Creative
+          - Bynder DAM
+          - Model Serving
+          - AI Functions
+          - Feature Store
+      - name: Fraud & IVT Detection
+        short: Quality
+        icon: gavel
+        summary: Invalid traffic removed before it bills or pollutes attribution.
+        problem: Invalid traffic and spoofed inventory drain budgets and poison attribution, and by the time verification reports flag it the money is spent and the models are already skewed.
+        who_benefits: Brand Safety
+        how_built: OpenRTB and delivery events stream into Lakehouse//RT, anomaly models score traffic in Model Serving, and confirmed IVT is filtered and surfaced by severity in the Brand Safety Console.
+        components:
+          - Brand Safety Console
+          - IAS Brand Safety
+          - IAB Tech Lab OpenRTB
+          - Model Serving
+          - Lakehouse//RT
+      - name: Agency Reconciliation
+        short: Finance
+        icon: erp
+        summary: Delivery, makegoods and rebates reconciled to contracted IO terms.
+        problem: Delivery, makegoods and rebates are reconciled to insertion orders across spreadsheets and exports, so billing disputes drag on and margin leaks through over-pacing no one caught.
+        who_benefits: Finance & Billing
+        how_built: Delivery and spend from ad servers conform under Unity Catalog, are reconciled to contracted IO terms on Delta Lake, and variance is questioned in Genie One and tracked in AI/BI.
+        components:
+          - Campaign Command Center
+          - Google Campaign Manager
+          - Genie One
+          - AI/BI
+          - Unity Catalog
+      - name: Privacy-Safe Clean Rooms
+        short: Identity
+        icon: partner
+        summary: Overlap and attribution computed without raw PII leaving either party.
+        problem: Overlap and attribution with retailers and publishers need matched records, but neither side will hand over raw PII, so measurement stalls in legal review and manual file swaps.
+        who_benefits: Performance Marketing
+        how_built: First-party data stays governed under Unity Catalog while overlap and attribution run in Audience Studio against partner data over OpenSharing, with no raw PII leaving either side.
+        components:
+          - Audience Studio
+          - LiveRamp Data Clean Room
+          - Unity Catalog
+          - OpenSharing
+          - Delta Lake
+        stories:
+          - title: 'The Trade Desk and Databricks: secure identity collaboration in clean rooms'
+            url: https://www.databricks.com/blog/accelerating-secure-interoperable-identity-collaboration-trade-desk-and-databricks-partnership
+medallion:
+  Bronze:
+    short: Raw ad server and partner logs
+    summary: Impression, click, conversion and spend events from DSPs, ad servers and clean rooms, landed exactly as received so a bid or a view can be replayed for audit.
+  Silver:
+    short: Conformed campaigns and audiences
+    summary: Campaigns, line items, creatives and audience segments resolved into single entities across platforms, with identity graphs stitched and frequency caps reconciled.
+  Gold:
+    short: ROAS, reach and attribution
+    summary: 'Contracted products the media and finance teams run on: ROAS and CPA by channel, incremental lift, reach and frequency, and brand safety incident rates.'
+citation_index:
+  google-cm360:
+    title: Google Campaign Manager 360
+    url: https://marketingplatform.google.com/about/campaign-manager-360/
+  trade-desk:
+    title: The Trade Desk
+    url: https://www.thetradedesk.com/
+  meta-ads:
+    title: Meta Ads Manager
+    url: https://www.facebook.com/business/tools/ads-manager
+  amazon-ads:
+    title: Amazon Ads
+    url: https://advertising.amazon.com/
+  google-ad-manager:
+    title: Google Ad Manager
+    url: https://admanager.google.com/
+  magnite:
+    title: Magnite SSP
+    url: https://www.magnite.com/
+  index-exchange:
+    title: Index Exchange
+    url: https://www.indexexchange.com/
+  sf-marketing-cloud:
+    title: Salesforce Marketing Cloud
+    url: https://www.salesforce.com/products/marketing-cloud/
+  adobe-aep:
+    title: Adobe Experience Platform
+    url: https://business.adobe.com/products/experience-platform/adobe-experience-platform.html
+  liveramp:
+    title: LiveRamp
+    url: https://liveramp.com/
+  nielsen-one:
+    title: Nielsen ONE
+    url: https://www.nielsen.com/solutions/nielsen-one/
+  ias:
+    title: Integral Ad Science
+    url: https://integralads.com/
+  appsflyer:
+    title: AppsFlyer
+    url: https://www.appsflyer.com/
+  kantar:
+    title: Kantar
+    url: https://www.kantar.com/
+  bynder:
+    title: Bynder DAM
+    url: https://www.bynder.com/
+  celtra:
+    title: Celtra
+    url: https://www.celtra.com/
+  iab-openrtb:
+    title: IAB OpenRTB
+    url: https://iabtechlab.com/standards/openrtb/
+  liveramp-cleanroom:
+    title: LiveRamp Data Collaboration
+    url: https://liveramp.com/data-collaboration/
+  comscore:
+    title: Comscore
+    url: https://www.comscore.com/

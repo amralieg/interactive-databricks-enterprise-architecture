@@ -1,0 +1,996 @@
+name: Airlines
+description: 'Passenger and cargo operations: reservations and revenue management, network and crew planning, airport turnaround, and line maintenance.'
+sources:
+  - name: Reservations & Revenue
+    icon: erp
+    tiles:
+      - name: Amadeus Altéa PSS
+        icon: erp
+        summary: Reservation, Inventory and Departure Control. The system of record for PNRs, seat inventory, fare classes and check-in, and the source of the passenger journey.
+        citations:
+          - amadeus-altea
+        category: Passenger Service System (PSS)
+        what_it_is: Holds the system of record for reservations, seat inventory and fare classes and runs departure control at check-in, emitting PNR, ticketing and boarding events across the passenger journey.
+        who_uses_it: Reservations and revenue management, airport check-in and ground staff, and commercial analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-150 GB/day
+            interval: Multiple daily cycles + nightly extract
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k events/sec at peak
+            interval: Continuous (near real-time)
+      - name: Sabre / Travelport GDS
+        icon: globe
+        summary: Global distribution systems carrying agency and OTA bookings, ticket coupons and schedule feeds into the airline estate.
+        citations:
+          - sabre-gds
+        category: Global Distribution System (GDS)
+        what_it_is: Carries agency and OTA bookings, ticket coupons, MCOs and schedule feeds between travel sellers and the airline, the indirect-channel counterpart to the PSS.
+        who_uses_it: Distribution and sales teams, revenue management, and the finance teams reconciling agency sales.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day booking + coupon files
+            interval: Multiple daily cycles
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec
+            interval: Continuous message flow
+      - name: PROS Revenue Management
+        icon: market
+        summary: Origin and destination forecasting, bid price and availability control. Supplies the demand forecasts and fare class recommendations the commercial team prices against.
+        citations:
+          - pros-rm
+        category: Airline Revenue Management System
+        what_it_is: Forecasts origin-and-destination demand and sets bid prices and fare-class availability, producing the recommendations the commercial team prices and merchandises against.
+        who_uses_it: Revenue management analysts, pricing and fares teams, and commercial planning.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day forecasts + bid prices
+            interval: Multiple daily optimisation runs
+      - name: ATPCO Fare Filings
+        icon: market
+        summary: Industry fare, rule and surcharge filings, the reference against which published pricing and NDC offers are validated.
+        citations:
+          - atpco
+        category: Airline Fare Filing / Pricing Data
+        what_it_is: Distributes industry fare, rule, footnote and surcharge filings, the reference dataset against which published pricing and NDC offers are constructed and validated.
+        who_uses_it: Pricing and fares teams, revenue management, and offer-management engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day filings
+            interval: Multiple daily filing cycles
+  - name: Network & Crew
+    icon: sheet
+    tiles:
+      - name: NetLine/Sched
+        icon: sheet
+        summary: 'Lufthansa Systems schedule and network planning: rotations, slot compliance and fleet assignment across the season.'
+        citations:
+          - netline
+        category: Airline Schedule & Network Planning
+        what_it_is: Builds and maintains the published schedule, aircraft rotations, slot compliance and fleet assignment across the season, the source of planned flying.
+        who_uses_it: Network planning, fleet assignment and slot coordination teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day schedule + rotation data
+            interval: Nightly batch + planning-cycle refresh
+      - name: AIMS Crew Management
+        icon: people
+        summary: Crew pairing, rostering, qualifications and flight time limitation tracking, the source of legality and standby state.
+        citations:
+          - aims
+        category: Crew Management System
+        what_it_is: Manages crew pairings, rosters, qualifications and flight-time-limitation tracking, the authoritative source of crew legality, standby and duty state.
+        who_uses_it: Crew planning and rostering, crew control, and operations control on a disrupted day.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day rosters + pairings
+            interval: Nightly batch + intraday updates
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous roster-change events
+      - name: Jeppesen Crew & Ops
+        icon: people
+        summary: Crew planning and operations optimisation used where AIMS is not the incumbent, feeding the same pairing and roster entities.
+        citations:
+          - jeppesen
+        category: Crew Planning & Ops Optimisation
+        what_it_is: Optimises crew pairings, rosters and operational recovery where it is the incumbent, feeding the same crew legality, pairing and roster entities as AIMS.
+        who_uses_it: Crew planning, crew control and operations control teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day rosters + pairings
+            interval: Nightly batch + intraday updates
+  - name: Airport & Operations
+    icon: stream
+    tiles:
+      - name: Airport Operational Database
+        icon: db
+        summary: 'The AODB: stand and gate allocation, actual movement times and turnaround milestones, shared with the airport under A-CDM.'
+        citations:
+          - aodb
+        category: Airport Operational Database (AODB)
+        what_it_is: The airport's operational record of stand and gate allocation, actual movement times and turnaround milestones, shared with the airline under A-CDM.
+        who_uses_it: Operations control, ground and ramp teams, and turnaround management.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day movement + stand history
+            interval: Hourly extracts + nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of milestone events/sec
+            interval: Continuous (near real-time)
+      - name: ACARS / OOOI Messages
+        icon: stream
+        summary: Out, Off, On and In movement messages from the aircraft, the ground truth for block and air times and for delay attribution.
+        citations:
+          - acars
+        category: Aircraft Datalink Messaging (ACARS)
+        what_it_is: Datalink Out, Off, On and In movement messages sent from the aircraft, the ground truth for block and air times and the anchor for delay attribution.
+        who_uses_it: Operations control, on-time-performance analytics, and engineering condition monitoring.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k messages/sec at peak
+            interval: Continuous (sub-second)
+      - name: ADS-B Surveillance
+        icon: iot
+        summary: Broadcast position, altitude and velocity from every airframe, used for airspace and taxi analysis independent of the airline's own reporting.
+        citations:
+          - adsb
+        category: Flight Surveillance Data (ADS-B)
+        what_it_is: Broadcast position, altitude and velocity telemetry from every airframe, used for airspace, taxi and turnaround analysis independent of the airline's own reporting.
+        who_uses_it: Operations analytics, flight operations engineering, and network performance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-30k position reports/sec
+            interval: Continuous (sub-second)
+      - name: SITA WorldTracer
+        icon: partner
+        summary: 'Industry baggage tracing: mishandling reports, file matching and delivery status across carriers.'
+        citations:
+          - worldtracer
+        category: Baggage Tracing System
+        what_it_is: Industry baggage tracing platform holding mishandling reports, file matching and delivery status across carriers, the source for mishandled-bag analysis.
+        who_uses_it: Baggage services, customer operations, and ground handling teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day tracing files
+            interval: Hourly + on-demand
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous status events
+  - name: Engineering & Cargo
+    icon: zplug
+    tiles:
+      - name: Swiss-AS AMOS
+        icon: erp
+        summary: 'Maintenance, repair and overhaul: work orders, component lifing, defect history and AOG events against each tail.'
+        citations:
+          - amos
+        category: Aircraft MRO / M&E System
+        what_it_is: Maintenance, repair and overhaul system of record holding work orders, component lifing, defect history and AOG events against each tail.
+        who_uses_it: Maintenance planning, reliability engineering, and line and base maintenance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day work orders + lifing
+            interval: Nightly batch + intraday updates
+      - name: Aircraft Sensor & QAR
+        icon: iot
+        summary: Quick access recorder and engine condition monitoring data, the basis for fuel burn analysis and predictive component removal.
+        category: Flight Data / Condition Monitoring
+        what_it_is: Quick access recorder and engine condition-monitoring telemetry offloaded from the aircraft, the basis for fuel-burn analysis and predictive component removal.
+        who_uses_it: Reliability engineering, flight data monitoring, and fuel-efficiency teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 20-80 GB/day per fleet
+            interval: Per-flight offload + nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k parameters/sec in flight
+            interval: Continuous during flight
+      - name: CHAMP Cargospot
+        icon: product
+        summary: 'Air cargo management: air waybills, ULD build-up, capacity and revenue for the freight side of the operation.'
+        citations:
+          - cargospot
+        category: Air Cargo Management System
+        what_it_is: Air cargo management system holding air waybills, ULD build-up, capacity allocation and revenue for the freight side of the operation.
+        who_uses_it: Cargo operations, cargo revenue management, and capacity planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day waybills + capacity
+            interval: Multiple daily cycles
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous shipment events
+  - name: Commercial & Loyalty
+    icon: partner
+    tiles:
+      - name: IATA BSP Settlement
+        icon: market
+        summary: 'Billing and Settlement Plan files: agency sales, refunds and commissions, reconciled against revenue accounting.'
+        citations:
+          - iata-bsp
+        category: Airline Sales Settlement (BSP)
+        what_it_is: IATA Billing and Settlement Plan files covering agency sales, refunds and commissions, reconciled against the airline's revenue accounting.
+        who_uses_it: Revenue accounting, sales finance, and distribution reconciliation teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB per settlement cycle
+            interval: Scheduled BSP settlement cycles
+      - name: Loyalty & FFP
+        icon: custlake
+        summary: Frequent flyer accruals, redemptions, tier status and partner earn, the profile every personalised offer is scored against.
+        category: Frequent Flyer / Loyalty Platform
+        what_it_is: Frequent-flyer platform holding accruals, redemptions, tier status and partner earn, the customer profile every personalised offer is scored against.
+        who_uses_it: Loyalty and ancillary teams, marketing, and customer analytics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day accruals + redemptions
+            interval: Nightly batch + intraday sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous earn/burn events
+      - name: Web & App Clickstream
+        icon: observ
+        summary: Search, shop and book events from the airline's own channels, joined to bookings for look-to-book and abandonment analysis.
+        category: Digital Channel Clickstream
+        what_it_is: Search, shop and book events from the airline's own web and mobile channels, joined to bookings for look-to-book, conversion and abandonment analysis.
+        who_uses_it: Digital, ecommerce and marketing analytics, and revenue management.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous clickstream
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Revenue Accounting
+        icon: fed
+        summary: Revenue accounting and proration marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Airline Revenue Accounting
+        what_it_is: Passenger revenue accounting and proration marts holding the audited flown-revenue numbers, kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Revenue accounting, commercial finance, and financial reporting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: SITA Type-B Messaging
+        icon: stream
+        summary: 'The teletype-era message bus the industry still runs on: PNL, ADL, MVT and LDM messages parsed on arrival and landed as structured events.'
+        citations:
+          - sita-typeb
+        category: Industry Type-B Messaging
+        what_it_is: The teletype-era industry message bus still in daily use, carrying PNL, ADL, MVT and LDM messages that are parsed on arrival and landed as structured events.
+        who_uses_it: Operations control, load control, and airport and passenger handling teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 500-2k messages/sec at peak
+            interval: Continuous message flow
+      - name: A-CDM Message Bus
+        icon: stream
+        summary: Airport Collaborative Decision Making milestones exchanged with the airport operator, the shared clock for turnaround performance.
+        citations:
+          - acdm
+        category: Airport Collaborative Decision Making Bus
+        what_it_is: Airport Collaborative Decision Making milestone messages exchanged with the airport operator, the shared clock that both sides measure turnaround performance against.
+        who_uses_it: Operations control, turnaround management, and ground handling teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of milestone events/sec
+            interval: Continuous (near real-time)
+      - name: IATA NDC / ONE Order APIs
+        icon: api
+        summary: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic. Managed ELT connectors and existing Kafka or MSK topics carrying movement, baggage and sensor events land here too, and are drawn generically on the reference board.
+        citations:
+          - ndc
+        category: Airline Retailing APIs (NDC / ONE Order)
+        what_it_is: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping and booking traffic across agencies, OTAs and metasearch.
+        who_uses_it: Offer-management engineering, distribution, and revenue management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of API calls/sec
+            interval: Continuous (API)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Executive Team
+        mark: Genie One
+        summary: The CEO on network profitability, fleet commitments and the trade between growth and margin; the CFO and treasury on unit cost, cash and fuel and FX exposure; the Chief Operating Officer on on-time performance, disruption cost and the safety record.
+        uses:
+          - - Genie One
+            - Ask what yesterday's operation cost, or what a route made last month, without booking analyst time.
+          - - AI/BI
+            - Network profitability, unit cost, load factor and on-time performance on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "on time" and "unit cost" mean one thing across the airline.
+        sub:
+          - - CEO
+            - network profitability, fleet commitments and the trade between growth and margin.
+          - - CFO & Treasury
+            - unit cost, cash, and fuel and FX exposure across the forward book.
+          - - Chief Operating Officer
+            - on-time performance, disruption cost and the safety and compliance record.
+        ucs:
+          - Network & Fleet Planning
+          - IROPS Recovery
+          - Continuous Pricing & NDC
+          - Fuel Burn & Tankering
+      - name: Revenue & Pricing
+        mark: Model Serving
+        summary: Revenue management analysts setting bid prices and fare class availability, pricing teams filing fares against ATPCO rules and the NDC offer catalogue, and the loyalty and ancillary team merchandising seats, bags and partner earn.
+        uses:
+          - - RM Analyst Workbench
+            - The forecast, override history and revenue at risk on a flight before a bid price is touched.
+          - - Continuous Pricing & NDC
+            - Offers priced per shopping request rather than against a filed fare ladder.
+          - - Loyalty & Ancillary
+            - Seats, bags and lounge access merchandised per passenger against the loyalty profile.
+          - - Model Serving
+            - Demand and willingness-to-pay models scored inside the offer path.
+        sub:
+          - - Revenue management analysts
+            - bid prices and fare-class availability, flight by flight.
+          - - Pricing & fares
+            - filing and matching fares against ATPCO rules and the NDC catalogue.
+          - - Loyalty & ancillary
+            - tier economics, partner earn and the merchandising of seats, bags and lounge access.
+        ucs:
+          - Continuous Pricing & NDC
+          - Cargo Yield
+          - Loyalty & Ancillary
+      - name: Network Planning
+        mark: AI/BI
+        summary: Which routes are flown, at what frequency and with which aircraft, season by season, against slots and maintenance windows.
+        uses:
+          - - Network & Fleet Planning
+            - Route and fleet scenarios scored on profitability rather than load factor alone.
+          - - AI/BI
+            - Route profitability, RASK and CASK on the same definitions the executive team reads.
+        sub:
+          - - Network planners
+            - which routes are flown and at what frequency, season by season.
+          - - Fleet assignment
+            - which aircraft flies which rotation against slots and maintenance.
+        ucs:
+          - Network & Fleet Planning
+      - name: Operations Control
+        mark: Lakehouse//RT
+        summary: Duty managers in the operations control centre on a disrupted day; ground and ramp teams on turnaround and baggage milestones; customer operations on IROPS rebooking and compensation.
+        uses:
+          - - OCC Recovery Cockpit
+            - Recovery options costed across aircraft, crew and passengers together.
+          - - Turnaround Manager
+            - Stand-side milestones flagged before target off-block is missed.
+          - - IROPS Recovery
+            - Passenger reaccommodation options costed before agents start dialling.
+          - - Lakehouse//RT
+            - Live operational state at the latency a turnaround moves at.
+        sub:
+          - - Duty managers
+            - the disrupted day from the operations control centre.
+          - - Ground & ramp
+            - turnaround and baggage milestones at the stand.
+          - - Customer operations
+            - IROPS reaccommodation and compensation.
+        ucs:
+          - IROPS Recovery
+          - Turnaround & OTP
+          - Crew Pairing & Rostering
+          - Baggage Mishandling
+          - Fuel Burn & Tankering
+      - name: Engineering & MRO
+        mark: Lakeflow
+        summary: Engineering and maintenance planning on predicted removals, tail health and AMOS work orders raised against the aircraft the airline already flies.
+        uses:
+          - - AMOS Work Orders
+            - Predicted component removals raised as maintenance work orders against the tail.
+          - - Lakeflow
+            - Aircraft, component and flight-hour feeds conformed for engineering analytics.
+          - - MLflow
+            - Remaining-useful-life models tracked for audit and reproduction.
+        sub:
+          - - Maintenance planning
+            - predicted removals and base-visit scheduling.
+          - - Reliability engineering
+            - component lifing and AOG root-cause analysis.
+        ucs:
+          - Predictive Maintenance
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the PSS, movement, crew, cargo and engineering feeds; own the Bronze to Silver path and the pager when a pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for the PSS, ERP and SaaS sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on movement and booking feeds.
+          - - Lakewatch
+            - Freshness on the tables the OCC and revenue teams read every morning.
+        sub:
+          - - Ingestion engineers
+            - PSS, movement, crew and cargo feeds into Bronze.
+          - - Streaming engineers
+            - A-CDM and ACARS events into Lakehouse//RT.
+          - - Platform & governance
+            - Unity Catalog permissions and the pipeline SLAs.
+        ucs:
+          - IROPS Recovery
+          - Turnaround & OTP
+          - Predictive Maintenance
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand, willingness-to-pay, disruption recovery and remaining-useful-life models, and whether they still hold six months after deployment.
+        uses:
+          - - Feature Store
+            - Features defined once and read identically in training and serving.
+          - - MLflow
+            - Every run tracked for audit and reproduction.
+          - - Model Serving
+            - Bid price, recovery and maintenance models scored in the operational path.
+        sub:
+          - - Demand & pricing modelers
+            - willingness-to-pay and bid-price models.
+          - - Reliability modelers
+            - remaining-useful-life on QAR and defect history.
+          - - MLOps
+            - tracking and serving models in the operational path.
+        ucs:
+          - Continuous Pricing & NDC
+          - Predictive Maintenance
+          - IROPS Recovery
+      - name: App Developers
+        mark: Apps
+        summary: Ship the OCC, turnaround, crew and engineering applications the airline works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for recovery decisions and roster writes.
+          - - Agent Bricks
+            - Agents that draft a recovery plan or work order against governed tools.
+        sub:
+          - - Operational app developers
+            - OCC, turnaround and crew screens.
+          - - Backend & Lakebase
+            - recovery and roster state with governed writes.
+          - - Agent developers
+            - recovery-plan and work-order drafting agents.
+        ucs:
+          - IROPS Recovery
+          - Turnaround & OTP
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and IROPS and turnaround updates in the channel the operation already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Distribution & Partners
+    icon: partner
+    tiles:
+      - name: NDC Offer & Order API
+        icon: api
+        summary: Continuous pricing and merchandised offers served to agencies, OTAs and metasearch through the airline's offer and order engine.
+        citations:
+          - ndc
+      - name: Interline & Codeshare
+        icon: partner
+        summary: Partner carriers reading schedule, availability and disruption state over Delta Sharing rather than nightly file exchange.
+      - name: Airport A-CDM Partners
+        icon: globe
+        summary: Turnaround milestones and stand demand shared back to airport operators and ground handlers under the A-CDM agreement.
+        citations:
+          - acdm
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Altéa Inventory Writeback
+        icon: db
+        summary: Availability, bid prices and reaccommodation decisions written back into the passenger service system so the answer reaches the booking path.
+        citations:
+          - amadeus-altea
+      - name: AMOS Work Orders
+        icon: erp
+        summary: Predicted component removals raised as maintenance work orders against the tail, in the system engineering already works in.
+        citations:
+          - amos
+      - name: Crew & Ground Mobile
+        icon: apps
+        summary: Roster changes, standby calls and turnaround tasks pushed to the devices crew and ramp teams actually carry.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Regulatory Submissions
+        icon: gavel
+        summary: Punctuality, safety and emissions reporting to the regulator, and CORSIA and EU ETS emissions accounting, produced from the same governed tables the airline runs on.
+        citations:
+          - corsia
+      - name: IATA Industry Reporting
+        icon: share
+        summary: Settlement, interline and industry benchmark submissions filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Lessors, maintenance partners and alliance members reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: OCC Recovery Cockpit
+        short: Disruption management
+        icon: gauge
+        summary: 'The screen the duty manager runs a disrupted day from: cancel and delay options costed against passenger reaccommodation, crew legality and downline aircraft rotation, on Databricks Apps over Lakebase.'
+      - name: Turnaround Manager
+        short: Stand-side milestones
+        icon: stream
+        summary: Live turnaround state against the A-CDM clock, flagging the stands that will miss target off-block so the ramp can be moved before the delay is booked.
+      - name: RM Analyst Workbench
+        short: Pricing decisions
+        icon: market
+        summary: Where revenue management analysts see the forecast, the override history and the revenue at risk on a flight before they touch a bid price.
+      - name: AOG Watchtower
+        short: Fleet health
+        icon: iot
+        summary: Component health and predicted removals by tail, so engineering plans the change at a base overnight instead of discovering it at a gate.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: On-Time Performance
+        icon: aibi
+        summary: Punctuality, delay attribution and turnaround compliance on certified operational Metric Views.
+        kpis:
+          - On-time performance
+          - Departure punctuality
+          - Turnaround compliance
+          - Delay minutes by cause
+          - Cancellation rate
+        teams:
+          - Operations Control
+          - Network Planning
+          - Executive Team
+      - name: Revenue & Yield
+        icon: aibi
+        summary: Route and cabin revenue performance against forecast across the commercial book.
+        kpis:
+          - RASK
+          - Yield
+          - Load factor
+          - Revenue vs forecast
+          - Ancillary revenue per passenger
+        teams:
+          - Revenue & Pricing
+          - Network Planning
+          - Executive Team
+      - name: Network & Unit Cost
+        icon: aibi
+        summary: Route profitability and unit cost with fleet utilisation and fuel efficiency.
+        kpis:
+          - CASK
+          - Route profitability
+          - Load factor
+          - Block-hour utilisation
+          - Fuel burn per ASK
+        teams:
+          - Network Planning
+          - Executive Team
+          - Operations Control
+      - name: Baggage & Customer
+        icon: aibi
+        summary: Baggage handling and customer experience across stations and journeys.
+        kpis:
+          - Mishandled bags per 1000
+          - Baggage delivery time
+          - Misconnect rate
+          - Net Promoter Score
+          - Complaint rate
+        teams:
+          - Operations Control
+          - Revenue & Pricing
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        short: Databricks, open source
+        icon: omni
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        short: 3rd-party harness
+        icon: code
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        short: 3rd-party harness
+        icon: code
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        short: Cursor, IDEs, frameworks
+        icon: mcp
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Network & Revenue Agent
+        icon: genie
+        summary: Ask about route profitability, yield and load factor in plain language across the commercial book.
+        feeds:
+          - PROS Revenue Management
+          - ATPCO Fare Filings
+          - Revenue Accounting
+          - On-time, RASK, turnaround
+        teams:
+          - Revenue & Pricing
+          - Network Planning
+          - Executive Team
+        questions:
+          - Which routes had the lowest RASK last month and why?
+          - How does load factor compare to last year by market?
+          - Which fare classes are we spilling demand in?
+          - What is yield by cabin on our top ten routes?
+          - Where is ancillary revenue per passenger growing fastest?
+      - name: Operations & OTP Agent
+        icon: genie
+        summary: Explore on-time performance, delay causes and turnaround compliance across the operation.
+        feeds:
+          - ACARS / OOOI Messages
+          - Airport Operational Database
+          - A-CDM Message Bus
+          - On-time, RASK, turnaround
+        teams:
+          - Operations Control
+          - Network Planning
+          - Executive Team
+        questions:
+          - What is our on-time performance today versus the same day last week?
+          - Which delay cause codes are driving the most delay minutes?
+          - Which stations have the worst turnaround compliance this month?
+          - How many flights missed target off-block yesterday, and why?
+          - Which rotations are most exposed to reactionary delay?
+      - name: Engineering & Fleet Reliability Agent
+        icon: genie
+        summary: Answer tail-health, defect and predicted-removal questions across the fleet.
+        feeds:
+          - Swiss-AS AMOS
+          - Aircraft Sensor & QAR
+          - Conformed flight, passenger, tail
+        teams:
+          - Engineering & MRO
+          - Operations Control
+        questions:
+          - Which tails have the most open deferred defects right now?
+          - Which components are predicted for removal in the next 30 days?
+          - How many AOG events did we have this month and on which fleet?
+          - Which aircraft show rising engine condition-monitoring trends?
+          - What is component reliability by part number versus target?
+      - name: Passenger & Loyalty Agent
+        icon: genie
+        summary: Ask about the passenger journey, disruption impact and loyalty value across channels.
+        feeds:
+          - Amadeus Altéa PSS
+          - Loyalty & FFP
+          - Web & App Clickstream
+          - Conformed flight, passenger, tail
+        teams:
+          - Revenue & Pricing
+          - Operations Control
+          - Executive Team
+        questions:
+          - How many top-tier members were disrupted this week and how were they reaccommodated?
+          - What is look-to-book by channel over the last quarter?
+          - Which routes carry the highest share of high-value loyalty members?
+          - What is redemption seat availability versus demand by market?
+          - Where are we losing bookings to abandonment in the shopping funnel?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: IROPS Recovery
+        short: Disruption
+        icon: gauge
+        summary: Recovering aircraft, crew and passengers together after weather, ATC or technical disruption, optimising total cost of the day rather than any single resource.
+        problem: Weather, ATC and technical disruption cascade across aircraft, crew and passengers. Recovered in silos, each fix breaks another and the cost of the day runs away before anyone sees the whole picture.
+        who_benefits: Operations Control
+        how_built: Movement, crew-legality and booking feeds land in Lakehouse//RT; recovery options are costed across all three resources in Model Serving and actioned from the OCC Recovery Cockpit on Lakebase.
+        components:
+          - OCC Recovery Cockpit
+          - Lakehouse//RT
+          - Model Serving
+          - ACARS / OOOI Messages
+          - Lakebase
+        stories:
+          - title: 'Aer Lingus: real-time recovery decisions in the OCC'
+            url: https://www.databricks.com/blog/scaling-ai-through-data-fluency
+          - title: JetBlue Blue Sky operational digital twin
+            url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
+      - name: Continuous Pricing & NDC
+        short: Revenue
+        icon: market
+        summary: Moving from filed fare classes to continuous price points served through NDC offers, scored per shopping request against demand and remaining capacity.
+        problem: Filed fare classes cannot express willingness to pay, so revenue leaks between the ladder's rungs, and NDC shopping traffic now moves faster than the fare-filing cycle can answer.
+        who_benefits: Revenue & Pricing
+        how_built: PROS forecasts and ATPCO rules are conformed in the lakehouse; demand and willingness-to-pay models score each shopping request through Model Serving behind the NDC offer engine.
+        components:
+          - RM Analyst Workbench
+          - Model Serving
+          - PROS Revenue Management
+          - NDC Offer & Order API
+          - AI/BI
+        stories:
+          - title: easyJet modernises pricing on Databricks Apps
+            url: https://www.databricks.com/customers/easyjet/lakebase
+          - title: Virgin Atlantic unifies commercial and finance data
+            url: https://www.databricks.com/customers/virgin-atlantic
+      - name: Network & Fleet Planning
+        short: Capacity
+        icon: sheet
+        summary: Which routes are flown, at what frequency and with which aircraft, evaluated on profitability per departure rather than on route revenue alone, season by season.
+        problem: Routes judged on route revenue alone hide the ones that lose money per departure once fleet, slots and maintenance windows are costed into the season.
+        who_benefits: Network Planning
+        how_built: Schedule, cost and demand feeds are conformed to certified Metric Views; profitability-per-departure scenarios are explored in AI/BI on the same definitions the executive team reads.
+        components:
+          - AI/BI
+          - Unity Catalog
+          - NetLine/Sched
+          - Genie One
+        stories:
+          - title: 'Virgin Atlantic: booking analysis from weeks to hours'
+            url: https://www.databricks.com/customers/virgin-atlantic
+      - name: Crew Pairing & Rostering
+        short: Planning
+        icon: people
+        summary: Building legal, low-cost pairings and rosters under flight time limitations, and repairing them when the operation moves.
+        problem: Legal, low-cost pairings must hold under flight-time limitations and then be repaired the moment the operation moves, without ever tipping a crew into illegality.
+        who_benefits: Operations Control
+        how_built: AIMS pairing and roster state is conformed and served in Lakehouse//RT; disruption models flag crews nearing duty limits so rosters are repaired before they break.
+        components:
+          - AIMS Crew Management
+          - Lakehouse//RT
+          - Model Serving
+          - Lakeflow
+        stories:
+          - title: JetBlue models crew duty limits in Blue Sky
+            url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
+      - name: Predictive Maintenance
+        short: Engineering
+        icon: iot
+        summary: Predicting component removal from sensor, QAR and defect history so an AOG becomes a planned base visit.
+        problem: An AOG discovered at the gate cancels flights and cascades. Component removals need predicting from actual condition, not a calendar, so the fix becomes a planned base visit.
+        who_benefits: Engineering & MRO
+        how_built: QAR, sensor and AMOS defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise AMOS work orders from the AOG Watchtower.
+        components:
+          - AOG Watchtower
+          - Aircraft Sensor & QAR
+          - MLflow
+          - Model Serving
+          - Swiss-AS AMOS
+        stories:
+          - title: 'JetBlue: maintenance anomalies caught in real time'
+            url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Fuel Burn & Tankering
+        short: Cost & emissions
+        icon: chart
+        summary: Route, load and tankering decisions that cut fuel burn and the emissions reported under CORSIA and EU ETS.
+        problem: Fuel is the largest controllable cost and the biggest emissions line. Tankering and route calls made without load and price data leave money and CORSIA exposure on the table.
+        who_benefits: Operations Control
+        how_built: Route, load and QAR burn data are conformed to Gold; tankering and burn recommendations are scored in Model Serving and reconciled against CORSIA and EU ETS reporting.
+        components:
+          - Aircraft Sensor & QAR
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+        stories:
+          - title: JetBlue improves fuel efficiency with Blue Sky
+            url: https://www.databricks.com/customers/jetblue-video
+      - name: Turnaround & OTP
+        short: Punctuality
+        icon: stream
+        summary: 'On-time performance attacked at the stand: milestone-level turnaround data against the A-CDM clock, so the delay is predicted and moved rather than explained afterwards.'
+        problem: On-time performance is won or lost at the stand. Without milestone-level turnaround data the delay is explained after the aircraft is late, not moved before it happens.
+        who_benefits: Operations Control
+        how_built: A-CDM milestones stream into Lakehouse//RT; the Turnaround Manager flags stands that will miss target off-block so the ramp is moved before the delay is booked.
+        components:
+          - Turnaround Manager
+          - Lakehouse//RT
+          - A-CDM Message Bus
+          - Airport Operational Database
+        stories:
+          - title: JetBlue Blue Sky operational digital twin
+            url: https://www.databricks.com/customers/jetblue-video
+      - name: Baggage Mishandling
+        short: Service
+        icon: partner
+        summary: Predicting which connections will lose a bag from the connection time, the stand pair and the handler, and intervening before the flight departs.
+        problem: A bag lost at a tight connection is a service failure and a cost. The connections that will fail are predictable from connection time, stand pair and handler, if anyone scores them in time.
+        who_benefits: Operations Control
+        how_built: WorldTracer, movement and stand data are joined in the lakehouse; a risk model scores each connection so at-risk bags are intervened on before the flight departs.
+        components:
+          - SITA WorldTracer
+          - Model Serving
+          - Lakehouse//RT
+          - Lakeflow
+      - name: Loyalty & Ancillary
+        short: Personalisation
+        icon: custlake
+        summary: Tier economics, partner earn and the merchandising of seats, bags and lounge access, scored per passenger against the profile the loyalty estate already holds.
+        problem: Seats, bags and lounge access are merchandised the same to everyone, while the profile needed to personalise them already exists behind the loyalty estate, unused.
+        who_benefits: Revenue & Pricing
+        how_built: Loyalty accruals and clickstream are activated through CustomerLake without a separate CDP; ancillary offers are scored per passenger and served into the booking path.
+        components:
+          - CustomerLake
+          - Model Serving
+          - Loyalty & FFP
+          - AI/BI
+        stories:
+          - title: Eurowings personalises search with AI Search and Model Serving
+            url: https://www.databricks.com/customers/eurowings
+          - title: How AI is redefining travel and hospitality
+            url: https://www.databricks.com/blog/booking-bon-voyage-how-ai-redefining-travel-hospitality-experience
+      - name: Cargo Yield
+        short: Freight revenue
+        icon: product
+        summary: Capacity, air waybill and ULD build-up data joined to the passenger schedule, so belly capacity is sold at the right price instead of released late.
+        problem: Belly capacity is perishable. Sold late or at the wrong price it is lost revenue the passenger schedule already paid to fly.
+        who_benefits: Revenue & Pricing
+        how_built: Cargospot air waybill and ULD build-up data are joined to the passenger schedule in the lakehouse; capacity and price are recommended through Model Serving.
+        components:
+          - CHAMP Cargospot
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+medallion:
+  Bronze:
+    short: Raw operational feeds
+    summary: PNR and ticketing records from the passenger service system, ACARS and OOOI movement messages, AODB stand and gate events, AMOS work orders and ATPCO fare filings, landed exactly as received so a fare or a delay code can always be replayed as it stood.
+  Silver:
+    short: Conformed flight, passenger, tail
+    summary: Flight legs, passenger journeys and aircraft tails resolved into single conformed entities across the reservation, operations and maintenance estates, with IATA and ICAO station codes reconciled and interline segments stitched to one itinerary.
+  Gold:
+    short: On-time, RASK, turnaround
+    summary: 'Contracted products the commercial and operations teams run on: on-time performance and delay attribution by cause code, RASK and CASK by route and cabin, turnaround compliance, and load factor and yield by market.'
+citation_index:
+  amadeus-altea:
+    title: Amadeus Altéa PSS
+    url: https://amadeus.com/en/portfolio/airlines/altea-passenger-service-system
+  sabre-gds:
+    title: Sabre global distribution
+    url: https://www.sabre.com/products/suites/network-planning-and-optimization/
+  pros-rm:
+    title: PROS revenue management for airlines
+    url: https://pros.com/products/travel/revenue-management/
+  atpco:
+    title: ATPCO fare and rule filing
+    url: https://www.atpco.net/
+  netline:
+    title: Lufthansa Systems NetLine/Sched
+    url: https://www.lhsystems.com/product/netline-sched
+  aims:
+    title: AIMS crew management
+    url: https://aims.aero/
+  jeppesen:
+    title: Jeppesen crew and operations
+    url: https://www.jeppesen.com/crew-solutions
+  aodb:
+    title: Airport Operational Database, A-CDM
+    url: https://www.eurocontrol.int/concept/airport-collaborative-decision-making
+  acars:
+    title: ACARS OOOI reporting
+    url: https://www.icao.int/safety/acp/Pages/default.aspx
+  adsb:
+    title: ADS-B surveillance
+    url: https://www.faa.gov/air_traffic/technology/adsb
+  worldtracer:
+    title: SITA WorldTracer baggage tracing
+    url: https://www.sita.aero/solutions/sita-at-airports/baggage-solutions/worldtracer/
+  amos:
+    title: Swiss-AS AMOS MRO
+    url: https://www.swiss-as.com/amos
+  cargospot:
+    title: CHAMP Cargospot
+    url: https://www.champ.aero/solutions/cargospot
+  iata-bsp:
+    title: IATA Billing and Settlement Plan
+    url: https://www.iata.org/en/services/finance/bsp/
+  sita-typeb:
+    title: SITA Type B messaging
+    url: https://www.sita.aero/solutions/sita-for-aircraft/
+  acdm:
+    title: Airport Collaborative Decision Making
+    url: https://www.eurocontrol.int/concept/airport-collaborative-decision-making
+  ndc:
+    title: IATA NDC and ONE Order
+    url: https://www.iata.org/en/programs/airline-distribution/retailing/ndc/
+  corsia:
+    title: ICAO CORSIA emissions scheme
+    url: https://www.icao.int/environmental-protection/CORSIA/Pages/default.aspx

@@ -1,0 +1,919 @@
+name: Retail
+description: 'Omnichannel retail: merchandising, inventory and allocation, store operations and loyalty across banners, e-commerce and marketplaces.'
+sources:
+  - name: ERP & Merchandising
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA Retail
+        icon: erp
+        summary: Item masters, pricing, allocation and financial close for multi-banner retailers.
+        citations:
+          - sap-retail
+        category: Retail ERP / Merchandising System
+        what_it_is: Holds the item, price and inventory system of record, runs allocation and the financial close, and posts the merchandising numbers finance and buyers reconcile to.
+        who_uses_it: Merchandising, Master Data, Finance and Allocation teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-200 GB/day
+            interval: Nightly close + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous CDC (near real-time)
+      - name: Oracle Retail Merch
+        icon: sheet
+        summary: Assortment planning, size profiles and PO lifecycle.
+        citations:
+          - oracle-retail
+        category: Merchandise Planning System
+        what_it_is: Plans assortments, size profiles and the purchase-order lifecycle against the open-to-buy so buyers commit the right depth and breadth by category.
+        who_uses_it: Buyers, Merchandise Planners and Category Managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + intraday plan saves
+      - name: Blue Yonder WMS
+        icon: stream
+        summary: Warehouse execution, pick paths and store replenishment.
+        citations:
+          - blue-yonder-wms
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs distribution-centre execution, pick paths and outbound replenishment, emitting the stock movements and shipment confirmations behind store availability.
+        who_uses_it: DC Operations, Store Replenishment and Logistics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Multiple daily waves
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous movement events
+  - name: Commerce & POS
+    icon: market
+    tiles:
+      - name: Salesforce Commerce
+        icon: partner
+        summary: Omnichannel carts, promotions and clienteling across web and store.
+        citations:
+          - sf-commerce
+        category: E-Commerce Platform
+        what_it_is: Runs the web and mobile storefront, carts, promotions and clienteling, emitting the clickstream and order events behind omnichannel journeys.
+        who_uses_it: E-commerce, Digital Merchandising and Marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous clickstream + orders
+      - name: Shopify Plus
+        icon: api
+        summary: DTC orders, returns and marketplace connectors for owned brands.
+        citations:
+          - shopify
+        category: DTC E-Commerce Platform
+        what_it_is: Powers direct-to-consumer storefronts for owned brands, capturing orders, returns and marketplace-connector traffic.
+        who_uses_it: DTC brand teams, E-commerce Operations and Fulfillment.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly order sync
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous (API / webhook)
+      - name: NCR Voyix POS
+        icon: market
+        summary: Store transactions, endless aisle and associate workflows.
+        citations:
+          - ncr-voyix
+        category: Point-of-Sale (POS) System
+        what_it_is: Captures in-store lane transactions, endless-aisle lookups and associate workflows across the store fleet.
+        who_uses_it: Store Operations, Front-End teams and Loss Prevention.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: End-of-day polling
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k transactions/sec at peak
+            interval: Continuous (near real-time)
+  - name: Inventory & Supply
+    icon: product
+    tiles:
+      - name: Manhattan Active Omni
+        icon: stream
+        summary: Order orchestration, ship-from-store and BOPIS fulfillment.
+        citations:
+          - manhattan-omni
+        category: Order Management System (OMS)
+        what_it_is: Orchestrates orders across channels, sourcing ship-from-store and BOPIS against a unified inventory position and emitting fulfillment events.
+        who_uses_it: Fulfillment Operations, Store Operations and E-commerce teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of order events/sec
+            interval: Continuous orchestration events
+      - name: E2open Supply Planning
+        icon: globe
+        summary: Vendor OTIF, inbound containers and allocation constraints.
+        citations:
+          - e2open
+        category: Supply Chain Planning Platform
+        what_it_is: Tracks vendor OTIF, inbound containers and allocation constraints so planners see fill risk and inbound flow before it hits the shelf.
+        who_uses_it: Supply Planners, Vendor Management and Logistics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Daily + on-demand plan runs
+      - name: SymphonyAI IRIS
+        icon: chart
+        summary: Promotion planning, markdown optimization and demand sensing.
+        citations:
+          - symphony-iris
+        category: Retail AI / Merchandising Analytics
+        what_it_is: Plans promotions, optimizes markdowns and senses demand, feeding recommended prices and cuts back into merchandising.
+        who_uses_it: Pricing & Markdown, Merchandising and Planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily model runs
+  - name: Customer & Loyalty
+    icon: custlake
+    tiles:
+      - name: Salesforce Loyalty
+        icon: custlake
+        summary: Points, tiers and offer redemptions across channels.
+        citations:
+          - sf-loyalty
+        category: Loyalty Management Platform
+        what_it_is: Runs the loyalty program, holding points, tiers and offer redemptions and emitting the redemption events behind member value.
+        who_uses_it: Loyalty & CRM, Marketing and Digital teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of redemptions/sec
+            interval: Continuous redemption events
+      - name: Adobe Experience Plat
+        icon: partner
+        summary: Web behaviour, segments and consent for personalisation.
+        citations:
+          - adobe-aep
+        category: Customer Data Platform (CDP)
+        what_it_is: Unifies web and app behaviour into segments with consent, feeding audiences and profiles used for personalisation.
+        who_uses_it: Personalisation, Digital and Marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k behavioural events/sec
+            interval: Continuous event stream
+      - name: Medallia Experience
+        icon: observ
+        summary: Store and digital survey scores tied to visit and order.
+        citations:
+          - medallia
+        category: Customer Experience (VoC) Platform
+        what_it_is: Collects store and digital survey responses and experience scores tied to the visit and order for voice-of-customer analytics.
+        who_uses_it: Customer Experience, Store Operations and Insights teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs (surveys + verbatims)
+            interval: Daily feed
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Wholesale Partner Mart
+        icon: fed
+        summary: Department store sell-in marts queried in place under Unity Catalog.
+        category: Wholesale Data Mart
+        what_it_is: Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Wholesale, Merchandising and Finance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: NielsenIQ POS
+        icon: market
+        summary: Syndicated sell-through consumed inbound for category benchmarking.
+        citations:
+          - nielseniq
+        category: Syndicated Market Data Provider
+        what_it_is: Supplies syndicated sell-through and market-share reads so category teams can benchmark performance against the wider market.
+        who_uses_it: Category Managers, Merchant Leadership and Insights teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/week
+            interval: Weekly / monthly syndicated feed
+      - name: Google Merchant Center
+        icon: api
+        summary: Product feed performance and local inventory ads parsed on ingest.
+        citations:
+          - google-merchant
+        category: Product Feed / Shopping Ads Platform
+        what_it_is: Reports product-feed performance and local inventory ads, parsed on ingest to tie shopping-ad spend to catalogue and stock.
+        who_uses_it: Digital Marketing and E-commerce teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs/day feed reports
+            interval: Daily feed + API pulls
+      - name: Weather & Local Events
+        icon: globe
+        summary: Forecast feeds attached to stores for short-term demand models.
+        category: External Signal / Weather Feed
+        what_it_is: Attaches weather forecasts and local-event calendars to stores as exogenous signals for short-term demand models.
+        who_uses_it: Demand Planners and Store Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day
+            interval: Daily forecast refresh
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Merchant Leadership
+        mark: Genie One
+        summary: The CEO on comparable sales and market share; the CFO on gross margin and inventory ownership when a season turns and markdowns start to bite.
+        uses:
+          - - Genie One
+            - Ask what comp sales were yesterday by banner without waiting on retail analytics.
+          - - AI/BI
+            - Sales, margin and in-stock on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "comp" means one thing across channels.
+        sub:
+          - name: Chief Merchant / CEO
+            cares: comparable sales, market share and the health of the assortment across banners.
+          - name: CFO & Finance
+            cares: gross margin after markdowns and the cash tied up in inventory.
+          - name: Chief Marketing Officer
+            cares: promotion effectiveness, loyalty growth and customer acquisition cost.
+        ucs:
+          - Promotion ROI
+          - Markdown Optimisation
+          - Demand Forecasting
+      - name: Merchandising
+        mark: AI/BI
+        summary: Buyers on assortment, pricing and markdown cadence by category, tracking sell-through and weeks of supply against the merchandise plan.
+        uses:
+          - - Allocation Optimizer
+            - Size curves and door profiles before allocation locks.
+          - - AI/BI
+            - Sell-through and WOS on governed POS.
+          - - Genie One
+            - Ask which SKUs are overstocked before markdown season.
+        sub:
+          - name: Buyers
+            cares: assortment breadth, sell-through and the open-to-buy against the merchandise plan.
+          - name: Pricing & Markdown
+            cares: price ladders, markdown cadence and margin recovery on aged stock.
+          - name: Category Managers
+            cares: space, range and vendor performance within the category.
+        ucs:
+          - Markdown Optimisation
+          - Allocation Optimisation
+          - Promotion ROI
+      - name: Planning & Allocation
+        mark: Model Serving
+        summary: Planners on forecast accuracy, receipts and replenishment at risk, watching in-stock rate and inventory turns across the store network.
+        uses:
+          - - Demand Planning Hub
+            - Consensus forecast before buy meetings.
+          - - Model Serving
+            - Demand models scored in the allocation path.
+          - - Unity Catalog
+            - One SKU definition across ERP and commerce.
+        sub:
+          - name: Demand Planners
+            cares: consensus forecast accuracy and weeks of supply by SKU and door.
+          - name: Allocators
+            cares: size curves, door profiles and receipts flowing to the right stores.
+          - name: Supply Planners
+            cares: vendor fill, inbound flow and replenishment at risk.
+        ucs:
+          - Demand Forecasting
+          - Allocation Optimisation
+          - Supplier OTIF
+          - In-Stock Optimisation
+      - name: Store Operations
+        mark: Lakehouse//RT
+        summary: Field leaders on labor, conversion and in-stock during peak weeks, watching sales per labor hour and how fast a stockout spreads across doors.
+        uses:
+          - - Store Command Centre
+            - Traffic, conversion and labor against plan.
+          - - Lakehouse//RT
+            - Inventory positions at the latency a stockout spreads at.
+          - - Apps
+            - Associate tasking on governed store data.
+        sub:
+          - name: Regional & District Managers
+            cares: sales per labor hour, conversion and in-stock across their doors.
+          - name: Store Managers
+            cares: labor, tasking and shelf availability during peak weeks.
+          - name: Loss Prevention
+            cares: shrink, register exceptions and process compliance on the floor.
+        ucs:
+          - In-Stock Optimisation
+          - Omnichannel Fulfillment
+          - Shrink Analytics
+          - Clienteling
+      - name: Digital & CRM
+        mark: CustomerLake
+        summary: E-commerce and loyalty on traffic, conversion and retention, tracking customer lifetime value and churn across web, app and store.
+        uses:
+          - - Personalisation Studio
+            - Offers ranked on governed segments.
+          - - CustomerLake
+            - Household profiles without copying CDP elsewhere.
+          - - Model Serving
+            - Churn models in the marketing path.
+        sub:
+          - name: E-commerce
+            cares: site conversion, basket size and the fulfillment promise across channels.
+          - name: Loyalty & CRM
+            cares: retention, lifetime value and offer relevance by segment.
+          - name: Personalisation
+            cares: recommendation lift and the models ranking offers on-site.
+        ucs:
+          - Personalisation
+          - Clienteling
+          - Promotion ROI
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the ERP item, commerce, WMS and loyalty feeds; own the Bronze to Silver path and the pager when a retail pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for retail ERP, commerce and WMS sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on POS and inventory feeds.
+          - - Lakewatch
+            - Freshness on the comp sales and in-stock tables merchants read.
+        sub:
+          - name: Platform Engineering
+            cares: the ERP, commerce, WMS and loyalty pipelines and the Bronze-to-Silver contracts.
+          - name: Streaming & Ingestion
+            cares: POS and inventory events landing at the latency stores read them.
+          - name: Data Quality & SRE
+            cares: freshness and expectations on the comp-sales and in-stock tables.
+        ucs:
+          - Demand Forecasting
+          - Omnichannel Fulfillment
+          - In-Stock Optimisation
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand-forecast, markdown, allocation and personalisation models, and whether they still hold six months after deployment across banners and channels.
+        uses:
+          - - Feature Store
+            - POS and web features read identically in training and serving.
+          - - MLflow
+            - Every forecast and markdown run tracked for audit and reproduction.
+          - - Model Serving
+            - Demand and offer models scored in the allocation and marketing path.
+        sub:
+          - name: Forecasting & Optimization
+            cares: demand, markdown and allocation models and whether they still hold across banners.
+          - name: Personalisation Science
+            cares: recommendation and next-best-offer models on governed profiles.
+          - name: MLOps
+            cares: features read the same in training and serving, and every run reproducible.
+        ucs:
+          - Demand Forecasting
+          - Markdown Optimisation
+          - Personalisation
+          - Allocation Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the store command, demand planning and personalisation applications merchants and field teams work in, hosted next to governed retail data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for tasking state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a replenishment order against governed tools.
+        sub:
+          - name: App Engineering
+            cares: the store command, planning and personalisation screens merchants work in.
+          - name: Backend & APIs
+            cares: governed writes and serverless Postgres state behind operational apps.
+          - name: Agent Builders
+            cares: agents that draft a replenishment order against governed tools.
+        ucs:
+          - Omnichannel Fulfillment
+          - Clienteling
+          - Personalisation
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and peak-week updates in the channel stores work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Store & ERP Writeback
+    icon: opdb
+    tiles:
+      - name: Allocation Releases
+        icon: stream
+        summary: Door-level allocations pushed to WMS before pick waves.
+        citations:
+          - blue-yonder-wms
+      - name: Price & Markdown
+        icon: market
+        summary: Markdown recommendations written to POS and commerce.
+        citations:
+          - sf-commerce
+      - name: Replenishment Orders
+        icon: erp
+        summary: Store replenishment POs raised from governed min-max rules.
+        citations:
+          - sap-retail
+  - name: Marketplace Partners
+    icon: partner
+    tiles:
+      - name: Marketplace Inventory API
+        icon: api
+        summary: Available-to-promise synced to marketplaces from governed stock.
+        citations:
+          - shopify
+      - name: Wholesale EDI
+        icon: share
+        summary: 850/856 orders and ASNs to department store partners over governed products.
+      - name: 3PL Fulfillment Feed
+        icon: globe
+        summary: Outbound shipment status from 3PLs without nightly spreadsheet chases.
+        citations:
+          - manhattan-omni
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Product Safety Recall
+        icon: gavel
+        summary: Lot and store distribution lists produced from governed inventory lineage.
+      - name: ESG Product Passport
+        icon: share
+        summary: Sourcing and sustainability attributes filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Suppliers, marketplaces and auditors reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Store Command Centre
+        icon: gauge
+        short: Comp sales live
+        summary: Traffic, conversion and labor against plan on Databricks Apps over Lakebase.
+      - name: Demand Planning Hub
+        icon: sheet
+        short: Forecast consensus
+        summary: Statistical and merchant forecasts reconciled before buy meetings lock.
+      - name: Allocation Optimizer
+        icon: product
+        short: Door profiles
+        summary: Size curves and door allocation against demand and constraints.
+      - name: Personalisation Studio
+        icon: custlake
+        short: Offer targeting
+        summary: Segments and offers ranked on governed loyalty and web behaviour.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Comp Sales & Margin
+        icon: aibi
+        summary: Comparable sales, gross margin after markdowns and category performance on certified Metric Views.
+        kpis:
+          - Comparable sales
+          - Gross margin
+          - Markdown rate
+          - Sell-through
+          - Basket size
+        teams:
+          - Merchant Leadership
+          - Merchandising
+          - Planning & Allocation
+      - name: In-Stock & Inventory
+        icon: aibi
+        summary: In-stock rate, inventory turns and weeks of supply across stores and the network.
+        kpis:
+          - In-stock rate
+          - Inventory turns
+          - Weeks of supply
+          - Stockout count
+          - Fulfillment SLA
+        teams:
+          - Store Operations
+          - Planning & Allocation
+          - Merchandising
+      - name: Markdown & Promotion ROI
+        icon: aibi
+        summary: Markdown depth, promotion lift and incremental margin across banners.
+        kpis:
+          - Markdown depth
+          - Promotion lift
+          - Incremental sales
+          - Full-price sell-through
+          - Margin recovery
+        teams:
+          - Merchandising
+          - Merchant Leadership
+          - Digital & CRM
+      - name: Customer & Loyalty
+        icon: aibi
+        summary: Loyalty penetration, retention and customer lifetime value across channels.
+        kpis:
+          - Loyalty penetration
+          - Repeat rate
+          - Customer lifetime value
+          - Offer response rate
+          - Churn risk
+        teams:
+          - Digital & CRM
+          - Merchant Leadership
+          - Store Operations
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Merchandising & Sell-Through Agent
+        icon: genie
+        summary: Ask about comparable sales, sell-through and markdown health by category in plain language.
+        feeds:
+          - SAP S/4HANA Retail
+          - NCR Voyix POS
+          - SymphonyAI IRIS
+          - Comp, margin, in-stock
+        teams:
+          - Merchandising
+          - Merchant Leadership
+          - Planning & Allocation
+        questions:
+          - What were comparable sales yesterday by banner and category?
+          - Which SKUs are overstocked and heading into markdown season?
+          - What is gross margin after markdowns by department this month?
+          - Which categories are beating and missing the merchandise plan?
+          - How is sell-through trending versus last year for the new season?
+      - name: Inventory & Availability Agent
+        icon: genie
+        summary: Explore in-stock rate, inventory turns and fulfillment across stores and the network.
+        feeds:
+          - Blue Yonder WMS
+          - Manhattan Active Omni
+          - E2open Supply Planning
+          - Conformed SKU, store
+        teams:
+          - Store Operations
+          - Planning & Allocation
+          - Merchandising
+        questions:
+          - What is our in-stock rate by store and category right now?
+          - Which doors have the most stockouts on the fastest sellers?
+          - What are inventory turns and weeks of supply by category?
+          - Which orders are at risk of missing the fulfillment promise?
+          - Where is inbound flow behind and threatening replenishment?
+      - name: Customer & Loyalty Agent
+        icon: genie
+        summary: Answer loyalty, personalisation and experience questions across web and store.
+        feeds:
+          - Salesforce Loyalty
+          - Adobe Experience Plat
+          - Medallia Experience
+        teams:
+          - Digital & CRM
+          - Merchant Leadership
+          - Store Operations
+        questions:
+          - What is loyalty penetration and member growth by segment?
+          - Which customers are cross-sell candidates but hold one category?
+          - How do experience scores compare across store and digital?
+          - Which segments responded best to last week's offers?
+          - What is churn risk for our top-decile households?
+      - name: Supply & Vendor Agent
+        icon: genie
+        summary: Ask about vendor OTIF, market share and wholesale sell-in across the network.
+        feeds:
+          - E2open Supply Planning
+          - NielsenIQ POS
+          - Wholesale Partner Mart
+        teams:
+          - Planning & Allocation
+          - Merchandising
+          - Merchant Leadership
+        questions:
+          - Which vendors are missing OTIF and lead-time targets?
+          - How is our market share trending versus the category?
+          - Which wholesale partners are driving sell-in growth?
+          - Where are inbound containers late and putting receipts at risk?
+          - Which SKUs show the widest gap between plan and syndicated demand?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Demand Forecasting
+        short: Planning
+        icon: chart
+        summary: SKU-store forecasts updated from POS, web and local signals.
+        problem: Category-level forecasts built on last year's averages miss local demand, so some doors overstock while others stock out before planners can react to what is actually selling.
+        who_benefits: Planning & Allocation
+        how_built: POS, e-commerce and local signals like weather land through Lakeflow, features are engineered in Feature Store, and SKU-store models scored in Model Serving feed the Demand Planning Hub.
+        components:
+          - Demand Planning Hub
+          - Lakeflow
+          - Feature Store
+          - Model Serving
+          - Weather & Local Events
+        stories:
+          - title: ABFRL scales demand forecasting and allocation on Databricks
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+          - title: Walgreens forecasts inventory across nearly 9,000 pharmacies
+            url: https://www.databricks.com/customers/walgreens
+      - name: Markdown Optimisation
+        short: Margin
+        icon: market
+        summary: Markdown timing and depth maximising margin recovery not calendar rules.
+        problem: Markdowns follow a fixed calendar, so slow sellers are cut too late and healthy ones too deep, and margin leaks out of the season before the buyer sees the whole picture.
+        who_benefits: Merchandising
+        how_built: Sell-through and price history conformed on Delta Lake feed markdown-timing models in Model Serving, and recommended cuts are written back to POS and commerce through Price & Markdown.
+        components:
+          - Model Serving
+          - MLflow
+          - Delta Lake
+          - Price & Markdown
+          - SymphonyAI IRIS
+        stories:
+          - title: ABFRL automates markdown recommendations with ML
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+      - name: Allocation Optimisation
+        short: Inventory
+        icon: product
+        summary: Initial and replenishment allocation tuned to size and door profiles.
+        problem: Initial and replenishment allocation lean on flat size curves and one national plan, so the wrong sizes land in the wrong doors and stores trade around the buy instead of to it.
+        who_benefits: Planning & Allocation
+        how_built: Demand signals and door profiles scored in Model Serving drive size curves in the Allocation Optimizer, and door-level allocations are released to the WMS through Allocation Releases.
+        components:
+          - Allocation Optimizer
+          - Model Serving
+          - Allocation Releases
+          - Blue Yonder WMS
+          - Unity Catalog
+        stories:
+          - title: ABFRL scales store-level SKU assortment and allocation
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+          - title: Al-Futtaim forecasts seasonal orders for Marks & Spencer
+            url: https://www.databricks.com/customers/al-futtaim
+      - name: Omnichannel Fulfillment
+        short: Operations
+        icon: stream
+        summary: Ship-from-store and BOPIS against unified inventory positions.
+        problem: Web, store and warehouse stock live in separate systems, so orders route to the wrong node, ship-from-store picks what is already sold, and BOPIS promises break at the counter.
+        who_benefits: Store Operations
+        how_built: Manhattan and commerce feeds land in Lakehouse//RT to hold one live inventory position, so ship-from-store and BOPIS route against real availability from the Store Command Centre.
+        components:
+          - Store Command Centre
+          - Lakehouse//RT
+          - Manhattan Active Omni
+          - Salesforce Commerce
+          - Delta Lake
+      - name: Personalisation
+        short: Digital
+        icon: custlake
+        summary: Offers and recommendations ranked without copying profiles off-platform.
+        problem: Offers are batched from stale segments and scattered across web, app and email, so shoppers see irrelevant messages while profiles get copied into yet another marketing tool.
+        who_benefits: Digital & CRM
+        how_built: Loyalty and web behaviour conformed in CustomerLake feed ranking models in Model Serving, and offers are served through Personalisation Studio without copying profiles off-platform.
+        components:
+          - Personalisation Studio
+          - CustomerLake
+          - Model Serving
+          - Adobe Experience Plat
+          - Feature Store
+        stories:
+          - title: Skechers lifts click-through 324% with personalization
+            url: https://www.databricks.com/customers/skechers
+          - title: Wehkamp serves recommendations at scale and doubles revenue
+            url: https://www.databricks.com/customers/wehkamp
+      - name: In-Stock Optimisation
+        short: Availability
+        icon: gauge
+        summary: Safety stock and replenishment tuned to actual demand variability.
+        problem: Safety stock is set once by rule of thumb, so demand variability shows up as empty shelves on the fastest sellers and cash tied up in the slow ones, and nobody sees a stockout spread.
+        who_benefits: Store Operations
+        how_built: POS and inventory positions stream into Lakehouse//RT and replenishment models in Model Serving tune min-max by SKU and door, raising Replenishment Orders before a shelf goes empty.
+        components:
+          - Store Command Centre
+          - Lakehouse//RT
+          - Model Serving
+          - Replenishment Orders
+          - SAP S/4HANA Retail
+        stories:
+          - title: Walgreens right-sizes inventory to avoid stockouts
+            url: https://www.databricks.com/customers/walgreens
+          - title: Top 7 ways AI in retail improves inventory availability
+            url: https://www.databricks.com/blog/top-7-ways-ai-retail-enhances-customer-experience-and-operations
+      - name: Promotion ROI
+        short: Commercial
+        icon: partner
+        summary: Campaign lift measured on incremental sales not vanity traffic.
+        problem: Campaigns are judged on traffic and redemptions, so promotions that pull demand forward or cannibalise full-price sales look like wins and the real margin impact is never measured.
+        who_benefits: Merchant Leadership
+        how_built: POS, promotion and loyalty data conformed on Delta Lake feed incremental-lift models in Model Serving, and campaign ROI lands on certified Metric Views merchants read in AI/BI.
+        components:
+          - AI/BI
+          - Model Serving
+          - Delta Lake
+          - Salesforce Loyalty
+          - Unity Catalog
+        stories:
+          - title: Currys drives growth and retail media with data intelligence
+            url: https://www.databricks.com/customers/currys
+      - name: Shrink Analytics
+        short: Loss prevention
+        icon: observ
+        summary: Inventory shrink correlated to store, category and process gaps.
+        problem: Shrink surfaces once a year at physical count, so theft, process error and phantom inventory blur together and the store or workflow driving the loss stays invisible until margin is gone.
+        who_benefits: Store Operations
+        how_built: POS exceptions, inventory movements and WMS events conformed on Delta Lake are scored for anomalies in Model Serving, so shrink is attributed to store, category and process in AI/BI.
+        components:
+          - Model Serving
+          - Delta Lake
+          - AI/BI
+          - NCR Voyix POS
+          - Unity Catalog
+      - name: Clienteling
+        short: Store
+        icon: people
+        summary: High-value customers recognized in every channel with governed profiles.
+        problem: Associates meet a high-value customer with no memory of the last visit, so online history, loyalty tier and preferences that would close the sale sit in systems the shop floor cannot reach.
+        who_benefits: Digital & CRM
+        how_built: Household profiles resolved in CustomerLake are served to associate apps through Databricks Apps on Lakebase, so every channel recognises the customer against one governed profile.
+        components:
+          - Personalisation Studio
+          - CustomerLake
+          - Apps
+          - Lakebase
+          - Salesforce Loyalty
+        stories:
+          - title: PetSmart boosts engagement and loyalty with AI decisioning
+            url: https://www.databricks.com/customers/petsmart/ai
+          - title: 'From search to sale: AI-driven engagement and loyalty in retail'
+            url: https://www.databricks.com/blog/search-sale-how-ai-redefining-customer-engagement-and-loyalty-retail
+      - name: Supplier OTIF
+        short: Supply
+        icon: globe
+        summary: Vendor fill rates and lead-time variability surfaced before stockouts.
+        problem: Vendor fill rates and lead times hide in EDI and email, so late or short deliveries are discovered only when a receipt fails to arrive and the stockout has already hit the shelf.
+        who_benefits: Planning & Allocation
+        how_built: PO, ASN and receipt data from ERP and EDI conformed on Delta Lake track fill rate and lead-time variability in AI/BI, flagging at-risk receipts before they become stockouts.
+        components:
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+          - E2open Supply Planning
+          - Wholesale EDI
+        stories:
+          - title: Al-Futtaim improves supply chain and cuts inventory holding cost
+            url: https://www.databricks.com/customers/al-futtaim
+          - title: Columbia Sportswear accelerates supply chain analytics on Databricks
+            url: https://www.databricks.com/customers/columbia
+medallion:
+  Bronze:
+    short: Raw sales and stock
+    summary: POS transactions, e-commerce orders, inventory snapshots, markdown events and loyalty interactions, landed exactly as received so a basket or a stock position can always be replayed as it stood.
+  Silver:
+    short: Conformed SKU, store
+    summary: SKUs, stores, customers and channels resolved into single conformed entities across ERP, commerce and WMS, with returns reconciled and omnichannel orders stitched to one fulfillment record.
+  Gold:
+    short: Comp, margin, in-stock
+    summary: 'Contracted products merchandising and finance run on: comparable sales, gross margin after markdowns, in-stock rate and inventory turns.'
+citation_index:
+  sap-retail:
+    title: SAP S/4HANA Retail
+    url: https://www.sap.com/industries/retail.html
+  oracle-retail:
+    title: Oracle Retail Merchandising
+    url: https://www.oracle.com/retail/merchandising/
+  blue-yonder-wms:
+    title: Blue Yonder WMS
+    url: https://blueyonder.com/solutions/warehouse-management
+  sf-commerce:
+    title: Salesforce Commerce Cloud
+    url: https://www.salesforce.com/commerce/
+  shopify:
+    title: Shopify Plus
+    url: https://www.shopify.com/plus
+  ncr-voyix:
+    title: NCR Voyix
+    url: https://www.ncr.com/retail
+  manhattan-omni:
+    title: Manhattan Active Omni
+    url: https://www.manh.com/solutions
+  e2open:
+    title: E2open
+    url: https://www.e2open.com/
+  symphony-iris:
+    title: SymphonyAI IRIS
+    url: https://www.symphonyai.com/retail/
+  sf-loyalty:
+    title: Salesforce Loyalty Management
+    url: https://www.salesforce.com/products/loyalty-management/
+  adobe-aep:
+    title: Adobe Experience Platform
+    url: https://business.adobe.com/products/experience-platform/adobe-experience-platform.html
+  medallia:
+    title: Medallia
+    url: https://www.medallia.com/
+  nielseniq:
+    title: NielsenIQ retail measurement
+    url: https://nielseniq.com/global/en/solutions/
+  google-merchant:
+    title: Google Merchant Center
+    url: https://merchants.google.com/

@@ -1,0 +1,996 @@
+name: Digital Health
+description: 'Telehealth and virtual-care platforms: video and asynchronous visits, remote patient monitoring and wearables, care management, FHIR-based EHR integration, member engagement and outcomes.'
+sources:
+  - name: Virtual Care Platform
+    icon: erp
+    tiles:
+      - name: Amwell Platform
+        icon: erp
+        summary: 'The virtual-care platform of record: scheduled and on-demand video visits, provider queues and visit notes, and the source of the telehealth encounter.'
+        citations:
+          - amwell
+        category: Telehealth / Virtual Care Platform
+        what_it_is: 'System of record for the telehealth encounter: scheduled and on-demand video visits, provider queues and visit notes, emitting visit, queue and note events.'
+        who_uses_it: Clinical Ops, care delivery and quality teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 5-20 GB/day incl. notes
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of visit events/sec at peak
+            interval: Continuous visit stream
+      - name: Teladoc Health
+        icon: erp
+        summary: Whole-person virtual care across urgent, chronic and mental health, carrying visits, programmes and clinician assignments into the estate.
+        citations:
+          - teladoc
+        category: Telehealth / Virtual Care Platform
+        what_it_is: Delivers whole-person virtual care across urgent, chronic and mental health, carrying visits, programmes and clinician assignments into the estate.
+        who_uses_it: Clinical Ops, care delivery and programme teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 5-20 GB/day incl. notes
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of visit events/sec at peak
+            interval: Continuous visit stream
+      - name: Zoom for Healthcare
+        icon: globe
+        summary: HIPAA-configured video sessions embedded in the care journey, the media and connection quality feed behind each visit.
+        citations:
+          - zoom-health
+        category: Video Conferencing Platform
+        what_it_is: Runs HIPAA-configured video sessions embedded in the care journey, emitting the media and connection-quality telemetry behind each visit.
+        who_uses_it: Clinical Ops, care delivery and platform-reliability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of session events/sec at peak
+            interval: Continuous session telemetry
+      - name: Doxy.me Telehealth
+        icon: globe
+        summary: Browser-based telemedicine for lightweight virtual visits, feeding session and waiting-room events where Doxy.me is the incumbent.
+        citations:
+          - doxyme
+        category: Telehealth / Virtual Care Platform
+        what_it_is: Browser-based telemedicine for lightweight virtual visits, feeding session and waiting-room events where Doxy.me is the incumbent.
+        who_uses_it: Clinical Ops, care delivery and virtual-visit operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of session events/sec
+            interval: Continuous session stream
+  - name: Clinical & EHR (FHIR)
+    icon: partner
+    tiles:
+      - name: Epic FHIR APIs
+        icon: erp
+        summary: Patient, Encounter, Observation and Medication resources pulled from the EHR over FHIR R4, the clinical spine every care plan is joined to.
+        citations:
+          - epic-fhir
+        category: EHR FHIR API
+        what_it_is: Serves Patient, Encounter, Observation and Medication resources from the EHR over FHIR R4, the clinical spine every care plan is joined to.
+        who_uses_it: App & FHIR Devs, Clinical ML and care-management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of resources/sec at peak
+            interval: Continuous (FHIR API / subscription)
+      - name: athenahealth API
+        icon: erp
+        summary: Ambulatory EHR and practice data over athenahealth's APIs, feeding problems, medications and results where athena is the record.
+        citations:
+          - athenahealth
+        category: Ambulatory EHR API
+        what_it_is: Serves ambulatory EHR and practice data over athenahealth's APIs, feeding problems, medications and results where athena is the record.
+        who_uses_it: App & FHIR Devs, Clinical ML and care-management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of resources/sec
+            interval: Continuous (API)
+      - name: Redox Interop
+        icon: partner
+        summary: Interoperability layer normalising HL7 v2 and FHIR across dozens of EHRs into one integration the platform reads.
+        citations:
+          - redox
+        category: Healthcare Interoperability Platform
+        what_it_is: Normalises HL7 v2 and FHIR across dozens of EHRs into one integration the platform reads, emitting conformed clinical events.
+        who_uses_it: App & FHIR Devs, Health Data Eng and integration teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec at peak
+            interval: Continuous (HL7/FHIR)
+      - name: Health Gorilla
+        icon: partner
+        summary: National FHIR network for clinical records, labs and patient query, the source of longitudinal history beyond the platform's own visits.
+        citations:
+          - health-gorilla
+        category: Health Information Network
+        what_it_is: National FHIR network for clinical records, labs and patient query, the source of longitudinal history beyond the platform's own visits.
+        who_uses_it: App & FHIR Devs, Clinical ML and care-management teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 1-5 GB/day records + labs
+            interval: Daily + on-demand query
+          stream:
+            types:
+              - semi-structured
+            volume: tens of queries/sec
+            interval: Continuous (API)
+  - name: RPM & Wearables
+    icon: iot
+    tiles:
+      - name: Validic Device Hub
+        icon: iot
+        summary: Device-data aggregation across hundreds of wearables and RPM kits, normalising readings into one Observation stream.
+        citations:
+          - validic
+        category: Remote Patient Monitoring Hub
+        what_it_is: Aggregates device data across hundreds of wearables and RPM kits, normalising readings into one Observation stream.
+        who_uses_it: Care Management, RPM nurses and Clinical ML teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k readings/sec at peak
+            interval: Continuous device stream
+      - name: Apple HealthKit
+        icon: iot
+        summary: Steps, heart rate, sleep and workout data shared from the member's phone, the consumer-side signal behind adherence and coaching.
+        citations:
+          - healthkit
+        category: Consumer Wearable Data Source
+        what_it_is: Shares steps, heart rate, sleep and workout data from the member's phone, the consumer-side signal behind adherence and coaching.
+        who_uses_it: Care Management, health coaches and Clinical ML teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of readings/sec at peak
+            interval: Continuous (device sync)
+      - name: Dexcom CGM
+        icon: iot
+        summary: Continuous glucose readings streamed from the sensor, the ground truth for diabetes and cardiometabolic programmes.
+        citations:
+          - dexcom
+        category: Continuous Glucose Monitor (CGM)
+        what_it_is: Streams continuous glucose readings from the sensor, the ground truth for diabetes and cardiometabolic programmes.
+        who_uses_it: Care Management, digital therapeutics and Clinical ML teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k readings/sec at peak
+            interval: Continuous CGM stream
+      - name: Fitbit & Google Fit
+        icon: iot
+        summary: Activity, resting heart rate and sleep from consumer wearables, joined to programmes for behavioural and outcome signals.
+        citations:
+          - fitbit
+        category: Consumer Wearable Data Source
+        what_it_is: Provides activity, resting heart rate and sleep from consumer wearables, joined to programmes for behavioural and outcome signals.
+        who_uses_it: Member Growth, health coaches and Clinical ML teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of readings/sec at peak
+            interval: Continuous (device sync)
+  - name: Member Engagement
+    icon: custlake
+    tiles:
+      - name: SF Health Cloud
+        icon: crm
+        summary: 'Salesforce Health Cloud: member and care-team relationships, service cases and next-best-action, the system of record for engagement and outreach.'
+        citations:
+          - sf-health
+        category: Healthcare CRM
+        what_it_is: 'System of record for engagement and outreach: member and care-team relationships, service cases and next-best-action, emitting account, case and activity events.'
+        who_uses_it: Member Growth, member-engagement and care-team leads.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: Twilio Comms
+        icon: chat
+        summary: SMS, voice and WhatsApp reminders and nudges, the delivery channel and event source for every outreach the platform sends.
+        citations:
+          - twilio
+        category: Communications / Messaging Platform
+        what_it_is: Delivers SMS, voice and WhatsApp reminders and nudges, the delivery channel and event source for every outreach the platform sends.
+        who_uses_it: Member Growth, member-engagement and lifecycle-marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of message events/sec at peak
+            interval: Continuous message stream
+      - name: Braze Journeys
+        icon: custlake
+        summary: Lifecycle campaigns and in-app messaging, carrying journey membership, sends and responses into the estate.
+        citations:
+          - braze
+        category: Customer Engagement Platform
+        what_it_is: Runs lifecycle campaigns and in-app messaging, carrying journey membership, sends and responses into the estate.
+        who_uses_it: Member Growth, lifecycle-marketing and member-engagement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-3 GB/day
+            interval: Hourly / daily export
+          stream:
+            types:
+              - semi-structured
+            volume: tens of journey events/sec
+            interval: Continuous event stream
+  - name: Claims & Eligibility
+    icon: market
+    tiles:
+      - name: Change Healthcare
+        icon: market
+        summary: Clearinghouse for eligibility, claims and remittance, the gateway between the platform and payer adjudication.
+        citations:
+          - change
+        category: Healthcare Claims Clearinghouse
+        what_it_is: Clearinghouse for eligibility, claims and remittance, the gateway between the platform and payer adjudication.
+        who_uses_it: Payer Partners, revenue and eligibility teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day claims + remits
+            interval: Daily claims cycle
+          stream:
+            types:
+              - semi-structured
+            volume: tens of eligibility checks/sec
+            interval: Continuous (API)
+      - name: Availity Gateway
+        icon: partner
+        summary: Real-time eligibility, benefits and prior-authorisation checks against payers, feeding coverage state into the visit path.
+        citations:
+          - availity
+        category: Payer Connectivity Gateway
+        what_it_is: Runs real-time eligibility, benefits and prior-authorisation checks against payers, feeding coverage state into the visit path.
+        who_uses_it: Payer Partners, eligibility and revenue teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of checks/sec at peak
+            interval: Continuous (API at visit)
+      - name: Stripe Payments
+        icon: product
+        summary: Copay, subscription and self-pay transactions, the source of billing and collection events for the member.
+        citations:
+          - stripe
+        category: Payments Platform
+        what_it_is: Processes copay, subscription and self-pay transactions, the source of billing and collection events for the member.
+        who_uses_it: Payer Partners, billing and finance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of payment events/sec
+            interval: Continuous (webhook / API)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Enrollment & Claims
+        icon: fed
+        summary: Employer and payer eligibility, enrollment and adjudicated-claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the paid claims.
+        category: Eligibility & Claims Data Warehouse
+        what_it_is: Employer and payer eligibility, enrollment and adjudicated-claims marts kept where they are and queried in place through federation instead of being copied.
+        who_uses_it: Payer Partners, Actuarial & VBC and care-management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale claims marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Twilio Event Streams
+        icon: stream
+        summary: Delivery, open and reply events from SMS and voice outreach streamed in for engagement and adherence analysis.
+        citations:
+          - twilio
+        category: Communications Event Stream
+        what_it_is: Streams delivery, open and reply events from SMS and voice outreach for engagement and adherence analysis.
+        who_uses_it: Member Growth, member-engagement and lifecycle-marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous event stream
+      - name: HL7 & FHIR Messages
+        icon: stream
+        summary: HL7 v2 ADT and FHIR subscription events parsed on arrival and landed as structured clinical events for near-real-time care.
+        citations:
+          - hl7-fhir
+        category: Health Interoperability Standard (HL7/FHIR)
+        what_it_is: HL7 v2 ADT and FHIR subscription events parsed on arrival and landed as structured clinical events for near-real-time care.
+        who_uses_it: Health Data Eng, App & FHIR Devs and care-management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec at peak
+            interval: Continuous HL7/FHIR feed
+      - name: Kafka Device Events
+        icon: eventbus
+        summary: High-frequency device telemetry from RPM kits and wearables on existing Kafka or event-hub topics, landed as it streams.
+        category: Streaming Event Bus
+        what_it_is: Carries high-frequency device telemetry from RPM kits and wearables on existing Kafka or event-hub topics, landed as it streams.
+        who_uses_it: Health Data Eng, Clinical ML and RPM-monitoring teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k messages/sec at peak
+            interval: Continuous (Kafka / event hub)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Clinical Ops
+        mark: Genie One
+        summary: The Chief Medical Officer on clinical quality and safety; care-delivery leadership on visit access, clinician utilisation and outcomes; the quality team on measures, escalations and clinical governance.
+        uses:
+          - - Genie One
+            - Ask what this week's no-show rate or alert precision is without booking analyst time.
+          - - AI/BI
+            - Visit access, RPM adherence and quality measures on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the clinical glossary, so "active member" and "adherent" mean one thing across the platform.
+        sub:
+          - name: Chief Medical Officer
+            cares: clinical quality, safety and the outcomes story.
+          - name: Care Delivery
+            cares: visit access, clinician utilisation and wait times.
+          - name: Quality & Safety
+            cares: measures, escalations and clinical governance.
+        ucs:
+          - Virtual Visit Ops
+          - Risk Stratification
+          - Care Coordination
+      - name: Member Growth
+        mark: AI/BI
+        summary: The Chief Growth Officer on acquisition, activation and retention; member-engagement leads on outreach performance and adherence; lifecycle marketing on journeys, channels and reactivation.
+        uses:
+          - - AI/BI
+            - Activation, engagement and retention on certified Metric Views.
+          - - Genie One
+            - Ask which cohort is disengaging this month without a report pull.
+          - - Model Serving
+            - Engagement and adherence propensity scored per member.
+        sub:
+          - name: Chief Growth Officer
+            cares: acquisition, activation and retention.
+          - name: Member Engagement
+            cares: outreach performance, adherence and satisfaction.
+          - name: Lifecycle Marketing
+            cares: journeys, channels and reactivation.
+        ucs:
+          - Member Engagement
+          - Digital Therapeutics
+          - Virtual Visit Ops
+      - name: Care Management
+        mark: Lakehouse//RT
+        summary: Care managers running panels of chronic and rising-risk members; RPM nurses triaging device alerts through the day; health coaches driving adherence and behaviour change against the care plan.
+        uses:
+          - - Care Command Center
+            - Device alerts and risk scores on a panel before the day starts.
+          - - Lakehouse//RT
+            - Live device, visit and engagement state at the latency a care team acts at.
+          - - Model Serving
+            - Deterioration and adherence models scored inside the care path.
+        sub:
+          - name: Care Managers
+            cares: chronic and rising-risk panels and escalations.
+          - name: RPM Nurses
+            cares: device-alert triage and remote intervention.
+          - name: Health Coaches
+            cares: adherence, behaviour change and coaching.
+        ucs:
+          - RPM & Alerting
+          - Care Gap Closure
+          - Risk Stratification
+          - Care Coordination
+      - name: Payer Partners
+        mark: AI/BI
+        summary: The VP of payer partnerships on contract performance and value-based targets; contracting on eligibility, claims and shared-savings settlement; the actuarial and VBC team on cost, utilisation and outcomes attribution.
+        uses:
+          - - AI/BI
+            - Contract performance, cost and utilisation on certified views.
+          - - Genie One
+            - Ask what a cohort's cost of care and gap closure look like this quarter.
+          - - Unity Catalog
+            - One definition of member, cost and outcome across clinical and finance.
+        sub:
+          - name: VP Partnerships
+            cares: contract performance and value-based targets.
+          - name: Contracting
+            cares: eligibility, claims and shared-savings settlement.
+          - name: Actuarial & VBC
+            cares: cost, utilisation and outcomes attribution.
+        ucs:
+          - Eligibility & Claims
+          - Outcomes Analytics
+          - Care Gap Closure
+      - name: Product & Data
+        mark: Model Serving
+        summary: The Chief Product Officer on the digital experience and feature bets; the digital-therapeutics team on programme efficacy and FDA-cleared claims; data science on the models behind coaching, triage and outcomes.
+        uses:
+          - - Model Serving
+            - Coaching, triage and outcome models scored in the member path.
+          - - MLflow
+            - Every model versioned for audit, evidence and reproduction.
+          - - Feature Store
+            - Member, device and clinical features read identically in training and serving.
+        sub:
+          - name: Chief Product Officer
+            cares: the digital experience and feature bets.
+          - name: Digital Therapeutics
+            cares: programme efficacy and cleared claims.
+          - name: Data Science
+            cares: models behind coaching, triage and outcomes.
+        ucs:
+          - FHIR Interoperability
+          - Digital Therapeutics
+          - Outcomes Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Health Data Eng
+        mark: Lakeflow
+        summary: Land telehealth, EHR (FHIR), device and eligibility feeds; build the FHIR-conformed clinical model; own Bronze to Silver and the pager when the care and engagement tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for the telehealth, CRM and claims sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on visit, device and eligibility feeds.
+          - - Lakewatch
+            - Freshness on the tables care teams read every morning.
+        ucs:
+          - FHIR Interoperability
+          - RPM & Alerting
+          - Eligibility & Claims
+      - name: Clinical ML
+        mark: MLflow
+        summary: Deterioration, readmission-risk, adherence and engagement models built from FHIR, device streams and claims; whether they still hold six months on as cohorts and devices shift.
+        uses:
+          - - Feature Store
+            - Clinical, device and engagement features read identically in training and serving.
+          - - MLflow
+            - Every risk and adherence model tracked for audit and reproduction.
+          - - Model Serving
+            - Risk and adherence models scored inside the care path.
+        ucs:
+          - Risk Stratification
+          - Digital Therapeutics
+          - Care Gap Closure
+      - name: App & FHIR Devs
+        mark: Apps
+        summary: Ship the member app, provider portal and care screens, and the SMART-on-FHIR APIs partners integrate against, hosted next to governed data.
+        uses:
+          - - Apps
+            - Member and care screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for care-plan state and governed writes.
+          - - Agent Bricks
+            - Agents that draft outreach or a care-plan update against governed tools.
+        ucs:
+          - Virtual Visit Ops
+          - Care Coordination
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Clinical, engagement and outcomes dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers on access, adherence and outcomes in the channel the business already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Clinical data-science notebooks and IDEs against governed member, device and claims data.
+  - name: Member & Provider Apps
+    icon: partner
+    tiles:
+      - name: Member Mobile App
+        icon: apps
+        summary: Real-time member profile, adherence and connected-device data served to the app over Lakebase for a live experience.
+      - name: Provider Portal
+        icon: apps
+        summary: Panel, alert and outcome views served to clinicians and care teams over governed APIs.
+      - name: FHIR & SMART APIs
+        icon: api
+        summary: SMART-on-FHIR endpoints served to partner EHRs and apps against contracted Gold products.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: EHR FHIR Writeback
+        icon: erp
+        summary: Risk flags, care-gap tasks and observations written back into the EHR over FHIR so the answer reaches the clinician's workflow.
+        citations:
+          - epic-fhir
+      - name: Health Cloud Sync
+        icon: crm
+        summary: Risk, engagement and next-best-action signals written into Salesforce Health Cloud for care-team and outreach action.
+        citations:
+          - sf-health
+      - name: Care Plan Writeback
+        icon: opdb
+        summary: Coaching and care-plan updates written to the care-management workflow on Lakebase in the tool the care team works in.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: HIPAA & HITRUST
+        icon: gavel
+        summary: PHI access, audit and de-identification governed in Unity Catalog, with HIPAA and HITRUST evidence produced from the same tables.
+      - name: HEDIS & Star Ratings
+        icon: sheet
+        summary: Quality measures, HEDIS and Star Ratings submissions produced from contracted Gold products, not a separate extract.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Payers, health-system partners and researchers reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Care Command Center
+        icon: gauge
+        short: RPM & care triage
+        summary: 'The screen the care team runs the day from: device alerts, deterioration and adherence scores across the panel with next-best-action, on Databricks Apps over Lakebase.'
+      - name: Member 360 Hub
+        icon: custlake
+        short: Engagement
+        summary: One governed view of the member across visits, devices, claims and engagement, with the outreach and journey history that makes personalisation possible.
+      - name: Visit Operations
+        icon: stream
+        short: Telehealth ops
+        summary: 'Live virtual-care state: clinician availability against demand, queue depth and no-show risk, so visits are staffed and steered before the wait becomes a cancellation.'
+      - name: Outcomes Explorer
+        icon: chart
+        short: Value-based
+        summary: Clinical and financial outcomes by cohort and programme, so product, clinical and payer teams see what actually moves adherence, gaps and cost of care.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Virtual Care Operations
+        icon: aibi
+        summary: Visit volume, no-show, wait time and clinician utilisation on certified Metric Views.
+        kpis:
+          - Visit volume
+          - No-show rate
+          - Wait time
+          - Clinician utilisation
+          - Access rate
+        teams:
+          - Clinical Ops
+          - Care Delivery
+          - Quality & Safety
+      - name: RPM & Alerting
+        icon: aibi
+        summary: Device adherence, alert precision and escalations across the monitored panel.
+        kpis:
+          - RPM adherence
+          - Alert precision
+          - Alerts per member
+          - Escalation rate
+          - Readings ingested
+        teams:
+          - Care Management
+          - RPM Nurses
+          - Health Coaches
+      - name: Engagement & Retention
+        icon: aibi
+        summary: Activation, engagement, outreach response and retention across cohorts.
+        kpis:
+          - Activation rate
+          - Engagement rate
+          - Retention rate
+          - Outreach response
+          - Reactivation rate
+        teams:
+          - Member Growth
+          - Member Engagement
+          - Lifecycle Marketing
+      - name: Outcomes & Cost of Care
+        icon: aibi
+        summary: Care-gap closure, cost of care and shared-savings performance by cohort.
+        kpis:
+          - Care-gap closure
+          - Cost of care
+          - Utilisation
+          - Shared savings
+          - Outcome improvement
+        teams:
+          - Payer Partners
+          - Actuarial & VBC
+          - Contracting
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Virtual Visit Ops Agent
+        icon: genie
+        summary: Ask about visit access, no-show rates and clinician utilisation in plain language.
+        feeds:
+          - Amwell Platform
+          - Teladoc Health
+          - Zoom for Healthcare
+          - Engagement, outcomes, cost of care
+        teams:
+          - Clinical Ops
+          - Care Delivery
+          - Quality & Safety
+        questions:
+          - What is this week's no-show rate by programme and channel?
+          - Where is clinician availability falling short of visit demand?
+          - What is average wait time from request to visit start?
+          - Which programmes have the longest queue depth right now?
+          - How has virtual visit volume grown month over month?
+      - name: RPM & Deterioration Agent
+        icon: genie
+        summary: Explore device adherence, alert precision and rising risk across the panel.
+        feeds:
+          - Validic Device Hub
+          - Dexcom CGM
+          - Kafka Device Events
+          - Conformed member, encounter, device
+        teams:
+          - Care Management
+          - RPM Nurses
+          - Health Coaches
+        questions:
+          - Which members have the highest deterioration risk from device signals?
+          - What is RPM adherence by programme and device type?
+          - Where is alert precision lowest and driving alert fatigue?
+          - Which members stopped syncing their device this week?
+          - How many escalations came from device alerts by cohort?
+      - name: Engagement & Retention Agent
+        icon: genie
+        summary: Answer activation, engagement and retention questions across cohorts.
+        feeds:
+          - SF Health Cloud
+          - Braze Journeys
+          - Twilio Comms
+          - Engagement, outcomes, cost of care
+        teams:
+          - Member Growth
+          - Member Engagement
+          - Lifecycle Marketing
+        questions:
+          - Which cohort is disengaging this month and why?
+          - What is activation rate by acquisition channel?
+          - Which outreach journeys drive the best adherence lift?
+          - Where is retention weakest across programmes?
+          - What is the reactivation rate for lapsed members?
+      - name: Outcomes & Value Agent
+        icon: genie
+        summary: Ask about cost of care, gap closure and shared-savings performance by cohort.
+        feeds:
+          - Enrollment & Claims
+          - Change Healthcare
+          - Engagement, outcomes, cost of care
+        teams:
+          - Payer Partners
+          - Actuarial & VBC
+          - Contracting
+        questions:
+          - What is cost of care and utilisation by cohort this quarter?
+          - How is care-gap closure trending against contract targets?
+          - Which programmes show the strongest outcome improvement?
+          - Where are we against shared-savings targets by contract?
+          - Which cohorts drive the most avoidable utilisation?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Virtual Visit Ops
+        short: Telehealth
+        icon: stream
+        summary: Matching clinician supply to demand across scheduled and on-demand visits, cutting wait times and no-shows so access holds as volume grows.
+        problem: Demand for virtual visits is spiky and clinician supply is fixed; without live matching, members wait, clinicians idle, and no-shows waste the slot that a waiting member needed.
+        who_benefits: Clinical Ops
+        how_built: Visit, queue and engagement feeds land in Lakehouse//RT; demand and no-show models score through Model Serving and the Visit Operations app steers staffing and reminders before the wait becomes a cancellation.
+        components:
+          - Visit Operations
+          - Amwell Platform
+          - Lakehouse//RT
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Accolade delivers seamless virtual care experiences on Databricks
+            url: https://www.databricks.com/customers/accolade
+          - title: Bupa unifies telehealth and health data on Databricks
+            url: https://www.databricks.com/customers/bupaaustralia
+      - name: RPM & Alerting
+        short: Monitoring
+        icon: iot
+        summary: Turning high-frequency device telemetry into high-precision clinical alerts, so nurses act on deterioration early without drowning in noise.
+        problem: RPM kits and wearables push millions of readings in dozens of formats; triaged by hand the signal is lost to alert fatigue, and the deterioration that mattered is seen too late.
+        who_benefits: Care Management
+        how_built: Device streams land through Auto Loader and Kafka into Lakehouse//RT; deterioration models score through Model Serving and the Care Command Center on Lakebase drives nurse triage and intervention.
+        components:
+          - Care Command Center
+          - Validic Device Hub
+          - Kafka Device Events
+          - Lakehouse//RT
+          - Model Serving
+        stories:
+          - title: Austin Health monitors patients at home with Databricks
+            url: https://www.databricks.com/customers/austin-health
+      - name: Member Engagement
+        short: Engagement
+        icon: custlake
+        summary: Personalised outreach and adherence nudges scored per member against the profile the engagement estate already holds, so activation and retention rise.
+        problem: Outreach is blasted the same to everyone while the signal to personalise it already sits behind the CRM and messaging estate, unused, so members disengage and programmes churn.
+        who_benefits: Member Growth
+        how_built: Engagement, visit and device data are unified through CustomerLake without a separate CDP; propensity and next-best-action are scored in Model Serving and activated through Braze and the Member 360 Hub.
+        components:
+          - Member 360 Hub
+          - CustomerLake
+          - Braze Journeys
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Flo Health scales personalised experiences on Databricks
+            url: https://www.databricks.com/customers/flo-health
+      - name: Care Gap Closure
+        short: Quality
+        icon: gauge
+        summary: Finding open care gaps and quality-measure misses across the panel and driving the outreach and tasks that close them before the measurement window shuts.
+        problem: Care gaps and HEDIS misses hide across claims, clinical and engagement systems; found late, quality scores slip and avoidable cost lands that a timely nudge would have prevented.
+        who_benefits: Care Management
+        how_built: Claims, clinical and engagement data are conformed to certified Gold; gaps are computed on Unity Catalog definitions, scored for outreach priority in Model Serving and pushed to care teams via Health Cloud Sync.
+        components:
+          - Enrollment & Claims
+          - AI/BI
+          - Model Serving
+          - Unity Catalog
+          - Health Cloud Sync
+        stories:
+          - title: Healthcare and life sciences on the Databricks Platform
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Risk Stratification
+        short: Population
+        icon: chart
+        summary: Ranking members by rising risk from clinical, device and claims signals, so care management works the members most likely to deteriorate first.
+        problem: Panels are worked by tenure or squeaky wheel, not risk; the member quietly deteriorating is missed while care time is spent where it changes the least.
+        who_benefits: Clinical Ops
+        how_built: FHIR clinical history, device features and claims are conformed in the lakehouse; risk models tracked in MLflow score through Model Serving and surface the rising-risk panel in the Care Command Center.
+        components:
+          - Care Command Center
+          - Epic FHIR APIs
+          - Feature Store
+          - MLflow
+          - Model Serving
+        stories:
+          - title: Accolade improves member stratification with Databricks
+            url: https://www.databricks.com/customers/accolade
+      - name: FHIR Interoperability
+        short: Interop
+        icon: api
+        summary: Turning HL7 v2, C-CDA and FHIR from many EHRs into one conformed clinical model, so every downstream care and analytics use case reads one patient record.
+        problem: Clinical data arrives from dozens of EHRs as HL7, C-CDA and nested FHIR JSON; without a conformed model, every team rebuilds the same patient and every join drifts.
+        who_benefits: Product & Data
+        how_built: HL7 and FHIR events land through subscriptions into Delta Lake; SQL-on-FHIR transformations build conformed resources served operationally on Lakebase and governed end to end in Unity Catalog.
+        components:
+          - HL7 & FHIR Messages
+          - Redox Interop
+          - Health Gorilla
+          - Delta Lake
+          - Lakebase
+          - Unity Catalog
+        stories:
+          - title: Building a FHIR-native health data platform on Databricks Lakebase
+            url: https://www.databricks.com/blog/building-fhir-native-health-data-platform-databricks-lakebase
+      - name: Eligibility & Claims
+        short: Revenue
+        icon: market
+        summary: Real-time eligibility and benefit checks in the visit path and clean claims out, so members are covered before care and revenue is not lost to rejects.
+        problem: Eligibility is checked late or not at all and claims reject on avoidable errors; members hit surprise bills and the platform chases denials it could have prevented at the point of care.
+        who_benefits: Payer Partners
+        how_built: Change Healthcare and Availity eligibility and claims traffic are conformed in the lakehouse; coverage is verified in the visit path and denial-risk is scored before submission, on pipelines built in Lakeflow.
+        components:
+          - Change Healthcare
+          - Availity Gateway
+          - Enrollment & Claims
+          - Lakeflow
+          - AI/BI
+      - name: Digital Therapeutics
+        short: DTx
+        icon: apps
+        summary: Powering evidence-based digital coaching for chronic conditions and proving programme efficacy for cleared claims and payer contracts.
+        problem: Digital therapeutics live or die on efficacy evidence, but coaching signals, device readings and outcomes sit apart, so personalisation is coarse and the evidence base is slow to build.
+        who_benefits: Product & Data
+        how_built: Device, engagement and clinical data are aggregated into a member view; coaching and efficacy models tracked in MLflow score through Model Serving and Feature Store into the programme in the Member 360 Hub.
+        components:
+          - Member 360 Hub
+          - Apple HealthKit
+          - Dexcom CGM
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: Welldoc enhances cardiometabolic digital coaching on Databricks
+            url: https://www.databricks.com/blog/welldocr-and-databricks-enhancing-cardiometabolic-care-improved-data-tailored-interventions
+      - name: Outcomes Analytics
+        short: Value-based
+        icon: sheet
+        summary: Measuring clinical and financial outcomes by cohort and programme, so product, clinical and payer teams see what actually moves adherence, gaps and cost of care.
+        problem: Outcomes are reported quarterly from stale extracts that cannot separate what worked from what did not, so value-based contracts are argued on anecdote and product bets are unproven.
+        who_benefits: Payer Partners
+        how_built: Clinical, engagement and claims outcomes are conformed to certified Gold; cohort and programme results are explored in AI/BI on Unity Catalog definitions and published as Data Products in the Outcomes Explorer.
+        components:
+          - Outcomes Explorer
+          - AI/BI
+          - Unity Catalog
+          - Data Products
+          - Genie One
+        stories:
+          - title: Welldoc surfaces population outcomes for health plans on Databricks
+            url: https://www.databricks.com/blog/welldocr-and-databricks-enhancing-cardiometabolic-care-improved-data-tailored-interventions
+          - title: Healthcare and life sciences on the Databricks Platform
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Care Coordination
+        short: Coordination
+        icon: people
+        summary: Coordinating hand-offs across virtual visits, RPM, coaching and the EHR so the member has one care plan, not a set of disconnected touchpoints.
+        problem: A member's care is split across telehealth, monitoring, coaching and their provider's EHR; without a shared plan the touchpoints contradict each other and work falls between the teams.
+        who_benefits: Clinical Ops
+        how_built: A unified member and care-plan view is served on Lakebase; agents draft hand-offs and updates against governed tools with Agent Bricks and AI Functions and write back to the EHR and Health Cloud.
+        components:
+          - Care Command Center
+          - Agent Bricks
+          - AI Functions
+          - Lakebase
+          - Model Serving
+        stories:
+          - title: Bupa builds a unified digital health view on Databricks
+            url: https://www.databricks.com/customers/bupaaustralia
+medallion:
+  Bronze:
+    short: Raw visit, device, claim feeds
+    summary: Video and async visit records from the telehealth platform, device telemetry from wearables and RPM kits, FHIR resources pulled from EHRs, engagement events and eligibility and paid-claims files, landed exactly as received so a reading or a visit can always be replayed as it stood.
+  Silver:
+    short: Conformed member, encounter, device
+    summary: Members, encounters, care plans and device streams resolved into single conformed entities across the telehealth, monitoring and engagement estates, with FHIR Patient and Observation identities matched and eligibility reconciled to one member record.
+  Gold:
+    short: Engagement, outcomes, cost of care
+    summary: 'Contracted products clinical and commercial teams run on: visit access and no-show rates, RPM adherence and alert precision, care-gap closure and quality measures, engagement and retention, and clinical and financial outcomes by cohort.'
+citation_index:
+  amwell:
+    title: Amwell virtual care platform
+    url: https://business.amwell.com/
+  teladoc:
+    title: Teladoc Health
+    url: https://www.teladochealth.com/
+  zoom-health:
+    title: Zoom for Healthcare
+    url: https://www.zoom.com/en/industry/healthcare/
+  doxyme:
+    title: Doxy.me telemedicine
+    url: https://doxy.me/
+  epic-fhir:
+    title: Epic on FHIR
+    url: https://fhir.epic.com/
+  athenahealth:
+    title: athenahealth
+    url: https://www.athenahealth.com/
+  redox:
+    title: Redox interoperability
+    url: https://www.redoxengine.com/
+  health-gorilla:
+    title: Health Gorilla health data network
+    url: https://www.healthgorilla.com/
+  validic:
+    title: Validic device data platform
+    url: https://validic.com/
+  healthkit:
+    title: Apple HealthKit
+    url: https://developer.apple.com/health-fitness/
+  dexcom:
+    title: Dexcom continuous glucose monitoring
+    url: https://www.dexcom.com/
+  fitbit:
+    title: Fitbit
+    url: https://www.fitbit.com/global/us/home
+  sf-health:
+    title: Salesforce Health Cloud
+    url: https://www.salesforce.com/products/health-cloud/overview/
+  twilio:
+    title: Twilio communications
+    url: https://www.twilio.com/
+  braze:
+    title: Braze engagement platform
+    url: https://www.braze.com/
+  change:
+    title: Change Healthcare
+    url: https://www.changehealthcare.com/
+  availity:
+    title: Availity
+    url: https://www.availity.com/
+  stripe:
+    title: Stripe payments
+    url: https://stripe.com/
+  hl7-fhir:
+    title: HL7 FHIR
+    url: https://www.hl7.org/fhir/

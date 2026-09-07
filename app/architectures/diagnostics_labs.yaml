@@ -1,0 +1,1023 @@
+name: Diagnostics & Labs
+description: 'Clinical diagnostic and pathology labs: order and specimen management, analyzer middleware, digital pathology, result reporting, QC and CLIA/CAP accreditation, and revenue cycle.'
+sources:
+  - name: LIS & Pathology
+    icon: db
+    tiles:
+      - name: Epic Beaker LIS
+        icon: db
+        summary: 'Laboratory information system inside Epic: the system of record for orders, accessions and results in the integrated hospital lab.'
+        citations:
+          - epic-beaker
+        category: Laboratory Information System (LIS)
+        what_it_is: The order, accession and result system of record for the integrated hospital lab, embedded in the Epic clinical estate.
+        who_uses_it: Lab Operations, Bench supervisors and Medical director.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + intraday
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of HL7 result msgs/sec
+            interval: Continuous (HL7 / CDC)
+      - name: Sunquest LIS
+        icon: db
+        summary: 'Clinisys Sunquest laboratory information system for hospital and reference labs: order entry, specimen tracking and result reporting.'
+        citations:
+          - sunquest
+        category: Laboratory Information System (LIS)
+        what_it_is: Order entry, specimen tracking and result reporting for hospital and reference labs on the Clinisys Sunquest platform.
+        who_uses_it: Lab Operations, Bench supervisors and Operations managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of HL7 msgs/sec
+            interval: Continuous (HL7)
+      - name: Oracle Health PathNet
+        icon: db
+        summary: 'Oracle Health (Cerner) Millennium PathNet: laboratory and pathology workflows where Cerner is the incumbent clinical estate.'
+        citations:
+          - oracle-pathnet
+        category: Laboratory Information System (LIS)
+        what_it_is: Laboratory and pathology workflows on Oracle Health (Cerner) Millennium PathNet where Cerner is the incumbent clinical estate.
+        who_uses_it: Lab Operations, Anatomic pathologists and Medical director.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of HL7 msgs/sec
+            interval: Continuous (HL7)
+      - name: Orchard Harvest LIS
+        icon: db
+        summary: 'Orchard Harvest LIS for independent and physician-office labs: order management, autoverification rules and result delivery.'
+        citations:
+          - orchard
+        category: Laboratory Information System (LIS)
+        what_it_is: Order management, autoverification rules and result delivery for independent and physician-office labs on Orchard Harvest.
+        who_uses_it: Lab Operations, Bench supervisors and Billing & coding.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch + intraday
+  - name: LIMS & Molecular
+    icon: erp
+    tiles:
+      - name: LabWare LIMS
+        icon: erp
+        summary: 'Laboratory information management for molecular, reference and specialty testing: specimen lifecycle, batch and result management.'
+        citations:
+          - labware
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Manages specimen lifecycle, batch and result management for molecular, reference and specialty testing beyond the routine LIS.
+        who_uses_it: Molecular pathology, Bench supervisors and QA & QC managers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + result release
+      - name: Thermo LIMS
+        icon: erp
+        summary: 'Thermo Fisher SampleManager LIMS: sample lifecycle, workflow and instrument integration across the diagnostic lab.'
+        citations:
+          - samplemanager
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Sample lifecycle, workflow and instrument integration across the diagnostic lab on Thermo Fisher SampleManager.
+        who_uses_it: Bench supervisors, Operations managers and QA & QC managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-8 GB/day
+            interval: Nightly batch
+      - name: LabVantage LIMS
+        icon: erp
+        summary: 'LabVantage LIMS for clinical and molecular labs: specimen, workflow and QC management on a single platform.'
+        citations:
+          - labvantage
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Specimen, workflow and QC management for clinical and molecular labs on a single LabVantage platform.
+        who_uses_it: Molecular pathology, QA & QC managers and Operations managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-8 GB/day
+            interval: Nightly batch
+      - name: STARLIMS
+        icon: db
+        summary: 'STARLIMS laboratory informatics for clinical diagnostics: specimen tracking, testing workflow and compliance records.'
+        citations:
+          - starlims
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Specimen tracking, testing workflow and compliance records for clinical diagnostics on STARLIMS laboratory informatics.
+        who_uses_it: Bench supervisors, Accreditation leads and QA & QC managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Nightly batch
+  - name: Analyzers & Middleware
+    icon: iot
+    tiles:
+      - name: DI Instrument Manager
+        icon: connect
+        summary: 'Data Innovations Instrument Manager: the analyzer middleware that routes orders and results between instruments and the LIS with autoverification rules.'
+        citations:
+          - di-instrument-manager
+        category: Analyzer Middleware / Connectivity
+        what_it_is: The analyzer middleware that routes orders and results between instruments and the LIS and applies autoverification rules at the bench.
+        who_uses_it: Bench supervisors, Operations managers and QA & QC managers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k result + QC msgs/sec
+            interval: Continuous (ASTM / HL7)
+      - name: Roche cobas infinity
+        icon: iot
+        summary: Roche cobas central-lab instruments and informatics feeding chemistry, immunoassay and molecular results into the lab estate.
+        citations:
+          - roche-cobas
+        category: Clinical Analyzer & Informatics (IVD)
+        what_it_is: Roche cobas central-lab instruments and informatics feeding chemistry, immunoassay and molecular results into the lab estate.
+        who_uses_it: Bench supervisors, Molecular pathology and QA & QC managers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of results/sec
+            interval: Continuous during runs
+      - name: Abbott AlinIQ
+        icon: iot
+        summary: 'Abbott AlinIQ informatics and Alinity analyzers: connectivity and result management across the core laboratory.'
+        citations:
+          - abbott-aliniq
+        category: Clinical Analyzer & Informatics (IVD)
+        what_it_is: Abbott AlinIQ informatics and Alinity analyzers providing connectivity and result management across the core laboratory.
+        who_uses_it: Bench supervisors, Operations managers and QA & QC managers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of results/sec
+            interval: Continuous during runs
+      - name: Analyzer Data
+        icon: iot
+        summary: Raw instrument telemetry, flags and QC readings from every analyzer on the bench, the ground truth for autoverification and uptime.
+        category: Analyzer Instrument Telemetry
+        what_it_is: Raw instrument telemetry, flags and QC readings from every analyzer on the bench, the ground truth for autoverification and instrument uptime.
+        who_uses_it: QC & Accred, Bench supervisors and Diagnostics DS.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: continuous telemetry per analyzer
+            interval: Continuous
+  - name: Digital Pathology
+    icon: media
+    tiles:
+      - name: Philips IntelliSite
+        icon: media
+        summary: 'Philips IntelliSite Pathology Solution: whole-slide scanning, image management and viewing for primary diagnosis.'
+        citations:
+          - philips-pathology
+        category: Digital Pathology Platform
+        what_it_is: Whole-slide scanning, image management and viewing for primary diagnosis on the Philips IntelliSite Pathology Solution.
+        who_uses_it: Anatomic pathologists, Cytology and Diagnostics DS.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 50-500 GB/day (whole-slide images)
+            interval: Per-scan on acquisition
+      - name: Leica Aperio
+        icon: media
+        summary: 'Leica Aperio digital pathology: slide scanning and image analysis feeding whole-slide images into the diagnostic workflow.'
+        citations:
+          - leica-aperio
+        category: Digital Pathology Platform
+        what_it_is: Slide scanning and image analysis feeding whole-slide images into the diagnostic workflow on Leica Aperio.
+        who_uses_it: Anatomic pathologists, Molecular pathology and Diagnostics DS.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 50-500 GB/day (WSI)
+            interval: Per-scan on acquisition
+      - name: Sectra Pathology
+        icon: media
+        summary: 'Sectra digital pathology module: whole-slide image storage and reading integrated with the diagnostic imaging estate.'
+        citations:
+          - sectra
+        category: Digital Pathology Platform
+        what_it_is: Whole-slide image storage and reading integrated with the diagnostic imaging estate on the Sectra digital pathology module.
+        who_uses_it: Anatomic pathologists, Cytology and Medical director.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 50-300 GB/day (WSI)
+            interval: Per-scan on acquisition
+      - name: Paige AI Pathology
+        icon: model
+        summary: Paige clinical AI applications and whole-slide image outputs used to assist detection and prioritisation before sign-out.
+        citations:
+          - paige
+        category: Clinical AI (Pathology)
+        what_it_is: Clinical AI applications and whole-slide image outputs used to assist detection and case prioritisation before pathologist sign-out.
+        who_uses_it: Anatomic pathologists, Diagnostics DS and Medical director.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs/day (scores + overlays)
+            interval: Per-slide on inference
+  - name: Interfaces, RCM & QC
+    icon: api
+    tiles:
+      - name: Rhapsody Engine
+        icon: api
+        summary: 'Rhapsody integration engine: HL7 v2 and FHIR order and result interfaces between the lab, EHRs and clients.'
+        citations:
+          - rhapsody
+        category: Integration Engine (HL7/FHIR)
+        what_it_is: Routes HL7 v2 and FHIR order and result interfaces between the lab, EHRs and clients, the messaging backbone of the lab estate.
+        who_uses_it: Interface Eng, Lab Operations and Bench supervisors.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k messages/sec at peak
+            interval: Continuous (HL7 / FHIR)
+      - name: NextGen Connect
+        icon: connect
+        summary: NextGen Connect (Mirth) interface engine routing HL7 and API messages across the lab's ordering and result channels.
+        citations:
+          - mirth
+        category: Integration Engine (HL7/FHIR)
+        what_it_is: Routes HL7 and API messages across the lab's ordering and result channels on the NextGen Connect (Mirth) interface engine.
+        who_uses_it: Interface Eng, Lab Operations and Billing & coding.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of msgs/sec
+            interval: Continuous (HL7 / API)
+      - name: XiFin RCM
+        icon: market
+        summary: 'XiFin revenue cycle management: claims, medical-necessity checking, denials and reimbursement for the diagnostic lab.'
+        citations:
+          - xifin
+        category: Revenue Cycle Management (RCM)
+        what_it_is: Manages claims, medical-necessity checking, denials and reimbursement for the diagnostic lab on XiFin RCM.
+        who_uses_it: Billing & coding, Denials management and Payer contracting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day claims + remits
+            interval: Daily claim + remittance cycles
+      - name: Bio-Rad Unity QC
+        icon: gauge
+        summary: 'Bio-Rad Unity quality control and QCNet: control results, Levey-Jennings and peer-group comparison across analytes.'
+        citations:
+          - biorad-unity
+        category: Quality Control Data Management
+        what_it_is: Captures control results, Levey-Jennings and peer-group comparison across analytes on Bio-Rad Unity QC and QCNet.
+        who_uses_it: QA & QC managers, Accreditation leads and Bench supervisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day QC results
+            interval: Per-run + daily peer comparison
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Billing & Claims Marts
+        icon: fed
+        summary: Historical billing, denial and claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled financial numbers.
+        category: Revenue Cycle Data Warehouse
+        what_it_is: Historical billing, denial and claims marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the reconciled financial numbers.
+        who_uses_it: Revenue Cycle, Denials management and CFO & finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: LOINC & SNOMED
+        icon: ontology
+        summary: LOINC test codes and SNOMED CT clinical terminology ingested as reference so orders and results map to one coding standard.
+        citations:
+          - loinc
+          - snomed
+        category: Clinical Terminology / Ontology
+        what_it_is: LOINC test codes and SNOMED CT clinical terminology ingested as reference so orders and results map to one coding standard across the estate.
+        who_uses_it: Interface Eng, Lab Leadership and QA & QC managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (terminology releases)
+            interval: Periodic version releases
+      - name: Public Health ELR
+        icon: gavel
+        summary: Electronic laboratory reporting of reportable conditions to public health, produced from the same governed result tables.
+        citations:
+          - cdc-elr
+        category: Public Health Reporting (ELR)
+        what_it_is: Electronic laboratory reporting of reportable conditions to public health, produced from the same governed result tables the lab reports on.
+        who_uses_it: Lab Leadership, Accreditation leads and Interface Eng.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: MBs-GBs/day (reportable results)
+            interval: Continuous / daily filing
+      - name: Instrument Events
+        icon: stream
+        summary: ASTM and HL7 instrument event streams over Kafka carrying analyzer results, flags and QC readings, landed as structured events.
+        category: Instrument Event Stream (ASTM/HL7)
+        what_it_is: ASTM and HL7 instrument event streams over Kafka carrying analyzer results, flags and QC readings, landed as structured events for real-time operations.
+        who_uses_it: Interface Eng, Bench supervisors and Diagnostics DS.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at peak
+            interval: Continuous (Kafka)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Lab Leadership
+        mark: Genie One
+        summary: The lab CEO and COO on volume, cost per test and network capacity; the medical director on diagnostic quality and the test menu; the CFO on reimbursement, payer mix and margin per accession.
+        uses:
+          - - Genie One
+            - Ask what a test line cost or what drove denials last month without an analyst pull.
+          - - AI/BI
+            - Cost per test, turnaround and margin per accession on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary so "billable test" and "TAT" mean one thing across sites.
+        sub:
+          - name: Lab CEO & COO
+            cares: volume, cost per test and network capacity.
+          - name: Medical director
+            cares: diagnostic quality and the test menu.
+          - name: CFO & finance
+            cares: reimbursement, payer mix and margin per accession.
+        ucs:
+          - Test Utilization
+          - AMR Surveillance
+          - Turnaround Time
+          - Denials & Billing
+      - name: Pathology
+        mark: Model Serving
+        summary: Anatomic pathologists reading whole-slide images and reporting diagnoses, molecular pathology interpreting NGS and FISH assays, and cytology screening cases before sign-out.
+        uses:
+          - - Pathology Viewer
+            - Whole-slide images pre-screened with metastasis heat maps before sign-out.
+          - - Model Serving
+            - Image and molecular classifiers scored in the diagnostic path.
+          - - MLflow
+            - Every diagnostic model tracked for validation and audit.
+        sub:
+          - name: Anatomic pathologists
+            cares: whole-slide reading and diagnostic sign-out.
+          - name: Molecular pathology
+            cares: NGS, FISH and companion-diagnostic interpretation.
+          - name: Cytology
+            cares: screening and adequacy before sign-out.
+        ucs:
+          - Digital Pathology AI
+          - Molecular Diagnostics
+          - Test Utilization
+      - name: Lab Operations
+        mark: Lakehouse//RT
+        summary: Lab operations managers on turnaround and backlog, bench supervisors on autoverification and repeat rates, and pre-analytic and phlebotomy teams on specimen quality and rejections.
+        uses:
+          - - TAT Command Center
+            - Turnaround and backlog by bench flagged before a STAT misses target.
+          - - Lakehouse//RT
+            - Live accession and instrument state at the latency a bench moves at.
+          - - Model Serving
+            - Autoverification and delay models scored in the result path.
+        sub:
+          - name: Operations managers
+            cares: turnaround, backlog and staffing across benches.
+          - name: Bench supervisors
+            cares: autoverification and repeat rates.
+          - name: Pre-analytic & phlebotomy
+            cares: specimen quality and rejections.
+        ucs:
+          - Turnaround Time
+          - Result Autoverify
+          - Critical Value Alerts
+          - Instrument Uptime
+      - name: QC & Accred
+        mark: AI/BI
+        summary: QA and QC managers on Levey-Jennings and Westgard rules, accreditation leads on CLIA and CAP readiness and proficiency testing, and lab safety on competency and audit trails.
+        uses:
+          - - AI/BI
+            - QC drift, proficiency testing and audit readiness on certified Metric Views.
+          - - Unity Catalog
+            - Audit trails and lineage supporting CLIA and CAP inspection.
+          - - Genie One
+            - Ask which analytes breached Westgard rules this week.
+        sub:
+          - name: QA & QC managers
+            cares: Levey-Jennings, Westgard rules and QC drift.
+          - name: Accreditation leads
+            cares: CLIA, CAP readiness and proficiency testing.
+          - name: Lab safety
+            cares: competency, training and audit trails.
+        ucs:
+          - QC & Accreditation
+          - Instrument Uptime
+          - Result Autoverify
+      - name: Revenue Cycle
+        mark: AI/BI
+        summary: Billing and coding on clean-claim rate and medical-necessity coding, denials management on payer denials and appeals, and payer contracting on reimbursement and prior authorization.
+        uses:
+          - - Denials Workbench
+            - Denials triaged by root cause with the evidence to appeal assembled.
+          - - Model Serving
+            - Denial-risk and medical-necessity models scored before submission.
+          - - AI/BI
+            - Clean-claim rate, denial rate and net collection on certified views.
+        sub:
+          - name: Billing & coding
+            cares: clean-claim rate and medical-necessity coding.
+          - name: Denials management
+            cares: payer denials, appeals and write-offs.
+          - name: Payer contracting
+            cares: reimbursement and prior authorization.
+        ucs:
+          - Denials & Billing
+          - Test Utilization
+          - Turnaround Time
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Interface Eng
+        mark: Lakeflow
+        summary: Land HL7 v2 orders and results, FHIR resources and analyzer ASTM messages through the interface engine; own the Bronze to Silver path and the pager when result feeds stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for LIS, LIMS, ERP and billing sources.
+          - - Auto Loader
+            - HL7, ASTM and instrument files landed incrementally into Bronze.
+          - - Lakewatch
+            - Freshness on the result and order tables the benches read all shift.
+      - name: Diagnostics DS
+        mark: MLflow
+        summary: Whole-slide image models, autoverification and denial classifiers, and molecular interpretation models, and whether they still hold as assays and instruments change.
+        uses:
+          - - Feature Store
+            - Specimen, patient and analyte features read identically in training and serving.
+          - - MLflow
+            - Every diagnostic and operational model tracked for validation and audit.
+          - - Model Serving
+            - Image, autoverification and denial models scored in the lab path.
+      - name: Lab App Dev
+        mark: Apps
+        summary: Ship the TAT, pathology-viewer and denials applications the lab works in, hosted next to governed accession and result data.
+        uses:
+          - - Apps
+            - Operational lab screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for accession workflow state and governed writes.
+          - - Agent Bricks
+            - Agents that draft an appeal or a QC investigation against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Leadership and QC dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for turnaround and denial answers in the channel the lab already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Pathology and data-science notebooks against governed accession, result and imaging data.
+  - name: Providers & Ordering
+    icon: partner
+    tiles:
+      - name: Provider FHIR Results
+        icon: api
+        summary: Verified results returned to ordering EHRs and clinicians over HL7 FHIR from governed result tables.
+      - name: EHR Order Interface
+        icon: connect
+        summary: Orders received from client and hospital EHRs through the interface engine into the accessioning path.
+      - name: Ordering Portals
+        icon: globe
+        summary: Web ordering and result portals for referring physicians and outreach clients, served from governed data.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: LIS Result Writeback
+        icon: db
+        summary: Verified and autoverified results written back into the LIS so the answer reaches the reporting path.
+        citations:
+          - sunquest
+      - name: RCM Claim Writeback
+        icon: market
+        summary: Denial-risk flags and coding evidence written back into the RCM system so billing acts before submission.
+        citations:
+          - xifin
+      - name: QC Writeback
+        icon: gauge
+        summary: QC dispositions and instrument holds written back to the middleware at the bench.
+        citations:
+          - di-instrument-manager
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CLIA & CAP Reporting
+        icon: gavel
+        summary: CLIA and CAP inspection evidence and proficiency-testing records produced from governed QC tables.
+        citations:
+          - clia
+          - cap
+      - name: Public Health Filing
+        icon: share
+        summary: Reportable-condition electronic lab reporting filed to public health from certified Gold results.
+        citations:
+          - cdc-elr
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted result and utilization products discoverable in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Hospitals, health plans and registries reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: TAT Command Center
+        icon: gauge
+        short: Turnaround & backlog
+        summary: 'The screen operations runs the shift from: accessions and STAT orders tracked from collection to verified result across every bench, flagging the ones that will miss target turnaround, on Databricks Apps over Lakebase.'
+      - name: Pathology Viewer
+        icon: media
+        short: Digital pathology triage
+        summary: Whole-slide images pre-screened with deep-learning metastasis heat maps and case context, so pathologists triage and sign out from governed imaging and result data.
+      - name: Denials Workbench
+        icon: market
+        short: Revenue cycle
+        summary: Where billing sees denials triaged by root cause with the medical-necessity and coding evidence assembled to appeal, scored for denial risk before the claim goes out.
+      - name: Utilization Hub
+        icon: chart
+        short: Test utilization
+        summary: Test ordering by provider, panel and guideline, flagging redundant and low-value tests so the medical director can steer the menu and reduce send-out cost.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Turnaround & Backlog
+        icon: aibi
+        summary: Turnaround, backlog and STAT compliance by bench on certified Metric Views.
+        kpis:
+          - Turnaround time
+          - Backlog by bench
+          - STAT compliance
+          - Autoverification rate
+          - Repeat rate
+        teams:
+          - Lab Operations
+          - Lab Leadership
+          - Operations managers
+      - name: Test Utilization & Cost
+        icon: aibi
+        summary: Test volume, cost per test and send-out cost for menu and utilization steering.
+        kpis:
+          - Test volume
+          - Cost per test
+          - Send-out cost
+          - Redundant orders
+          - Margin per accession
+        teams:
+          - Lab Leadership
+          - Revenue Cycle
+          - Medical director
+      - name: Denials & Revenue
+        icon: aibi
+        summary: Clean-claim rate, denial rate and net collection across the revenue cycle.
+        kpis:
+          - Clean-claim rate
+          - Denial rate
+          - Net collection
+          - Appeal success rate
+          - Days in AR
+        teams:
+          - Revenue Cycle
+          - Lab Leadership
+          - Denials management
+      - name: QC & Accreditation
+        icon: aibi
+        summary: QC failure, Westgard breaches and instrument uptime for CLIA and CAP readiness.
+        kpis:
+          - QC failure rate
+          - Westgard breaches
+          - Proficiency-testing outcome
+          - Instrument uptime
+          - Audit findings
+        teams:
+          - QC & Accred
+          - Lab Operations
+          - Accreditation leads
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Turnaround & Operations Agent
+        icon: genie
+        summary: Ask about turnaround, backlog and benches at risk of missing target in plain language.
+        feeds:
+          - Epic Beaker LIS
+          - DI Instrument Manager
+          - Instrument Events
+          - TAT, utilization, QC
+        teams:
+          - Lab Operations
+          - Operations managers
+          - Bench supervisors
+        questions:
+          - What is turnaround time by bench against target right now?
+          - Which STAT orders are at risk of missing turnaround?
+          - Where is the backlog deepest across the benches?
+          - What is the autoverification rate by analyzer today?
+          - Which specimens were rejected and for what reason?
+      - name: Pathology & Diagnostics Agent
+        icon: genie
+        summary: Explore case volumes, sign-out throughput and molecular results across pathology.
+        feeds:
+          - Philips IntelliSite
+          - Leica Aperio
+          - LabWare LIMS
+          - Conformed order, specimen, result
+        teams:
+          - Pathology
+          - Anatomic pathologists
+          - Molecular pathology
+        questions:
+          - How many cases are awaiting sign-out by subspecialty?
+          - What is time to sign-out for whole-slide cases this week?
+          - Which molecular assays have the longest turnaround?
+          - How many cases were AI-prioritised before review?
+          - What is the reflex-to-send-out rate by test?
+      - name: Revenue Cycle & Denials Agent
+        icon: genie
+        summary: Answer clean-claim, denial and net-collection questions across the revenue cycle.
+        feeds:
+          - XiFin RCM
+          - Billing & Claims Marts
+          - Conformed order, specimen, result
+        teams:
+          - Revenue Cycle
+          - Billing & coding
+          - Denials management
+        questions:
+          - What is our clean-claim rate by payer this month?
+          - Which denial reasons are driving the most lost revenue?
+          - How many appealable claims are aging toward the deadline?
+          - What is net collection by test and payer?
+          - Which tests fail medical-necessity checks most often?
+      - name: QC & Compliance Agent
+        icon: genie
+        summary: Ask about QC drift, Westgard breaches and accreditation readiness across analytes.
+        feeds:
+          - Bio-Rad Unity QC
+          - Roche cobas infinity
+          - Analyzer Data
+          - TAT, utilization, QC
+        teams:
+          - QC & Accred
+          - QA & QC managers
+          - Accreditation leads
+        questions:
+          - Which analytes breached Westgard rules this week?
+          - What is the QC failure rate by instrument and analyte?
+          - How did we perform on the last proficiency-testing round?
+          - Which instruments are trending toward a failure?
+          - Where is our lineage evidence weakest for CAP inspection?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Turnaround Time
+        short: Operations
+        icon: gauge
+        summary: Accessions tracked from collection to verified result across every bench, so the orders that will miss turnaround are moved before the STAT is late.
+        problem: Turnaround is measured after the fact in the LIS, so a backlog on a bench or a stalled analyzer is discovered when a clinician chases a STAT, not before.
+        who_benefits: Lab Operations
+        how_built: LIS accession events and analyzer middleware feeds land in Lakehouse//RT; delay models score orders in Model Serving and the TAT Command Center flags benches that will miss target before the result is late.
+        components:
+          - TAT Command Center
+          - Lakehouse//RT
+          - Epic Beaker LIS
+          - DI Instrument Manager
+          - AI/BI
+        stories:
+          - title: Kythera Labs builds its business on Spark Declarative Pipelines
+            url: https://www.databricks.com/customers/kythera-labs
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Digital Pathology AI
+        short: Pathology
+        icon: media
+        summary: Whole-slide images processed at scale with deep learning to pre-screen for metastasis and prioritise cases before a pathologist signs out.
+        problem: Whole-slide images are gigapixel and reviewed manually, so screening is slow and the hardest cases wait behind routine ones in the same queue.
+        who_benefits: Pathology
+        how_built: Slides from the digital-pathology scanners are processed with the Databricks pathology accelerator; metastasis models score tiles in Model Serving and surface heat maps in the Pathology Viewer for triage and sign-out.
+        components:
+          - Pathology Viewer
+          - Philips IntelliSite
+          - Leica Aperio
+          - Model Serving
+          - MLflow
+          - Unity Catalog
+        stories:
+          - title: Digital Pathology Image Analysis solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/digital-pathology
+          - title: Why Pathnostics chose Databricks for complex diagnostics data
+            url: https://www.databricks.com/blog/why-pathnostics-chose-databricks-data-intelligence-platform-its-most-complex-diagnostics-data
+      - name: Result Autoverify
+        short: Operations
+        icon: zeroops
+        summary: Routine results released automatically against rules and prior-result deltas, so technologists spend their time on the cases that actually need a human.
+        problem: Every result queues for manual verification even when it is normal and consistent with history, so technologist time is spent on the routine and the abnormal waits behind it.
+        who_benefits: Lab Operations
+        how_built: Analyzer results flow through the middleware into the lakehouse; delta-check and autoverification models score each result in Model Serving so routine results release and only exceptions reach a technologist.
+        components:
+          - DI Instrument Manager
+          - Analyzer Data
+          - Model Serving
+          - Lakehouse//RT
+          - Sunquest LIS
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Test Utilization
+        short: Leadership
+        icon: chart
+        summary: Ordering patterns by provider, panel and guideline, so redundant and low-value tests are steered out and send-out cost is controlled.
+        problem: Duplicate orders, reflex tests and expensive send-outs are ordered against no consistent guideline, so cost per accession creeps and the menu is never rationalised.
+        who_benefits: Lab Leadership
+        how_built: Order, result and coding data are conformed to certified Metric Views mapped to LOINC; the Utilization Hub and Genie surface redundant and low-value ordering for the medical director to steer.
+        components:
+          - Utilization Hub
+          - AI/BI
+          - Genie One
+          - LOINC & SNOMED
+          - Unity Catalog
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Denials & Billing
+        short: Revenue cycle
+        icon: market
+        summary: Claim denials predicted and triaged by root cause with the medical-necessity evidence assembled to appeal, so cash is not left on the table.
+        problem: Denials are worked reactively across the billing system and spreadsheets, so appealable claims age past the window and the same root causes recur unmeasured.
+        who_benefits: Revenue Cycle
+        how_built: Accession, result and claim data are joined in the lakehouse; denial-risk models score claims in Model Serving before submission and the Denials Workbench assembles appeals on Lakebase.
+        components:
+          - Denials Workbench
+          - XiFin RCM
+          - Model Serving
+          - AI/BI
+          - Lakebase
+      - name: QC & Accreditation
+        short: Quality
+        icon: gavel
+        summary: QC drift, proficiency testing and audit trails on certified data, so CLIA and CAP inspection is a query rather than a scramble.
+        problem: QC lives in instrument middleware and spreadsheets and accreditation evidence is assembled by hand, so Westgard breaches are caught late and every inspection is a fire drill.
+        who_benefits: QC & Accred
+        how_built: QC results and proficiency testing are conformed to Gold under Unity Catalog; Levey-Jennings and Westgard monitoring runs in AI/BI with lineage that supports CLIA and CAP inspection.
+        components:
+          - Bio-Rad Unity QC
+          - AI/BI
+          - Unity Catalog
+          - Lakeflow
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Molecular Diagnostics
+        short: Pathology
+        icon: ontology
+        summary: NGS, FISH and companion-diagnostic results interpreted and reported with the unstructured assay context pathologists need to sign out.
+        problem: Molecular results arrive as large, semi-structured assay outputs the LIS was never built to hold, so interpretation and reporting are slow and evidence is scattered.
+        who_benefits: Pathology
+        how_built: NGS and molecular outputs land in Delta Lake alongside the LIMS record; AI Functions extract and structure assay context and interpretation models score in Model Serving for sign-out.
+        components:
+          - LabWare LIMS
+          - AI Functions
+          - Model Serving
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Why Pathnostics chose Databricks for complex diagnostics data
+            url: https://www.databricks.com/blog/why-pathnostics-chose-databricks-data-intelligence-platform-its-most-complex-diagnostics-data
+          - title: Real-World Evidence Solution Accelerator
+            url: https://www.databricks.com/solutions/accelerators/real-world-evidence
+      - name: Critical Value Alerts
+        short: Operations
+        icon: stream
+        summary: Critical and life-threatening results detected and routed to the ordering clinician the moment they verify, with acknowledgement closing the loop.
+        problem: Critical values depend on a technologist reaching a clinician by phone, so a life-threatening result can wait in a queue and read-back is hard to evidence.
+        who_benefits: Lab Operations
+        how_built: Verified results stream through the interface engine into Lakehouse//RT; critical-value and early-deterioration models score in Model Serving and alerts route to the clinician over FHIR with acknowledgement tracked.
+        components:
+          - Rhapsody Engine
+          - Lakehouse//RT
+          - Model Serving
+          - Provider FHIR Results
+        stories:
+          - title: MUSC detects at-risk sepsis patients from real-world data
+            url: https://www.databricks.com/blog/2020/10/20/detecting-at-risk-patients-with-real-world-data.html
+      - name: Instrument Uptime
+        short: Engineering
+        icon: iot
+        summary: Analyzer telemetry scored for drift and failure so a maintenance call is planned before an instrument goes down mid-run.
+        problem: An analyzer failure mid-run scraps specimens and stalls a bench, and without telemetry the first signal is a failed QC or a dead instrument, not a prediction.
+        who_benefits: QC & Accred
+        how_built: Analyzer and middleware telemetry stream into the lakehouse; remaining-useful-life models score each instrument in Model Serving so service is planned before an unplanned failure.
+        components:
+          - Analyzer Data
+          - Instrument Events
+          - MLflow
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: AMR Surveillance
+        short: Population
+        icon: zshield
+        summary: Antibiotic resistance tracked across microbiology results and reported to clinicians and public health, so stewardship acts on real local patterns.
+        problem: Resistance patterns sit in microbiology results no one aggregates, so antibiograms are annual and stewardship and public-health reporting lag the actual local trend.
+        who_benefits: Lab Leadership
+        how_built: Microbiology results are conformed with LOINC and SNOMED in the lakehouse; resistance trends are analysed in AI/BI and reported to clinicians and public health, and asked of Genie directly.
+        components:
+          - LOINC & SNOMED
+          - Public Health Filing
+          - AI/BI
+          - Genie
+          - Delta Lake
+        stories:
+          - title: Why Pathnostics chose Databricks for complex diagnostics data
+            url: https://www.databricks.com/blog/why-pathnostics-chose-databricks-data-intelligence-platform-its-most-complex-diagnostics-data
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+medallion:
+  Bronze:
+    short: Raw lab and result feeds
+    summary: HL7 v2 orders and results, FHIR resources, analyzer ASTM messages through the middleware, LIMS specimen records, whole-slide image metadata and claims, landed exactly as received so an order or a result can be replayed as it stood.
+  Silver:
+    short: Conformed order, specimen, result
+    summary: Orders, specimens, accessions, patients and results resolved into single conformed entities across the LIS, LIMS, instrument and billing estates, with LOINC and SNOMED codes reconciled and reflex and send-out chains stitched to one accession.
+  Gold:
+    short: TAT, utilization, QC
+    summary: 'Contracted products the lab runs on: turnaround time and backlog by bench, test utilization and send-out cost, QC drift and proficiency testing, and denial rate and net collection by payer.'
+citation_index:
+  epic-beaker:
+    title: Epic software (Beaker LIS)
+    url: https://www.epic.com/software/
+  sunquest:
+    title: Clinisys / Sunquest LIS
+    url: https://www.clinisys.com/
+  oracle-pathnet:
+    title: Oracle Health
+    url: https://www.oracle.com/health/
+  orchard:
+    title: Orchard Harvest LIS
+    url: https://www.orchardsoft.com/
+  labware:
+    title: LabWare LIMS
+    url: https://www.labware.com/
+  samplemanager:
+    title: Thermo Fisher lab informatics (SampleManager)
+    url: https://www.thermofisher.com/us/en/home/digital-solutions/lab-informatics.html
+  labvantage:
+    title: LabVantage LIMS
+    url: https://www.labvantage.com/
+  starlims:
+    title: STARLIMS laboratory informatics
+    url: https://www.starlims.com/
+  di-instrument-manager:
+    title: Data Innovations Instrument Manager
+    url: https://www.datainnovations.com/
+  roche-cobas:
+    title: Roche cobas instruments
+    url: https://diagnostics.roche.com/global/en/products/instruments.html
+  abbott-aliniq:
+    title: Abbott AlinIQ informatics
+    url: https://www.corelaboratory.abbott/int/en/offerings/brands/aliniq
+  philips-pathology:
+    title: Philips IntelliSite Pathology Solution
+    url: https://www.usa.philips.com/healthcare/resources/landing/philips-intellisite-pathology-solution
+  leica-aperio:
+    title: Leica Aperio digital pathology
+    url: https://www.leicabiosystems.com/us/digital-pathology/
+  sectra:
+    title: Sectra Digital Pathology Solution
+    url: https://medical.sectra.com/product/sectra-digital-pathology-solution/
+  paige:
+    title: Paige clinical AI pathology
+    url: https://www.paige.ai/
+  rhapsody:
+    title: Rhapsody integration engine
+    url: https://rhapsody.health/
+  mirth:
+    title: NextGen Connect (Mirth) integration engine
+    url: https://www.nextgen.com/solutions/interoperability/mirth-integration-engine
+  xifin:
+    title: XiFin revenue cycle management
+    url: https://www.xifin.com/
+  biorad-unity:
+    title: Bio-Rad Unity quality controls
+    url: https://www.bio-rad.com/en-us/category/quality-controls
+  loinc:
+    title: LOINC test terminology
+    url: https://loinc.org/
+  snomed:
+    title: SNOMED CT clinical terminology
+    url: https://www.snomed.org/
+  cdc-elr:
+    title: CDC Electronic Laboratory Reporting
+    url: https://www.cdc.gov/elr/
+  clia:
+    title: CMS CLIA program
+    url: https://www.cms.gov/medicare/quality/clinical-laboratory-improvement-amendments
+  cap:
+    title: CAP Laboratory Accreditation
+    url: https://www.cap.org/laboratory-improvement/accreditation

@@ -1,0 +1,1011 @@
+name: Wealth Management
+description: 'Advisor-led wealth and private banking: custody and clearing, portfolio management and rebalancing, financial planning, performance reporting, and suitability across client households.'
+sources:
+  - name: Custody & Clearing
+    icon: partner
+    tiles:
+      - name: Pershing NetX360
+        icon: partner
+        summary: 'BNY Pershing''s clearing and custody platform: the book of record for RIA and broker-dealer accounts, positions, cash and transactions.'
+        citations:
+          - pershing
+        category: Custody & Clearing Platform
+        what_it_is: 'BNY Pershing''s clearing and custody platform: the book of record for RIA and broker-dealer accounts, positions, cash and transactions.'
+        who_uses_it: Investment operations, custody teams and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day positions + transactions
+            interval: Nightly custodial files
+      - name: Fidelity Wealthscape
+        icon: partner
+        summary: Fidelity Institutional's custody and brokerage platform holding accounts, positions and settlement for advisors and their clients.
+        citations:
+          - fidelity-inst
+        category: Custody & Clearing Platform
+        what_it_is: Fidelity Institutional's custody and brokerage platform holding accounts, positions and settlement records for advisors and their clients.
+        who_uses_it: Investment operations, custody teams and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day positions + transactions
+            interval: Nightly custodial files
+      - name: Schwab Advisor Svcs
+        icon: partner
+        summary: 'Charles Schwab''s custody platform for independent advisors: account, position and cost-basis records feeding the wealth estate.'
+        citations:
+          - schwab-adv
+        category: Custody & Clearing Platform
+        what_it_is: Charles Schwab's custody platform for independent advisors, carrying account, position and cost-basis records into the wealth estate.
+        who_uses_it: Investment operations, custody teams and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day positions + cost basis
+            interval: Nightly custodial files
+      - name: Apex Clearing
+        icon: db
+        summary: Digital-first clearing and custody powering robo and hybrid-advice platforms, the source of accounts and fractional-share positions.
+        citations:
+          - apex
+        category: Custody & Clearing Platform
+        what_it_is: API-first clearing and custody powering robo and hybrid-advice platforms, the source of digitally opened accounts and fractional-share positions.
+        who_uses_it: Digital advice teams, investment operations and platform engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day accounts + positions
+            interval: Nightly custodial files
+          stream:
+            types:
+              - semi-structured
+            volume: Account + trade events
+            interval: Continuous (API/events)
+  - name: Portfolio Management
+    icon: chart
+    tiles:
+      - name: Addepar
+        icon: chart
+        summary: Portfolio management, aggregation and reporting for HNW and multi-custodial books, the source of consolidated positions, performance and exposures.
+        citations:
+          - addepar-vendor
+        category: Portfolio Management & Reporting
+        what_it_is: Portfolio management, aggregation and reporting for HNW and multi-custodial books, the source of consolidated positions, performance and exposures across the household.
+        who_uses_it: Investments, performance reporting and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day positions + performance
+            interval: Nightly portfolio extracts
+      - name: Orion Advisor Tech
+        icon: chart
+        summary: 'Portfolio accounting, performance and rebalancing for RIAs: the reconciled position and transaction ledger advisors bill and report against.'
+        citations:
+          - orion
+        category: Portfolio Accounting & Rebalancing
+        what_it_is: Portfolio accounting, performance and rebalancing for RIAs, the reconciled position and transaction ledger advisors bill and report against.
+        who_uses_it: Investment operations, portfolio construction and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day positions + transactions
+            interval: Nightly portfolio extracts
+      - name: Envestnet Tamarac
+        icon: sheet
+        summary: RIA portfolio management, trading and rebalancing with model portfolios, the source of target weights and drift against household accounts.
+        citations:
+          - tamarac
+        category: Portfolio Management & Rebalancing
+        what_it_is: RIA portfolio management, trading and rebalancing with model portfolios, the source of target weights and drift against household accounts.
+        who_uses_it: Portfolio construction, trading and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day models + drift
+            interval: Nightly portfolio extracts
+      - name: SS&C Black Diamond
+        icon: chart
+        summary: Portfolio management and client reporting platform holding performance, holdings and billing for advisory firms.
+        citations:
+          - black-diamond
+        category: Portfolio Management & Reporting
+        what_it_is: Portfolio management and client reporting platform holding performance, holdings and billing records for advisory firms.
+        who_uses_it: Performance reporting, billing operations and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day performance + billing
+            interval: Nightly portfolio extracts
+  - name: Advisor CRM
+    icon: crm
+    tiles:
+      - name: Salesforce FSC
+        icon: crm
+        summary: 'Salesforce Financial Services Cloud: the advisor desktop for households, relationships, activities and service cases across the book.'
+        citations:
+          - sfdc-fsc
+        category: Wealth CRM
+        what_it_is: Salesforce Financial Services Cloud, the advisor desktop for households, relationships, activities and service cases across the book.
+        who_uses_it: Advisory field, relationship managers and client associates.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day accounts + activities
+            interval: Nightly CDC
+          stream:
+            types:
+              - semi-structured
+            volume: Activity + case events
+            interval: Continuous (API/events)
+      - name: Redtail CRM
+        icon: crm
+        summary: 'Wealth-native CRM widely used by independent advisors: contacts, households, activities and workflow the practice runs on.'
+        citations:
+          - redtail
+        category: Wealth CRM
+        what_it_is: Wealth-native CRM widely used by independent advisors, carrying contacts, households, activities and the workflow the practice runs on.
+        who_uses_it: Advisory field, client associates and practice managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day contacts + activities
+            interval: Nightly CDC
+      - name: Practifi
+        icon: crm
+        summary: 'Practice-management platform on the Salesforce stack for advice firms: pipeline, onboarding and service workflow.'
+        citations:
+          - practifi
+        category: Practice Management (CRM)
+        what_it_is: Practice-management platform on the Salesforce stack for advice firms, carrying pipeline, onboarding and service workflow.
+        who_uses_it: Practice managers, onboarding and advisory field.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day pipeline + workflow
+            interval: Nightly CDC
+      - name: Wealthbox
+        icon: crm
+        summary: Modern advisor CRM for contacts, tasks and communications, feeding client activity and relationship context into the estate.
+        citations:
+          - wealthbox
+        category: Wealth CRM
+        what_it_is: Modern advisor CRM for contacts, tasks and communications, feeding client activity and relationship context into the estate.
+        who_uses_it: Advisory field, client associates and practice managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day contacts + tasks
+            interval: Nightly CDC
+  - name: Financial Planning
+    icon: sheet
+    tiles:
+      - name: eMoney Advisor
+        icon: sheet
+        summary: 'Financial planning and client portal: goals, cash-flow plans, held-away accounts and net-worth aggregation for each household.'
+        citations:
+          - emoney
+        category: Financial Planning Software
+        what_it_is: Financial planning and client portal carrying goals, cash-flow plans, held-away accounts and net-worth aggregation for each household.
+        who_uses_it: Financial advisors, planning specialists and clients.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-20 GB/day plans + held-away
+            interval: Nightly plan extracts
+      - name: MoneyGuide
+        icon: sheet
+        summary: 'Envestnet MoneyGuide goals-based planning: retirement, education and income plans the advice conversation is built around.'
+        citations:
+          - moneyguide
+        category: Financial Planning Software
+        what_it_is: Goals-based planning covering retirement, education and income plans the advice conversation is built around.
+        who_uses_it: Financial advisors and planning specialists.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-20 GB/day plans + goals
+            interval: Nightly plan extracts
+      - name: RightCapital
+        icon: sheet
+        summary: Planning software for tax-efficient retirement and distribution strategies, the source of plan assumptions and goal progress.
+        citations:
+          - rightcapital
+        category: Financial Planning Software
+        what_it_is: Planning software for tax-efficient retirement and distribution strategies, the source of plan assumptions and goal progress.
+        who_uses_it: Financial advisors and planning specialists.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-10 GB/day plans + assumptions
+            interval: Nightly plan extracts
+      - name: Morningstar Advisor
+        icon: market
+        summary: Morningstar research, ratings and analytics for fund selection, model construction and investment due diligence.
+        citations:
+          - morningstar-adv
+        category: Investment Research & Analytics
+        what_it_is: Research, ratings and analytics for fund selection, model construction and investment due diligence.
+        who_uses_it: Investment research, portfolio construction and advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day ratings + analytics
+            interval: Daily research updates
+  - name: Onboarding & Compliance
+    icon: gavel
+    tiles:
+      - name: DocuSign eSignature
+        icon: docs
+        summary: Electronic signature and agreement workflow for account opening, disclosures and advisory agreements across the household.
+        citations:
+          - docusign
+        category: eSignature / Agreement Platform
+        what_it_is: Electronic signature and agreement workflow for account opening, disclosures and advisory agreements across the household.
+        who_uses_it: Onboarding, operations and compliance.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: Signed agreements + envelope status
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: Envelope completion events
+            interval: Continuous (webhooks)
+      - name: Fenergo Onboarding
+        icon: identity
+        summary: Client lifecycle management for KYC, entity data and account opening, the source of verified client and beneficial-owner records.
+        citations:
+          - fenergo
+        category: Client Lifecycle Management (KYC)
+        what_it_is: Client lifecycle management for KYC, entity data and account opening, the source of verified client and beneficial-owner records.
+        who_uses_it: Onboarding, financial crime and compliance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day KYC + entity records
+            interval: Nightly batch
+      - name: LexisNexis KYC
+        icon: gavel
+        summary: Identity verification, sanctions and PEP screening data used to onboard and periodically re-screen clients and their entities.
+        citations:
+          - lexisnexis
+        category: KYC & Screening Provider
+        what_it_is: Identity verification, sanctions and PEP screening data used to onboard and periodically re-screen clients and their entities.
+        who_uses_it: Financial crime, compliance and onboarding.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: Screening results + watchlist deltas
+            interval: Daily screening refresh
+          stream:
+            types:
+              - semi-structured
+            volume: Screening API responses
+            interval: Continuous (API)
+      - name: Global Relay Archive
+        icon: chat
+        summary: Communications capture and archiving for email, chat and voice, the books-and-records source for supervision and surveillance.
+        citations:
+          - global-relay
+        category: Communications Archiving & Surveillance
+        what_it_is: Communications capture and archiving for email, chat and voice, the books-and-records source for supervision and surveillance.
+        who_uses_it: Supervision, compliance and surveillance.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - semi-structured
+            volume: 50-200 GB/day messages + metadata
+            interval: Continuous capture, batch load
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Custodial BoR
+        icon: fed
+        summary: Portfolio accounting and the custodial book of record left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled positions and cost basis.
+        category: Custodial Book of Record
+        what_it_is: Portfolio accounting and the custodial book of record kept in the incumbent system and queried in place, giving one reconciled view of positions and cost basis.
+        who_uses_it: Investment operations, fund accounting and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical positions + cost basis
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Custodial Files
+        icon: stream
+        summary: NSCC Fund/SERV and Networking files and DTCC position and transaction feeds parsed on arrival and landed as structured events.
+        citations:
+          - dtcc
+        category: Custodial File Feed (NSCC/DTCC)
+        what_it_is: NSCC Fund/SERV and Networking files and DTCC position and transaction feeds parsed on arrival and landed as structured events.
+        who_uses_it: Investment operations and data engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 10-50 GB/day files
+            interval: Multiple settlement cycles daily
+      - name: Market & Fund Data
+        icon: api
+        summary: Pricing, quote and fund-reference APIs from Morningstar and market-data vendors consumed inbound through managed ELT connectors.
+        category: Market & Fund Data API
+        what_it_is: Pricing, quote and fund-reference APIs from Morningstar and market-data vendors consumed inbound through managed ELT connectors.
+        who_uses_it: Investments, performance reporting and data engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day prices + reference
+            interval: Intraday and end-of-day
+          stream:
+            types:
+              - semi-structured
+            volume: Quote + price updates
+            interval: Continuous (API)
+      - name: Advisor SaaS APIs
+        icon: api
+        summary: CRM, planning and custody request/response APIs, and existing Kafka topics carrying account and market events, land here and are drawn generically on the reference board.
+        category: Advisor SaaS / Streaming API
+        what_it_is: CRM, planning and custody request/response APIs and existing Kafka topics carrying account and market events, landed generically on the reference board.
+        who_uses_it: Data engineering, app developers and platform teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: Account + market events
+            interval: Continuous (API/Kafka)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Wealth Leadership
+        mark: Genie One
+        summary: The head of wealth on AUM, net new assets and advisor productivity; the CFO on fee revenue, margin and cost to serve; the COO on platform consolidation and the operating model across custodians and offices.
+        uses:
+          - - Genie One
+            - Ask what net new assets an office brought in, or what a household is worth, without waiting on an analyst.
+          - - AI/BI
+            - AUM, net flows, fee revenue and advisor productivity on one certified set of Metric Views.
+          - - Unity Catalog
+            - One governed household and glossary, so "AUM" and "net new assets" mean one thing across the firm.
+        sub:
+          - name: Head of Wealth
+            cares: AUM growth, net new assets and advisor productivity.
+          - name: CFO
+            cares: fee revenue, margin and cost to serve across the book.
+          - name: COO
+            cares: platform consolidation and the operating model across custodians.
+        ucs:
+          - Client Household 360
+          - Client Attrition Risk
+          - Performance Reporting
+      - name: Advisory Field
+        mark: Genie One
+        summary: Financial advisors preparing for and running client reviews; relationship managers on HNW and private-banking relationships; client associates on meeting prep, service requests and follow-up.
+        uses:
+          - - Genie One
+            - Ask a client's tax-loss opportunity or held-away balances in plain language, in seconds, before the meeting.
+          - - Agent Bricks
+            - Agents that draft a meeting brief and next best action against governed household data.
+          - - Model Serving
+            - Attrition and next-best-action scores surfaced on the advisor desktop.
+        sub:
+          - name: Financial advisors
+            cares: client conversations, reviews and next best action.
+          - name: Relationship managers
+            cares: HNW and private-banking relationships.
+          - name: Client associates
+            cares: meeting prep, service requests and follow-up.
+        ucs:
+          - Advisor Meeting Prep
+          - Next Best Action
+          - Client Attrition Risk
+      - name: Investments
+        mark: AI/BI
+        summary: The chief investment office on model portfolios and asset allocation; portfolio construction on rebalancing and tax-aware trading; investment research on fund selection and manager due diligence.
+        uses:
+          - - AI/BI
+            - Performance, attribution and drift on the same definitions the advisor reads to the client.
+          - - Model Serving
+            - Rebalancing and tax-optimisation scored across households, not one account at a time.
+          - - Unity Catalog
+            - One governed security master and model library across research and trading.
+        sub:
+          - name: Chief investment office
+            cares: model portfolios and asset allocation.
+          - name: Portfolio construction
+            cares: rebalancing and tax-aware trading across households.
+          - name: Investment research
+            cares: fund selection and manager due diligence.
+        ucs:
+          - Model Portfolio Rebal
+          - Tax-Loss Harvesting
+          - Performance Reporting
+      - name: Client Experience
+        mark: CustomerLake
+        summary: Digital and robo-advice teams on self-directed and hybrid journeys; client marketing on segmentation and personalised outreach; the onboarding team on account opening and funding.
+        uses:
+          - - CustomerLake
+            - Household, planning and clickstream activated for personalisation without a separate CDP.
+          - - Model Serving
+            - Propensity, funding and next-best-conversation models scored in the client journey.
+          - - Apps
+            - Client portal and onboarding screens hosted next to governed data.
+        sub:
+          - name: Digital & robo advice
+            cares: self-directed and hybrid-advice journeys.
+          - name: Client marketing
+            cares: segmentation and personalised outreach.
+          - name: Onboarding
+            cares: account opening and funding.
+        ucs:
+          - Digital & Robo Advice
+          - Client Onboarding
+          - Next Best Action
+      - name: Risk & Compliance
+        mark: AI Functions
+        summary: Compliance on suitability, Reg BI and books-and-records; financial crime on KYC, AML and transaction monitoring; supervision on advisor conduct and communications surveillance.
+        uses:
+          - - AI Functions
+            - Communications and account activity screened for suitability and abuse patterns at scale.
+          - - Genie One
+            - Investigators ask for a client's activity around an event in plain language.
+          - - Unity Catalog
+            - Audit trails and lineage that satisfy a regulatory examination.
+        sub:
+          - name: Compliance
+            cares: suitability, Reg BI and books-and-records.
+          - name: Financial crime
+            cares: KYC, AML and transaction monitoring.
+          - name: Supervision
+            cares: advisor conduct and communications surveillance.
+        ucs:
+          - KYC AML & Suitability
+          - Client Onboarding
+          - Client Household 360
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land Pershing, Fidelity and Schwab custodial files, Addepar and Orion positions and Salesforce FSC activity; own the Bronze to Silver path and the pager when a feed breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for custody, CRM, planning and portfolio sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on position, transaction and fee feeds.
+          - - Lakewatch
+            - Freshness on the household and performance tables advisors open every morning.
+      - name: Data Scientists
+        mark: MLflow
+        summary: Attrition, next-best-action, funding-propensity and tax-optimisation models, and whether they still hold six months after deployment.
+        uses:
+          - - Feature Store
+            - Household and behaviour features defined once and read identically in training and serving.
+          - - MLflow
+            - Every run tracked for audit and reproduction under supervision.
+          - - Model Serving
+            - Attrition and next-best-action models scored on the advisor desktop.
+      - name: App Developers
+        mark: Apps
+        summary: Ship the advisor desktop, review builder, rebalancing and onboarding applications the firm works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Advisor and client screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for onboarding state and governed writes.
+          - - Agent Bricks
+            - Agents that draft review packs and rebalance proposals against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers, and household and pipeline updates in the channel advisors already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Client & Partner Sharing
+    icon: share
+    tiles:
+      - name: Custodian Sharing
+        icon: share
+        summary: Positions, performance and billing shared with custodians and sub-advisors over Delta Sharing rather than nightly file exchange.
+      - name: TAMP & BD Partners
+        icon: partner
+        summary: Turnkey asset-management programs and broker-dealer partners reading live household and model state on governed tables.
+      - name: Data Marketplace
+        icon: market
+        summary: Curated market, fund and benchmark datasets consumed and published through Databricks Marketplace.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: CRM & FSC Writeback
+        icon: crm
+        summary: Next best actions, meeting briefs and household scores written back into Salesforce FSC so the answer reaches the advisor's desktop.
+      - name: Rebalancer Writeback
+        icon: gauge
+        summary: Target weights and tax-aware trade proposals pushed back into Tamarac and Orion so the decision reaches the trading path.
+      - name: Alert & Case Queue
+        icon: gavel
+        summary: Suitability and surveillance alerts pushed to the supervision queue compliance already works.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: SEC & FINRA Filings
+        icon: gavel
+        summary: Form ADV, Reg BI and books-and-records evidence produced from the same governed tables the firm runs on.
+      - name: Client Statements
+        icon: share
+        summary: Performance, holdings and fee statements and 1099 reporting generated from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Custodians, sub-advisors and partners reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Advisor Desktop
+        icon: apps
+        short: Household cockpit
+        summary: 'The unified screen an advisor runs the book from: household 360, next best action and meeting prep in one view, on Databricks Apps over Lakebase.'
+      - name: Client Review Builder
+        icon: docs
+        short: Meeting packs
+        summary: Auto-drafts traceable client review packs and meeting briefs from portfolio, planning and CRM data, so preparation takes minutes instead of hours.
+      - name: Rebalancing Console
+        icon: gauge
+        short: Tax-aware trading
+        summary: Model-portfolio drift, tax-loss opportunities and trade proposals across every household, scored and reviewed before orders reach the custodian.
+      - name: Onboarding Studio
+        icon: identity
+        short: Account opening
+        summary: Digital account opening, funding and KYC in one flow, with signature, screening and custodial account creation orchestrated over governed writes.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: AUM & Net Flows
+        icon: aibi
+        summary: AUM, net new assets and flows across offices and advisors on certified Metric Views.
+        kpis:
+          - AUM
+          - Net new assets
+          - Net flows
+          - Fee revenue
+          - Advisor productivity
+        teams:
+          - Wealth Leadership
+          - Investments
+          - CFO
+      - name: Advisor Productivity
+        icon: aibi
+        summary: Advisor activity, book health and next-best-action conversion across the field.
+        kpis:
+          - Households per advisor
+          - Revenue per advisor
+          - Meeting cadence
+          - Next-best-action conversion
+          - Client attrition rate
+        teams:
+          - Advisory Field
+          - Wealth Leadership
+          - Relationship managers
+      - name: Performance & Attribution
+        icon: aibi
+        summary: Time-weighted return, attribution and drift on the same definitions advisors read to clients.
+        kpis:
+          - Time-weighted return
+          - Attribution
+          - Benchmark tracking
+          - Model drift
+          - Fee margin
+        teams:
+          - Investments
+          - Chief investment office
+          - Portfolio construction
+      - name: Compliance & Suitability
+        icon: aibi
+        summary: Suitability, screening and surveillance posture across the book.
+        kpis:
+          - Suitability exceptions
+          - Alert volume
+          - Case backlog
+          - KYC refresh rate
+          - Reg BI coverage
+        teams:
+          - Risk & Compliance
+          - Compliance
+          - Supervision
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Household & Relationship Agent
+        icon: genie
+        summary: Ask about a household's value, held-away assets and relationship context in plain language.
+        feeds:
+          - Salesforce FSC
+          - Addepar
+          - Pershing NetX360
+          - Conformed household, account, position
+        teams:
+          - Wealth Leadership
+          - Advisory Field
+          - Financial advisors
+        questions:
+          - What is this household worth across every account and custodian?
+          - Which held-away assets could we bring onto the platform?
+          - How many households does each advisor manage and how active are they?
+          - Which relationships have grown or shrunk most this year?
+          - What service cases are open for this client right now?
+      - name: Performance & Fees Agent
+        icon: genie
+        summary: Ask about returns, fee revenue and net flows across the book in plain language.
+        feeds:
+          - Addepar
+          - SS&C Black Diamond
+          - AUM, fees, performance, flows
+        teams:
+          - Investments
+          - Wealth Leadership
+          - CFO
+        questions:
+          - What did each household return last quarter after fees?
+          - What net new assets did each office bring in this month?
+          - Where is fee margin thinnest across the book?
+          - Which households have the largest net outflows this year?
+          - How does performance compare to benchmark by segment?
+      - name: Rebalancing & Tax Agent
+        icon: genie
+        summary: Ask about model drift, rebalancing needs and tax-loss opportunities in plain language.
+        feeds:
+          - Envestnet Tamarac
+          - Orion Advisor Tech
+          - Conformed household, account, position
+        teams:
+          - Investments
+          - Portfolio construction
+          - Chief investment office
+        questions:
+          - Which households have drifted furthest from their model?
+          - Where are the largest tax-loss harvesting opportunities right now?
+          - How much cash is sitting undeployed across the book?
+          - Which accounts breach a concentration or mandate limit?
+          - What trades would a model change generate across households?
+      - name: Compliance & Suitability Agent
+        icon: genie
+        summary: Ask about suitability exceptions, screening and surveillance alerts in plain language.
+        feeds:
+          - LexisNexis KYC
+          - Global Relay Archive
+          - Conformed household, account, position
+        teams:
+          - Risk & Compliance
+          - Compliance
+          - Supervision
+        questions:
+          - Which accounts show suitability exceptions this month?
+          - What is a client's account activity around this event?
+          - Which KYC refreshes are overdue across the book?
+          - Where did communications surveillance flag conduct risk?
+          - What is our Reg BI documentation coverage by advisor?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Advisor Meeting Prep
+        short: Productivity
+        icon: docs
+        summary: Assembling a traceable client review pack and meeting brief from portfolio, planning and CRM data, so advisors spend the time on the conversation, not the preparation.
+        problem: Client data is scattered across custody, portfolio, planning and CRM systems, so advisors burn hours hand-building each review pack and the least-served clients get the thinnest preparation.
+        who_benefits: Advisory Field
+        how_built: Household, portfolio and planning data are unified in the lakehouse; the Client Review Builder drafts traceable packs with Agent Bricks and advisors query specifics in Genie before the meeting.
+        components:
+          - Client Review Builder
+          - Genie
+          - Salesforce FSC
+          - Agent Bricks
+          - Unity Catalog
+        stories:
+          - title: Wealth advisor productivity starts with the client conversation
+            url: https://www.databricks.com/blog/wealth-advisor-productivity-starts-client-conversation
+      - name: Client Household 360
+        short: Household view
+        icon: people
+        summary: Resolving every account, entity and held-away asset into one household view across custodians, so the advisor and the firm see the whole relationship.
+        problem: Accounts sit across multiple custodians and legal entities with no shared household key, so the true relationship value and concentration are invisible and reporting never ties out.
+        who_benefits: Wealth Leadership
+        how_built: Custody, portfolio and CRM feeds are conformed against one household key in the lakehouse and served to the Advisor Desktop and AI/BI on certified Metric Views.
+        components:
+          - Advisor Desktop
+          - Unity Catalog
+          - Pershing NetX360
+          - Addepar
+          - AI/BI
+        stories:
+          - title: Addepar unifies portfolio, market and custodial data on Databricks
+            url: https://www.databricks.com/customers/addepar
+          - title: Wealth advisor productivity starts with the client conversation
+            url: https://www.databricks.com/blog/wealth-advisor-productivity-starts-client-conversation
+      - name: Next Best Action
+        short: Advice
+        icon: aisvc
+        summary: Surfacing the most relevant next conversation for each household, from a funding opportunity to a plan gap, ranked and explained on the advisor's desktop.
+        problem: Advisors cannot review every household every week, so opportunities and risks surface late or by luck rather than by a ranked, explainable signal.
+        who_benefits: Advisory Field
+        how_built: Household, planning and behaviour features feed next-best-action models in Model Serving; ranked, explained actions are written back to Salesforce FSC and the Advisor Desktop.
+        components:
+          - Advisor Desktop
+          - Model Serving
+          - Feature Store
+          - Salesforce FSC
+          - CustomerLake
+        stories:
+          - title: MCP-Powered Financial AI Workflows on Databricks
+            url: https://www.databricks.com/blog/mcp-powered-financial-ai-workflows-databricks
+      - name: Model Portfolio Rebal
+        short: Trading
+        icon: gauge
+        summary: Rebalancing every household to its target model with tax and cash constraints respected, run across the book instead of one account at a time.
+        problem: Rebalancing runs account by account in the portfolio tool, so drift, tax lots and household constraints are handled inconsistently and trading is slow to react to a model change.
+        who_benefits: Investments
+        how_built: Positions and model targets are conformed in the lakehouse; drift and tax-aware trades are scored in Model Serving and written back to Tamarac and Orion from the Rebalancing Console.
+        components:
+          - Rebalancing Console
+          - Envestnet Tamarac
+          - Orion Advisor Tech
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Addepar achieves scalable, cost-efficient data operations
+            url: https://www.databricks.com/customers/addepar
+          - title: Financial Services Investment Management reference architecture
+            url: https://www.databricks.com/resources/architectures/financial-services-investment-management-reference-architecture
+      - name: Tax-Loss Harvesting
+        short: Tax alpha
+        icon: chart
+        summary: Finding realised-loss opportunities across a household's taxable accounts given current lots and estimated tax rate, before the tax year closes.
+        problem: Tax-loss opportunities hide in per-account cost-basis data that is never viewed at household level, so harvestable losses expire unclaimed and wash-sale rules are hard to police.
+        who_benefits: Investments
+        how_built: Cost-basis and lot data are conformed to Gold; harvest candidates are scored across the household and surfaced in the Rebalancing Console and to advisors in Genie.
+        components:
+          - Rebalancing Console
+          - Addepar
+          - Model Serving
+          - Genie
+          - Gold
+        stories:
+          - title: Wealth advisor productivity starts with the client conversation
+            url: https://www.databricks.com/blog/wealth-advisor-productivity-starts-client-conversation
+      - name: Performance Reporting
+        short: Reporting
+        icon: chart
+        summary: Producing accurate, timely time-weighted performance, attribution and fee reporting for every household from one governed source instead of reconciled extracts.
+        problem: Performance is stitched from custodian, portfolio and billing extracts that never agree, so client statements are late, inconsistent between systems and expensive to audit.
+        who_benefits: Investments
+        how_built: Positions, prices and fees are conformed against the custodial book of record; time-weighted performance and attribution are served to certified Gold products and Client Statements.
+        components:
+          - Client Statements
+          - Addepar
+          - SS&C Black Diamond
+          - Data Products
+          - AI/BI
+        stories:
+          - title: Addepar unifies portfolio and custodial data on Databricks
+            url: https://www.databricks.com/customers/addepar
+      - name: Client Attrition Risk
+        short: Retention
+        icon: observ
+        summary: Predicting which households are at risk of leaving or moving assets away, early enough for the advisor to act rather than explain the outflow afterwards.
+        problem: Outflows and advisor departures are seen after the assets move, so retention is reactive and the households most worth saving are identified too late.
+        who_benefits: Advisory Field
+        how_built: Household, activity and flow features feed attrition models tracked in MLflow and scored in Model Serving; at-risk households surface on the Advisor Desktop with the reason and a suggested action.
+        components:
+          - Advisor Desktop
+          - Model Serving
+          - Feature Store
+          - Salesforce FSC
+          - MLflow
+        stories:
+          - title: Databricks for Financial Services
+            url: https://www.databricks.com/solutions/industries/financial-services
+      - name: Digital & Robo Advice
+        short: Hybrid advice
+        icon: model
+        summary: Powering self-directed and hybrid-advice journeys with personalised guidance, portfolios and nudges, at a cost to serve that reaches smaller and next-generation clients.
+        problem: Digital advice journeys are generic and disconnected from the advised relationship, so smaller and next-generation clients get commodity guidance and drift to competitors.
+        who_benefits: Client Experience
+        how_built: Household and behaviour data are activated through CustomerLake; portfolio and guidance recommendations are scored in Model Serving and served into the digital and robo journey over Apex Clearing accounts.
+        components:
+          - CustomerLake
+          - Model Serving
+          - Apex Clearing
+          - AI/BI
+          - Lakehouse
+        stories:
+          - title: 'Customer Story: HSBC'
+            url: https://www.databricks.com/customers/hsbc
+      - name: Client Onboarding
+        short: Account opening
+        icon: identity
+        summary: Opening, verifying and funding a new household across signature, KYC and custodial account creation in one governed flow rather than a multi-week paper chase.
+        problem: Account opening spans signature, screening and custodial systems with manual re-keying, so onboarding takes weeks, funding stalls and status is invisible to the advisor.
+        who_benefits: Client Experience
+        how_built: Onboarding state is orchestrated in the Onboarding Studio on Lakebase; Fenergo screening and DocuSign signature events are governed in Unity Catalog and custodial accounts created over managed writes.
+        components:
+          - Onboarding Studio
+          - Fenergo Onboarding
+          - DocuSign eSignature
+          - Unity Catalog
+          - Lakebase
+        stories:
+          - title: Addepar accelerates client onboarding with Databricks
+            url: https://www.databricks.com/customers/addepar
+      - name: KYC AML & Suitability
+        short: Compliance
+        icon: gavel
+        summary: Screening clients and monitoring account activity for KYC, AML and suitability with an audit trail a regulator will accept, without drowning supervisors in false positives.
+        problem: Screening and suitability run across siloed compliance systems with gappy data, so alerts are noisy, investigations are slow and completeness cannot be proven to an examiner.
+        who_benefits: Risk & Compliance
+        how_built: Client, activity and communications data are unified in the lakehouse; AI Functions and models score suitability and abuse patterns with LexisNexis screening, and cases open in the supervision queue.
+        components:
+          - AI Functions
+          - LexisNexis KYC
+          - Unity Catalog
+          - Model Serving
+          - Global Relay Archive
+        stories:
+          - title: 'Customer Story: HSBC'
+            url: https://www.databricks.com/customers/hsbc
+          - title: MCP-Powered Financial AI Workflows on Databricks
+            url: https://www.databricks.com/blog/mcp-powered-financial-ai-workflows-databricks
+medallion:
+  Bronze:
+    short: Raw custodial and CRM feeds
+    summary: Custodial position and transaction files from Pershing, Fidelity and Schwab, Addepar and Orion portfolio extracts, Salesforce FSC activity and eMoney financial plans, landed exactly as received so a holding or a fee can always be replayed as it stood.
+  Silver:
+    short: Conformed household, account, position
+    summary: Households, clients, accounts and positions resolved into single conformed entities across the custody, portfolio and CRM estates, with security identifiers reconciled and every account linked to one household and one advisor.
+  Gold:
+    short: AUM, fees, performance, flows
+    summary: 'Contracted products the wealth business runs on: AUM and net new assets by advisor and household, fee revenue and margin, time-weighted performance and attribution, and net flows by segment and channel.'
+citation_index:
+  pershing:
+    title: BNY Pershing solutions
+    url: https://www.pershing.com/us/en/solutions.html
+  fidelity-inst:
+    title: Fidelity Institutional (Wealthscape)
+    url: https://institutional.fidelity.com/
+  schwab-adv:
+    title: Schwab Advisor Services
+    url: https://en.wikipedia.org/wiki/Charles_Schwab_Corporation
+  apex:
+    title: Apex Fintech Solutions
+    url: https://www.apexfintechsolutions.com/
+  addepar-vendor:
+    title: Addepar
+    url: https://www.addepar.com/
+  orion:
+    title: Orion Advisor Tech
+    url: https://orion.com/
+  tamarac:
+    title: Envestnet Tamarac
+    url: https://www.tamaracinc.com/
+  black-diamond:
+    title: SS&C Black Diamond (SS&C Technologies)
+    url: https://www.ssctech.com/
+  sfdc-fsc:
+    title: Salesforce Financial Services Cloud
+    url: https://www.salesforce.com/products/financial-services-cloud/overview/
+  redtail:
+    title: Redtail Technology CRM
+    url: https://www.redtailtechnology.com/
+  practifi:
+    title: Practifi
+    url: https://www.practifi.com/
+  wealthbox:
+    title: Wealthbox CRM
+    url: https://www.wealthbox.com/
+  emoney:
+    title: eMoney Advisor
+    url: https://emoneyadvisor.com/
+  moneyguide:
+    title: Envestnet MoneyGuide
+    url: https://www.moneyguide.com/
+  rightcapital:
+    title: RightCapital
+    url: https://www.rightcapital.com/
+  morningstar-adv:
+    title: Morningstar Advisor Workstation
+    url: https://www.morningstar.com/products/advisor-workstation
+  docusign:
+    title: DocuSign eSignature
+    url: https://www.docusign.com/
+  fenergo:
+    title: Fenergo client lifecycle management
+    url: https://www.fenergo.com/
+  lexisnexis:
+    title: LexisNexis Risk Solutions (Financial Services)
+    url: https://risk.lexisnexis.com/financial-services
+  global-relay:
+    title: Global Relay communications archiving
+    url: https://www.globalrelay.com/
+  dtcc:
+    title: DTCC clearing and settlement
+    url: https://www.dtcc.com/

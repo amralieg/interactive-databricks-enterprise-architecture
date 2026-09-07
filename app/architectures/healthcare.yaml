@@ -1,0 +1,914 @@
+name: Healthcare
+description: 'Health systems and hospitals: EHR clinical data, revenue cycle, capacity management, population health and quality reporting.'
+sources:
+  - name: EHR & Clinical
+    icon: erp
+    tiles:
+      - name: Epic Caboodle
+        icon: db
+        summary: Orders, results, notes and billing extracts from the hospital EHR of record.
+        citations:
+          - epic
+        category: Electronic Health Record (EHR)
+        what_it_is: Emits orders, results, clinical notes and billing extracts from the hospital EHR of record via its Caboodle data warehouse.
+        who_uses_it: Clinical Operations, Revenue Cycle and Population Health teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 100-400 GB/day incl. notes
+            interval: Nightly Caboodle refresh + intraday deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of HL7 msgs/sec at peak
+            interval: Continuous HL7/FHIR feed
+      - name: Oracle Health Millennium
+        icon: erp
+        summary: Inpatient and ambulatory clinical, scheduling and documentation for Cerner estates.
+        citations:
+          - oracle-millennium
+        category: Electronic Health Record (EHR)
+        what_it_is: Runs inpatient and ambulatory clinical care, scheduling and documentation on Cerner-based estates, feeding clinical and encounter records.
+        who_uses_it: Clinical Operations, clinicians and Quality & Safety teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 50-200 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of HL7 msgs/sec at peak
+            interval: Continuous HL7 feed
+      - name: Meditech Expanse
+        icon: sheet
+        summary: Acute and post-acute clinical records for community hospital networks.
+        citations:
+          - meditech
+        category: Electronic Health Record (EHR)
+        what_it_is: Holds acute and post-acute clinical records for community hospital networks, emitting encounter, order and result data.
+        who_uses_it: Clinical Operations, community-hospital clinicians and Revenue Cycle teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 20-100 GB/day
+            interval: Nightly batch
+      - name: Code Sets & Terminology
+        icon: gavel
+        summary: 'Seed and reference tables for the standard clinical code sets: ICD-10 diagnoses and procedures, CPT and HCPCS professional codes, J Codes for drugs, and NDC drug identifiers.'
+        category: Reference Terminology / Code Sets
+        what_it_is: Provides governed seed and reference tables for ICD-10, CPT and HCPCS, J Codes and NDC, so coding, grouping and analytics resolve against one shared terminology.
+        who_uses_it: Revenue Cycle, coding, Quality & Safety and clinical-analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs (reference sets)
+            interval: Quarterly / on code-set release
+  - name: Revenue Cycle
+    icon: market
+    tiles:
+      - name: R1 RCM Platform
+        icon: market
+        summary: Charge capture, claims scrubbing, denials and patient collections workflow.
+        citations:
+          - r1-rcm
+        category: Revenue Cycle Management Platform
+        what_it_is: Runs charge capture, claims scrubbing, denials and patient collections workflow, emitting charge, claim and denial transactions.
+        who_uses_it: Revenue Cycle, patient financial services and denial-management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + intraday deltas
+      - name: Waystar Claims
+        icon: api
+        summary: Eligibility, prior auth status and remittance advice across payers.
+        citations:
+          - waystar
+        category: Healthcare Claims Clearinghouse
+        what_it_is: Handles eligibility, prior-auth status and remittance advice across payers, emitting eligibility, status and 835 remittance records.
+        who_uses_it: Revenue Cycle, billing and eligibility teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Daily remittance cycle
+          stream:
+            types:
+              - semi-structured
+            volume: tens of eligibility checks/sec
+            interval: Continuous (API)
+      - name: 3M 360 Encompass
+        icon: gavel
+        summary: Computer-assisted coding, CDI queries and DRG grouping across the inpatient record.
+        citations:
+          - 3m-codeassist
+        category: Computer-Assisted Coding & CDI
+        what_it_is: Provides computer-assisted coding, clinical-documentation-improvement queries and DRG grouping across the inpatient record.
+        who_uses_it: Revenue Cycle, clinical documentation and coding teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 2-10 GB/day codes + queries
+            interval: Daily batch
+  - name: Imaging & Devices
+    icon: iot
+    tiles:
+      - name: Philips IntelliSpace
+        icon: stream
+        summary: Radiology worklists, study metadata and dose metrics from imaging PACS.
+        citations:
+          - philips-pacs
+        category: Imaging PACS / Radiology System
+        what_it_is: Emits radiology worklists, study metadata and dose metrics from the imaging PACS for utilisation and quality analysis.
+        who_uses_it: Clinical Operations, radiology and imaging-informatics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of studies/hour
+            interval: Continuous worklist feed
+      - name: Capsule Medical Device
+        icon: iot
+        summary: Bedside monitor vitals, ventilator settings and infusion pump alarms.
+        citations:
+          - capsule
+        category: Medical Device Integration Platform
+        what_it_is: Aggregates bedside monitor vitals, ventilator settings and infusion-pump alarms into one device-telemetry stream.
+        who_uses_it: Quality & Safety, clinical engineering and bedside nursing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k readings/sec at peak
+            interval: Continuous device telemetry
+      - name: Masimo Patient SafetyNet
+        icon: gauge
+        summary: Continuous pulse oximetry and early warning scores from wearable sensors.
+        citations:
+          - masimo
+        category: Patient Monitoring System
+        what_it_is: Streams continuous pulse oximetry and early-warning scores from wearable sensors for deterioration detection.
+        who_uses_it: Quality & Safety, patient-safety and rapid-response teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k readings/sec at peak
+            interval: Continuous sensor stream
+  - name: Operations & Staffing
+    icon: people
+    tiles:
+      - name: TeleTracking Capacity
+        icon: gauge
+        summary: Bed requests, patient placement and transfer centre milestones.
+        citations:
+          - teletracking
+        category: Patient Flow / Capacity Management System
+        what_it_is: Tracks bed requests, patient placement and transfer-centre milestones, emitting bed, placement and transfer events.
+        who_uses_it: Clinical Operations, bed management and patient-flow teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of placement events/sec
+            interval: Continuous placement feed
+      - name: Kronos Workforce
+        icon: people
+        summary: Nurse schedules, acuity staffing and overtime by unit.
+        citations:
+          - kronos
+        category: Workforce Management System
+        what_it_is: Holds nurse schedules, acuity staffing and overtime by unit, emitting schedule, timekeeping and overtime records.
+        who_uses_it: Clinical Operations, nursing leadership and workforce-planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch
+      - name: Press Ganey Experience
+        icon: partner
+        summary: HCAHPS and point-of-care patient satisfaction surveys.
+        citations:
+          - press-ganey
+        category: Patient Experience Survey Platform
+        what_it_is: Collects HCAHPS and point-of-care patient satisfaction surveys, emitting survey responses and experience scores.
+        who_uses_it: Clinical Operations, patient-experience and quality teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs (surveys)
+            interval: Weekly / survey cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Affiliate EHR Feeds
+        icon: fed
+        summary: Joint venture and affiliated clinic clinical summaries left at partner systems and queried in place under Unity Catalog.
+        category: Affiliated EHR / HIE Source
+        what_it_is: Joint-venture and affiliated-clinic clinical summaries kept at partner systems and queried in place through federation instead of being copied.
+        who_uses_it: Population Health, Clinical Operations and clinical-analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GB-scale affiliate marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: HL7 FHIR Bulk Data
+        icon: api
+        summary: Patient, encounter and observation exports normalised on ingest for analytics.
+        citations:
+          - fhir-bulk
+        category: Health Interoperability Standard (FHIR)
+        what_it_is: Bulk Patient, Encounter and Observation FHIR exports normalised on ingest to build the conformed clinical model for analytics.
+        who_uses_it: Data Engineers, Population Health and clinical-analytics teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 10-50 GB/export
+            interval: Scheduled bulk export
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of resources/sec at peak
+            interval: Continuous FHIR subscription
+      - name: CMS Quality Reporting
+        icon: gavel
+        summary: Hospital compare and value-based programme specifications consumed inbound.
+        citations:
+          - cms-quality
+        category: Quality Program Specification
+        what_it_is: Inbound Hospital Compare and value-based-programme specifications that define the quality measures the health system must report.
+        who_uses_it: Quality & Safety, regulatory and clinical-analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs (specifications)
+            interval: Annual / on release
+      - name: Syndromic Surveillance
+        icon: stream
+        summary: Public health case feeds exchanged under state reporting agreements.
+        category: Public Health Surveillance Feed
+        what_it_is: Public-health case and syndromic feeds exchanged under state reporting agreements for outbreak monitoring and mandated reporting.
+        who_uses_it: Quality & Safety, infection prevention and public-health reporting teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of case events/sec
+            interval: Continuous surveillance feed
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO, CNO & CMO
+        mark: Genie One
+        summary: The CEO on volume, contribution margin and quality scores; the CNO on staffing and patient safety; the CMO on outcomes and 30-day readmissions.
+        uses:
+          - - Genie One
+            - Ask what yesterday's census and contribution margin were without waiting on finance.
+          - - AI/BI
+            - Volume, margin and quality on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "contribution margin" means one thing across the health system.
+        sub:
+          - name: Chief Executive Officer
+            cares: volume, contribution margin and the quality and safety scores the board and public see.
+          - name: Chief Nursing Officer
+            cares: safe staffing ratios, patient safety and nurse retention across the units.
+          - name: Chief Medical Officer
+            cares: clinical outcomes, 30-day readmissions and physician documentation quality.
+        ucs:
+          - Hospital Throughput
+          - Readmission Reduction
+          - Nurse Staffing
+          - Patient Experience
+      - name: Clinical Operations
+        mark: Lakehouse//RT
+        summary: Bed management, ED throughput and OR scheduling on a typical inpatient day, moving boarding patients before diversion becomes necessary.
+        uses:
+          - - Capacity Command Centre
+            - ED boarding and bed placement options costed in real time.
+          - - Lakehouse//RT
+            - Live census and acuity at hospital operational latency.
+          - - AI/BI
+            - LOS and throughput on governed definitions.
+        sub:
+          - name: VP Patient Flow
+            cares: ED boarding, bed placement and discharge timing across the hospital.
+          - name: OR & Perioperative
+            cares: block-time utilisation, on-time first cases and surgical turnover.
+          - name: Bed Management
+            cares: transfer-centre throughput and the census that decides diversion.
+        ucs:
+          - Hospital Throughput
+          - OR Utilisation
+          - Nurse Staffing
+          - Imaging Utilisation
+      - name: Revenue Cycle
+        mark: AI/BI
+        summary: Denials, underpayments and CDI queries that decide whether documented care is actually paid, flagged before the claim leaves the building.
+        uses:
+          - - Denial Prevention Workbench
+            - At-risk accounts flagged before claim submission.
+          - - AI/BI
+            - Net revenue and denial rate on certified Metric Views.
+          - - Unity Catalog
+            - One definition of charges and payments across EHR and RCM.
+        sub:
+          - name: VP Revenue Cycle
+            cares: net revenue, denial rate and days in accounts receivable.
+          - name: Clinical Documentation
+            cares: query response and the gap between clinical truth and billed severity.
+          - name: Coding & Compliance
+            cares: DRG accuracy and coding audit risk before the claim submits.
+        ucs:
+          - Denial Management
+          - Clinical Documentation
+      - name: Population Health
+        mark: Model Serving
+        summary: Care managers and physicians on attributed panels, open gaps in care and rising-risk patients before preventable utilisation spikes.
+        uses:
+          - - Population Health Registry
+            - Attributed patients ranked by preventable utilisation risk.
+          - - Model Serving
+            - Readmission models scored at discharge.
+          - - CustomerLake
+            - Panel segments without copying payer files elsewhere.
+        sub:
+          - name: VP Population Health
+            cares: attributed-panel performance and total cost of care under value-based contracts.
+          - name: Care Management
+            cares: rising-risk patients and the interventions that prevent avoidable utilisation.
+          - name: Clinical Analytics
+            cares: risk stratification and the registries physicians act on.
+        ucs:
+          - Readmission Reduction
+          - Research Cohorts
+      - name: Quality & Safety
+        mark: AI/BI
+        summary: Infection prevention, sepsis-bundle compliance and hospital-acquired-condition reduction, catching the deterioration before the public measure does.
+        uses:
+          - - Quality Dashboard
+            - Core measures and HAC rates before public reporting.
+          - - AI/BI
+            - Mortality and complication indices on governed definitions.
+          - - Genie One
+            - Ask which units drove last month's CLABSI count.
+        sub:
+          - name: VP Quality
+            cares: core-measure attainment and the mortality and complication indices.
+          - name: Infection Prevention
+            cares: HAC, CLABSI and sepsis-bundle compliance across the units.
+          - name: Patient Safety
+            cares: harm events and the deterioration signals before the public measure moves.
+        ucs:
+          - Sepsis Early Warning
+          - Patient Experience
+          - Readmission Reduction
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the EHR, revenue-cycle and device feeds; own the Bronze to Silver path and the pager when an HL7 or charge feed breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for EHR, RCM and ancillary sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on ADT and charge feeds.
+          - - Lakewatch
+            - Freshness on the tables the command centre and finance read every morning.
+        sub:
+          - name: EHR Integration
+            cares: the HL7, FHIR and Clarity feeds and the pager when an ADT stream breaks.
+          - name: Revenue-Cycle Pipelines
+            cares: charge, claim and remittance feeds behind the finance tables.
+          - name: Streaming & Devices
+            cares: bedside monitor and PACS telemetry landed at operational latency.
+        ucs:
+          - Hospital Throughput
+          - Denial Management
+          - Sepsis Early Warning
+      - name: Data Scientists
+        mark: MLflow
+        summary: Readmission, sepsis and denial-risk models, and whether they still hold six months after deployment.
+        uses:
+          - - Feature Store
+            - Patient and encounter features defined once for training and serving.
+          - - MLflow
+            - Every clinical model run tracked for audit and reproduction.
+          - - Model Serving
+            - Readmission and sepsis models scored at discharge and bedside.
+        sub:
+          - name: Clinical Modelling
+            cares: readmission, sepsis and deterioration models validated against outcomes.
+          - name: Revenue Science
+            cares: denial-risk and underpayment models behind the workbench.
+          - name: MLOps
+            cares: drift and monitoring so a clinical model still holds six months on.
+        ucs:
+          - Readmission Reduction
+          - Sepsis Early Warning
+          - Denial Management
+      - name: App Developers
+        mark: Apps
+        summary: Ship the capacity, denial-prevention and population-health applications the health system works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Capacity and revenue screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for bed-placement and query writes.
+          - - Agent Bricks
+            - Agents that draft a CDI query or discharge plan against governed tools.
+        sub:
+          - name: Operational Apps
+            cares: the capacity, denial and registry screens clinicians and finance work in.
+          - name: Clinical Agents
+            cares: CDI-query and discharge-plan agents against governed tools.
+          - name: Integration Services
+            cares: writeback into the EHR inbox and bed-placement workflows.
+        ucs:
+          - Hospital Throughput
+          - Denial Management
+          - Research Cohorts
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and capacity alerts in the channel operations already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Clinical Writeback
+    icon: opdb
+    tiles:
+      - name: EHR Chart Queries
+        icon: db
+        summary: CDI and quality queries written back into the EHR inbox for physician response.
+        citations:
+          - epic
+      - name: Bed Placement Orders
+        icon: gauge
+        summary: Accepted bed assignments pushed to transport and nursing workflows.
+        citations:
+          - teletracking
+      - name: Care Gap Outreach
+        icon: apps
+        summary: Preventive care tasks pushed to ambulatory care teams from panel registries.
+  - name: Payer & Community
+    icon: partner
+    tiles:
+      - name: Payer Risk Contracts
+        icon: share
+        summary: Quality and utilisation metrics shared with payers under value-based arrangements.
+      - name: HIE Clinical Exchange
+        icon: api
+        summary: Summaries and referrals exchanged with regional health information exchanges.
+        citations:
+          - fhir-bulk
+      - name: Employer Reporting
+        icon: partner
+        summary: Occupational health and direct-contract outcomes reported to self-insured employers.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CMS Quality Programs
+        icon: gavel
+        summary: HAC, readmission and MIPS measures produced from governed clinical tables.
+        citations:
+          - cms-quality
+      - name: State Reporting
+        icon: share
+        summary: Mandatory infection and utilization filings assembled from Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Researchers, payers and affiliates reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Capacity Command Centre
+        icon: gauge
+        short: Patient flow
+        summary: ED boarding, bed placement and surgical holds costed in real time before diversion becomes necessary.
+      - name: Denial Prevention Workbench
+        icon: market
+        short: Revenue integrity
+        summary: Accounts at risk of denial flagged from documentation, coding and payer rules before claims submit.
+      - name: Population Health Registry
+        icon: people
+        short: Attributed panels
+        summary: Rising-risk patients and gaps in care ranked for outreach before utilisation spikes.
+      - name: Sepsis Surveillance
+        icon: iot
+        short: Patient safety
+        summary: Early warning from vitals, labs and nursing assessments before bundle compliance windows close.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Volume, LOS & Margin
+        icon: aibi
+        summary: Census, length of stay and contribution margin on certified operational Metric Views.
+        kpis:
+          - Census
+          - Length of stay
+          - Contribution margin
+          - Case mix index
+          - Discharge volume
+        teams:
+          - CEO, CNO & CMO
+          - Clinical Operations
+          - Revenue Cycle
+      - name: Revenue Integrity
+        icon: aibi
+        summary: Denial rate, days in A/R, net revenue and documentation quality across the revenue cycle.
+        kpis:
+          - Denial rate
+          - Days in A/R
+          - Net revenue
+          - CDI query rate
+          - DRG accuracy
+        teams:
+          - Revenue Cycle
+          - Clinical Documentation
+          - Coding & Compliance
+      - name: Quality & Safety
+        icon: aibi
+        summary: Readmissions, HAC, sepsis-bundle compliance and mortality index before public reporting.
+        kpis:
+          - Readmission rate
+          - HAC rate
+          - Sepsis-bundle compliance
+          - Mortality index
+          - CLABSI rate
+        teams:
+          - Quality & Safety
+          - Infection Prevention
+          - Patient Safety
+      - name: Patient Flow & Staffing
+        icon: aibi
+        summary: ED boarding, bed turnaround, OR utilisation and staffing across the hospital.
+        kpis:
+          - ED boarding
+          - Bed turnaround
+          - OR utilisation
+          - Overtime hours
+          - Staffing ratio
+        teams:
+          - Clinical Operations
+          - VP Patient Flow
+          - CEO, CNO & CMO
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Capacity & Throughput Agent
+        icon: genie
+        summary: Ask about census, boarding, length of stay and OR utilisation in plain language.
+        feeds:
+          - TeleTracking Capacity
+          - Epic Caboodle
+          - Kronos Workforce
+          - LOS, margin, outcomes
+        teams:
+          - Clinical Operations
+          - VP Patient Flow
+          - Bed Management
+        questions:
+          - What is our current census and how many patients are boarding in the ED?
+          - Which units are driving excess length of stay this week?
+          - What is OR block-time utilisation by service line?
+          - Where are discharge delays holding up bed placement?
+          - How does staffing align to the census forecast for tomorrow?
+      - name: Revenue Cycle & Denials Agent
+        icon: genie
+        summary: Explore denials, days in A/R and documentation gaps across the revenue cycle.
+        feeds:
+          - R1 RCM Platform
+          - Waystar Claims
+          - 3M 360 Encompass
+          - Conformed patient, encounter
+        teams:
+          - Revenue Cycle
+          - Clinical Documentation
+          - Coding & Compliance
+        questions:
+          - What is our denial rate and top denial reasons this month?
+          - Which accounts are at highest risk of denial before submission?
+          - Where is the gap between clinical documentation and billed severity?
+          - What is days in accounts receivable by payer?
+          - Which DRGs show the most coding-accuracy risk?
+      - name: Quality & Safety Agent
+        icon: genie
+        summary: Answer core-measure, HAC and deterioration questions before public reporting.
+        feeds:
+          - Capsule Medical Device
+          - Masimo Patient SafetyNet
+          - CMS Quality Reporting
+          - LOS, margin, outcomes
+        teams:
+          - Quality & Safety
+          - Infection Prevention
+          - Patient Safety
+        questions:
+          - Which units drove last month's CLABSI and HAC counts?
+          - What is our sepsis-bundle compliance rate by unit?
+          - How does the 30-day readmission rate trend by service line?
+          - Where are early-warning scores flagging deterioration now?
+          - What is the mortality index versus expected this quarter?
+      - name: Population Health Agent
+        icon: genie
+        summary: Ask about attributed panels, rising risk and gaps in care.
+        feeds:
+          - Epic Caboodle
+          - HL7 FHIR Bulk Data
+          - Conformed patient, encounter
+        teams:
+          - Population Health
+          - Care Management
+          - Clinical Analytics
+        questions:
+          - Which attributed patients are rising-risk and need outreach?
+          - What is total cost of care by attributed panel under value-based contracts?
+          - Which patients have open gaps in care across measures?
+          - Where is preventable utilisation concentrated in the panel?
+          - How is readmission risk distributed at discharge today?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Hospital Throughput
+        short: Operations
+        icon: gauge
+        summary: ED boarding, discharge planning and OR turnover optimised as one patient-flow problem.
+        problem: ED boarding, discharge and OR turnover are run by separate teams on separate screens, so beds free too late and the whole hospital backs up before anyone sees it coming.
+        who_benefits: Clinical Operations
+        how_built: ADT, bed-request and discharge feeds land in Lakehouse//RT; placement options are costed live and surfaced in the Capacity Command Centre so flow moves before diversion.
+        components:
+          - Capacity Command Centre
+          - TeleTracking Capacity
+          - Lakehouse//RT
+          - AI/BI
+          - Model Serving
+        stories:
+          - title: Providence turns Epic streaming data into real-time care
+            url: https://www.databricks.com/customers/providence
+          - title: Providence scales ED census and occupancy forecasting
+            url: https://www.databricks.com/blog/providence-health-automl
+      - name: Readmission Reduction
+        short: Quality
+        icon: people
+        summary: Discharge risk scored and interventions triggered before the 30-day window opens.
+        problem: Discharge decisions are made without knowing who will bounce back, and the clinical, social and utilisation signals that predict a readmission sit in systems that never meet.
+        who_benefits: Population Health
+        how_built: Encounter and history features in Feature Store feed readmission models scored at discharge in Model Serving, ranking risk in the Population Health Registry for outreach.
+        components:
+          - Population Health Registry
+          - Model Serving
+          - MLflow
+          - Feature Store
+          - Epic Caboodle
+        stories:
+          - title: Reducing referral leakage and readmissions with Databricks Genie
+            url: https://www.databricks.com/blog/transforming-healthcare-referrals-fivetran-agentic-ai-and-databricks-genie
+      - name: Denial Management
+        short: Revenue
+        icon: market
+        summary: Root causes of denials traced to documentation, coding and authorization gaps.
+        problem: Denials are worked one appeal at a time after the money is withheld, and the documentation, coding and authorization gaps that caused them are never traced to a root cause.
+        who_benefits: Revenue Cycle
+        how_built: Charge, claim and remittance feeds join clinical data under Unity Catalog; at-risk accounts are scored and surfaced in the Denial Prevention Workbench before the claim leaves.
+        components:
+          - Denial Prevention Workbench
+          - R1 RCM Platform
+          - Waystar Claims
+          - AI/BI
+          - Unity Catalog
+      - name: Sepsis Early Warning
+        short: Safety
+        icon: iot
+        summary: Deterioration detected from streaming vitals and labs before codes are called.
+        problem: Sepsis turns deadly in hours, yet the vitals, labs and nursing signals of early deterioration are scattered across monitors and the chart and seen only when someone looks.
+        who_benefits: Quality & Safety
+        how_built: Streaming vitals and labs feed early-warning models tracked in MLflow and scored in Model Serving; the Sepsis Surveillance app alerts the bedside before the bundle window closes.
+        components:
+          - Sepsis Surveillance
+          - Capsule Medical Device
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Children's National's Criticality Index flags deterioration early
+            url: https://www.databricks.com/customers/childrens-national-medical-center
+      - name: OR Utilisation
+        short: Surgical
+        icon: sheet
+        summary: Block time, turnover and case mix analysed to recover lost surgical minutes.
+        problem: Block time is allocated on history and habit, first cases start late and turnovers drag, so surgical minutes and revenue are lost while the backlog and wait times keep growing.
+        who_benefits: Clinical Operations
+        how_built: Scheduling, case and turnover data are conformed to certified Metric Views and explored in AI/BI and Genie One, surfacing block-release and turnover gaps in the Capacity Command Centre.
+        components:
+          - Capacity Command Centre
+          - Epic Caboodle
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+      - name: Nurse Staffing
+        short: Workforce
+        icon: people
+        summary: Acuity-adjusted schedules that match census forecasts without chronic overtime.
+        problem: Schedules are built weeks ahead against average census, so units swing between dangerous short-staffing and costly overtime and acuity is rarely matched to the nurses on the floor.
+        who_benefits: CEO, CNO & CMO
+        how_built: Census forecasts and acuity feeds are modelled in Model Serving against Kronos schedules on Lakehouse//RT, so staffing matches predicted demand rather than last year's grid.
+        components:
+          - Kronos Workforce
+          - Model Serving
+          - AI/BI
+          - Lakehouse//RT
+          - TeleTracking Capacity
+        stories:
+          - title: Children's National predicts patient volumes and nurse staffing
+            url: https://www.databricks.com/customers/childrens-national-medical-center
+      - name: Clinical Documentation
+        short: CDI
+        icon: gavel
+        summary: Queries raised where clinical truth and billed severity diverge before final coding.
+        problem: What clinicians document and what gets billed drift apart, so severity is understated, quality scores suffer and coders chase queries long after the patient has gone home.
+        who_benefits: Revenue Cycle
+        how_built: Clinical and coding data are joined under AI Functions and governed tables, and the Denial Prevention Workbench raises documentation queries where clinical truth and billed severity diverge.
+        components:
+          - Denial Prevention Workbench
+          - 3M 360 Encompass
+          - Epic Caboodle
+          - AI Functions
+          - Agent Bricks
+      - name: Imaging Utilisation
+        short: Ancillary
+        icon: stream
+        summary: Appropriate use and turnaround analysed by modality and site.
+        problem: Imaging is ordered, read and billed across disconnected PACS and departmental systems, so nobody sees appropriate-use patterns, modality turnaround or where scans are duplicated.
+        who_benefits: Clinical Operations
+        how_built: Study metadata and worklists are conformed to Delta Lake under Unity Catalog and explored in AI/BI and Genie One, exposing utilisation and turnaround by modality and site.
+        components:
+          - Philips IntelliSpace
+          - AI/BI
+          - Unity Catalog
+          - Delta Lake
+          - Genie One
+        stories:
+          - title: Akron Children's unifies imaging, lab and clinical data
+            url: https://www.databricks.com/customers/akron-childrens-hospital
+          - title: Albert Einstein Hospital cuts radiology query time with Genie
+            url: https://www.databricks.com/customers/albert-einstein-hospital/genie
+      - name: Patient Experience
+        short: HCAHPS
+        icon: partner
+        summary: Satisfaction drivers linked to operational and clinical variables teams can act on.
+        problem: HCAHPS and point-of-care surveys arrive weeks late and detached from what happened on the unit, so teams cannot tell which operational and clinical drivers actually moved the score.
+        who_benefits: Clinical Operations
+        how_built: Survey, operational and clinical data are joined on certified Metric Views and scored in Model Serving, so drivers surface in AI/BI and Genie One where unit teams can act on them.
+        components:
+          - Press Ganey Experience
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+          - Model Serving
+      - name: Research Cohorts
+        short: Evidence
+        icon: notebook
+        summary: De-identified cohorts built from governed EHR data under IRB protocols.
+        problem: Building a study cohort means manual extracts and one-off scripts against the EHR, so researchers wait weeks, governance is unclear and de-identification is inconsistent across projects.
+        who_benefits: Population Health
+        how_built: FHIR resources are conformed under Unity Catalog with governed de-identification, and cohorts are built in Notebooks & IDEs and shared to researchers over OpenSharing under IRB protocols.
+        components:
+          - Population Health Registry
+          - HL7 FHIR Bulk Data
+          - Unity Catalog
+          - OpenSharing
+          - Notebooks & IDEs
+        stories:
+          - title: Albert Einstein Hospital builds radiology cohorts with Genie
+            url: https://www.databricks.com/customers/albert-einstein-hospital/genie
+medallion:
+  Bronze:
+    short: Raw clinical feeds
+    summary: HL7 ADT and ORU messages, FHIR resources, charge master transactions, imaging DICOM metadata and device telemetry, landed exactly as received so a diagnosis or a charge can always be replayed.
+  Silver:
+    short: Conformed patient, encounter
+    summary: Patients, encounters, orders and charges resolved into single conformed entities across EHR, billing and ancillary systems, with MRNs reconciled and transfers stitched to one episode.
+  Gold:
+    short: LOS, margin, outcomes
+    summary: 'Contracted products clinical and finance leaders run on: length of stay, contribution margin by service line, readmission rates, and quality measure attainment.'
+citation_index:
+  epic:
+    title: Epic Systems EHR
+    url: https://www.epic.com/
+  oracle-millennium:
+    title: Oracle Health Millennium
+    url: https://www.oracle.com/industries/healthcare/
+  meditech:
+    title: Meditech Expanse
+    url: https://ehr.meditech.com/
+  r1-rcm:
+    title: R1 RCM revenue cycle
+    url: https://www.r1rcm.com/
+  waystar:
+    title: Waystar healthcare payments
+    url: https://www.waystar.com/
+  3m-codeassist:
+    title: 3M 360 Encompass (Solventum)
+    url: https://www.solventum.com/
+  philips-pacs:
+    title: Philips IntelliSpace PACS
+    url: https://www.philips.com/healthcare
+  capsule:
+    title: Capsule medical device integration
+    url: https://www.capsuletech.com/
+  masimo:
+    title: Masimo Patient SafetyNet
+    url: https://www.masimo.com/
+  teletracking:
+    title: TeleTracking capacity management
+    url: https://www.teletracking.com/
+  kronos:
+    title: UKG workforce management
+    url: https://www.ukg.com/workforce-management
+  press-ganey:
+    title: Press Ganey patient experience
+    url: https://www.pressganey.com/
+  fhir-bulk:
+    title: HL7 FHIR Bulk Data Access
+    url: https://hl7.org/fhir/uv/bulkdata/
+  cms-quality:
+    title: CMS hospital quality reporting
+    url: https://www.cms.gov/medicare/quality/initiatives/hospital-quality-initiative

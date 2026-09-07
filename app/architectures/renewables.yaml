@@ -1,0 +1,965 @@
+name: Renewables & Cleantech
+description: 'Utility-scale solar, wind and storage developers and IPPs: asset performance and SCADA, energy trading and PPAs, grid interconnection, O&M and field service, ESG and carbon.'
+sources:
+  - name: SCADA & Historian
+    icon: iot
+    tiles:
+      - name: AVEVA PI System
+        icon: iot
+        summary: 'The operational historian of record: high-frequency SCADA and PPC time-series from every turbine, inverter and plant controller, the source of availability and performance signals.'
+        citations:
+          - pi
+        category: Process/Time-Series Historian
+        what_it_is: Stores high-frequency SCADA and plant-controller time-series from every turbine, inverter and site controller as the operational system of record for availability and performance.
+        who_uses_it: Performance engineers, reliability engineers and production analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-100 GB/day tag history
+            interval: Hourly / daily aggregates
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500k tags/sec at peak
+            interval: Continuous (sub-second sampling)
+      - name: GE Vernova SCADA
+        icon: iot
+        summary: 'Wind turbine SCADA and controls from the OEM: nacelle, drivetrain and pitch telemetry, alarms and availability states against each unit.'
+        citations:
+          - ge-vernova
+        category: Turbine SCADA / OEM Control System
+        what_it_is: OEM wind-turbine SCADA and controls emitting nacelle, drivetrain and pitch telemetry, alarms and availability states for each unit.
+        who_uses_it: Reliability engineers, performance engineers and O&M teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k signals/sec
+            interval: Continuous (sub-second)
+      - name: Power Factors APM
+        icon: gauge
+        summary: 'Renewable asset performance management: production, availability and loss accounting across mixed-OEM solar, wind and storage fleets.'
+        citations:
+          - powerfactors
+        category: Asset Performance Management (APM)
+        what_it_is: Renewable asset performance management aggregating production, availability and loss accounting across mixed-OEM solar, wind and storage fleets.
+        who_uses_it: Performance engineers, production analysts and asset managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / daily performance rollups
+      - name: Huawei FusionSolar
+        icon: iot
+        summary: 'String-level inverter and PV plant monitoring: DC and AC yield, string faults and soiling signals feeding solar performance analysis.'
+        citations:
+          - fusionsolar
+        category: Solar Inverter Monitoring Platform
+        what_it_is: String-level inverter and PV plant monitoring emitting DC/AC yield, string faults and soiling signals for solar performance analysis.
+        who_uses_it: Solar performance engineers and O&M technicians.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: 15-minute / hourly yield reads
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k readings/sec
+            interval: Continuous inverter telemetry
+  - name: Trading & Markets
+    icon: market
+    tiles:
+      - name: ERCOT / CAISO
+        icon: market
+        summary: 'ISO and RTO market participation: nodal prices, dispatch instructions and settlement, the systems bids, schedules and imbalance settle against.'
+        citations:
+          - ercot
+          - caiso
+        category: ISO/RTO Market Operator
+        what_it_is: 'ISO and RTO market participation feeds: nodal prices, dispatch instructions and settlement that bids, schedules and imbalance are cleared against.'
+        who_uses_it: Power traders, battery schedulers and grid compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day price + settlement
+            interval: Settlement cycles daily
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of signals/sec
+            interval: Continuous (5-minute dispatch)
+      - name: ION Commodities ETRM
+        icon: erp
+        summary: 'Energy trading and risk management for power and PPA positions: deal capture, position, mark-to-market and settlement across the trading book.'
+        citations:
+          - ion
+        category: Energy Trading & Risk Management (ETRM)
+        what_it_is: Captures power and PPA deals, positions, mark-to-market and settlement across the trading book.
+        who_uses_it: Power traders, PPA originators and risk/middle office.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day deals + positions
+            interval: Intraday + end-of-day marks
+      - name: Molecule ETRM
+        icon: market
+        summary: Cloud ETRM for power and renewables portfolios where lighter-weight position, PnL and risk reporting is the incumbent.
+        citations:
+          - molecule
+        category: Energy Trading & Risk Management (ETRM)
+        what_it_is: Cloud ETRM providing position, PnL and risk reporting for power and renewables portfolios where a lighter-weight incumbent is in place.
+        who_uses_it: Power traders, portfolio managers and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Intraday + end-of-day
+      - name: ICE Power Markets
+        icon: market
+        summary: Forward power, gas and carbon curves and exchange-traded prices, the market reference PPA valuation and hedging are marked against.
+        citations:
+          - ice
+        category: Commodity Exchange & Price Reference
+        what_it_is: Forward power, gas and carbon curves and exchange-traded prices used as the market reference for PPA valuation and hedging.
+        who_uses_it: Traders, PPA origination and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs reference curves
+            interval: Daily settlement + intraday
+  - name: O&M & Field Service
+    icon: erp
+    tiles:
+      - name: IBM Maximo EAM
+        icon: erp
+        summary: 'Enterprise asset management: work orders, component lifing, spares and preventive maintenance schedules against every turbine and inverter.'
+        citations:
+          - maximo
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages work orders, component lifing, spares and preventive-maintenance schedules against every turbine and inverter.
+        who_uses_it: O&M managers, reliability engineers and spares & logistics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + intraday work orders
+      - name: SAP Asset Mgmt
+        icon: erp
+        summary: Plant maintenance and enterprise asset management where SAP is the incumbent core, feeding the same work-order and asset-register entities.
+        citations:
+          - sap-eam
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Plant maintenance and enterprise asset management on the incumbent SAP core, feeding the same work-order and asset-register entities.
+        who_uses_it: Maintenance planning, asset management and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch
+      - name: Salesforce Field Svc
+        icon: crm
+        summary: 'Field service dispatch and scheduling: technician assignment, site visits and mobile job completion for O&M crews.'
+        citations:
+          - salesforce-fs
+        category: Field Service Management (FSM)
+        what_it_is: 'Field service dispatch and scheduling: technician assignment, site visits and mobile job completion for O&M crews.'
+        who_uses_it: O&M dispatch, field technicians and service coordinators.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: ServiceMax
+        icon: product
+        summary: 'Asset-centric field service for renewable O&M: warranty, entitlement and technician workflow tied to the installed base.'
+        citations:
+          - servicemax
+        category: Field Service Management (FSM)
+        what_it_is: Asset-centric field service for renewable O&M covering warranty, entitlement and technician workflow tied to the installed base.
+        who_uses_it: O&M managers, warranty administrators and field technicians.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly / nightly sync
+  - name: Grid & Metering
+    icon: network
+    tiles:
+      - name: Revenue Meters/MDM
+        icon: db
+        summary: Certified revenue-grade meter reads and the meter data management estate, the billed basis for generation, export and settlement.
+        category: Revenue Metering / MDM
+        what_it_is: Certified revenue-grade meter reads and the meter data management estate, the billed basis for generation, export and settlement.
+        who_uses_it: Settlement analysts, commercial operations and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day interval reads
+            interval: Interval reads (5-15 min) + daily settle
+      - name: ISO Interconnection
+        icon: network
+        summary: Interconnection queue, agreements and grid-code compliance data from the ISO, the constraints a project is energised and dispatched under.
+        citations:
+          - ferc
+        category: Grid Interconnection Registry
+        what_it_is: Interconnection queue, agreements and grid-code compliance data from the ISO defining the constraints a project is energised and dispatched under.
+        who_uses_it: Interconnection engineers, grid compliance and development teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs documents + status
+            interval: Periodic (milestone-driven)
+      - name: Itron MDM
+        icon: db
+        summary: Meter data management and grid-edge metering where Itron is the incumbent, feeding interval reads into settlement and loss analysis.
+        citations:
+          - itron
+        category: AMI Meter Data Management (MDMS)
+        what_it_is: Meter data management and grid-edge metering on the incumbent Itron estate, feeding interval reads into settlement and loss analysis.
+        who_uses_it: Settlement analysts, metering operations and commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day interval reads
+            interval: Hourly / daily reads
+  - name: ESG & Certificates
+    icon: gavel
+    tiles:
+      - name: REC Registries
+        icon: gavel
+        summary: 'Renewable energy certificate and guarantee-of-origin registries (M-RETS and equivalents): issuance, transfer and retirement against metered generation.'
+        citations:
+          - mrets
+        category: Environmental Certificate Registry
+        what_it_is: Renewable energy certificate and guarantee-of-origin registries tracking issuance, transfer and retirement against metered generation.
+        who_uses_it: ESG and sustainability teams, commercial and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs certificates
+            interval: Monthly issuance + transfers
+      - name: Watershed Carbon
+        icon: globe
+        summary: 'Carbon and emissions accounting: avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.'
+        citations:
+          - watershed
+        category: Carbon & ESG Accounting Platform
+        what_it_is: Carbon and emissions accounting for avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.
+        who_uses_it: Chief Sustainability Office, ESG reporting and finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs emissions data
+            interval: Monthly / quarterly reporting
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Project Finance
+        icon: fed
+        summary: Project-finance models, asset ledgers and tax-equity and debt marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited returns.
+        category: Enterprise Data Warehouse
+        what_it_is: Project-finance models, asset ledgers and tax-equity and debt marts kept in the incumbent finance warehouse and queried in place through federation rather than copied.
+        who_uses_it: CFO & treasury, project finance and portfolio analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Weather & Irradiance
+        icon: globe
+        summary: Irradiance, wind-speed and power forecasts from the meteorological provider, the exogenous driver every generation forecast is conditioned on.
+        citations:
+          - solcast
+        category: Weather & Irradiance Provider
+        what_it_is: Irradiance, wind-speed and power forecasts from the meteorological provider, the exogenous driver every generation forecast is conditioned on.
+        who_uses_it: Forecasting ML, performance engineers and traders.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day gridded forecasts
+            interval: Multiple forecast cycles daily
+      - name: ISO Dispatch Signals
+        icon: stream
+        summary: Real-time dispatch, AGC and curtailment instructions from the ISO, streamed in so the plant controller and traders react at grid latency.
+        citations:
+          - caiso
+        category: ISO Dispatch & Curtailment Feed
+        what_it_is: Real-time dispatch, AGC and curtailment instructions from the ISO, streamed in so the plant controller and traders react at grid latency.
+        who_uses_it: Plant controls, grid compliance and battery schedulers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of signals/sec
+            interval: Continuous (4-second AGC / dispatch)
+      - name: Plant Sensor Stream
+        icon: stream
+        summary: High-frequency turbine, inverter and battery telemetry landed as structured events over Zerobus and existing Kafka topics for real-time performance analytics.
+        category: Streaming Telemetry Bus
+        what_it_is: High-frequency turbine, inverter and battery telemetry landed as events over Zerobus and existing Kafka topics for real-time performance analytics.
+        who_uses_it: Performance engineers, forecasting ML and reliability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500k events/sec at peak
+            interval: Continuous (sub-second)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Executive Office
+        mark: Genie One
+        summary: The CEO on portfolio returns and the build-out pipeline; the CFO and treasury on project finance, tax equity and the cost of capital; the Chief Sustainability Officer on carbon, RECs and the disclosure the board signs.
+        uses:
+          - - Genie One
+            - Ask what a portfolio's availability or PPA settlement was last month without booking analyst time.
+          - - AI/BI
+            - Portfolio returns, availability and carbon on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "availability" and "avoided emissions" mean one thing across the fleet.
+        sub:
+          - name: CEO
+            cares: portfolio returns and the development pipeline.
+          - name: CFO & Treasury
+            cares: project finance, tax equity and cost of capital.
+          - name: Chief Sustainability
+            cares: carbon, RECs and audited ESG disclosure.
+        ucs:
+          - Portfolio & Finance
+          - ESG & Carbon
+          - Generation Forecasting
+      - name: Asset Ops
+        mark: AI/BI
+        summary: Asset performance engineers on availability, performance ratio and loss accounting; reliability engineers on component health across the fleet; performance analysts closing the gap to the P50 production case.
+        uses:
+          - - APM Control Room
+            - Availability, PR and underperformance by site and asset before the morning call.
+          - - AI/BI
+            - Loss accounting and production-to-plan on the same definitions finance reads.
+          - - Model Serving
+            - Underperformance and anomaly models scored against live SCADA.
+        sub:
+          - name: Performance Engineers
+            cares: availability, performance ratio and loss accounting.
+          - name: Reliability Engineers
+            cares: component health and failure modes across the fleet.
+          - name: Production Analysts
+            cares: the gap to the P50 case, site by site.
+        ucs:
+          - Fleet Performance
+          - Predictive Maintenance
+          - Generation Forecasting
+      - name: Energy Trading
+        mark: Model Serving
+        summary: Power traders scheduling and hedging generation into the ISO; PPA originators structuring offtake and shape risk; battery schedulers arbitraging price and ancillary markets.
+        uses:
+          - - Trading & Dispatch
+            - Position, forecast and imbalance risk on a portfolio before a bid is placed.
+          - - Model Serving
+            - Price and generation forecasts scored inside the bidding path.
+          - - Lakehouse//RT
+            - Live price, dispatch and telemetry at the latency a battery cycles at.
+        sub:
+          - name: Power Traders
+            cares: scheduling and hedging generation into the ISO.
+          - name: PPA Origination
+            cares: offtake structure, shape and imbalance risk.
+          - name: Battery Schedulers
+            cares: price and ancillary-market arbitrage.
+        ucs:
+          - Energy Trading & PPA
+          - Storage Optimisation
+          - Curtailment & Dispatch
+          - Generation Forecasting
+      - name: O&M & Field
+        mark: Lakeflow
+        summary: O&M managers on truck-roll cost and mean-time-to-repair; field technicians on the work order in front of them; spares and logistics on the parts that keep the fleet turning.
+        uses:
+          - - O&M Work Planner
+            - Predicted failures turned into scheduled work orders against the tail of assets.
+          - - Lakeflow
+            - SCADA, EAM and field feeds conformed for maintenance analytics.
+          - - MLflow
+            - Remaining-useful-life models tracked for audit and reproduction.
+        sub:
+          - name: O&M Managers
+            cares: truck-roll cost and mean-time-to-repair.
+          - name: Field Technicians
+            cares: the scheduled and corrective work order at the site.
+          - name: Spares & Logistics
+            cares: component availability and warranty recovery.
+        ucs:
+          - Predictive Maintenance
+          - O&M & Field Service
+          - Fleet Performance
+      - name: Grid Ops
+        mark: Lakehouse//RT
+        summary: Interconnection engineers on queue position and grid-code compliance; grid compliance on curtailment reporting and settlement; plant controls on PPC setpoints and dispatch response.
+        uses:
+          - - Lakehouse//RT
+            - Live dispatch, curtailment and telemetry at grid latency.
+          - - AI/BI
+            - Curtailment, availability-to-grid and compliance on certified views.
+          - - Model Serving
+            - Curtailment and setpoint recommendations scored against live signals.
+        sub:
+          - name: Interconnection Eng
+            cares: queue position and grid-code compliance.
+          - name: Grid Compliance
+            cares: curtailment reporting and settlement accuracy.
+          - name: Plant Controls
+            cares: PPC setpoints and dispatch response.
+        ucs:
+          - Grid Interconnection
+          - Curtailment & Dispatch
+          - Storage Optimisation
+  - name: Technical
+    icon: code
+    tiles:
+      - name: SCADA Data Eng
+        mark: Lakeflow
+        summary: Land the PI historian, GE and Huawei SCADA, Maximo and revenue-meter feeds; own the Bronze to Silver path and the pager when a performance table stalls before the morning call.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for the historian, EAM and metering sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on SCADA and meter feeds.
+          - - Lakewatch
+            - Freshness on the availability and production tables ops reads each morning.
+      - name: Forecast ML
+        mark: MLflow
+        summary: Generation, price and remaining-useful-life models built from SCADA, weather and market history; whether they still hold as turbines age and price regimes shift.
+        uses:
+          - - Feature Store
+            - Weather, telemetry and market features read identically in training and serving.
+          - - MLflow
+            - Every forecast and RUL model tracked for audit and reproduction.
+          - - Model Serving
+            - Generation, price and failure models scored in the operational path.
+      - name: Controls & Apps
+        mark: Apps
+        summary: Ship the APM control room, trading desk and O&M planner the fleet works in, and write PPC setpoints and work orders back to the systems of record next to governed data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for dispatch decisions and work-order writes.
+          - - Agent Bricks
+            - Agents that draft a work order or a curtailment note against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Operations, commercial and finance dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers on availability, curtailment and settlement in the channel the fleet already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Performance and data-science notebooks and IDEs against governed SCADA, weather and market data.
+  - name: Grid & Market Ops
+    icon: partner
+    tiles:
+      - name: ISO Market Bids
+        icon: api
+        summary: Bids, schedules and imbalance positions served back to the ISO and market platforms through governed offer APIs.
+      - name: PPA Offtaker Sharing
+        icon: share
+        summary: Metered generation, availability and settlement shared live to offtakers and corporate PPA buyers over Delta Sharing rather than monthly files.
+      - name: OEM Warranty Sharing
+        icon: partner
+        summary: Turbine and inverter telemetry shared to OEMs under warranty and availability guarantees, with no copy and no egress duplication.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Maximo Work Orders
+        icon: erp
+        summary: Predicted component removals and corrective actions raised as work orders against the asset, in the system O&M already works in.
+        citations:
+          - maximo
+      - name: PPC Setpoints
+        icon: opdb
+        summary: Curtailment and dispatch setpoints written back to the power plant controller so the recommendation reaches the grid.
+      - name: Field Mobile
+        icon: apps
+        summary: Scheduled and corrective jobs, checklists and completions pushed to the devices field technicians actually carry.
+  - name: Regulatory & ESG
+    icon: gavel
+    tiles:
+      - name: REC / GO Issuance
+        icon: gavel
+        summary: Metered generation registered for renewable energy certificate and guarantee-of-origin issuance, produced from the same governed tables the fleet runs on.
+        citations:
+          - mrets
+      - name: Emissions Reporting
+        icon: sheet
+        summary: Avoided-emissions and ESG disclosure filed from contracted Gold products, audit-ready against metered production.
+        citations:
+          - watershed
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Offtakers, OEMs, lenders and grid partners reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: APM Control Room
+        icon: gauge
+        short: Fleet performance
+        summary: 'The screen the performance team runs the fleet from: availability, performance ratio and underperformance by site and asset, loss accounting and production-to-plan, on Databricks Apps over Lakebase.'
+      - name: Trading & Dispatch
+        icon: market
+        short: Market & PPA
+        summary: Where traders and schedulers see forecast generation, position and imbalance risk against live ISO prices, and place bids and battery schedules with the shape and hedge in one view.
+      - name: O&M Work Planner
+        icon: erp
+        short: Field & maintenance
+        summary: Predicted failures and corrective actions turned into scheduled work orders, sequenced against crews, spares and site access, and written back into Maximo.
+      - name: ESG & REC Ledger
+        icon: gavel
+        short: Carbon & certificates
+        summary: Metered generation reconciled to REC and guarantee-of-origin issuance and avoided-emissions accounting, audit-ready for the board and the offtaker.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Fleet Performance
+        icon: aibi
+        summary: Availability, performance ratio, loss accounting and production-to-plan on certified Metric Views.
+        kpis:
+          - Availability
+          - Performance ratio
+          - Production vs P50
+          - Curtailment loss
+          - Soiling loss
+        teams:
+          - Asset Ops
+          - Performance Engineers
+          - Executive Office
+      - name: Trading & Settlement
+        icon: aibi
+        summary: Positions, forecast accuracy, imbalance cost and PPA settlement.
+        kpis:
+          - Open position
+          - Forecast accuracy
+          - Imbalance cost
+          - PPA settlement
+          - Battery arbitrage value
+        teams:
+          - Energy Trading
+          - PPA Origination
+          - Battery Schedulers
+      - name: O&M & Reliability
+        icon: aibi
+        summary: Work-order backlog, mean-time-to-repair, truck-roll cost and component health.
+        kpis:
+          - Work-order backlog
+          - Mean-time-to-repair
+          - Truck-roll cost
+          - Predicted removals
+          - Warranty recovery
+        teams:
+          - O&M & Field
+          - Reliability Engineers
+          - Spares & Logistics
+      - name: ESG & Carbon
+        icon: aibi
+        summary: REC issuance, guarantee-of-origin and avoided-emissions reconciled to metered generation.
+        kpis:
+          - REC issuance
+          - Guarantees of origin
+          - Avoided emissions
+          - Metered generation
+          - Retirement volume
+        teams:
+          - Executive Office
+          - Grid Ops
+          - Asset Ops
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Fleet Performance Agent
+        icon: genie
+        summary: Ask about availability, performance ratio and production-to-plan across the fleet in plain language.
+        feeds:
+          - AVEVA PI System
+          - Power Factors APM
+          - GE Vernova SCADA
+          - Availability, PR, settlement
+        teams:
+          - Asset Ops
+          - Performance Engineers
+          - Executive Office
+        questions:
+          - What was availability by site yesterday versus plan?
+          - Which assets are underperforming their P50 case this month?
+          - How much production have we lost to curtailment this week?
+          - Which sites show the largest soiling or degradation losses?
+          - What is fleet performance ratio by technology and OEM?
+      - name: Trading & PPA Agent
+        icon: genie
+        summary: Explore positions, forecast generation, imbalance and PPA settlement across the portfolio.
+        feeds:
+          - ION Commodities ETRM
+          - ICE Power Markets
+          - ERCOT / CAISO
+          - Revenue Meters/MDM
+        teams:
+          - Energy Trading
+          - PPA Origination
+          - Battery Schedulers
+        questions:
+          - What is our open position by node for tomorrow?
+          - How much imbalance cost did we incur last settlement period?
+          - Which PPAs are most exposed to shape and price risk right now?
+          - What is battery arbitrage value captured this month?
+          - How does forecast generation compare to scheduled volume today?
+      - name: O&M & Reliability Agent
+        icon: genie
+        summary: Answer questions on work orders, component health and mean-time-to-repair across the fleet.
+        feeds:
+          - IBM Maximo EAM
+          - GE Vernova SCADA
+          - Salesforce Field Svc
+          - Conformed asset, meter, PPA
+        teams:
+          - O&M & Field
+          - Reliability Engineers
+          - Spares & Logistics
+        questions:
+          - Which turbines have predicted component removals this quarter?
+          - What is mean-time-to-repair by fault type across the fleet?
+          - Which sites have the largest open work-order backlog?
+          - Where is truck-roll cost highest relative to generation?
+          - Which components are we most likely to run short of spares on?
+      - name: Grid & Curtailment Agent
+        icon: genie
+        summary: Ask about dispatch, curtailment, interconnection and grid-code compliance in real time.
+        feeds:
+          - ISO Dispatch Signals
+          - ISO Interconnection
+          - ERCOT / CAISO
+          - PPC Setpoints
+        teams:
+          - Grid Ops
+          - Interconnection Eng
+          - Plant Controls
+        questions:
+          - How much generation are we curtailing right now and where?
+          - Which sites are at risk of a grid-code compliance breach?
+          - What is our curtailment recovery in settlement this month?
+          - Where do our interconnection queue milestones stand?
+          - How are PPC setpoints tracking against dispatch instructions today?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Predictive Maintenance
+        short: Turbine & inverter
+        icon: iot
+        summary: Predicting component failure from SCADA, vibration and defect history so a gearbox or inverter fault becomes a planned visit, not an unplanned outage.
+        problem: An unplanned turbine or inverter failure means lost generation and an emergency truck roll. Removals need predicting from actual condition, not a calendar, before the fault takes the asset offline.
+        who_benefits: O&M & Field
+        how_built: PI historian, GE and Huawei SCADA and Maximo defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise work orders from the O&M Work Planner.
+        components:
+          - O&M Work Planner
+          - AVEVA PI System
+          - MLflow
+          - Model Serving
+          - IBM Maximo EAM
+        stories:
+          - title: 'Databricks and Shell: industrial time series for asset monitoring'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Fleet Performance
+        short: Availability & PR
+        icon: gauge
+        summary: Availability, performance ratio and loss accounting across a mixed-OEM solar, wind and storage fleet, so underperformance is found and closed against the production case.
+        problem: Underperformance hides in per-OEM SCADA silos and monthly reports; by the time a soiling loss or a curtailment pattern is spotted, weeks of generation are already gone.
+        who_benefits: Asset Ops
+        how_built: SCADA and APM feeds are conformed to certified Gold; availability, PR and loss accounting are explored in AI/BI and surfaced in the APM Control Room on definitions certified in Unity Catalog.
+        components:
+          - APM Control Room
+          - Power Factors APM
+          - AVEVA PI System
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: E.ON advances asset management with Databricks
+            url: https://www.databricks.com/customers/eon
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+      - name: Generation Forecasting
+        short: Production & weather
+        icon: chart
+        summary: Short and medium-term generation forecasts conditioned on weather, so schedules, hedges and imbalance are priced on what the fleet will actually produce.
+        problem: Wind and solar output is intermittent; forecasts built on stale weather and disconnected telemetry are wrong at exactly the hours that price imbalance the hardest.
+        who_benefits: Asset Ops
+        how_built: Irradiance and wind forecasts join live telemetry in the lakehouse; generation models defined in Feature Store and tracked in MLflow score through Model Serving into the APM Control Room and the trading desk.
+        components:
+          - APM Control Room
+          - Weather & Irradiance
+          - Model Serving
+          - Feature Store
+          - MLflow
+        stories:
+          - title: Sympower scales forecasting and grid balancing on Databricks
+            url: https://www.databricks.com/customers/sympower
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+      - name: Energy Trading & PPA
+        short: Market revenue
+        icon: market
+        summary: Scheduling and hedging generation into the ISO and valuing PPA and offtake shape, so revenue is captured across price, imbalance and the contract structure.
+        problem: Generation, price forecasts and PPA terms live in different systems, so bids are placed without the shape or the hedge in view and imbalance and offtake risk are settled after the fact.
+        who_benefits: Energy Trading
+        how_built: ETRM positions and ICE forward curves are conformed in the lakehouse; price and generation models score each schedule through Model Serving behind the Trading & Dispatch desk.
+        components:
+          - Trading & Dispatch
+          - ION Commodities ETRM
+          - ICE Power Markets
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: 'Octopus Energy: data-powered clean energy on Databricks'
+            url: https://www.databricks.com/customers/octopus-energy
+          - title: SSE Energy Solutions lowers emissions with Databricks
+            url: https://www.databricks.com/customers/sse
+      - name: Curtailment & Dispatch
+        short: Grid signals
+        icon: network
+        summary: Responding to ISO dispatch and curtailment instructions in real time, minimising lost generation and settling curtailment accurately.
+        problem: Curtailment and dispatch instructions arrive at grid latency; handled by hand or reconciled monthly, lost generation is over-curtailed and under-recovered in settlement.
+        who_benefits: Grid Ops
+        how_built: ISO dispatch signals stream into Lakehouse//RT; setpoint recommendations are scored in Model Serving and written back as PPC Setpoints, with curtailment reconciled for settlement.
+        components:
+          - PPC Setpoints
+          - ISO Dispatch Signals
+          - Lakehouse//RT
+          - Model Serving
+        stories:
+          - title: Sympower stabilises the grid with flexibility on Databricks
+            url: https://www.databricks.com/customers/sympower
+      - name: Storage Optimisation
+        short: Battery dispatch
+        icon: store
+        summary: Cycling battery storage against energy and ancillary-market prices, so each charge and discharge captures the most value within warranty and state-of-health limits.
+        problem: Battery value leaks when dispatch ignores forward prices, ancillary opportunity or degradation; cycled by rule of thumb, the asset trades against itself and ages faster than it earns.
+        who_benefits: Energy Trading
+        how_built: Live price and telemetry land in Lakehouse//RT; a dispatch model scored in Model Serving optimises cycling against ERCOT and CAISO prices from the Trading & Dispatch desk.
+        components:
+          - Trading & Dispatch
+          - Model Serving
+          - Lakehouse//RT
+          - ERCOT / CAISO
+          - AI/BI
+        stories:
+          - title: 'Octopus Energy: data-powered clean energy on Databricks'
+            url: https://www.databricks.com/customers/octopus-energy
+      - name: Grid Interconnection
+        short: Queue & compliance
+        icon: network
+        summary: Managing interconnection queue position, grid-code compliance and availability-to-grid, so a project energises on schedule and stays compliant once live.
+        problem: Interconnection terms, queue milestones and grid-code obligations sit in ISO documents and spreadsheets; missed conditions delay energisation and risk compliance penalties.
+        who_benefits: Grid Ops
+        how_built: Interconnection and compliance data are conformed in the lakehouse against live telemetry; queue and compliance status is explored in AI/BI and asked of Genie One on Unity Catalog definitions.
+        components:
+          - ISO Interconnection
+          - AI/BI
+          - Unity Catalog
+          - Genie One
+        stories:
+          - title: E.ON consolidates grid asset data on Databricks
+            url: https://www.databricks.com/customers/eon
+      - name: O&M & Field Service
+        short: Work orders
+        icon: erp
+        summary: Turning predicted and corrective work into scheduled field jobs, sequenced against crews, spares and site access, and closed on mobile.
+        problem: Work orders, technician schedules and spares live in separate systems, so crews are dispatched inefficiently, truck rolls stack up and warranty recovery is missed.
+        who_benefits: O&M & Field
+        how_built: Maximo and field-service feeds are conformed in the lakehouse; the O&M Work Planner on Lakebase sequences jobs and Agent Bricks drafts work orders against governed tools.
+        components:
+          - O&M Work Planner
+          - IBM Maximo EAM
+          - Salesforce Field Svc
+          - Agent Bricks
+          - Lakebase
+        stories:
+          - title: 'Databricks and Shell: asset monitoring and work-order history'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+      - name: ESG & Carbon
+        short: RECs & carbon
+        icon: gavel
+        summary: Reconciling metered generation to REC and guarantee-of-origin issuance and avoided-emissions accounting, audit-ready for the board and offtakers.
+        problem: RECs, guarantees of origin and carbon disclosure are stitched together from meter extracts and spreadsheets at reporting time, so issuance is late and the audit trail is fragile.
+        who_benefits: Executive Office
+        how_built: Metered generation is conformed to Gold and reconciled to REC Registries and Watershed Carbon; the ESG & REC Ledger publishes issuance and disclosure through AI/BI on Unity Catalog definitions.
+        components:
+          - ESG & REC Ledger
+          - REC Registries
+          - Watershed Carbon
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: SSE Energy Solutions lowers carbon emissions with Databricks
+            url: https://www.databricks.com/customers/sse
+          - title: TotalEnergies powers cleaner energy with Databricks
+            url: https://www.databricks.com/customers/totalenergies
+      - name: Portfolio & Finance
+        short: IRR & tax equity
+        icon: sheet
+        summary: Measuring portfolio returns, project-finance covenants and tax-equity waterfalls against live generation and settlement, so the investment case tracks reality.
+        problem: Returns, debt covenants and tax-equity flows are modelled in spreadsheets against stale production, so the portfolio's real performance is only known at quarter close.
+        who_benefits: Executive Office
+        how_built: Generation, settlement and cost feeds are conformed against the Project Finance marts; returns and covenants are analysed in AI/BI and asked of Genie One, published as governed Data Products.
+        components:
+          - Project Finance
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+          - Data Products
+        stories:
+          - title: TotalEnergies powers cleaner energy with Databricks
+            url: https://www.databricks.com/customers/totalenergies
+medallion:
+  Bronze:
+    short: Raw asset & market feeds
+    summary: SCADA and PPC time-series from the PI historian, turbine and inverter telemetry, revenue-meter reads, ISO market prices and dispatch signals, Maximo work orders and weather forecasts, landed exactly as received so a curtailment or a generation figure can always be replayed as it stood.
+  Silver:
+    short: Conformed asset, meter, PPA
+    summary: Turbines, inverters, sites and meters resolved into single conformed entities across SCADA, asset management and metering, with plant hierarchy, availability states and PPA and offtake contracts reconciled to one asset register.
+  Gold:
+    short: Availability, PR, settlement
+    summary: 'Contracted products operations, commercial and finance teams run on: availability and performance ratio by site and asset, production against P50 and P90, PPA settlement and imbalance, and ESG, carbon and REC positions.'
+citation_index:
+  pi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/aveva-pi-system/
+  ge-vernova:
+    title: GE Vernova Wind
+    url: https://www.gevernova.com/wind-power
+  powerfactors:
+    title: Power Factors APM
+    url: https://www.powerfactors.com/
+  fusionsolar:
+    title: Huawei FusionSolar
+    url: https://solar.huawei.com/
+  ercot:
+    title: ERCOT market
+    url: https://www.ercot.com/
+  caiso:
+    title: CAISO market
+    url: https://www.caiso.com/
+  ion:
+    title: ION commodities ETRM
+    url: https://iongroup.com/
+  molecule:
+    title: Molecule ETRM
+    url: https://www.molecule.io/
+  ice:
+    title: ICE power and energy markets
+    url: https://www.ice.com/
+  maximo:
+    title: IBM Maximo Application Suite
+    url: https://www.ibm.com/products/maximo
+  sap-eam:
+    title: SAP Enterprise Asset Management
+    url: https://www.sap.com/products/erp/asset-management.html
+  salesforce-fs:
+    title: Salesforce Field Service
+    url: https://www.salesforce.com/products/field-service/overview/
+  servicemax:
+    title: ServiceMax field service
+    url: https://www.servicemax.com/
+  itron:
+    title: Itron metering and MDM
+    url: https://www.itron.com/
+  ferc:
+    title: FERC electric transmission and interconnection
+    url: https://www.ferc.gov/electric-transmission
+  mrets:
+    title: M-RETS renewable energy certificate registry
+    url: https://www.mrets.org/
+  watershed:
+    title: Watershed carbon accounting
+    url: https://watershed.com/
+  solcast:
+    title: Solcast solar and weather forecasting
+    url: https://solcast.com/

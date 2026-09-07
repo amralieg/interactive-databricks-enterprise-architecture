@@ -1,0 +1,954 @@
+name: Public Sector
+description: 'Civilian government across federal, state and local agencies: benefits and eligibility, tax and revenue, permitting and licensing, case management, and constituent services.'
+sources:
+  - name: Benefits & Eligibility
+    icon: erp
+    tiles:
+      - name: Merative Cúram SPM
+        icon: erp
+        summary: 'Social program management: the system of record for eligibility rules, determinations and case management across benefits programs.'
+        citations:
+          - curam
+        category: Social Program Management / Eligibility System
+        what_it_is: Holds the eligibility rules, determinations and benefits case records, so a determination can be replayed exactly as it stood for appeal and audit.
+        who_uses_it: Caseworkers, eligibility determination staff and program integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of case events/sec
+            interval: Continuous CDC
+      - name: Gainwell MMIS
+        icon: db
+        summary: 'Medicaid Management Information System: claims, provider and member data for state health and human-services programs.'
+        citations:
+          - gainwell
+        category: Medicaid Management Information System (MMIS)
+        what_it_is: Processes Medicaid claims and holds provider and member records for state health and human-services programs.
+        who_uses_it: Medicaid program staff, provider enrollment and program integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-200 GB/day claims + eligibility
+            interval: Nightly batch + weekly cycles
+      - name: Conduent Benefits
+        icon: people
+        summary: Government benefits administration and EBT processing for food, cash and childcare assistance programs.
+        citations:
+          - conduent
+        category: Benefits Administration & EBT Platform
+        what_it_is: Administers benefits issuance and processes EBT card transactions for food, cash and childcare assistance programs.
+        who_uses_it: Benefits operations, EBT program managers and payment integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of EBT txns/sec at peak
+            interval: Continuous
+  - name: Tax & Revenue
+    icon: market
+    tiles:
+      - name: FAST GenTax
+        icon: market
+        summary: 'Integrated tax administration used by many state revenue departments: registration, returns, payments and audit case management.'
+        citations:
+          - fast
+        category: Integrated Tax Administration System
+        what_it_is: Runs registration, returns, payments and audit case management as the system of record for a revenue department.
+        who_uses_it: Revenue and tax administration, audit selection and collections teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-60 GB/day
+            interval: Nightly batch + filing-season peaks
+      - name: Tyler Property Tax
+        icon: sheet
+        summary: 'Computer-assisted mass appraisal and property tax billing: parcels, assessments, levies and collections.'
+        citations:
+          - tyler-ptax
+        category: Property Assessment & Tax (CAMA) System
+        what_it_is: Values parcels through computer-assisted mass appraisal and bills, levies and collects property tax.
+        who_uses_it: Assessors, property tax billing and collections teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day parcels + assessments
+            interval: Nightly batch + assessment cycles
+      - name: RSI Revenue Premier
+        icon: market
+        summary: 'Revenue management and discovery: compliance case selection, collections and audit workflows for tax agencies.'
+        citations:
+          - rsi
+        category: Revenue Management & Discovery System
+        what_it_is: Selects compliance cases, drives collections and runs audit workflows to close the tax gap for a revenue agency.
+        who_uses_it: Compliance, collections and audit teams in revenue departments.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 2-10 GB/day cases + scores
+            interval: Nightly batch
+  - name: Permitting & Licensing
+    icon: gavel
+    tiles:
+      - name: Accela Civic Platform
+        icon: gavel
+        summary: 'Land management, permitting, licensing and code enforcement: the workflow of record for applications and inspections.'
+        citations:
+          - accela
+        category: Permitting & Licensing System
+        what_it_is: Runs land management, permitting, licensing and code enforcement as the workflow of record for applications and inspections.
+        who_uses_it: Permit technicians, plan reviewers, inspectors and code enforcement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 3-15 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of application events/sec
+            interval: Continuous
+      - name: Tyler EnerGov
+        icon: gavel
+        summary: Enterprise permitting and licensing for community development, plan review and business licensing.
+        citations:
+          - tyler-energov
+        category: Permitting & Licensing System
+        what_it_is: Handles community-development permitting, plan review and business licensing across the application lifecycle.
+        who_uses_it: Community development, plan review and business licensing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 3-12 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: OpenGov Permitting
+        icon: appbuilder
+        summary: Cloud permitting and licensing with online applications, plan review and citizen self-service.
+        citations:
+          - opengov
+        category: Cloud Permitting & Licensing System
+        what_it_is: Cloud permitting and licensing with online applications, plan review and citizen self-service portals.
+        who_uses_it: Community development staff, applicants and citizen self-service teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of portal events/sec
+            interval: Continuous
+  - name: Case & Constituent
+    icon: crm
+    tiles:
+      - name: Salesforce Pub Sector
+        icon: crm
+        summary: 'Public Sector Solutions: constituent case management, benefits intake and licensing on the government CRM.'
+        citations:
+          - sf-ps
+        category: Government CRM / Case Management
+        what_it_is: Government CRM holding constituent case management, benefits intake and licensing interactions across channels.
+        who_uses_it: Caseworkers, contact centre and constituent services teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of case events/sec
+            interval: Continuous CDC
+      - name: ServiceNow Gov
+        icon: apps
+        summary: 'Digital government services and workflow: request intake, routing and resolution across agency processes.'
+        citations:
+          - servicenow
+        category: Digital Service Management / Workflow
+        what_it_is: 'Runs digital government service workflows: request intake, routing and resolution across agency processes.'
+        who_uses_it: Service desk, business process owners and IT operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-4 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of workflow events/sec
+            interval: Continuous
+      - name: SeeClickFix 311
+        icon: chat
+        summary: Constituent 311 request reporting and non-emergency service tracking across the city.
+        citations:
+          - seeclickfix
+        category: 311 / Constituent Request System
+        what_it_is: Captures 311 non-emergency service requests from residents and tracks them to resolution across city departments.
+        who_uses_it: 311 contact centre, public works and constituent services teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of requests/hour
+            interval: Continuous (API / webhook)
+  - name: GIS, HR & Grants
+    icon: globe
+    tiles:
+      - name: Esri ArcGIS
+        icon: globe
+        summary: 'The GIS of record: parcels, addresses, service geographies and the spatial layers behind siting and response.'
+        citations:
+          - arcgis
+        category: Geographic Information System (GIS)
+        what_it_is: System of record for parcels, addresses and service geographies, and the spatial layers behind siting, equity and response.
+        who_uses_it: GIS analysts, planning and program teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GB-scale spatial layers
+            interval: Nightly / on-change refresh
+      - name: Workday HCM
+        icon: people
+        summary: 'Human capital and payroll for the government workforce: positions, hiring, time and personnel records.'
+        citations:
+          - workday
+        category: HCM / Payroll Suite
+        what_it_is: Manages positions, hiring, time and payroll for the government workforce as the personnel system of record.
+        who_uses_it: Human resources, payroll and workforce planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch + payroll cycles
+      - name: AmpliFund Grants
+        icon: docs
+        summary: 'Grants management: applications, awards, subrecipient monitoring and compliance reporting.'
+        citations:
+          - amplifund
+        category: Grants Management System
+        what_it_is: Manages grant applications, awards, subrecipient monitoring and compliance reporting across the award lifecycle.
+        who_uses_it: Grants management, finance and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day
+            interval: Daily + reporting cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: State Data Warehouse
+        icon: fed
+        summary: Legacy agency data marts and mainframe extracts left where they are and queried in place under Unity Catalog, which avoids a second copy of records still under retention.
+        category: Legacy Data Warehouse / Marts
+        what_it_is: Historical agency marts and mainframe extracts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Program, finance and reporting analysts across agencies.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Socrata Open Data
+        icon: globe
+        summary: Open-data platform APIs carrying public datasets and portal content, ingested for reconciliation against the governed source.
+        citations:
+          - socrata
+        category: Open Data Platform
+        what_it_is: Serves public datasets and portal content over APIs, ingested to reconcile the published portal against the governed source.
+        who_uses_it: Open data, transparency and analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs across datasets
+            interval: Daily + on-demand API
+          stream:
+            types:
+              - semi-structured
+            volume: API calls on demand
+            interval: Continuous (API)
+      - name: Census Bureau APIs
+        icon: api
+        summary: Demographic, economic and geographic reference data from the U.S. Census Bureau, joined for benchmarking and equity analysis.
+        citations:
+          - census
+        category: Government Reference Data (Demographics)
+        what_it_is: Supplies demographic, economic and geographic reference data joined for benchmarking, targeting and equity analysis.
+        who_uses_it: Policy analysts, equity and program planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs reference tables
+            interval: Periodic + on-demand API
+      - name: Grants.gov / SAM.gov
+        icon: gavel
+        summary: Federal grant opportunity, award and entity registration feeds consumed for grants and subrecipient management.
+        citations:
+          - grantsgov
+        category: Federal Grants & Entity Registry
+        what_it_is: Carries federal grant opportunity, award and entity-registration feeds used for grants and subrecipient management.
+        who_uses_it: Grants management, compliance and subrecipient monitoring teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.2-2 GB/day
+            interval: Daily feed + on-demand
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Agency Leadership
+        mark: Genie One
+        summary: The agency director and CIO on mission outcomes and service levels; the chief financial officer on budget execution and cost per program; the performance office steering the agency on evidence rather than anecdote.
+        uses:
+          - - Genie One
+            - Ask what a program delivered last quarter or where the budget is running hot without booking analyst time.
+          - - AI/BI
+            - Mission outcomes, budget execution and service levels on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary, so "outcome" and "cost per case" mean one thing across the agency.
+        sub:
+          - name: Agency Director & CIO
+            cares: mission outcomes, service levels and the modernisation agenda.
+          - name: Chief Financial Officer
+            cares: budget execution, cost per program and audit readiness.
+          - name: Performance Office
+            cares: the KPIs the agency defends to oversight and the public.
+        ucs:
+          - Workforce Analytics
+          - Emergency Response
+          - Program Outcomes
+      - name: Program Directors
+        mark: AI/BI
+        summary: 'The directors who run benefits, health and human-services programs: enrolment and eligibility, improper-payment exposure, and whether the program actually moves outcomes for the people it serves.'
+        uses:
+          - - AI/BI
+            - Enrolment, payment integrity and outcome cohorts on governed program data.
+          - - Model Serving
+            - Improper-payment and eligibility-risk models scored before money leaves.
+          - - Genie One
+            - Ask which caseload is growing or which cohort is falling behind without an analyst pull.
+        sub:
+          - name: Benefits & Eligibility
+            cares: enrolment, determinations and improper-payment exposure.
+          - name: Health & Human Services
+            cares: caseload, outcomes and social determinants of health.
+          - name: Program Integrity
+            cares: fraud, waste and abuse across the program estate.
+        ucs:
+          - Improper Payments
+          - Program Outcomes
+          - Grants Management
+      - name: Chief Data Officer
+        mark: Unity Catalog
+        summary: 'The office accountable for data governance, open-data publishing and cross-agency sharing: one catalogue, one set of access rules, and a public that can trust the numbers.'
+        uses:
+          - - Unity Catalog
+            - One governed catalogue and lineage across every agency domain.
+          - - OpenSharing
+            - Cross-agency and public data shared live without copies or egress.
+          - - AI/BI
+            - Published, certified products the portal and analysts read from the same source.
+        sub:
+          - name: Data Governance
+            cares: classification, lineage and access policy across agencies.
+          - name: Open Data & Transparency
+            cares: the public portal and the certified numbers behind it.
+          - name: Data Sharing
+            cares: secure cross-agency exchange without duplication.
+        ucs:
+          - Open Data Platform
+          - Constituent 360
+          - Digital Services
+      - name: Budget & Finance
+        mark: AI/BI
+        summary: 'The budget office and revenue teams on where money is raised and spent: budget execution against appropriation, grant compliance, and the tax and revenue that funds it all.'
+        uses:
+          - - AI/BI
+            - Budget execution, grant compliance and revenue yield on certified views.
+          - - Genie One
+            - Ask which grants are near closeout or which returns look anomalous without a finance pull.
+          - - Model Serving
+            - Audit-selection and revenue-risk models scored against filings.
+        sub:
+          - name: Budget Office
+            cares: execution against appropriation and cost per outcome.
+          - name: Revenue & Tax
+            cares: collections, compliance yield and audit selection.
+          - name: Grants & Compliance
+            cares: subrecipient monitoring, closeouts and single-audit readiness.
+        ucs:
+          - Tax Compliance & Audit
+          - Grants Management
+          - Improper Payments
+      - name: Constituent Services
+        mark: Lakehouse//RT
+        summary: 'The teams residents actually meet: 311 and contact centres, permitting and licensing counters, and the digital services meant to make all of it self-serve.'
+        uses:
+          - - Lakehouse//RT
+            - Live case, permit and 311 state at the latency a counter moves at.
+          - - Apps
+            - Constituent-facing services next to governed data with no separate web tier.
+          - - CustomerLake
+            - One resident profile stitched across case, benefits and 311 records.
+        sub:
+          - name: 311 & Contact Centre
+            cares: request intake, routing and resolution time.
+          - name: Permitting & Licensing
+            cares: application throughput and cycle time.
+          - name: Digital Services
+            cares: self-service adoption and completion rates.
+        ucs:
+          - Constituent 360
+          - Permit & Licensing
+          - Digital Services
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Gov Data Engineers
+        mark: Lakeflow
+        summary: Land the benefits, tax, permitting, case and GIS feeds from Cúram, GenTax, Accela and ArcGIS; own the Bronze to Silver path and the pager when an eligibility or payment table stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for eligibility, tax, permitting and SaaS case systems.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on benefit and payment feeds.
+          - - Lakewatch
+            - Freshness on the tables caseworkers and auditors read every morning.
+      - name: GIS Analysts
+        mark: Model Serving
+        summary: Parcels, addresses and service geographies from Esri ArcGIS joined to program and permit data, and the spatial models behind siting, routing and disaster response.
+        uses:
+          - - Model Serving
+            - Spatial risk and demand models scored in the operational path.
+          - - Feature Store
+            - Parcel and geography features read identically in training and serving.
+          - - AI Functions
+            - Geocoding and address matching run in SQL against governed data.
+      - name: Policy Analysts
+        mark: AI/BI
+        summary: 'Program and policy analysts testing what works: linking service records to outcomes, sizing cohorts, and answering the question a legislator asked this morning.'
+        uses:
+          - - AI/BI
+            - Cohort and outcome analysis on certified, governed data.
+          - - Genie
+            - Plain-language questions against linked program data without SQL.
+          - - Document Intelligence
+            - Policy documents and case notes parsed into governed tables.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and program dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers in the channel program teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks, VS Code and JetBrains against governed program and case data.
+  - name: Constituent Channels
+    icon: partner
+    tiles:
+      - name: Open Data Portal
+        icon: globe
+        summary: Certified open data served to residents and journalists from governed Gold products.
+        citations:
+          - socrata
+      - name: 311 & Service Apps
+        icon: apps
+        summary: Self-service request and status apps built on Databricks Apps over Lakebase.
+      - name: Genie for Residents
+        icon: genie
+        summary: Plain-language answers about permits, benefits and services grounded in governed data.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Case & Eligibility
+        icon: db
+        summary: Determinations and next actions written back into the case and eligibility systems constituents are served from.
+        citations:
+          - curam
+      - name: Permit Status
+        icon: stream
+        summary: Cycle-time flags and re-sequencing written back to the permitting system before deadlines slip.
+        citations:
+          - accela
+      - name: Do Not Pay Sync
+        icon: gavel
+        summary: Confirmed bad actors and payment holds synced to disbursement and Do Not Pay controls.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Federal Reporting
+        icon: gavel
+        summary: Program, single-audit and improper-payment reporting produced from the same governed tables the agency runs on.
+      - name: Transparency Portals
+        icon: share
+        summary: Spending and performance transparency published from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Other agencies and researchers reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Improper Payment Radar
+        icon: gauge
+        short: Payment integrity
+        summary: 'The screen program integrity runs claims through: eligibility, identity and payment signals scored together so high-risk payments are held for review before disbursement, on Databricks Apps over Lakebase.'
+      - name: Constituent 360 Hub
+        icon: custlake
+        short: One resident view
+        summary: One governed profile per resident stitched across case, benefits, tax and 311 records, so a caseworker sees the whole person instead of one agency's slice.
+      - name: Permit Throughput
+        icon: stream
+        short: Cycle-time board
+        summary: Live permit and licence state against target dates, flagging the applications stalled between departments so reviews are re-sequenced before deadlines slip.
+      - name: Program Outcome Studio
+        icon: chart
+        short: Evidence & cohorts
+        summary: Where policy analysts link service records to downstream outcomes and size cohorts on certified data, without a fresh data request for every question.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Payment Integrity
+        icon: aibi
+        summary: Improper-payment rate, held payments and eligibility-risk exposure across benefits programs.
+        kpis:
+          - Improper-payment rate
+          - Payments held for review
+          - Eligibility-risk exposure
+          - Recovery rate
+          - Fraud loss avoided
+        teams:
+          - Program Directors
+          - Budget & Finance
+          - Program Integrity
+      - name: Program Outcomes
+        icon: aibi
+        summary: Program outcomes by cohort, cost per outcome and service level across the agency.
+        kpis:
+          - Outcome attainment
+          - Cost per outcome
+          - Cohort reach
+          - Service level
+          - Enrolment rate
+        teams:
+          - Agency Leadership
+          - Program Directors
+          - Performance Office
+      - name: Revenue & Compliance
+        icon: aibi
+        summary: Tax compliance yield, collections, audit selection and revenue at risk on certified views.
+        kpis:
+          - Compliance yield
+          - Collections rate
+          - Audit hit rate
+          - Revenue at risk
+          - Days to collect
+        teams:
+          - Budget & Finance
+          - Revenue & Tax
+          - Agency Leadership
+      - name: Permit & Service Delivery
+        icon: aibi
+        summary: Permit cycle time, backlog, 311 resolution and digital service adoption by channel.
+        kpis:
+          - Permit cycle time
+          - Application backlog
+          - 311 resolution time
+          - Self-service adoption
+          - On-time rate
+        teams:
+          - Constituent Services
+          - Permitting & Licensing
+          - Digital Services
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Program Integrity Agent
+        icon: genie
+        summary: Ask about improper-payment exposure, eligibility risk and fraud signals across benefits programs in plain language.
+        feeds:
+          - Merative Cúram SPM
+          - Gainwell MMIS
+          - Conduent Benefits
+          - Outcomes, integrity, service metrics
+        teams:
+          - Program Directors
+          - Budget & Finance
+          - Program Integrity
+        questions:
+          - What is our improper-payment rate this quarter versus last, by program?
+          - Which caseloads show the fastest growth in high-risk determinations?
+          - How many payments are being held for review right now, and for which programs?
+          - Which providers or cohorts drive the most flagged claims?
+          - How has eligibility-risk exposure changed since last month and why?
+      - name: Constituent 360 Agent
+        icon: genie
+        summary: Answer whole-person questions across benefits, tax, permitting and 311 records for a resident.
+        feeds:
+          - Salesforce Pub Sector
+          - SeeClickFix 311
+          - Merative Cúram SPM
+          - Conformed constituent, case, parcel
+        teams:
+          - Constituent Services
+          - Chief Data Officer
+          - 311 & Contact Centre
+        questions:
+          - What is the full history of this resident across benefits, permits and 311?
+          - Which constituents have open cases across more than one agency?
+          - What is average resolution time for 311 requests by category and neighbourhood?
+          - Which residents are eligible for a benefit they have not enrolled in?
+          - Where are service requests concentrating this month across the city?
+      - name: Revenue & Tax Agent
+        icon: genie
+        summary: Explore filings, collections, audit selection and compliance yield across the revenue estate.
+        feeds:
+          - FAST GenTax
+          - RSI Revenue Premier
+          - Tyler Property Tax
+          - Outcomes, integrity, service metrics
+        teams:
+          - Budget & Finance
+          - Revenue & Tax
+          - Agency Leadership
+        questions:
+          - What is our tax compliance yield this cycle versus target?
+          - Which returns look anomalous and should be selected for audit?
+          - What is collections performance by tax type and region?
+          - Which property assessments moved the most this cycle?
+          - How much revenue is at risk in open compliance cases right now?
+      - name: Permitting & Service Agent
+        icon: genie
+        summary: Ask about permit cycle time, backlogs and constituent service levels across channels.
+        feeds:
+          - Accela Civic Platform
+          - Tyler EnerGov
+          - OpenGov Permitting
+          - Outcomes, integrity, service metrics
+        teams:
+          - Constituent Services
+          - Permitting & Licensing
+          - Digital Services
+        questions:
+          - What is average permit cycle time by permit type and department?
+          - Which applications are stalled between departments past their target date?
+          - How does permit throughput compare this month versus last?
+          - Where are the biggest bottlenecks in plan review right now?
+          - What is self-service completion rate by channel?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Improper Payments
+        short: Payment integrity
+        icon: gauge
+        summary: Scoring eligibility, identity and payment signals together so improper and fraudulent payments are prevented, not chased after the money is gone.
+        problem: Benefits are optimised to pay quickly, so integrity checks run after the money is out the door and improper payments are chased through pay-and-chase rather than prevented.
+        who_benefits: Program Directors
+        how_built: Eligibility, claims and payment feeds land in Lakehouse//RT; entity resolution and risk models score each claim in Model Serving so high-risk payments are held before disbursement.
+        components:
+          - Improper Payment Radar
+          - Lakehouse//RT
+          - Model Serving
+          - Merative Cúram SPM
+          - Unity Catalog
+        stories:
+          - title: Bringing real-time fraud prevention to government benefits
+            url: https://www.databricks.com/blog/bringing-real-time-fraud-prevention-government-benefits
+          - title: Operationalizing AI for public sector fraud prevention
+            url: https://www.databricks.com/blog/operationalizing-ai-public-sector-fraud-prevention
+      - name: Constituent 360
+        short: Whole-person view
+        icon: custlake
+        summary: Resolving a resident's records across benefits, tax, permitting and 311 into one governed profile so caseworkers and services see the whole person.
+        problem: A resident's records are scattered across benefits, tax, permitting and 311 systems, so no caseworker or service ever sees the whole person.
+        who_benefits: Constituent Services
+        how_built: Records from the case, benefits and 311 systems are conformed and resolved in CustomerLake, giving caseworkers one governed profile per constituent.
+        components:
+          - Constituent 360 Hub
+          - CustomerLake
+          - Salesforce Pub Sector
+          - SeeClickFix 311
+          - Unity Catalog
+        stories:
+          - title: State of Washington builds data-driven government
+            url: https://www.databricks.com/customers/state-of-washington
+          - title: GovTech Singapore unlocks nationwide data insights
+            url: https://www.databricks.com/customers/govtech
+      - name: Program Outcomes
+        short: Evidence & impact
+        icon: chart
+        summary: Linking service records to downstream results across agency silos so programs are judged on outcomes for residents, not activity counts.
+        problem: Programs report activity, not outcomes, because linking service records to downstream results means crossing agency silos that rarely share data.
+        who_benefits: Program Directors
+        how_built: Cross-agency records are linked under Unity Catalog and shared via OpenSharing; outcome cohorts are built in AI/BI on certified Metric Views.
+        components:
+          - Program Outcome Studio
+          - AI/BI
+          - Unity Catalog
+          - OpenSharing
+          - Genie One
+        stories:
+          - title: DC OCTO links education and workforce data for outcomes
+            url: https://www.databricks.com/customers/dc-octo
+      - name: Tax Compliance & Audit
+        short: Revenue integrity
+        icon: market
+        summary: Targeting audit effort at the highest-risk returns with anomaly models rather than fixed rules, so underreporting and refund fraud are caught before refunds are paid.
+        problem: Underreporting and refund fraud slip through fixed rules, and auditors work returns after refunds are already paid out.
+        who_benefits: Budget & Finance
+        how_built: Filing, payment and third-party data are conformed in the lakehouse; anomaly models score returns in Model Serving so audit effort targets the highest-risk cases.
+        components:
+          - FAST GenTax
+          - Model Serving
+          - AI/BI
+          - MLflow
+          - Unity Catalog
+        stories:
+          - title: Operationalizing AI for public sector fraud prevention
+            url: https://www.databricks.com/blog/operationalizing-ai-public-sector-fraud-prevention
+      - name: Permit & Licensing
+        short: Throughput
+        icon: stream
+        summary: Making the permit and licence backlog visible across departments so reviews are re-sequenced and cycle time falls before deadlines are missed.
+        problem: Permit and licence applications stall between departments with no visibility into where the backlog sits or which reviews are late.
+        who_benefits: Constituent Services
+        how_built: Accela and EnerGov application events stream into Lakehouse//RT; cycle-time and bottleneck analytics surface in AI/BI so reviews are re-sequenced before deadlines slip.
+        components:
+          - Permit Throughput
+          - Accela Civic Platform
+          - Tyler EnerGov
+          - Lakehouse//RT
+          - AI/BI
+        stories:
+          - title: Data governance and AI drive better living in Amsterdam
+            url: https://www.databricks.com/customers/gemeente-amsterdam
+      - name: Open Data Platform
+        short: Transparency
+        icon: globe
+        summary: Publishing certified open data and answering the public from the governed source, so the portal never drifts from the numbers the agency runs on.
+        problem: Publishing open data means hand-built extracts that go stale, and the public portal drifts from the governed source it was copied from.
+        who_benefits: Chief Data Officer
+        how_built: Curated Gold tables are published as data products and served to the portal and to residents through Genie and Public & Open Data, governed by Unity Catalog.
+        components:
+          - Socrata Open Data
+          - Data Products
+          - Genie One
+          - Unity Catalog
+          - OpenSharing
+        stories:
+          - title: How World Bank Group uses Databricks to share knowledge
+            url: https://www.databricks.com/blog/how-world-bank-group-uses-databricks-eradicate-poverty-through-shared-knowledge
+      - name: Workforce Analytics
+        short: Hiring & people
+        icon: people
+        summary: Making the hiring pipeline visible end to end so leadership sees where candidates stall and vacancies that put services at risk.
+        problem: Hiring drags for months and leadership cannot see where in the pipeline candidates stall or which vacancies put services at risk.
+        who_benefits: Agency Leadership
+        how_built: Workday and applicant-tracking data are unified and analysed in AI/BI so hiring bottlenecks and vacancy risk are visible by department.
+        components:
+          - Workday HCM
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+        stories:
+          - title: LA County modernises hiring with Databricks
+            url: https://www.databricks.com/customers/la-county
+      - name: Emergency Response
+        short: Live common picture
+        icon: gauge
+        summary: Building a live common operating picture from sensor, GIS and operational feeds so responders act on current ground truth rather than a hand-stitched view.
+        problem: In a disaster the operational picture is stitched together by hand from feeds that arrive too late to act on.
+        who_benefits: Agency Leadership
+        how_built: Sensor, GIS and operational feeds stream into Lakehouse//RT and are mapped against Esri layers so responders act on a live common picture.
+        components:
+          - Lakehouse//RT
+          - Esri ArcGIS
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+        stories:
+          - title: U.S. Department of Transportation delivers real-time insight
+            url: https://www.databricks.com/customers/us-department-of-transportation
+      - name: Grants Management
+        short: Awards & compliance
+        icon: docs
+        summary: Centralising grant, subrecipient and spend data so compliance reporting is automated and anomalies surface before closeout, not after.
+        problem: Grant, subrecipient and spend data live in spreadsheets, so compliance reporting is slow and anomalies surface late in the award cycle.
+        who_benefits: Budget & Finance
+        how_built: Grant, finance and performance data are centralised in the lakehouse; AmpliFund and finance feeds are conformed for automated compliance reporting and anomaly alerts.
+        components:
+          - AmpliFund Grants
+          - AI/BI
+          - Unity Catalog
+          - Lakeflow
+          - Genie One
+        stories:
+          - title: Data and AI solutions for federal government
+            url: https://www.databricks.com/solutions/industries/federal-government
+      - name: Digital Services
+        short: Self-service delivery
+        icon: apps
+        summary: Building constituent-facing services on governed data so residents complete online what used to need a counter visit, with plain-language help.
+        problem: Residents drop out of online services that are slow, fragmented and disconnected from the data behind them.
+        who_benefits: Constituent Services
+        how_built: Constituent-facing services are built as Databricks Apps over Lakebase next to governed data, with Genie answering resident questions in plain language.
+        components:
+          - Constituent 360 Hub
+          - Apps
+          - Lakebase
+          - Genie One
+          - ServiceNow Gov
+        stories:
+          - title: GovTech Singapore improves nationwide services
+            url: https://www.databricks.com/customers/govtech
+          - title: Reinventing government with the Databricks platform
+            url: https://www.databricks.com/blog/reinventing-government-databricks-data-intelligence-platform
+medallion:
+  Bronze:
+    short: Raw agency system feeds
+    summary: Eligibility determinations, tax filings, permit applications, case notes and GIS parcels landed exactly as received from the systems of record, so a determination or a filing can always be replayed as it stood for audit and appeal.
+  Silver:
+    short: Conformed constituent, case, parcel
+    summary: Constituents, cases, parcels and programs resolved into single conformed entities across the eligibility, tax, permitting and case estates, with identifiers reconciled and duplicate records matched across agencies under one governance model.
+  Gold:
+    short: Outcomes, integrity, service metrics
+    summary: 'Contracted products the program and finance teams run on: improper-payment rate and program outcomes by cohort, permit cycle time, tax compliance yield, and constituent service level by channel.'
+citation_index:
+  curam:
+    title: Merative Cúram Social Program Management
+    url: https://www.merative.com/social-program-management
+  gainwell:
+    title: Gainwell Technologies (MMIS)
+    url: https://www.gainwelltechnologies.com/
+  conduent:
+    title: Conduent Government Solutions
+    url: https://www.conduent.com/government-solutions/
+  fast:
+    title: FAST Enterprises GenTax
+    url: https://www.fastenterprises.com/
+  tyler-ptax:
+    title: Tyler Technologies Property Tax
+    url: https://www.tylertech.com/products/property-tax
+  rsi:
+    title: Revenue Solutions, Inc.
+    url: https://www.revenuesolutionsinc.com/
+  accela:
+    title: Accela Civic Platform
+    url: https://www.accela.com/civic-platform/
+  tyler-energov:
+    title: Tyler Enterprise Permitting & Licensing (EnerGov)
+    url: https://www.tylertech.com/products/enterprise-permitting-licensing
+  opengov:
+    title: OpenGov Permitting & Licensing
+    url: https://opengov.com/products/permitting-and-licensing/
+  sf-ps:
+    title: Salesforce Public Sector Solutions
+    url: https://www.salesforce.com/solutions/industries/government/overview/
+  servicenow:
+    title: ServiceNow for Public Sector
+    url: https://www.servicenow.com/solutions/industry/public-sector.html
+  seeclickfix:
+    title: SeeClickFix 311
+    url: https://seeclickfix.com/
+  arcgis:
+    title: Esri ArcGIS
+    url: https://www.esri.com/en-us/arcgis/about-arcgis/overview
+  workday:
+    title: Workday for Government
+    url: https://www.workday.com/en-us/industries/government.html
+  amplifund:
+    title: AmpliFund Grants Management
+    url: https://www.amplifund.com/
+  socrata:
+    title: Tyler Data & Insights (Socrata)
+    url: https://www.tylertech.com/products/data-insights
+  census:
+    title: U.S. Census Bureau Developer APIs
+    url: https://www.census.gov/data/developers.html
+  grantsgov:
+    title: Grants.gov
+    url: https://www.grants.gov/

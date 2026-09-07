@@ -1,0 +1,962 @@
+name: Automotive
+description: Vehicle design, manufacturing, dealer networks, connected services, and aftersales across OEMs, tier suppliers, and mobility fleets.
+sources:
+  - name: Engineering & PLM
+    icon: product
+    tiles:
+      - name: Siemens Teamcenter
+        icon: product
+        summary: EBOM, change orders and variant configuration through SOP.
+        citations:
+          - teamcenter
+        category: PLM System
+        what_it_is: System of record for the engineering BOM, change orders and variant configuration carried through to start of production.
+        who_uses_it: Vehicle engineering, change management and Configuration management.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-20 GB/day
+            interval: On change release + nightly
+      - name: Dassault 3DEXPERIENCE
+        icon: product
+        summary: CAD, simulation and manufacturing process definitions.
+        citations:
+          - 3dexperience
+        category: CAD / PLM Platform
+        what_it_is: Holds CAD geometry, simulation results and manufacturing process definitions for vehicle and component design.
+        who_uses_it: Design engineers, CAE/simulation and Manufacturing engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs (CAD + simulation)
+            interval: On design release
+      - name: PTC Windchill
+        icon: product
+        summary: Part masters, effectivity and supplier packages.
+        citations:
+          - windchill
+        category: PLM System
+        what_it_is: Manages part masters, effectivity dates and supplier data packages across programs standardized on Windchill.
+        who_uses_it: Component engineering, Supplier engineering and Configuration management.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: On change release + nightly
+  - name: Procurement & ERP
+    icon: erp
+    tiles:
+      - name: Ivalua
+        icon: erp
+        summary: Source-to-contract and procure-to-pay across raw, partial and assembled parts.
+        citations:
+          - ivalua
+        category: Source-to-Pay / Procurement
+        what_it_is: Runs source-to-contract and procure-to-pay across raw, partial and assembled parts, holding supplier contracts, purchase orders and lead-time commitments across the supply base.
+        who_uses_it: Procurement, Supplier management and Materials planning.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Nightly + hourly deltas
+      - name: SAP S/4HANA
+        icon: erp
+        summary: ERP of record for procurement, inventory, production orders and finance.
+        citations:
+          - sap-s4auto
+        category: Enterprise ERP
+        what_it_is: System of record for procurement, inventory, production orders and finance across the automotive business, feeding cost, purchase-order and materials data to the plant.
+        who_uses_it: Procurement, Production planning and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Nightly batch + hourly deltas
+  - name: Manufacturing MES
+    icon: iot
+    tiles:
+      - name: Siemens Opcenter
+        icon: iot
+        summary: Line sequencing, torque traces, andon events by station.
+        citations:
+          - opcenter
+        category: Manufacturing Execution System (MES)
+        what_it_is: Runs line sequencing and captures torque traces, station cycle data and andon events across the assembly line.
+        who_uses_it: Plant operations, production engineering and Quality.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k events/sec at peak
+            interval: Continuous station events
+      - name: Rockwell FactoryTalk
+        icon: iot
+        summary: PLC tags, quality checks and downtime reason codes.
+        citations:
+          - factorytalk
+        category: Industrial Automation / SCADA
+        what_it_is: Streams PLC tags, in-line quality checks and downtime reason codes from controlled assembly and body-shop assets.
+        who_uses_it: Controls engineers, plant operations and Continuous improvement.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k tags/sec
+            interval: Continuous high-frequency telemetry
+      - name: Bosch Nexeed
+        icon: stream
+        summary: Tier-1 JIT sequencing and logistics for assembly plants.
+        citations:
+          - nexeed
+        category: Manufacturing Operations / JIS-JIT
+        what_it_is: Coordinates tier-1 just-in-sequence and just-in-time part sequencing and logistics feeding the assembly plant.
+        who_uses_it: Plant logistics, materials management and Tier-1 suppliers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous sequencing events
+  - name: Dealer & Retail
+    icon: market
+    tiles:
+      - name: CDK Global DMS
+        icon: erp
+        summary: Dealer inventory, deals, F&I and service ROs.
+        citations:
+          - cdk
+        category: Dealer Management System (DMS)
+        what_it_is: Runs dealer inventory, vehicle deals, F&I and service repair orders across the dealer network.
+        who_uses_it: Dealer principals, sales and service managers and OEM Sales operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Nightly + hourly deltas
+      - name: Reynolds ERA
+        icon: erp
+        summary: Retail, parts and service transactions across dealer groups.
+        citations:
+          - reynolds
+        category: Dealer Management System (DMS)
+        what_it_is: Processes retail, parts and service transactions across dealer groups on the Reynolds platform.
+        who_uses_it: Dealer groups, parts and service operations and OEM Sales operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch
+      - name: VinSolutions CRM
+        icon: custlake
+        summary: Leads, appointments and sold-not-reported tracking.
+        citations:
+          - vinsolutions
+        category: Automotive Retail CRM
+        what_it_is: Tracks dealer leads, appointments and sold-not-reported activity across the sales funnel.
+        who_uses_it: Dealer sales teams, BDC and OEM Marketing analytics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous lead events
+  - name: Connected Vehicle
+    icon: stream
+    tiles:
+      - name: OEM Telematics Gateway
+        icon: iot
+        summary: CAN signals, GPS and remote diagnostics from connected fleets.
+        citations:
+          - telematics
+        category: Connected Vehicle Telematics
+        what_it_is: Ingests CAN bus signals, GPS and remote diagnostics streamed from the connected vehicle fleet.
+        who_uses_it: Connected-vehicle engineering, Aftersales and Data science.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500k signals/sec (fleet)
+            interval: Continuous vehicle telemetry
+      - name: HERE HD Maps
+        icon: globe
+        summary: Lane-level map tiles for ADAS and navigation features.
+        citations:
+          - here-maps
+        category: HD Mapping / Location Data
+        what_it_is: Supplies lane-level HD map tiles and location data feeding ADAS and navigation features.
+        who_uses_it: ADAS engineering, navigation and Connected-vehicle teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs (map tiles)
+            interval: Periodic map updates
+      - name: Aptiv Smart Vehicle
+        icon: zplug
+        summary: Sensor fusion and software-defined feature telemetry.
+        citations:
+          - aptiv
+        category: Vehicle Software / Sensor Platform
+        what_it_is: Provides sensor-fusion output and software-defined vehicle feature telemetry from the vehicle architecture.
+        who_uses_it: ADAS/software engineering and Connected-vehicle data teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k signals/sec
+            interval: Continuous sensor telemetry
+  - name: Aftersales & Parts
+    icon: zplug
+    tiles:
+      - name: SAP Aftermarket
+        icon: erp
+        summary: Parts catalog, supersession and dealer ordering.
+        citations:
+          - sap-aftermarket
+        category: Aftermarket / Parts ERP
+        what_it_is: Manages the parts catalog, supersession chains and dealer parts ordering across the aftermarket.
+        who_uses_it: Parts planning, aftersales operations and Dealer parts teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly + hourly deltas
+      - name: Mitchell Repair
+        icon: product
+        summary: Labor guides, TSBs and repair procedures.
+        citations:
+          - mitchell
+        category: Repair Information System
+        what_it_is: Provides labor time guides, technical service bulletins and repair procedures used in service.
+        who_uses_it: Service technicians, warranty analysts and Aftersales engineering.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: 100s of MB/day
+            interval: Periodic content updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Warranty Mart
+        icon: fed
+        summary: Warranty accrual and revenue recognition marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Warranty accrual and revenue-recognition marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance, Warranty management and Revenue accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: JD Power IQS/SSI
+        icon: chart
+        summary: Initial quality and sales satisfaction benchmarks by segment.
+        citations:
+          - jdpower
+        category: Quality & Satisfaction Benchmarks
+        what_it_is: Provides Initial Quality Study and Sales Satisfaction Index benchmarks by segment for competitive quality and CX analysis.
+        who_uses_it: Quality engineering, Sales operations and Product planning.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB (surveys)
+            interval: Periodic study releases
+      - name: Polk Registration
+        icon: market
+        summary: Vehicle registration and conquest data by geography.
+        citations:
+          - polk
+        category: Vehicle Registration Data
+        what_it_is: Supplies vehicle registration, ownership and conquest data by geography for market share and targeting.
+        who_uses_it: Sales & Marketing, incentive planning and Market analytics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/month
+            interval: Monthly registration refresh
+      - name: MQTT / DDS Telematics
+        icon: iot
+        summary: CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events.
+        category: Vehicle Telemetry Middleware
+        what_it_is: Carries CAN and sensor signals streamed from connected vehicles over MQTT and DDS middleware, parsed on arrival into structured telematics events.
+        who_uses_it: Connected-vehicle engineering and Streaming data teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500k signals/sec (fleet)
+            interval: Continuous vehicle telemetry
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Mfg COO
+        mark: Genie One
+        summary: The CEO on market share and program ROI; the COO on plant OEE, first-time-through quality and defect PPM against the launch curve by line.
+        uses:
+          - - Genie One
+            - Ask what last month's plant OEE was by line.
+          - - AI/BI
+            - Quality and throughput on certified Metric Views.
+          - - Unity Catalog
+            - One VIN definition across plant and dealer.
+        sub:
+          - name: CEO
+            cares: market share, program ROI and the trade between growth and plant capacity.
+          - name: Manufacturing COO
+            cares: plant OEE, first-time-through quality and defect PPM against the launch curve.
+          - name: Chief Strategy Officer
+            cares: the EV transition, software revenue and where the vehicle portfolio is headed.
+        ucs:
+          - Predictive Quality
+          - Launch Curve Tracking
+          - Supplier PPM
+          - EV Battery Health
+      - name: Manufacturing
+        mark: Lakehouse//RT
+        summary: Line balancing, andon response and launch curve tracking, run on OEE, cycle time and bottleneck-station losses against takt.
+        uses:
+          - - Plant Cockpit
+            - Live OEE and bottleneck stations on the floor.
+          - - Lakehouse//RT
+            - Torque and vision checks at line latency.
+        sub:
+          - name: Plant Manager
+            cares: line OEE, andon response and hitting the daily build-to-plan.
+          - name: Production Engineering
+            cares: takt balance, station cycle time and bottleneck losses on the line.
+          - name: Launch / Program Manager
+            cares: the SOP ramp and closing quality gaps against the launch curve.
+        ucs:
+          - Predictive Quality
+          - Launch Curve Tracking
+          - Supplier PPM
+      - name: Quality Engineering
+        mark: AI/BI
+        summary: Defect pareto, supplier PPM and containment across plants, tracked on warranty cost per vehicle, scrap rate and time-to-containment.
+        uses:
+          - - Quality Command
+            - Emerging defect trends before field campaigns.
+          - - AI/BI
+            - PPM and scrap on governed inspection data.
+        sub:
+          - name: Quality Director
+            cares: warranty cost per vehicle, field campaigns and time-to-containment.
+          - name: Supplier Quality
+            cares: incoming PPM and containment across the tier-1 supply base.
+          - name: Field Quality
+            cares: emerging defect clusters and the recall or OTA fix that follows.
+        ucs:
+          - Predictive Quality
+          - Supplier PPM
+          - Warranty Recovery
+          - OTA Campaign Mgmt
+      - name: Sales & Marketing
+        mark: Model Serving
+        summary: Incentive planning, conquest targeting and digital lead scoring, judged on incentive spend per unit, conquest rate and margin.
+        uses:
+          - - Incentive Optimizer
+            - Program spend against margin guardrails.
+          - - Model Serving
+            - Lead scores in the CRM routing path.
+        sub:
+          - name: CMO
+            cares: conquest rate, brand demand and incentive spend per unit.
+          - name: Incentive Planning
+            cares: program spend against margin and residual guardrails.
+          - name: Digital Marketing
+            cares: lead scoring, conquest targeting and the dealer handoff.
+        ucs:
+          - Dealer Inventory Opt
+          - Connected Diagnostics
+      - name: Aftersales
+        mark: Apps
+        summary: Service retention, parts availability and warranty recovery, measured on retention rate, parts fill rate and chargeback recovery.
+        uses:
+          - - Service Advisor App
+            - Next-best service offers on governed vehicle history.
+          - - Apps
+            - Dealer tools hosted next to governed data.
+        sub:
+          - name: Service Operations
+            cares: service retention, fix-first-visit and dealer capacity.
+          - name: Parts & Supply
+            cares: parts fill rate and days supply across DCs and dealers.
+          - name: Warranty Management
+            cares: chargeback recovery and warranty cost against accrual.
+        ucs:
+          - Warranty Recovery
+          - Parts Forecasting
+          - Connected Diagnostics
+          - EV Battery Health
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land MES torque traces, telematics CAN signals, dealer DMS and warranty claims; own Bronze to Silver and the pager when the OEE tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for MES, ERP and dealer DMS sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on line and telematics feeds.
+          - - Lakewatch
+            - Freshness on the OEE and quality tables the plant reads each shift.
+        sub:
+          - name: Streaming / Plant Data
+            cares: MES torque traces and andon events at line latency.
+          - name: Telematics Data
+            cares: CAN signals and remote diagnostics off the connected fleet.
+          - name: Dealer & Warranty Data
+            cares: DMS, warranty claims and the finance mart feeds.
+        ucs:
+          - Predictive Quality
+          - Connected Diagnostics
+          - Warranty Recovery
+      - name: Data Scientists
+        mark: MLflow
+        summary: Predictive-quality, remaining-useful-life, lead-scoring and incentive models, and whether they still hold across a model-year changeover.
+        uses:
+          - - Feature Store
+            - VIN and station features read identically in training and serving.
+          - - MLflow
+            - Every quality and RUL model tracked for audit and reproduction.
+          - - Model Serving
+            - Quality and lead models scored in the line and CRM path.
+        sub:
+          - name: Quality & Reliability ML
+            cares: predictive-quality and remaining-useful-life models by station and VIN.
+          - name: Connected-Vehicle ML
+            cares: fault prediction and battery state-of-health from telemetry.
+          - name: Commercial ML
+            cares: lead scoring, conquest and incentive optimisation models.
+        ucs:
+          - Predictive Quality
+          - Connected Diagnostics
+          - EV Battery Health
+      - name: App Developers
+        mark: Apps
+        summary: Ship the plant cockpit, quality command, incentive optimizer and service advisor apps operations and dealers work in, next to governed VIN data.
+        uses:
+          - - Apps
+            - Plant and dealer screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for line and service-advisor state.
+          - - Agent Bricks
+            - Agents that draft containment and work orders against governed tools.
+        sub:
+          - name: Plant Apps
+            cares: the Plant Cockpit and Quality Command screens on the floor.
+          - name: Dealer & Service Apps
+            cares: the Service Advisor and incentive tools dealers work in.
+          - name: Agent & Workflow
+            cares: agents drafting containment and work orders on governed data.
+        ucs:
+          - Predictive Quality
+          - Warranty Recovery
+          - Dealer Inventory Opt
+          - Connected Diagnostics
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Plant and regional sales dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for quality and inventory in plant channels.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Engineering notebooks against governed BOM and telemetry.
+  - name: Dealer & Partners
+    icon: partner
+    tiles:
+      - name: Dealer Inventory Feed
+        icon: api
+        summary: Days supply and allocation pushed to DMS nightly.
+        citations:
+          - cdk
+      - name: OTA Update Channel
+        icon: iot
+        summary: Software campaigns delivered to connected VINs.
+        citations:
+          - telematics
+      - name: Supplier Portal
+        icon: zplug
+        summary: ASN and quality alerts shared with tier-1 suppliers.
+        citations:
+          - nexeed
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Line Sequencing
+        icon: stream
+        summary: Re-sequenced build orders sent to MES after disruption.
+      - name: Recall Campaign List
+        icon: gavel
+        summary: Affected VINs pushed to dealer service systems.
+      - name: Parts Allocation
+        icon: product
+        summary: Scarce parts prioritized to high-value ROs.
+        citations:
+          - sap-aftermarket
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: NHTSA Reporting
+        icon: gavel
+        summary: Safety defects and recall filings from governed case data.
+      - name: EU CO2 Fleet Targets
+        icon: share
+        summary: Fleet emissions reported to regulators.
+        citations:
+          - unece-r155
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Vehicle and quality products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Suppliers and finance partners via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Plant Cockpit
+        icon: gauge
+        short: Line OEE
+        summary: Live throughput, andon state and bottleneck stations across assembly lines.
+      - name: Quality Command
+        icon: gavel
+        short: Defect intelligence
+        summary: Emerging defect clusters flagged before field campaigns are required.
+      - name: Incentive Optimizer
+        icon: market
+        short: Program planning
+        summary: Regional incentive spend modeled against margin and conquest targets.
+      - name: Service Advisor App
+        icon: custlake
+        short: Aftersales
+        summary: Next-best service and retention offers on governed vehicle history.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Plant Quality & OEE
+        icon: aibi
+        summary: Line OEE, defect PPM and launch-curve tracking on certified Metric Views.
+        kpis:
+          - OEE
+          - Defect PPM
+          - First-time-through
+          - Launch curve attainment
+          - Andon downtime
+        teams:
+          - Manufacturing
+          - Quality Engineering
+          - Plant Manager
+      - name: Warranty & Field Performance
+        icon: aibi
+        summary: Warranty cost, field failure trends and chargeback recovery.
+        kpis:
+          - Warranty cost per vehicle
+          - Field failure rate
+          - Time-to-containment
+          - Chargeback recovery
+          - Recall exposure
+        teams:
+          - Quality Engineering
+          - Aftersales
+          - Warranty Management
+      - name: Dealer Inventory & Sales
+        icon: aibi
+        summary: Days supply, allocation, conquest and incentive efficiency across dealers.
+        kpis:
+          - Days supply
+          - Allocation fill
+          - Conquest rate
+          - Incentive spend per unit
+          - Lead conversion
+        teams:
+          - Sales & Marketing
+          - Incentive Planning
+          - Digital Marketing
+      - name: Connected & Aftersales
+        icon: aibi
+        summary: Connected diagnostics, battery health, parts fill and service retention.
+        kpis:
+          - Service retention
+          - Parts fill rate
+          - Battery state-of-health
+          - Proactive offer take rate
+          - Fix-first-visit
+        teams:
+          - Aftersales
+          - Service Operations
+          - Parts & Supply
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Plant Quality & Throughput Agent
+        icon: genie
+        summary: Ask about OEE, defect PPM and launch-curve progress by line and station.
+        feeds:
+          - Siemens Opcenter
+          - Rockwell FactoryTalk
+          - Bosch Nexeed
+          - Quality, throughput, loyalty
+        teams:
+          - Manufacturing
+          - Quality Engineering
+          - Plant Manager
+        questions:
+          - What was plant OEE by line and shift yesterday?
+          - Which stations are driving defect PPM this week?
+          - How is the launch curve tracking against SOP targets by week?
+          - Which andon events caused the most line downtime?
+          - What is first-time-through quality by line this month?
+      - name: Warranty & Field Quality Agent
+        icon: genie
+        summary: Explore warranty cost, field failures and supplier chargebacks across the fleet.
+        feeds:
+          - Finance & Warranty Mart
+          - SAP Aftermarket
+          - Mitchell Repair
+          - Conformed vehicles and parts
+        teams:
+          - Quality Engineering
+          - Aftersales
+          - Supplier Quality
+        questions:
+          - What is warranty cost per vehicle by model and model year?
+          - Which failure modes are emerging fastest in the field?
+          - Which supplier lots are linked to recoverable chargebacks?
+          - Where is time-to-containment slipping by defect cluster?
+          - Which VINs are candidates for an OTA fix versus a recall?
+      - name: Dealer & Sales Agent
+        icon: genie
+        summary: Answer inventory, days-supply and conquest questions across the dealer network.
+        feeds:
+          - CDK Global DMS
+          - VinSolutions CRM
+          - Polk Registration
+          - Quality, throughput, loyalty
+        teams:
+          - Sales & Marketing
+          - Incentive Planning
+          - Digital Marketing
+        questions:
+          - What is days supply by dealer and configuration right now?
+          - Which markets are over- or under-allocated versus demand?
+          - What is incentive spend per unit versus margin by region?
+          - What is our conquest rate against key competitors this quarter?
+          - Which leads are highest-propensity and unassigned?
+      - name: Connected Vehicle & Service Agent
+        icon: genie
+        summary: Ask about connected diagnostics, battery health and service retention.
+        feeds:
+          - OEM Telematics Gateway
+          - Aptiv Smart Vehicle
+          - VinSolutions CRM
+          - Conformed vehicles and parts
+        teams:
+          - Aftersales
+          - Service Operations
+          - Connected-Vehicle ML
+        questions:
+          - Which VINs show fault signatures predicting a failure soon?
+          - What is EV battery state-of-health distribution by fleet?
+          - What is service retention rate by dealer and region?
+          - Which parts are predicted to be needed by DC next month?
+          - Which connected faults should trigger a proactive service offer?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Predictive Quality
+        short: Manufacturing
+        icon: iot
+        summary: Torque and vision anomalies predicted before vehicles leave the station.
+        problem: Defects are caught at final inspection or in the field, long after the station that caused them, so scrap, rework and warranty cost are locked in before anyone sees the pattern.
+        who_benefits: Manufacturing
+        how_built: Torque and vision checks stream into Lakehouse//RT; station features in Feature Store feed Model Serving models that flag suspect builds on the Plant Cockpit before the station releases.
+        components:
+          - Plant Cockpit
+          - Lakehouse//RT
+          - Model Serving
+          - Feature Store
+          - Siemens Opcenter
+        stories:
+          - title: Toyota uses Zerobus Ingest for real-time factory data
+            url: https://www.databricks.com/customers/toyota/lakeflow-connect
+          - title: Predictive quality starts where defect detection stops
+            url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+      - name: Launch Curve Tracking
+        short: Program
+        icon: sheet
+        summary: Build and quality ramp against SOP targets by week.
+        problem: A new-model launch must hit build rate and quality targets week over week, but ramp data is scattered across MES, quality and program spreadsheets, so gaps surface too late to correct.
+        who_benefits: Manufacturing
+        how_built: Build, quality and station data are conformed on Delta Lake under Unity Catalog and tracked on the Plant Cockpit and AI/BI against SOP targets, so program teams see the ramp by week.
+        components:
+          - Plant Cockpit
+          - AI/BI
+          - Unity Catalog
+          - Siemens Opcenter
+          - Delta Lake
+        stories:
+          - title: Automotive giant turns data into business value with Databricks
+            url: https://www.databricks.com/blog/automotive-giant-turns-data-business-value-databricks
+      - name: Connected Diagnostics
+        short: Telematics
+        icon: stream
+        summary: Remote fault prediction triggering proactive service offers.
+        problem: Faults are discovered when a warning light comes on or the vehicle is towed in, and the telemetry that would have predicted the failure sits unused in the connected-vehicle stream.
+        who_benefits: Aftersales
+        how_built: CAN signals and remote diagnostics land in Lakehouse//RT; fault models tracked in MLflow and served through Model Serving raise proactive service offers in the Service Advisor App.
+        components:
+          - Service Advisor App
+          - OEM Telematics Gateway
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Rivian improves vehicle health and performance with Databricks
+            url: https://www.databricks.com/customers/rivian
+      - name: Warranty Recovery
+        short: Aftersales
+        icon: erp
+        summary: Supplier chargebacks matched to field failure modes.
+        problem: Warranty spend is written off as a cost of doing business because linking a field failure to the responsible supplier lot and claim is manual, so recoverable chargebacks are never pursued.
+        who_benefits: Aftersales
+        how_built: Warranty claims, parts and field failures are conformed under Unity Catalog and analysed in Quality Command and AI/BI, matching failure modes to supplier lots so chargebacks are recovered.
+        components:
+          - Quality Command
+          - Finance & Warranty Mart
+          - AI/BI
+          - Unity Catalog
+          - SAP Aftermarket
+      - name: Dealer Inventory Opt
+        short: Retail
+        icon: market
+        summary: Allocation and days supply tuned by market demand.
+        problem: Vehicles pile up on some dealer lots while hot configurations sell out elsewhere, because allocation runs on stale days-supply numbers rather than live market demand by region.
+        who_benefits: Sales & Marketing
+        how_built: DMS inventory and registration demand are conformed on Delta Lake and scored in Model Serving, so allocation and days-supply targets are tuned by market and pushed back to dealer systems.
+        components:
+          - CDK Global DMS
+          - Model Serving
+          - AI/BI
+          - Polk Registration
+          - Delta Lake
+        stories:
+          - title: Al-Futtaim becomes customer-centric with Databricks
+            url: https://www.databricks.com/customers/al-futtaim
+      - name: OTA Campaign Mgmt
+        short: Software
+        icon: api
+        summary: Feature rollouts and recalls delivered over the air.
+        problem: Software features and safety fixes must reach the right VINs over the air, but eligibility, version state and results live in systems that disagree, so rollouts stall or misfire.
+        who_benefits: Quality Engineering
+        how_built: VIN, version and telematics state are conformed under Unity Catalog and scored in Model Serving, so campaigns target eligible VINs and results are tracked against R155 compliance.
+        components:
+          - OEM Telematics Gateway
+          - Unity Catalog
+          - Model Serving
+          - UNECE WP.29 R155
+          - Aptiv Smart Vehicle
+      - name: Supplier PPM
+        short: Quality
+        icon: zplug
+        summary: Incoming quality scored and ranked across the supply base.
+        problem: Incoming quality varies lot by lot, but supplier defect data is buried in inspection systems, so problem suppliers are ranked on gut feel long after bad parts reach the line.
+        who_benefits: Quality Engineering
+        how_built: Inspection, containment and line-defect data are conformed under Unity Catalog and scored in Quality Command and Model Serving, ranking supplier PPM so problem lots are caught early.
+        components:
+          - Quality Command
+          - Bosch Nexeed
+          - Model Serving
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: Predictive quality starts where defect detection stops
+            url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+      - name: Parts Forecasting
+        short: Aftersales
+        icon: product
+        summary: Dealer and DC parts stock against failure curves.
+        problem: Dealers stock out of the parts customers actually need while capital sits in slow movers, because parts planning ignores the failure curves and field signals that predict real demand.
+        who_benefits: Aftersales
+        how_built: Failure, telematics and parts data are conformed on Delta Lake and scored in Model Serving with runs tracked in MLflow, positioning dealer and DC stock against predicted failure curves.
+        components:
+          - Service Advisor App
+          - SAP Aftermarket
+          - Model Serving
+          - MLflow
+          - OEM Telematics Gateway
+        stories:
+          - title: Volvo Group increases inventory visibility with Databricks
+            url: https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines
+      - name: EV Battery Health
+        short: Mobility
+        icon: iot
+        summary: State of health scored for resale and fleet redeployment.
+        problem: An EV's residual value and second-life potential hinge on battery state of health, but that signal is locked in raw telemetry, so resale and fleet redeployment decisions are made blind.
+        who_benefits: Aftersales
+        how_built: Battery telemetry streams into Lakehouse//RT; state-of-health models tracked in MLflow and served through Model Serving score each pack for resale, warranty and fleet redeployment.
+        components:
+          - OEM Telematics Gateway
+          - Model Serving
+          - Lakehouse//RT
+          - MLflow
+          - Feature Store
+        stories:
+          - title: Mercedes-Benz transforms the car experience with Databricks
+            url: https://www.databricks.com/customers/mercedes-benz
+      - name: Supplier Lead-Time Risk
+        short: Supply chain
+        icon: network
+        summary: Supplier lead times and JIS/JIT risk scored before a late part starves the line.
+        problem: Just-in-sequence and just-in-time builds depend on parts landing to a tight window, but lead-time and PO commitments sit in procurement and ERP apart from plant sequencing, so a slipping supplier is discovered when the line starves.
+        who_benefits: Manufacturing
+        how_built: Ivalua contract and PO lead times and SAP S/4HANA materials data are conformed on Delta Lake and scored in Model Serving against Bosch Nexeed sequencing, flagging JIS/JIT risk on the Plant Cockpit before a shortage stops the build.
+        components:
+          - Ivalua
+          - SAP S/4HANA
+          - Bosch Nexeed
+          - Model Serving
+          - Plant Cockpit
+        stories:
+          - title: Supply chain and distribution optimization on Databricks
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+medallion:
+  Bronze:
+    short: Raw plant and vehicle feeds
+    summary: MES, telematics, dealer DMS and warranty claims landed exactly as received so a VIN lifecycle can be replayed.
+  Silver:
+    short: Conformed vehicles and parts
+    summary: VINs, BOMs, dealers and service events resolved into single entities across engineering, plant and retail systems.
+  Gold:
+    short: Quality, throughput, loyalty
+    summary: 'Contracted products operations and sales run on: plant OEE, defect PPM, days supply and service retention.'
+citation_index:
+  teamcenter:
+    title: Siemens Teamcenter
+    url: https://plm.sw.siemens.com/en-US/teamcenter/
+  3dexperience:
+    title: Dassault 3DEXPERIENCE
+    url: https://www.3ds.com/3dexperience
+  windchill:
+    title: PTC Windchill
+    url: https://www.ptc.com/en/products/windchill
+  opcenter:
+    title: Siemens Opcenter
+    url: https://plm.sw.siemens.com/en-US/opcenter/
+  factorytalk:
+    title: Rockwell FactoryTalk
+    url: https://www.rockwellautomation.com/en-us/products/software/factorytalk.html
+  nexeed:
+    title: Bosch Nexeed
+    url: https://www.bosch-connected-industry.com/
+  cdk:
+    title: CDK Global
+    url: https://www.cdkglobal.com/
+  reynolds:
+    title: Reynolds and Reynolds
+    url: https://www.reyrey.com/
+  vinsolutions:
+    title: VinSolutions
+    url: https://www.vinsolutions.com/
+  telematics:
+    title: Connected vehicle telematics
+    url: https://www.sae.org/standards/content/j3016_202104/
+  here-maps:
+    title: HERE Technologies
+    url: https://www.here.com/platform
+  aptiv:
+    title: Aptiv
+    url: https://www.aptiv.com/
+  sap-aftermarket:
+    title: SAP Automotive
+    url: https://www.sap.com/industries/automotive.html
+  ivalua:
+    title: Ivalua
+    url: https://www.ivalua.com/
+  sap-s4auto:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  mitchell:
+    title: Mitchell International
+    url: https://www.mitchell.com/
+  jdpower:
+    title: J.D. Power
+    url: https://www.jdpower.com/business/automotive
+  polk:
+    title: S&P Global Mobility Polk
+    url: https://www.spglobal.com/mobility/
+  unece-r155:
+    title: UNECE WP.29 R155
+    url: https://unece.org/transport/documents/2021/03/standards/un-regulation-no-155-cyber-security-and-cyber-security

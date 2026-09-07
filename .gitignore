@@ -3,13 +3,17 @@ tools/.markcache/
 node_modules/
 package-lock.json
 
-# i18n build scratch and tooling (not shipped; runtime loads only app/i18n/<code>.json)
+# i18n build scratch and tooling (not shipped; runtime loads app/translations/<code>/*.json)
 tools/i18n_work/
 tools/build_i18n.js
 tools/smoke_i18n.js
 _audit_i18n.js
 _shot_bar.js
-app/i18n/.cache/
-app/i18n/_*.json
-app/i18n/manifest.json
-app/i18n/overrides/
+# translations build scratch (the sharded app/translations/<code>/ dicts ARE shipped)
+app/translations/.cache/
+app/translations/_*.json
+app/translations/manifest.json
+app/translations/overrides/
+
+# scratch probe diagnostics (never ship to the public repo)
+tools/*_probe.js

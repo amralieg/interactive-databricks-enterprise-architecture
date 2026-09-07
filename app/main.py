@@ -25,6 +25,12 @@ class Handler(SimpleHTTPRequestHandler):
     # for each of the page's sub-requests through the Apps proxy.
     protocol_version = "HTTP/1.1"
 
+    # Boards are served as readable YAML descriptors; stdlib mimetypes does not
+    # know .yaml, so register it (nosniff is set, and the runtime reads them as
+    # text, but an explicit type keeps the responses honest).
+    extensions_map = {**SimpleHTTPRequestHandler.extensions_map,
+                      ".yaml": "text/yaml", ".yml": "text/yaml"}
+
     def end_headers(self):
         # The page keeps its state in localStorage, so a stale cached copy after
         # an upgrade shows an old diagram against new saved state.

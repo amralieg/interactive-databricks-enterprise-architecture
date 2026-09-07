@@ -1,0 +1,938 @@
+name: Agriculture
+description: Farm operations, crop planning, input supply, commodity trading, and sustainability reporting across grower networks and co-ops.
+sources:
+  - name: Farm Management
+    icon: sheet
+    tiles:
+      - name: John Deere Operations Center
+        icon: iot
+        summary: Machine telemetry, as-applied maps and field boundaries from connected equipment.
+        citations:
+          - john-deere
+        category: Farm Management (FMIS) / Machine Data
+        what_it_is: Streams machine telemetry, as-applied maps and field boundaries from connected equipment, the ground truth for operations and prescriptions.
+        who_uses_it: Agronomy, Precision Ag Specialists and Field Scouts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-10 GB/day in season
+            interval: Daily + per-operation sync
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of machine events/sec at peak
+            interval: Continuous in-field telemetry
+      - name: Climate FieldView
+        icon: iot
+        summary: Planting, spraying and harvest layers with hybrid performance by field.
+        citations:
+          - climate-fieldview
+        category: Farm Management (FMIS) / Agronomy
+        what_it_is: Holds planting, spraying and harvest layers with hybrid performance by field, feeding yield response and prescription analysis.
+        who_uses_it: Agronomy, Lead Agronomists and Field Scouts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-5 GB/day in season
+            interval: Daily layer sync
+      - name: Traction Ag
+        icon: sheet
+        summary: Field plans, input tracking and profit and loss by field for growers.
+        citations:
+          - granular
+        category: Farm Financial & Field Management
+        what_it_is: Maintains field plans, input tracking and profit and loss by field for growers, the basis for cost-per-bushel analysis.
+        who_uses_it: Finance & Risk, Agronomy and grower operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB
+            interval: Daily sync
+  - name: ERP & Supply Chain
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA Agribusiness
+        icon: erp
+        summary: Grain contracts, settlements and inventory across elevators and processing.
+        citations:
+          - sap-agri
+        category: Agribusiness ERP
+        what_it_is: Holds grain contracts, settlements and inventory across elevators and processing, the system of record for commodity supply chain and finance.
+        who_uses_it: Grain Merchandising, Finance & Risk and Sustainability teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Oracle Food & Beverage
+        icon: erp
+        summary: Procurement, production and lot traceability for processors.
+        citations:
+          - oracle-fb
+        category: Food & Beverage ERP
+        what_it_is: Runs procurement, production and lot traceability for processors, the source of lot lineage behind traceability claims.
+        who_uses_it: Sustainability, Finance & Risk and processing operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch
+      - name: Agvance (SSI)
+        icon: erp
+        summary: Co-op grain accounting, patronage and settlements for ag retailers.
+        citations:
+          - agvance
+        category: Co-op Grain Accounting
+        what_it_is: Handles co-op grain accounting, patronage and settlements for ag retailers, the source of patronage pools and member returns.
+        who_uses_it: Finance & Risk, CFO & Controller and Member board teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch + settlement runs
+  - name: Commodity Markets
+    icon: market
+    tiles:
+      - name: CME Group Futures
+        icon: market
+        summary: Corn, soybean and wheat futures, options and settlement prices.
+        citations:
+          - cme
+        category: Commodity Futures Exchange
+        what_it_is: Carries corn, soybean and wheat futures, options and settlement prices, the hedging benchmark behind basis and position management.
+        who_uses_it: Grain Merchandising, Risk Desk and Head Merchandisers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (settlements + history)
+            interval: Daily settlement
+          stream:
+            types:
+              - structured
+            volume: hundreds of ticks/sec
+            interval: Continuous market data
+      - name: DTN ProphetX
+        icon: market
+        summary: Cash bids, basis and local elevator prices by location.
+        citations:
+          - dtn
+        category: Cash Grain & Basis Data
+        what_it_is: Provides cash bids, basis and local elevator prices by location, the local price signal for origination and basis trading.
+        who_uses_it: Grain Merchandising, Origination and Risk Desk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB
+            interval: Multiple intraday updates
+          stream:
+            types:
+              - structured
+            volume: tens of quotes/sec
+            interval: Continuous cash bids
+      - name: Barchart cmdty
+        icon: chart
+        summary: Historical cash and futures curves for hedging analysis.
+        citations:
+          - barchart
+        category: Market Data & Analytics
+        what_it_is: Supplies historical cash and futures curves for hedging analysis, the reference series behind basis-forecast models.
+        who_uses_it: Grain Merchandising, Quant & Basis and Data Scientists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (historical curves)
+            interval: Daily refresh
+  - name: Weather & Imagery
+    icon: stream
+    tiles:
+      - name: DTN Weather
+        icon: stream
+        summary: Hyperlocal forecasts, growing degree days and spray windows.
+        citations:
+          - dtn-weather
+        category: Agricultural Weather Data
+        what_it_is: Delivers hyperlocal forecasts, growing degree days and spray windows, joined to field boundaries for risk and operations timing.
+        who_uses_it: Agronomy, Co-op Executive Board and Field Scouts.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of updates/sec
+            interval: Continuous forecast updates
+      - name: Planet Labs Imagery
+        icon: iot
+        summary: Daily satellite NDVI and change detection by parcel.
+        citations:
+          - planet
+        category: Satellite Imagery
+        what_it_is: Provides daily satellite NDVI and change detection by parcel, the in-season crop-condition signal behind yield forecasts.
+        who_uses_it: Agronomy, Yield Modeling and Precision Ag Specialists.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: GBs/day (imagery + derived)
+            interval: Daily scenes
+      - name: Sentinel Hub
+        icon: globe
+        summary: Copernicus optical and radar scenes for crop condition.
+        citations:
+          - sentinel
+        category: Satellite Imagery
+        what_it_is: Supplies Copernicus optical and radar scenes for crop condition, complementing NDVI through cloud cover and for verification.
+        who_uses_it: Agronomy, Yield Modeling and Carbon Quantification teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: GBs per revisit
+            interval: Per satellite revisit
+  - name: Sustainability
+    icon: gavel
+    tiles:
+      - name: Regrow MRV
+        icon: gavel
+        summary: Practice verification and carbon quantification for regenerative programs.
+        citations:
+          - regrow
+        category: Carbon MRV Platform
+        what_it_is: Handles practice verification and carbon quantification for regenerative programs, the measurement basis behind issued credits.
+        who_uses_it: Sustainability, MRV & Verification and Carbon Program Lead teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Daily + verification cycles
+      - name: Indigo Carbon
+        icon: partner
+        summary: Carbon credit issuance and soil carbon sampling workflows.
+        citations:
+          - indigo
+        category: Carbon Credit Program
+        what_it_is: Runs carbon credit issuance and soil-carbon sampling workflows, the issuance and sampling record for the carbon registry.
+        who_uses_it: Sustainability, Carbon Program Lead and Scope 3 Reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 100s of MB
+            interval: Per sampling / issuance cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Legacy Co-op Mart
+        icon: fed
+        summary: Patronage and historical elevator marts queried in place under Unity Catalog.
+        category: Co-op Data Warehouse
+        what_it_is: Patronage and historical elevator marts kept in the legacy warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance & Risk, CFO & Controller and Member board analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: USDA NASS QuickStats
+        icon: api
+        summary: County yield, acreage and production statistics ingested for benchmarking.
+        citations:
+          - usda-nass
+        category: Government Ag Statistics
+        what_it_is: Provides county yield, acreage and production statistics ingested for benchmarking grower and regional performance.
+        who_uses_it: Agronomy, Finance & Risk and Data Scientists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB
+            interval: Periodic USDA releases
+      - name: USDA RMA Crop Insurance
+        icon: gavel
+        summary: Policy, acreage and indemnity files for risk programs.
+        citations:
+          - usda-rma
+        category: Crop Insurance Data
+        what_it_is: Supplies policy, acreage and indemnity files for risk programs, the basis for crop-insurance exposure and coverage analysis.
+        who_uses_it: Finance & Risk, Crop Insurance and Counterparty Risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 100s of MB
+            interval: Periodic + reporting cycles
+      - name: AgGateway ADAPT
+        icon: zplug
+        summary: Standardized machine and application data from mixed OEM fleets.
+        citations:
+          - aggateway
+        category: Machine Data Standard (ADAPT)
+        what_it_is: Standardises machine and application data from mixed OEM fleets, letting agronomy read as-applied data regardless of equipment brand.
+        who_uses_it: Agronomy, Precision Ag Specialists and Data Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day in season
+            interval: Per-operation sync
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Co-op Executive Board
+        mark: Genie One
+        summary: The CEO on margin per bushel and land strategy; the COO on harvest logistics, elevator throughput and cost per acre.
+        uses:
+          - - Genie One
+            - Ask what last harvest cost per acre without analyst delay.
+          - - AI/BI
+            - Margin and yield on certified Metric Views.
+          - - Unity Catalog
+            - One bushel definition across operations and finance.
+        sub:
+          - name: CEO
+            cares: margin per bushel, land strategy and the trade between growth and grower returns.
+          - name: Chief Operating Officer
+            cares: harvest logistics, elevator throughput and cost per acre across the network.
+          - name: Member Board
+            cares: patronage returns and the long-term value delivered back to grower-owners.
+        ucs:
+          - Harvest Logistics
+          - Weather Risk Alerts
+          - Patronage Planning
+          - Input Cost Optimization
+      - name: Agronomy
+        mark: AI/BI
+        summary: Hybrid selection, variable-rate prescriptions and scouting priorities, judged on yield per acre, input cost per bushel and nitrogen use.
+        uses:
+          - - Prescription Workbench
+            - VR seed and nitrogen plans by productivity zone.
+          - - AI/BI
+            - Yield response curves on governed trial data.
+        sub:
+          - name: Lead Agronomist
+            cares: hybrid selection and variable-rate plans that lift yield per acre.
+          - name: Field Scouts
+            cares: scouting priorities and where pest and disease pressure is building.
+          - name: Precision Ag Specialist
+            cares: productivity-zone mapping and nitrogen use efficiency by field.
+        ucs:
+          - Yield Forecasting
+          - Variable-Rate Prescriptions
+          - Weather Risk Alerts
+      - name: Grain Merchandising
+        mark: Model Serving
+        summary: Basis trading, hedging and origination against futures and local bids, managed on position, basis exposure and hedge P&L.
+        uses:
+          - - Merchandising Desk
+            - Position and basis exposure by location.
+          - - Model Serving
+            - Basis forecast models in the pricing path.
+        sub:
+          - name: Head Merchandiser
+            cares: basis positions and hedge P&L against futures and local bids.
+          - name: Origination
+            cares: grower contracts and where to bid to fill the elevator at target basis.
+          - name: Risk Desk
+            cares: position limits and futures and basis exposure across locations.
+        ucs:
+          - Basis Trading
+          - Harvest Logistics
+          - Input Cost Optimization
+      - name: Sustainability
+        mark: Lakehouse//RT
+        summary: Carbon programs, practice verification and Scope 3 reporting, tracked on carbon intensity, enrolled acres and credits issued per grower.
+        uses:
+          - - Carbon Registry
+            - Issuance pipeline and practice compliance by grower.
+          - - Lakehouse//RT
+            - Practice events at operational latency.
+        sub:
+          - name: Carbon Program Lead
+            cares: enrolled acres, practice compliance and credits issued per grower.
+          - name: MRV & Verification
+            cares: the measurement and verification behind every credit sent to a buyer.
+          - name: Scope 3 Reporting
+            cares: carbon intensity and water metrics reported to food-company buyers.
+        ucs:
+          - Carbon MRV
+          - Supply Chain Traceability
+      - name: Finance & Risk
+        mark: AI/BI
+        summary: Patronage, crop insurance and counterparty exposure, watching patronage pools, indemnity exposure and off-margin contracts.
+        uses:
+          - - AI/BI
+            - Patronage and hedge P&L on certified views.
+          - - Genie One
+            - Ask which contracts are off-margin this week.
+        sub:
+          - name: CFO & Controller
+            cares: patronage pools, working capital and grain accounting through fiscal close.
+          - name: Crop Insurance
+            cares: acreage reporting, indemnity exposure and RMA program compliance.
+          - name: Counterparty Risk
+            cares: off-margin contracts and counterparty exposure across the book.
+        ucs:
+          - Crop Insurance Analytics
+          - Input Cost Optimization
+          - Patronage Planning
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land equipment telemetry, satellite imagery, FMIS field plans and exchange ticks; own Bronze to Silver and the pager when the basis and yield tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for FMIS, ERP and commodity-market sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on machine and imagery feeds.
+          - - Lakewatch
+            - Freshness on the basis and yield tables merchandisers read at open.
+        sub:
+          - name: Ingestion Engineering
+            cares: equipment telemetry, imagery and exchange ticks landed Bronze to Silver.
+          - name: Pipeline On-Call
+            cares: the pager when the basis and yield tables stall before market open.
+          - name: Data Quality
+            cares: expectations on machine, imagery and FMIS feeds before agronomy reads them.
+        ucs:
+          - Yield Forecasting
+          - Basis Trading
+          - Harvest Logistics
+      - name: Data Scientists
+        mark: MLflow
+        summary: Yield-forecast, basis and soil-carbon quantification models built from imagery and trial data, and whether they still hold across a shifting season.
+        uses:
+          - - Feature Store
+            - Field and weather features read identically in training and serving.
+          - - MLflow
+            - Every yield and basis model tracked for audit and reproduction.
+          - - Model Serving
+            - Basis and yield models scored in the pricing and prescription path.
+        sub:
+          - name: Yield Modeling
+            cares: in-season yield forecasts from imagery, weather and hybrid response.
+          - name: Quant & Basis
+            cares: basis and hedge models that hold across a shifting season.
+          - name: Carbon Quantification
+            cares: soil-carbon models that survive third-party verification.
+        ucs:
+          - Yield Forecasting
+          - Basis Trading
+          - Carbon MRV
+      - name: App Developers
+        mark: Apps
+        summary: Ship the harvest command, prescription workbench and carbon registry apps agronomy and merchandising work in, hosted next to governed field data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for prescription and contract state.
+          - - Agent Bricks
+            - Agents that draft prescriptions and offers against governed tools.
+        sub:
+          - name: Operational Apps
+            cares: harvest command and prescription workbench next to governed field data.
+          - name: Registry & Contracts
+            cares: carbon registry and contract state on serverless Postgres.
+          - name: Agent Builders
+            cares: agents that draft prescriptions and offers against governed tools.
+        ucs:
+          - Harvest Logistics
+          - Variable-Rate Prescriptions
+          - Carbon MRV
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Grower and elevator dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for basis and yield questions in the merchandising channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Agronomy notebooks against governed field and trial data.
+  - name: Grower & Retail
+    icon: partner
+    tiles:
+      - name: Deere Ops Center API
+        icon: api
+        summary: Prescriptions and harvest summaries shared back to grower accounts.
+        citations:
+          - john-deere
+      - name: FieldView Plus
+        icon: partner
+        summary: Field layers and recommendations delivered to farmer subscriptions.
+        citations:
+          - climate-fieldview
+      - name: Retail Input Portal
+        icon: product
+        summary: Seed and chemical orders tied to field-level plans.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: VR Prescription Export
+        icon: iot
+        summary: Variable-rate files pushed to applicators before the window closes.
+      - name: Contract Offers
+        icon: market
+        summary: Origination offers written to grower CRM at target basis.
+        citations:
+          - bushel
+      - name: Elevator Receiving
+        icon: stream
+        summary: Scale tickets and moisture discounts flowing to settlement.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: USDA Reporting
+        icon: gavel
+        summary: Production and stocks reports filed from governed inventory.
+        citations:
+          - usda-nass
+      - name: Sustainability Disclosures
+        icon: share
+        summary: Carbon and water metrics shared to food company buyers.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Yield and sustainability products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Food companies and lenders reading live tables via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Harvest Command
+        icon: gauge
+        short: Season operations
+        summary: Live harvest progress, elevator queues and dryer capacity across the network.
+      - name: Prescription Workbench
+        icon: iot
+        short: Variable-rate plans
+        summary: Seed, nitrogen and chemical prescriptions by productivity zone before application.
+      - name: Merchandising Desk
+        icon: market
+        short: Basis and hedges
+        summary: Position, basis and hedge effectiveness by location and crop.
+      - name: Carbon Registry
+        icon: gavel
+        short: MRV pipeline
+        summary: Practice enrollment, verification status and credit issuance by grower.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Yield & Input Cost
+        icon: aibi
+        summary: Yield per acre, input cost per bushel and prescription performance by field.
+        kpis:
+          - Yield per acre
+          - Input cost per bushel
+          - Nitrogen use efficiency
+          - Forecast vs actual yield
+          - Prescription lift
+        teams:
+          - Agronomy
+          - Finance & Risk
+          - Co-op Executive Board
+      - name: Basis & Hedge P&L
+        icon: aibi
+        summary: Basis positions, hedge exposure and P&L across locations and commodities.
+        kpis:
+          - Basis position
+          - Hedge P&L
+          - Open exposure
+          - Position vs limit
+          - Origination volume
+        teams:
+          - Grain Merchandising
+          - Head Merchandiser
+          - Risk Desk
+      - name: Harvest Logistics
+        icon: aibi
+        summary: Harvest progress, elevator throughput and truck wait across the network.
+        kpis:
+          - Harvest progress
+          - Elevator throughput
+          - Truck wait time
+          - Cost per acre
+          - Grain shrink
+        teams:
+          - Co-op Executive Board
+          - Chief Operating Officer
+          - Origination
+      - name: Carbon & Patronage
+        icon: aibi
+        summary: Enrolled acres, credits issued and patronage pools by grower.
+        kpis:
+          - Enrolled acres
+          - Credits issued
+          - Carbon intensity
+          - Practice compliance
+          - Patronage pool
+        teams:
+          - Sustainability
+          - Finance & Risk
+          - Carbon Program Lead
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Yield & Agronomy Agent
+        icon: genie
+        summary: Ask about in-season yield, crop condition and prescription performance by field.
+        feeds:
+          - Planet Labs Imagery
+          - Climate FieldView
+          - John Deere Operations Center
+          - Yield, margin and carbon
+        teams:
+          - Agronomy
+          - Lead Agronomist
+          - Precision Ag Specialist
+        questions:
+          - What is the current yield estimate by field and hybrid?
+          - Which fields show declining crop condition on recent imagery?
+          - How did variable-rate prescriptions perform versus flat rate?
+          - Which fields have the best nitrogen use efficiency this season?
+          - Where is pest or disease pressure building right now?
+      - name: Basis & Merchandising Agent
+        icon: genie
+        summary: Explore basis positions, hedge exposure and origination against futures and local bids.
+        feeds:
+          - CME Group Futures
+          - DTN ProphetX
+          - SAP S/4HANA Agribusiness
+          - Yield, margin and carbon
+        teams:
+          - Grain Merchandising
+          - Head Merchandiser
+          - Risk Desk
+        questions:
+          - What is our basis position by location right now?
+          - How much futures and basis exposure is open against limits?
+          - Where should we bid to fill the elevator at target basis?
+          - What is hedge P&L by commodity this month?
+          - Which contracts are off-margin at current prices?
+      - name: Harvest & Elevator Ops Agent
+        icon: genie
+        summary: Answer harvest progress, elevator throughput and logistics bottleneck questions.
+        feeds:
+          - John Deere Operations Center
+          - Agvance (SSI)
+          - DTN Weather
+          - Conformed fields and assets
+        teams:
+          - Co-op Executive Board
+          - Chief Operating Officer
+          - Origination
+        questions:
+          - What is harvest progress by region and crop today?
+          - Where are elevator and dryer queues building right now?
+          - Which routes have the longest truck wait at receiving?
+          - What is cost per acre this harvest versus plan?
+          - Which spray or harvest windows are at weather risk this week?
+      - name: Carbon & Sustainability Agent
+        icon: genie
+        summary: Ask about enrolled acres, practice verification and credits issued per grower.
+        feeds:
+          - Regrow MRV
+          - Indigo Carbon
+          - Planet Labs Imagery
+          - Yield, margin and carbon
+        teams:
+          - Sustainability
+          - Carbon Program Lead
+          - MRV & Verification
+        questions:
+          - How many acres are enrolled in carbon programs by practice?
+          - Which enrolled fields are missing practice verification evidence?
+          - How many credits have been issued per grower this cycle?
+          - What is carbon intensity by crop for Scope 3 reporting?
+          - Which practices are at risk of failing third-party verification?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Yield Forecasting
+        short: Production
+        icon: chart
+        summary: In-season yield estimates from imagery, weather and hybrid response.
+        problem: Yield is guessed from last year's average and a windshield survey, so seed, input and marketing decisions are made months before anyone has a defensible number per field.
+        who_benefits: Agronomy
+        how_built: Satellite imagery, weather and hybrid-trial features are engineered in Feature Store and scored through Model Serving, with runs tracked in MLflow across the season.
+        components:
+          - Harvest Command
+          - Planet Labs Imagery
+          - Model Serving
+          - Feature Store
+          - MLflow
+        stories:
+          - title: Agerpoint partners with Databricks for agriculture data intelligence
+            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
+          - title: Databricks spatial joins for crop yield analysis and forecasting
+            url: https://www.databricks.com/blog/databricks-spatial-joins-now-17x-faster-out-box
+      - name: Variable-Rate Prescriptions
+        short: Agronomy
+        icon: iot
+        summary: Input rates optimized by zone rather than flat application.
+        problem: Inputs go on at flat rates because field, soil and yield layers live in different tools and never line up, so money is spent on acres that cannot return it.
+        who_benefits: Agronomy
+        how_built: Soil, yield and imagery layers are scored with AI Functions and Model Serving in the Prescription Workbench, then written back to the applicator and Deere Operations Center as VR files.
+        components:
+          - Prescription Workbench
+          - Model Serving
+          - AI Functions
+          - John Deere Operations Center
+          - Delta Lake
+        stories:
+          - title: 'Geospatial Unbounded: variable-rate prescription from soil, zones and weather'
+            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
+      - name: Basis Trading
+        short: Merchandising
+        icon: market
+        summary: Local basis positions managed against futures and storage.
+        problem: Basis is tracked on spreadsheets against futures and a dozen local bids, so positions and hedge exposure lag the market and a bad basis call quietly erodes margin on every bushel.
+        who_benefits: Grain Merchandising
+        how_built: Futures, cash bids and position feeds land in Lakehouse//RT and basis-forecast models scored in Model Serving surface position and exposure in the Merchandising Desk.
+        components:
+          - Merchandising Desk
+          - Lakehouse//RT
+          - Model Serving
+          - CME Group Futures
+          - DTN ProphetX
+      - name: Harvest Logistics
+        short: Operations
+        icon: stream
+        summary: Truck routing and elevator scheduling to minimize wait and shrink.
+        problem: At harvest, trucks, elevators and dryers are coordinated by phone, so queues build, grain shrinks in the wait and no one sees where the network is bottlenecked until it is too late.
+        who_benefits: Co-op Executive Board
+        how_built: Scale tickets, equipment telemetry and elevator status stream into Lakehouse//RT and route-and-scheduling logic surfaces live queues and dryer capacity in Harvest Command.
+        components:
+          - Harvest Command
+          - Lakehouse//RT
+          - John Deere Operations Center
+          - Model Serving
+          - Delta Lake
+      - name: Crop Insurance Analytics
+        short: Risk
+        icon: gavel
+        summary: Acreage and indemnity exposure modeled before planting decisions.
+        problem: Acreage and indemnity exposure is pieced together from policy files after planting, so coverage and risk decisions are made without a clear picture of what is really at stake.
+        who_benefits: Finance & Risk
+        how_built: USDA RMA policy and acreage files are conformed under Unity Catalog and modeled in AI/BI, so indemnity exposure and coverage scenarios are analysed before planting decisions are locked.
+        components:
+          - USDA RMA Crop Insurance
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+          - Genie One
+        stories:
+          - title: Real-Time Agricultural Risk Portfolio Management
+            url: https://www.databricks.com/resources/demos/videos/real-time-agricultural-risk-portfolio-management
+      - name: Carbon MRV
+        short: Sustainability
+        icon: partner
+        summary: Practice verification and quantification for credit programs.
+        problem: Carbon programs enroll acres faster than they can prove the outcome, and practice evidence stitched from spreadsheets and one-off models will not survive third-party verification.
+        who_benefits: Sustainability
+        how_built: Imagery, practice and soil data feed carbon models scored in Model Serving, with Unity Catalog holding auditable lineage from field practice to issued credit in the Carbon Registry.
+        components:
+          - Carbon Registry
+          - Model Serving
+          - Regrow MRV
+          - Unity Catalog
+          - Planet Labs Imagery
+        stories:
+          - title: Agerpoint partners with Databricks for agriculture and nature systems
+            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
+      - name: Supply Chain Traceability
+        short: Traceability
+        icon: product
+        summary: Lot lineage from field through elevator to customer.
+        problem: Provenance from field to customer is scattered across ERP, elevator and grower systems, so lot lineage and sourcing claims are assembled by hand and hard to defend to a buyer or auditor.
+        who_benefits: Sustainability
+        how_built: Field, elevator and ERP data are conformed under Unity Catalog and published as governed data products shared to food-company buyers and lenders over OpenSharing.
+        components:
+          - SAP S/4HANA Agribusiness
+          - Unity Catalog
+          - Data Products
+          - OpenSharing
+          - Delta Lake
+        stories:
+          - title: UPL optimizes supply chain operations with demand forecasting
+            url: https://www.databricks.com/customers/upl
+      - name: Input Cost Optimization
+        short: Finance
+        icon: erp
+        summary: Seed and chemical spend per bushel against plan.
+        problem: Seed and chemical spend is reconciled against plan long after the season, so overspend on an acre or a hybrid is found at close rather than while there is still time to change the order.
+        who_benefits: Finance & Risk
+        how_built: Application records, ERP purchases and yield outcomes are conformed on Delta Lake and tracked in AI/BI, so cost per bushel is measured against plan by field, hybrid and input.
+        components:
+          - Traction Ag
+          - SAP S/4HANA Agribusiness
+          - Delta Lake
+          - AI/BI
+          - Genie One
+        stories:
+          - title: UPL optimizes supply chain operations with demand forecasting
+            url: https://www.databricks.com/customers/upl
+          - title: FMC optimizes harvests with data and AI
+            url: https://www.databricks.com/customers/fmc-corporation
+      - name: Weather Risk Alerts
+        short: Risk
+        icon: stream
+        summary: Frost, drought and spray window alerts pushed to operations.
+        problem: Frost, drought and spray-window warnings arrive as generic regional forecasts, so operations cannot tell which fields are actually at risk or act before the window to protect them closes.
+        who_benefits: Co-op Executive Board
+        how_built: Hyperlocal forecasts stream into Lakehouse//RT and are joined to field boundaries, so frost, drought and spray-window alerts push to operations in Harvest Command as risk emerges.
+        components:
+          - Harvest Command
+          - DTN Weather
+          - Lakehouse//RT
+          - Planet Labs Imagery
+          - AI Functions
+        stories:
+          - title: Real-Time Agricultural Risk Portfolio Management
+            url: https://www.databricks.com/resources/demos/videos/real-time-agricultural-risk-portfolio-management
+      - name: Patronage Planning
+        short: Finance
+        icon: chart
+        summary: Patronage pools modeled before fiscal close.
+        problem: Patronage pools are modeled in spreadsheets against provisional volumes, so the board reaches fiscal close without a reliable view of what can be returned to grower-members.
+        who_benefits: Finance & Risk
+        how_built: Grain accounting, volume and margin data are conformed on Delta Lake and modeled in AI/BI, so patronage pools and member returns can be scenario-tested before fiscal close.
+        components:
+          - Agvance (SSI)
+          - Delta Lake
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+medallion:
+  Bronze:
+    short: Raw field and market feeds
+    summary: Telemetry from equipment, weather stations, satellite imagery and exchange ticks, landed exactly as received so a yield estimate can be replayed.
+  Silver:
+    short: Conformed fields and assets
+    summary: Fields, parcels, equipment and contracts resolved into single entities across FMIS, ERP and trading systems.
+  Gold:
+    short: Yield, margin and carbon
+    summary: 'Contracted products agronomy and finance run on: yield per acre, input cost per bushel, basis and carbon intensity scores.'
+citation_index:
+  john-deere:
+    title: John Deere Operations Center
+    url: https://www.deere.com/en/technology-products/precision-ag-technology/operations-center/
+  climate-fieldview:
+    title: Climate FieldView
+    url: https://www.climate.com/
+  granular:
+    title: Traction Ag
+    url: https://tractionag.com
+  sap-agri:
+    title: SAP Agribusiness
+    url: https://www.sap.com/industries/agribusiness.html
+  oracle-fb:
+    title: Oracle Food and Beverage
+    url: https://www.oracle.com/food-beverage/
+  bushel:
+    title: Bushel
+    url: https://bushelpowered.com/
+  agvance:
+    title: Agvance (SSI)
+    url: https://www.agvance.net
+  cme:
+    title: CME Group
+    url: https://www.cmegroup.com/markets/agriculture.html
+  dtn:
+    title: DTN
+    url: https://www.dtn.com/
+  barchart:
+    title: Barchart
+    url: https://www.barchart.com/cmdty
+  dtn-weather:
+    title: DTN Weather
+    url: https://www.dtn.com/weather/
+  planet:
+    title: Planet Labs
+    url: https://www.planet.com/
+  sentinel:
+    title: Sentinel Hub
+    url: https://www.sentinel-hub.com/
+  regrow:
+    title: Regrow
+    url: https://www.regrow.ag/
+  indigo:
+    title: Indigo Ag
+    url: https://www.indigoag.com/
+  usda-nass:
+    title: USDA NASS
+    url: https://quickstats.nass.usda.gov/
+  usda-rma:
+    title: USDA RMA
+    url: https://www.rma.usda.gov/
+  aggateway:
+    title: AgGateway ADAPT
+    url: https://www.aggateway.org/

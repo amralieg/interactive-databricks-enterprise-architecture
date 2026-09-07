@@ -1,0 +1,936 @@
+name: Apparel & Fashion
+description: Seasonal collections, omnichannel retail, demand sensing, and sustainable sourcing across design, manufacturing, and direct-to-consumer channels.
+sources:
+  - name: PLM & Design
+    icon: product
+    tiles:
+      - name: Centric PLM
+        icon: product
+        summary: Style masters, BOMs, colorways and sample approvals through development.
+        citations:
+          - centric-plm
+        category: Product Lifecycle Management (PLM)
+        what_it_is: Holds style masters, BOMs, colorways and sample approvals through development, the system of record for the line as it takes shape.
+        who_uses_it: Product Development, Design and Sourcing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+      - name: Adobe Substance
+        icon: apps
+        summary: Material libraries and 3D render assets linked to style records.
+        citations:
+          - adobe-substance
+        category: 3D Material / Design Software
+        what_it_is: Manages material libraries and 3D render assets linked to style records for digital design and virtual sampling.
+        who_uses_it: Design and Product Development teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+            volume: 10s-100s GB (assets)
+            interval: On-save / nightly asset sync
+      - name: CLO 3D
+        icon: apps
+        summary: Digital samples and fit iterations before physical proto.
+        citations:
+          - clo-3d
+        category: 3D Sampling / Fit Simulation
+        what_it_is: Produces digital samples and fit iterations before a physical proto, cutting sample rounds from the calendar.
+        who_uses_it: Product Development, Design and Fit teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - semi-structured
+            volume: GBs/day (3D + fit)
+            interval: On-iteration / daily sync
+  - name: ERP & Supply
+    icon: erp
+    tiles:
+      - name: Infor CloudSuite Fashion
+        icon: erp
+        summary: Seasonal collections, purchasing and factory allocations.
+        citations:
+          - infor-fashion
+        category: Fashion ERP System
+        what_it_is: Runs seasonal collections, purchasing and factory allocations, the commercial system of record for buy and ownership.
+        who_uses_it: Merchandising, Planning and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly close + hourly deltas
+      - name: SAP S/4HANA Retail
+        icon: erp
+        summary: Inventory, allocation and financial close for multi-brand houses.
+        citations:
+          - sap-retail
+        category: Retail ERP System
+        what_it_is: Holds inventory, allocation and the financial close for multi-brand houses, reconciling ownership and margin across banners.
+        who_uses_it: Finance, Merchandising and Master Data teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Nightly close + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous CDC
+      - name: Blue Yonder WMS
+        icon: stream
+        summary: Warehouse execution, pick paths and store replenishment.
+        citations:
+          - blue-yonder-wms
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs distribution-centre execution, pick paths and store replenishment, emitting the movements behind door availability.
+        who_uses_it: DC Operations, Store Replenishment and Logistics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Multiple daily waves
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous movement events
+  - name: Commerce & POS
+    icon: market
+    tiles:
+      - name: Shopify Plus
+        icon: partner
+        summary: DTC orders, returns and customer profiles across owned sites.
+        citations:
+          - shopify
+        category: DTC E-Commerce Platform
+        what_it_is: Powers direct-to-consumer orders, returns and customer profiles across owned sites, emitting the digital demand signal.
+        who_uses_it: Ecommerce, Digital & CRM teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly order sync
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous clickstream
+      - name: Salesforce Commerce Cloud
+        icon: partner
+        summary: Omnichannel carts, promotions and clienteling data.
+        citations:
+          - sf-commerce
+        category: E-Commerce Platform
+        what_it_is: Runs omnichannel carts, promotions and clienteling, emitting the browse, cart and order events behind the online journey.
+        who_uses_it: Ecommerce, Digital Merchandising and Marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of events/sec at peak
+            interval: Continuous clickstream + orders
+      - name: Oracle Xstore POS
+        icon: market
+        summary: Store transactions, associates and endless aisle lookups.
+        citations:
+          - oracle-xstore
+        category: Point-of-Sale (POS) System
+        what_it_is: Captures store transactions, associate actions and endless-aisle lookups across the store fleet for sell-through and clienteling.
+        who_uses_it: Retail Store Operations and Digital & CRM teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: End-of-day polling
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of transactions/sec at peak
+            interval: Continuous (near real-time)
+  - name: Manufacturing
+    icon: zplug
+    tiles:
+      - name: Lectra Fashion
+        icon: zplug
+        summary: Marker making, cutting room and factory KPIs.
+        citations:
+          - lectra
+        category: Cutting Room / Manufacturing Software
+        what_it_is: Runs marker making, cutting-room execution and factory KPIs, emitting the production and utilisation data behind supply.
+        who_uses_it: Sourcing, Production and Manufacturing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day
+            interval: Daily batch
+      - name: Gerber Technology
+        icon: iot
+        summary: Spreading, cutting and unit production tracking.
+        citations:
+          - gerber
+        category: Cutting / Production Automation
+        what_it_is: Tracks spreading, cutting and unit production on the factory floor, emitting throughput and WIP telemetry.
+        who_uses_it: Production, Manufacturing and T&A teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous production events
+      - name: Fast React Plan
+        icon: sheet
+        summary: Factory capacity, T&A calendars and critical path.
+        citations:
+          - fast-react
+        category: Production Planning System
+        what_it_is: Plans factory capacity, time-and-action calendars and the critical path so delay risk is visible before a launch window slips.
+        who_uses_it: Production / T&A and Sourcing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily plan runs
+  - name: Sustainability
+    icon: gavel
+    tiles:
+      - name: Higg Index MSI
+        icon: gavel
+        summary: Material sustainability scores and facility social audits.
+        citations:
+          - higg
+        category: Sustainability Scoring Platform
+        what_it_is: Supplies material sustainability scores and facility social audits used to score styles and factories on ESG.
+        who_uses_it: Sourcing, Sustainability and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/month
+            interval: Monthly / on-audit refresh
+      - name: Textile Exchange
+        icon: partner
+        summary: Preferred fiber certifications and chain of custody.
+        citations:
+          - textile-exchange
+        category: Materials Certification Registry
+        what_it_is: Provides preferred-fiber certifications and chain-of-custody records for due diligence and sustainability claims.
+        who_uses_it: Sourcing, Sustainability and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs/month
+            interval: Periodic certification updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Wholesale Partner Mart
+        icon: fed
+        summary: Department store sell-in and chargeback marts queried in place under Unity Catalog.
+        category: Wholesale Data Mart
+        what_it_is: Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Wholesale, Finance and Merchandising analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Edited Retail Intel
+        icon: market
+        summary: Competitor pricing, assortment and markdown signals by market.
+        citations:
+          - edited
+        category: Retail Intelligence Provider
+        what_it_is: Supplies competitor pricing, assortment and markdown signals by market so merchandising can price and range against the field.
+        who_uses_it: Merchandising, Pricing and Buying teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day
+            interval: Daily competitive feed
+      - name: WGSN Trend Forecast
+        icon: ztarget
+        summary: Macro trends, color and silhouette forecasts for line planning.
+        citations:
+          - wgsn
+        category: Trend Forecasting Service
+        what_it_is: Provides macro trend, color and silhouette forecasts that inform line planning and the seasonal buy.
+        who_uses_it: Design, Merchandising and Planning teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: MBs-GBs/season
+            interval: Seasonal + monthly updates
+      - name: Open Supply Hub
+        icon: globe
+        summary: Factory disclosure and supplier mapping for due diligence.
+        citations:
+          - opensupplyhub
+        category: Supplier Disclosure Registry
+        what_it_is: Supplies factory disclosure and supplier mapping consumed inbound for supply-chain due diligence and ESG.
+        who_uses_it: Sourcing, Sustainability and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs/month
+            interval: Periodic disclosure refresh
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Brand President & CFO
+        mark: Genie One
+        summary: The CEO on brand heat and wholesale sell-in; the CFO on gross margin, full-price sell-through and inventory ownership.
+        uses:
+          - - Genie One
+            - Ask what last collection's full-price sell-through was.
+          - - AI/BI
+            - Margin and OTB on certified Metric Views.
+          - - Unity Catalog
+            - One SKU definition across channels.
+        sub:
+          - name: Brand President / CEO
+            cares: brand heat, wholesale sell-in and the health of the full-price business.
+          - name: CFO
+            cares: gross margin, full-price sell-through and the cash tied up in inventory ownership.
+          - name: Financial Planning
+            cares: OTB budgets, markdown liability and the season's margin bridge.
+        ucs:
+          - Inventory Right-Sizing
+          - Wholesale Chargebacks
+          - Markdown Optimization
+      - name: Merchandising
+        mark: AI/BI
+        summary: Assortment breadth, depth, pricing and markdown cadence by door and channel, judged on sell-through rate, weeks of supply and GMROI.
+        uses:
+          - - Allocation Optimizer
+            - Size curves and door profiles before allocation locks.
+          - - AI/BI
+            - Sell-through and WOS on governed POS.
+        sub:
+          - name: Buyers
+            cares: assortment breadth and depth and the sell-through of every style they bought.
+          - name: Merchandise Planners
+            cares: pricing, markdown cadence and GMROI by door and channel.
+          - name: Trading
+            cares: weeks of supply and in-season reaction on the styles moving now.
+        ucs:
+          - Markdown Optimization
+          - Demand Sensing
+          - Size Curve Optimization
+      - name: Planning & Allocation
+        mark: Model Serving
+        summary: Open-to-buy, size curves and replenishment against demand forecasts, balancing receipt plans, in-stock rate and markdown liability.
+        uses:
+          - - OTB Workbench
+            - Receipt plans against sell-through scenarios.
+          - - Model Serving
+            - Demand forecasts in the allocation path.
+        sub:
+          - name: Demand Planners
+            cares: the forecast per style and door and how fast it moves with the trend.
+          - name: Allocators
+            cares: size curves, receipt plans and the in-stock rate at each door.
+          - name: Replenishment
+            cares: weeks of supply and refill timing against markdown liability.
+        ucs:
+          - Demand Sensing
+          - Size Curve Optimization
+          - Omnichannel Fulfillment
+          - Inventory Right-Sizing
+      - name: Sourcing & Production
+        mark: Lakehouse//RT
+        summary: Factory capacity, time-and-action risk and cost negotiations, tracked on on-time delivery, WIP by PO and landed cost per unit.
+        uses:
+          - - Factory Tracker
+            - WIP and delay risk by PO and factory.
+          - - Lakehouse//RT
+            - Production milestones at operational latency.
+        sub:
+          - name: Sourcing Managers
+            cares: landed cost per unit and the factory negotiation behind it.
+          - name: Production / T&A
+            cares: on-time delivery, WIP by PO and the critical-path calendar.
+          - name: Product Development
+            cares: fit, sample approvals and the path from design to proto.
+        ucs:
+          - Factory Risk Monitoring
+          - 3D Sample Reduction
+          - Sustainable Sourcing
+      - name: Digital & CRM
+        mark: Apps
+        summary: Clienteling, loyalty and personalization across stores and DTC, measured on repeat rate, clienteled revenue and conversion.
+        uses:
+          - - Clienteling App
+            - Associate recommendations on governed customer profiles.
+          - - Apps
+            - Store apps hosted next to governed data.
+        sub:
+          - name: Ecommerce
+            cares: DTC conversion, on-site personalization and the owned-site funnel.
+          - name: CRM & Loyalty
+            cares: repeat rate, clienteled revenue and lifetime value across channels.
+          - name: Retail Store Ops
+            cares: associate clienteling and endless-aisle lookups on the floor.
+        ucs:
+          - Clienteling & CRM
+          - Omnichannel Fulfillment
+          - Demand Sensing
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land POS, e-commerce, PLM style masters and factory WIP; own Bronze to Silver and the pager when the sell-through tables merchandisers trade on stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for ERP, PLM and commerce sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on POS and production feeds.
+          - - Lakewatch
+            - Freshness on the sell-through tables the trading room reads every morning.
+        sub:
+          - name: Ingestion Engineers
+            cares: managed connectors for ERP, PLM, POS and commerce feeds.
+          - name: Pipeline Engineers
+            cares: Bronze-to-Silver reliability and expectations on the sell-through tables.
+          - name: Platform / SRE
+            cares: the pager when the trading-room tables stall before market open.
+        ucs:
+          - Demand Sensing
+          - Omnichannel Fulfillment
+          - Factory Risk Monitoring
+      - name: Data Scientists
+        mark: MLflow
+        summary: Short-lifecycle demand-sensing, size-curve and markdown-optimisation models, and whether they still hold across a new season's assortment.
+        uses:
+          - - Feature Store
+            - Style and door features read identically in training and serving.
+          - - MLflow
+            - Every demand and markdown model tracked for audit and reproduction.
+          - - Model Serving
+            - Demand and markdown models scored in the allocation path.
+        sub:
+          - name: Demand Scientists
+            cares: short-lifecycle demand-sensing and size-curve models per season.
+          - name: Pricing Scientists
+            cares: markdown-optimisation and price-elasticity models that hold through the season.
+          - name: MLOps
+            cares: training-to-serving parity and whether last season's model still holds.
+        ucs:
+          - Demand Sensing
+          - Markdown Optimization
+          - Size Curve Optimization
+      - name: App Developers
+        mark: Apps
+        summary: Ship the OTB workbench, allocation optimizer, factory tracker and clienteling apps merchandising and stores work in, next to governed style data.
+        uses:
+          - - Apps
+            - Operational and store screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for allocation and clienteling state.
+          - - Agent Bricks
+            - Agents that draft receipt and markdown moves against governed tools.
+        sub:
+          - name: Full-Stack Engineers
+            cares: the OTB, allocation and factory screens merchandising works in.
+          - name: Store App Engineers
+            cares: the clienteling and endless-aisle app on the sales floor.
+          - name: Agent Engineers
+            cares: agents that draft receipt and markdown moves against governed tools.
+        ucs:
+          - Clienteling & CRM
+          - Markdown Optimization
+          - Inventory Right-Sizing
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Looker
+        icon: chart
+        summary: Merchandising and finance dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for sell-through and OTB in the trading room.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Planning notebooks against governed style and sales data.
+  - name: Wholesale & Retail
+    icon: partner
+    tiles:
+      - name: EDI 850/856 ASN
+        icon: api
+        summary: Wholesale orders and advance ship notices to department store partners.
+      - name: Endless Aisle API
+        icon: partner
+        summary: Store lookups against central inventory for clienteling.
+        citations:
+          - oracle-xstore
+      - name: Marketplace Feeds
+        icon: globe
+        summary: Assortment and inventory synced to Zalando and Farfetch.
+        citations:
+          - shopify
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Allocation Releases
+        icon: stream
+        summary: Door-level allocations pushed to WMS before pick waves.
+      - name: Price & Markdown
+        icon: market
+        summary: Markdown recommendations written to POS and commerce.
+        citations:
+          - sf-commerce
+      - name: Factory PO Updates
+        icon: zplug
+        summary: Revised quantities and dates sent to vendor portals.
+        citations:
+          - fast-react
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: EU DPP Readiness
+        icon: gavel
+        summary: Digital product passport attributes assembled from PLM and supply chain.
+      - name: Modern Slavery Reports
+        icon: share
+        summary: Supplier audit status filed from governed facility data.
+        citations:
+          - higg
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Style and sell-through products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Wholesale partners reading inventory via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: OTB Workbench
+        icon: sheet
+        short: Receipt planning
+        summary: Open-to-buy scenarios by collection before purchase orders are released.
+      - name: Allocation Optimizer
+        icon: market
+        short: Door profiles
+        summary: Size curves and door-level allocation against demand and constraints.
+      - name: Factory Tracker
+        icon: zplug
+        short: Production WIP
+        summary: PO milestones, delay risk and air-freight decisions before launch windows slip.
+      - name: Clienteling App
+        icon: custlake
+        short: Store associate
+        summary: Recommendations and endless aisle on governed customer and inventory data.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Sell-Through & Margin
+        icon: aibi
+        summary: Sell-through, full-price rate and margin by collection on certified Metric Views.
+        kpis:
+          - Sell-through rate
+          - Full-price sell-through
+          - Gross margin
+          - GMROI
+          - Markdown rate
+        teams:
+          - Merchandising
+          - Brand President & CFO
+          - Planning & Allocation
+      - name: Inventory & OTB
+        icon: aibi
+        summary: Open-to-buy, weeks of supply and in-stock across doors and channels.
+        kpis:
+          - Open-to-buy
+          - Weeks of supply
+          - In-stock rate
+          - Markdown liability
+          - Inventory turns
+        teams:
+          - Planning & Allocation
+          - Merchandising
+          - Brand President & CFO
+      - name: Sourcing & Production
+        icon: aibi
+        summary: Factory on-time delivery, WIP and landed cost across the supply base.
+        kpis:
+          - On-time delivery
+          - WIP by PO
+          - Landed cost per unit
+          - T&A adherence
+          - Air-freight rate
+        teams:
+          - Sourcing & Production
+          - Merchandising
+          - Brand President & CFO
+      - name: Customer & Clienteling
+        icon: aibi
+        summary: Repeat rate, clienteled revenue and lifetime value across channels.
+        kpis:
+          - Repeat rate
+          - Clienteled revenue
+          - Customer lifetime value
+          - DTC conversion
+          - Offer response rate
+        teams:
+          - Digital & CRM
+          - Merchandising
+          - Brand President & CFO
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Sell-Through & Margin Agent
+        icon: genie
+        summary: Ask about sell-through, full-price rate and margin by collection in plain language.
+        feeds:
+          - Oracle Xstore POS
+          - Shopify Plus
+          - Infor CloudSuite Fashion
+          - Sell-through, margin, OTB
+        teams:
+          - Merchandising
+          - Brand President & CFO
+          - Planning & Allocation
+        questions:
+          - What was full-price sell-through for the last collection?
+          - Which styles are overstocked heading into markdown?
+          - What is gross margin and GMROI by category and door?
+          - How is weeks of supply trending versus the plan?
+          - Which styles need a markdown before margin erodes?
+      - name: Planning & Allocation Agent
+        icon: genie
+        summary: Explore open-to-buy, size curves and in-stock across doors and channels.
+        feeds:
+          - Infor CloudSuite Fashion
+          - Blue Yonder WMS
+          - Conformed styles and channels
+        teams:
+          - Planning & Allocation
+          - Merchandising
+          - Brand President & CFO
+        questions:
+          - What is open-to-buy remaining by department and collection?
+          - Which doors are short on the fastest-selling sizes?
+          - What is in-stock rate by door and style right now?
+          - Where is markdown liability building against the plan?
+          - Which size curves are misaligned to door demand?
+      - name: Sourcing & Production Agent
+        icon: genie
+        summary: Answer factory WIP, on-time delivery and sustainability questions across the supply base.
+        feeds:
+          - Fast React Plan
+          - Centric PLM
+          - Lectra Fashion
+          - Higg Index MSI
+        teams:
+          - Sourcing & Production
+          - Merchandising
+          - Brand President & CFO
+        questions:
+          - Which POs are at risk of missing the launch window?
+          - What is on-time delivery by factory and season?
+          - Where is WIP stalled against the critical path?
+          - Which styles have unresolved sustainability or audit flags?
+          - What is landed cost per unit trending by sourcing region?
+      - name: Customer & Clienteling Agent
+        icon: genie
+        summary: Ask about repeat rate, clienteled revenue and personalisation across channels.
+        feeds:
+          - Salesforce Commerce Cloud
+          - Oracle Xstore POS
+          - Shopify Plus
+        teams:
+          - Digital & CRM
+          - Merchandising
+          - Brand President & CFO
+        questions:
+          - What is repeat purchase rate by customer segment?
+          - How much revenue is clienteled versus walk-in?
+          - Which high-value customers have lapsed this season?
+          - What is DTC conversion by channel and device?
+          - Which segments respond best to personalised offers?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Demand Sensing
+        short: Planning
+        icon: chart
+        summary: Short-lifecycle forecasts updated from POS and digital signals.
+        problem: Fashion sells out or gets marked down before anyone reads the signal, and forecasts built on last year's like-for-like miss the trend and the weather, so the buy is wrong the moment the season turns.
+        who_benefits: Planning & Allocation
+        how_built: POS and e-commerce signals land through Lakeflow onto Delta Lake, and demand-sensing models tracked in MLflow score through Model Serving into the OTB Workbench so plans move weekly, not seasonally.
+        components:
+          - OTB Workbench
+          - Shopify Plus
+          - Model Serving
+          - MLflow
+          - Lakeflow
+          - Delta Lake
+        stories:
+          - title: ABFRL forecasts trends, demand and pricing on Databricks
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+          - title: Prada Group tailors their AI strategy with forecasting models
+            url: https://www.databricks.com/customers/prada-group
+      - name: Size Curve Optimization
+        short: Allocation
+        icon: product
+        summary: Size profiles tuned by door cluster and sell-through.
+        problem: Size curves are set once at the chain level, so popular sizes stock out while the odd sizes pile into markdown, and door-level demand and returns never feed back into the next allocation.
+        who_benefits: Planning & Allocation
+        how_built: Sell-through and returns by door cluster are conformed on Delta Lake, scored with Model Serving off Feature Store, and the Allocation Optimizer sets size profiles before allocation locks.
+        components:
+          - Allocation Optimizer
+          - Oracle Xstore POS
+          - Model Serving
+          - Feature Store
+          - Delta Lake
+        stories:
+          - title: ABFRL scales ML to store-level SKU assortment and allocation
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+      - name: Markdown Optimization
+        short: Pricing
+        icon: market
+        summary: Markdown timing and depth maximizing margin recovery.
+        problem: 'Markdowns are taken on a calendar rather than on evidence, so margin walks out the door: too deep too early on styles that would have sold, too late on the ones that never will.'
+        who_benefits: Merchandising
+        how_built: Sell-through, inventory and price-elasticity features on Delta Lake feed markdown models in Model Serving, with recommendations written back to POS and commerce and watched in AI/BI.
+        components:
+          - Model Serving
+          - Salesforce Commerce Cloud
+          - AI/BI
+          - Delta Lake
+          - MLflow
+        stories:
+          - title: ABFRL builds an in-season markdown recommendation model
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+      - name: Factory Risk Monitoring
+        short: Sourcing
+        icon: zplug
+        summary: T&A delays flagged before launch dates are missed.
+        problem: A slipped fabric date or a stalled cut cascades into a missed launch window, but time-and-action status lives in factory emails and spreadsheets, so the risk is seen only once the order is already late.
+        who_benefits: Sourcing & Production
+        how_built: PLM milestones and factory WIP land through Lakeflow onto Delta Lake at operational latency in Lakehouse//RT, and the Factory Tracker flags delay risk by PO before air-freight is forced.
+        components:
+          - Factory Tracker
+          - Fast React Plan
+          - Centric PLM
+          - Lakehouse//RT
+          - Lakeflow
+          - Delta Lake
+      - name: Sustainable Sourcing
+        short: ESG
+        icon: gavel
+        summary: Preferred materials and audited factories scored at style level.
+        problem: Buyers pick materials and factories with no live view of sustainability scores or audit status, so ESG claims and due-diligence rules are reconciled after the buy instead of shaping it.
+        who_benefits: Sourcing & Production
+        how_built: Higg material scores and factory disclosures are conformed under Unity Catalog and joined to style records, scored at style level and read in AI/BI so sourcing sees the ESG picture before commitment.
+        components:
+          - Higg Index MSI
+          - Open Supply Hub
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+      - name: Omnichannel Fulfillment
+        short: Operations
+        icon: stream
+        summary: Ship-from-store and BOPIS against unified inventory.
+        problem: Store and warehouse stock sit in separate systems, so ship-from-store and BOPIS promise inventory that isn't there and cancel orders a nearby store could have filled.
+        who_benefits: Planning & Allocation
+        how_built: POS, e-commerce and WMS feeds are unified on Delta Lake in near real time through Lakehouse//RT, exposing one governed inventory position that fulfilment routing and store Apps read.
+        components:
+          - Blue Yonder WMS
+          - Shopify Plus
+          - Lakehouse//RT
+          - Delta Lake
+          - Apps
+      - name: Clienteling & CRM
+        short: Retail
+        icon: custlake
+        summary: High-value customers recognized in every channel.
+        problem: A shopper is a loyalty number in-store, an email in DTC and a cookie online, so associates cannot recognise the high-value customer in front of them and personalization stays generic.
+        who_benefits: Digital & CRM
+        how_built: Store, DTC and loyalty identities are resolved on Delta Lake under Unity Catalog into CustomerLake profiles, and the Clienteling App serves associate recommendations over Lakebase.
+        components:
+          - Clienteling App
+          - Salesforce Commerce Cloud
+          - CustomerLake
+          - Unity Catalog
+          - Lakebase
+        stories:
+          - title: Skechers personalizes experiences for every customer
+            url: https://www.databricks.com/customers/skechers
+          - title: MUSINSA uses data to inspire smart fashion choices
+            url: https://www.databricks.com/customers/musinsa
+          - title: Myntra delivers personalized shopping experiences
+            url: https://www.databricks.com/customers/myntra
+      - name: Wholesale Chargebacks
+        short: Finance
+        icon: erp
+        summary: Deductions reconciled to shipment and compliance data.
+        problem: Department stores deduct for late, short or non-compliant shipments, and disputing a chargeback means matching it by hand to the PO, ASN and routing rules across systems, so most are written off.
+        who_benefits: Brand President & CFO
+        how_built: Shipment, order and compliance data are conformed on Delta Lake and reconciled in AI/BI against the Wholesale Partner Mart, surfacing which deductions are valid and which to dispute.
+        components:
+          - Wholesale Partner Mart
+          - SAP S/4HANA Retail
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+      - name: 3D Sample Reduction
+        short: Design
+        icon: apps
+        summary: Physical samples replaced by digital fit approval.
+        problem: Every style spins up multiple physical protos shipped between design and factories, adding weeks and cost to the calendar and a material footprint the sustainability targets can no longer absorb.
+        who_benefits: Sourcing & Production
+        how_built: 3D samples and material libraries from CLO 3D and Adobe Substance are governed as assets under Unity Catalog beside PLM style records, so fit is approved digitally before a physical proto is cut.
+        components:
+          - CLO 3D
+          - Adobe Substance
+          - Centric PLM
+          - Unity Catalog
+          - Delta Lake
+      - name: Inventory Right-Sizing
+        short: Finance
+        icon: chart
+        summary: WOS targets by category before excess ownership builds.
+        problem: Excess inventory ties up cash and forces end-of-season markdown, but weeks-of-supply is read on a lag from stale reports, so overbuys are visible only once the ownership is already on the books.
+        who_benefits: Brand President & CFO
+        how_built: Sell-through and on-hand across channels are conformed on Delta Lake into certified Metric Views, so weeks-of-supply by category is watched in AI/BI and Genie One before excess builds.
+        components:
+          - Infor CloudSuite Fashion
+          - AI/BI
+          - Genie One
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: ABFRL anticipates the right product mix and quantities on Databricks
+            url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
+medallion:
+  Bronze:
+    short: Raw style and sales feeds
+    summary: POS, e-commerce, PLM and factory WIP events landed exactly as received so a markdown or a allocation can be replayed.
+  Silver:
+    short: Conformed styles and channels
+    summary: Styles, SKUs, stores and digital channels resolved into single entities across ERP, PLM and commerce platforms.
+  Gold:
+    short: Sell-through, margin, OTB
+    summary: 'Contracted products merchandising and finance run on: sell-through rate, full-price sell-through, OTB and margin by collection.'
+citation_index:
+  centric-plm:
+    title: Centric PLM
+    url: https://www.centricsoftware.com/
+  adobe-substance:
+    title: Adobe Substance 3D
+    url: https://www.adobe.com/products/substance3d.html
+  clo-3d:
+    title: CLO 3D
+    url: https://www.clo3d.com/
+  infor-fashion:
+    title: Infor CloudSuite Fashion
+    url: https://www.infor.com/industries/fashion
+  sap-retail:
+    title: SAP S/4HANA Retail
+    url: https://www.sap.com/industries/retail.html
+  blue-yonder-wms:
+    title: Blue Yonder WMS
+    url: https://blueyonder.com/solutions/warehouse-management
+  shopify:
+    title: Shopify Plus
+    url: https://www.shopify.com/plus
+  sf-commerce:
+    title: Salesforce Commerce Cloud
+    url: https://www.salesforce.com/commerce/
+  oracle-xstore:
+    title: Oracle Xstore
+    url: https://www.oracle.com/retail/
+  lectra:
+    title: Lectra
+    url: https://www.lectra.com/
+  gerber:
+    title: Gerber Technology
+    url: https://gerbertechnology.com/
+  fast-react:
+    title: Fast React
+    url: https://www.fastreact.com/
+  higg:
+    title: Higg Index
+    url: https://higg.com/
+  textile-exchange:
+    title: Textile Exchange
+    url: https://textileexchange.org/
+  edited:
+    title: Edited
+    url: https://edited.com/
+  wgsn:
+    title: WGSN
+    url: https://www.wgsn.com/
+  opensupplyhub:
+    title: Open Supply Hub
+    url: https://www.opensupplyhub.org/

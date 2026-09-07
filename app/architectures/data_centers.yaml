@@ -1,0 +1,995 @@
+name: Data Centers & Cloud
+description: 'Colocation and hyperscale data-center operations: DCIM and critical facilities, power and cooling efficiency, capacity and interconnection, energy and sustainability, and tenant service.'
+sources:
+  - name: DCIM & Assets
+    icon: erp
+    tiles:
+      - name: EcoStruxure IT
+        icon: erp
+        summary: 'Schneider Electric EcoStruxure IT DCIM: the system of record for assets, power chains, rack and space allocation and environmental monitoring across the estate.'
+        citations:
+          - schneider
+        category: DCIM (Data Center Infrastructure Mgmt)
+        what_it_is: System of record for assets, power chains, rack and space allocation and environmental monitoring across the estate.
+        who_uses_it: Data-center operations, capacity planners and facilities engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k readings/sec
+            interval: Continuous
+      - name: Nlyte DCIM
+        icon: erp
+        summary: 'Carrier Nlyte data-center infrastructure management: asset lifecycle, workflow and capacity records, the incumbent inventory of what is racked where and on which circuit.'
+        citations:
+          - nlyte
+        category: DCIM / Asset Lifecycle
+        what_it_is: Asset lifecycle, workflow and capacity records; the incumbent inventory of what is racked where and on which circuit.
+        who_uses_it: Capacity planners, asset and facilities teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Nightly
+      - name: Sunbird dcTrack
+        icon: sheet
+        summary: 'Sunbird dcTrack DCIM: rack elevations, power-port and network-port connectivity and capacity, the source for space, power and cooling headroom by cabinet.'
+        citations:
+          - sunbird
+        category: DCIM / Capacity Management
+        what_it_is: Rack elevations, power-port and network-port connectivity and capacity; the source for space, power and cooling headroom by cabinet.
+        who_uses_it: Capacity planners and facilities engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Nightly
+      - name: Vertiv Environet
+        icon: observ
+        summary: 'Vertiv Environet monitoring: real-time power, cooling and environmental alarms and trends across critical infrastructure, the operator''s view of live facility health.'
+        citations:
+          - vertiv-env
+        category: Critical Facility Monitoring
+        what_it_is: Real-time power, cooling and environmental alarms and trends across critical infrastructure; the operator's live view of facility health.
+        who_uses_it: NOC operators and critical-facility engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k readings/sec
+            interval: Continuous
+  - name: Building & Power
+    icon: iot
+    tiles:
+      - name: JCI Metasys
+        icon: iot
+        summary: 'Johnson Controls Metasys building automation: the BMS that runs cooling plant, air handling and building systems and publishes the setpoints and status the floor operates on.'
+        citations:
+          - jci
+        category: Building Management System (BMS)
+        what_it_is: Runs cooling plant, air handling and building systems and publishes the setpoints and status the floor operates on.
+        who_uses_it: Controls engineers and critical-facility operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k BACnet points/sec
+            interval: Continuous
+      - name: Siemens Desigo CC
+        icon: iot
+        summary: 'Siemens Desigo CC building management: a common BMS platform for HVAC, power and environmental supervision where Metasys is not the incumbent, feeding the same point data.'
+        citations:
+          - siemens
+        category: Building Management System (BMS)
+        what_it_is: Common BMS platform for HVAC, power and environmental supervision where Metasys is not the incumbent, feeding the same point data.
+        who_uses_it: Controls engineers and facilities operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k points/sec
+            interval: Continuous
+      - name: Vertiv Liebert iCOM
+        icon: iot
+        summary: 'Vertiv Liebert thermal controls and CRAC/CRAH units: chilled-water and DX cooling status, fan speed and return-air temperature, the raw signal for cooling optimisation.'
+        citations:
+          - liebert
+        category: Precision Cooling Controls
+        what_it_is: Chilled-water and DX cooling status, fan speed and return-air temperature; the raw signal for cooling optimisation.
+        who_uses_it: Mechanical engineers and cooling-optimisation teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of points/sec
+            interval: Continuous
+      - name: Schneider PowerLogic
+        icon: gauge
+        summary: 'Schneider PowerLogic power monitoring: switchgear, UPS and branch-circuit metering across the power chain, the electrical ground truth behind PUE and billing.'
+        citations:
+          - powerlogic
+        category: Power Metering & Monitoring
+        what_it_is: Switchgear, UPS and branch-circuit metering across the power chain; the electrical ground truth behind PUE and billing.
+        who_uses_it: Electrical engineers, sustainability and billing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of meter reads/sec
+            interval: Continuous
+  - name: Environmental & IoT
+    icon: stream
+    tiles:
+      - name: BACnet & Modbus
+        icon: stream
+        summary: Temperature, humidity, differential-pressure and leak sensors published over the BACnet and Modbus protocols the building estate speaks, parsed on arrival as structured events.
+        citations:
+          - bacnet
+        category: Building / Industrial Protocol
+        what_it_is: Temperature, humidity, differential-pressure and leak sensors published over BACnet and Modbus, parsed on arrival as structured events.
+        who_uses_it: Controls engineers and facilities data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k sensor points/sec
+            interval: Continuous
+      - name: Ignition SCADA
+        icon: iot
+        summary: 'Inductive Automation Ignition SCADA: supervisory control and historian for electrical and mechanical plant, the tag store many operators standardise facility telemetry on.'
+        citations:
+          - ignition
+        category: SCADA / Historian
+        what_it_is: Supervisory control and historian for electrical and mechanical plant; the tag store many operators standardise facility telemetry on.
+        who_uses_it: Controls engineers and facilities data engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day historian
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k tags/sec
+            interval: Continuous
+      - name: PDU Branch Metering
+        icon: gauge
+        summary: Intelligent rack PDUs from Raritan and Server Technology reporting per-outlet and branch-circuit power, the meter behind tenant billing and stranded-capacity analysis.
+        citations:
+          - raritan
+        category: Rack Power Metering (PDU)
+        what_it_is: Intelligent rack PDUs reporting per-outlet and branch-circuit power; the meter behind tenant billing and stranded-capacity analysis.
+        who_uses_it: Capacity planners, billing and facilities teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k per-outlet reads/sec
+            interval: Continuous
+  - name: Interconnect & Net
+    icon: network
+    tiles:
+      - name: Equinix Fabric
+        icon: network
+        summary: 'Equinix Fabric software-defined interconnection: cross-connects, virtual connections and fabric ports, the record of who is connected to whom across the meet-me room.'
+        citations:
+          - equinix
+        category: Interconnection Platform
+        what_it_is: 'Software-defined interconnection: cross-connects, virtual connections and fabric ports; the record of who is connected to whom in the meet-me room.'
+        who_uses_it: Interconnection product managers and capacity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous
+      - name: Digital Realty Fabric
+        icon: network
+        summary: 'Digital Realty PlatformDIGITAL ServiceFabric: interconnection and connectivity records where Digital Realty is the operator, feeding the same utilisation and revenue view.'
+        citations:
+          - digitalrealty
+        category: Interconnection Platform
+        what_it_is: Interconnection and connectivity records where Digital Realty is the operator, feeding the same utilisation and revenue view.
+        who_uses_it: Interconnection product managers and commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Daily
+      - name: SolarWinds NPM
+        icon: observ
+        summary: 'SolarWinds Network Performance Monitor: SNMP-polled device health, interface utilisation and up/down state across the facility network fabric.'
+        citations:
+          - solarwinds
+        category: Network Performance Monitoring
+        what_it_is: SNMP-polled device health, interface utilisation and up/down state across the facility network fabric.
+        who_uses_it: Network operations and NOC teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of polls/sec
+            interval: Continuous
+      - name: Kentik NPM
+        icon: network
+        summary: 'Kentik network observability: flow, BGP and traffic-engineering telemetry, the demand signal that justifies interconnection capacity and pricing.'
+        citations:
+          - kentik
+        category: Network Observability / Flow
+        what_it_is: Flow, BGP and traffic-engineering telemetry; the demand signal that justifies interconnection capacity and pricing.
+        who_uses_it: Network engineering and interconnection product teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k flow records/sec
+            interval: Continuous
+  - name: Service & Physical Sec
+    icon: gavel
+    tiles:
+      - name: ServiceNow ITSM
+        icon: opdb
+        summary: 'ServiceNow IT Service Management: incidents, changes and work orders raised against facility and IT assets, the process record from alarm to resolved ticket.'
+        citations:
+          - servicenow
+        category: IT Service Management (ITSM)
+        what_it_is: Incidents, changes and work orders raised against facility and IT assets; the process record from alarm to resolved ticket.
+        who_uses_it: Incident and change managers, NOC and facilities ops.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous
+      - name: Genetec Security
+        icon: zshield
+        summary: 'Genetec Security Center: unified access control and video surveillance across the perimeter, halls and cages, the source of who entered where and when.'
+        citations:
+          - genetec
+        category: Physical Security (Access & Video)
+        what_it_is: Unified access control and video surveillance across perimeter, halls and cages; the source of who entered where and when.
+        who_uses_it: Physical security and facilities teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+            volume: GBs-TB/day video
+            interval: Continuous
+          stream:
+            types:
+              - semi-structured
+            volume: tens of access events/sec
+            interval: Continuous
+      - name: Lenel OnGuard
+        icon: key
+        summary: 'LenelS2 OnGuard access control: badge, door and alarm events across the physical estate where OnGuard is the incumbent, feeding the same physical-security view.'
+        citations:
+          - lenel
+        category: Physical Access Control (PACS)
+        what_it_is: Badge, door and alarm events across the physical estate where OnGuard is the incumbent, feeding the same physical-security view.
+        who_uses_it: Physical security and facilities teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of access events/sec
+            interval: Continuous
+      - name: Tenant Billing
+        icon: market
+        summary: The colocation billing and contract system carrying committed power and space, metered usage rules and SLA terms, reconciled against the meters that actually recorded draw.
+        category: Colocation Billing & Contracts
+        what_it_is: Committed power and space, metered usage rules and SLA terms, reconciled against the meters that recorded actual draw.
+        who_uses_it: Tenant success, billing and commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Daily / monthly billing cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Utility & Energy Mkts
+        icon: fed
+        summary: Utility interval-meter reads, wholesale energy-market prices and renewable-energy-certificate and PPA registries left in their existing warehouses and queried in place under Unity Catalog, so cost and carbon attribution join facility telemetry without a second copy.
+        category: Energy Market & Utility Data
+        what_it_is: Utility interval-meter reads, wholesale energy-market prices and REC/PPA registries kept in existing warehouses and queried in place through federation.
+        who_uses_it: Energy procurement, sustainability and finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale market + meter history
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: SNMP & Telemetry
+        icon: stream
+        summary: SNMP traps, syslog and NetFlow from power, cooling and network gear polled continuously and landed as governed events for real-time facility and network analysis.
+        citations:
+          - snmp
+        category: Network / Facility Telemetry
+        what_it_is: SNMP traps, syslog and NetFlow from power, cooling and network gear polled continuously and landed as governed events.
+        who_uses_it: NOC, network and facilities data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec
+            interval: Continuous
+      - name: Kafka Sensor Bus
+        icon: eventbus
+        summary: High-frequency BMS, PDU and environmental events carried on existing Kafka topics, consumed continuously into the lakehouse for near-real-time cooling and power analytics.
+        citations:
+          - kafka
+        category: Event Streaming Platform
+        what_it_is: High-frequency BMS, PDU and environmental events carried on existing Kafka topics, consumed continuously for near-real-time analytics.
+        who_uses_it: Facilities data engineers and streaming teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec
+            interval: Continuous
+      - name: MQTT Gateway
+        icon: iot
+        summary: Edge sensor and controller telemetry published to an MQTT broker at the site, bridged into the lakehouse so hall-level readings arrive at the cadence they are sampled.
+        citations:
+          - mqtt
+        category: IoT Messaging (MQTT)
+        what_it_is: Edge sensor and controller telemetry published to a site MQTT broker and bridged into the lakehouse at sampling cadence.
+        who_uses_it: Edge/IoT and facilities data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-50k edge readings/sec
+            interval: Continuous
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Executive Team
+        mark: Genie One
+        summary: The CEO on capacity, uptime and the cost of powering AI-era demand; the CFO on capital deployment across sites and the return on every megawatt; the COO on availability, SLA exposure and the sustainability commitments made to investors and tenants.
+        uses:
+          - - Genie One
+            - Ask what a site cost to run last month, or where capacity is stranded, without booking analyst time.
+          - - AI/BI
+            - PUE, uptime, capacity headroom and energy cost on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary, so "PUE" and "availability" mean one thing across every site.
+        sub:
+          - name: CEO
+            cares: capacity, uptime and the cost of powering AI-era demand.
+          - name: CFO
+            cares: capital deployment across sites and return on every megawatt.
+          - name: COO
+            cares: availability, SLA exposure and sustainability commitments.
+        ucs:
+          - Capacity Planning
+          - PUE & Sustainability
+          - Energy Procurement
+          - Uptime & Availability
+      - name: Facilities Ops
+        mark: Lakehouse//RT
+        summary: Critical facility engineers watching the power chain and cooling loops on a live floor, shift operators in the NOC acknowledging alarms against the clock, and mechanical and electrical teams keeping UPS, generators and chillers inside their operating envelope.
+        uses:
+          - - Critical Ops Cockpit
+            - Power-chain, cooling and alarm state on one screen before an operator escalates.
+          - - Lakehouse//RT
+            - BMS, PDU and chiller telemetry at the latency a thermal event moves at.
+          - - Model Serving
+            - Cooling-setpoint and failure-risk models scored inline against live conditions.
+        sub:
+          - name: Critical facility eng
+            cares: the power chain and cooling loops on a live floor.
+          - name: NOC operators
+            cares: alarm acknowledgement and first-response triage.
+          - name: M&E engineers
+            cares: UPS, generator and chiller operating envelopes.
+        ucs:
+          - Cooling Optimization
+          - Predictive Maintenance
+          - Incident & Change
+          - Uptime & Availability
+      - name: Capacity & IX
+        mark: AI/BI
+        summary: Capacity planners tracking power, cooling and space headroom hall by hall before a sales commitment strands a cabinet, and interconnection product managers monetising cross-connects and fabric ports across the meet-me room.
+        uses:
+          - - Capacity Planner
+            - Power, cooling and space headroom and stranded capacity by hall on governed data.
+          - - AI/BI
+            - Utilisation, headroom and interconnection revenue on the definitions the board reads.
+          - - Genie
+            - Plain-English questions on where the next cabinet or cross-connect can land.
+        sub:
+          - name: Capacity planners
+            cares: power, cooling and space headroom by hall.
+          - name: Interconnection PMs
+            cares: cross-connect and fabric-port monetisation.
+        ucs:
+          - Capacity Planning
+          - Interconnect Revenue
+      - name: Sustainability
+        mark: Model Serving
+        summary: Energy procurement teams hedging and buying power against volatile wholesale markets, and ESG and sustainability leads accounting for PUE, WUE and Scope 1-3 carbon across the estate for regulators, investors and tenants.
+        uses:
+          - - PUE Optimizer
+            - Cooling and PUE recommendations reconciled against the carbon and cost they move.
+          - - Model Serving
+            - Load, price and carbon-intensity forecasts scored behind procurement and reporting.
+          - - AI/BI
+            - PUE, WUE and Scope 1-3 emissions on governed, audit-ready Gold tables.
+        sub:
+          - name: Energy procurement
+            cares: hedging and buying power against wholesale markets.
+          - name: ESG & sustainability
+            cares: PUE, WUE and Scope 1-3 carbon accounting.
+        ucs:
+          - PUE & Sustainability
+          - Energy Procurement
+      - name: Service & Sec
+        mark: Agent Bricks
+        summary: Incident and change managers running the ITSM process when an alarm becomes a ticket, physical-security teams watching access control and video across the perimeter, and tenant-success and billing teams reconciling metered power draw against colocation contracts.
+        uses:
+          - - Tenant Portal
+            - Metered power, billing, SLA and interconnection self-service for every tenant.
+          - - Agent Bricks
+            - Agents that triage an alarm, draft a change record or answer a tenant query against governed tools.
+          - - Lakehouse//RT
+            - Access-control, video and ITSM events joined to the assets they touch, live.
+        sub:
+          - name: Incident & change mgrs
+            cares: the ITSM process from alarm to resolved ticket.
+          - name: Physical security
+            cares: access control and video across the perimeter.
+          - name: Tenant success & billing
+            cares: metered power reconciled against colo contracts.
+        ucs:
+          - Incident & Change
+          - Physical Security
+          - Tenant Billing & SLA
+  - name: Technical
+    icon: code
+    tiles:
+      - name: DC Data Engineers
+        mark: Lakeflow
+        summary: Land DCIM asset records, BMS BACnet and Modbus points, PDU branch-circuit power reads and SNMP and NetFlow telemetry; own the Bronze-to-Silver path and the pager when a facility feed stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for DCIM, ITSM and BMS historian sources.
+          - - Auto Loader
+            - Incremental ingestion of high-frequency sensor and meter files into conformed tables.
+          - - Lakeflow
+            - Declarative pipelines with expectations on every power, cooling and network feed.
+      - name: Optimization Eng
+        mark: Model Serving
+        summary: Build cooling-setpoint and PUE-optimisation models against BMS and chiller telemetry, and remaining-useful-life models on UPS, battery and CRAH condition data, and keep them honest six months after deployment.
+        uses:
+          - - Feature Store
+            - Sensor features defined once and read identically in training and serving.
+          - - MLflow
+            - Every optimisation and RUL run tracked for audit and reproduction.
+          - - Model Serving
+            - Setpoint and failure-risk models scored in the operational control path.
+      - name: Ops App Devs
+        mark: Apps
+        summary: Ship the NOC, capacity and tenant applications the operator works in, hosted next to governed facility data with governed writes back to ITSM and DCIM.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for ticket, work-order and acknowledgement state.
+          - - Agent Bricks
+            - Agents that draft a change record or a tenant answer against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Power BI / Tableau
+        icon: chart
+        summary: Executive and operations dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the facility lakehouse, and incident and capacity updates in the channel operations already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Engineer and analyst notebooks, VS Code and JetBrains against governed facility data and Genie Code.
+  - name: NOC & Alerting
+    icon: gauge
+    tiles:
+      - name: PagerDuty / Opsgenie
+        icon: gauge
+        summary: Scored, correlated alarms routed to the on-call rotation so the one incident that matters pages a human, not the whole storm.
+      - name: NOC Dashboards
+        icon: chart
+        summary: Live power-chain, cooling and network state surfaced to the network operations centre with recommended actions attached.
+      - name: Alarm Correlation
+        icon: stream
+        summary: BMS, PDU and network alarms clustered into incidents in near real time so operators triage causes, not a flood of symptoms.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: ServiceNow Work Orders
+        icon: opdb
+        summary: Predicted failures and correlated incidents raised as work orders and change records in ServiceNow, in the system operations already runs.
+        citations:
+          - servicenow
+      - name: DCIM Writeback
+        icon: db
+        summary: Reconciled capacity, connectivity and asset state written back into DCIM so the inventory operations plans against stays true.
+      - name: Setpoint Advisories
+        icon: iot
+        summary: Cooling-setpoint recommendations delivered as advisories to controls engineers, who apply them in the BMS rather than a model driving plant directly.
+  - name: Regulatory & ESG
+    icon: gavel
+    tiles:
+      - name: ESG & Carbon Report
+        icon: gavel
+        summary: PUE, WUE and Scope 1-3 emissions reporting for CSRD and investor disclosure, produced from the same governed tables the floor runs on.
+      - name: SLA & Uptime Report
+        icon: gavel
+        summary: Contracted uptime and service-credit reporting to tenants produced from contracted Gold products rather than reassembled by hand under deadline.
+      - name: Audit Evidence
+        icon: docs
+        summary: Immutable query and access logs proving who saw what and when, covering facility and tenant audit requirements without extra instrumentation.
+  - name: Sharing & Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted facility and tenant products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Tenant Data Sharing
+        icon: share
+        summary: Live power, uptime and interconnection data shared to each tenant over Delta Sharing with no copy and no egress duplication.
+      - name: Sharing Recipients
+        icon: share
+        summary: Partners, utilities and regulators reading live governed tables directly rather than by nightly file exchange.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Critical Ops Cockpit
+        icon: gauge
+        short: Live facility state
+        summary: 'The screen the NOC and critical-facility engineers run a floor from: power-chain, cooling and alarm state, correlated into the one incident that matters, on Databricks Apps over Lakebase.'
+      - name: Capacity Planner
+        icon: sheet
+        short: Power & space headroom
+        summary: Power, cooling and space headroom and stranded capacity by hall and cabinet, so a sales commitment lands where capacity actually exists rather than behind a full breaker.
+      - name: PUE Optimizer
+        icon: chart
+        short: Cooling efficiency
+        summary: Cooling-setpoint and airflow recommendations scored against live heat load and reconciled to the PUE, cost and carbon they move, delivered as advisories to the controls team.
+      - name: Tenant Portal
+        icon: product
+        short: Billing & SLA
+        summary: Metered power, billing, SLA and interconnection self-service for every tenant, served from governed data and shared live over Delta Sharing.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: PUE & Efficiency
+        icon: aibi
+        summary: Site PUE, WUE and cooling energy on certified Metric Views.
+        kpis:
+          - PUE
+          - WUE
+          - Cooling energy share
+          - Setpoint compliance
+          - Free-cooling hours
+        teams:
+          - Sustainability
+          - Facilities Ops
+          - Executive Team
+      - name: Capacity & Headroom
+        icon: aibi
+        summary: Power, cooling and space headroom and stranded capacity by hall.
+        kpis:
+          - Power headroom
+          - Cooling headroom
+          - Space utilisation
+          - Stranded capacity
+          - Interconnect utilisation
+        teams:
+          - Capacity & IX
+          - Executive Team
+          - Facilities Ops
+      - name: Uptime & Reliability
+        icon: aibi
+        summary: Availability, alarms and predicted-failure risk across critical plant.
+        kpis:
+          - Uptime %
+          - SLA compliance
+          - Open critical alarms
+          - MTTR
+          - Predicted failures
+        teams:
+          - Facilities Ops
+          - Service & Sec
+          - Executive Team
+      - name: Energy & Carbon
+        icon: aibi
+        summary: Energy cost, spot-versus-contract mix and Scope 1-3 emissions by site.
+        kpis:
+          - Energy cost
+          - Spot vs contract mix
+          - Scope 1-3 emissions
+          - Carbon intensity
+          - Demand-response savings
+        teams:
+          - Sustainability
+          - Executive Team
+          - Facilities Ops
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Facility Operations Agent
+        icon: genie
+        summary: Ask about live power, cooling and alarms across the floor in plain language.
+        feeds:
+          - JCI Metasys
+          - Vertiv Environet
+          - SNMP & Telemetry
+          - PUE, uptime, capacity
+        teams:
+          - Facilities Ops
+          - Executive Team
+          - Optimization Eng
+        questions:
+          - Which halls are running hottest against their thermal envelope right now?
+          - What is current PUE by site and how is it trending today?
+          - Which cooling units are drawing the most power for the least effect?
+          - Where are active critical alarms concentrated?
+          - Which power chains are closest to their capacity limit?
+      - name: Capacity & Interconnection Agent
+        icon: genie
+        summary: Explore power, cooling and space headroom and cross-connect utilisation.
+        feeds:
+          - Sunbird dcTrack
+          - Schneider PowerLogic
+          - Equinix Fabric
+          - Conformed site, asset, tenant
+        teams:
+          - Capacity & IX
+          - Executive Team
+          - Facilities Ops
+        questions:
+          - Where do we have stranded power capacity by hall?
+          - Which cabinets have space but no available power?
+          - What is cross-connect utilisation across the meet-me room?
+          - Where will the next megawatt of demand land?
+          - Which sites are closest to selling out of cooling?
+      - name: Energy & Sustainability Agent
+        icon: genie
+        summary: Answer PUE, WUE, energy-cost and carbon questions across the estate.
+        feeds:
+          - Schneider PowerLogic
+          - PDU Branch Metering
+          - Utility & Energy Mkts
+          - PUE, uptime, capacity
+        teams:
+          - Sustainability
+          - Executive Team
+          - Facilities Ops
+        questions:
+          - What is PUE and WUE by site this month versus last?
+          - How much power did we buy on spot versus contract this week?
+          - What are Scope 1-3 emissions by site quarter to date?
+          - Which sites have the best carbon-intensity buying windows today?
+          - Where is energy spend growing fastest relative to load?
+      - name: Service & Tenant Agent
+        icon: genie
+        summary: Ask about SLAs, tenant power, incidents and physical access in plain language.
+        feeds:
+          - ServiceNow ITSM
+          - Genetec Security
+          - Tenant Billing
+          - Conformed site, asset, tenant
+        teams:
+          - Service & Sec
+          - Capacity & IX
+          - Executive Team
+        questions:
+          - Which tenants are closest to breaching an uptime SLA?
+          - What is metered power draw versus committed power by tenant?
+          - Which incidents are open past their SLA right now?
+          - Where did anomalous after-hours access occur this week?
+          - Which change records carry the highest risk this window?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Cooling Optimization
+        short: Efficiency
+        icon: iot
+        summary: Optimising chiller, CRAH and airflow setpoints against live heat load to cut the cooling energy that is a third of a site's power, without leaving the thermal envelope.
+        problem: Cooling runs on static, conservative setpoints tuned for the worst case, so a third of site power is spent holding halls colder than the live heat load actually needs.
+        who_benefits: Facilities Ops
+        how_built: BMS, chiller and PDU telemetry lands in Lakehouse//RT; setpoint models tracked in MLflow score against live load in Model Serving and are surfaced as advisories in the Critical Ops Cockpit.
+        components:
+          - Critical Ops Cockpit
+          - Lakehouse//RT
+          - Model Serving
+          - JCI Metasys
+          - MLflow
+        stories:
+          - title: Schneider Electric industrialises energy AI on Databricks
+            url: https://www.databricks.com/blog/ai-doesnt-scale-until-you-stop-calling-it-innovation
+          - title: Databricks IoT platform for predictive maintenance and optimization
+            url: https://www.databricks.com/resources/demos/tutorials/lakehouse-platform/iot-and-predictive-maintenance
+      - name: PUE & Sustainability
+        short: Carbon & PUE
+        icon: chart
+        summary: Measuring PUE, WUE and Scope 1-3 carbon across the estate from the same governed telemetry the floor runs on, so a disclosure is produced continuously rather than reassembled each quarter.
+        problem: PUE, WUE and carbon are reassembled by hand each reporting cycle from meters, spreadsheets and vendor portals the auditors cannot see into, so disclosures lag the operation by a quarter.
+        who_benefits: Sustainability
+        how_built: Meter, BMS and utility feeds are conformed to Gold with lineage in Unity Catalog; PUE, WUE and Scope 1-3 emissions are published as governed Data Products and read in AI/BI.
+        components:
+          - AI/BI
+          - Unity Catalog
+          - Utility & Energy Mkts
+          - Data Products
+          - PDU Branch Metering
+        stories:
+          - title: How Dow built a carbon footprint ledger on Databricks
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+          - title: Vattenfall quantifies carbon impact at second-level granularity
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Predictive Maintenance
+        short: Critical plant
+        icon: iot
+        summary: Predicting UPS, battery, generator and CRAH failures from condition telemetry so a component is changed on a planned window instead of tripping a live floor.
+        problem: Critical plant is maintained on a calendar rather than its condition, so a failing UPS string or battery is discovered when it trips a floor, not on a planned window.
+        who_benefits: Facilities Ops
+        how_built: PDU, BMS and Vertiv Environet condition data feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted failures raise work orders from the Critical Ops Cockpit.
+        components:
+          - Critical Ops Cockpit
+          - Vertiv Environet
+          - MLflow
+          - Model Serving
+          - Lakeflow
+        stories:
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Turning predictive-maintenance scores into a reliability app
+            url: https://developers.databricks.com/perspectives/databricks-supports-predictive-maintenance-iot-analytics-for-energy-operations
+      - name: Capacity Planning
+        short: Headroom
+        icon: sheet
+        summary: Tracking power, cooling and space headroom cabinet by cabinet so a sales commitment lands where capacity exists instead of stranding a megawatt behind a full breaker.
+        problem: Power, cooling and space are tracked in separate DCIM, BMS and spreadsheet views, so capacity is sold against stale headroom and megawatts strand behind full breakers and hot aisles.
+        who_benefits: Capacity & IX
+        how_built: DCIM, branch-circuit and cooling feeds are conformed in the lakehouse; headroom and stranded capacity by hall are modelled and explored in the Capacity Planner on AI/BI.
+        components:
+          - Capacity Planner
+          - AI/BI
+          - Sunbird dcTrack
+          - Nlyte DCIM
+          - Schneider PowerLogic
+        stories:
+          - title: E.ON unifies energy asset data on the Databricks Platform
+            url: https://www.databricks.com/customers/eon
+      - name: Interconnect Revenue
+        short: Meet-me room
+        icon: network
+        summary: Monetising cross-connects and fabric ports by joining interconnection records to network telemetry, so the meet-me room is priced and provisioned on real utilisation.
+        problem: Interconnection revenue and port utilisation live in the fabric platform while the traffic that justifies them lives in network telemetry, so cross-connects are priced and provisioned blind to real use.
+        who_benefits: Capacity & IX
+        how_built: Equinix Fabric and Digital Realty records are joined to SolarWinds and Kentik telemetry in the lakehouse; utilisation and revenue are surfaced through AI/BI and the Tenant Portal.
+        components:
+          - Equinix Fabric
+          - Digital Realty Fabric
+          - Kentik NPM
+          - AI/BI
+          - Tenant Portal
+      - name: Incident & Change
+        short: ITSM
+        icon: opdb
+        summary: Correlating the alarm storm into the one incident that matters and scoring the risk of every change before it touches a live floor.
+        problem: A single fault throws hundreds of BMS and network alarms into ServiceNow at once and change risk is judged on memory, so the real incident is buried and risky changes reach live floors.
+        who_benefits: Service & Sec
+        how_built: Alarms and tickets from ServiceNow ITSM and the BMS estate are correlated in Lakehouse//RT; an agent on Agent Bricks drafts the incident and flags change risk against history.
+        components:
+          - ServiceNow ITSM
+          - Lakehouse//RT
+          - Agent Bricks
+          - SNMP & Telemetry
+          - AI Functions
+      - name: Energy Procurement
+        short: Power buying
+        icon: market
+        summary: Buying and hedging power against volatile wholesale markets from a forecast of site load and carbon intensity, instead of a static block bought a year ahead.
+        problem: Power is the largest operating cost and is bought against static blocks and gut feel, so the operator is exposed to spot volatility and misses the carbon-intensity windows that cut cost and emissions.
+        who_benefits: Sustainability
+        how_built: Site-load, market-price and carbon-intensity feeds are conformed to Gold; forecasts scored in Model Serving inform hedging and demand-response decisions read in AI/BI.
+        components:
+          - Model Serving
+          - AI/BI
+          - Utility & Energy Mkts
+          - Delta Lake
+          - Lakeflow
+        stories:
+          - title: Helen forecasts energy demand and production with Databricks
+            url: https://www.databricks.com/customers/helen
+          - title: Vattenfall builds real-time energy-market intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Physical Security
+        short: Access & video
+        icon: zshield
+        summary: Fusing access-control and video events with facility state to flag tailgating, anomalous access and perimeter risk before it becomes an incident.
+        problem: Access control, video and facility systems each see one slice, so tailgating and anomalous after-hours access only surface on a manual review of footage after something has already gone wrong.
+        who_benefits: Service & Sec
+        how_built: Genetec and Lenel events are joined to facility state in the lakehouse; anomaly models in Model Serving flag risk to the Critical Ops Cockpit and physical-security teams.
+        components:
+          - Genetec Security
+          - Lenel OnGuard
+          - Model Serving
+          - Lakehouse//RT
+          - Critical Ops Cockpit
+      - name: Tenant Billing & SLA
+        short: Metering
+        icon: product
+        summary: Billing metered power draw and reporting SLA and uptime to every tenant from branch-circuit meters, so an invoice and a service credit come from the same governed record.
+        problem: Metered power for billing and uptime for SLA credits are pulled from different systems by hand, so invoices are late, disputes are common, and a service credit is argued rather than evidenced.
+        who_benefits: Service & Sec
+        how_built: PDU branch-circuit reads and power-chain uptime are conformed to Gold; tenant billing, SLA and interconnection views are served through the Tenant Portal and shared over Delta Sharing.
+        components:
+          - Tenant Portal
+          - PDU Branch Metering
+          - Tenant Billing
+          - Data Products
+          - Unity Catalog
+        stories:
+          - title: Databricks Data Intelligence Platform for Energy (AMI metering)
+            url: https://www.databricks.com/company/newsroom/press-releases/databricks-launches-data-intelligence-platform-energy-bringing
+      - name: Uptime & Availability
+        short: Resilience
+        icon: gauge
+        summary: Forecasting availability risk across the power and cooling chain so the operator defends the uptime SLA before a redundancy is quietly lost, not after an outage.
+        problem: Redundancy is assumed until an outage proves it was lost weeks earlier; availability risk hides across UPS, generator, cooling and network layers that no single system watches together.
+        who_benefits: Facilities Ops
+        how_built: Power, cooling and network telemetry are unified in Lakehouse//RT; availability-risk models in Model Serving forecast single points of failure and surface them in the Critical Ops Cockpit.
+        components:
+          - Critical Ops Cockpit
+          - Lakehouse//RT
+          - Model Serving
+          - SolarWinds NPM
+          - Vertiv Environet
+        stories:
+          - title: 'Databricks for Energy: forecast load and predict outages'
+            url: https://www.databricks.com/company/newsroom/press-releases/databricks-launches-data-intelligence-platform-energy-bringing
+          - title: E.ON improves grid asset management on Databricks
+            url: https://www.databricks.com/customers/eon
+medallion:
+  Bronze:
+    short: Raw facility & sensor feeds
+    summary: DCIM asset records, BMS BACnet and Modbus points, PDU branch-circuit power reads, chiller and CRAH telemetry, SNMP and NetFlow, access-control and video events and ServiceNow tickets, landed exactly as received so any PUE figure or outage can be replayed as it stood.
+  Silver:
+    short: Conformed site, asset, tenant
+    summary: Sites, halls, racks, power chains, cooling loops and tenants resolved into single conformed entities across the DCIM, BMS and ITSM estates, with sensor points reconciled to one tag namespace and alarms and access events joined to the assets they touch.
+  Gold:
+    short: PUE, uptime, capacity
+    summary: 'Contracted products operations and commercial run on: PUE and WUE by site, power and cooling capacity headroom, uptime and SLA compliance, interconnection utilisation and revenue, and metered tenant power billing.'
+citation_index:
+  schneider:
+    title: Schneider Electric EcoStruxure IT
+    url: https://www.se.com/us/en/product-range/64046-ecostruxure-it/
+  nlyte:
+    title: Carrier Nlyte DCIM
+    url: https://www.nlyte.com/
+  sunbird:
+    title: Sunbird dcTrack DCIM
+    url: https://www.sunbirddcim.com/
+  vertiv-env:
+    title: Vertiv Environet monitoring
+    url: https://www.vertiv.com/en-us/products-catalog/monitoring-control-and-management/
+  jci:
+    title: Johnson Controls Metasys
+    url: https://www.johnsoncontrols.com/building-automation-and-controls/building-management/building-automation-systems/metasys-building-automation-system
+  siemens:
+    title: Siemens Desigo CC
+    url: https://www.siemens.com/global/en/products/buildings/automation/desigo/building-management.html
+  liebert:
+    title: Vertiv Liebert thermal management
+    url: https://www.vertiv.com/en-us/products/brands/liebert/
+  powerlogic:
+    title: Schneider PowerLogic power monitoring
+    url: https://www.se.com/us/en/product-range/62306-powerlogic/
+  bacnet:
+    title: BACnet building protocol
+    url: https://www.bacnet.org/
+  ignition:
+    title: Inductive Automation Ignition SCADA
+    url: https://inductiveautomation.com/ignition/
+  raritan:
+    title: Raritan intelligent rack PDUs
+    url: https://www.raritan.com/products/power-distribution/rack-pdus
+  equinix:
+    title: Equinix Fabric interconnection
+    url: https://www.equinix.com/interconnection-services/equinix-fabric
+  digitalrealty:
+    title: Digital Realty PlatformDIGITAL ServiceFabric
+    url: https://www.digitalrealty.com/platform-digital/servicefabric
+  solarwinds:
+    title: SolarWinds Network Performance Monitor
+    url: https://www.solarwinds.com/network-performance-monitor
+  kentik:
+    title: Kentik network observability
+    url: https://www.kentik.com/
+  servicenow:
+    title: ServiceNow IT Service Management
+    url: https://www.servicenow.com/products/itsm.html
+  genetec:
+    title: Genetec Security Center
+    url: https://www.genetec.com/products/unified-security/security-center
+  lenel:
+    title: LenelS2 OnGuard access control
+    url: https://www.lenels2.com/
+  snmp:
+    title: SNMP network management protocol
+    url: https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol
+  kafka:
+    title: Apache Kafka
+    url: https://kafka.apache.org/
+  mqtt:
+    title: MQTT IoT messaging protocol
+    url: https://mqtt.org/

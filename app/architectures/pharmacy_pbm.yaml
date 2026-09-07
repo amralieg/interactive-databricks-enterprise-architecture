@@ -1,0 +1,1021 @@
+name: Pharmacy & PBM
+description: 'Retail, mail and specialty pharmacies and the pharmacy benefit managers behind them: claims adjudication, formulary and rebate management, prior authorization, 340B, dispensing and adherence.'
+sources:
+  - name: Pharmacy Systems
+    icon: erp
+    tiles:
+      - name: McKesson EnterpriseRx
+        icon: erp
+        summary: 'Enterprise pharmacy management for chains: the system of record for prescriptions, dispensing workflow, patient profiles and third-party billing.'
+        citations:
+          - enterpriserx
+        category: Pharmacy Management System
+        what_it_is: 'System of record for chain pharmacies: prescriptions, dispensing workflow, patient profiles and third-party billing, emitting fill, patient and billing records.'
+        who_uses_it: Pharmacy Ops, retail pharmacy operations and inventory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + intraday deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of fills/sec at peak
+            interval: Continuous (dispensing events)
+      - name: PioneerRx
+        icon: erp
+        summary: 'Independent and specialty pharmacy management: e-prescribing, workflow, inventory and point-of-sale for the dispensing pharmacy.'
+        citations:
+          - pioneerrx
+        category: Pharmacy Management System
+        what_it_is: Manages independent and specialty pharmacy e-prescribing, workflow, inventory and point-of-sale, feeding fill, inventory and patient data.
+        who_uses_it: Pharmacy Ops, mail & specialty and inventory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of fills/sec
+            interval: Continuous (dispensing events)
+      - name: Epic Willow
+        icon: product
+        summary: 'Health-system pharmacy: inpatient and outpatient dispensing, order verification and medication management inside the EHR.'
+        citations:
+          - willow
+        category: Health-System Pharmacy System
+        what_it_is: Runs health-system inpatient and outpatient dispensing, order verification and medication management inside the EHR, emitting dispensing and medication records.
+        who_uses_it: Pharmacy Ops, health-system pharmacy and inventory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 5-20 GB/day incl. med records
+            interval: Nightly batch
+      - name: FrameworkLTC
+        icon: erp
+        summary: 'Long-term-care pharmacy management: batch and cycle fills, facility billing and eMAR integration for LTC pharmacies.'
+        citations:
+          - frameworkltc
+        category: Long-Term-Care Pharmacy System
+        what_it_is: Manages long-term-care batch and cycle fills, facility billing and eMAR integration, emitting cycle-fill, facility and billing records.
+        who_uses_it: Pharmacy Ops, LTC pharmacy operations and facility-billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Cycle-fill batches
+  - name: Claims & Adjudication
+    icon: market
+    tiles:
+      - name: SS&C RxClaim
+        icon: market
+        summary: 'PBM claims adjudication: real-time NCPDP claim processing, benefit and formulary application and pharmacy payment.'
+        citations:
+          - rxclaim
+        category: PBM Claims Adjudication Engine
+        what_it_is: 'Adjudicates PBM claims in real time: NCPDP claim processing, benefit and formulary application and pharmacy payment, emitting adjudicated claim lines.'
+        who_uses_it: PBM Leadership, Network Pricing and Clinical & UM teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Daily claims cycle + intraday deltas
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k claims/sec at peak
+            interval: Continuous (real-time adjudication)
+      - name: Gainwell Rx
+        icon: market
+        summary: State Medicaid pharmacy benefit administration and point-of-sale claim processing for fee-for-service and single-PBM programs.
+        citations:
+          - argus
+        category: Medicaid Pharmacy Benefit System
+        what_it_is: Administers state Medicaid pharmacy benefits and point-of-sale claim processing for fee-for-service and single-PBM programs, emitting POS claim records.
+        who_uses_it: PBM Leadership, Trust & Comply and regulatory-affairs teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Daily claims cycle
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of claims/sec at peak
+            interval: Continuous (POS)
+      - name: NCPDP Claims
+        icon: stream
+        summary: Real-time NCPDP Telecommunication D.0 claim and reversal transactions from the pharmacy point of sale, the ground truth for every fill.
+        citations:
+          - ncpdp
+        category: Pharmacy Claim Transaction Standard
+        what_it_is: Carries real-time NCPDP Telecommunication D.0 claim and reversal transactions from the pharmacy point of sale, the ground truth for every fill.
+        who_uses_it: Claims Data Eng, PBM Leadership and Trust & Comply teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k transactions/sec at peak
+            interval: Continuous (point-of-sale)
+      - name: Surescripts Rx
+        icon: api
+        summary: E-prescribing, medication history and eligibility across the Surescripts network into the pharmacy and PBM estate.
+        citations:
+          - surescripts
+        category: E-Prescribing Network
+        what_it_is: Carries e-prescribing, medication history and eligibility across the Surescripts network into the pharmacy and PBM estate.
+        who_uses_it: Clinical & UM, Pharmacy Ops and Claims Data Eng teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec at peak
+            interval: Continuous (network)
+  - name: Formulary & Pricing
+    icon: sheet
+    tiles:
+      - name: First Databank FDB
+        icon: db
+        summary: 'Drug knowledge and pricing: AWP, drug identifiers and clinical screening, the reference claims are adjudicated against.'
+        citations:
+          - fdb
+        category: Drug Knowledge & Pricing Database
+        what_it_is: Supplies drug knowledge and pricing, AWP, drug identifiers and clinical screening, the reference claims are adjudicated against.
+        who_uses_it: Network Pricing, Clinical & UM and pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (drug reference + pricing)
+            interval: Weekly / on release
+      - name: Medi-Span
+        icon: db
+        summary: Wolters Kluwer drug pricing and clinical data used for AWP, MAC and drug-interaction screening.
+        citations:
+          - medispan
+        category: Drug Knowledge & Pricing Database
+        what_it_is: Provides drug pricing and clinical data used for AWP, MAC and drug-interaction screening across the estate.
+        who_uses_it: Network Pricing, pricing & MAC and Clinical & UM teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (drug reference + pricing)
+            interval: Weekly / on release
+      - name: Model N Rebates
+        icon: market
+        summary: 'Revenue and rebate management: manufacturer rebate contracts, formulary rebate accrual and payment reconciliation.'
+        citations:
+          - modeln
+        category: Rebate & Revenue Management System
+        what_it_is: Manages manufacturer rebate contracts, formulary rebate accrual and payment reconciliation, emitting contract, accrual and payment records.
+        who_uses_it: PBM Leadership, chief trade officer and finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day contracts + accruals
+            interval: Daily + rebate cycle
+      - name: MMIT Formulary
+        icon: sheet
+        summary: Formulary status, coverage and restriction data across plans and payers for formulary and market-access analytics.
+        citations:
+          - mmit
+        category: Formulary & Market-Access Data
+        what_it_is: Supplies formulary status, coverage and restriction data across plans and payers for formulary and market-access analytics.
+        who_uses_it: Clinical & UM, P&T committee and market-access teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB refresh
+            interval: Periodic formulary refresh
+  - name: Specialty, PA & 340B
+    icon: partner
+    tiles:
+      - name: CoverMyMeds
+        icon: partner
+        summary: 'Electronic prior authorization and patient access: PA requests, determinations and specialty enrollment across payers.'
+        citations:
+          - covermymeds
+        category: Electronic Prior Authorization Platform
+        what_it_is: 'Runs electronic prior authorization and patient access: PA requests, determinations and specialty enrollment across payers.'
+        who_uses_it: Clinical & UM, utilization management and Pharmacy Ops teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+              - unstructured
+            volume: tens of PA requests/sec at peak
+            interval: Continuous (portal / API)
+      - name: CareMetx Hub
+        icon: partner
+        summary: 'Specialty hub services: benefit verification, enrollment, copay and adherence for specialty and limited-distribution drugs.'
+        citations:
+          - caremetx
+        category: Specialty Pharmacy Hub
+        what_it_is: 'Provides specialty hub services: benefit verification, enrollment, copay and adherence for specialty and limited-distribution drugs.'
+        who_uses_it: Pharmacy Ops, mail & specialty and clinical-pharmacy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-4 GB/day enrollment + status
+            interval: Daily feed
+      - name: Trisus 340B
+        icon: gavel
+        summary: 'Craneware 340B split-billing and compliance: eligibility, accumulation and replenishment for covered entities.'
+        citations:
+          - trisus
+        category: 340B Compliance Platform
+        what_it_is: 'Runs 340B split-billing and compliance: eligibility, accumulation and replenishment for covered entities, emitting accumulation and eligibility records.'
+        who_uses_it: Pharmacy Ops, 340B compliance and audit teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day accumulations
+            interval: Daily split-billing cycle
+      - name: Macro Helix 340B
+        icon: gavel
+        summary: 340B Architect split-billing and program management where Macro Helix is the covered entity's compliance platform.
+        citations:
+          - macrohelix
+        category: 340B Compliance Platform
+        what_it_is: Runs 340B Architect split-billing and program management where Macro Helix is the covered entity's compliance platform.
+        who_uses_it: Pharmacy Ops, 340B compliance and audit teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day accumulations
+            interval: Daily split-billing cycle
+  - name: Wholesale & Dispensing
+    icon: compute
+    tiles:
+      - name: Cencora Supply
+        icon: storage
+        summary: 'Pharmaceutical wholesale: drug orders, invoices, chargebacks and DSCSA serialization from the primary distributor.'
+        citations:
+          - cencora
+        category: Pharmaceutical Wholesale Distributor
+        what_it_is: 'Supplies pharmaceutical wholesale feeds: drug orders, invoices, chargebacks and DSCSA serialization from the primary distributor.'
+        who_uses_it: Pharmacy Ops, inventory and 340B compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day orders + invoices
+            interval: Daily EDI cycle
+      - name: McKesson Supply
+        icon: storage
+        summary: 'Wholesale distribution feeds: purchase orders, acquisition cost and 340B replenishment from the distributor.'
+        citations:
+          - mckesson
+        category: Pharmaceutical Wholesale Distributor
+        what_it_is: 'Provides wholesale distribution feeds: purchase orders, acquisition cost and 340B replenishment from the distributor.'
+        who_uses_it: Pharmacy Ops, inventory and 340B compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day orders + invoices
+            interval: Daily EDI cycle
+      - name: ScriptPro Robotics
+        icon: iot
+        summary: 'Central-fill and in-pharmacy dispensing automation: robotic fill counts, vial data and dispensing throughput.'
+        citations:
+          - scriptpro
+        category: Pharmacy Dispensing Automation
+        what_it_is: Runs central-fill and in-pharmacy dispensing automation, emitting robotic fill counts, vial data and dispensing throughput.
+        who_uses_it: Pharmacy Ops, dispensing operations and inventory teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of fill events/sec at peak
+            interval: Continuous (dispensing telemetry)
+      - name: Parata Systems
+        icon: iot
+        summary: High-volume dispensing and pouch-packaging automation feeding fill, inventory and adherence-packaging data.
+        citations:
+          - parata
+        category: Pharmacy Dispensing Automation
+        what_it_is: Runs high-volume dispensing and pouch-packaging automation, feeding fill, inventory and adherence-packaging data.
+        who_uses_it: Pharmacy Ops, mail & specialty and inventory teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of fill events/sec at peak
+            interval: Continuous (dispensing telemetry)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Rebate & Claims Marts
+        icon: fed
+        summary: Historical adjudicated-claims, rebate accrual and DIR marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Claims & Rebate Data Warehouse
+        what_it_is: Historical adjudicated-claims, rebate accrual and DIR marts kept where they are and queried in place through federation instead of being copied.
+        who_uses_it: PBM Leadership, finance and Network Pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Surescripts Network
+        icon: api
+        summary: E-prescribing, eligibility and medication-history transactions across the Surescripts network, landed as structured events.
+        citations:
+          - surescripts
+        category: E-Prescribing Network
+        what_it_is: Carries e-prescribing, eligibility and medication-history transactions across the Surescripts network, landed as structured events.
+        who_uses_it: Claims Data Eng, Clinical & UM and Pharmacy Ops teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec at peak
+            interval: Continuous (network)
+      - name: X12 & NCPDP Feeds
+        icon: stream
+        summary: 834 enrollment, 270/271 eligibility and NCPDP claim events parsed on arrival and landed as structured records.
+        citations:
+          - ncpdp
+        category: EDI Enrollment & Claims Feed
+        what_it_is: Parses 834 enrollment, 270/271 eligibility and NCPDP claim events on arrival and lands them as structured records.
+        who_uses_it: Claims Data Eng, eligibility and enrollment teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of transactions/sec at peak
+            interval: Continuous EDI feed
+      - name: Wholesaler EDI
+        icon: stream
+        summary: 852, 856 and 810 order, shipment and invoice EDI from distributors reconciled against dispensing and 340B.
+        category: Supply Chain EDI Feed
+        what_it_is: Carries 852, 856 and 810 order, shipment and invoice EDI from distributors, reconciled against dispensing and 340B accumulation.
+        who_uses_it: Claims Data Eng, inventory and 340B compliance teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 1-5 GB/day EDI
+            interval: Daily EDI cycle
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: PBM Leadership
+        mark: Genie One
+        summary: The CEO on book-of-business growth and client retention; the CFO on rebate economics and net cost trend; the chief trade officer on manufacturer rebate contracts and formulary value.
+        uses:
+          - - Genie One
+            - Ask what a client's net cost per claim was last month, or where rebate leaked, without a analyst pull.
+          - - AI/BI
+            - Net cost, rebate accrual and generic dispensing rate on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary so "net cost" and "rebate" mean one thing across the PBM.
+        sub:
+          - name: CEO
+            cares: book-of-business growth and client retention.
+          - name: CFO
+            cares: rebate economics and net cost trend across the book.
+          - name: Chief trade officer
+            cares: manufacturer rebate contracts and formulary value.
+        ucs:
+          - Rebate Optimization
+          - Formulary Management
+          - Network Performance
+          - MAC & Drug Pricing
+      - name: Clinical & UM
+        mark: Model Serving
+        summary: The P&T committee on formulary decisions, clinical pharmacists on medication therapy and adherence, and utilization management on prior-authorization policy and step therapy.
+        uses:
+          - - Model Serving
+            - Adherence and prior-auth models scored inside the clinical and PA path.
+          - - AI Functions
+            - Prior-auth documents and clinical notes classified at scale from unstructured text.
+          - - AI/BI
+            - Adherence, PA turnaround and formulary compliance on governed, certified views.
+        sub:
+          - name: P&T committee
+            cares: formulary decisions and therapeutic class review.
+          - name: Clinical pharmacy
+            cares: medication therapy management and adherence.
+          - name: Utilization mgmt
+            cares: prior-authorization policy and step therapy.
+        ucs:
+          - Prior Auth Automation
+          - Medication Adherence
+          - Formulary Management
+      - name: Network Pricing
+        mark: AI/BI
+        summary: Network contracting on pharmacy reimbursement, the pricing team on MAC lists and AWP, and underwriting on client pricing guarantees and effective rate.
+        uses:
+          - - AI/BI
+            - MAC competitiveness, network spread and guarantee attainment on certified views.
+          - - Model Serving
+            - MAC and reimbursement models scored against acquisition cost and claim volume.
+          - - Genie One
+            - Ask which drugs are underwater on the current MAC list this week.
+        sub:
+          - name: Network contracting
+            cares: pharmacy reimbursement and network design.
+          - name: Pricing & MAC
+            cares: MAC list maintenance and AWP benchmarking.
+          - name: Underwriting
+            cares: client pricing guarantees and effective rate.
+        ucs:
+          - MAC & Drug Pricing
+          - Network Performance
+          - Rebate Optimization
+      - name: Pharmacy Ops
+        mark: Lakehouse//RT
+        summary: Retail pharmacy operations on dispensing workflow and throughput, mail and specialty on fulfillment and patient support, and inventory on stock, replenishment and 340B accumulation.
+        uses:
+          - - Dispensing Cockpit
+            - Fill volume, wait time and out-of-stock risk flagged before a patient is turned away.
+          - - Lakehouse//RT
+            - Live dispensing and inventory state at the latency a pharmacy moves at.
+          - - Model Serving
+            - Demand and replenishment models scored against fill and wholesaler data.
+        sub:
+          - name: Retail pharmacy ops
+            cares: dispensing workflow and throughput.
+          - name: Mail & specialty
+            cares: fulfillment and specialty patient support.
+          - name: Inventory
+            cares: stock, replenishment and 340B accumulation.
+        ucs:
+          - Specialty Pharmacy
+          - Dispensing & Inventory
+          - 340B Compliance
+      - name: Trust & Comply
+        mark: Unity Catalog
+        summary: Program integrity on fraud, waste and abuse, regulatory affairs on Medicare Part D and CMS reporting, and audit on pharmacy audit exposure and DIR reconciliation.
+        uses:
+          - - Model Serving
+            - Fraud, waste and abuse models scored across claims, prescriber and pharmacy behaviour.
+          - - Unity Catalog
+            - Fine-grained governance and lineage over PHI supporting HIPAA and CMS audit.
+          - - AI/BI
+            - FWA exposure, Part D metrics and DIR reconciliation on governed, certified views.
+        sub:
+          - name: Program integrity
+            cares: fraud, waste and abuse investigation.
+          - name: Regulatory affairs
+            cares: Medicare Part D and CMS reporting.
+          - name: Audit
+            cares: pharmacy audit exposure and DIR reconciliation.
+        ucs:
+          - Fraud, Waste & Abuse
+          - 340B Compliance
+          - Medication Adherence
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Claims Data Eng
+        mark: Lakeflow
+        summary: Land NCPDP claims and reversals, eligibility and enrollment, Surescripts and wholesaler EDI; own the Bronze to Silver path and the pager when the claims tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for RxClaim, dispensing, rebate and eligibility sources.
+          - - Auto Loader
+            - NCPDP claim and EDI files landed incrementally into Bronze.
+          - - Lakewatch
+            - Freshness on the claims and rebate tables finance reads every morning.
+      - name: Pharmacy DS
+        mark: MLflow
+        summary: Adherence, fraud-waste-abuse, prior-auth prediction and demand models, and whether they still hold six months after deployment as formularies and networks change.
+        uses:
+          - - Feature Store
+            - Member, drug and claim features read identically in training and serving.
+          - - MLflow
+            - Every adherence and FWA model tracked for audit and reproduction.
+          - - Model Serving
+            - Adherence and anomaly models scored in the clinical and claims path.
+      - name: Health App Dev
+        mark: Apps
+        summary: Ship the prior-auth, rebate, adherence and dispensing applications the pharmacy and PBM work in, hosted next to governed PHI.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for PA and dispensing state with governed writes.
+          - - Agent Bricks
+            - Agents that draft a prior-auth decision against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and clinical dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for net-cost and adherence answers in the channel clinical and finance already work in.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks and IDEs against governed claims, drug and member data.
+  - name: Payers & Partners
+    icon: partner
+    tiles:
+      - name: Plan Sponsor Portal
+        icon: globe
+        summary: Net cost, utilization and guarantee attainment shared to plan sponsors and consultants over governed access.
+      - name: Manufacturer Share
+        icon: share
+        summary: Rebate-eligible utilization and market data shared to manufacturers over Delta Sharing without a copy.
+      - name: Provider Exchange
+        icon: api
+        summary: Medication history and adherence signal exchanged with prescribers and health systems over HL7 FHIR.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Adjudication Writeback
+        icon: market
+        summary: MAC updates and coverage decisions written back into the adjudication engine so the answer reaches the claim path.
+        citations:
+          - rxclaim
+      - name: PA Determinations
+        icon: gavel
+        summary: Prior-authorization determinations written back into the PA workflow prescribers and pharmacies work in.
+        citations:
+          - covermymeds
+      - name: Dispensing Queue
+        icon: apps
+        summary: Adherence outreach and replenishment tasks pushed to the dispensing and mail-order queue.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CMS Part D Reporting
+        icon: gavel
+        summary: Medicare Part D, PDE and star-ratings reporting produced from the same governed tables the PBM runs on.
+      - name: DIR & Rebate Filing
+        icon: share
+        summary: Direct and indirect remuneration and rebate reconciliation filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted claims and rebate products discoverable in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Plan sponsors, manufacturers and covered entities reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Rebate Cockpit
+        icon: market
+        short: Rebate & net cost
+        summary: Where the trade and finance teams see rebate accrual, formulary value and net cost per claim by client and drug, on Databricks Apps over Lakebase.
+      - name: PA Assistant
+        icon: agents
+        short: Prior authorization
+        summary: Prior-authorization requests triaged and drafted against formulary and clinical policy, assembling evidence from claims and prescriber notes with Agent Bricks.
+      - name: Adherence Monitor
+        icon: gauge
+        short: Medication adherence
+        summary: Members scored on refill and adherence risk so outreach reaches non-adherent patients before a gap becomes a gap in care.
+      - name: FWA Investigator
+        icon: zshield
+        short: Program integrity
+        summary: Claims, prescriber and pharmacy behaviour scored for fraud, waste and abuse so special investigations work the highest-value cases first.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Rebate & Net Cost
+        icon: aibi
+        summary: Net cost per claim, rebate accrual and generic dispensing rate on certified Metric Views.
+        kpis:
+          - Net cost per claim
+          - Rebate accrual
+          - Generic dispensing rate
+          - Rebate leakage
+          - Net cost trend
+        teams:
+          - PBM Leadership
+          - Chief trade officer
+          - CFO
+      - name: Adherence & Clinical
+        icon: aibi
+        summary: Adherence, prior-auth turnaround and formulary compliance across the book.
+        kpis:
+          - Proportion of days covered
+          - Adherence rate
+          - PA turnaround
+          - Formulary compliance
+          - Step-therapy adherence
+        teams:
+          - Clinical & UM
+          - Clinical pharmacy
+          - Utilization mgmt
+      - name: Network & Pricing
+        icon: aibi
+        summary: MAC competitiveness, network spread, guarantee attainment and effective rate.
+        kpis:
+          - MAC competitiveness
+          - Network spread
+          - Guarantee attainment
+          - Effective rate
+          - Underwater drug rate
+        teams:
+          - Network Pricing
+          - Pricing & MAC
+          - Underwriting
+      - name: Integrity & Compliance
+        icon: aibi
+        summary: FWA exposure, recoveries, 340B compliance and DIR reconciliation.
+        kpis:
+          - FWA exposure
+          - Recovery
+          - 340B compliance rate
+          - DIR reconciliation
+          - Part D metrics
+        teams:
+          - Trust & Comply
+          - Program integrity
+          - Audit
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Rebate & Net Cost Agent
+        icon: genie
+        summary: Ask about net cost per claim, rebate accrual and where rebate is leaking in plain language.
+        feeds:
+          - Model N Rebates
+          - SS&C RxClaim
+          - Net cost, adherence, rebate
+          - Rebate & Claims Marts
+        teams:
+          - PBM Leadership
+          - Chief trade officer
+          - CFO
+        questions:
+          - What was net cost per claim by client last month?
+          - Where is rebate leaking against the manufacturer contracts?
+          - How is generic dispensing rate trending by client?
+          - Which drugs contribute most to net cost trend this quarter?
+          - What is rebate accrual versus payment reconciliation by contract?
+      - name: Clinical & Adherence Agent
+        icon: genie
+        summary: Explore adherence, prior-auth turnaround and formulary compliance across the book.
+        feeds:
+          - NCPDP Claims
+          - MMIT Formulary
+          - CoverMyMeds
+          - Net cost, adherence, rebate
+        teams:
+          - Clinical & UM
+          - P&T committee
+          - Clinical pharmacy
+        questions:
+          - Which members are at highest risk of non-adherence right now?
+          - What is proportion-of-days-covered by therapeutic class?
+          - Where is prior-auth turnaround exceeding target?
+          - How does formulary compliance vary by plan and drug?
+          - Which step-therapy policies drive the most appeals?
+      - name: Network & Pricing Agent
+        icon: genie
+        summary: Answer MAC competitiveness, network spread and guarantee-attainment questions.
+        feeds:
+          - SS&C RxClaim
+          - First Databank FDB
+          - Medi-Span
+          - Conformed claim, member, drug
+        teams:
+          - Network Pricing
+          - Pricing & MAC
+          - Network contracting
+        questions:
+          - Which drugs are underwater on the current MAC list this week?
+          - What is network spread by pharmacy and drug class?
+          - Where are client guarantees at risk of not being attained?
+          - How does effective rate compare to the contracted guarantee?
+          - Which pharmacies drive the most reimbursement variance?
+      - name: Integrity & Compliance Agent
+        icon: genie
+        summary: Ask about fraud, waste and abuse, 340B compliance and DIR reconciliation.
+        feeds:
+          - NCPDP Claims
+          - Trisus 340B
+          - Gainwell Rx
+          - Conformed claim, member, drug
+        teams:
+          - Trust & Comply
+          - Program integrity
+          - Audit
+        questions:
+          - Which prescribers show aberrant billing patterns this quarter?
+          - Where are duplicate 340B discounts at risk across entities?
+          - What is our FWA exposure by claim category?
+          - How does DIR reconciliation compare to accrual?
+          - Which pharmacies show the highest audit exposure?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Rebate Optimization
+        short: Revenue
+        icon: market
+        summary: Manufacturer rebate accrual and formulary value reconciled per claim so net cost is understood before the invoice, not after.
+        problem: Rebate contracts, formulary tiers and adjudicated claims sit in separate systems, so rebate leakage and net cost per client are reconstructed by hand quarters after the money moved.
+        who_benefits: PBM Leadership
+        how_built: Model N rebate contracts and RxClaim adjudication are conformed in the lakehouse; accrual and net cost are scored per claim in Model Serving and read in the Rebate Cockpit on certified Metric Views.
+        components:
+          - Rebate Cockpit
+          - Model N Rebates
+          - SS&C RxClaim
+          - AI/BI
+          - Model Serving
+          - Rebate & Claims Marts
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Prior Auth Automation
+        short: Clinical
+        icon: gavel
+        summary: Prior-authorization requests triaged, evidence assembled and routine approvals drafted so patients wait hours, not days.
+        problem: Prior authorization is a manual, fax-and-portal process; requests queue for days while clinicians reassemble the same claims, prescriber and formulary evidence by hand.
+        who_benefits: Clinical & UM
+        how_built: CoverMyMeds PA requests and Surescripts data land in the lakehouse; text models classify and draft determinations in Model Serving and Agent Bricks, with the PA Assistant writing decisions back.
+        components:
+          - PA Assistant
+          - CoverMyMeds
+          - Surescripts Rx
+          - Agent Bricks
+          - AI Functions
+          - Model Serving
+        stories:
+          - title: Orizon automates claims and denials with data and AI
+            url: https://www.databricks.com/customers/orizon/mosaic-ai
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Medication Adherence
+        short: Clinical
+        icon: gauge
+        summary: Members scored on refill and adherence risk so outreach reaches non-adherent patients before the gap widens.
+        problem: Non-adherence drives avoidable cost and worse outcomes, but the refill and claims signal that predicts it is scattered and reviewed too late to intervene.
+        who_benefits: Clinical & UM
+        how_built: Fill and claims history feed proportion-of-days-covered and risk models in Model Serving; the Adherence Monitor targets outreach to the members most likely to lapse.
+        components:
+          - Adherence Monitor
+          - NCPDP Claims
+          - Model Serving
+          - AI/BI
+          - Feature Store
+        stories:
+          - title: CVS Health improves medication adherence with Databricks
+            url: https://www.databricks.com/customers/cvs-health
+      - name: Formulary Management
+        short: Clinical
+        icon: sheet
+        summary: Formulary tiers and coverage decisions evaluated on utilization, rebate value and clinical evidence together.
+        problem: Formulary decisions weigh clinical evidence, rebate value and utilization that live in different systems, so a tier change's true net-cost effect is hard to see before it ships.
+        who_benefits: Clinical & UM
+        how_built: MMIT formulary status and FDB drug data are conformed with utilization and rebate on the lakehouse; scenarios are explored in AI/BI and Genie on the definitions the P&T committee reads.
+        components:
+          - MMIT Formulary
+          - First Databank FDB
+          - AI/BI
+          - Unity Catalog
+          - Genie One
+        stories:
+          - title: IQVIA and Databricks enable healthcare data collaboration
+            url: https://www.databricks.com/blog/future-healthcare-relies-data-collaboration-how-iqvia-and-databricks-lakehouse-enable-better
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: MAC & Drug Pricing
+        short: Pricing
+        icon: chart
+        summary: MAC lists and reimbursement tuned against acquisition cost and AWP so drugs are neither underwater nor overpaid.
+        problem: MAC lists drift against acquisition cost and AWP, leaving drugs underwater for pharmacies or overpaid for clients, and every list refresh is a slow manual reconciliation.
+        who_benefits: Network Pricing
+        how_built: FDB and Medi-Span pricing and RxClaim adjudication are conformed to Gold; MAC and reimbursement models score competitiveness in Model Serving and write updates back to the adjudication engine.
+        components:
+          - First Databank FDB
+          - Medi-Span
+          - SS&C RxClaim
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+        stories:
+          - title: Abacus Insights unifies healthcare data on Databricks
+            url: https://www.databricks.com/customers/abacus-insights
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Network Performance
+        short: Network
+        icon: network
+        summary: Pharmacy network spread, guarantee attainment and effective rate read on one certified set of definitions.
+        problem: Network spread and client guarantee attainment are computed in spreadsheets from claims exports, so effective rate is known too late to renegotiate or correct.
+        who_benefits: Network Pricing
+        how_built: Adjudicated claims and contract terms are conformed to certified Metric Views; network spread and guarantee attainment are read in AI/BI and Genie and shared to plan sponsors.
+        components:
+          - SS&C RxClaim
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+          - Plan Sponsor Portal
+        stories:
+          - title: Walgreens builds an intelligent pharmacy data platform
+            url: https://www.databricks.com/customers/walgreens
+          - title: Abacus Insights unifies healthcare data on Databricks
+            url: https://www.databricks.com/customers/abacus-insights
+      - name: Specialty Pharmacy
+        short: Specialty
+        icon: partner
+        summary: Specialty patient journeys from hub enrollment through fill and adherence assembled into one view for support and outcomes.
+        problem: Specialty patients move across hub, benefit verification, specialty pharmacy and clinical support systems that never meet, so enrollment stalls and adherence risk is invisible.
+        who_benefits: Pharmacy Ops
+        how_built: CareMetx hub, dispensing and clinical feeds are conformed on the lakehouse; adherence and abandonment models score each patient in Model Serving for proactive specialty support.
+        components:
+          - CareMetx Hub
+          - PioneerRx
+          - Model Serving
+          - Lakehouse//RT
+          - AI/BI
+        stories:
+          - title: Walgreens delivers personalized care at the point of care
+            url: https://www.databricks.com/customers/walgreens
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Dispensing & Inventory
+        short: Operations
+        icon: iot
+        summary: Demand forecasting and replenishment across the pharmacy network so the right drug is on the shelf without dead stock.
+        problem: Out-of-stocks turn patients away while overstock ties up cash and risks expiry, and forecasts made per store miss the demand that moves across the network.
+        who_benefits: Pharmacy Ops
+        how_built: Dispensing, wholesaler and fill-automation feeds stream into Lakehouse//RT; demand and replenishment models in Model Serving right-size inventory and drive the dispensing queue.
+        components:
+          - ScriptPro Robotics
+          - Parata Systems
+          - Cencora Supply
+          - Lakehouse//RT
+          - Model Serving
+          - Dispensing Queue
+        stories:
+          - title: Walgreens optimizes pharmacy supply chain with Databricks
+            url: https://www.databricks.com/customers/walgreens
+      - name: 340B Compliance
+        short: Compliance
+        icon: gavel
+        summary: 340B eligibility, accumulation and split-billing reconciled continuously so every discounted claim holds up under audit.
+        problem: 340B eligibility, accumulation and duplicate-discount prevention span dispensing, TPA and claims feeds, so compliance is a reactive audit scramble rather than continuous monitoring.
+        who_benefits: Pharmacy Ops
+        how_built: Trisus and Macro Helix split-billing, dispensing and wholesaler data are conformed under Unity Catalog; eligibility and duplicate-discount checks run continuously with lineage for audit.
+        components:
+          - Trisus 340B
+          - Macro Helix 340B
+          - McKesson Supply
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Databricks for Healthcare and Life Sciences
+            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
+      - name: Fraud, Waste & Abuse
+        short: Integrity
+        icon: zshield
+        summary: Claims, prescriber and pharmacy behaviour scored for fraud, waste and abuse so investigations chase the highest-value cases.
+        problem: Rules engines catch known schemes but miss evolving behaviour like prescriber collusion and phantom billing, and manual review queues overwhelm special investigations with false positives.
+        who_benefits: Trust & Comply
+        how_built: Adjudicated claims, prescriber and pharmacy data are conformed on the lakehouse; anomaly and peer-comparison models score behaviour in Model Serving and route explainable cases to the FWA Investigator.
+        components:
+          - FWA Investigator
+          - NCPDP Claims
+          - Model Serving
+          - AI Functions
+          - AI/BI
+          - MLflow
+        stories:
+          - title: Orizon reduces waste and protects patients with AI
+            url: https://www.databricks.com/customers/orizon/mosaic-ai
+          - title: Real-time fraud prevention on Databricks
+            url: https://www.databricks.com/blog/bringing-real-time-fraud-prevention-government-benefits
+medallion:
+  Bronze:
+    short: Raw claims and Rx feeds
+    summary: NCPDP claim transactions and reversals, dispensing and e-prescribing records, manufacturer rebate contracts, 340B accumulations and wholesaler invoices, landed exactly as received so a claim or a rebate can always be replayed as it stood.
+  Silver:
+    short: Conformed claim, member, drug
+    summary: Claims, members, prescribers and drugs resolved into single conformed entities across the adjudication, dispensing and rebate estates, with NDC, GPI and NPI reconciled and every fill stitched to member, plan and drug.
+  Gold:
+    short: Net cost, adherence, rebate
+    summary: 'Contracted products the clinical and finance teams run on: net cost and rebate accrual per claim, medication adherence by drug and cohort, generic dispensing rate, and pharmacy network and specialty performance.'
+citation_index:
+  enterpriserx:
+    title: McKesson Pharmacy Systems
+    url: https://www.mckesson.com/pharmacy-management/
+  pioneerrx:
+    title: PioneerRx pharmacy software
+    url: https://www.pioneerrx.com/
+  willow:
+    title: Epic (Willow pharmacy)
+    url: https://www.epic.com/software/
+  frameworkltc:
+    title: SoftWriters FrameworkLTC
+    url: https://www.softwriters.com/
+  rxclaim:
+    title: SS&C Health (RxClaim)
+    url: https://www.ssctech.com/
+  argus:
+    title: Gainwell Rx Medicaid pharmacy
+    url: https://www.gainwelltechnologies.com/solutions/pharmacy-solutions/
+  ncpdp:
+    title: NCPDP standards
+    url: https://www.ncpdp.org/
+  surescripts:
+    title: Surescripts network
+    url: https://surescripts.com/
+  fdb:
+    title: First Databank (FDB)
+    url: https://www.fdbhealth.com/
+  medispan:
+    title: Wolters Kluwer Medi-Span
+    url: https://www.wolterskluwer.com/en/solutions/medi-span
+  modeln:
+    title: Model N revenue management
+    url: https://www.modeln.com/
+  mmit:
+    title: MMIT formulary data
+    url: https://www.mmitnetwork.com/
+  covermymeds:
+    title: CoverMyMeds prior authorization
+    url: https://www.covermymeds.com/
+  caremetx:
+    title: CareMetx specialty hub
+    url: https://www.caremetx.com/
+  trisus:
+    title: Craneware Trisus 340B
+    url: https://www.craneware.com/
+  macrohelix:
+    title: Macro Helix 340B Architect
+    url: https://www.macrohelix.com/
+  cencora:
+    title: Cencora pharmaceutical distribution
+    url: https://www.cencora.com/
+  mckesson:
+    title: McKesson distribution
+    url: https://www.mckesson.com/
+  scriptpro:
+    title: ScriptPro pharmacy automation
+    url: https://www.scriptpro.com/
+  parata:
+    title: Parata dispensing systems
+    url: https://www.parata.com/

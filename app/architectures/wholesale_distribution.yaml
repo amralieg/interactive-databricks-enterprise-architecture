@@ -1,0 +1,978 @@
+name: Wholesale & Distribution
+description: 'B2B wholesale and distribution: demand and inventory planning, warehouse and transport execution, EDI trading, dynamic pricing, rebates, and multi-channel commerce across branch networks.'
+sources:
+  - name: ERP & Finance
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Orders, inventory, procurement and finance for large distributors; the system of record for the order-to-cash and procure-to-pay flow.
+        citations:
+          - sap
+        category: Enterprise Resource Planning (ERP)
+        what_it_is: Holds the system-of-record for order-to-cash and procure-to-pay across large distributors, the source of orders, inventory, purchasing and finance.
+        who_uses_it: Finance & Rebates, Supply Chain & Ops and Sales & Commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-100 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of postings/sec
+            interval: Continuous CDC
+      - name: Infor Distribution
+        icon: erp
+        summary: 'CloudSuite Distribution ERP purpose-built for wholesale distributors: inventory, pricing and warehouse operations.'
+        citations:
+          - infor
+        category: Distribution ERP
+        what_it_is: Purpose-built distribution ERP covering inventory, pricing and warehouse operations for wholesale distributors.
+        who_uses_it: Supply Chain & Ops, Category & Merch and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Epicor Prophet 21
+        icon: erp
+        summary: Distribution ERP widely run by mid-market wholesalers for order management, inventory and branch operations.
+        citations:
+          - epicor
+        category: Distribution ERP
+        what_it_is: Mid-market distribution ERP for order management, inventory and branch operations, the operational backbone of many wholesalers.
+        who_uses_it: Supply Chain & Ops, Sales & Commercial and Branch operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day
+            interval: Nightly batch
+      - name: Oracle NetSuite
+        icon: erp
+        summary: Cloud ERP for distributors covering order management, inventory, procurement and financials.
+        citations:
+          - netsuite
+        category: Cloud ERP
+        what_it_is: Cloud ERP covering order management, inventory, procurement and financials for distributors running on a SaaS backbone.
+        who_uses_it: Finance & Rebates, Supply Chain & Ops and Sales & Commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day
+            interval: Hourly / nightly sync
+  - name: Warehouse (WMS)
+    icon: store
+    tiles:
+      - name: Manhattan Active WMS
+        icon: store
+        summary: Warehouse management for picking, putaway, slotting and labour across the DC network, the source of execution events.
+        citations:
+          - manhattan
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs picking, putaway, slotting and labour across the DC network, the source of execution move events behind fill rate and productivity.
+        who_uses_it: Supply Chain & Ops, Warehouse operations and Data Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Hourly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of moves/sec at peak
+            interval: Continuous move events
+      - name: Blue Yonder WMS
+        icon: store
+        summary: Warehouse management and fulfilment orchestration across distribution centres and branch stock.
+        citations:
+          - blueyonder
+        category: Warehouse Management System (WMS)
+        what_it_is: Orchestrates warehouse management and fulfilment across distribution centres and branch stock, feeding order and shipment execution state.
+        who_uses_it: Supply Chain & Ops and Warehouse operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day
+            interval: Hourly batch + intraday deltas
+      - name: Körber WMS
+        icon: store
+        summary: Körber Supply Chain warehouse management for wave planning, inventory moves and labour in the DC.
+        citations:
+          - korber
+        category: Warehouse Management System (WMS)
+        what_it_is: Handles wave planning, inventory moves and labour in the DC, emitting the task and move events behind slotting and labour analytics.
+        who_uses_it: Supply Chain & Ops and Warehouse operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Hourly batch
+  - name: Transport & Logistics
+    icon: stream
+    tiles:
+      - name: Oracle OTM
+        icon: stream
+        summary: 'Oracle Transportation Management: route planning, carrier selection, freight rating and settlement across the network.'
+        citations:
+          - oracle-otm
+        category: Transportation Management System (TMS)
+        what_it_is: Plans routes, selects carriers, rates freight and settles across the network, the source of movement and landed-cost data.
+        who_uses_it: Supply Chain & Ops, Transport & logistics and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: project44
+        icon: iot
+        summary: 'Real-time transportation visibility: in-transit tracking, ETAs and exception alerts across carriers.'
+        citations:
+          - project44
+        category: Real-Time Transportation Visibility
+        what_it_is: Provides in-transit tracking, ETAs and exception alerts across carriers, the live status feed behind the OTIF control tower.
+        who_uses_it: Supply Chain & Ops, Transport & logistics and Customer service teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous (API / webhook)
+      - name: FourKites
+        icon: iot
+        summary: Supply chain visibility platform tracking loads and shipments end to end for proactive exception handling.
+        citations:
+          - fourkites
+        category: Real-Time Transportation Visibility
+        what_it_is: Tracks loads and shipments end to end for proactive exception handling, feeding predictive ETA and dwell into service analytics.
+        who_uses_it: Supply Chain & Ops, Transport & logistics and Warehouse operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous (API / webhook)
+  - name: EDI & B2B Commerce
+    icon: api
+    tiles:
+      - name: SPS Commerce EDI
+        icon: api
+        summary: Retail and distribution EDI network carrying purchase orders, ASNs and invoices between trading partners.
+        citations:
+          - sps
+        category: EDI / B2B Network
+        what_it_is: Carries purchase orders, ASNs and invoices between trading partners across the retail and distribution community, the B2B document backbone.
+        who_uses_it: Supply Chain & Ops, Category & Merch and Integration Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Multiple daily batches
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of documents/sec
+            interval: Continuous document flow
+      - name: TrueCommerce EDI
+        icon: api
+        summary: EDI and B2B integration network for order, shipment and invoice documents across the trading community.
+        citations:
+          - truecommerce
+        category: EDI / B2B Network
+        what_it_is: EDI and B2B integration network for order, shipment and invoice documents across the trading community, joined to orders for status and audit.
+        who_uses_it: Supply Chain & Ops, Sales & Commercial and Integration Engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Multiple daily batches
+      - name: SAP Commerce Cloud
+        icon: product
+        summary: 'B2B commerce and punchout catalogs: contract pricing, availability and reorder for buyer procurement systems.'
+        citations:
+          - sap-commerce
+        category: B2B Commerce Platform
+        what_it_is: Serves B2B commerce and punchout catalogs with contract pricing, availability and reorder to buyer procurement systems, emitting web and order events.
+        who_uses_it: Sales & Commercial, Inside sales & e-commerce and Commercial App Devs.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous clickstream / orders
+  - name: Pricing & CRM
+    icon: market
+    tiles:
+      - name: Vendavo Pricing
+        icon: market
+        summary: 'B2B price management and margin optimisation: price guidance, deal scoring and rebate administration.'
+        citations:
+          - vendavo
+        category: B2B Price Management
+        what_it_is: Manages B2B pricing and margin optimisation with price guidance, deal scoring and rebate administration, the source of contract and quote pricing.
+        who_uses_it: Sales & Commercial, Finance & Rebates and Pricing & Demand Sci teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily price + rebate refresh
+      - name: PROS Pricing
+        icon: market
+        summary: AI-driven price optimisation and CPQ for distribution, feeding willingness-to-pay and quote guidance.
+        citations:
+          - pros
+        category: Price Optimization & CPQ
+        what_it_is: Provides AI-driven price optimisation and CPQ, feeding willingness-to-pay and quote guidance into the sales and commerce path.
+        who_uses_it: Sales & Commercial, Pricing & Demand Sci and Inside sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Daily + on-demand quote scoring
+      - name: Salesforce Sales Cloud
+        icon: crm
+        summary: Accounts, opportunities and quotes for field, inside and account-management sales teams.
+        citations:
+          - salesforce
+        category: Sales CRM
+        what_it_is: Holds accounts, opportunities and quotes for field, inside and account-management teams, the relationship view behind churn and cross-sell.
+        who_uses_it: Sales & Commercial, Sales leadership and Account management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Rebate Mart
+        icon: fed
+        summary: Rebate, chargeback and margin marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Finance Data Warehouse
+        what_it_is: Rebate, chargeback and margin marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
+        who_uses_it: Finance & Rebates, CFO & controllers and Rebate & pricing admin analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Dun & Bradstreet
+        icon: partner
+        summary: Firmographics, corporate hierarchies and credit signals for customer onboarding and credit risk.
+        citations:
+          - dnb
+        category: Firmographic & Credit Data
+        what_it_is: Supplies firmographics, corporate hierarchies and credit signals used to onboard customers and assess credit and counterparty risk.
+        who_uses_it: Finance & Rebates, Credit & AR and Sales & Commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Weekly + on-demand refresh
+      - name: Circana POS
+        icon: chart
+        summary: Downstream point-of-sale and market data for demand sensing across categories and channels.
+        citations:
+          - circana
+        category: POS & Market Data
+        what_it_is: Provides downstream point-of-sale and market data for demand sensing across categories and channels, feeding forecast and assortment decisions.
+        who_uses_it: Category & Merch, Pricing & Demand Sci and Merchandising teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/week
+            interval: Weekly syndicated feed
+      - name: DAT Freight Rates
+        icon: market
+        summary: Spot and contract freight rate benchmarks for carrier negotiation and landed-cost analysis.
+        citations:
+          - dat
+        category: Freight Rate Benchmarks
+        what_it_is: Publishes spot and contract freight-rate benchmarks used for carrier negotiation and landed-cost analysis.
+        who_uses_it: Supply Chain & Ops, Transport & logistics and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs
+            interval: Daily / weekly rate benchmarks
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Executive Office
+        mark: Genie One
+        summary: The CEO and COO on revenue growth, branch productivity and the working capital tied up in inventory; the strategy office on which categories, branches and customers to expand or exit.
+        uses:
+          - - Genie One
+            - Ask what last month's gross margin was by branch and category without booking analyst time.
+          - - AI/BI
+            - Revenue, fill rate, margin and inventory turns on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "margin" and "service level" mean one thing across the business.
+        sub:
+          - name: CEO & COO
+            cares: revenue growth, branch productivity and the trade between service and working capital.
+          - name: Strategy & M&A
+            cares: which categories, branches and customers to expand, acquire or exit.
+        ucs:
+          - Margin & Mix Analytics
+          - Demand Forecasting
+          - Dynamic B2B Pricing
+          - Fill-Rate & OTIF
+      - name: Sales & Commercial
+        mark: Model Serving
+        summary: Field sales, inside sales and account management growing wallet share across the customer base, defending price and catching accounts before they drift away.
+        uses:
+          - - Model Serving
+            - Churn, cross-sell and next-best-order scored in the rep's account view.
+          - - Pricing Cockpit
+            - Quote and contract price guidance held to margin floors at the point of sale.
+          - - AI/BI
+            - Pipeline, win rate and share of wallet on governed customer data.
+        sub:
+          - name: Sales leadership
+            cares: territory targets, rep productivity and share of wallet.
+          - name: Account management
+            cares: retention, cross-sell and contract renewals on key accounts.
+          - name: Inside sales & e-commerce
+            cares: conversion and basket size across the branch and web channels.
+        ucs:
+          - Dynamic B2B Pricing
+          - Churn & Cross-Sell
+          - B2B Personalization
+      - name: Category & Merch
+        mark: AI/BI
+        summary: Category managers and merchandisers deciding assortment, supplier terms and private-label mix, judged on category margin, in-stock rate and supplier performance.
+        uses:
+          - - AI/BI
+            - Category margin, assortment productivity and supplier scorecards on certified views.
+          - - Demand Forecasting
+            - SKU-location demand signals feeding assortment and buy decisions.
+          - - Genie One
+            - Ask which SKUs are dead stock or which suppliers slipped on lead time.
+        sub:
+          - name: Category managers
+            cares: assortment, pricing architecture and private-label mix.
+          - name: Merchandising
+            cares: planograms, promotions and new-product introductions.
+          - name: Vendor management
+            cares: supplier terms, rebates and lead-time performance.
+        ucs:
+          - Demand Forecasting
+          - Supplier Scorecards
+          - Margin & Mix Analytics
+      - name: Supply Chain & Ops
+        mark: Lakehouse//RT
+        summary: Planning, warehouse and transport teams moving product from supplier to branch to customer at the promised service level and the lowest landed cost.
+        uses:
+          - - Inventory Command
+            - Replenishment and safety-stock recommendations by SKU and location.
+          - - Lakehouse//RT
+            - Live warehouse and in-transit state at the latency the operation moves at.
+          - - OTIF Control Tower
+            - Orders at risk of missing the promised delivery flagged before they ship.
+        sub:
+          - name: Demand & supply planning
+            cares: forecast, replenishment and safety-stock policy.
+          - name: Warehouse operations
+            cares: picking, putaway and slotting across the DC network.
+          - name: Transport & logistics
+            cares: route, carrier and last-mile execution to branch and customer.
+        ucs:
+          - Inventory Optimization
+          - Fill-Rate & OTIF
+          - Route & Logistics
+          - Demand Forecasting
+      - name: Finance & Rebates
+        mark: AI/BI
+        summary: The CFO's office running margin, cash and the rebate and chargeback programs that make or break net profit in a thin-margin distribution business.
+        uses:
+          - - AI/BI
+            - Net margin after rebates and chargebacks on certified Metric Views.
+          - - Rebate Manager
+            - Supplier rebate accruals and customer chargebacks tracked to contract terms.
+          - - Genie One
+            - Ask which rebate tiers are at risk of being missed this quarter.
+        sub:
+          - name: CFO & controllers
+            cares: gross-to-net margin, cash and inventory valuation.
+          - name: Rebate & pricing admin
+            cares: supplier rebate accruals and customer chargeback claims.
+          - name: Credit & AR
+            cares: customer credit exposure and collections across the book.
+        ucs:
+          - Rebate & Chargeback
+          - Margin & Mix Analytics
+          - Churn & Cross-Sell
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Supply Chain Data Eng
+        mark: Lakeflow
+        summary: Land the SAP, Infor and Epicor ERP, Manhattan and Blue Yonder WMS, TMS and EDI feeds; own the Bronze to Silver path and the pager when replenishment tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for the ERP, WMS and SaaS commerce sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on order, shipment and EDI feeds.
+          - - Lakewatch
+            - Freshness on the inventory and fill-rate tables ops reads every morning.
+        sub:
+          - name: Ingestion Engineers
+            cares: the SAP, Infor and Epicor ERP, WMS, TMS and EDI order feeds landed on time.
+          - name: Pipeline Engineers
+            cares: the Bronze-to-Silver path and expectations on order, shipment and EDI feeds.
+          - name: Platform Reliability
+            cares: freshness of the fill-rate and margin tables ops and finance read every morning.
+      - name: Pricing & Demand Sci
+        mark: MLflow
+        summary: Demand-forecast, price-elasticity, churn and inventory-optimisation models built from POS, order and Vendavo and PROS data, and whether they still hold as the network shifts.
+        uses:
+          - - Feature Store
+            - Customer, SKU and location features read identically in training and serving.
+          - - MLflow
+            - Every forecast and pricing model tracked for audit and reproduction.
+          - - Model Serving
+            - Price, demand and churn models scored in the quote and replenishment path.
+        sub:
+          - name: Forecasting Scientists
+            cares: demand and price-elasticity models across SKU-location and customer.
+          - name: Optimization Scientists
+            cares: inventory and safety-stock models under service and working-capital limits.
+          - name: MLOps
+            cares: every forecast and pricing model tracked for audit and reproduction.
+      - name: Commercial App Devs
+        mark: Apps
+        summary: Ship the inventory command, pricing cockpit, OTIF tower and rebate applications the commercial and operations teams work in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for quote, replenishment and rebate-claim state.
+          - - Agent Bricks
+            - Agents that draft a reorder or a price quote against governed tools.
+        sub:
+          - name: Frontend Engineers
+            cares: the inventory command, pricing cockpit and OTIF tower screens teams work in.
+          - name: Backend Engineers
+            cares: Lakebase state for quote, replenishment and rebate-claim writeback.
+          - name: Agent Builders
+            cares: agents that draft a reorder or a price quote against governed tools.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and branch dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for margin and fill-rate answers in the channel the commercial team already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks, VS Code and JetBrains against governed order and inventory data.
+  - name: Customer & Supplier
+    icon: partner
+    tiles:
+      - name: Customer & Punchout
+        icon: api
+        summary: Contract pricing, availability and reorder guidance served to buyer procurement and punchout catalogs.
+        citations:
+          - sap-commerce
+      - name: Supplier Portals
+        icon: partner
+        summary: Forecasts, scorecards and replenishment signals shared to suppliers over Delta Sharing rather than spreadsheets.
+      - name: EDI Outbound
+        icon: stream
+        summary: Purchase orders, ASNs and invoices pushed back to trading partners through the EDI network.
+        citations:
+          - sps
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: ERP Replenishment
+        icon: erp
+        summary: Reorder points and purchase-order suggestions written back into the ERP so the buy reaches the procurement path.
+        citations:
+          - sap
+      - name: WMS Slotting
+        icon: store
+        summary: Slotting and wave recommendations written to the warehouse system operations already works in.
+        citations:
+          - manhattan
+      - name: Price & Quote Sync
+        icon: market
+        summary: Contract prices and quote guidance written back to CRM and commerce at the point of sale.
+        citations:
+          - vendavo
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Trade & Tax Compliance
+        icon: gavel
+        summary: Sales-and-use tax, customs and controlled-product reporting produced from the same governed tables the business runs on.
+      - name: Financial Reporting
+        icon: share
+        summary: Rebate, margin and inventory-valuation reporting filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Suppliers, carriers and buying groups reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Inventory Command
+        icon: gauge
+        short: Replenishment
+        summary: Replenishment, safety-stock and dead-stock recommendations by SKU and branch, so buyers reorder on predicted demand instead of a fixed reorder point, on Databricks Apps over Lakebase.
+      - name: Pricing Cockpit
+        icon: market
+        short: Quote guidance
+        summary: Where sales and pricing see the margin floor, competitor context and win probability on a quote before a contract price is agreed.
+      - name: OTIF Control Tower
+        icon: stream
+        short: Service levels
+        summary: Live order and shipment state against the promised delivery date, flagging the orders that will miss on-time-in-full before they leave the dock.
+      - name: Rebate Manager
+        icon: gavel
+        short: Margin recovery
+        summary: Supplier rebate accruals and customer chargeback claims tracked to contract terms, so earned rebates are captured and invalid chargebacks are disputed.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Fill-Rate & Service
+        icon: aibi
+        summary: Fill rate, OTIF and orders at risk across customers and branches.
+        kpis:
+          - Fill rate
+          - OTIF
+          - Orders at risk
+          - Backorder rate
+          - Perfect order rate
+        teams:
+          - Supply Chain & Ops
+          - Executive Office
+          - Demand & supply planning
+      - name: Margin & Rebate Recovery
+        icon: aibi
+        summary: Gross-to-net margin, rebate accruals and chargeback exposure.
+        kpis:
+          - Gross-to-net margin
+          - Rebate accrual
+          - Chargeback exposure
+          - Margin leakage
+          - Net profit
+        teams:
+          - Finance & Rebates
+          - CFO & controllers
+          - Executive Office
+      - name: Inventory & Working Capital
+        icon: aibi
+        summary: Inventory turns, dead stock and working capital by SKU and branch.
+        kpis:
+          - Inventory turns
+          - Days on hand
+          - Dead stock value
+          - Working capital
+          - Stockout rate
+        teams:
+          - Supply Chain & Ops
+          - Category & Merch
+          - Finance & Rebates
+      - name: Sales & Customer Health
+        icon: aibi
+        summary: Share of wallet, churn risk and cross-sell across the account base.
+        kpis:
+          - Share of wallet
+          - Churn risk
+          - Cross-sell rate
+          - Win rate
+          - Order frequency
+        teams:
+          - Sales & Commercial
+          - Account management
+          - Inside sales & e-commerce
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Inventory & Fill-Rate Agent
+        icon: genie
+        summary: Ask about stock positions, fill rate and orders at risk of missing OTIF.
+        feeds:
+          - SAP S/4HANA
+          - Manhattan Active WMS
+          - project44
+          - Fill-rate, margin, forecast
+        teams:
+          - Supply Chain & Ops
+          - Demand & supply planning
+          - Warehouse operations
+        questions:
+          - Which SKU-locations are about to stock out on current demand?
+          - What is fill rate by customer and branch this week?
+          - Which open orders are at risk of missing OTIF today?
+          - Where is working capital tied up in slow-moving inventory?
+          - Which SKUs are dead stock across the branch network?
+      - name: Margin & Rebates Agent
+        icon: genie
+        summary: Explore gross-to-net margin, rebate accruals and chargeback exposure.
+        feeds:
+          - SAP S/4HANA
+          - Vendavo Pricing
+          - Finance & Rebate Mart
+          - Fill-rate, margin, forecast
+        teams:
+          - Finance & Rebates
+          - CFO & controllers
+          - Rebate & pricing admin
+        questions:
+          - What is gross-to-net margin by customer and category this month?
+          - Which supplier rebate tiers are at risk of being missed this quarter?
+          - Which customer chargebacks look invalid and worth disputing?
+          - Which customers and SKUs are loss-making after rebates?
+          - How much earned rebate is still uncaptured against contract terms?
+      - name: Sales & Customer Growth Agent
+        icon: genie
+        summary: Answer share-of-wallet, churn and cross-sell questions across the account base.
+        feeds:
+          - Salesforce Sales Cloud
+          - SAP Commerce Cloud
+          - SAP S/4HANA
+          - Conformed customer, SKU, order
+        teams:
+          - Sales & Commercial
+          - Account management
+          - Inside sales & e-commerce
+        questions:
+          - Which accounts are drifting and reducing order frequency?
+          - Where is the biggest cross-sell whitespace by account?
+          - What is share of wallet on our top 100 customers?
+          - Which reps are below target on productivity this quarter?
+          - How is the B2B web channel converting versus the branch?
+      - name: Demand & Supplier Performance Agent
+        icon: genie
+        summary: Ask about SKU-location demand forecasts and supplier lead-time reliability.
+        feeds:
+          - Circana POS
+          - SPS Commerce EDI
+          - SAP S/4HANA
+          - Fill-rate, margin, forecast
+        teams:
+          - Category & Merch
+          - Vendor management
+          - Demand & supply planning
+        questions:
+          - Which SKU-locations have the least accurate forecast right now?
+          - Which suppliers are slipping on lead time versus commitment?
+          - How does forecast bias vary by category and season?
+          - Which suppliers have the worst fill rate on our purchase orders?
+          - Where should assortment change based on demand signals?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Demand Forecasting
+        short: Planning
+        icon: chart
+        summary: SKU-location demand forecasts across a long-tail catalog and a branch network, blending sell-through, order history, seasonality and promotions.
+        problem: A distributor forecasts hundreds of thousands of SKU-location pairs on a spreadsheet cadence, so slow movers overstock and fast movers stock out between refreshes.
+        who_benefits: Category & Merch
+        how_built: Order, POS and promotion feeds are conformed to Gold; fine-grained forecasts are trained in MLflow and scored per SKU-location, feeding replenishment and buy decisions.
+        components:
+          - Demand Forecasting
+          - Model Serving
+          - SAP S/4HANA
+          - AI/BI
+          - Feature Store
+        stories:
+          - title: Demand Forecasting at Scale on Databricks
+            url: https://www.databricks.com/solutions/accelerators/demand-forecasting
+          - title: Mondelez scales model experimentation on Databricks
+            url: https://www.databricks.com/customers/mondelez
+      - name: Inventory Optimization
+        short: Working capital
+        icon: store
+        summary: Safety-stock, reorder-point and assortment decisions tuned to service-level targets and the cash tied up in inventory across every branch.
+        problem: Inventory is set by static min-max rules per branch, so millions in working capital sit in the wrong SKUs while service levels still miss on the ones that matter.
+        who_benefits: Supply Chain & Ops
+        how_built: Forecasts and lead-time variability feed multi-echelon optimisation in Model Serving; recommendations surface in the Inventory Command app and write back to the ERP.
+        components:
+          - Inventory Command
+          - Model Serving
+          - Manhattan Active WMS
+          - Lakehouse//RT
+          - MLflow
+        stories:
+          - title: Supply Chain Distribution Optimization
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+      - name: Dynamic B2B Pricing
+        short: Revenue
+        icon: market
+        summary: Contract and quote prices set per customer, product and volume against cost, competitor context and willingness to pay rather than a static price book.
+        problem: Thousands of negotiated contract prices drift from cost, so margin leaks quietly on renewals and reps discount to the floor without knowing where the floor is.
+        who_benefits: Sales & Commercial
+        how_built: Vendavo and PROS pricing data are conformed in the lakehouse; elasticity and win-probability models score each quote through Model Serving behind the Pricing Cockpit.
+        components:
+          - Pricing Cockpit
+          - Vendavo Pricing
+          - PROS Pricing
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Databricks for Retail and Consumer Goods
+            url: https://www.databricks.com/solutions/industries/retail-industry-solutions
+      - name: Churn & Cross-Sell
+        short: Growth
+        icon: custlake
+        summary: Predicting which accounts are drifting and which product lines they should be buying, scored against the order history the CRM and ERP already hold.
+        problem: 'A distributor loses accounts quietly: orders taper for months before anyone notices, and cross-sell whitespace sits unworked because no one scores it.'
+        who_benefits: Sales & Commercial
+        how_built: Order and CRM history are activated through CustomerLake; churn and next-best-order models are scored in Model Serving and served into the rep's account view.
+        components:
+          - Feature Store
+          - Model Serving
+          - Salesforce Sales Cloud
+          - CustomerLake
+          - AI/BI
+        stories:
+          - title: Calculate Customer Lifetime Value
+            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
+      - name: Fill-Rate & OTIF
+        short: Service
+        icon: gauge
+        summary: 'On-time-in-full attacked before the miss: order, inventory and shipment state joined so an at-risk line is caught while it can still be expedited.'
+        problem: Fill-rate and OTIF are reported after the customer is short-shipped, when the only options left are an apology and a credit.
+        who_benefits: Supply Chain & Ops
+        how_built: Order, inventory and shipment feeds stream into Lakehouse//RT; the OTIF Control Tower flags orders that will miss the promised date so ops can expedite or substitute.
+        components:
+          - OTIF Control Tower
+          - Lakehouse//RT
+          - Manhattan Active WMS
+          - Oracle OTM
+          - AI/BI
+        stories:
+          - title: Supply Chain Distribution Optimization
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+      - name: Supplier Scorecards
+        short: Sourcing
+        icon: sheet
+        summary: Supplier performance measured on lead-time reliability, fill rate, quality and rebate compliance across every purchase order, not just the last complaint.
+        problem: Supplier reviews run on anecdote and the loudest incident, because lead-time and fill data live in the ERP and never get turned into a scorecard.
+        who_benefits: Category & Merch
+        how_built: Purchase-order, receipt and EDI feeds are conformed to Gold; supplier scorecards are published as certified Metric Views and shared back to suppliers over Delta Sharing.
+        components:
+          - AI/BI
+          - SAP S/4HANA
+          - SPS Commerce EDI
+          - Unity Catalog
+          - Genie One
+        stories:
+          - title: 'Unilever: GenAI powers smarter operations'
+            url: https://www.databricks.com/customers/unilever
+      - name: Route & Logistics
+        short: Logistics
+        icon: stream
+        summary: Delivery routes, carrier choice and last-mile execution optimised across the branch and DC network to cut freight cost and hit the delivery window.
+        problem: Routes and carrier assignments are planned in silos per branch, so trucks run half-empty, freight spend climbs and delivery windows slip.
+        who_benefits: Supply Chain & Ops
+        how_built: Order, shipment and TMS feeds are conformed; route and load plans are generated in Model Serving and executed from the OTIF Control Tower against live in-transit state.
+        components:
+          - OTIF Control Tower
+          - Oracle OTM
+          - project44
+          - Model Serving
+          - Lakehouse//RT
+        stories:
+          - title: Scalable Route Generation on Databricks
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+      - name: Rebate & Chargeback
+        short: Margin
+        icon: gavel
+        summary: Supplier rebate accruals earned and customer chargebacks validated to contract terms, so net margin reflects the money actually owed and owing.
+        problem: Rebates and chargebacks are reconciled in spreadsheets against contracts no one can find, so earned rebates go uncaptured and invalid chargebacks go unpaid.
+        who_benefits: Finance & Rebates
+        how_built: Contract terms, purchase and sales history are conformed in the lakehouse; the Rebate Manager app tracks accruals and disputes on Lakebase with governed writes.
+        components:
+          - Rebate Manager
+          - SAP S/4HANA
+          - AI/BI
+          - Lakebase
+          - Unity Catalog
+      - name: B2B Personalization
+        short: E-commerce
+        icon: product
+        summary: Search, product discovery and reorder guidance on the B2B web and punchout channels, tuned to the contract catalog and buying pattern of each account.
+        problem: A distributor's e-commerce search buries the right part in a multi-million-SKU catalog, so buyers call the branch and the digital channel underperforms.
+        who_benefits: Sales & Commercial
+        how_built: Catalog and order history feed retrieval and recommendation models scored in Model Serving; personalised search and reorder lists serve into the commerce and punchout channels.
+        components:
+          - Pricing Cockpit
+          - CustomerLake
+          - Model Serving
+          - SAP Commerce Cloud
+          - AI/BI
+        stories:
+          - title: 'Grainger: GenAI product discovery across 2.5M SKUs'
+            url: https://www.databricks.com/customers/grainger
+          - title: Recommendation Engines for Personalization
+            url: https://www.databricks.com/solutions/accelerators/recommendation-engines
+      - name: Margin & Mix Analytics
+        short: Profitability
+        icon: chart
+        summary: Gross-to-net margin decomposed by customer, product, branch and channel, so the business sees where mix, price and cost move the P&L.
+        problem: Margin is reported at the top line, so the loss-making customers and SKUs hide inside a healthy average until a bad quarter exposes them.
+        who_benefits: Finance & Rebates
+        how_built: Sales, cost and rebate data are conformed to certified Metric Views; margin and mix are explored in AI/BI and Genie on the same definitions the executive team reads.
+        components:
+          - AI/BI
+          - Unity Catalog
+          - Genie One
+          - SAP S/4HANA
+          - Vendavo Pricing
+        stories:
+          - title: Reckitt on Databricks
+            url: https://www.databricks.com/customers/reckitt
+          - title: Ahold Delhaize on Databricks
+            url: https://www.databricks.com/customers/ahold-delhaize
+medallion:
+  Bronze:
+    short: Raw ERP, WMS, EDI feeds
+    summary: Orders, shipments and invoices from the ERP, WMS pick and putaway events, TMS movements and inbound EDI transactions, landed exactly as received so a short-ship or a price can always be replayed as it stood.
+  Silver:
+    short: Conformed customer, SKU, order
+    summary: Customers, SKUs, suppliers and orders resolved into single conformed entities across the ERP, WMS, CRM and commerce estates, with ship-to and bill-to hierarchies reconciled and EDI trading partners matched.
+  Gold:
+    short: Fill-rate, margin, forecast
+    summary: 'Contracted products the commercial and operations teams run on: fill rate and OTIF by customer and branch, gross-to-net margin after rebates, inventory turns, and SKU-location demand forecasts.'
+citation_index:
+  sap:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  infor:
+    title: Infor CloudSuite Distribution
+    url: https://www.infor.com/industries/distribution
+  epicor:
+    title: Epicor Prophet 21
+    url: https://www.epicor.com/en-us/erp-systems/prophet-21/
+  netsuite:
+    title: Oracle NetSuite ERP
+    url: https://www.netsuite.com/portal/products/erp.shtml
+  manhattan:
+    title: Manhattan Active Warehouse Management
+    url: https://www.manh.com/products/warehouse-management
+  blueyonder:
+    title: Blue Yonder Warehouse Management
+    url: https://blueyonder.com/solutions/warehouse-management
+  korber:
+    title: Körber Supply Chain Software
+    url: https://www.koerber-supplychain.com/
+  oracle-otm:
+    title: Oracle Transportation Management
+    url: https://www.oracle.com/scm/logistics/transportation-management/
+  project44:
+    title: project44 Visibility
+    url: https://www.project44.com/
+  fourkites:
+    title: FourKites Supply Chain Visibility
+    url: https://www.fourkites.com/
+  sps:
+    title: SPS Commerce EDI
+    url: https://www.spscommerce.com/
+  truecommerce:
+    title: TrueCommerce EDI
+    url: https://www.truecommerce.com/
+  sap-commerce:
+    title: SAP Commerce Cloud
+    url: https://www.sap.com/products/crm/e-commerce-platforms.html
+  vendavo:
+    title: Vendavo Pricing
+    url: https://www.vendavo.com/
+  pros:
+    title: PROS Pricing
+    url: https://pros.com/
+  salesforce:
+    title: Salesforce Sales Cloud
+    url: https://www.salesforce.com/products/sales-cloud/overview/
+  dnb:
+    title: Dun & Bradstreet
+    url: https://www.dnb.com/
+  circana:
+    title: Circana (IRI/NPD)
+    url: https://www.circana.com/
+  dat:
+    title: DAT Freight & Analytics
+    url: https://www.dat.com/

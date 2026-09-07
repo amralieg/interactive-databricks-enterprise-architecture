@@ -1,16 +1,19 @@
 const { chromium } = require("playwright");
-const path = require("path");
-const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
+const { serve } = require("./lib_serve");
 (async () => {
+  // Serve over HTTP so industries can lazy-load from architectures/*.json
+  // (fetch() cannot read them over file://).
+  const server = await serve();
+  const base = "http://127.0.0.1:" + server.address().port + "/index.html";
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   const errs = [];
   page.on("pageerror", e => errs.push(String(e)));
-  await page.goto(FILE, { waitUntil: "load" });
-  const ids = await page.evaluate(() => ["generic"].concat(Object.keys(INDUSTRIES)));
+  await page.goto(base, { waitUntil: "networkidle" });
+  const ids = await page.evaluate(() => ["generic"].concat(INDUSTRY_CATALOG.map(x => x[0])));
   const rows = [];
   for (const id of ids) {
-    await page.evaluate((i) => { i === "generic" ? build() : applyIndustry(i, false); }, id);
+    await page.evaluate(async (i) => { i === "generic" ? build() : await applyIndustry(i, false); }, id);
     const r = await page.evaluate(() => {
       const s = deckSections();
       const by = k => { const x = s.find(z => z.kind === k); return x ? x.tiles.length : 0; };
@@ -19,6 +22,7 @@ const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
     rows.push({ id, ...r });
   }
   await browser.close();
+  server.close();
   let bad = 0;
   const short = rows.filter(r => !(r.uc >= 1 && r.genie >= 1 && r.dash >= 1 && r.app >= 1));
   rows.forEach(r => { if (!(r.uc && r.genie && r.dash && r.app)) bad++; });

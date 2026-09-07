@@ -2,8 +2,8 @@ const { chromium } = require("playwright");
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const { serve } = require("./lib_serve");
 
-const FILE = "file://" + path.resolve(__dirname, "../app/index.html");
 const OUT = "/tmp/arch_exports";
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
@@ -29,6 +29,12 @@ function pdfPageCount(buf) {
 }
 
 (async () => {
+  // Serve over HTTP: the deep-linked industry lazy-loads from architectures/*.json
+  // (and resources/*.json), which fetch() cannot read over file://. Under file://
+  // every case would silently fall back to generic and the export checks would
+  // pass vacuously; HTTP makes the deck reflect the real industry content.
+  const server = await serve();
+  const BASE = "http://127.0.0.1:" + server.address().port + "/index.html";
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
   const errors = [];
@@ -37,8 +43,8 @@ function pdfPageCount(buf) {
 
   const results = [];
   for (const [ind, cloud] of CASES) {
-    const url = `${FILE}?industry=${ind}&cloud=${cloud}`;
-    await page.goto(url, { waitUntil: "load" });
+    const url = `${BASE}?industry=${ind}&cloud=${cloud}`;
+    await page.goto(url, { waitUntil: "networkidle" });
     await page.waitForTimeout(700);
 
     const summary = await page.evaluate(() => {
@@ -91,6 +97,7 @@ function pdfPageCount(buf) {
   }
 
   await browser.close();
+  server.close();
 
   console.log("\n================ EXPORT VERIFICATION ================\n");
   let fail = 0;
@@ -108,6 +115,9 @@ function pdfPageCount(buf) {
     const expSlides = 1 /*cover*/ + 1 /*index*/ + 1 /*board*/ + breaks + narr + 1 /*closing*/;
 
     const checks = [];
+    // Guard against a silent fall-back to generic: the loaded industry must be
+    // the one requested (proves the lazy per-industry fetch actually resolved).
+    checks.push(["industry==" + r.tag.split("_")[0], r.industry === r.tag.slice(0, r.tag.lastIndexOf("_"))]);
     checks.push(["uc>0", hasUc]);
     checks.push(["ucInDeck", r.ucInDeck]);
     checks.push(["genie>0", hasGenieS]);

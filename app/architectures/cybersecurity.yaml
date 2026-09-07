@@ -1,0 +1,1028 @@
+name: Cybersecurity
+description: 'Enterprise security operations: threat detection and correlation, alert triage, threat hunting, insider risk, vulnerability management, incident response, and compliance across the SOC.'
+sources:
+  - name: SIEM & Log Analytics
+    icon: observ
+    tiles:
+      - name: Splunk Enterprise
+        icon: observ
+        summary: The incumbent SIEM and search index for security events, alerts and dashboards, and the source of the SPL detections and correlation searches the SOC runs today.
+        citations:
+          - splunk
+        category: SIEM / Log Analytics
+        what_it_is: Incumbent SIEM and search index for security events, alerts and dashboards; runs the SPL detections and correlation searches the SOC uses today.
+        who_uses_it: SOC analysts, detection engineers and security leadership.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: TB/day indexed logs
+            interval: Continuous + scheduled searches
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M events/sec at peak
+            interval: Continuous
+      - name: Elastic Security
+        icon: observ
+        summary: Elastic Common Schema logs, detection rules and endpoint telemetry, a common SIEM and search estate for high-volume log analytics.
+        citations:
+          - elastic
+        category: SIEM / Log Analytics
+        what_it_is: Elastic Common Schema logs, detection rules and endpoint telemetry for high-volume log analytics.
+        who_uses_it: SOC analysts and security engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k events/sec at peak
+            interval: Continuous
+      - name: Microsoft Sentinel
+        icon: zshield
+        summary: 'Cloud-native SIEM and SOAR: analytics rules, incidents and workbooks over identity, endpoint and productivity signals across the Microsoft estate.'
+        citations:
+          - sentinel
+        category: Cloud SIEM / SOAR
+        what_it_is: 'Cloud-native SIEM and SOAR: analytics rules, incidents and workbooks over identity, endpoint and productivity signals across the Microsoft estate.'
+        who_uses_it: SOC analysts and Microsoft-estate security teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 100s of GB/day
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: Chronicle SecOps
+        icon: observ
+        summary: Petabyte-scale security telemetry, UDM-normalised events and curated detections, retained for long-horizon threat investigation.
+        citations:
+          - chronicle
+        category: Cloud-Scale Security Analytics
+        what_it_is: Petabyte-scale security telemetry, UDM-normalised events and curated detections retained for long-horizon investigation.
+        who_uses_it: SOC, threat hunters and detection engineers.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: PB-scale retained telemetry
+            interval: Continuous ingest
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M events/sec at peak
+            interval: Continuous
+  - name: Endpoint & XDR
+    icon: zshield
+    tiles:
+      - name: CrowdStrike Falcon
+        icon: zshield
+        summary: Endpoint detection and response telemetry, process trees, detections and containment actions from the Falcon sensor across the fleet.
+        citations:
+          - crowdstrike
+        category: Endpoint Detection & Response (EDR)
+        what_it_is: Endpoint detection and response telemetry, process trees, detections and containment actions from the Falcon sensor across the fleet.
+        who_uses_it: SOC, incident responders and endpoint teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: SentinelOne EDR
+        icon: zshield
+        summary: Singularity endpoint and identity telemetry, behavioural detections and automated response for workstations, servers and cloud workloads.
+        citations:
+          - sentinelone
+        category: Endpoint / XDR
+        what_it_is: Singularity endpoint and identity telemetry, behavioural detections and automated response across workstations, servers and cloud workloads.
+        who_uses_it: SOC and endpoint security teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: Microsoft Defender XDR
+        icon: zshield
+        summary: Cross-domain endpoint, email, identity and app signals with alerts and advanced hunting tables spanning the Defender suite.
+        citations:
+          - defender
+        category: Extended Detection & Response (XDR)
+        what_it_is: Cross-domain endpoint, email, identity and app signals with alerts and advanced-hunting tables across the Defender suite.
+        who_uses_it: SOC analysts and Microsoft security teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 100s of GB/day hunting tables
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+  - name: Identity & Access
+    icon: identity
+    tiles:
+      - name: Okta Identity Cloud
+        icon: identity
+        summary: Workforce sign-in, MFA, factor and system-log events, the authoritative record of who authenticated where and how.
+        citations:
+          - okta
+        category: Identity Provider (IdP)
+        what_it_is: Workforce sign-in, MFA, factor and system-log events; the authoritative record of who authenticated where and how.
+        who_uses_it: Identity, SOC and insider-risk teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous
+      - name: Microsoft Entra ID
+        icon: identity
+        summary: Directory, conditional-access and sign-in logs with risk detections, the identity graph every UEBA and lateral-movement detection joins to.
+        citations:
+          - entra
+        category: Identity & Access Management (IAM)
+        what_it_is: Directory, conditional-access and sign-in logs with risk detections; the identity graph UEBA and lateral-movement detections join to.
+        who_uses_it: Identity, SOC and GRC teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous
+      - name: CyberArk PAM
+        icon: key
+        summary: Privileged session recordings, vault checkouts and secret access, the source of truth for privileged-account misuse detection.
+        citations:
+          - cyberark
+        category: Privileged Access Management (PAM)
+        what_it_is: Privileged session recordings, vault checkouts and secret access; the source of truth for privileged-account misuse detection.
+        who_uses_it: Identity, insider-risk and SOC teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs/day (logs + session recordings)
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous
+  - name: Vuln & Threat Intel
+    icon: gauge
+    tiles:
+      - name: Tenable Nessus
+        icon: gauge
+        summary: Vulnerability scan results, plugin findings and asset exposure across the estate, the raw feed for exposure prioritisation.
+        citations:
+          - tenable
+        category: Vulnerability Scanning
+        what_it_is: Vulnerability scan results, plugin findings and asset exposure across the estate; the raw feed for exposure prioritisation.
+        who_uses_it: Vulnerability management and GRC teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/scan cycle
+            interval: Daily / weekly scans
+      - name: Qualys VMDR
+        icon: gauge
+        summary: Vulnerability management, detection and response findings with asset criticality and patch state for risk-based prioritisation.
+        citations:
+          - qualys
+        category: Vulnerability Management (VM)
+        what_it_is: Vulnerability management, detection and response findings with asset criticality and patch state for risk-based prioritisation.
+        who_uses_it: Vulnerability management and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily
+      - name: Mandiant Threat Intel
+        icon: globe
+        summary: Adversary profiles, indicators and campaign intelligence used to prioritise detections against the threats actually targeting the sector.
+        citations:
+          - mandiant
+        category: Threat Intelligence Provider
+        what_it_is: Adversary profiles, indicators and campaign intelligence used to prioritise detections against the threats targeting the sector.
+        who_uses_it: Threat intel analysts and detection engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: sub-GB/day
+            interval: Daily + on-demand
+      - name: Recorded Future
+        icon: globe
+        summary: Real-time indicators, risk scores and dark-web intelligence enriched onto entities to raise or lower detection confidence.
+        citations:
+          - recorded-future
+        category: Threat Intelligence Provider
+        what_it_is: Real-time indicators, risk scores and dark-web intelligence enriched onto entities to raise or lower detection confidence.
+        who_uses_it: Threat intel analysts and SOC teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: sub-GB/day
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of indicators/sec
+            interval: Continuous (API)
+  - name: Network & Cloud Sec
+    icon: network
+    tiles:
+      - name: Palo Alto NGFW
+        icon: network
+        summary: Next-generation firewall traffic, threat-prevention and URL-filtering logs, the perimeter and east-west view of the network.
+        citations:
+          - paloalto
+        category: Next-Gen Firewall (NGFW)
+        what_it_is: Next-generation firewall traffic, threat-prevention and URL-filtering logs; the perimeter and east-west view of the network.
+        who_uses_it: Network security and SOC teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: Zscaler ZIA/ZPA
+        icon: cloud
+        summary: Secure web gateway and zero-trust access logs for every user-to-app session, the source for egress and exfiltration analysis.
+        citations:
+          - zscaler
+        category: Secure Web Gateway / ZTNA
+        what_it_is: Secure web gateway and zero-trust access logs for every user-to-app session; the source for egress and exfiltration analysis.
+        who_uses_it: Network security, SOC and insider-risk teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: Corelight NDR
+        icon: network
+        summary: Zeek-based network evidence and detections, the high-fidelity packet-derived record threat hunters pivot on during investigations.
+        citations:
+          - corelight
+        category: Network Detection & Response (NDR)
+        what_it_is: Zeek-based network evidence and detections; the high-fidelity packet-derived record hunters pivot on during investigations.
+        who_uses_it: Threat hunters, SOC and network security teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: TB/day network evidence
+            interval: Continuous
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+      - name: Wiz CNAPP
+        icon: cloud
+        summary: Cloud security posture, misconfiguration and runtime findings across cloud accounts, containers and workloads.
+        citations:
+          - wiz
+        category: Cloud Security (CNAPP)
+        what_it_is: Cloud security posture, misconfiguration and runtime findings across cloud accounts, containers and workloads.
+        who_uses_it: Cloud security, GRC and SOC teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day findings
+            interval: Daily
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (runtime)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Enterprise Audit Marts
+        icon: fed
+        summary: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories left in their existing warehouses and queried in place under Unity Catalog, so identity and asset context enriches detections without a second copy of sensitive data.
+        category: Enterprise Data Warehouse / Audit
+        what_it_is: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories kept in existing warehouses and queried in place through federation.
+        who_uses_it: GRC, insider-risk and SOC analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale audit history
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: OCSF Event Streams
+        icon: stream
+        summary: Security telemetry normalised to the Open Cybersecurity Schema Framework on arrival and landed as governed tables, so detections are written once against a vendor-neutral schema.
+        citations:
+          - ocsf
+        category: Normalized Security Schema (OCSF)
+        what_it_is: Security telemetry normalised to the Open Cybersecurity Schema Framework on arrival and landed as governed tables.
+        who_uses_it: Security data engineers and detection engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M events/sec at peak
+            interval: Continuous
+      - name: Kafka Security Topics
+        icon: eventbus
+        summary: High-volume endpoint, network and identity events carried on existing Kafka topics, consumed continuously into the lakehouse for near-real-time detection.
+        citations:
+          - kafka
+        category: Event Streaming Platform
+        what_it_is: High-volume endpoint, network and identity events carried on existing Kafka topics, consumed continuously for near-real-time detection.
+        who_uses_it: Security data engineers and streaming teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-1M events/sec at peak
+            interval: Continuous
+      - name: Cortex XSOAR
+        icon: orch
+        summary: SOAR case, playbook-run and enrichment records ingested back so response actions and analyst decisions are analysed alongside the alerts that triggered them.
+        citations:
+          - xsoar
+        category: SOAR / Case Management
+        what_it_is: SOAR case, playbook-run and enrichment records ingested back so response actions and analyst decisions are analysed alongside the alerts that triggered them.
+        who_uses_it: SOC, incident responders and detection engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: sub-GB/day cases + playbook runs
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Security Leadership
+        mark: Genie One
+        summary: The CISO on aggregate risk posture, board-level cyber exposure and the cost and coverage of the security programme; the deputy CISO and SecOps director on detection coverage against MITRE ATT&CK, mean-time-to-respond and the economics of log retention.
+        uses:
+          - - Genie One
+            - Ask what the current risk posture and open critical incidents are without booking analyst time.
+          - - AI/BI
+            - Detection coverage, MTTD and MTTR, and SIEM spend on one certified set of Metric Views.
+          - - Unity Catalog
+            - Governance and the security glossary, so "critical incident" and "coverage" mean one thing across the programme.
+        sub:
+          - name: CISO
+            cares: aggregate risk posture, board reporting and cyber exposure.
+          - name: Deputy CISO
+            cares: detection coverage, control effectiveness and programme maturity.
+          - name: SecOps Director
+            cares: SOC throughput, mean-time-to-respond and retention economics.
+        ucs:
+          - Threat Detection
+          - Security Lakehouse
+          - Compliance Reporting
+      - name: SOC & Response
+        mark: Lakehouse//RT
+        summary: Tier-1 and tier-2 SOC analysts triaging alerts against a shrinking clock, incident responders containing active intrusions, and on-call leads running the bridge when a confirmed breach is in progress.
+        uses:
+          - - SOC Triage Console
+            - The alert, its full entity context and the recommended action on one screen before an analyst escalates.
+          - - Lakehouse//RT
+            - Endpoint, identity and network events at the latency an intrusion moves at.
+          - - Model Serving
+            - Alert-scoring and deduplication models scored inline so the queue is ordered by real risk.
+        sub:
+          - name: Tier-1 analysts
+            cares: first-pass triage and false-positive suppression.
+          - name: Tier-2 analysts
+            cares: deeper correlation and escalation decisions.
+          - name: Incident responders
+            cares: containment, eradication and recovery on active intrusions.
+        ucs:
+          - Threat Detection
+          - Alert Triage & Dedup
+          - Incident Forensics
+          - Phishing & BEC Defense
+      - name: Threat Intelligence
+        mark: AI/BI
+        summary: Threat intel analysts curating adversary tradecraft and indicators, and threat hunters forming hypotheses and pivoting across months of telemetry to find what no rule fired on.
+        uses:
+          - - Threat Hunt Workbench
+            - Hypothesis-driven hunts across the full-fidelity history rather than a two-week index.
+          - - Genie
+            - Plain-English pivots across petabytes so a hunt is not gated on SPL fluency.
+          - - AI/BI
+            - Campaign, indicator and coverage views on governed data.
+        sub:
+          - name: Threat intel analysts
+            cares: adversary profiling, indicator curation and prioritisation.
+          - name: Threat hunters
+            cares: hypothesis-driven hunting across long-horizon telemetry.
+        ucs:
+          - Threat Hunting
+          - Threat Detection
+          - Vulnerability Triage
+      - name: GRC & Compliance
+        mark: Unity Catalog
+        summary: Governance, risk and compliance teams evidencing controls to auditors, insider-risk analysts investigating anomalous user behaviour, and risk owners prioritising the vulnerabilities that actually matter to the business.
+        uses:
+          - - Unity Catalog
+            - Lineage, access controls and control evidence produced from the same governed tables the SOC runs on.
+          - - AI/BI
+            - Compliance coverage, insider-risk scores and exposure by control framework.
+          - - Genie One
+            - Ask which controls lack evidence this quarter without a manual audit pull.
+        sub:
+          - name: Compliance analysts
+            cares: control evidence and framework coverage (SOC 2, PCI, NIST).
+          - name: Insider-risk analysts
+            cares: anomalous user and privileged-access behaviour.
+          - name: Risk owners
+            cares: risk-based vulnerability and exposure prioritisation.
+        ucs:
+          - Compliance Reporting
+          - Insider Risk & UEBA
+          - Vulnerability Triage
+      - name: Detection Engineering
+        mark: Model Serving
+        summary: Detection engineers who write, test and ship detection content as code, and content developers who tune rules against false positives and keep coverage mapped to the ATT&CK matrix.
+        uses:
+          - - Detection Studio
+            - Detections authored, backtested against history and shipped through CI/CD.
+          - - Model Serving
+            - Behavioural and anomaly models scored alongside rule-based detections.
+          - - Unity Catalog
+            - Versioned, governed detection content with lineage from rule to alert.
+        sub:
+          - name: Detection engineers
+            cares: detection-as-code authoring, testing and deployment.
+          - name: Content developers
+            cares: false-positive tuning and ATT&CK coverage mapping.
+        ucs:
+          - Detection-as-Code
+          - Phishing & BEC Defense
+          - Alert Triage & Dedup
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Detection Engineers
+        mark: Lakeflow
+        summary: Write detections as code in Sigma, SQL and Python notebooks, backtest them against historical telemetry, and manage the rule library through Git and CI/CD instead of hand-editing SIEM consoles.
+        uses:
+          - - Genie Code
+            - Draft and refine detections and translate hunt questions into SQL against governed tables.
+          - - Lakeflow
+            - Streaming and batch detection pipelines with expectations on every security feed.
+          - - Unity Catalog
+            - Versioned detection content with lineage from rule change to alert.
+      - name: Sec Data Engineers
+        mark: Lakeflow
+        summary: Land Splunk, EDR, identity and network feeds, normalise them to OCSF with Auto Loader and Lakeflow, and own the Bronze-to-Silver path and the pager when a security pipeline stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for SIEM, EDR, identity and SaaS security sources.
+          - - Auto Loader
+            - Incremental ingestion of high-volume log files into OCSF-conformed tables.
+          - - Lakeflow
+            - Declarative pipelines with expectations on endpoint, identity and network feeds.
+      - name: Threat Hunters
+        mark: AI/BI
+        summary: Form hypotheses from ATT&CK tradecraft and Corelight and Zeek evidence, pivot across months of telemetry in notebooks, and turn confirmed findings into new detection content.
+        uses:
+          - - Genie
+            - Natural-language pivots across full-fidelity history without SPL or KQL fluency.
+          - - AI/BI
+            - Hunt findings, indicator overlaps and coverage gaps on governed data.
+          - - Model Serving
+            - Anomaly and entity-risk models scored to surface hunt leads.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive risk and SOC-performance dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the security lakehouse, and incident updates in the channel the SOC already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst and hunter notebooks, VS Code and JetBrains against governed telemetry and Genie Code.
+  - name: Response & Orchestration
+    icon: orch
+    tiles:
+      - name: SOAR Playbooks
+        icon: orch
+        summary: Enriched, scored alerts pushed to Cortex XSOAR so containment and notification playbooks fire with full lakehouse context attached.
+        citations:
+          - xsoar
+      - name: EDR Host Isolation
+        icon: zshield
+        summary: Confirmed-compromise decisions written back to CrowdStrike or SentinelOne to isolate a host in the tool the responder already operates.
+        citations:
+          - crowdstrike
+      - name: ITSM Ticketing
+        icon: opdb
+        summary: Incidents and remediation tasks raised in ServiceNow Security Operations, tracked to closure against the same governed record.
+        citations:
+          - servicenow
+  - name: Detection Delivery
+    icon: cicd
+    tiles:
+      - name: Detection CI/CD
+        icon: cicd
+        summary: Detection-as-code changes tested against historical telemetry and promoted through pipelines rather than edited live in a console.
+      - name: Sigma Rule Sync
+        icon: code
+        summary: Vendor-neutral Sigma rules translated and deployed to the lakehouse and downstream SIEMs from one governed source.
+        citations:
+          - sigma
+      - name: Alert Dashboards
+        icon: gauge
+        summary: Scored, deduplicated alert queues surfaced to analysts with entity context and recommended actions.
+  - name: Regulatory & Audit
+    icon: gavel
+    tiles:
+      - name: Compliance Reporting
+        icon: gavel
+        summary: SOC 2, PCI DSS and NIST control coverage and evidence produced from the same governed tables the SOC runs on.
+      - name: Audit Evidence
+        icon: docs
+        summary: Immutable query and access logs proving who saw what and when, covering audit requirements without extra instrumentation.
+      - name: Regulatory Filings
+        icon: gavel
+        summary: Breach-notification and regulator reporting produced from contracted Gold products rather than reassembled by hand under deadline.
+  - name: Sharing & Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted security products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Threat Intel Sharing
+        icon: share
+        summary: Curated indicators and detections shared with ISACs and partners over Delta Sharing rather than emailed spreadsheets.
+      - name: Sharing Recipients
+        icon: share
+        summary: Subsidiaries, MSSPs and regulators reading live governed tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: SOC Triage Console
+        icon: gauge
+        short: Alert triage
+        summary: 'The screen a SOC analyst runs the queue from: each alert with its full entity context, deduplicated and scored, and a recommended action, on Databricks Apps over Lakebase.'
+      - name: Threat Hunt Workbench
+        icon: observ
+        short: Hunting queries
+        summary: Where hunters form a hypothesis and pivot across months of full-fidelity telemetry in plain English, turning a confirmed finding into new detection content in the same session.
+      - name: Detection Studio
+        icon: code
+        short: Detection-as-code
+        summary: Author, backtest and ship detections as versioned code, with coverage mapped to the MITRE ATT&CK matrix and every change promoted through CI/CD.
+      - name: Exposure Manager
+        icon: zshield
+        short: Vuln prioritization
+        summary: Vulnerabilities ranked by exploitability, asset criticality and active-threat context so remediation effort goes to the exposures an adversary would actually use.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: SOC Performance
+        icon: aibi
+        summary: Detection coverage, alert volumes and MTTD/MTTR across the SOC.
+        kpis:
+          - MTTD
+          - MTTR
+          - Alert volume
+          - False-positive rate
+          - Backlog past SLA
+        teams:
+          - SOC & Response
+          - Security Leadership
+          - Detection Engineering
+      - name: Detection Coverage
+        icon: aibi
+        summary: MITRE ATT&CK coverage and detection health across the estate.
+        kpis:
+          - ATT&CK coverage
+          - Detections shipped
+          - Rule false-positive rate
+          - Coverage gaps
+          - Backtest pass rate
+        teams:
+          - Detection Engineering
+          - Threat Intelligence
+          - SOC & Response
+      - name: Exposure & Vulnerability
+        icon: aibi
+        summary: Risk-based vulnerability exposure and remediation SLA by asset.
+        kpis:
+          - Critical exposures
+          - Patch-SLA compliance
+          - Exploitable-on-critical
+          - Mean-time-to-remediate
+          - Cloud misconfigurations
+        teams:
+          - GRC & Compliance
+          - Security Leadership
+          - Detection Engineering
+      - name: Identity & Insider Risk
+        icon: aibi
+        summary: Identity anomalies, privileged access and entity-risk scores.
+        kpis:
+          - Entity-risk score
+          - Anomalous sign-ins
+          - Privileged checkouts
+          - Dormant entitlements
+          - Impossible-travel events
+        teams:
+          - GRC & Compliance
+          - SOC & Response
+          - Security Leadership
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: SOC Operations Agent
+        icon: genie
+        summary: Ask about open incidents, alert quality and response times in plain language.
+        feeds:
+          - Splunk Enterprise
+          - CrowdStrike Falcon
+          - Cortex XSOAR
+          - Detections, risk, MTTR
+        teams:
+          - SOC & Response
+          - Security Leadership
+          - Detection Engineering
+        questions:
+          - How many open critical incidents do we have right now?
+          - What is mean-time-to-detect and respond this week?
+          - Which alert types have the worst false-positive rate?
+          - Which hosts have the most unresolved detections?
+          - What is the alert backlog past SLA by tier?
+      - name: Threat Hunting Agent
+        icon: genie
+        summary: Pivot across full-fidelity telemetry and threat intel to find what no rule fired on.
+        feeds:
+          - Corelight NDR
+          - Chronicle SecOps
+          - Mandiant Threat Intel
+          - Conformed entities & OCSF
+        teams:
+          - Threat Intelligence
+          - Threat Hunters
+          - SOC & Response
+        questions:
+          - Which entities match indicators from the latest campaign?
+          - Where do we see lateral movement across identities this month?
+          - Which hosts beaconed to rare external destinations?
+          - Which ATT&CK techniques have no detection coverage?
+          - Which internal assets contacted known-bad infrastructure?
+      - name: Identity & Insider Risk Agent
+        icon: genie
+        summary: Explore identity anomalies, privileged access and entity risk across the estate.
+        feeds:
+          - Okta Identity Cloud
+          - Microsoft Entra ID
+          - CyberArk PAM
+          - Enterprise Audit Marts
+        teams:
+          - GRC & Compliance
+          - SOC & Response
+          - Security Leadership
+        questions:
+          - Which users show anomalous access versus their baseline?
+          - Which privileged accounts checked out secrets off-hours?
+          - Where did impossible-travel sign-ins occur this week?
+          - Which leavers still have active entitlements?
+          - Which identities have the highest entity-risk score?
+      - name: Exposure & Compliance Agent
+        icon: genie
+        summary: Answer vulnerability exposure and control-coverage questions across frameworks.
+        feeds:
+          - Tenable Nessus
+          - Qualys VMDR
+          - Wiz CNAPP
+          - Detections, risk, MTTR
+        teams:
+          - GRC & Compliance
+          - Security Leadership
+          - Detection Engineering
+        questions:
+          - Which exploitable vulnerabilities sit on business-critical assets?
+          - What is our patch-SLA compliance by asset class?
+          - Which controls lack evidence for the current audit cycle?
+          - Which cloud misconfigurations are exposed to the internet?
+          - How has overall exposure risk trended this quarter?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Threat Detection
+        short: Correlation
+        icon: zshield
+        summary: Correlating endpoint, identity, network and cloud signals into high-fidelity detections mapped to MITRE ATT&CK, across full-fidelity history rather than a truncated index.
+        problem: Signals scattered across a dozen point tools and a two-week SIEM index mean multi-stage attacks are only correlated after the fact, once the retention window has already dropped the earliest evidence.
+        who_benefits: SOC & Response
+        how_built: Endpoint, identity and network telemetry land in Lakehouse//RT normalised to OCSF; detections mapped to ATT&CK are scored in Model Serving and surfaced to the SOC Triage Console.
+        components:
+          - SOC Triage Console
+          - Lakehouse//RT
+          - Splunk Enterprise
+          - CrowdStrike Falcon
+          - Model Serving
+        stories:
+          - title: 'Barracuda: real-time threat detection, 75% lower cost'
+            url: https://www.databricks.com/customers/barracuda-networks/cybersecurity
+          - title: Building the future of security with NAB and Lakewatch
+            url: https://www.databricks.com/blog/building-future-security-nab-lakewatch
+      - name: Alert Triage & Dedup
+        short: Triage
+        icon: gauge
+        summary: Deduplicating and scoring the alert flood so analysts work a queue ordered by real risk instead of drowning in near-duplicate, low-context tickets.
+        problem: 'Alert volume outruns analyst capacity: near-duplicate alerts from overlapping tools flood the queue, real incidents wait behind noise, and burnout drives inconsistent triage.'
+        who_benefits: SOC & Response
+        how_built: Alerts are conformed and clustered in the lakehouse; a scoring and deduplication model in Model Serving orders the queue, and the result reaches analysts through the SOC Triage Console and Alert Dashboards.
+        components:
+          - SOC Triage Console
+          - Model Serving
+          - Cortex XSOAR
+          - Lakehouse//RT
+          - Alert Dashboards
+        stories:
+          - title: Barracuda makes security logs conversational with Genie
+            url: https://www.databricks.com/blog/barracuda-makes-security-logs-conversational-genie
+          - title: 'Lakewatch: the open security lakehouse for the AI era'
+            url: https://www.databricks.com/product/lakewatch
+      - name: Threat Hunting
+        short: Proactive
+        icon: observ
+        summary: Hypothesis-driven hunting across months of full-fidelity telemetry to find the tradecraft no rule fired on, in plain English rather than gated on query-language fluency.
+        problem: Hunting stops at the SIEM's retention wall and the analyst's SPL fluency; the long, quiet campaigns that matter most live in exactly the history that was aged out to save cost.
+        who_benefits: Threat Intelligence
+        how_built: Full-fidelity telemetry is retained in Delta Lake; hunters pivot in plain English through Genie on the Threat Hunt Workbench and turn confirmed findings into new detections.
+        components:
+          - Threat Hunt Workbench
+          - Genie
+          - AI/BI
+          - Corelight NDR
+          - Delta Lake
+        stories:
+          - title: NAB hunts at scale on the open security lakehouse
+            url: https://www.databricks.com/blog/building-future-security-nab-lakewatch
+          - title: 'Lakewatch: AI-driven hunting on the lakehouse'
+            url: https://www.databricks.com/product/lakewatch
+      - name: Phishing & BEC Defense
+        short: Email threat
+        icon: chat
+        summary: Detecting phishing and business email compromise from behavioural signals across email, identity and message content rather than static rules and blocklists.
+        problem: Socially engineered email and account-takeover BEC evade signature and rule-based filters, and the behavioural signal needed to catch them spans email, identity and history that legacy filters never see together.
+        who_benefits: Detection Engineering
+        how_built: Email, identity and content signals are joined in the lakehouse; behaviour models trained with Feature Store and tracked in MLflow score each message through Model Serving alongside Defender signals.
+        components:
+          - Model Serving
+          - Microsoft Defender XDR
+          - Feature Store
+          - MLflow
+          - Detection Studio
+        stories:
+          - title: Abnormal Security scales behavioural email AI on Databricks
+            url: https://www.databricks.com/customers/abnormal
+      - name: Insider Risk & UEBA
+        short: Behaviour
+        icon: people
+        summary: User and entity behaviour analytics that baseline normal activity and flag anomalous access, exfiltration and privilege misuse before it becomes a breach.
+        problem: Insider threat and account misuse look like ordinary activity one event at a time; the anomaly only appears when identity, access and data-movement history are baselined together, which siloed tools cannot do.
+        who_benefits: GRC & Compliance
+        how_built: Identity, privileged-access and audit signals are conformed and joined with Enterprise Audit Marts; UEBA models in Model Serving score entity risk against learned baselines with governance in Unity Catalog.
+        components:
+          - Model Serving
+          - Okta Identity Cloud
+          - CyberArk PAM
+          - Feature Store
+          - Enterprise Audit Marts
+        stories:
+          - title: Atlassian modernises threat detection on a security lakehouse
+            url: https://www.databricks.com/customers/atlassian/security-lakehouse
+      - name: Vulnerability Triage
+        short: Exposure
+        icon: gauge
+        summary: Ranking vulnerabilities by exploitability, asset criticality and active-threat context so scarce remediation effort goes to the exposures an adversary would actually use.
+        problem: Scanners return more critical findings than any team can patch, and raw CVSS scores ignore whether an asset is exposed, business-critical, or being actively exploited right now.
+        who_benefits: GRC & Compliance
+        how_built: Tenable and Qualys findings are joined to asset criticality and threat-intel exploitability in the lakehouse; a risk model in AI/BI and Model Serving ranks exposures in the Exposure Manager.
+        components:
+          - Exposure Manager
+          - Tenable Nessus
+          - Qualys VMDR
+          - AI/BI
+          - Model Serving
+      - name: Incident Forensics
+        short: Response
+        icon: zshield
+        summary: Reconstructing an intrusion end to end from full-fidelity history, and driving containment into the response tools without leaving the investigation.
+        problem: When a breach is confirmed, responders need the full timeline across every tool, but the earliest evidence has usually aged out of the SIEM and stitching it back together by hand costs the hours that matter most.
+        who_benefits: SOC & Response
+        how_built: Full-fidelity endpoint and network evidence is queried from Delta Lake; the timeline is assembled in the SOC Triage Console with Genie, and containment is written back through EDR Host Isolation.
+        components:
+          - SOC Triage Console
+          - Corelight NDR
+          - Delta Lake
+          - Genie
+          - EDR Host Isolation
+        stories:
+          - title: 'Atlassian: long-horizon investigations on the lakehouse'
+            url: https://www.databricks.com/customers/atlassian/security-lakehouse
+          - title: Barracuda delivers alerts with full context in minutes
+            url: https://www.databricks.com/customers/barracuda-networks/cybersecurity
+      - name: Detection-as-Code
+        short: Engineering
+        icon: code
+        summary: Treating detections as version-controlled, tested and CI/CD-deployed software, with coverage mapped to MITRE ATT&CK and every rule backtested against real history.
+        problem: Detections hand-edited in SIEM consoles drift, go untested and leave silent coverage gaps; there is no peer review, no backtest against history and no map of what the estate can and cannot see.
+        who_benefits: Detection Engineering
+        how_built: Detections are authored in Detection Studio as Sigma, SQL and notebook code, backtested against Delta history, governed in Unity Catalog, and shipped through Detection CI/CD.
+        components:
+          - Detection Studio
+          - Detection CI/CD
+          - Sigma Rule Sync
+          - Unity Catalog
+          - Genie Code
+        stories:
+          - title: 'Databricks announces Lakewatch: detection-as-code, agentic SIEM'
+            url: https://www.databricks.com/blog/databricks-announces-lakewatch-new-agentic-siem
+          - title: 'Barracuda: detection rules managed and deployed automatically'
+            url: https://www.databricks.com/customers/barracuda-networks/cybersecurity
+      - name: Compliance Reporting
+        short: Governance
+        icon: gavel
+        summary: Producing control coverage and audit evidence for SOC 2, PCI DSS and NIST from the same governed tables the SOC runs on, rather than a separate reporting scramble.
+        problem: Compliance evidence is reassembled by hand each cycle from tools the auditors cannot see into, and proving who accessed sensitive security data means bolt-on instrumentation the SIEM never captured.
+        who_benefits: GRC & Compliance
+        how_built: Control coverage and access evidence are produced from governed Gold tables with lineage and immutable audit logs in Unity Catalog, and surfaced through AI/BI and Compliance Reporting.
+        components:
+          - Unity Catalog
+          - AI/BI
+          - Compliance Reporting
+          - Audit Evidence
+          - Regulatory Filings
+        stories:
+          - title: 'Barracuda: governed audit trail covers SOC 2 with Genie'
+            url: https://www.databricks.com/blog/barracuda-makes-security-logs-conversational-genie
+      - name: Security Lakehouse
+        short: SIEM cost & tiering
+        icon: lakehouse
+        summary: Retaining full-fidelity telemetry in open formats at cloud-commodity cost, tiering logs by source and value, and querying years of history instead of dropping data to fit a SIEM budget.
+        problem: Per-gigabyte SIEM ingestion pricing forces teams to drop logs, shorten retention and ignore unstructured data, so detection and investigation run on incomplete evidence chosen by budget rather than risk.
+        who_benefits: Security Leadership
+        how_built: All telemetry lands in the Lakehouse in open OCSF, Delta and Iceberg formats with Auto Loader and Lakeflow, retained cheaply and governed in Unity Catalog, with compute paid only on query.
+        components:
+          - Lakehouse
+          - Unity Catalog
+          - Delta Lake
+          - Lakeflow
+          - Auto Loader
+        stories:
+          - title: 'Atlassian: 80% reduction in ingestion overhead'
+            url: https://www.databricks.com/customers/atlassian/security-lakehouse
+          - title: 'Lakewatch: retain 100% of telemetry, no SIEM tax'
+            url: https://www.databricks.com/blog/databricks-announces-lakewatch-new-agentic-siem
+medallion:
+  Bronze:
+    short: Raw security telemetry
+    summary: Endpoint, identity, network, cloud-audit and SIEM logs from CrowdStrike, Splunk, Okta and dozens of sources, landed exactly as received in open OCSF, Delta and Iceberg formats so any alert can be replayed against full-fidelity history rather than a truncated retention window.
+  Silver:
+    short: Conformed entities & OCSF
+    summary: Users, hosts, identities and assets resolved into single conformed entities across the endpoint, identity and network estates, normalised to the Open Cybersecurity Schema Framework and enriched with threat-intel indicators and MITRE ATT&CK technique tags.
+  Gold:
+    short: Detections, risk, MTTR
+    summary: 'Contracted products the SOC and GRC teams run on: high-fidelity detections mapped to MITRE ATT&CK, entity risk scores, mean-time-to-detect and respond, and compliance coverage measured by control framework.'
+citation_index:
+  splunk:
+    title: Splunk Enterprise Security
+    url: https://www.splunk.com/en_us/products/enterprise-security.html
+  elastic:
+    title: Elastic Security (SIEM)
+    url: https://www.elastic.co/security
+  sentinel:
+    title: Microsoft Sentinel
+    url: https://www.microsoft.com/en-us/security/business/siem-and-xdr/microsoft-sentinel
+  chronicle:
+    title: Google Security Operations (Chronicle)
+    url: https://cloud.google.com/security/products/security-operations
+  crowdstrike:
+    title: CrowdStrike Falcon platform
+    url: https://www.crowdstrike.com/platform/
+  sentinelone:
+    title: SentinelOne Singularity platform
+    url: https://www.sentinelone.com/platform/
+  defender:
+    title: Microsoft Defender XDR
+    url: https://www.microsoft.com/en-us/security/business/siem-and-xdr/microsoft-defender-xdr
+  okta:
+    title: Okta Workforce Identity
+    url: https://www.okta.com/products/single-sign-on-workforce-identity/
+  entra:
+    title: Microsoft Entra ID
+    url: https://www.microsoft.com/en-us/security/business/microsoft-entra
+  cyberark:
+    title: CyberArk Privileged Access Manager
+    url: https://www.cyberark.com/products/privileged-access-manager/
+  tenable:
+    title: Tenable Nessus
+    url: https://www.tenable.com/products/nessus
+  qualys:
+    title: Qualys VMDR
+    url: https://www.qualys.com/apps/vulnerability-management-detection-response/
+  mandiant:
+    title: Mandiant Threat Intelligence
+    url: https://cloud.google.com/security/products/threat-intelligence
+  recorded-future:
+    title: Recorded Future Intelligence Cloud
+    url: https://www.recordedfuture.com/platform
+  paloalto:
+    title: Palo Alto Networks NGFW
+    url: https://www.paloaltonetworks.com/network-security/next-generation-firewall
+  zscaler:
+    title: Zscaler Internet Access
+    url: https://www.zscaler.com/products-and-solutions/zscaler-internet-access
+  corelight:
+    title: Corelight Open NDR
+    url: https://corelight.com/
+  wiz:
+    title: Wiz CNAPP
+    url: https://www.wiz.io/
+  ocsf:
+    title: Open Cybersecurity Schema Framework
+    url: https://ocsf.io/
+  kafka:
+    title: Apache Kafka
+    url: https://kafka.apache.org/
+  xsoar:
+    title: Palo Alto Cortex XSOAR
+    url: https://www.paloaltonetworks.com/cortex/cortex-xsoar
+  servicenow:
+    title: ServiceNow Security Operations
+    url: https://www.servicenow.com/products/security-operations.html
+  sigma:
+    title: Sigma detection rules (SigmaHQ)
+    url: https://sigmahq.io/
