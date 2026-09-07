@@ -36,8 +36,8 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
   // ---- default OG tags on index.html (the reference-board card LinkedIn scrapes) ----
   const head = await page.evaluate(() => document.head.innerHTML);
   check('index has default og:title', /property="og:title" content="Databricks Reference Architecture"/.test(head));
-  check('index has og:image (1200x630)',
-    /property="og:image" content="[^"]+assets\/og-cover\.png"/.test(head) && /property="og:image:width" content="1200"/.test(head), head.match(/og:image" content="([^"]+)"/) ? head.match(/og:image" content="([^"]+)"/)[1] : 'missing');
+  check('index has og:image under /app/ (1200x630)',
+    /property="og:image" content="[^"]+\/app\/assets\/og-cover\.png"/.test(head) && /property="og:image:width" content="1200"/.test(head), head.match(/og:image" content="([^"]+)"/) ? head.match(/og:image" content="([^"]+)"/)[1] : 'missing');
   check('index has twitter summary_large_image', /name="twitter:card" content="summary_large_image"/.test(head));
   check('og-cover.png is served', (await page.evaluate(async () => (await fetch('assets/og-cover.png')).status)) === 200);
 
@@ -80,7 +80,8 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
   });
   check('stub served (200)', stub.status === 200, 'status=' + stub.status);
   check('stub has per-industry og:title', /og:title" content="Databricks Reference Architecture for Banking"/.test(stub.html));
-  check('stub has og:image', /og:image" content="[^"]+og-cover\.png"/.test(stub.html));
+  check('stub og:image is under /app/ (else it 404s on Pages)', /og:image" content="[^"]+\/app\/assets\/og-cover\.png"/.test(stub.html), (stub.html.match(/og:image" content="([^"]+)"/) || [])[1]);
+  check('stub og:url is under /app/', /og:url" content="[^"]+\/app\/share\/banking\.html"/.test(stub.html), (stub.html.match(/og:url" content="([^"]+)"/) || [])[1]);
 
   const landed = await (async () => {
     const p2 = await browser.newPage();

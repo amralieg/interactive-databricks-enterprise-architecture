@@ -13,7 +13,10 @@ const yaml = require('js-yaml');
 const APP = path.join(__dirname, '..', 'app');
 const ARCH_DIR = path.join(APP, 'architectures');
 const OUT_DIR = path.join(APP, 'share');
-const BASE = 'https://amralieg.github.io/interactive-databricks-enterprise-architecture/';
+/* GitHub Pages serves the repo ROOT; the board and its assets live under /app/
+   (the root index.html just redirects there). Absolute OG URLs a scraper fetches
+   MUST therefore include /app/, or the image 404s and the card renders blank. */
+const BASE = 'https://amralieg.github.io/interactive-databricks-enterprise-architecture/app/';
 const IMG = BASE + 'assets/og-cover.png';
 
 function esc(s) {
