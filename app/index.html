@@ -2127,8 +2127,12 @@
   .pal-menu.ind-menu { min-width:304px; max-height:none; overflow:visible; }
   /* The industry glyph leads each row so the eye finds a board by its icon before
      reading the name; fixed width keeps the labels in one column. */
-  .ind-menu .ind-ic { display:inline-block; width:1.35em; margin-right:2px; text-align:center;
-    font-size:14px; line-height:1; flex:0 0 auto; }
+  .ind-menu .ind-ic { display:inline-flex; align-items:center; justify-content:center;
+    width:1.35em; height:1.2em; margin-right:4px; flex:0 0 auto; }
+  /* the same line-art the deck cover and share card use, so the menu reads in one
+     visual language; currentColor lets it follow hover/selected/disabled states */
+  .ind-menu .ind-ic svg { width:16px; height:16px; fill:none; stroke:currentColor;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round; opacity:.82; }
   /* One line per entry, and a row wider than the menu widens the MENU rather
      than clipping: the shared rule sets width:100% on the button, which with
      nowrap would cut a long name off instead. The menu is absolutely positioned,
@@ -6218,6 +6222,14 @@ function syncIndustryBtn(){
     on ? industryLabel(ARCH.industry) : "Pick an Industry (63 available)";
 }
 
+/* Inline Lucide line-art for a menu row, from the single SVG source shared with
+   the deck cover and share card. Monochrome (currentColor) so it inherits the
+   row's hover/selected/disabled colour; the emoji glyphs read inconsistently
+   across platforms, the line-art does not. */
+function indMenuIcon(id){
+  const g = (typeof IndustryIcons !== "undefined" && IndustryIcons.svgFor) ? IndustryIcons.svgFor(id) : "";
+  return g ? '<svg viewBox="0 0 24 24">' + g + "</svg>" : "";
+}
 function paintIndustryMenu(){
   const cur = ARCH.industry;
   const q = indFilter.trim().toLowerCase();
@@ -6230,9 +6242,8 @@ function paintIndustryMenu(){
        (loaded at boot) says which ids are authored. Before it arrives, treat all
        catalog rows as available rather than greying the whole menu out. */
     const built = INDUSTRY_BUILT ? INDUSTRY_BUILT.has(id) : true;
-    const ic = (typeof IndustryIcons !== "undefined") ? IndustryIcons.iconFor(id) : "";
     return '<button data-ind="' + id + '"' + (built ? "" : " disabled") +
-      ' class="' + (id === cur ? "on" : "") + '"><span class="ind-ic" aria-hidden="true">' + ic + "</span><span>" + esc(T(label)) + "</span>" +
+      ' class="' + (id === cur ? "on" : "") + '"><span class="ind-ic" aria-hidden="true">' + indMenuIcon(id) + "</span><span>" + esc(T(label)) + "</span>" +
       (built ? "" : "<i>" + esc(T("soon")) + "</i>") + "</button>";
   };
 
@@ -6242,7 +6253,7 @@ function paintIndustryMenu(){
       'placeholder="Filter industries" value="' + indFilter.replace(/"/g, "&quot;") + '">' +
     '<div class="ind-list">' +
       '<button data-ind="generic" class="' + (cur === "generic" ? "on" : "") +
-        '"><span class="ind-ic" aria-hidden="true">' + (typeof IndustryIcons !== "undefined" ? IndustryIcons.GENERIC : "") + '</span><span>' + esc(T("Standard Reference Architecture")) + "</span></button>" +
+        '"><span class="ind-ic" aria-hidden="true">' + indMenuIcon("generic") + '</span><span>' + esc(T("Standard Reference Architecture")) + "</span></button>" +
       (rows.length ? rows.map(rowHtml).join("") : '<div class="ind-none">No industry matches that.</div>') +
     "</div>" +
     '<div class="dl-note">Replaces Sources, Ingestion, Teams, Consumers and the ' +
