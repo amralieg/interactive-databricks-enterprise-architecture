@@ -15,7 +15,7 @@ const url = (n) => `https://unpkg.com/lucide-static@${VER}/icons/${n}.svg`;
 // id -> ordered candidate Lucide names (first that resolves wins)
 const MAP = {
   advertising: ['megaphone'], aerospace_space: ['rocket'], agriculture: ['wheat'], agtech: ['sprout'],
-  airlines: ['plane'], apparel_fashion: ['shirt'], automotive: ['car'], banking: ['piggy-bank'],
+  airlines: ['plane'], apparel_fashion: ['shirt'], automotive: ['car'], banking: ['landmark', 'building-columns'],
   capital_markets: ['trending-up'], chemical_mfg: ['flask-conical'], clinical_trials: ['test-tube-diagonal', 'test-tube'],
   construction: ['hard-hat'], consumer_goods: ['shopping-bag'], crypto_digital_assets: ['bitcoin'],
   cybersecurity: ['shield-check'], data_centers: ['database'], diagnostics_labs: ['microscope'],
@@ -28,7 +28,7 @@ const MAP = {
   ngo: ['heart-handshake'], oil_gas: ['fuel'], paper_packaging: ['package', 'package-2'], payments_fintech: ['credit-card'],
   pharmaceuticals: ['pill'], pharmacy_pbm: ['cross'], professional_services: ['briefcase'],
   public_safety: ['siren'], public_sector: ['building'], rail_transit: ['train-front', 'tram-front'],
-  real_estate: ['building-2'], renewables: ['wind'], restaurants: ['utensils-crossed'], retail: ['store'],
+  real_estate: ['building-2'], renewables: ['leaf'], restaurants: ['utensils-crossed'], retail: ['store'],
   semiconductors: ['circuit-board', 'cpu'], shipping_ports: ['anchor'], software_technology: ['code'],
   sports_entertainment: ['trophy'], staffing_hr: ['users'], telecommunication: ['radio-tower'],
   transport_shipping: ['ship'], travel_hospitality: ['palmtree', 'palm-tree', 'tent-tree'],

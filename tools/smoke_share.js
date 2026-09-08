@@ -51,7 +51,9 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
     const land = shareLandingUrl();
     const rows = Array.from(menu.querySelectorAll('button[data-share]')).map(b => b.dataset.share);
     const T = SHARE_TARGETS.reduce((a, t) => { a[t.k] = t.copy ? null : t.href(shareLandingUrl(), shareTitle()); return a; }, {});
-    const icon = (document.querySelector('#ind-menu button[data-ind="banking"] .ind-ic') || {}).textContent || '';
+    /* the menu row icon is a Lucide line-art SVG (not an emoji text node), so
+       "carries an icon" means the .ind-ic holds a rendered <svg> glyph */
+    const icon = document.querySelector('#ind-menu button[data-ind="banking"] .ind-ic svg') ? 'svg' : '';
     return { title, land, rows, hrefs: T, label: industryLabel(ind), pageTitle: document.title, cloud: cloudLabelNow(), cloudKey: ARCH.cloud.provider, icon };
   }, IND);
 

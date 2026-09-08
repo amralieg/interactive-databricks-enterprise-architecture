@@ -21,8 +21,9 @@ const OG_DIR = path.join(ASSETS, 'og');
 const OUT = path.join(ASSETS, 'og-cover.png');
 const URL = 'amralieg.github.io/interactive-databricks-enterprise-architecture';
 const SUB = 'Databricks Data Intelligence Platform';
-// Official Databricks mark (stacked-bricks glyph), drawn in brand red.
-const DBX = 'M.95 14.184L12 20.403l9.919-5.55v2.21L12 22.662l-10.484-5.96-.565.308v.77L12 24l11.05-6.218v-4.317l-.515-.309L12 19.118l-9.867-5.653v-2.21L12 16.805l11.05-6.218V6.32l-.515-.308L12 11.974 2.647 6.681 12 1.388l7.76 4.368.668-.411v-.566L12 0 .95 6.27v.72L12 13.207l9.919-5.55v2.26L12 15.52 1.516 9.56l-.565.308Z';
+// The official Databricks lockup (brick mark + wordmark), white wordmark for the
+// dark card. Same artwork the app header and deck covers use (IndustryIcons).
+const LOGO = ICONS.dbxLogoSvg({ wordmark: '#ffffff', height: 52 });
 
 function esc(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
@@ -58,8 +59,7 @@ function head(fs_){ return `<meta charset="utf-8"><style>
     -webkit-mask-image:linear-gradient(100deg,transparent 30%,#000 66%);mask-image:linear-gradient(100deg,transparent 30%,#000 66%)}
   .wm svg{width:100%;height:100%;fill:none;stroke:url(#g);stroke-width:.46;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
   .wrap{position:absolute;inset:0;padding:72px 84px 62px;display:flex;flex-direction:column;z-index:2}
-  .brand{display:flex;align-items:center;gap:16px}.brand svg{width:50px;height:50px}
-  .brand .wm2{font-size:33px;font-weight:800;letter-spacing:-.01em;color:#fff}
+  .brand{display:flex;align-items:center}.brand svg{height:52px;width:auto;display:block}
   .mid{flex:1;display:flex;flex-direction:column;justify-content:center}
   .kick{margin:0;font-size:22px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#FF5F46}
   h1{margin:76px 0 76px;font-size:${fs_}px;line-height:1.02;font-weight:850;letter-spacing:-.025em;color:#fff;max-width:720px}
@@ -77,7 +77,7 @@ function card(label, glyph){
   <div class="accent"></div>
   ${watermark(glyph)}
   <div class="wrap">
-    <div class="brand"><svg viewBox="0 0 24 24" fill="#FF3621"><path d="${DBX}"/></svg><span class="wm2">Databricks</span></div>
+    <div class="brand">${LOGO}</div>
     <div class="mid">
       <div class="kick">Reference Architecture</div>
       <h1>${esc(label)}</h1>
@@ -94,7 +94,7 @@ function refCard(){
   <div class="accent"></div>
   ${watermark(ICONS.svgFor('generic'))}
   <div class="wrap">
-    <div class="brand"><svg viewBox="0 0 24 24" fill="#FF3621"><path d="${DBX}"/></svg><span class="wm2">Databricks</span></div>
+    <div class="brand">${LOGO}</div>
     <div class="mid">
       <div class="kick">63 Industries · 15 Languages</div>
       <h1>${esc(label)}</h1>

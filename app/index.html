@@ -24,8 +24,8 @@
 <meta name="twitter:title" content="Databricks Reference Architecture">
 <meta name="twitter:description" content="An interactive enterprise blueprint on the Databricks Data Intelligence Platform, specialised for 63 industries.">
 <meta name="twitter:image" content="https://amralieg.github.io/interactive-databricks-enterprise-architecture/app/assets/og-cover.png">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF3621'/%3E%3Cpath transform='translate(4 4)' fill='%23fff' d='M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z'/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23FF3621'/%3E%3Cpath transform='translate(4 4)' fill='%23fff' d='M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z'/%3E%3C/svg%3E">
+<link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23FF3621%22%2F%3E%3Csvg%20x%3D%226.5%22%20y%3D%226.5%22%20width%3D%2219%22%20height%3D%2219%22%20viewBox%3D%220%200%20516%20537.3%22%3E%3Cg%20transform%3D%22translate(-124%2C-115.5)%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M%20333%20142.128%20C%20305.775%20156.913%2C%20247.613%20188.455%2C%20203.750%20212.223%20L%20124%20255.436%20124.034%20262.968%20L%20124.069%20270.500%20182.784%20302.262%20C%20215.078%20319.731%2C%20263.100%20345.748%2C%20289.500%20360.078%20C%20315.900%20374.408%2C%20347.562%20391.563%2C%20359.859%20398.200%20L%20382.218%20410.266%20385.859%20408.533%20C%20389.145%20406.968%2C%20475.580%20359.984%2C%20573.814%20306.367%20C%20594.336%20295.165%2C%20611.556%20286%2C%20612.081%20286%20C%20612.667%20286%2C%20612.931%20295.844%2C%20612.767%20311.582%20L%20612.500%20337.164%20574.500%20357.884%20C%20553.600%20369.281%2C%20501.886%20397.448%2C%20459.579%20420.479%20L%20382.658%20462.352%20376.079%20458.797%20C%20346.542%20442.833%2C%20275.833%20404.429%2C%20184.337%20354.656%20C%20158.397%20340.545%2C%20136.694%20329%2C%20136.109%20329%20C%20135.523%20329%2C%20132.559%20330.219%2C%20129.522%20331.708%20L%20124%20334.417%20124.008%20382.958%20L%20124.015%20431.500%20143.258%20441.900%20C%20153.841%20447.621%2C%20175.550%20459.394%2C%20191.500%20468.064%20C%20311.018%20533.027%2C%20381.536%20571%2C%20382.658%20571%20C%20383.384%20571%2C%20388.371%20568.592%2C%20393.739%20565.648%20C%20399.108%20562.705%2C%20417.225%20552.858%2C%20434%20543.767%20C%20450.775%20534.675%2C%20496%20510.148%2C%20534.500%20489.261%20C%20573%20468.375%2C%20606.413%20450.312%2C%20608.750%20449.123%20L%20613%20446.959%20613%20472.755%20L%20613%20498.550%20567.750%20523.196%20C%20542.862%20536.752%2C%20491.029%20564.983%2C%20452.564%20585.931%20L%20382.628%20624.019%20345.064%20603.632%20C%20324.404%20592.419%2C%20294.450%20576.155%2C%20278.500%20567.488%20C%20201.854%20525.841%2C%20167.136%20506.989%2C%20152.130%20498.869%20L%20135.759%20490.011%20129.880%20493.145%20L%20124%20496.279%20124.004%20504.389%20L%20124.008%20512.500%20142.254%20522.400%20C%20152.289%20527.846%2C%20189.525%20548.026%2C%20225%20567.245%20C%20260.475%20586.465%2C%20294.675%20605.016%2C%20301%20608.469%20C%20307.325%20611.923%2C%20326%20622.055%2C%20342.500%20630.984%20C%20359%20639.913%2C%20374.776%20648.474%2C%20377.557%20650.009%20L%20382.614%20652.799%20399.557%20643.551%20C%20417.049%20634.003%2C%20486.777%20596.109%2C%20568%20552.012%20C%20593.575%20538.126%2C%20620.237%20523.640%2C%20627.250%20519.820%20L%20640%20512.875%20639.999%20464.187%20L%20639.998%20415.500%20635.102%20412.750%20C%20632.409%20411.237%2C%20629.637%20410%2C%20628.943%20410%20C%20628.249%20410%2C%20621.566%20413.324%2C%20614.091%20417.387%20C%20606.616%20421.450%2C%20571.250%20440.632%2C%20535.500%20460.015%20C%20499.750%20479.397%2C%20452.050%20505.263%2C%20429.500%20517.494%20C%20406.950%20529.725%2C%20387.112%20540.440%2C%20385.414%20541.307%20L%20382.329%20542.881%20363.414%20532.598%20C%20353.012%20526.942%2C%20324.700%20511.611%2C%20300.500%20498.527%20C%20276.300%20485.444%2C%20237.600%20464.510%2C%20214.500%20452.007%20C%20191.400%20439.504%2C%20168.116%20426.926%2C%20162.759%20424.056%20C%20157.401%20421.185%2C%20152.783%20418.458%2C%20152.498%20417.996%20C%20151.809%20416.882%2C%20151.678%20367.988%2C%20152.362%20367.305%20C%20152.654%20367.013%2C%20173.054%20377.687%2C%20197.696%20391.026%20C%20222.338%20404.364%2C%20261.625%20425.617%2C%20285%20438.255%20C%20308.375%20450.892%2C%20335.150%20465.386%2C%20344.500%20470.463%20C%20353.850%20475.541%2C%20366.271%20482.238%2C%20372.103%20485.347%20L%20382.706%20490.998%20392.603%20485.621%20C%20398.046%20482.664%2C%20415.550%20473.153%2C%20431.500%20464.486%20C%20447.450%20455.820%2C%20468.375%20444.467%2C%20478%20439.258%20C%20487.625%20434.050%2C%20498.413%20428.198%2C%20501.972%20426.254%20C%20515.892%20418.655%2C%20588.234%20379.350%2C%20601%20372.451%20C%20608.425%20368.438%2C%20620.125%20362.083%2C%20627%20358.328%20L%20639.500%20351.500%20639.500%20303.169%20L%20639.500%20254.839%20633.500%20251.536%20L%20627.500%20248.233%20607.500%20259.174%20C%20596.500%20265.192%2C%20578.950%20274.746%2C%20568.500%20280.405%20C%20558.050%20286.065%2C%20512.058%20311.014%2C%20466.296%20335.848%20C%20420.533%20360.681%2C%20382.873%20381%2C%20382.607%20381%20C%20382.154%20381%2C%20348.309%20362.806%2C%20258%20314.015%20C%20237.375%20302.872%2C%20208.350%20287.223%2C%20193.500%20279.241%20C%20178.650%20271.258%2C%20165.951%20264.224%2C%20165.281%20263.608%20C%20164.357%20262.761%2C%20168.477%20260.091%2C%20182.281%20252.590%20C%20205.699%20239.864%2C%20294.417%20191.761%2C%20344.057%20164.874%20L%20382.613%20143.989%20472.557%20192.853%20L%20562.500%20241.717%20570.231%20237.609%20L%20577.961%20233.500%20577.981%20227.453%20L%20578%20221.407%20549.250%20205.809%20C%20533.438%20197.230%2C%20489.675%20173.465%2C%20452%20152.997%20C%20414.325%20132.530%2C%20383.275%20115.663%2C%20383%20115.515%20C%20382.725%20115.367%2C%20360.225%20127.343%2C%20333%20142.128%22%20stroke%3D%22none%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22%23FF3621%22%2F%3E%3Csvg%20x%3D%226.5%22%20y%3D%226.5%22%20width%3D%2219%22%20height%3D%2219%22%20viewBox%3D%220%200%20516%20537.3%22%3E%3Cg%20transform%3D%22translate(-124%2C-115.5)%22%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M%20333%20142.128%20C%20305.775%20156.913%2C%20247.613%20188.455%2C%20203.750%20212.223%20L%20124%20255.436%20124.034%20262.968%20L%20124.069%20270.500%20182.784%20302.262%20C%20215.078%20319.731%2C%20263.100%20345.748%2C%20289.500%20360.078%20C%20315.900%20374.408%2C%20347.562%20391.563%2C%20359.859%20398.200%20L%20382.218%20410.266%20385.859%20408.533%20C%20389.145%20406.968%2C%20475.580%20359.984%2C%20573.814%20306.367%20C%20594.336%20295.165%2C%20611.556%20286%2C%20612.081%20286%20C%20612.667%20286%2C%20612.931%20295.844%2C%20612.767%20311.582%20L%20612.500%20337.164%20574.500%20357.884%20C%20553.600%20369.281%2C%20501.886%20397.448%2C%20459.579%20420.479%20L%20382.658%20462.352%20376.079%20458.797%20C%20346.542%20442.833%2C%20275.833%20404.429%2C%20184.337%20354.656%20C%20158.397%20340.545%2C%20136.694%20329%2C%20136.109%20329%20C%20135.523%20329%2C%20132.559%20330.219%2C%20129.522%20331.708%20L%20124%20334.417%20124.008%20382.958%20L%20124.015%20431.500%20143.258%20441.900%20C%20153.841%20447.621%2C%20175.550%20459.394%2C%20191.500%20468.064%20C%20311.018%20533.027%2C%20381.536%20571%2C%20382.658%20571%20C%20383.384%20571%2C%20388.371%20568.592%2C%20393.739%20565.648%20C%20399.108%20562.705%2C%20417.225%20552.858%2C%20434%20543.767%20C%20450.775%20534.675%2C%20496%20510.148%2C%20534.500%20489.261%20C%20573%20468.375%2C%20606.413%20450.312%2C%20608.750%20449.123%20L%20613%20446.959%20613%20472.755%20L%20613%20498.550%20567.750%20523.196%20C%20542.862%20536.752%2C%20491.029%20564.983%2C%20452.564%20585.931%20L%20382.628%20624.019%20345.064%20603.632%20C%20324.404%20592.419%2C%20294.450%20576.155%2C%20278.500%20567.488%20C%20201.854%20525.841%2C%20167.136%20506.989%2C%20152.130%20498.869%20L%20135.759%20490.011%20129.880%20493.145%20L%20124%20496.279%20124.004%20504.389%20L%20124.008%20512.500%20142.254%20522.400%20C%20152.289%20527.846%2C%20189.525%20548.026%2C%20225%20567.245%20C%20260.475%20586.465%2C%20294.675%20605.016%2C%20301%20608.469%20C%20307.325%20611.923%2C%20326%20622.055%2C%20342.500%20630.984%20C%20359%20639.913%2C%20374.776%20648.474%2C%20377.557%20650.009%20L%20382.614%20652.799%20399.557%20643.551%20C%20417.049%20634.003%2C%20486.777%20596.109%2C%20568%20552.012%20C%20593.575%20538.126%2C%20620.237%20523.640%2C%20627.250%20519.820%20L%20640%20512.875%20639.999%20464.187%20L%20639.998%20415.500%20635.102%20412.750%20C%20632.409%20411.237%2C%20629.637%20410%2C%20628.943%20410%20C%20628.249%20410%2C%20621.566%20413.324%2C%20614.091%20417.387%20C%20606.616%20421.450%2C%20571.250%20440.632%2C%20535.500%20460.015%20C%20499.750%20479.397%2C%20452.050%20505.263%2C%20429.500%20517.494%20C%20406.950%20529.725%2C%20387.112%20540.440%2C%20385.414%20541.307%20L%20382.329%20542.881%20363.414%20532.598%20C%20353.012%20526.942%2C%20324.700%20511.611%2C%20300.500%20498.527%20C%20276.300%20485.444%2C%20237.600%20464.510%2C%20214.500%20452.007%20C%20191.400%20439.504%2C%20168.116%20426.926%2C%20162.759%20424.056%20C%20157.401%20421.185%2C%20152.783%20418.458%2C%20152.498%20417.996%20C%20151.809%20416.882%2C%20151.678%20367.988%2C%20152.362%20367.305%20C%20152.654%20367.013%2C%20173.054%20377.687%2C%20197.696%20391.026%20C%20222.338%20404.364%2C%20261.625%20425.617%2C%20285%20438.255%20C%20308.375%20450.892%2C%20335.150%20465.386%2C%20344.500%20470.463%20C%20353.850%20475.541%2C%20366.271%20482.238%2C%20372.103%20485.347%20L%20382.706%20490.998%20392.603%20485.621%20C%20398.046%20482.664%2C%20415.550%20473.153%2C%20431.500%20464.486%20C%20447.450%20455.820%2C%20468.375%20444.467%2C%20478%20439.258%20C%20487.625%20434.050%2C%20498.413%20428.198%2C%20501.972%20426.254%20C%20515.892%20418.655%2C%20588.234%20379.350%2C%20601%20372.451%20C%20608.425%20368.438%2C%20620.125%20362.083%2C%20627%20358.328%20L%20639.500%20351.500%20639.500%20303.169%20L%20639.500%20254.839%20633.500%20251.536%20L%20627.500%20248.233%20607.500%20259.174%20C%20596.500%20265.192%2C%20578.950%20274.746%2C%20568.500%20280.405%20C%20558.050%20286.065%2C%20512.058%20311.014%2C%20466.296%20335.848%20C%20420.533%20360.681%2C%20382.873%20381%2C%20382.607%20381%20C%20382.154%20381%2C%20348.309%20362.806%2C%20258%20314.015%20C%20237.375%20302.872%2C%20208.350%20287.223%2C%20193.500%20279.241%20C%20178.650%20271.258%2C%20165.951%20264.224%2C%20165.281%20263.608%20C%20164.357%20262.761%2C%20168.477%20260.091%2C%20182.281%20252.590%20C%20205.699%20239.864%2C%20294.417%20191.761%2C%20344.057%20164.874%20L%20382.613%20143.989%20472.557%20192.853%20L%20562.500%20241.717%20570.231%20237.609%20L%20577.961%20233.500%20577.981%20227.453%20L%20578%20221.407%20549.250%20205.809%20C%20533.438%20197.230%2C%20489.675%20173.465%2C%20452%20152.997%20C%20414.325%20132.530%2C%20383.275%20115.663%2C%20383%20115.515%20C%20382.725%20115.367%2C%20360.225%20127.343%2C%20333%20142.128%22%20stroke%3D%22none%22%20fill-rule%3D%22evenodd%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E%3C%2Fsvg%3E">
 <style>
   /* =====================================================================
      PALETTE
@@ -566,9 +566,11 @@
   header.top { --hpadv:6px; --hgap:9px;
     display:flex; align-items:center; gap:var(--hgap); padding:var(--hpadv) 12px; background:var(--card);
     border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30; flex-wrap:nowrap; }
-  .logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:15px;
-    letter-spacing:-.02em; flex:0 0 auto; }
-  .logo .mark { width:22px; height:22px; flex:0 0 auto; color:var(--brand); }
+  /* The official Databricks lockup (brick mark + wordmark). Bricks carry the
+     brand red from the artwork; the wordmark is currentColor so it follows the
+     theme via --logo-ink, the same token the old wordmark text used. */
+  .logo { display:flex; align-items:center; flex:0 0 auto; color:var(--logo-ink); }
+  .logo svg { height:22px; width:auto; display:block; flex:0 0 auto; }
   /* flex:0 0 auto and nowrap together are the protection: whatever the tabs do,
      these controls keep their width and their place */
   .htools { display:flex; align-items:center; gap:var(--hgap); flex:0 0 auto; margin-left:auto; }
@@ -617,7 +619,7 @@
     .hbtn { padding:0 7px; }
     .hbtn.ico-only { width:28px; }
     .tab { padding:6px 9px 7px; font-size:12px; }
-    .logo { font-size:14px; } .logo .mark { width:19px; height:19px; }
+    .logo svg { height:19px; }
   }
   /* Tabs sit on the header's bottom edge and the active one is filled with the
      page colour, so the sheet below reads as that tab's own surface. The
@@ -670,6 +672,12 @@
     width:15px; height:15px; border:none; border-radius:50%; background:none; cursor:pointer;
     font:inherit; font-size:14px; line-height:1; color:var(--muted); padding:0; }
   .tab-x:hover { background:var(--veil); color:var(--ink); }
+  /* Each tab leads with its board's industry glyph so tabs read apart at a
+     glance; currentColor follows the muted/active-brand tab colour. */
+  .tab-ico { display:inline-flex; align-items:center; justify-content:center;
+    flex:0 0 auto; width:15px; height:15px; }
+  .tab-ico svg { width:15px; height:15px; fill:none; stroke:currentColor;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round; opacity:.9; }
   /* The + is the only way to discover the builder, so it is drawn as an open
      invitation rather than a glyph: a dashed brand outline that fills in and
      lifts under the cursor, offset clear of the active tab's shoulder. */
@@ -2133,6 +2141,12 @@
      visual language; currentColor lets it follow hover/selected/disabled states */
   .ind-menu .ind-ic svg { width:16px; height:16px; fill:none; stroke:currentColor;
     stroke-width:2; stroke-linecap:round; stroke-linejoin:round; opacity:.82; }
+  /* The picker button leads the toolbar with the SELECTED board's glyph (the
+     generic layers mark before a choice), same line-art language as the menu. */
+  #ind-ico { display:inline-flex; align-items:center; justify-content:center;
+    width:1.05em; height:1.05em; }
+  #ind-ico svg { width:15px; height:15px; fill:none; stroke:currentColor;
+    stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   /* One line per entry, and a row wider than the menu widens the MENU rather
      than clipping: the shared rule sets width:100% on the button, which with
      nowrap would cut a long name off instead. The menu is absolutely positioned,
@@ -2515,10 +2529,7 @@
   var p=(qp && /^[a-z]+$/.test(qp)) ? qp : localStorage.getItem("dbx-arch-pal");
   if(p && /^[a-z]+$/.test(p)) document.body.classList.add("pal-"+p);}catch(e){}})();</script>
 <header class="top">
-  <div class="logo">
-    <svg class="mark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z"/></svg>
-    databricks
-  </div>
+  <div class="logo" id="brand-logo" aria-label="Databricks"></div>
   <!-- Reference is pinned and cannot be closed; every other tab is one the user
        made with +, renames by double-click and closes with its own x. The + is
        always the last item, so it follows whatever the last tab happens to be. -->
@@ -2634,7 +2645,7 @@
     <div class="gutter g1"><span class="flow"></span></div>
     <div class="gutter g0"><span class="flow"></span></div>
     <div class="colhead plat-head" data-en="Databricks Data Intelligence Platform">
-      <svg class="ph-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2 21.4 7v3.1L12 15.4 4.4 11.1v1.6L12 17l9.4-5.3v3.1L12 20.1 2.6 14.8v-3.1L12 17l-.02-.01L2.6 11.6V8.5L12 13.8l7.6-4.3v-1.6L12 12.2 2.6 6.9 12 2.2Z"/></svg>
+      <svg class="ph-mark" viewBox="0 0 516 537.3" fill="currentColor" aria-hidden="true"><g transform="translate(-124,-115.5)"><path fill="currentColor" d="M 333 142.128 C 305.775 156.913, 247.613 188.455, 203.750 212.223 L 124 255.436 124.034 262.968 L 124.069 270.500 182.784 302.262 C 215.078 319.731, 263.100 345.748, 289.500 360.078 C 315.900 374.408, 347.562 391.563, 359.859 398.200 L 382.218 410.266 385.859 408.533 C 389.145 406.968, 475.580 359.984, 573.814 306.367 C 594.336 295.165, 611.556 286, 612.081 286 C 612.667 286, 612.931 295.844, 612.767 311.582 L 612.500 337.164 574.500 357.884 C 553.600 369.281, 501.886 397.448, 459.579 420.479 L 382.658 462.352 376.079 458.797 C 346.542 442.833, 275.833 404.429, 184.337 354.656 C 158.397 340.545, 136.694 329, 136.109 329 C 135.523 329, 132.559 330.219, 129.522 331.708 L 124 334.417 124.008 382.958 L 124.015 431.500 143.258 441.900 C 153.841 447.621, 175.550 459.394, 191.500 468.064 C 311.018 533.027, 381.536 571, 382.658 571 C 383.384 571, 388.371 568.592, 393.739 565.648 C 399.108 562.705, 417.225 552.858, 434 543.767 C 450.775 534.675, 496 510.148, 534.500 489.261 C 573 468.375, 606.413 450.312, 608.750 449.123 L 613 446.959 613 472.755 L 613 498.550 567.750 523.196 C 542.862 536.752, 491.029 564.983, 452.564 585.931 L 382.628 624.019 345.064 603.632 C 324.404 592.419, 294.450 576.155, 278.500 567.488 C 201.854 525.841, 167.136 506.989, 152.130 498.869 L 135.759 490.011 129.880 493.145 L 124 496.279 124.004 504.389 L 124.008 512.500 142.254 522.400 C 152.289 527.846, 189.525 548.026, 225 567.245 C 260.475 586.465, 294.675 605.016, 301 608.469 C 307.325 611.923, 326 622.055, 342.500 630.984 C 359 639.913, 374.776 648.474, 377.557 650.009 L 382.614 652.799 399.557 643.551 C 417.049 634.003, 486.777 596.109, 568 552.012 C 593.575 538.126, 620.237 523.640, 627.250 519.820 L 640 512.875 639.999 464.187 L 639.998 415.500 635.102 412.750 C 632.409 411.237, 629.637 410, 628.943 410 C 628.249 410, 621.566 413.324, 614.091 417.387 C 606.616 421.450, 571.250 440.632, 535.500 460.015 C 499.750 479.397, 452.050 505.263, 429.500 517.494 C 406.950 529.725, 387.112 540.440, 385.414 541.307 L 382.329 542.881 363.414 532.598 C 353.012 526.942, 324.700 511.611, 300.500 498.527 C 276.300 485.444, 237.600 464.510, 214.500 452.007 C 191.400 439.504, 168.116 426.926, 162.759 424.056 C 157.401 421.185, 152.783 418.458, 152.498 417.996 C 151.809 416.882, 151.678 367.988, 152.362 367.305 C 152.654 367.013, 173.054 377.687, 197.696 391.026 C 222.338 404.364, 261.625 425.617, 285 438.255 C 308.375 450.892, 335.150 465.386, 344.500 470.463 C 353.850 475.541, 366.271 482.238, 372.103 485.347 L 382.706 490.998 392.603 485.621 C 398.046 482.664, 415.550 473.153, 431.500 464.486 C 447.450 455.820, 468.375 444.467, 478 439.258 C 487.625 434.050, 498.413 428.198, 501.972 426.254 C 515.892 418.655, 588.234 379.350, 601 372.451 C 608.425 368.438, 620.125 362.083, 627 358.328 L 639.500 351.500 639.500 303.169 L 639.500 254.839 633.500 251.536 L 627.500 248.233 607.500 259.174 C 596.500 265.192, 578.950 274.746, 568.500 280.405 C 558.050 286.065, 512.058 311.014, 466.296 335.848 C 420.533 360.681, 382.873 381, 382.607 381 C 382.154 381, 348.309 362.806, 258 314.015 C 237.375 302.872, 208.350 287.223, 193.500 279.241 C 178.650 271.258, 165.951 264.224, 165.281 263.608 C 164.357 262.761, 168.477 260.091, 182.281 252.590 C 205.699 239.864, 294.417 191.761, 344.057 164.874 L 382.613 143.989 472.557 192.853 L 562.500 241.717 570.231 237.609 L 577.961 233.500 577.981 227.453 L 578 221.407 549.250 205.809 C 533.438 197.230, 489.675 173.465, 452 152.997 C 414.325 132.530, 383.275 115.663, 383 115.515 C 382.725 115.367, 360.225 127.343, 333 142.128" stroke="none" fill-rule="evenodd"/></g></svg>
       Databricks Data Intelligence Platform
       <button class="ph-max" id="plat-max" type="button" aria-pressed="false" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="ph-max-out" d="M6 2H2v4M10 2h4v4M10 14h4v-4M6 14H2v-4"/><path class="ph-max-in" d="M2 6h4V2M14 6h-4V2M14 10h-4v4M2 10h4v4"/></svg></button>
     </div>
@@ -5608,6 +5619,7 @@ function selectTab(tab){
      budget just changed */
   fitBoard();
   revealTab(tab);
+  paintTabIcons();
   persistTabs();
 }
 
@@ -5667,6 +5679,7 @@ function makeTab(id, name, text, snap){
   tab.ondblclick = (e)=>{ if(e.target !== x) startRename(tab, nameEl); };
   /* + stays last */
   tabsEl.insertBefore(tab, tabAddEl);
+  paintTabIcons();
   return tab;
 }
 
@@ -6065,7 +6078,17 @@ function pageTitleText(){
     : T("Databricks Reference Architecture") + on;
   return (icon ? icon + " " : "") + core;
 }
-function updatePageTitle(){ try { document.title = pageTitleText(); } catch(e){} }
+function updatePageTitle(){ try { document.title = pageTitleText(); } catch(e){} updateFavicon(); }
+/* The browser tab icon: a single fixed app icon (the Databricks mark on the
+   red square) for every board and industry. It is captured from the link's
+   initial href once, so it is never duplicated as a literal. */
+let DBX_FAVICON = null;
+function faviconHref(){ return DBX_FAVICON; }
+function updateFavicon(){
+  const el = document.getElementById("favicon"); if(!el) return;
+  if(DBX_FAVICON === null) DBX_FAVICON = el.getAttribute("href");
+  try { el.setAttribute("href", faviconHref()); } catch(e){}
+}
 /* The URL a share posts. For a named industry it is the static
    /share/<id>_<cloud>.html stub, NOT the live query link: a scraper reads that
    stub's per-industry, per-cloud Open Graph tags for the card (title + image) and
@@ -6220,6 +6243,11 @@ function syncIndustryBtn(){
      how many boards there are rather than showing a bare "Industry" */
   document.getElementById("ind-lbl").textContent =
     on ? industryLabel(ARCH.industry) : "Pick an Industry (63 available)";
+  /* the button glyph mirrors the SELECTED board (generic layers mark before a
+     pick), and each tab carries its own board's glyph */
+  const indIco = document.getElementById("ind-ico");
+  if(indIco) indIco.innerHTML = indMenuIcon(on ? ARCH.industry : "generic");
+  paintTabIcons();
 }
 
 /* Inline Lucide line-art for a menu row, from the single SVG source shared with
@@ -6229,6 +6257,36 @@ function syncIndustryBtn(){
 function indMenuIcon(id){
   const g = (typeof IndustryIcons !== "undefined" && IndustryIcons.svgFor) ? IndustryIcons.svgFor(id) : "";
   return g ? '<svg viewBox="0 0 24 24">' + g + "</svg>" : "";
+}
+
+/* The industry a tab is drawn for: the ACTIVE tab reflects the live board
+   (ARCH), a parked reference tab its stored snapshot, a parked clone its own
+   snapshot. Anything transient/blank falls back to the generic layers mark. */
+function tabIndustryOf(id){
+  if(id === activeBoard) return ARCH.industry;
+  if(id === "reference") return (refSnap && refSnap.industry) || "generic";
+  const r = customTabs.get(id);
+  return (r && r.snap && r.snap.industry) || "generic";
+}
+function tabIconHtml(id){
+  const ind = tabIndustryOf(id);
+  const named = ind && ind !== "generic" && ind.indexOf("__import__") !== 0;
+  return indMenuIcon(named ? ind : "generic");
+}
+/* Prepend/refresh a leading glyph on every tab; reuses the one node so repeated
+   paints never duplicate it. */
+function paintTabIcons(){
+  if(typeof tabsEl === "undefined" || !tabsEl) return;
+  tabsEl.querySelectorAll(".tab").forEach(t=>{
+    let ico = t.querySelector(".tab-ico");
+    if(!ico){
+      ico = document.createElement("span");
+      ico.className = "tab-ico";
+      ico.setAttribute("aria-hidden", "true");
+      t.insertBefore(ico, t.firstChild);
+    }
+    ico.innerHTML = tabIconHtml(t.dataset.tab);
+  });
 }
 function paintIndustryMenu(){
   const cur = ARCH.industry;
@@ -8097,7 +8155,7 @@ function pptxBullets(id, x, y, w, h, items, size, inkHex, accentHex){
 }
 /* Slide 1: what this is, which variant, and a live link back to the board it
    came from. A deck outlives the picture in it; the URL does not go stale. */
-function pptxCoverSlide(glyphPng){
+function pptxCoverSlide(glyphPng, logoPng){
   const SW = PPT_SW, SH = PPT_SH;
   const PT = 12700;                                   /* EMU per point */
   const M = Math.round(SW * 0.062);
@@ -8121,6 +8179,20 @@ function pptxCoverSlide(glyphPng){
       pptxMirrorX(Math.round(cx - side / 2), side) + '" y="' + Math.round(cy - side / 2) +
       '"/><a:ext cx="' + side + '" cy="' + side + '"/></a:xfrm>' +
       '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>');
+  }
+  /* the official Databricks lockup, top of the reading side (top-left LTR, mirrored
+     to top-right for RTL). Pushed after the glyph so its rel id follows, keeping
+     the link rel ids that pptxSlideRel computes from media.length in step. */
+  if(logoPng){
+    const li = slide.media.length; slide.media.push(logoPng);
+    const lh = Math.round(SH * 0.072), lw = Math.round(lh * DBX_LOGO_AR),
+          lx = M, ly = Math.round(SH * 0.085);
+    parts.push('<p:pic><p:nvPicPr><p:cNvPr id="' + (id++) + '" name="Logo"/>' +
+      '<p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
+      '<p:blipFill><a:blip r:embed="' + pptxSlideRel(slide, "img", li) + '"/>' +
+      '<a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="' +
+      pptxMirrorX(lx, lw) + '" y="' + ly + '"/><a:ext cx="' + lw + '" cy="' + lh +
+      '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>');
   }
   const rectXml = (rx, ry, rw, rh, hex)=>{
     const rid = id++;
@@ -8241,7 +8313,7 @@ function pptxIndexSlide(){
    reference deck: an eyebrow and a running header, a title with a brand rule, and
    filled tinted cards. Paragraph heights are estimated from a canvas measurement
    so stacked blocks do not overlap once PowerPoint rewraps them. */
-function pptxNarrativeSlides(){
+async function pptxNarrativeSlides(coverGlyphPng){
   const SW = PPT_SW, SH = PPT_SH, PTU = 12700;
   const M = Math.round(SW * 0.062), W = SW - M * 2;
   const ink = expInk(), mut = expMuted(), brand = expBrand();
@@ -8261,11 +8333,37 @@ function pptxNarrativeSlides(){
     parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, creditText(), null, "l", "t"));
     parts.push(pptxTextEx(ref.id++, M, fy, W, Math.round(15 * PTU), 10, false, mut, runHdr, null, "r", "t"));
   };
-  const titleBlock = (parts, ref, y, title, sub)=>{
-    parts.push(pptxTextEx(ref.id++, M, y, W, Math.round(34 * PTU), 26, true, ink, title, null, "l", "t"));
+  /* A picture placed like pptxFillRect/pptxTextEx: caller passes the un-mirrored
+     x and it mirrors for RTL, so glyph badges land on the reading side. */
+  const picXml = (idn, rel, x, y, w, h)=>
+    '<p:pic><p:nvPicPr><p:cNvPr id="' + idn + '" name="pic' + idn + '"/>' +
+    '<p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
+    '<p:blipFill><a:blip r:embed="' + rel + '"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>' +
+    '<p:spPr><a:xfrm><a:off x="' + pptxMirrorX(x, w) + '" y="' + Math.round(y) + '"/>' +
+    '<a:ext cx="' + Math.round(w) + '" cy="' + Math.round(h) + '"/></a:xfrm>' +
+    '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>';
+  /* Rasterise a tile/section glyph and push it to the slide's media, returning
+     its media index (or -1). Pushed before any hyperlink is referenced so the
+     link rel ids, which count from media.length, stay in step. */
+  const pushGlyph = async (slide, svgStr, colourHex, faded)=>{
+    if(!svgStr) return -1;
+    const png = await glyphPngU8(svgStr, faded ? 900 : 132, colourHex, faded, ooxmlRtl());
+    if(!png) return -1;
+    const mi = slide.media.length; slide.media.push(png); return mi;
+  };
+  const titleBlock = (parts, ref, y, title, sub, slide, gmi)=>{
+    let tx = M, tw = W, leadW = 0;
+    if(slide && gmi != null && gmi >= 0){
+      const bsz = Math.round(46 * PTU), isz = Math.round(28 * PTU);
+      parts.push(pptxFillRect(ref.id++, M, y - Math.round(6 * PTU), bsz, bsz, deckTint(brand), 26000));
+      parts.push(picXml(ref.id++, pptxSlideRel(slide, "img", gmi),
+        M + Math.round(9 * PTU), y - Math.round(6 * PTU) + Math.round(9 * PTU), isz, isz));
+      leadW = bsz + Math.round(16 * PTU); tx = M + leadW; tw = W - leadW;
+    }
+    parts.push(pptxTextEx(ref.id++, tx, y, tw, Math.round(34 * PTU), 26, true, ink, title, null, "l", "t"));
     let ny = y + Math.round(34 * PTU);
     if(sub){
-      parts.push(pptxTextEx(ref.id++, M, ny, W, Math.round(20 * PTU), 13, false, mut, sub, null, "l", "t"));
+      parts.push(pptxTextEx(ref.id++, tx, ny, tw, Math.round(20 * PTU), 13, false, mut, sub, null, "l", "t"));
       ny += Math.round(20 * PTU);
     }
     parts.push(pptxFillRect(ref.id++, M, ny + Math.round(2 * PTU), Math.round(W * 0.09), Math.round(4 * PTU), brand));
@@ -8313,9 +8411,13 @@ function pptxNarrativeSlides(){
 
   /* --- section break: one per content section, coloured by its role, with a
      "SECTION N" tab whose N matches the Contents page row --- */
-  const sectionBreak = (sec, roleHex, idx)=>{
+  const sectionBreak = async (sec, roleHex, idx)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    const wm = await glyphPngU8(svg(deckSectionIcon(sec)), 900, roleHex, true, ooxmlRtl());
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, roleHex));
+    if(wm){ const mi = slide.media.length; slide.media.push(wm);
+      const side = Math.round(SH * 1.12), cx = Math.round(SW * 0.66), cy = Math.round(SH * 0.52);
+      parts.push(picXml(ref.id++, pptxSlideRel(slide, "img", mi), Math.round(cx - side / 2), Math.round(cy - side / 2), side, side)); }
     chrome(parts, ref, sec.eyebrow);
     let y = Math.round(SH * 0.30);
     const kick = String(T("SECTION")).toUpperCase() + " " + idx;
@@ -8334,14 +8436,15 @@ function pptxNarrativeSlides(){
   };
 
   /* --- one slide per use case, mirroring the drawer --- */
-  const ucSlide = (t, i, total, eyebrow)=>{
+  const ucSlide = async (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [];
     const stories = (t.stories || []).slice(0, 4);
     const acc = accelFor(t);
     const slide = { media:[], hlinks: stories.map(s=> s.u).concat(acc ? [acc.u] : []) };
+    const gmi = await pushGlyph(slide, titleIcon(t), expBrand());
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, String(eyebrow || "").toUpperCase());
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "");
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || t.desc || "", slide, gmi);
     /* two columns: reasoning on the left, who / architecture / stories on the right */
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
@@ -8385,11 +8488,12 @@ function pptxNarrativeSlides(){
 
   /* --- one slide per Genie Agent: what it explores, the data it reads, the
      teams it serves and the questions it answers, mirroring the drawer --- */
-  const genieSlide = (t, i, total, eyebrow)=>{
+  const genieSlide = async (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    const gmi = await pushGlyph(slide, titleIcon(t), expBrand());
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, String(eyebrow || "").toUpperCase());
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, genieDomain(t) || T("Ask in natural language over governed data"));
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, genieDomain(t) || T("Ask in natural language over governed data"), slide, gmi);
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it explores"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
@@ -8416,11 +8520,12 @@ function pptxNarrativeSlides(){
      and the teams that run on it. A dashboard is as content-rich as a Genie
      agent, so it gets a full slide; a 2x2 grid cell on 16:9 is too short to
      hold five KPI chips plus the team pills without spilling. --- */
-  const dashSlide = (t, i, total, eyebrow)=>{
+  const dashSlide = async (t, i, total, eyebrow)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    const gmi = await pushGlyph(slide, titleIcon(t), expBrand());
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, String(eyebrow || "").toUpperCase());
-    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || T("Certified AI/BI on governed Metric Views"));
+    const topY = titleBlock(parts, ref, Math.round(SH * 0.135), t.n, t.s || T("Certified AI/BI on governed Metric Views"), slide, gmi);
     const colW = Math.round(W * 0.55), rx = M + Math.round(W * 0.60), rW = W - Math.round(W * 0.60);
     let ly = topY;
     if(t.long){ ly = label(ref, parts, M, ly, colW, "What it tracks"); ly = para(ref, parts, M, ly, colW, t.long, 14, ink); }
@@ -8433,12 +8538,14 @@ function pptxNarrativeSlides(){
 
   /* --- one slide for a section shown as a 2x2 card grid (apps):
      a coloured header per card, then the card's own detail --- */
-  const gridSlide = (sec, roleBase)=>{
+  const gridSlide = async (sec, roleBase)=>{
     const ref = { id:2 }, parts = [], slide = { media:[], hlinks:[] };
+    const tiles2 = sec.tiles.slice(0, 4), cols = 2;
+    const cardGmi = [];
+    for(const t of tiles2){ cardGmi.push(await pushGlyph(slide, titleIcon(t), "FFFFFF")); }
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, sec.eyebrow);
     const topY = titleBlock(parts, ref, Math.round(SH * 0.135), sec.title, sec.blurb);
-    const tiles2 = sec.tiles.slice(0, 4), cols = 2;
     const gx = Math.round(20 * PTU), gy = Math.round(18 * PTU);
     const cardW = Math.round((W - gx) / cols);
     const gridTop = topY + Math.round(6 * PTU);
@@ -8452,8 +8559,11 @@ function pptxNarrativeSlides(){
       parts.push(pptxFillRect(ref.id++, cx, cy, cardW, cardH, deckTint(role), 40000));
       parts.push(pptxFillRect(ref.id++, cx, cy, cardW, hh, role, 40000));
       parts.push(pptxFillRect(ref.id++, cx, cy + Math.round(hh / 2), cardW, Math.round(hh / 2), role));
-      parts.push(pptxTextEx(ref.id++, cx + Math.round(16 * PTU), cy, cardW - Math.round(28 * PTU), hh,
-        13, true, onRoleInk(role), t.n, null, "l", "ctr"));
+      const gmi = cardGmi[i]; let htx = cx + Math.round(16 * PTU), htw = cardW - Math.round(28 * PTU);
+      if(gmi >= 0){ const isz = Math.round(18 * PTU);
+        parts.push(picXml(ref.id++, pptxSlideRel(slide, "img", gmi), cx + Math.round(15 * PTU), cy + Math.round((hh - isz) / 2), isz, isz));
+        htx = cx + Math.round(41 * PTU); htw = cardW - Math.round(53 * PTU); }
+      parts.push(pptxTextEx(ref.id++, htx, cy, htw, hh, 13, true, onRoleInk(role), t.n, null, "l", "ctr"));
       const ix = cx + Math.round(16 * PTU), iw = cardW - Math.round(32 * PTU);
       let iy = cy + hh + Math.round(12 * PTU);
       if(t.s){ parts.push(pptxTextEx(ref.id++, ix, iy, iw, Math.round(15 * PTU), 11, true, mixHex(role, ink, 0.30), t.s, null, "l", "t")); iy += Math.round(17 * PTU); }
@@ -8470,6 +8580,20 @@ function pptxNarrativeSlides(){
     const ref = { id:2 }, parts = [];
     const links = closingLinks();
     const slide = { media:[], hlinks: links.map(r=> r.url) };
+    /* the deck closes on the same industry silhouette it opened on: pushed to
+       media first (behind everything) so the link rel ids stay in step, mirrored
+       for RTL exactly like the cover */
+    if(coverGlyphPng){
+      slide.media.push(coverGlyphPng);
+      const side = Math.round(SH * 1.34), cx = Math.round(SW * 0.66), cy = Math.round(SH * 0.52);
+      parts.push('<p:pic><p:nvPicPr><p:cNvPr id="' + (ref.id++) + '" name="Silhouette"/>' +
+        '<p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>' +
+        '<p:blipFill><a:blip r:embed="' + pptxSlideRel(slide, "img", 0) + '"/>' +
+        '<a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="' +
+        pptxMirrorX(Math.round(cx - side / 2), side) + '" y="' + Math.round(cy - side / 2) +
+        '"/><a:ext cx="' + side + '" cy="' + side + '"/></a:xfrm>' +
+        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>');
+    }
     parts.push(pptxFillRect(ref.id++, 0, 0, Math.round(SW * 0.014), SH, brand));
     chrome(parts, ref, String(T("In Summary")).toUpperCase());
     let y = Math.round(SH * 0.28);
@@ -8501,16 +8625,16 @@ function pptxNarrativeSlides(){
      here, but it still advances the section index so the "SECTION N" tabs and
      the Contents page rows carry the same numbers. */
   let si = 0;
-  deckSections().forEach(sec=>{
-    if(sec.kind === "board"){ si++; return; }
+  for(const sec of deckSections()){
+    if(sec.kind === "board"){ si++; continue; }
     const role = DECK_ROLES[si % DECK_ROLES.length];
-    slides.push(sectionBreak(sec, role, si + 1));
-    if(sec.kind === "uc") sec.tiles.forEach((t, i)=> slides.push(ucSlide(t, i, sec.tiles.length, sec.eyebrow)));
-    else if(sec.kind === "genie") sec.tiles.forEach((t, i)=> slides.push(genieSlide(t, i, sec.tiles.length, sec.eyebrow)));
-    else if(sec.kind === "dash") sec.tiles.forEach((t, i)=> slides.push(dashSlide(t, i, sec.tiles.length, sec.eyebrow)));
-    else slides.push(gridSlide(sec, si));
+    slides.push(await sectionBreak(sec, role, si + 1));
+    if(sec.kind === "uc"){ for(let i = 0; i < sec.tiles.length; i++) slides.push(await ucSlide(sec.tiles[i], i, sec.tiles.length, sec.eyebrow)); }
+    else if(sec.kind === "genie"){ for(let i = 0; i < sec.tiles.length; i++) slides.push(await genieSlide(sec.tiles[i], i, sec.tiles.length, sec.eyebrow)); }
+    else if(sec.kind === "dash"){ for(let i = 0; i < sec.tiles.length; i++) slides.push(await dashSlide(sec.tiles[i], i, sec.tiles.length, sec.eyebrow)); }
+    else slides.push(await gridSlide(sec, si));
     si++;
-  });
+  }
   slides.push(closing());
   return slides;
 }
@@ -8566,7 +8690,7 @@ function loadImg(src){ return new Promise((res, rej)=>{ const im = new Image(); 
 /* A square canvas holding the faded silhouette on a transparent ground. The fade
    erases the left third so the graph reads on the right and dissolves under the
    text, matching the card's mask. Opacity follows the theme (stronger on dark). */
-async function coverGlyphCanvas(px){
+async function coverGlyphCanvas(px, rtl){
   const svg = coverGlyphSvg(px); if(!svg) return null;
   let img; try { img = await loadImg("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg)); }
   catch(e){ return null; }
@@ -8575,8 +8699,13 @@ async function coverGlyphCanvas(px){
   ctx.globalAlpha = document.body.classList.contains("theme-dark") ? 0.55 : 0.34;
   ctx.drawImage(img, 0, 0, px, px);
   ctx.globalAlpha = 1;
+  /* dissolve the edge that faces the text: text is on the left for LTR (fade the
+     glyph's left) and on the right for RTL (fade its right), so the graph melts
+     under the words rather than behind the empty margin. destination-out erases
+     wherever the fill is opaque. */
   const grd = ctx.createLinearGradient(0, 0, px, 0);
-  grd.addColorStop(0, "rgba(0,0,0,1)"); grd.addColorStop(0.30, "rgba(0,0,0,1)"); grd.addColorStop(0.66, "rgba(0,0,0,0)");
+  if(rtl){ grd.addColorStop(0, "rgba(0,0,0,0)"); grd.addColorStop(0.34, "rgba(0,0,0,0)"); grd.addColorStop(0.70, "rgba(0,0,0,1)"); }
+  else { grd.addColorStop(0, "rgba(0,0,0,1)"); grd.addColorStop(0.30, "rgba(0,0,0,1)"); grd.addColorStop(0.66, "rgba(0,0,0,0)"); }
   ctx.globalCompositeOperation = "destination-out"; ctx.fillStyle = grd; ctx.fillRect(0, 0, px, px);
   ctx.globalCompositeOperation = "source-over";
   return cv;
@@ -8590,8 +8719,8 @@ function canvasPngU8(cv){
 /* PDF has no image alpha here (DeviceRGB flate), so the silhouette is composited
    over the cover's own background colour into an opaque RGB tile; its ground
    pixels equal bgHex and merge seamlessly with the page. Returns flate RGB. */
-async function coverGlyphRgbOnBg(px, bgHex){
-  const cv = await coverGlyphCanvas(px); if(!cv) return null;
+async function coverGlyphRgbOnBg(px, bgHex, rtl){
+  const cv = await coverGlyphCanvas(px, rtl); if(!cv) return null;
   const out = document.createElement("canvas"); out.width = px; out.height = px;
   const ctx = out.getContext("2d");
   ctx.fillStyle = bgHex; ctx.fillRect(0, 0, px, px);
@@ -8602,11 +8731,80 @@ async function coverGlyphRgbOnBg(px, bgHex){
   const enc = await flate(rgb); if(!enc) return null;
   return { stream:enc, w:px, h:px };
 }
+async function glyphCanvasBox(svgStr, px, colorHex, faded, rtl){
+  if(!svgStr) return null;
+  const col = colorHex ? (colorHex.charAt(0) === "#" ? colorHex : "#" + colorHex) : null;
+  let colored = col ? svgStr.replace(/currentColor/g, col) : svgStr;
+  /* svg()/markSvg emit namespace-less SVG (fine inline, but a standalone data-URI
+     Image needs the SVG xmlns or it fails to decode), so add it when absent. */
+  if(!/xmlns=/.test(colored)) colored = colored.replace(/<svg\b/, '<svg xmlns="http://www.w3.org/2000/svg"');
+  let img; try { img = await loadImg("data:image/svg+xml;charset=utf-8," + encodeURIComponent(colored)); }
+  catch(e){ return null; }
+  let aw = 24, ah = 24; const vb = (svgStr.match(/viewBox="([^"]+)"/) || [])[1];
+  if(vb){ const p = vb.trim().split(/[\s,]+/).map(Number); if(p.length === 4 && p[2] > 0 && p[3] > 0){ aw = p[2]; ah = p[3]; } }
+  const cv = document.createElement("canvas"); cv.width = px; cv.height = px;
+  const ctx = cv.getContext("2d");
+  const scale = Math.min(px / aw, px / ah), dw = aw * scale, dh = ah * scale;
+  if(faded) ctx.globalAlpha = document.body.classList.contains("theme-dark") ? 0.5 : 0.30;
+  ctx.drawImage(img, (px - dw) / 2, (px - dh) / 2, dw, dh);
+  ctx.globalAlpha = 1;
+  if(faded){
+    const grd = ctx.createLinearGradient(0, 0, px, 0);
+    if(rtl){ grd.addColorStop(0, "rgba(0,0,0,0)"); grd.addColorStop(0.34, "rgba(0,0,0,0)"); grd.addColorStop(0.70, "rgba(0,0,0,1)"); }
+    else { grd.addColorStop(0, "rgba(0,0,0,1)"); grd.addColorStop(0.30, "rgba(0,0,0,1)"); grd.addColorStop(0.66, "rgba(0,0,0,0)"); }
+    ctx.globalCompositeOperation = "destination-out"; ctx.fillStyle = grd; ctx.fillRect(0, 0, px, px);
+    ctx.globalCompositeOperation = "source-over";
+  }
+  return cv;
+}
+async function glyphPngU8(svgStr, px, colorHex, faded, rtl){
+  const cv = await glyphCanvasBox(svgStr, px, colorHex, faded, rtl); return cv ? canvasPngU8(cv) : null; }
+async function glyphRgbOnBg(svgStr, px, bgHex, colorHex, faded, rtl){
+  const cv = await glyphCanvasBox(svgStr, px, colorHex, faded, rtl); if(!cv) return null;
+  const bg = (bgHex && bgHex.charAt(0) !== "#") ? "#" + bgHex : bgHex;
+  const out = document.createElement("canvas"); out.width = px; out.height = px;
+  const ctx = out.getContext("2d"); ctx.fillStyle = bg; ctx.fillRect(0, 0, px, px); ctx.drawImage(cv, 0, 0);
+  const d = ctx.getImageData(0, 0, px, px).data; const rgb = new Uint8Array(px * px * 3);
+  for(let i = 0, j = 0; i < d.length; i += 4){ rgb[j++] = d[i]; rgb[j++] = d[i + 1]; rgb[j++] = d[i + 2]; }
+  const enc = await flate(rgb); if(!enc) return null; return { stream:enc, w:px, h:px };
+}
+/* The official Databricks lockup as a raster tile for the decks, so the same
+   artwork the header and share cards use also opens every PPTX/PDF cover. PPTX
+   takes a transparent PNG; the PDF (no image alpha here) takes an opaque RGB
+   tile composited on the cover background. The wordmark follows the theme ink so
+   it reads on light and dark; the bricks keep their brand red from the artwork. */
+const DBX_LOGO_AR = 508.42 / 100;
+async function dbxLogoCanvas(h, wordmarkHex){
+  const svg = (typeof IndustryIcons !== "undefined" && IndustryIcons.dbxLogoSvg)
+    ? IndustryIcons.dbxLogoSvg({ wordmark: wordmarkHex }) : "";
+  if(!svg) return null;
+  const w = Math.round(h * DBX_LOGO_AR);
+  let img; try { img = await loadImg("data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg)); }
+  catch(e){ return null; }
+  const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+  cv.getContext("2d").drawImage(img, 0, 0, w, h);
+  return cv;
+}
+async function dbxLogoPngU8(h, wordmarkHex){ const cv = await dbxLogoCanvas(h, wordmarkHex); return cv ? canvasPngU8(cv) : null; }
+async function dbxLogoRgbOnBg(h, bgHex, wordmarkHex){
+  const cv = await dbxLogoCanvas(h, wordmarkHex); if(!cv) return null;
+  const w = cv.width;
+  const out = document.createElement("canvas"); out.width = w; out.height = h;
+  const ctx = out.getContext("2d");
+  ctx.fillStyle = bgHex; ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(cv, 0, 0);
+  const d = ctx.getImageData(0, 0, w, h).data;
+  const rgb = new Uint8Array(w * h * 3);
+  for(let i = 0, j = 0; i < d.length; i += 4){ rgb[j++] = d[i]; rgb[j++] = d[i + 1]; rgb[j++] = d[i + 2]; }
+  const enc = await flate(rgb); if(!enc) return null;
+  return { stream:enc, w:w, h:h };
+}
 async function exportPptx(){
   const SW = PPT_SW, SH = PPT_SH;
   const pad = 0.03;
   const title = docTitle();
-  const coverGlyphPng = await (async()=>{ const cv = await coverGlyphCanvas(1400); return cv ? canvasPngU8(cv) : null; })();
+  const coverGlyphPng = await (async()=>{ const cv = await coverGlyphCanvas(1400, ooxmlRtl()); return cv ? canvasPngU8(cv) : null; })();
+  const coverLogoPng = await dbxLogoPngU8(140, expInk());
   /* The architecture/board page is shipped as a single rasterised image in EVERY
      language, English included: it is a pixel-exact copy of the on-screen
      diagram, so no divergence between the browser's fonts and the reader's
@@ -8652,7 +8850,7 @@ async function exportPptx(){
     '</a:solidFill>' + pptxRunFonts() + '</a:rPr><a:t>' + xmlEsc(title) +
     '</a:t></a:r></a:p></p:txBody></p:sp>');
   board.body = parts.join("");
-  return zipStore(pptxParts([pptxCoverSlide(coverGlyphPng), pptxIndexSlide(), board].concat(pptxNarrativeSlides()), title));
+  return zipStore(pptxParts([pptxCoverSlide(coverGlyphPng, coverLogoPng), pptxIndexSlide(), board].concat(await pptxNarrativeSlides(coverGlyphPng)), title));
 }
 /* A copy of this page with the live state frozen in, so the download opens with
    the same edits and cloud provider the user is looking at. */
@@ -8825,6 +9023,9 @@ function DECK_SLIDE_CSS(){ return "" +
   ".ds-top{display:flex;justify-content:space-between;font:700 13px/1.2 inherit;letter-spacing:.06em;}" +
   ".ds-foot{margin-top:auto;display:flex;justify-content:space-between;font:400 11px/1.2 inherit;padding-top:12px;}" +
   ".ds-h{margin:22px 0 6px;}" +
+  ".ds-htitle{display:flex;align-items:center;gap:15px;}" +
+  ".ds-hico{flex:none;width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;}" +
+  ".ds-hico svg{width:28px;height:28px;display:block;}" +
   ".ds-title{font:700 30px/1.15 inherit;margin:0;}" +
   ".ds-sub{font:400 15px/1.3 inherit;margin-top:6px;}" +
   ".ds-rule{width:120px;height:4px;margin-top:12px;border-radius:2px;}" +
@@ -8850,7 +9051,12 @@ function DECK_SLIDE_CSS(){ return "" +
   ".ds-sectitle{font:700 44px/1.1 inherit;margin:22px 0 0;}" +
   ".ds-secblurb{font:400 15px/1.45 inherit;margin-top:16px;max-width:72%;}" +
   ".ds-secwrap{margin-top:70px;}" +
-  ".ds-cover{justify-content:center;}" +
+  /* align-items:flex-start stops the flex column from stretching the kicker tab to
+     full width (the RTL cover bug) and pins children to the reading edge — left
+     for LTR, right for RTL — so Arabic lays out mirrored and tidy. */
+  ".ds-cover{justify-content:center;align-items:flex-start;}" +
+  ".ds-cover-brand{margin-bottom:22px;}" +
+  ".ds-cover-brand svg{height:30px;width:auto;display:block;}" +
   ".ds-cover-title{font:700 40px/1.12 inherit;margin:26px 0 0;max-width:88%;}" +
   ".ds-cover-meta{font:400 15px/1.3 inherit;margin-top:14px;}" +
   ".ds-cover-sub{font:400 15px/1.4 inherit;margin-top:8px;max-width:82%;}" +
@@ -8859,7 +9065,9 @@ function DECK_SLIDE_CSS(){ return "" +
   ".ds-dot{width:9px;height:9px;flex:none;}" +
   ".ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;}" +
   ".ds-card{border-radius:9px;overflow:hidden;display:flex;flex-direction:column;}" +
-  ".ds-card-h{font:700 14px/1.2 inherit;padding:11px 14px;}" +
+  ".ds-card-h{font:700 14px/1.2 inherit;padding:11px 14px;display:flex;align-items:center;gap:9px;}" +
+  ".ds-card-hico{flex:none;display:flex;align-items:center;}" +
+  ".ds-card-hico svg{width:18px;height:18px;display:block;}" +
   ".ds-card-b{padding:12px 14px;}" +
   ".ds-csub{font:700 12px/1.2 inherit;margin-bottom:6px;}" +
   ".ds-stories{display:flex;flex-direction:column;gap:7px;}" +
@@ -8881,10 +9089,11 @@ function dsChipsH(items, start){ start = start || 0;
 function dsPillsH(items, roleHex){ return '<div class="ds-pills">' + (items || []).map(cm=>
   '<span class="ds-pill" style="background:' + HX(roleHex) + ';color:' + HX(onRoleInk(roleHex)) +
   '">' + xmlEsc(cm) + '</span>').join("") + '</div>'; }
-function dsShellH(eyebrow, bodyHtml, roleHex){
+function dsShellH(eyebrow, bodyHtml, roleHex, glyphHtml){
   const col = dsCols(), accent = roleHex ? HX(roleHex) : col.brand;
   const rh = xmlEsc(deckRunHeader()), cred = xmlEsc(creditText());
   return '<div class="ds-bar" style="background:' + accent + '"></div>' +
+    (glyphHtml || "") +
     '<div class="ds-pad">' +
       '<div class="ds-top"><span style="color:' + accent + '">' + eyebrow + '</span>' +
         '<span style="color:' + col.mut + '">' + rh + '</span></div>' +
@@ -8892,13 +9101,44 @@ function dsShellH(eyebrow, bodyHtml, roleHex){
       '<div class="ds-foot"><span style="color:' + col.mut + '">' + cred + '</span>' +
         '<span style="color:' + col.mut + '">' + rh + '</span></div>' +
     '</div>'; }
-function dsTitleH(title, sub){ const col = dsCols();
-  return '<div class="ds-h"><h1 class="ds-title" style="color:' + col.ink + '">' + xmlEsc(title) + '</h1>' +
+function dsTitleH(title, sub, iconHtml){ const col = dsCols();
+  const h = '<h1 class="ds-title" style="color:' + col.ink + '">' + xmlEsc(title) + '</h1>';
+  const titleRow = iconHtml
+    ? '<div class="ds-htitle"><span class="ds-hico" style="background:' + HX(deckTint(expBrand())) +
+        ';color:' + col.brand + '">' + iconHtml + '</span>' + h + '</div>'
+    : h;
+  return '<div class="ds-h">' + titleRow +
     (sub ? '<div class="ds-sub" style="color:' + col.mut + '">' + xmlEsc(sub) + '</div>' : "") +
     '<div class="ds-rule" style="background:' + col.brand + '"></div></div>'; }
-function dsDetailH(eyebrow, title, sub, leftHtml, rightHtml){
+function dsDetailH(eyebrow, title, sub, leftHtml, rightHtml, iconHtml){
   const body = '<div class="ds-cols"><div>' + leftHtml + '</div><div>' + rightHtml + '</div></div>';
-  return dsShellH(xmlEsc(String(eyebrow).toUpperCase()), dsTitleH(title, sub) + body); }
+  return dsShellH(xmlEsc(String(eyebrow).toUpperCase()), dsTitleH(title, sub, iconHtml) + body); }
+/* Each content tile carries the same glyph the canvas draws (titleIcon: the
+   official product mark, or its concept icon), so the exported detail slides,
+   grid cards and section breaks are not text-only the way they used to be. */
+function deckTileGlyph(t){ return titleIcon(t) || ""; }
+/* The section-break watermark: the section's concept glyph, large and faded like
+   the cover's industry silhouette, stroked in the section's role colour. Mask ids
+   are per-call unique so several section slides in one raster document never
+   collide on the same #mask reference. */
+let DS_GLYPH_SEQ = 0;
+function deckSectionIcon(sec){ return ({ uc:"flow", genie:"genie", dash:"aibi", app:"apps", board:"lakehouse" })[sec && sec.key] || "dot"; }
+function dsSectionGlyph(iconKey, roleHex){
+  const glyph = ICONS[iconKey] || ICONS.dot;
+  const op = document.body.classList.contains("theme-dark") ? "0.5" : "0.30";
+  const rtl = (typeof I18N !== "undefined" && I18N.dir === "rtl");
+  const leftPct = rtl ? "34%" : "66%";
+  const uid = "dsmk" + (DS_GLYPH_SEQ++), gid = "dsm" + DS_GLYPH_SEQ;
+  const maskStops = rtl
+    ? '<stop offset="0.34" stop-color="#fff" stop-opacity="1"/><stop offset="0.70" stop-color="#fff" stop-opacity="0"/>'
+    : '<stop offset="0.30" stop-color="#fff" stop-opacity="0"/><stop offset="0.66" stop-color="#fff" stop-opacity="1"/>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" ' +
+    'style="position:absolute;top:50%;left:' + leftPct + ';width:130%;height:130%;transform:translate(-50%,-50%);opacity:' + op + ';z-index:0;">' +
+    '<defs><linearGradient id="' + gid + '" x1="0" x2="1">' + maskStops + '</linearGradient>' +
+    '<mask id="' + uid + '"><rect width="24" height="24" fill="url(#' + gid + ')"/></mask></defs>' +
+    '<g mask="url(#' + uid + ')" fill="none" stroke="' + HX(roleHex) + '" stroke-width="0.42" stroke-linecap="round" stroke-linejoin="round">' +
+    glyph + '</g></svg>';
+}
 /* the industry silhouette watermark for the rasterised (Arabic/CJK/Hindi) cover;
    an inline SVG with its own mask (not a CSS mask, which the foreignObject
    rasteriser drops) so the left-fade survives, stroked in the palette accent */
@@ -8908,10 +9148,16 @@ function dsCoverGlyph(){
   const glyph = (typeof IndustryIcons !== "undefined" && IndustryIcons.svgFor) ? IndustryIcons.svgFor(id) : "";
   if(!glyph) return "";
   const op = document.body.classList.contains("theme-dark") ? "0.5" : "0.32";
+  /* RTL text sits on the right, so the graph moves to the left and fades toward
+     the right (toward the words); LTR is the mirror of that. */
+  const rtl = (typeof I18N !== "undefined" && I18N.dir === "rtl");
+  const leftPct = rtl ? "34%" : "66%";
+  const maskStops = rtl
+    ? '<stop offset="0.34" stop-color="#fff" stop-opacity="1"/><stop offset="0.70" stop-color="#fff" stop-opacity="0"/>'
+    : '<stop offset="0.30" stop-color="#fff" stop-opacity="0"/><stop offset="0.66" stop-color="#fff" stop-opacity="1"/>';
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" ' +
-    'style="position:absolute;top:50%;left:66%;width:150%;height:150%;transform:translate(-50%,-50%);opacity:' + op + ';z-index:0;">' +
-    '<defs><linearGradient id="dcm" x1="0" x2="1"><stop offset="0.30" stop-color="#fff" stop-opacity="0"/>' +
-    '<stop offset="0.66" stop-color="#fff" stop-opacity="1"/></linearGradient>' +
+    'style="position:absolute;top:50%;left:' + leftPct + ';width:150%;height:150%;transform:translate(-50%,-50%);opacity:' + op + ';z-index:0;">' +
+    '<defs><linearGradient id="dcm" x1="0" x2="1">' + maskStops + '</linearGradient>' +
     '<mask id="dcmk"><rect width="24" height="24" fill="url(#dcm)"/></mask></defs>' +
     '<g mask="url(#dcmk)" fill="none" stroke="' + expBrand() + '" stroke-width="0.46" stroke-linecap="round" stroke-linejoin="round">' +
     glyph + '</g></svg>';
@@ -8920,6 +9166,8 @@ function dsCover(){ const col = dsCols(), links = coverLinks();
   return '<div class="ds-bar ds-bar-wide" style="background:' + col.brand + '"></div>' +
     dsCoverGlyph() +
     '<div class="ds-pad ds-cover" style="z-index:1">' +
+      '<div class="ds-cover-brand">' + ((typeof IndustryIcons !== "undefined" && IndustryIcons.dbxLogoSvg)
+        ? IndustryIcons.dbxLogoSvg({ wordmark: col.ink, height: 30 }) : "") + '</div>' +
       '<span class="ds-kick" style="background:' + col.brand + ';color:#fff">' + xmlEsc(T("Reference Architecture").toUpperCase()) + '</span>' +
       '<h1 class="ds-cover-title" style="color:' + col.ink + '">' + xmlEsc(coverTitle()) + '</h1>' +
       '<div class="ds-rule" style="background:' + col.brand + '"></div>' +
@@ -8949,7 +9197,7 @@ function dsSection(sec, role, idx){ const col = dsCols();
     '<h1 class="ds-sectitle" style="color:' + HX(role) + '">' + xmlEsc(sec.title) + '</h1>' +
     '<div class="ds-rule" style="background:' + HX(role) + '"></div>' +
     '<p class="ds-secblurb" style="color:' + col.mut + '">' + xmlEsc(sec.blurb) + '</p></div>';
-  return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()), body, role); }
+  return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()), body, role, dsSectionGlyph(deckSectionIcon(sec), role)); }
 function dsUC(t, eyebrow){ let L = "", R = "";
   if(t.long){ L += dsLabelH("What it is") + dsParaH(t.long); }
   { const acc = accelFor(t); if(acc){ L += dsLabelH("Solution Accelerator available") + dsParaH(acc.n + (acc.note ? " \u2014 " + acc.note : "")); } }
@@ -8961,18 +9209,18 @@ function dsUC(t, eyebrow){ let L = "", R = "";
     t.stories.slice(0, 4).map(s=> '<div class="ds-story" style="color:' + dsCols().brand +
       '"><span class="ds-sdot" style="background:' + dsCols().brand + '"></span>' + xmlEsc(s.t) + '</div>').join("") +
     '</div>'; }
-  return dsDetailH(eyebrow, t.n, t.s || t.desc || "", L, R); }
+  return dsDetailH(eyebrow, t.n, t.s || t.desc || "", L, R, deckTileGlyph(t)); }
 function dsGenie(t, eyebrow){ let L = "", R = "";
   if(t.long){ L += dsLabelH("What it explores") + dsParaH(t.long); }
   if(t.questions && t.questions.length){ L += dsLabelH("Top questions it answers") + dsBulletsH(t.questions.slice(0, 5)); }
   if(t.feeds && t.feeds.length){ R += dsLabelH("Data it reads") + dsChipsH(t.feeds, 0); }
   if(t.teams && t.teams.length){ R += dsLabelH("Teams it serves") + dsPillsH(t.teams, expBrand()); }
-  return dsDetailH(eyebrow, t.n, genieDomain(t) || T("Ask in natural language over governed data"), L, R); }
+  return dsDetailH(eyebrow, t.n, genieDomain(t) || T("Ask in natural language over governed data"), L, R, deckTileGlyph(t)); }
 function dsDash(t, eyebrow){ let L = "", R = "";
   if(t.long){ L += dsLabelH("What it tracks") + dsParaH(t.long); }
   if(t.kpis && t.kpis.length){ L += dsLabelH("KPIs it depends on") + dsChipsH(t.kpis, 0); }
   if(t.teams && t.teams.length){ R += dsLabelH("Teams that run on it") + dsPillsH(t.teams, expBrand()); }
-  return dsDetailH(eyebrow, t.n, t.s || T("Certified AI/BI on governed Metric Views"), L, R); }
+  return dsDetailH(eyebrow, t.n, t.s || T("Certified AI/BI on governed Metric Views"), L, R, deckTileGlyph(t)); }
 function dsGrid(sec, si){
   const cards = sec.tiles.slice(0, 4).map((t, i)=>{ const role = DECK_ROLES[(si + i) % DECK_ROLES.length];
     let inner = "";
@@ -8980,8 +9228,10 @@ function dsGrid(sec, si){
     if(t.long) inner += dsParaH(t.long);
     if(t.kpis && t.kpis.length) inner += dsLabelH("KPIs", HX(mixHex(role, expInk(), 0.30))) + dsChipsH(t.kpis, si + i);
     if(t.teams && t.teams.length) inner += dsLabelH("Teams", HX(mixHex(role, expInk(), 0.30))) + dsPillsH(t.teams, role);
+    const gl = deckTileGlyph(t);
     return '<div class="ds-card" style="background:' + HX(deckTint(role)) + '">' +
-      '<div class="ds-card-h" style="background:' + HX(role) + ';color:' + HX(onRoleInk(role)) + '">' + xmlEsc(t.n) + '</div>' +
+      '<div class="ds-card-h" style="background:' + HX(role) + ';color:' + HX(onRoleInk(role)) + '">' +
+      (gl ? '<span class="ds-card-hico">' + gl + '</span>' : "") + '<span>' + xmlEsc(t.n) + '</span></div>' +
       '<div class="ds-card-b">' + inner + '</div></div>';
   }).join("");
   return dsShellH(xmlEsc(String(sec.eyebrow).toUpperCase()),
@@ -8995,7 +9245,7 @@ function dsClosing(){ const col = dsCols(), links = closingLinks();
     '<div class="ds-links">' + links.map(r=> '<div class="ds-link" style="color:' + col.brand +
       '"><span class="ds-dot" style="background:' + col.brand + '"></span>' + xmlEsc(r.label) + '</div>').join("") +
     '</div></div>';
-  return dsShellH(xmlEsc(String(T("In Summary")).toUpperCase()), body); }
+  return dsShellH(xmlEsc(String(T("In Summary")).toUpperCase()), body, null, dsCoverGlyph()); }
 /* The board PAGE for a non-Latin language: the board is already a correct raster
    (Arabic/CJK/Hindi shape + RTL come from the re-scoped export CSS), but its
    title sits on the PDF page as base-14 vector text that cannot draw those
@@ -9023,7 +9273,12 @@ async function boardPdfBlob(){
      into an opaque RGB tile (this PDF has no image alpha), so it merges with the
      cover behind the localized text. Skipped for raster languages, whose cover
      is built as HTML (dsCover) and carries the glyph there instead. */
-  const coverGlyphImg = await coverGlyphRgbOnBg(1000, expBg());
+  const coverGlyphImg = await coverGlyphRgbOnBg(1000, expBg(), ooxmlRtl());
+  /* the official Databricks lockup for the cover, composited on the page bg into
+     an opaque RGB tile (this PDF has no image alpha). Latin covers are vector, so
+     it rides as a second XObject (/Im1) above the kicker; RAST covers carry it in
+     dsCover instead. */
+  const coverLogoImg = await dbxLogoRgbOnBg(140, expBg(), expInk());
   const PW = 842, PH = 595, M = 14;                        /* A4 landscape, points */
   const TB = 26;                          /* title strip, points, above the board */
   const NM = 54;                          /* margin on the narrative pages, points */
@@ -9044,8 +9299,9 @@ async function boardPdfBlob(){
     x2.toFixed(2) + " " + y2.toFixed(2) + "]/A<</Type/Action/S/URI/URI(" + pdfStr(url) + ")>>>>";
   /* eyebrow + running header at the top, credit + running header at the foot,
      and a brand bar down the left edge: the chrome every narrative page shares */
-  const chrome = (c, eyebrow)=>{
+  const chrome = (c, eyebrow, underlay)=>{
     c.push(rectF(bgc, 0, 0, PW, PH));
+    if(underlay) c.push(underlay);
     c.push(rectF(brand, 0, 0, 10, PH));
     c.push(txt("F1", 9, brand, NM, PH - 42, String(eyebrow).toUpperCase()));
     const rh = deckRunHeader();
@@ -9054,10 +9310,28 @@ async function boardPdfBlob(){
     c.push(txt("F2", 8, mut, NM, 26, cred));
     c.push(txt("F2", 8, mut, PW - NM - pdfTextW(rh, 8), 26, rh));
   };
-  const titleBlock = (c, cur, title, sub)=>{
-    c.push(txt("F1", 20, ink, NM, cur - 20, title)); cur -= 28;
-    if(sub){ c.push(txt("F2", 11, mut, NM, cur - 11, sub)); cur -= 18; }
+  const titleBlock = (c, cur, title, sub, leadW)=>{
+    const tx = NM + (leadW || 0);
+    c.push(txt("F1", 20, ink, tx, cur - 20, title)); cur -= 28;
+    if(sub){ c.push(txt("F2", 11, mut, tx, cur - 11, sub)); cur -= 18; }
     c.push(rectF(brand, NM, cur - 2, 86, 3)); return cur - 16;
+  };
+  /* Draw a pre-specced glyph tile: records the spec on the page's glyph list
+     (rasterised async after the page list is fixed, exactly like the raster
+     slides) and emits the /ImN paint at x,y sized w x h (PDF space, y up). */
+  const drawGlyph = (c, glyphs, spec, x, y, w, h)=>{
+    const nm = "/Im" + glyphs.length; glyphs.push(spec);
+    c.push("q " + w.toFixed(2) + " 0 0 " + h.toFixed(2) + " " + x.toFixed(2) + " " + y.toFixed(2) + " cm " + nm + " Do Q\n");
+  };
+  /* The detail-slide title badge: a brand-tinted square carrying the tile's own
+     mark/concept glyph, drawn to the reading side of the title; returns the lead
+     width the title then indents by, so the two never overlap. */
+  const detailBadge = (c, glyphs, t, titleTop)=>{
+    const bsz = 30, gsz = 22, tint = deckTint(expBrand());
+    c.push(rectF(rg(tint), NM, titleTop - 25, bsz, bsz));
+    drawGlyph(c, glyphs, { svg:titleIcon(t), px:128, bg:tint, color:expBrand() },
+      NM + (bsz - gsz) / 2, titleTop - 25 + (bsz - gsz) / 2, gsz, gsz);
+    return bsz + 12;
   };
   /* Shared card primitives (PDF space: y is a baseline, growing upward, so each
      helper decrements). Mirror the deck's chips/pills/bullets so the use-case,
@@ -9108,10 +9382,19 @@ async function boardPdfBlob(){
   const coverPage = ()=>{
     const c = [], annots = [], CM = 60, links = coverLinks();
     const glyphOn = coverGlyphImg && !RAST;
+    const logoOn = coverLogoImg && !RAST;
+    /* images[]: board=0, glyph=1 (if present), logo next. /Im0 is the glyph when
+       present, otherwise the logo; /Im1 is the logo when both ride the cover. */
+    const glyphIdx = 1, logoIdx = glyphOn ? 2 : 1;
     c.push(rectF(bgc, 0, 0, PW, PH));
     if(glyphOn){
       const dw = PW * 0.74, dx = PW * 0.67 - dw / 2, dy = PH * 0.50 - dw / 2;
       c.push("q " + dw.toFixed(2) + " 0 0 " + dw.toFixed(2) + " " + dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n");
+    }
+    if(logoOn){
+      const lw = 148, lh = lw / DBX_LOGO_AR, lx = 60, ly = PH - 96;
+      c.push("q " + lw.toFixed(2) + " 0 0 " + lh.toFixed(2) + " " + lx.toFixed(2) + " " +
+        ly.toFixed(2) + " cm /" + (glyphOn ? "Im1" : "Im0") + " Do Q\n");
     }
     c.push(rectF(brand, 0, 0, 14, PH));
     let y = PH - 150;
@@ -9136,7 +9419,9 @@ async function boardPdfBlob(){
     });
     const cred = creditText();
     c.push(txt("F2", 9, mut, PW - CM - pdfTextW(cred, 9), CM, cred));
-    return { content:c.join(""), annots, usesImage:glyphOn, imgIndex:1 };
+    return { content:c.join(""), annots, usesImage:glyphOn || logoOn,
+      imgIndex: glyphOn ? glyphIdx : (logoOn ? logoIdx : 0),
+      imgIndex2: (glyphOn && logoOn) ? logoIdx : null };
   };
 
   /* ---- page: the board as it stands ---- */
@@ -9205,8 +9490,11 @@ async function boardPdfBlob(){
   /* ---- page: a section break, coloured by its role, with a "SECTION N" tab
      whose N matches the Contents row ---- */
   const sectionBreakPage = (sec, roleHex, idx)=>{
-    const c = [];
+    const c = [], glyphs = [];
     c.push(rectF(bgc, 0, 0, PW, PH));
+    const rtlW = ooxmlRtl(), side = 520, wcx = (rtlW ? PW * 0.28 : PW * 0.72), wcy = PH * 0.5;
+    drawGlyph(c, glyphs, { svg:svg(deckSectionIcon(sec)), px:700, bg:expBg(), color:roleHex, faded:true, rtl:rtlW },
+      wcx - side / 2, wcy - side / 2, side, side);
     c.push(rectF(rg(roleHex), 0, 0, 10, PH));
     c.push(txt("F1", 9, rg(roleHex), NM, PH - 42, String(sec.eyebrow).toUpperCase()));
     const rh = deckRunHeader();
@@ -9222,13 +9510,14 @@ async function boardPdfBlob(){
     c.push(txt("F1", 40, rg(roleHex), NM, y, sec.title)); y -= 34;
     c.push(rectF(rg(roleHex), NM, y, 120, 4)); y -= 26;
     pdfWrap(sec.blurb, 12, PW - NM * 2 - 40).forEach(l=>{ c.push(txt("F2", 12, mut, NM, y - 12, l)); y -= 17; });
-    return { content:c.join(""), annots:[], usesImage:false };
+    return { content:c.join(""), annots:[], usesImage:glyphs.length > 0, glyphs:glyphs };
   };
 
   /* ---- page: one per use case, mirroring the drawer ---- */
   const ucPage = (t, i, total, eyebrow)=>{
-    const c = [], annots = []; chrome(c, eyebrow || "");
-    const cur = titleBlock(c, PH - 70, t.n, t.s || t.desc || "");
+    const c = [], annots = [], glyphs = []; chrome(c, eyebrow || "");
+    const leadW = detailBadge(c, glyphs, t, PH - 70);
+    const cur = titleBlock(c, PH - 70, t.n, t.s || t.desc || "", leadW);
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it is"); ly = paraP(c, NM, ly, colW, t.long, 14); }
@@ -9266,13 +9555,14 @@ async function boardPdfBlob(){
         ry = ly2 - 8;
       });
     }
-    return { content:c.join(""), annots, usesImage:false };
+    return { content:c.join(""), annots, usesImage:glyphs.length > 0, glyphs:glyphs };
   };
 
   /* ---- page: one per Genie Agent (explores, reads, teams, questions) ---- */
   const geniePage = (t, i, total, eyebrow)=>{
-    const c = []; chrome(c, eyebrow || "");
-    const cur = titleBlock(c, PH - 70, t.n, genieDomain(t) || T("Ask in natural language over governed data"));
+    const c = [], glyphs = []; chrome(c, eyebrow || "");
+    const leadW = detailBadge(c, glyphs, t, PH - 70);
+    const cur = titleBlock(c, PH - 70, t.n, genieDomain(t) || T("Ask in natural language over governed data"), leadW);
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it explores"); ly = paraP(c, NM, ly, colW, t.long, 14); }
@@ -9283,7 +9573,7 @@ async function boardPdfBlob(){
     let ry = cur;
     if(t.feeds && t.feeds.length){ ry = labelP(c, rx, ry, "Data it reads"); ry = chipsP(c, rx, ry, rW, t.feeds, 0); }
     if(t.teams && t.teams.length){ ry = labelP(c, rx, ry, "Teams it serves"); ry = pillsP(c, rx, ry, rW, t.teams, expBrand()); }
-    return { content:c.join(""), annots:[], usesImage:false };
+    return { content:c.join(""), annots:[], usesImage:glyphs.length > 0, glyphs:glyphs };
   };
 
   /* ---- page: one per AI/BI dashboard (what it tracks, its KPIs, its teams).
@@ -9291,20 +9581,21 @@ async function boardPdfBlob(){
      and its teams), so it gets its own page rather than a grid cell, which on a
      16:9 slide is too short to hold the KPI chips without spilling. ---- */
   const dashPage = (t, i, total, eyebrow)=>{
-    const c = []; chrome(c, eyebrow || "");
-    const cur = titleBlock(c, PH - 70, t.n, t.s || T("Certified AI/BI on governed Metric Views"));
+    const c = [], glyphs = []; chrome(c, eyebrow || "");
+    const leadW = detailBadge(c, glyphs, t, PH - 70);
+    const cur = titleBlock(c, PH - 70, t.n, t.s || T("Certified AI/BI on governed Metric Views"), leadW);
     const contentW = PW - NM * 2, colW = contentW * 0.55, rx = NM + contentW * 0.60, rW = contentW * 0.40;
     let ly = cur;
     if(t.long){ ly = labelP(c, NM, ly, "What it tracks"); ly = paraP(c, NM, ly, colW, t.long, 14); }
     if(t.kpis && t.kpis.length){ ly = labelP(c, NM, ly, "KPIs it depends on"); ly = chipsP(c, NM, ly, colW, t.kpis, 0); }
     let ry = cur;
     if(t.teams && t.teams.length){ ry = labelP(c, rx, ry, "Teams that run on it"); ry = pillsP(c, rx, ry, rW, t.teams, expBrand()); }
-    return { content:c.join(""), annots:[], usesImage:false };
+    return { content:c.join(""), annots:[], usesImage:glyphs.length > 0, glyphs:glyphs };
   };
 
   /* ---- page: a section as a 2x2 card grid (apps) ---- */
   const gridPage = (sec, roleBase)=>{
-    const c = []; chrome(c, sec.eyebrow);
+    const c = [], glyphs = []; chrome(c, sec.eyebrow);
     const cur = titleBlock(c, PH - 70, sec.title, sec.blurb);
     const tiles2 = sec.tiles.slice(0, 4), cols = 2, gx = 18, gy = 16;
     const cardW = (PW - NM * 2 - gx) / cols, gridTop = cur - 6;
@@ -9316,20 +9607,29 @@ async function boardPdfBlob(){
       const top = gridTop - Math.floor(i / cols) * (cardH + gy);
       c.push(rectF(rg(deckTint(role)), cx, top - cardH, cardW, cardH));
       c.push(rectF(rg(role), cx, top - hh, cardW, hh));
-      c.push(txt("F1", 12, rg(onRoleInk(role)), cx + 12, top - 17, t.n));
+      const gsz = 15;
+      drawGlyph(c, glyphs, { svg:titleIcon(t), px:96, bg:role, color:"#ffffff" }, cx + 12, top - hh + (hh - gsz) / 2, gsz, gsz);
+      c.push(txt("F1", 12, rg(onRoleInk(role)), cx + 12 + gsz + 8, top - 17, t.n));
       const ix = cx + 12, iw = cardW - 24; let iy = top - hh - 12;
       if(t.s){ c.push(txt("F1", 10, rg(mixHex(role, expInk(), 0.30)), ix, iy - 10, t.s)); iy -= 16; }
       if(t.long){ iy = paraP(c, ix, iy, iw, t.long, 11); }
       if(t.kpis && t.kpis.length){ iy = labelP(c, ix, iy, "KPIs", rg(mixHex(role, expInk(), 0.30))); iy = chipsP(c, ix, iy, iw, t.kpis, roleBase + i); }
       if(t.teams && t.teams.length){ iy = labelP(c, ix, iy, "Teams", rg(mixHex(role, expInk(), 0.30))); iy = pillsP(c, ix, iy, iw, t.teams, role); }
     });
-    return { content:c.join(""), annots:[], usesImage:false };
+    return { content:c.join(""), annots:[], usesImage:glyphs.length > 0, glyphs:glyphs };
   };
 
   /* ---- page: closing ---- */
   const closingPage = ()=>{
     const c = [], annots = [], links = closingLinks();
-    chrome(c, T("In Summary"));
+    /* the deck closes on the same industry silhouette the cover opened on, drawn
+       as an underlay (behind the text) referencing the cover's own glyph XObject
+       (images index 1, /Im0 here); Latin/vector languages only, RTL uses dsClosing */
+    const glyphOn = coverGlyphImg && !RAST;
+    let under = "";
+    if(glyphOn){ const dw = PW * 0.74, dx = PW * 0.67 - dw / 2, dy = PH * 0.50 - dw / 2;
+      under = "q " + dw.toFixed(2) + " 0 0 " + dw.toFixed(2) + " " + dx.toFixed(2) + " " + dy.toFixed(2) + " cm /Im0 Do Q\n"; }
+    chrome(c, T("In Summary"), under);
     let y = PH - 170;
     const kick = "DATABRICKS DATA INTELLIGENCE PLATFORM", kw = pdfTextW(kick, 10) + 26;
     c.push(rectF(brand, NM, y - 6, kw, 23)); c.push(txt("F1", 10, "1 1 1", NM + 13, y, kick)); y -= 44;
@@ -9345,7 +9645,7 @@ async function boardPdfBlob(){
       annots.push(linkAnnot(lx, y - 5, lx + lw + 2, y + 13, row.url));
       y -= 30;
     });
-    return { content:c.join(""), annots, usesImage:false };
+    return { content:c.join(""), annots, usesImage:glyphOn, imgIndex: glyphOn ? 1 : 0 };
   };
 
   /* the page order comes from the single source of truth, deckSections: cover,
@@ -9387,6 +9687,9 @@ async function boardPdfBlob(){
   /* the cover silhouette is image index 1 (referenced as /Im0 on the cover page),
      ahead of any rasterised-slide images, so the cover page's imgIndex stays 1 */
   if(coverGlyphImg && !RAST) images.push(coverGlyphImg);
+  /* the cover lockup follows the glyph (images index 2, or 1 if the glyph was
+     skipped), matching the glyphIdx/logoIdx the cover page computed */
+  if(coverLogoImg && !RAST) images.push(coverLogoImg);
   if(RAST){
     for(const p of pages){
       if(!p.raster) continue;
@@ -9395,6 +9698,25 @@ async function boardPdfBlob(){
       if(!senc) return null;
       p.imgIndex = images.length;
       images.push({ stream:senc, w:slide.w, h:slide.h });
+    }
+  }
+  /* Latin (vector) narrative pages carry their tile/section glyphs as XObjects,
+     rasterised here like the raster slides; each page records the image index
+     behind its /Im0../ImN in the order the page content paints them. A tile of
+     the page background stands in for any glyph that fails to rasterise, so a
+     /ImN reference is never left dangling. */
+  let glyphMiss = null;
+  for(const p of pages){
+    if(p.raster || !p.glyphs || !p.glyphs.length) continue;
+    p.imgIndices = [];
+    for(const g of p.glyphs){
+      let tile = await glyphRgbOnBg(g.svg, g.px || 128, g.bg, g.color, g.faded, g.rtl);
+      if(!tile){
+        if(!glyphMiss){ const senc = await flate(new Uint8Array([238, 240, 242])); if(!senc) return null; glyphMiss = { stream:senc, w:1, h:1 }; }
+        tile = glyphMiss;
+      }
+      p.imgIndices.push(images.length);
+      images.push(tile);
     }
   }
 
@@ -9416,18 +9738,23 @@ async function boardPdfBlob(){
   images.forEach(im=> objs.push({ dict:"<</Type/XObject/Subtype/Image/Width " + im.w + "/Height " + im.h +
     "/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/FlateDecode/Length " + im.stream.length + ">>", stream:im.stream }));
   pages.forEach((p, i)=>{
-    let content, usesImage = false, imgObjNum = null, annots = "";
+    let content, imgIdxList = [], annots = "";
     if(p.raster){
-      imgObjNum = fixed + 1 + p.imgIndex; usesImage = true;
+      imgIdxList = [p.imgIndex];
       content = "q " + PW + " 0 0 " + PH + " 0 0 cm /Im0 Do Q\n";
     } else {
       content = p.content;
-      if(p.usesImage){ usesImage = true; imgObjNum = fixed + 1 + (p.imgIndex || 0); }
+      /* a page paints /Im0../ImN in the order it recorded them: several glyph
+         tiles (imgIndices), or the cover's glyph /Im0 + lockup /Im1. */
+      if(p.imgIndices && p.imgIndices.length) imgIdxList = p.imgIndices;
+      else if(p.usesImage){ imgIdxList = [p.imgIndex || 0]; if(p.imgIndex2 != null) imgIdxList.push(p.imgIndex2); }
       if(p.annots && p.annots.length) annots = "/Annots[" + p.annots.join("") + "]";
     }
+    const usesImage = imgIdxList.length > 0;
     const cs = enc.encode(content);
+    const xobj = imgIdxList.map((idx, k)=> "/Im" + k + " " + (fixed + 1 + idx) + " 0 R").join("");
     const res = usesImage
-      ? "/Resources<</XObject<</Im0 " + imgObjNum + " 0 R>>/Font<</F1 4 0 R/F2 5 0 R>>>>"
+      ? "/Resources<</XObject<<" + xobj + ">>/Font<</F1 4 0 R/F2 5 0 R>>>>"
       : "/Resources<</Font<</F1 4 0 R/F2 5 0 R>>>>";
     objs.push(enc.encode("<</Type/Page/Parent 2 0 R/MediaBox[0 0 " + PW + " " + PH + "]" +
       res + "/Contents " + (firstPage + i * 2 + 1) + " 0 R" + annots + ">>"));
@@ -10012,7 +10339,16 @@ async function seedFromUrl(){
 /* Resources power the reference board, so they load before the first build();
    the industry overlay (if any) is applied after, fetching its module on the
    way. Wrapped in an async IIFE because the loads are awaited. */
+/* Paint the official Databricks lockup into the header. Injected (not inlined in
+   the static markup) so there is one source of the artwork — IndustryIcons — and
+   a saved offline copy captures the rendered logo after boot. */
+function paintBrandLogo(){
+  const el = document.getElementById("brand-logo");
+  if(el && typeof IndustryIcons !== "undefined" && IndustryIcons.dbxLogoSvg)
+    el.innerHTML = IndustryIcons.dbxLogoSvg({});
+}
 (async function boot(){
+  paintBrandLogo();
   await loadResources();
   if(!(await seedFromUrl())){
     /* A saved industry id must not pin stale rails from an older template: refresh
