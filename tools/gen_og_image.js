@@ -19,7 +19,7 @@ const ICONS = require('../app/industry_icons.js');
 const ASSETS = path.join(__dirname, '..', 'app', 'assets');
 const OG_DIR = path.join(ASSETS, 'og');
 const OUT = path.join(ASSETS, 'og-cover.png');
-const URL = 'amralieg.github.io/interactive-databricks-enterprise-architecture';
+const CREDIT = 'Databricks Industry Solutions';
 const SUB = 'Databricks Data Intelligence Platform';
 // The official Databricks lockup (brick mark + wordmark), white wordmark for the
 // dark card. Same artwork the app header and deck covers use (IndustryIcons).
@@ -64,7 +64,7 @@ function head(fs_){ return `<meta charset="utf-8"><style>
   .kick{margin:0;font-size:22px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#FF5F46}
   h1{margin:76px 0 76px;font-size:${fs_}px;line-height:1.02;font-weight:850;letter-spacing:-.025em;color:#fff;max-width:720px}
   p.sub{margin:0;font-size:31px;line-height:1.36;color:#C6D6DD;max-width:640px;font-weight:500}
-  .url{margin:0;font-size:21px;font-weight:600;color:#8AA4AD}
+  .foot{margin:0;font-size:21px;font-weight:600;color:#8AA4AD}
 </style>`; }
 
 function watermark(glyph){
@@ -83,7 +83,7 @@ function card(label, glyph){
       <h1>${esc(label)}</h1>
       <p class="sub">${SUB}</p>
     </div>
-    <div class="url">${URL}</div>
+    <div class="foot">${CREDIT}</div>
   </div></body></html>`;
 }
 
@@ -100,7 +100,7 @@ function refCard(){
       <h1>${esc(label)}</h1>
       <p class="sub">${SUB}</p>
     </div>
-    <div class="url">${URL}</div>
+    <div class="foot">${CREDIT}</div>
   </div></body></html>`;
 }
 
