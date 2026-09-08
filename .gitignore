@@ -17,3 +17,5 @@ app/translations/overrides/
 
 # scratch probe diagnostics (never ship to the public repo)
 tools/*_probe.js
+
+.DS_Store
