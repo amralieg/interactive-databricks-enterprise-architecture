@@ -58,7 +58,6 @@ const GATE = {
       industry: 'automotive',
       cloudTokens: [],
       i18n: [
-        'Branded', 'Categorized',
         'Show products by commercial brand name, or rooted back to their generic category',
         'Pick an industry to switch between brand and category names',
         'Pick an industry to enable the branded view'
@@ -245,7 +244,7 @@ async function phaseG3Dom(browser) {
         btnTitles: btns.map(b => b.title),
         expSegTitle: T('Pick an industry to switch between brand and category names'),
         expBtnTitle: T('Pick an industry to enable the branded view'),
-        expBranded: T('Branded'), expCategorized: T('Categorized')
+        expBranded: 'Branded', expCategorized: 'Categorized'
       };
     });
     const problems = [];
@@ -253,9 +252,9 @@ async function phaseG3Dom(browser) {
     if (r.segTitle !== r.expSegTitle) problems.push(`seg.title="${r.segTitle}" != T() "${r.expSegTitle}"`);
     if (!r.btnTitles.every(t => t === r.expBtnTitle)) problems.push(`button title not localised (${JSON.stringify(r.btnTitles)})`);
     if (!(r.btnTexts.includes(r.expBranded) && r.btnTexts.includes(r.expCategorized)))
-      problems.push(`button labels not localised (${JSON.stringify(r.btnTexts)})`);
+      problems.push(`toggle labels must stay English Branded/Categorized (${JSON.stringify(r.btnTexts)})`);
     if (problems.length) fail(`${code}: ${problems.join('; ')}`);
-    else pass(`${code}: toggle labels + tooltips localised in DOM (${r.btnTexts.join('/')})`);
+    else pass(`${code}: toggle labels English + tooltips localised in DOM (${r.btnTexts.join('/')})`);
     await p.close();
   }
 }

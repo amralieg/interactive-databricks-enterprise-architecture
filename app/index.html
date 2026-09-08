@@ -4232,6 +4232,9 @@ async function applyLang(code, persist){
   if(typeof build === "function") build();
   if(typeof fitBoard === "function") fitBoard();
   if(typeof translateContent === "function") translateContent();
+  /* the industry picker label localises with the language too, so refresh it
+     after the dict swap or it keeps the boot-time (English) name */
+  if(typeof syncIndustryBtn === "function") syncIndustryBtn();
   if(typeof updatePageTitle === "function") updatePageTitle();
 }
 /* Static board content that lives in the HTML (not rebuilt by build()): the
@@ -5840,7 +5843,7 @@ function paintDisplaySeg(){
   seg.innerHTML = "";
   DISPLAY_MODES.forEach(([k,label])=>{
     const b = document.createElement("button");
-    b.textContent = T(label);
+    b.textContent = label;
     b.className = (displayMode === k) ? "on" : "";
     b.setAttribute("aria-disabled", String(!live));
     if(!live) b.title = T("Pick an industry to enable the branded view");
@@ -6242,7 +6245,7 @@ function syncIndustryBtn(){
   /* the picker leads the toolbar, so when nothing is chosen it names itself and
      how many boards there are rather than showing a bare "Industry" */
   document.getElementById("ind-lbl").textContent =
-    on ? industryLabel(ARCH.industry) : "Pick an Industry (63 available)";
+    on ? T(industryLabel(ARCH.industry)) : "Pick an Industry (63 available)";
   /* the button glyph mirrors the SELECTED board (generic layers mark before a
      pick), and each tab carries its own board's glyph */
   const indIco = document.getElementById("ind-ico");
