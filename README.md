@@ -69,6 +69,54 @@ IDEA is the same architecture as a live document:
 
 ---
 
+## Why it is useful
+
+### 1. See the whole of Databricks, and where it fits your architecture
+
+Most people meet Databricks one feature at a time: a notebook here, a job there,
+Unity Catalog in a governance review. This board puts the entire Data
+Intelligence Platform in one frame: the sources on the left; ingestion, the
+medallion layers, unified governance and the agentic layers through the middle;
+and the consumers, the teams and the cloud services around the outside, with the
+data flows drawn as live arrows so you can see how one part feeds the next. Every
+box is a real product, not a label, so clicking one tells you what it is, the
+thing the name does not give away, what it actually does, and the boxes it
+connects to. In one screen a newcomer gets the shape of the whole platform, and
+an architect gets the connections between its parts.
+
+It is not a generic diagram either, and that is the point. The cloud switch
+redraws the storage, compute, identity and ingestion services as Azure, AWS or
+GCP and re-points every documentation link at that cloud, so you are looking at
+the platform on the cloud you actually run. The industry switch respecialises the
+sources, teams, use cases and consumers for your sector and points the medallion
+layers at that industry's own data model. And when you need it tied to one
+specific estate, edit mode, the YAML export and import, and the AI assistant let
+you retarget the board to a particular customer or use case and export it, as a
+PDF, a PowerPoint or a standalone page, that shows exactly how Databricks fits
+into that architecture. It is the difference between a picture of the platform
+and a picture of *your* platform.
+
+### 2. Learn the whole platform, not just present it
+
+Because every box carries its own facts and links, the board doubles as a way to
+learn Databricks rather than only to show it. Open any product and the **Learn
+more** section takes you to the cloud-specific documentation for the cloud you are
+on (the Azure Databricks docs on Azure, `docs.databricks.com` on AWS and GCP),
+the product page, and a blog or deep dive, so each box is a launch point into the
+official material rather than a dead end. The release-stage filter teaches what is
+generally available today against what is still in preview or beta. The use cases
+spell out the problem each one solves, who benefits, how it is built and which
+components it touches, with links to real customer stories, so you see how the
+features are used and not only what they are named. The Genie Agents and AI/BI
+dashboards show the question-and-answer layer that sits on top. There is a
+**Databricks YouTube channel** section with curated videos verified against the
+official channel for when you would rather watch than read, and the whole board
+translates into sixteen languages, so a team can learn in its own. A new joiner, a
+partner or a customer can explore the platform at their own pace, from the first
+box to the deepest link, without a slide deck in between.
+
+---
+
 ## What it shows
 
 Sources on the left, the platform through the middle, consumers on the right,
@@ -370,7 +418,7 @@ rather than a preference.
 ## AI Architecture Assistant (`app/ai/`)
 
 A chat-driven sub-app that lets you describe a customer or use case and receive a new,
-editable, persisted tab containing a tailored architecture — without touching the
+editable, persisted tab containing a tailored architecture, without touching the
 reference board. The reference board stays live and unmodified; the generated tab is its
 own independent copy.
 
@@ -380,22 +428,22 @@ relevant to that use case, and opens it with edit mode pre-enabled. The tab pers
 between reloads. The reference board is never switched or mutated by industry detection.
 
 **Two-phase, industry-grounded selection.** Phase 1 grounds the model on the live
-generic board catalog and identifies the best-fit industry. Phase 2 — only when a known
-built industry matches — loads that industry's YAML template and re-runs component
+generic board catalog and identifies the best-fit industry. Phase 2, only when a known
+built industry matches, loads that industry's YAML template and re-runs component
 selection against that industry's own catalog, so industry-specific atoms (for example,
 banking's core-banking systems or healthcare's EHR vendors) are included in the output.
 Generic descriptions skip Phase 2.
 
 **Industry type-ahead chip.** As you type in the chat input, matching industries surface
-as chips. Picking one switches the Reference board to that industry immediately — it does
-not generate a tab; it is a separate shortcut to the board's existing industry switch.
+as chips. Picking one switches the Reference board to that industry immediately; it does
+not generate a tab, it is a separate shortcut to the board's existing industry switch.
 
 **Editing a generated architecture.** Every generated tab opens with edit mode on (the
 `✎ Editing: on` toggle in the chat header), so it is a working draft you can shape by
-hand, not a fixed output. Click any component on the board to edit it in the drawer —
+hand, not a fixed output. Click any component on the board to edit it in the drawer:
 change its **title**, its **caption / description line**, the **detail text** that
 explains what it does in this architecture, and its **capabilities** (comma-separated
-tags) — or **delete** it outright. Double-click a tab's name to **rename** it. Edits are
+tags), or **delete** it outright. Double-click a tab's name to **rename** it. Edits are
 scoped to that tab and persist between reloads; the toggle is per-tab, so switching to the
 Reference board turns editing off and the reference stays read-only. The AI's per-component
 usage notes ride along too: hover any component on a generated tab to see why the assistant
@@ -412,7 +460,7 @@ serves `index.html`, exposes `/health` and `POST /generate {system,user,model}->
 and mounts the parent `app/` subdirectories as static paths so the `<base href="../">`
 fetches resolve. `/generate` calls a Databricks-hosted Claude Foundation Model serving
 endpoint (default `databricks-claude-sonnet-5`, override via `SERVING_ENDPOINT` env)
-using the injected WorkspaceClient OAuth identity — no API key is required or stored.
+using the injected WorkspaceClient OAuth identity, and no API key is required or stored.
 
 ---
 
