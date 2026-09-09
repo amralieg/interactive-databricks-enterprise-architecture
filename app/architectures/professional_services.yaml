@@ -1,0 +1,943 @@
+name: Professional Services
+description: 'Consulting, agencies, accounting and audit, and engineering services: engagement delivery, consultant utilization, project margin, resourcing, pipeline and talent.'
+sources:
+  - name: PSA & Delivery
+    icon: erp
+    tiles:
+      - name: Kantata PSA
+        icon: erp
+        summary: 'Professional services automation: projects, resource plans, time and margin. The system of record for engagement delivery and billing.'
+        citations:
+          - kantata
+        category: Professional Services Automation (PSA)
+        what_it_is: 'System of record for engagement delivery and billing: projects, resource plans, time and margin.'
+        who_uses_it: Delivery leads, resource managers and the PMO.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of time and staffing events/sec
+            interval: Continuous CDC
+      - name: NetSuite OpenAir
+        icon: sheet
+        summary: PSA for time capture, project accounting, utilization and invoicing across the engagement lifecycle.
+        citations:
+          - openair
+        category: Professional Services Automation (PSA)
+        what_it_is: Handles time capture, project accounting, utilization and invoicing across the engagement lifecycle.
+        who_uses_it: Delivery, project accounting and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Certinia PSA
+        icon: product
+        summary: Salesforce-native services automation linking opportunity, staffing, delivery and revenue on one record.
+        citations:
+          - certinia
+        category: Professional Services Automation (PSA)
+        what_it_is: Salesforce-native services automation linking opportunity, staffing, delivery and revenue on one record.
+        who_uses_it: Practice leaders, delivery and revenue operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of engagement events/sec
+            interval: Continuous CDC
+  - name: CRM & Pipeline
+    icon: crm
+    tiles:
+      - name: Salesforce Sales Cloud
+        icon: crm
+        summary: Accounts, opportunities and the sales pipeline, the source of proposals in flight and closed-won engagements.
+        citations:
+          - sfdc
+        category: CRM / Sales Pipeline
+        what_it_is: Holds accounts, opportunities and the sales pipeline, the source of proposals in flight and closed-won engagements.
+        who_uses_it: Practice leaders, sector leads and business development.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of opportunity events/sec
+            interval: Continuous CDC
+      - name: Dynamics 365 Sales
+        icon: crm
+        summary: Microsoft CRM pipeline, quotes and win/loss reasons feeding win-rate and bid analytics.
+        citations:
+          - dynamics
+        category: CRM / Sales Pipeline
+        what_it_is: Microsoft CRM holding pipeline, quotes and win/loss reasons that feed win-rate and bid analytics.
+        who_uses_it: Business development, sector leads and sales operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / nightly sync
+      - name: HubSpot CRM
+        icon: crm
+        summary: Agency and boutique pipeline, deal stages and proposal tracking for the front of the funnel.
+        citations:
+          - hubspot
+        category: CRM / Sales Pipeline
+        what_it_is: Agency and boutique CRM holding pipeline, deal stages and proposal tracking for the front of the funnel.
+        who_uses_it: Business development and marketing teams at agencies and boutiques.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+  - name: Finance & ERP
+    icon: erp
+    tiles:
+      - name: Workday Financials
+        icon: erp
+        summary: General ledger, project financials and revenue recognition for services firms.
+        citations:
+          - workday-fins
+        category: ERP / Financials Suite
+        what_it_is: Runs the general ledger, project financials and revenue recognition as the finance system of record.
+        who_uses_it: CFO, controllership and revenue accounting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + monthly close
+      - name: NetSuite ERP
+        icon: erp
+        summary: Services accounting, billing, revenue recognition and subcontractor payables.
+        citations:
+          - netsuite
+        category: ERP / Financials Suite
+        what_it_is: Handles services accounting, billing, revenue recognition and subcontractor payables.
+        who_uses_it: Controllership, billing/AR and accounts payable teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Nightly batch + close cycles
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Finance and project system core for large engineering and consulting firms.
+        citations:
+          - sap
+        category: ERP / Financials Suite
+        what_it_is: Finance and project-system core for large engineering and consulting firms.
+        who_uses_it: Finance, project systems and controllership teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + monthly close
+  - name: Time & Billing
+    icon: sheet
+    tiles:
+      - name: Deltek Vantagepoint
+        icon: erp
+        summary: 'Project ERP for project-based firms: engagements, cost, time and billing for A&E and consulting.'
+        citations:
+          - deltek
+        category: Project ERP / Time & Billing
+        what_it_is: Project ERP covering engagements, cost, time and billing for architecture, engineering and consulting firms.
+        who_uses_it: Project accounting, delivery and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Replicon Time
+        icon: sheet
+        summary: Time capture and billing across billable and non-billable activity, the raw signal for utilization.
+        citations:
+          - replicon
+        category: Time Tracking & Billing System
+        what_it_is: Captures time and billing across billable and non-billable activity, the raw signal behind utilization.
+        who_uses_it: Consultants, delivery leads and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of timecard events/sec
+            interval: Continuous
+      - name: BigTime
+        icon: sheet
+        summary: Time, expense and billing for accounting and consulting practices, feeding WIP and invoicing.
+        citations:
+          - bigtime
+        category: Time Tracking & Billing System
+        what_it_is: Handles time, expense and billing for accounting and consulting practices, feeding WIP and invoicing.
+        who_uses_it: Consultants, project accounting and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.3-2 GB/day
+            interval: Nightly batch
+  - name: Talent & Knowledge
+    icon: people
+    tiles:
+      - name: Workday HCM
+        icon: people
+        summary: Headcount, skills, compensation and attrition, the source of the talent and bench picture.
+        citations:
+          - workday-hcm
+        category: HCM / Talent Suite
+        what_it_is: Holds headcount, skills, compensation and attrition, the source of the talent and bench picture.
+        who_uses_it: Chief People Officer, talent acquisition and L&D teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + payroll cycles
+      - name: Coupa Procurement
+        icon: docs
+        summary: Subcontractor and supplier spend, purchase orders and category commitments.
+        citations:
+          - coupa
+        category: Procurement / Spend Management
+        what_it_is: Tracks subcontractor and supplier spend, purchase orders and category commitments across the firm.
+        who_uses_it: Procurement, finance and category management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch
+      - name: iManage Knowledge
+        icon: docs
+        summary: Documents, deliverables and matter/engagement knowledge, the corpus a GenAI assistant is grounded on.
+        citations:
+          - imanage
+        category: Knowledge / Document Management
+        what_it_is: Holds documents, deliverables and engagement knowledge, the corpus a GenAI assistant is grounded on.
+        who_uses_it: Consultants, knowledge management and the GenAI assistant.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - semi-structured
+            volume: 5-30 GB/day docs + metadata
+            interval: Nightly batch + hourly deltas
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Revenue & GL Mart
+        icon: fed
+        summary: Audited revenue recognition and general-ledger marts left in the finance warehouse and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Finance Data Warehouse / Marts
+        what_it_is: Audited revenue-recognition and general-ledger marts kept in the finance warehouse and queried in place through federation.
+        who_uses_it: CFO, controllership and revenue accounting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale audited marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: SAP Concur Expense
+        icon: api
+        summary: Travel and expense line items joined to engagements for reimbursable and leakage analysis.
+        citations:
+          - concur
+        category: Travel & Expense Management
+        what_it_is: Carries travel and expense line items joined to engagements for reimbursable and margin-leakage analysis.
+        who_uses_it: Finance, delivery leads and expense audit teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Daily feed
+      - name: DocuSign CLM
+        icon: api
+        summary: Engagement contracts, SOWs and change orders parsed for rates, caps and milestones.
+        citations:
+          - docusign
+        category: Contract Lifecycle Management (CLM)
+        what_it_is: Holds engagement contracts, SOWs and change orders parsed for rates, caps and milestones.
+        who_uses_it: Contract management, finance and delivery leads.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.3-2 GB/day contracts + metadata
+            interval: Daily + on-signature
+      - name: Jira & Confluence
+        icon: api
+        summary: Delivery tasks, sprints and engagement knowledge from technical and product engagements.
+        citations:
+          - atlassian
+        category: Delivery / Project Collaboration
+        what_it_is: Carries delivery tasks, sprints and engagement knowledge from technical and product engagements.
+        who_uses_it: Delivery engineers, PMO and knowledge management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of issue events/sec
+            interval: Continuous (webhook)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Firm Leadership
+        mark: Genie One
+        summary: The Managing Partner and CEO on growth, utilization and firm profitability; the COO on delivery health and risk across the portfolio of engagements.
+        uses:
+          - - Genie One
+            - Ask what utilization and margin ran last month across practices without booking analyst time.
+          - - AI/BI
+            - Utilization, margin, pipeline and win-rate on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary, so "utilization" and "margin" mean one thing firm-wide.
+        sub:
+          - name: Managing Partner / CEO
+            cares: growth, firm profitability and the trade between hiring and utilization.
+          - name: Chief Operating Officer
+            cares: delivery health, engagement risk and quality across the portfolio.
+          - name: Board & Partners
+            cares: partner economics, distributions and the firm-wide scorecard.
+        ucs:
+          - Engagement Margin
+          - Consultant Utilization
+          - Pipeline & Win-Rate
+          - Knowledge & GenAI
+      - name: Practice Leaders
+        mark: AI/BI
+        summary: 'Practice and sector leads owning a book of business: the pipeline they must win, the engagements they deliver and the margin those engagements return.'
+        uses:
+          - - AI/BI
+            - Practice margin, backlog and win-rate on governed data the leadership team also reads.
+          - - Genie One
+            - Ask which engagements are slipping on margin without a finance pull.
+          - - Model Serving
+            - Win probability scored on the pipeline behind proposal decisions.
+        sub:
+          - name: Practice leads
+            cares: 'the practice P&L: pipeline, utilization and margin by engagement.'
+          - name: Sector leads
+            cares: the book of business and the win rate in their industry vertical.
+          - name: Engagement partners
+            cares: delivery quality, scope and profitability on live engagements.
+        ucs:
+          - Engagement Margin
+          - Pipeline & Win-Rate
+          - Proposal Analytics
+          - Consultant Utilization
+      - name: CFO & Finance
+        mark: AI/BI
+        summary: The CFO and finance team on revenue recognition, days sales outstanding, subcontractor spend and the month-end close across a book of concurrent engagements.
+        uses:
+          - - AI/BI
+            - Revenue, DSO, WIP and margin variance to plan on certified numbers.
+          - - Lakeflow
+            - Time, rate and contract feeds reconciled to the general ledger continuously.
+          - - Unity Catalog
+            - SOX-ready lineage and access across the finance and delivery estate.
+        sub:
+          - name: CFO
+            cares: revenue recognition, cash and firm margin under pressure.
+          - name: Controller
+            cares: the close, WIP and unbilled revenue across engagements.
+          - name: Billing & AR
+            cares: invoicing accuracy, DSO and dispute reduction.
+        ucs:
+          - Revenue Recognition
+          - Subcontractor Spend
+          - Engagement Margin
+      - name: Talent & HR
+        mark: Model Serving
+        summary: Talent and HR leadership on attrition, skills coverage and the match between the people the firm has and the demand it has sold.
+        uses:
+          - - Model Serving
+            - Attrition risk and skills-to-demand gaps scored per consultant.
+          - - AI/BI
+            - Headcount, attrition and skills coverage on governed HR data.
+          - - AI Search
+            - Skills and experience matched semantically to open engagement roles.
+        sub:
+          - name: Chief People Officer
+            cares: attrition, engagement and the talent brand.
+          - name: Talent acquisition
+            cares: hiring against the demand the firm has sold.
+          - name: L&D / capability
+            cares: reskilling to close skills-to-demand gaps.
+        ucs:
+          - Talent Attrition
+          - Skills-to-Demand Match
+          - Staffing & Bench
+      - name: Delivery & PMO
+        mark: Lakehouse//RT
+        summary: Resource managers and the PMO on staffing the bench against demand, protecting utilization and keeping engagements on scope and on margin.
+        uses:
+          - - Lakehouse//RT
+            - Live utilization, bench and staffing state at the cadence resourcing moves at.
+          - - Model Serving
+            - Best-fit staffing recommendations scored against skills and availability.
+          - - Apps
+            - Resourcing and utilization screens hosted next to governed delivery data.
+        sub:
+          - name: Resource managers
+            cares: matching the bench to demand week by week.
+          - name: PMO
+            cares: engagement health, scope and delivery risk across the portfolio.
+          - name: Delivery leads
+            cares: utilization and burn on their own engagements.
+        ucs:
+          - Consultant Utilization
+          - Staffing & Bench
+          - Knowledge & GenAI
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Delivery Engineers
+        mark: Lakeflow
+        summary: Land the PSA, CRM, finance and HR feeds from Kantata, Salesforce, Workday and NetSuite; own the Bronze to Silver path and the pager when a utilization table stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for the PSA, CRM, ERP and HR sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on time, rate and contract feeds.
+          - - Lakewatch
+            - Freshness on the utilization and margin tables leadership reads every Monday.
+      - name: Insights & Analytics
+        mark: MLflow
+        summary: Build the utilization, margin, attrition and win-rate models on top of governed engagement data, and prove they still hold as the book of business shifts.
+        uses:
+          - - Feature Store
+            - Consultant, engagement and client features read identically in training and serving.
+          - - MLflow
+            - Every attrition and win-rate experiment tracked for audit and reproduction.
+          - - Model Serving
+            - Staffing, attrition and win models scored in the resourcing and pipeline path.
+      - name: Knowledge & GenAI
+        mark: Agent Bricks
+        summary: Ground a firm-wide assistant on deliverables, methods and prior work in iManage, SharePoint and Confluence, governed so an answer never crosses an engagement wall it should not.
+        uses:
+          - - Agent Bricks
+            - Retrieval agents over deliverables and methods with governed tools.
+          - - AI Search
+            - Semantic search across prior engagements and knowledge assets.
+          - - Unity Catalog
+            - Fine-grained access so client and engagement walls hold inside the assistant.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Partner and practice dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers on utilization and margin in the channel the firm already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks, VS Code and JetBrains against governed engagement and finance data.
+  - name: Delivery & Clients
+    icon: partner
+    tiles:
+      - name: Client Delta Sharing
+        icon: share
+        summary: Live engagement dashboards and data products shared to clients over Delta Sharing rather than emailed spreadsheets.
+      - name: Client Portals
+        icon: globe
+        summary: Engagement status, deliverables and spend surfaced to clients through the firm's own portal.
+      - name: Subcontractor Feeds
+        icon: partner
+        summary: Milestones and spend exchanged with subcontractors and alliance partners.
+        citations:
+          - coupa
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: PSA Writeback
+        icon: db
+        summary: Staffing decisions and revised forecasts written back into the PSA so the answer reaches the delivery path.
+        citations:
+          - kantata
+      - name: Staffing Assignments
+        icon: people
+        summary: Best-fit staffing and bench moves pushed to resource managers and consultant calendars.
+      - name: Billing & Invoices
+        icon: erp
+        summary: Approved WIP and revenue schedules written to the finance system for invoicing.
+        citations:
+          - netsuite
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Audit & SOX Reporting
+        icon: gavel
+        summary: Revenue recognition and controls evidence produced from the same governed tables the firm runs on, audit-ready under Unity Catalog.
+      - name: ESG & DE&I Reporting
+        icon: share
+        summary: Diversity, pay-equity and sustainability disclosures filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted utilization and margin products discoverable in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Clients and alliance partners reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Utilization Cockpit
+        icon: gauge
+        short: Billable & bench
+        summary: 'The screen resource managers run the week from: billable utilization, bench and burn by consultant and practice, with the roles that will sit idle flagged before the week starts, on Databricks Apps over Lakebase.'
+      - name: Margin Radar
+        icon: chart
+        short: Engagement margin
+        summary: Realised margin by engagement and practice against the rate card and cost rate, flagging the engagements slipping on scope and burn before the write-off is booked.
+      - name: Staffing & Bench Board
+        icon: people
+        short: Resource matching
+        summary: Open demand matched to available skills and bench, with best-fit staffing recommendations a resource manager confirms rather than assembles by hand.
+      - name: Knowledge Assistant
+        icon: genie
+        short: GenAI on deliverables
+        summary: A governed assistant grounded on prior deliverables, methods and engagement knowledge, answering within the client and engagement walls it is allowed to cross.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Utilization & Bench
+        icon: aibi
+        summary: Billable utilization, bench, burn and engagement health across practices on certified views.
+        kpis:
+          - Billable utilization
+          - Bench days
+          - Engagement burn
+          - Realization
+          - Delivery risk
+        teams:
+          - Delivery & PMO
+          - Firm Leadership
+          - Resource managers
+      - name: Engagement Margin
+        icon: aibi
+        summary: Realised margin, rate-versus-cost and leakage by engagement and practice.
+        kpis:
+          - Engagement margin
+          - Rate realisation
+          - Cost rate variance
+          - Margin leakage
+          - Write-offs
+        teams:
+          - Practice Leaders
+          - CFO & Finance
+          - Engagement partners
+      - name: Pipeline & Growth
+        icon: aibi
+        summary: Pipeline health, weighted forecast, win-rate and backlog across the book of business.
+        kpis:
+          - Weighted pipeline
+          - Win rate
+          - Backlog
+          - Proposal conversion
+          - Book-to-bill
+        teams:
+          - Practice Leaders
+          - Firm Leadership
+          - Sector leads
+      - name: Talent & Skills
+        icon: aibi
+        summary: Attrition risk, skills coverage, staffing fit and hiring against sold demand.
+        kpis:
+          - Attrition rate
+          - Skills-to-demand gap
+          - Staffing fill rate
+          - Time-to-staff
+          - Hiring vs demand
+        teams:
+          - Talent & HR
+          - Delivery & PMO
+          - L&D / capability
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Utilization & Delivery Agent
+        icon: genie
+        summary: Ask about billable utilization, bench and engagement health across practices in plain language.
+        feeds:
+          - Kantata PSA
+          - Replicon Time
+          - NetSuite OpenAir
+          - Utilization, margin, win-rate
+        teams:
+          - Delivery & PMO
+          - Firm Leadership
+          - Resource managers
+        questions:
+          - What was billable utilization last month by practice and consultant?
+          - Who is on the bench this week and for how long?
+          - Which engagements are burning ahead of plan?
+          - Where is idle capacity likely next week?
+          - How does utilization compare to target by sector?
+      - name: Engagement Margin Agent
+        icon: genie
+        summary: Explore realised margin, rate-versus-cost and leakage across engagements and practices.
+        feeds:
+          - Workday Financials
+          - DocuSign CLM
+          - Revenue & GL Mart
+          - Utilization, margin, win-rate
+        teams:
+          - Practice Leaders
+          - CFO & Finance
+          - Engagement partners
+        questions:
+          - Which engagements are slipping on margin this quarter?
+          - What is realised margin by practice against the rate card?
+          - Where is scope creep eroding margin the most?
+          - How does margin compare across fixed-fee and T&M engagements?
+          - Which clients consistently deliver below target margin?
+      - name: Pipeline & Win-Rate Agent
+        icon: genie
+        summary: Answer questions on pipeline health, win probability and proposal outcomes across the book.
+        feeds:
+          - Salesforce Sales Cloud
+          - Dynamics 365 Sales
+          - HubSpot CRM
+          - Utilization, margin, win-rate
+        teams:
+          - Practice Leaders
+          - Firm Leadership
+          - Sector leads
+        questions:
+          - What is our weighted pipeline by practice and sector?
+          - Which open opportunities have the highest win probability?
+          - What is our win rate by sector this year versus last?
+          - Which proposals stalled and at what stage?
+          - Which deals should partners prioritise this week?
+      - name: Talent & Skills Agent
+        icon: genie
+        summary: Ask about attrition risk, skills coverage and staffing fit across the workforce.
+        feeds:
+          - Workday HCM
+          - Jira & Confluence
+          - iManage Knowledge
+          - Conformed engagement, person, client
+        teams:
+          - Talent & HR
+          - Delivery & PMO
+          - L&D / capability
+        questions:
+          - Which consultants are at highest attrition risk right now?
+          - Where are our biggest skills-to-demand gaps?
+          - Who is the best-fit staffing for this open role?
+          - Which skills are we overselling versus our bench?
+          - How is attrition trending by practice and level?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Consultant Utilization
+        short: Billable rate
+        icon: gauge
+        summary: Billable utilization and bench tracked live across consultants and practices so idle capacity is seen and filled before it is lost.
+        problem: Utilization is the number the firm lives on, yet it is stitched together from timesheets days late, so idle capacity is only seen after the week it was lost.
+        who_benefits: Delivery & PMO
+        how_built: Time, project and HR feeds land in Lakehouse//RT; utilization and bench are computed on certified Metric Views and worked from the Utilization Cockpit on Lakebase.
+        components:
+          - Utilization Cockpit
+          - Lakehouse//RT
+          - Replicon Time
+          - Kantata PSA
+          - AI/BI
+        stories:
+          - title: DXC Technology boosts productivity with GenAI
+            url: https://www.databricks.com/customers/dxc-technology
+          - title: How CFOs in consulting can recover margin with Databricks
+            url: https://www.databricks.com/blog/how-cfos-consulting-can-recover-margin-databricks
+      - name: Engagement Margin
+        short: Profitability
+        icon: chart
+        summary: Realised margin by engagement and practice against the rate card and cost rate, seen while the engagement can still be corrected.
+        problem: Margin is discovered at close, after the scope creep and write-offs have already happened, when it is too late to reprice or restaff the engagement.
+        who_benefits: Practice Leaders
+        how_built: Time, rate, cost and contract data are conformed to Gold; margin by engagement is served on certified Metric Views and drilled from Margin Radar.
+        components:
+          - Margin Radar
+          - AI/BI
+          - Workday Financials
+          - DocuSign CLM
+          - Unity Catalog
+        stories:
+          - title: How CFOs in consulting can recover margin with Databricks
+            url: https://www.databricks.com/blog/how-cfos-consulting-can-recover-margin-databricks
+      - name: Staffing & Bench
+        short: Resourcing
+        icon: people
+        summary: Open engagement demand matched to available skills and bench, so the right consultant is staffed instead of the first one free.
+        problem: Staffing runs on who a resource manager happens to remember, so the bench sits idle while roles go to the nearest name rather than the best fit.
+        who_benefits: Delivery & PMO
+        how_built: Skills, availability and demand are conformed in the lakehouse; best-fit staffing is scored in Model Serving and confirmed from the Staffing & Bench Board.
+        components:
+          - Staffing & Bench Board
+          - Model Serving
+          - Workday HCM
+          - AI Search
+          - Lakehouse//RT
+        stories:
+          - title: DXC Technology boosts productivity with GenAI
+            url: https://www.databricks.com/customers/dxc-technology
+          - title: NorthStar Anesthesia built a scheduling app in weeks
+            url: https://www.databricks.com/blog/how-northstar-anesthesia-built-scheduling-app-workforce-3000-clinicians-weeks
+      - name: Pipeline & Win-Rate
+        short: Growth
+        icon: market
+        summary: Pipeline health and win probability scored across the opportunity book so partners chase the deals the firm can actually win.
+        problem: Pipeline is judged on gut and stage, so effort goes to deals that will not close while the winnable ones get too little partner attention.
+        who_benefits: Practice Leaders
+        how_built: Salesforce and PSA opportunity data are conformed; win probability is scored in Model Serving and read alongside backlog in AI/BI.
+        components:
+          - Salesforce Sales Cloud
+          - Model Serving
+          - AI/BI
+          - Genie One
+        stories:
+          - title: MiQ scales campaign optimization with Genie
+            url: https://www.databricks.com/customers/miq
+          - title: Publicis Groupe unifies retail data on Databricks
+            url: https://www.databricks.com/customers/publicis-groupe
+      - name: Talent Attrition
+        short: Retention
+        icon: people
+        summary: Attrition risk scored per consultant so the firm intervenes on its best people before the resignation, not after.
+        problem: The firm learns a consultant is leaving when the notice lands, after the knowledge, the client relationship and the utilization have already walked out the door.
+        who_benefits: Talent & HR
+        how_built: HR, utilization and engagement signals feed an attrition model tracked in MLflow and scored in Model Serving, with at-risk consultants flagged to people leaders.
+        components:
+          - Model Serving
+          - MLflow
+          - Workday HCM
+          - AI/BI
+        stories:
+          - title: LA County democratizes hiring and retention data
+            url: https://www.databricks.com/customers/la-county
+          - title: Crafting a data-driven talent intelligence strategy
+            url: https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare
+      - name: Proposal Analytics
+        short: Bidding
+        icon: product
+        summary: Proposals and bids analysed against past wins so pricing, staffing and scope reflect what actually closes.
+        problem: Every proposal is priced from scratch, so the firm repeats the pricing and staffing mistakes of the last lost bid instead of learning from the won ones.
+        who_benefits: Practice Leaders
+        how_built: Won and lost proposals, rates and outcomes are conformed in the lakehouse; win drivers are analysed in AI/BI and surfaced against new bids.
+        components:
+          - AI/BI
+          - Salesforce Sales Cloud
+          - DocuSign CLM
+          - Unity Catalog
+      - name: Skills-to-Demand Match
+        short: Capability
+        icon: ztarget
+        summary: The skills the firm has matched against the demand it has sold, so hiring and reskilling close the gap that would otherwise be subcontracted.
+        problem: Firms sell skills they are short of and bench skills they oversold, because the supply of capability and the demand in the pipeline are never compared on one picture.
+        who_benefits: Talent & HR
+        how_built: Skills from HR and delivery are matched semantically to pipeline demand with AI Search; gaps are scored in Model Serving to steer hiring and L&D.
+        components:
+          - AI Search
+          - Model Serving
+          - Workday HCM
+          - Salesforce Sales Cloud
+        stories:
+          - title: DXC Technology boosts productivity with GenAI
+            url: https://www.databricks.com/customers/dxc-technology
+          - title: Crafting a data-driven talent intelligence strategy
+            url: https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare
+      - name: Revenue Recognition
+        short: Finance
+        icon: erp
+        summary: Billable hours, rates and contract terms reconciled to the general ledger continuously so the close is faster and audit-ready.
+        problem: Revenue is knitted together each month by hand from time, rate and contract systems that do not agree, consuming finance days and inviting restatements.
+        who_benefits: CFO & Finance
+        how_built: Time, rate and DocuSign contract terms are reconciled to the Revenue & GL Mart with Lakeflow, computed once and made SOX-ready under Unity Catalog.
+        components:
+          - Lakeflow
+          - Revenue & GL Mart
+          - Workday Financials
+          - Unity Catalog
+          - DocuSign CLM
+        stories:
+          - title: How CFOs in consulting can recover margin with Databricks
+            url: https://www.databricks.com/blog/how-cfos-consulting-can-recover-margin-databricks
+          - title: 'Beyond the spreadsheet: the modern CFO on Databricks'
+            url: https://www.databricks.com/blog/beyond-spreadsheet-how-databricks-delivering-modern-cfo-financial-services
+      - name: Subcontractor Spend
+        short: Procurement
+        icon: docs
+        summary: Subcontractor and supplier spend joined to engagements so pass-through cost and margin leakage are seen per project.
+        problem: Subcontractor cost sits in procurement, disconnected from the engagement it was bought for, so margin leakage and off-contract spend hide until the project is underwater.
+        who_benefits: CFO & Finance
+        how_built: Coupa purchase orders and invoices are conformed and joined to engagement actuals in the lakehouse, surfacing spend and leakage by project in AI/BI.
+        components:
+          - Coupa Procurement
+          - AI/BI
+          - Workday Financials
+          - Lakeflow
+      - name: Knowledge & GenAI
+        short: Assistant
+        icon: genie
+        summary: A governed assistant over the firm's deliverables and methods so consultants reuse prior work instead of rebuilding it.
+        problem: The firm's best thinking is buried in past deliverables no one can find, so every engagement rebuilds work that already exists somewhere in the practice.
+        who_benefits: Firm Leadership
+        how_built: Deliverables and methods in iManage and Confluence are indexed for AI Search; a retrieval assistant on Agent Bricks answers within Unity Catalog access walls from the Knowledge Assistant.
+        components:
+          - Knowledge Assistant
+          - Agent Bricks
+          - AI Search
+          - iManage Knowledge
+          - Unity Catalog
+        stories:
+          - title: DXC Technology boosts productivity with GenAI
+            url: https://www.databricks.com/customers/dxc-technology
+          - title: The agentic marketing stack starts with the data layer
+            url: https://www.databricks.com/blog/agentic-marketing-stack-starts-data-layer
+medallion:
+  Bronze:
+    short: Raw engagement and time feeds
+    summary: Timesheets, project actuals, expenses and CRM opportunities from the PSA, finance and HR estates, landed exactly as received so a billed hour or a recognised dollar can always be replayed as it stood.
+  Silver:
+    short: Conformed engagement, person, client
+    summary: Engagements, consultants and clients resolved into single conformed entities across the PSA, CRM, finance and HR systems, with rate cards, cost rates and skills reconciled to one record.
+  Gold:
+    short: Utilization, margin, win-rate
+    summary: 'Contracted products leadership runs on: billable utilization and bench, engagement and practice margin, pipeline and win-rate, attrition and skills-to-demand coverage.'
+citation_index:
+  kantata:
+    title: Kantata PSA
+    url: https://www.kantata.com/
+  openair:
+    title: Oracle NetSuite OpenAir
+    url: https://www.netsuite.com/portal/products/openair.shtml
+  certinia:
+    title: Certinia PSA
+    url: https://certinia.com/
+  sfdc:
+    title: Salesforce Sales Cloud
+    url: https://www.salesforce.com/products/sales-cloud/
+  dynamics:
+    title: Microsoft Dynamics 365 Sales
+    url: https://www.microsoft.com/en-us/dynamics-365/products/sales
+  hubspot:
+    title: HubSpot CRM
+    url: https://www.hubspot.com/products/crm
+  workday-fins:
+    title: Workday Financial Management
+    url: https://www.workday.com/en-us/products/financial-management/overview.html
+  netsuite:
+    title: Oracle NetSuite ERP
+    url: https://www.netsuite.com/portal/products/erp.shtml
+  sap:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  deltek:
+    title: Deltek Vantagepoint
+    url: https://www.deltek.com/en/products/project-erp/vantagepoint
+  replicon:
+    title: Replicon time tracking
+    url: https://www.replicon.com/
+  bigtime:
+    title: BigTime time and billing
+    url: https://www.bigtime.net/
+  workday-hcm:
+    title: Workday HCM
+    url: https://www.workday.com/en-us/products/human-capital-management/overview.html
+  coupa:
+    title: Coupa procurement
+    url: https://www.coupa.com/
+  imanage:
+    title: iManage knowledge management
+    url: https://imanage.com/
+  concur:
+    title: SAP Concur expense
+    url: https://www.concur.com/
+  docusign:
+    title: DocuSign CLM
+    url: https://www.docusign.com/products/clm
+  atlassian:
+    title: Atlassian Jira
+    url: https://www.atlassian.com/software/jira

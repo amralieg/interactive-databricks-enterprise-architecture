@@ -1,0 +1,888 @@
+name: Real Estate
+description: 'Property investment, development and operations: leasing, valuations, construction progress and tenant experience across commercial and residential portfolios.'
+sources:
+  - name: Property & ERP
+    icon: erp
+    tiles:
+      - name: Yardi Voyager
+        icon: erp
+        summary: Property accounting, AP/AR and CAM reconciliations for operating portfolios.
+        citations:
+          - yardi
+        category: Property Management & Accounting (ERP)
+        what_it_is: Property accounting, AP/AR and CAM reconciliations for operating portfolios, the financial system of record per asset.
+        who_uses_it: Lease Administration, Portfolio Manager and Construction Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of GL and lease ledger rows
+            interval: Nightly close batch
+      - name: MRI Software
+        icon: db
+        summary: Commercial lease administration, billing and investor reporting.
+        citations:
+          - mri
+        category: Lease Administration & Investor Reporting
+        what_it_is: Commercial lease administration, billing and investor reporting across the operating portfolio.
+        who_uses_it: Lease Administration, Head of Investor Relations and Valuations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: hundreds of thousands of lease and billing rows
+            interval: Daily
+      - name: SAP Real Estate Mgmt
+        icon: erp
+        summary: Corporate real estate, cost allocations and IFRS lease accounting.
+        citations:
+          - sap-rem
+        category: Corporate Real Estate & Lease Accounting
+        what_it_is: Corporate real estate, cost allocations and IFRS 16 / ASC 842 lease accounting.
+        who_uses_it: CFO & Treasury, Lease Administration and Governance Engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of cost-allocation and lease rows
+            interval: Nightly ERP extract
+  - name: Leasing & CRM
+    icon: custlake
+    tiles:
+      - name: Salesforce Real Estate
+        icon: custlake
+        summary: Broker pipelines, tour activity and lease negotiation stages.
+        citations:
+          - sf-real-estate
+        category: Customer Relationship Management (CRM)
+        what_it_is: Broker pipelines, tour activity and lease negotiation stages for the leasing deal desk.
+        who_uses_it: Brokerage Team, Leasing Director and Head of Investor Relations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of thousands of pipeline and activity rows
+            interval: Hourly CRM sync
+      - name: VTS Lease Platform
+        icon: partner
+        summary: Availabilities, proposals and executed leases for commercial assets.
+        citations:
+          - vts
+        category: Commercial Leasing Platform
+        what_it_is: Availabilities, proposals and executed leases for commercial assets across the leasing lifecycle.
+        who_uses_it: Leasing Director, Brokerage Team and Lease Counsel teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of thousands of availability and proposal rows
+            interval: Hourly sync
+      - name: ARGUS Enterprise
+        icon: chart
+        summary: Discounted cash flow valuation and hold-sell analysis for commercial assets.
+        citations:
+          - buildout
+        category: CRE Valuation & Cash Flow Modelling
+        what_it_is: Discounted cash flow valuation and hold-sell analysis for commercial assets used in underwriting.
+        who_uses_it: Valuations, Portfolio Manager and Rent & Valuation Modelling teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: thousands of valuation model outputs
+            interval: Per valuation cycle
+  - name: Construction & Dev
+    icon: sheet
+    tiles:
+      - name: Procore Project Mgmt
+        icon: sheet
+        summary: Budgets, schedules, RFIs and daily logs from development sites.
+        citations:
+          - procore
+        category: Construction Project Management
+        what_it_is: Budgets, schedules, RFIs and daily logs from development sites, the project system of record.
+        who_uses_it: Project Controls, Development Director and Construction Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of thousands of budget and log records
+            interval: Daily site logs
+      - name: Oracle Aconex
+        icon: notebook
+        summary: Document transmittals, submittals and design revisions.
+        citations:
+          - aconex
+        category: Construction Document Management
+        what_it_is: Document transmittals, submittals and design revisions across the development lifecycle.
+        who_uses_it: Project Controls, Development Director and Application Engineering teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: millions of documents and transmittals
+            interval: Daily
+      - name: CoStar Market Data
+        icon: chart
+        summary: Comparable rents, vacancy and transaction comps for underwriting.
+        citations:
+          - costar
+        category: Property Listing / Market Data
+        what_it_is: Comparable rents, vacancy and transaction comps for underwriting and valuation.
+        who_uses_it: Valuations, Portfolio Manager and Rent & Valuation Modelling teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of comp and market rows
+            interval: Daily market feed
+  - name: Operations & IoT
+    icon: iot
+    tiles:
+      - name: Honeywell Forge BMS
+        icon: iot
+        summary: HVAC, access and energy telemetry from building management systems.
+        citations:
+          - honeywell-forge
+        category: Building Management System (BMS)
+        what_it_is: HVAC, access and energy telemetry from building management systems across the operating portfolio.
+        who_uses_it: Chief Engineer, Energy Optimisation and Facilities Management teams.
+        data_out:
+          stream:
+            types:
+              - structured
+            volume: tens of thousands of meter and sensor points/min
+            interval: Continuous (BMS)
+      - name: ServiceChannel FM
+        icon: stream
+        summary: Work orders, contractor SLAs and tenant service requests.
+        citations:
+          - servicechannel
+        category: Facilities Management (CMMS)
+        what_it_is: Work orders, contractor SLAs and tenant service requests across managed properties.
+        who_uses_it: Facilities Management, Chief Engineer and Retention & Risk teams.
+        data_out:
+          stream:
+            types:
+              - structured
+              - semi-structured
+            volume: thousands of work-order events/hour
+            interval: Continuous (work orders)
+      - name: Measurabl ESG
+        icon: observ
+        summary: Utility bills, ENERGY STAR scores and carbon disclosures by asset.
+        citations:
+          - measurabl
+        category: ESG & Sustainability Reporting
+        what_it_is: Utility bills, ENERGY STAR scores and carbon disclosures by asset for ESG reporting.
+        who_uses_it: ESG & Sustainability, Chief Engineer and CFO & Treasury teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: hundreds of thousands of utility and emissions rows
+            interval: Monthly billing cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Investor Reporting Mart
+        icon: fed
+        summary: Fund NAV and waterfall marts queried in place under Unity Catalog.
+        category: Federated Data Warehouse / Marts
+        what_it_is: Fund NAV and waterfall marts queried in place under Unity Catalog, avoiding a second copy of numbers finance already closed.
+        who_uses_it: Head of Investor Relations, CFO & Treasury and Governance Engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of NAV and waterfall rows queried in place
+            interval: Query-time federation
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Municipal Permit APIs
+        icon: api
+        summary: Zoning and permit filings consumed inbound for development risk monitoring.
+        citations:
+          - procore
+        category: Government Permit / Zoning Data
+        what_it_is: Zoning and permit filings consumed inbound for development risk monitoring.
+        who_uses_it: Project Controls, Development Director and Governance Engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: thousands of permit filings/day
+            interval: Scheduled API pulls
+      - name: Walk Score / Transit
+        icon: globe
+        summary: Amenity and transit scores attached to assets for underwriting models.
+        citations:
+          - walkscore
+        category: Location & Amenity Scoring
+        what_it_is: Amenity and transit scores attached to assets for underwriting and valuation models.
+        who_uses_it: Valuations, Rent & Valuation Modelling and Portfolio Manager teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: scores per asset location
+            interval: On refresh
+      - name: Flood & Hazard Layers
+        icon: globe
+        summary: Climate hazard overlays normalised for portfolio risk scoring.
+        category: Climate & Hazard Geospatial Data
+        what_it_is: Flood, wildfire and heat hazard overlays normalised for portfolio climate-risk scoring.
+        who_uses_it: Retention & Risk, CFO & Treasury and Data Scientists teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: hazard raster and polygon layers
+            interval: Periodic refresh
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Fund & Asset Leadership
+        mark: Genie One
+        summary: The CEO on portfolio NOI and occupancy; the CFO on capex per square foot and fund IRR when interest rates and cap rates shift the book.
+        uses:
+          - - Genie One
+            - Ask what same-store NOI was last quarter without waiting on asset management.
+          - - AI/BI
+            - NOI, occupancy and capex on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "occupancy" means one thing across ERP and CRM.
+        sub:
+          - name: CEO
+            cares: portfolio NOI, occupancy and the trade between growth and the cost of capital.
+          - name: CFO & Treasury
+            cares: capex per square foot, fund IRR and debt covenants as rates and cap rates move.
+          - name: Head of Investor Relations
+            cares: NAV, waterfalls and the reporting investors and lenders see each quarter.
+        ucs:
+          - Investor Reporting
+          - Portfolio Risk
+          - Capex Planning
+          - Rent Forecasting
+      - name: Asset Management
+        mark: AI/BI
+        summary: Portfolio managers on rent rolls, renewals and capital plans by asset, tracking same-store NOI and tenant retention against the annual budget.
+        uses:
+          - - Portfolio Command
+            - Lease expirations and renewal risk on one surface.
+          - - AI/BI
+            - NOI and retention on governed definitions.
+          - - Genie One
+            - Ask which assets missed budgeted rent steps.
+        sub:
+          - name: Portfolio Manager
+            cares: same-store NOI, renewal risk and the capital plan against the annual budget.
+          - name: Lease Administration
+            cares: rent steps, recoveries and critical dates across the rent roll.
+          - name: Valuations
+            cares: cap rates, comps and the mark on each asset at reporting.
+        ucs:
+          - Rent Forecasting
+          - Tenant Retention
+          - Capex Planning
+          - CAM Reconciliation
+      - name: Development
+        mark: Lakehouse//RT
+        summary: Development directors on draw schedules, milestones and contractor performance, watching cost-to-complete and development IRR against covenants.
+        uses:
+          - - Development Tracker
+            - Budget and schedule variance before lender reports.
+          - - Lakehouse//RT
+            - Site progress at the latency a delay compounds at.
+          - - Model Serving
+            - Cost-to-complete models scored on draw history.
+        sub:
+          - name: Development Director
+            cares: draw schedules, cost-to-complete and development IRR against covenants.
+          - name: Project Controls
+            cares: budget and schedule variance and contractor performance on site.
+          - name: Construction Finance
+            cares: lender draws, retention and the capital stack on each project.
+        ucs:
+          - Development ROI
+          - Capex Planning
+      - name: Leasing & Brokerage
+        mark: CustomerLake
+        summary: Brokerage teams on pipeline, tour conversion and time-to-lease, tracking leasing velocity and net effective rent by asset and market.
+        uses:
+          - - Leasing Pipeline
+            - Proposal status and comp rents before options expire.
+          - - CustomerLake
+            - Tenant prospects without copying CRM elsewhere.
+          - - Apps
+            - Tour and proposal workflows on governed data.
+        sub:
+          - name: Leasing Director
+            cares: pipeline, net effective rent and time-to-lease by asset and market.
+          - name: Brokerage Team
+            cares: tour activity, proposals and conversion across the deal desk.
+          - name: Lease Counsel
+            cares: clauses, options and the abstract behind every executed lease.
+        ucs:
+          - Broker Performance
+          - Lease Abstraction
+          - Tenant Retention
+      - name: Property Operations
+        mark: Apps
+        summary: Building engineers and FM on work orders, energy intensity and tenant satisfaction, watching SLA breaches and operating cost per square foot.
+        uses:
+          - - Operations Hub
+            - Open tickets and SLA breaches before renewals.
+          - - Apps
+            - Technician mobile workflows on governed BMS data.
+          - - Lakeflow
+            - Utility and work-order feeds conformed for asset analytics.
+        sub:
+          - name: Chief Engineer
+            cares: HVAC, energy intensity and equipment reliability across the building.
+          - name: Facilities Management
+            cares: work orders, contractor SLAs and tenant service requests.
+          - name: ESG & Sustainability
+            cares: ENERGY STAR, carbon disclosure and utility cost per square foot.
+        ucs:
+          - Energy Optimisation
+          - CAM Reconciliation
+          - Tenant Retention
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the ERP lease, CRM, construction and BMS meter feeds; own the Bronze to Silver path and the pager when a portfolio pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for property ERP, CRM and BMS sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on lease and meter feeds.
+          - - Lakewatch
+            - Freshness on the NOI and occupancy tables asset teams read.
+        sub:
+          - name: Ingestion Engineering
+            cares: the ERP lease, CRM, construction and BMS feeds landing on time.
+          - name: Platform Reliability
+            cares: the pager and freshness on the NOI and occupancy tables.
+          - name: Governance Engineering
+            cares: Unity Catalog permissions and lineage across property systems.
+        ucs:
+          - Development ROI
+          - CAM Reconciliation
+          - Portfolio Risk
+      - name: Data Scientists
+        mark: MLflow
+        summary: Rent-forecast, tenant-retention, energy-optimisation and cost-to-complete models, and whether they still hold six months after deployment across the portfolio.
+        uses:
+          - - Feature Store
+            - Lease and market features read identically in training and serving.
+          - - MLflow
+            - Every rent and retention run tracked for audit and reproduction.
+          - - Model Serving
+            - Rent and churn models scored in the underwriting path.
+        sub:
+          - name: Rent & Valuation Modelling
+            cares: market rent, renewal probability and asset valuation models.
+          - name: Retention & Risk
+            cares: tenant churn, credit and portfolio climate-risk scoring.
+          - name: Energy Optimisation
+            cares: occupancy and tariff-aware HVAC and lighting models.
+        ucs:
+          - Rent Forecasting
+          - Tenant Retention
+          - Energy Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the portfolio command, development tracker and operations applications asset and FM teams work in, hosted next to governed property data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for work-order state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a lease abstract against governed tools.
+        sub:
+          - name: Application Engineering
+            cares: the portfolio, leasing and operations screens teams work in.
+          - name: Workflow & Writeback
+            cares: governed writes back to Yardi, BMS and FM systems.
+          - name: Agent Engineering
+            cares: agents that draft a lease abstract against governed tools.
+        ucs:
+          - Lease Abstraction
+          - Broker Performance
+          - Investor Reporting
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and site updates in the channel asset teams work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Yardi Lease Posting
+        icon: erp
+        summary: Executed lease terms and rent steps written back into property accounting.
+        citations:
+          - yardi
+      - name: BMS Setpoint Adjust
+        icon: iot
+        summary: Approved HVAC schedules pushed from energy optimisation runs.
+        citations:
+          - honeywell-forge
+      - name: FM Work Orders
+        icon: stream
+        summary: Predictive maintenance tasks raised in ServiceChannel before failures.
+        citations:
+          - servicechannel
+  - name: Investors & Tenants
+    icon: partner
+    tiles:
+      - name: Investor Portal API
+        icon: share
+        summary: Fund performance and property KPIs shared over Delta Sharing not quarterly PDFs.
+        citations:
+          - mri
+      - name: Tenant Experience App
+        icon: apps
+        summary: Service requests and amenity bookings on Apps reading governed operations data.
+      - name: Broker Co-broke Feed
+        icon: api
+        summary: Availability and comps served to brokerage partners from governed listings.
+        citations:
+          - vts
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: GRESB / ESG Filing
+        icon: gavel
+        summary: Energy and emissions disclosures filed from governed utility and BMS data.
+        citations:
+          - measurabl
+      - name: IFRS 16 / ASC 842
+        icon: share
+        summary: Lease liability schedules from contracted Gold products.
+        citations:
+          - sap-rem
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Investors, lenders and partners reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Portfolio Command
+        icon: gauge
+        short: NOI live
+        summary: Occupancy, NOI and capex by asset on Databricks Apps over Lakebase.
+      - name: Development Tracker
+        icon: sheet
+        short: Draw schedule
+        summary: Budget, milestone and contractor variance before lender reporting.
+      - name: Leasing Pipeline
+        icon: custlake
+        short: Tour to lease
+        summary: Proposals, comps and expiration risk before options lapse.
+      - name: Operations Hub
+        icon: iot
+        short: FM & energy
+        summary: Work orders, SLA breaches and energy anomalies before tenant renewals.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Portfolio & NOI
+        icon: aibi
+        summary: NOI, occupancy and capex by asset and fund on certified Metric Views.
+        kpis:
+          - Same-store NOI
+          - Occupancy
+          - Capex per sq ft
+          - Retention rate
+          - Fund IRR
+        teams:
+          - Fund & Asset Leadership
+          - Asset Management
+          - Portfolio Manager
+      - name: Leasing & Retention
+        icon: aibi
+        summary: Pipeline, conversion, time-to-lease and churn risk on governed data.
+        kpis:
+          - Leasing velocity
+          - Tour-to-lease conversion
+          - Net effective rent
+          - Time-to-lease
+          - Churn risk
+        teams:
+          - Leasing & Brokerage
+          - Asset Management
+          - Brokerage Team
+      - name: Development & Capex
+        icon: aibi
+        summary: Draw schedules, cost-to-complete and development IRR against covenants.
+        kpis:
+          - Budget variance
+          - Schedule variance
+          - Cost-to-complete
+          - Development IRR
+          - Draw utilisation
+        teams:
+          - Development
+          - Development Director
+          - Construction Finance
+      - name: Operations & Energy
+        icon: aibi
+        summary: Work orders, SLA breaches and energy intensity across the portfolio.
+        kpis:
+          - Open work orders
+          - SLA breach rate
+          - Energy intensity
+          - Operating cost per sq ft
+          - ENERGY STAR coverage
+        teams:
+          - Property Operations
+          - Chief Engineer
+          - ESG & Sustainability
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Portfolio & NOI Agent
+        icon: genie
+        summary: Ask about net operating income, occupancy and capex by asset and fund in plain language.
+        feeds:
+          - Yardi Voyager
+          - MRI Software
+          - Investor Reporting Mart
+          - NOI, occupancy, capex
+        teams:
+          - Fund & Asset Leadership
+          - Asset Management
+          - Portfolio Manager
+        questions:
+          - What was same-store NOI by asset last quarter?
+          - Which assets missed their budgeted rent steps this year?
+          - How does occupancy trend by market and property type?
+          - Where is capex per square foot running above plan?
+          - Which funds are most exposed to upcoming lease expirations?
+      - name: Leasing & Retention Agent
+        icon: genie
+        summary: Explore pipeline, tour conversion, time-to-lease and tenant churn risk.
+        feeds:
+          - Salesforce Real Estate
+          - VTS Lease Platform
+          - ServiceChannel FM
+          - Conformed asset, lease
+        teams:
+          - Leasing & Brokerage
+          - Asset Management
+          - Brokerage Team
+        questions:
+          - What is time-to-lease by asset and market this quarter?
+          - Which brokerage teams have the highest tour-to-lease conversion?
+          - Which tenants are at highest churn risk before renewal?
+          - Where is net effective rent trending below the market comp?
+          - Which proposals are at risk of expiring options this month?
+      - name: Development & Capex Agent
+        icon: genie
+        summary: Answer questions on draw schedules, cost-to-complete and development IRR.
+        feeds:
+          - Procore Project Mgmt
+          - Oracle Aconex
+          - Investor Reporting Mart
+          - NOI, occupancy, capex
+        teams:
+          - Development
+          - Development Director
+          - Construction Finance
+        questions:
+          - Which projects are over budget or behind schedule right now?
+          - What is cost-to-complete versus the approved budget by project?
+          - How does development IRR compare across the active pipeline?
+          - Which draws are approaching a covenant threshold?
+          - Where is contractor performance dragging the schedule?
+      - name: Operations & Energy Agent
+        icon: genie
+        summary: Ask about work orders, SLA breaches and energy intensity across the portfolio.
+        feeds:
+          - Honeywell Forge BMS
+          - ServiceChannel FM
+          - Measurabl ESG
+          - Conformed asset, lease
+        teams:
+          - Property Operations
+          - Chief Engineer
+          - ESG & Sustainability
+        questions:
+          - Which assets have the most open work orders and SLA breaches?
+          - Where is energy intensity highest per square foot this month?
+          - Which buildings are missing ENERGY STAR or ESG disclosures?
+          - How does operating cost per square foot compare across the portfolio?
+          - Which HVAC assets show anomalies against occupancy schedules?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Rent Forecasting
+        short: Underwriting
+        icon: chart
+        summary: Market rent and renewal probability scored with comps and tenant history.
+        problem: Market rent and renewal outcomes are guessed from stale comps and last year's rent roll, so underwriting and budgeted rent steps rest on a number no one can defend per asset.
+        who_benefits: Asset Management
+        how_built: Comps, tenant history and market signals are engineered in Feature Store and scored through Model Serving, landing renewal probability and market rent on Portfolio Command.
+        components:
+          - Portfolio Command
+          - CoStar Market Data
+          - Model Serving
+          - Feature Store
+          - MLflow
+        stories:
+          - title: Reonomy modernizes real estate with data and ML
+            url: https://www.databricks.com/customers/reonomy
+      - name: Tenant Retention
+        short: Occupancy
+        icon: custlake
+        summary: Churn risk surfaced from service tickets and lease economics before expiration.
+        problem: Tenants leave at renewal after a year of unresolved service tickets and off-market rent, but that churn signal is buried in FM logs and lease economics no one joins until the notice lands.
+        who_benefits: Asset Management
+        how_built: Service-ticket history and lease economics are joined and scored in Model Serving, surfacing churn risk on the Leasing Pipeline before renewal windows open.
+        components:
+          - Leasing Pipeline
+          - ServiceChannel FM
+          - CustomerLake
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Cushman & Wakefield builds an enterprise AI core on Databricks
+            url: https://www.databricks.com/blog/your-ai-ready-your-data-foundation-probably-isnt
+      - name: Capex Planning
+        short: Investment
+        icon: sheet
+        summary: Replacement and repositioning projects ranked by NOI impact and risk.
+        problem: Capital plans are built in spreadsheets per asset, so replacement and repositioning projects compete for budget without a comparable view of NOI impact or risk across the portfolio.
+        who_benefits: Fund & Asset Leadership
+        how_built: Work-order, condition and NOI data are conformed on Delta Lake under Unity Catalog and ranked in AI/BI, so capex projects sort by NOI impact on Portfolio Command.
+        components:
+          - Portfolio Command
+          - Yardi Voyager
+          - AI/BI
+          - Unity Catalog
+          - Delta Lake
+      - name: Energy Optimisation
+        short: Operations
+        icon: iot
+        summary: HVAC and lighting schedules tuned to occupancy and tariff signals.
+        problem: HVAC and lighting run to fixed schedules regardless of occupancy or tariff, so energy burns in empty floors and peak-price windows while operating cost per square foot and ESG targets slip.
+        who_benefits: Property Operations
+        how_built: BMS telemetry and tariff signals feed optimisation models scored in Model Serving, and approved setpoint schedules are written back to Honeywell Forge BMS from the Operations Hub.
+        components:
+          - Operations Hub
+          - Honeywell Forge BMS
+          - Model Serving
+          - Lakehouse//RT
+          - Measurabl ESG
+        stories:
+          - title: Colas drives efficiency and cuts energy use with Databricks
+            url: https://www.databricks.com/customers/colas
+          - title: TK Elevator delivers service intelligence across connected buildings
+            url: https://www.databricks.com/customers/tke-elevator
+      - name: Development ROI
+        short: Projects
+        icon: product
+        summary: Cost-to-complete and IRR tracked against lender covenants in real time.
+        problem: Development budgets and schedules live in the project system while draws and covenants live in finance, so cost-to-complete and IRR are reconciled by hand and slippage surfaces only at the lender report.
+        who_benefits: Development
+        how_built: Procore budget, schedule and draw data land through Lakeflow and are tracked against covenants in AI/BI, so cost-to-complete and IRR update live on the Development Tracker.
+        components:
+          - Development Tracker
+          - Procore Project Mgmt
+          - Lakeflow
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Trackunit eliminates downtime for the construction industry
+            url: https://www.databricks.com/customers/trackunit
+      - name: Lease Abstraction
+        short: Legal
+        icon: gavel
+        summary: Critical dates and options extracted from abstracts with audit lineage.
+        problem: Critical dates, options and clauses sit in thousands of PDF leases in varied formats and languages, so abstraction is manual and slow and a missed option date is a real financial loss.
+        who_benefits: Leasing & Brokerage
+        how_built: Lease PDFs are extracted with AI Functions and Agent Bricks into governed records under Unity Catalog, with lineage back to the source clause and Genie for portfolio-level questions.
+        components:
+          - Leasing Pipeline
+          - AI Functions
+          - Agent Bricks
+          - Unity Catalog
+          - Genie One
+        stories:
+          - title: JLL turns lease data into governed insights with Genie and AI/BI
+            url: https://www.databricks.com/customers/jll/dealsumm
+      - name: CAM Reconciliation
+        short: Finance
+        icon: erp
+        summary: Operating expense pools reconciled before tenant true-ups post.
+        problem: Operating-expense pools are reconciled against hundreds of lease recovery clauses by hand each year, so CAM true-ups post late and disputes erode the recoveries the budget assumed.
+        who_benefits: Property Operations
+        how_built: Expense ledgers and lease recovery terms are conformed on Delta Lake and reconciled in AI/BI, so CAM pools tie out before true-ups post from Yardi Voyager.
+        components:
+          - Operations Hub
+          - Yardi Voyager
+          - MRI Software
+          - Delta Lake
+          - AI/BI
+      - name: Portfolio Risk
+        short: Climate
+        icon: globe
+        summary: Flood and hazard exposure aggregated for insurance and disclosure.
+        problem: Flood, wildfire and heat exposure is assessed asset by asset at insurance renewal, so the portfolio's aggregate climate risk and its effect on premiums and disclosure is never seen whole.
+        who_benefits: Fund & Asset Leadership
+        how_built: Hazard layers are joined to the asset register with H3 spatial indexing in Apache Spark and aggregated in AI/BI, so climate exposure rolls up by fund on Portfolio Command.
+        components:
+          - Portfolio Command
+          - Flood & Hazard Layers
+          - Apache Spark
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Geospatial analytics and AI with Databricks and CARTO for JLL
+            url: https://www.databricks.com/blog/2021/12/09/announcing-cartos-spatial-extension-for-databricks-powering-geospatial-analysis-for-jll.html
+      - name: Broker Performance
+        short: Leasing
+        icon: partner
+        summary: Tour conversion and time-to-lease compared across brokerage teams.
+        problem: Tour activity, proposals and executed leases sit in the CRM and the leasing platform separately, so time-to-lease and conversion are compared across brokerage teams from stale exports weeks late.
+        who_benefits: Leasing & Brokerage
+        how_built: Salesforce and VTS activity are conformed under Unity Catalog and surfaced in AI/BI, so tour conversion and time-to-lease compare across teams on the Leasing Pipeline.
+        components:
+          - Leasing Pipeline
+          - VTS Lease Platform
+          - Salesforce Real Estate
+          - Unity Catalog
+          - AI/BI
+      - name: Investor Reporting
+        short: Funds
+        icon: share
+        summary: NAV and waterfall metrics produced from the same tables finance closes on.
+        problem: Fund NAV and waterfalls are rebuilt in spreadsheets each quarter from data finance already closed, so investor reporting lags weeks behind and every number is reconciled twice.
+        who_benefits: Fund & Asset Leadership
+        how_built: NAV and waterfall marts are queried in place from the Investor Reporting Mart under Unity Catalog and shared to investors over OpenSharing instead of quarterly PDFs.
+        components:
+          - Investor Reporting Mart
+          - Unity Catalog
+          - OpenSharing
+          - Data Products
+          - AI/BI
+        stories:
+          - title: JLL modernizes its data stack and analytics with Databricks
+            url: https://www.databricks.com/customers/jll/training-and-certification
+medallion:
+  Bronze:
+    short: Raw lease and ops
+    summary: Lease abstracts, rent rolls, construction draws, work orders and utility meter reads, landed exactly as received so a square foot or a rent step can always be replayed as it stood.
+  Silver:
+    short: Conformed asset, lease
+    summary: Properties, units, tenants and leases resolved into single conformed entities across ERP, CRM and operations systems, with CAM reconciliations stitched and occupancy reconciled to one unit record.
+  Gold:
+    short: NOI, occupancy, capex
+    summary: 'Contracted products asset and portfolio leaders run on: net operating income, occupancy and retention, capex per square foot and development IRR.'
+citation_index:
+  yardi:
+    title: Yardi Voyager
+    url: https://www.yardi.com/products/voyager/
+  mri:
+    title: MRI Software
+    url: https://www.mrisoftware.com/
+  sap-rem:
+    title: SAP Real Estate Management
+    url: https://www.sap.com/products/financial-management/real-estate-management.html
+  sf-real-estate:
+    title: Salesforce for real estate
+    url: https://www.salesforce.com/solutions/industries/real-estate/
+  vts:
+    title: VTS
+    url: https://www.vts.com/
+  buildout:
+    title: Altus ARGUS Enterprise
+    url: https://www.altusgroup.com/solutions/argus-enterprise/
+  procore:
+    title: Procore
+    url: https://www.procore.com/
+  aconex:
+    title: Oracle Aconex
+    url: https://www.oracle.com/industries/construction-engineering/aconex/
+  costar:
+    title: CoStar
+    url: https://www.costar.com/
+  honeywell-forge:
+    title: Honeywell Forge
+    url: https://www.honeywellforge.com/
+  servicechannel:
+    title: ServiceChannel
+    url: https://servicechannel.com/
+  measurabl:
+    title: Measurabl
+    url: https://www.measurabl.com/
+  walkscore:
+    title: Walk Score
+    url: https://www.walkscore.com/professional/

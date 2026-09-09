@@ -1,0 +1,935 @@
+name: E-Commerce
+description: 'Digital commerce: catalog, orders, fulfillment, personalization, and marketplace operations across DTC and marketplace channels.'
+sources:
+  - name: Commerce Platform
+    icon: apps
+    tiles:
+      - name: Shopify Plus
+        icon: apps
+        summary: Catalog, carts, checkouts and customer accounts.
+        citations:
+          - shopify-ec
+        category: E-Commerce Platform
+        what_it_is: Runs the catalog, carts, checkouts and customer accounts, emitting the clickstream and order events behind the storefront.
+        who_uses_it: E-commerce, Growth Marketing and Merchandising teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous clickstream + orders
+      - name: Salesforce Commerce Cloud
+        icon: partner
+        summary: B2C and B2B storefronts with promotions.
+        citations:
+          - sfcc
+        category: E-Commerce Platform
+        what_it_is: Powers B2C and B2B storefronts with promotions and catalog, capturing browse, cart and order events across sites.
+        who_uses_it: E-commerce, Merchandising and B2B Sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly order sync
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of events/sec
+            interval: Continuous clickstream
+      - name: Adobe Commerce
+        icon: product
+        summary: Magento catalog, pricing and multi-site config.
+        citations:
+          - adobe-commerce
+        category: E-Commerce Platform
+        what_it_is: Magento-based catalog, pricing and multi-site configuration, emitting product, price and order data across storefronts.
+        who_uses_it: Merchandising, E-commerce and Site Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+  - name: OMS & Payments
+    icon: erp
+    tiles:
+      - name: Manhattan Active Omni
+        icon: erp
+        summary: Order orchestration, promising and returns.
+        citations:
+          - manhattan
+        category: Order Management System (OMS)
+        what_it_is: Orchestrates orders, order promising and returns across nodes, emitting the fulfillment and ATP events behind the promise.
+        who_uses_it: Operations, Fulfillment and Customer Experience teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of order events/sec
+            interval: Continuous orchestration events
+      - name: Stripe Payments
+        icon: market
+        summary: Payment intents, disputes and payout reconciliation.
+        citations:
+          - stripe
+        category: Payment Gateway / Processor
+        what_it_is: Captures payment intents, disputes and payouts, returning the transaction and chargeback data behind revenue and fraud.
+        who_uses_it: Finance, Fraud & Risk and Growth teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day payouts
+            interval: Daily reconciliation
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous (API / webhook)
+      - name: Adyen Platform
+        icon: partner
+        summary: Global acquiring, risk and settlement.
+        citations:
+          - adyen
+        category: Payment Gateway / Processor
+        what_it_is: Provides global acquiring, risk scoring and settlement, emitting authorization, capture and settlement events across markets.
+        who_uses_it: Finance, Payments and Fraud & Risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day settlement
+            interval: Daily settlement files
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous (API)
+  - name: Fulfillment & WMS
+    icon: stream
+    tiles:
+      - name: ShipBob WMS
+        icon: stream
+        summary: Pick, pack and carrier manifests.
+        citations:
+          - shipbob
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs pick, pack and carrier manifesting across fulfillment centres, emitting shipment and inventory movement events.
+        who_uses_it: Fulfillment Operations and Logistics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous fulfillment events
+      - name: Flexport Logistics
+        icon: globe
+        summary: Inbound containers, customs and drayage.
+        citations:
+          - flexport
+        category: Freight Forwarding / Logistics Platform
+        what_it_is: Tracks inbound containers, customs and drayage so planners see landed inventory and inbound delays before they hit stock.
+        who_uses_it: Supply Chain, Inventory Planning and Logistics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day
+            interval: Daily + milestone events
+      - name: Narvar Post-Purchase
+        icon: partner
+        summary: Tracking, returns and WISMO experiences.
+        citations:
+          - narvar
+        category: Post-Purchase Experience Platform
+        what_it_is: Manages tracking, returns and where-is-my-order experiences, emitting delivery and return events tied to the order.
+        who_uses_it: Customer Experience, Returns and Logistics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of events/sec
+            interval: Continuous tracking events
+  - name: Marketing & CRM
+    icon: custlake
+    tiles:
+      - name: Klaviyo
+        icon: custlake
+        summary: Email, SMS and lifecycle segments.
+        citations:
+          - klaviyo
+        category: Marketing Automation / CRM Platform
+        what_it_is: Runs email, SMS and lifecycle journeys on segments, emitting send, open, click and conversion events for lifecycle analytics.
+        who_uses_it: Lifecycle & CRM and Growth Marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous engagement events
+      - name: Braze
+        icon: partner
+        summary: Cross-channel campaigns and canvas journeys.
+        citations:
+          - braze
+        category: Customer Engagement Platform
+        what_it_is: Orchestrates cross-channel campaigns and canvas journeys across push, email and in-app, emitting engagement and conversion events.
+        who_uses_it: Lifecycle & CRM and Growth Marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous campaign events
+      - name: Google Analytics 4
+        icon: observ
+        summary: Session, funnel and attribution events.
+        citations:
+          - ga4
+        category: Web / Digital Analytics Platform
+        what_it_is: Captures session, funnel and attribution events across web and app for traffic, conversion and channel-mix analytics.
+        who_uses_it: Growth Marketing, SEO and Analytics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous event stream
+  - name: Marketplaces
+    icon: market
+    tiles:
+      - name: Amazon Seller Central
+        icon: market
+        summary: Marketplace orders, fees and advertising.
+        citations:
+          - amazon-sc
+        category: Marketplace Seller Platform
+        what_it_is: Provides marketplace orders, fees and advertising data so teams can reconcile price, stock and per-channel profit on Amazon.
+        who_uses_it: Marketplace, Merchandising and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Daily reports + hourly orders
+      - name: eBay Managed Payments
+        icon: partner
+        summary: Third-party marketplace transactions.
+        citations:
+          - ebay
+        category: Marketplace Seller Platform
+        what_it_is: Supplies third-party marketplace transactions and payouts, feeding per-channel order, fee and settlement reconciliation.
+        who_uses_it: Marketplace and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day
+            interval: Daily order + payout feed
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance Revenue Mart
+        icon: fed
+        summary: Revenue recognition marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Revenue-recognition marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Finance and Revenue Operations analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Similarweb Digital
+        icon: observ
+        summary: Competitive traffic and channel mix benchmarks.
+        citations:
+          - similarweb
+        category: Digital Market Intelligence Provider
+        what_it_is: Supplies competitive traffic and channel-mix benchmarks so growth teams can size their share against competitors.
+        who_uses_it: Growth Marketing, SEO and Strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/week
+            interval: Weekly benchmark feed
+      - name: Jungle Scout
+        icon: market
+        summary: Marketplace share and keyword intelligence.
+        citations:
+          - jungle-scout
+        category: Marketplace Intelligence Provider
+        what_it_is: Provides marketplace share and keyword intelligence used to tune Amazon listings, price and ad spend.
+        who_uses_it: Marketplace and Merchandising teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs/day
+            interval: Daily feed
+      - name: ShipStation Rates
+        icon: api
+        summary: Carrier rate shopping and delivery promises.
+        citations:
+          - shipstation
+        category: Shipping / Rate Shopping API
+        what_it_is: Returns carrier rate shopping and delivery promises consumed inbound to route orders to the lowest-cost node that meets SLA.
+        who_uses_it: Operations, Fulfillment and Logistics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of API calls/sec
+            interval: Continuous (API)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Growth CFO
+        mark: Genie One
+        summary: The CEO on GMV and contribution margin; the CMO on CAC and LTV, watching conversion rate, AOV and repeat rate by channel.
+        uses:
+          - - Genie One
+            - Ask what yesterday's conversion rate was by channel.
+          - - AI/BI
+            - Revenue and margin on certified Metric Views.
+          - - Unity Catalog
+            - One customer ID across storefront and CRM.
+        sub:
+          - name: CEO
+            cares: GMV, contribution margin and the growth-versus-profit trade across channels.
+          - name: Growth CFO
+            cares: cash, CAC payback and the margin behind every discount and promotion.
+          - name: Chief Marketing Officer
+            cares: blended CAC, LTV-to-CAC and return on ad spend across paid and owned.
+        ucs:
+          - Personalization
+          - Dynamic Pricing
+          - LTV Segmentation
+          - Fraud Prevention
+      - name: Growth Marketing
+        mark: Model Serving
+        summary: Paid acquisition, SEO and lifecycle campaigns, judged on blended CAC, LTV-to-CAC and return on ad spend against payback period by channel.
+        uses:
+          - - Attribution Hub
+            - Multi-touch credit across paid and owned.
+          - - Model Serving
+            - Propensity models in the campaign path.
+        sub:
+          - name: Paid Acquisition
+            cares: blended CAC, ROAS and payback period by channel and campaign.
+          - name: Lifecycle & CRM
+            cares: email, SMS and push journeys judged on repeat rate and retention.
+          - name: SEO & Content
+            cares: organic traffic, landing-page conversion and content-driven discovery.
+        ucs:
+          - Personalization
+          - Cart Abandonment
+          - LTV Segmentation
+      - name: Merchandising
+        mark: AI/BI
+        summary: Assortment, pricing, bundles and on-site search relevance, tracked on attach rate, gross margin and competitive price gap.
+        uses:
+          - - Pricing Workbench
+            - Elasticity and competitive price gaps.
+          - - AI/BI
+            - Basket and attach rate on governed orders.
+        sub:
+          - name: Category Managers
+            cares: assortment, gross margin and attach rate by category.
+          - name: Pricing & Promotions
+            cares: elasticity, competitive price gap and promotion lift.
+          - name: Site Search & Discovery
+            cares: on-site search relevance and conversion from query to cart.
+        ucs:
+          - Dynamic Pricing
+          - Search Relevance
+          - Marketplace Sync
+      - name: Operations
+        mark: Lakehouse//RT
+        summary: Fulfillment SLA, inventory and returns processing, run on on-time delivery, fill rate and cost to serve per order.
+        uses:
+          - - Fulfillment Command
+            - Promise vs actual delivery by node.
+          - - Lakehouse//RT
+            - Inventory ATP at cart latency.
+        sub:
+          - name: Fulfillment Ops
+            cares: on-time delivery, fill rate and cost to serve per order.
+          - name: Inventory Planning
+            cares: available-to-promise accuracy and safety stock across nodes.
+          - name: Returns & Reverse Logistics
+            cares: return rate, processing cost and restock speed.
+        ucs:
+          - Inventory ATP
+          - Fulfillment Network
+          - Returns Optimization
+      - name: Customer Experience
+        mark: Apps
+        summary: Support, reviews and loyalty program health, measured on CSAT, NPS and repeat purchase against return rate and contact rate by cohort.
+        uses:
+          - - CX Console
+            - CSAT, NPS and repeat purchase by cohort.
+          - - Apps
+            - Support tools on governed order history.
+        sub:
+          - name: Customer Support
+            cares: contact rate, first-contact resolution and CSAT by channel.
+          - name: Loyalty & Retention
+            cares: repeat purchase, NPS and program engagement by cohort.
+          - name: Reviews & Community
+            cares: review volume, sentiment and their lift on conversion.
+        ucs:
+          - Returns Optimization
+          - Cart Abandonment
+          - LTV Segmentation
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land web clickstream, OMS orders, payment captures and WMS shipments; own Bronze to Silver and the pager when the revenue and ATP tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for commerce, OMS and payment sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on clickstream and order feeds.
+          - - Lakewatch
+            - Freshness on the revenue and conversion tables growth reads at standup.
+        sub:
+          - name: Ingestion Engineers
+            cares: clickstream, OMS, payment and WMS connectors landing on time.
+          - name: Pipeline Owners
+            cares: Bronze-to-Silver reliability and the revenue and ATP table SLAs.
+          - name: Platform On-Call
+            cares: freshness and the pager when conversion or inventory tables stall.
+        ucs:
+          - Inventory ATP
+          - Fraud Prevention
+          - Marketplace Sync
+      - name: Data Scientists
+        mark: MLflow
+        summary: Recommendation, propensity, dynamic-pricing and checkout-fraud models, and whether they still hold across a peak season and channel mix shift.
+        uses:
+          - - Feature Store
+            - Customer and session features read identically in training and serving.
+          - - MLflow
+            - Every recommendation and fraud model tracked for audit and reproduction.
+          - - Model Serving
+            - Recommendation and fraud models scored in the checkout path.
+        sub:
+          - name: Recommendation & Ranking
+            cares: recommender and search-ranking models and their conversion lift.
+          - name: Pricing & Propensity
+            cares: elasticity, propensity and lifetime-value models across the mix.
+          - name: Fraud & Risk
+            cares: checkout-fraud models and how they hold through peak season.
+        ucs:
+          - Personalization
+          - Dynamic Pricing
+          - Fraud Prevention
+          - Search Relevance
+      - name: App Developers
+        mark: Apps
+        summary: Ship the attribution hub, pricing workbench, fulfillment command and CX console apps growth and operations work in, next to governed order data.
+        uses:
+          - - Apps
+            - Growth and operations screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for cart-recovery and inventory-hold state.
+          - - Agent Bricks
+            - Agents that draft pricing and recovery moves against governed tools.
+        sub:
+          - name: App Engineers
+            cares: the attribution, pricing, fulfillment and CX consoles growth and ops work in.
+          - name: Backend & State
+            cares: cart-recovery and inventory-hold state on serverless Postgres.
+          - name: Agent Builders
+            cares: agents that draft pricing and recovery moves against governed tools.
+        ucs:
+          - Cart Abandonment
+          - Dynamic Pricing
+          - Fulfillment Network
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Looker
+        icon: chart
+        summary: Growth and ops dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for daily revenue in growth standups.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks on governed clickstream.
+  - name: Channels & Partners
+    icon: partner
+    tiles:
+      - name: Marketplace Listings
+        icon: api
+        summary: Inventory and price sync to Amazon and eBay.
+        citations:
+          - amazon-sc
+      - name: 3PL Status Feed
+        icon: stream
+        summary: Shipment events shared to Narvar and Klaviyo.
+        citations:
+          - narvar
+      - name: Affiliate Networks
+        icon: partner
+        summary: Commission and attribution to partners.
+        citations:
+          - braze
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Dynamic Pricing
+        icon: market
+        summary: Price updates pushed to commerce and marketplaces.
+        citations:
+          - sfcc
+      - name: Cart Recovery
+        icon: custlake
+        summary: Abandonment sequences triggered from session data.
+        citations:
+          - klaviyo
+      - name: Inventory Holds
+        icon: stream
+        summary: ATP reservations released or extended in OMS.
+        citations:
+          - manhattan
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Sales Tax Filing
+        icon: gavel
+        summary: Jurisdiction filings from governed transaction data.
+      - name: PCI Scope Reports
+        icon: share
+        summary: Cardholder data environment attestations.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Customer and order products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Brand partners via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Attribution Hub
+        icon: chart
+        short: Marketing mix
+        summary: Multi-touch attribution across paid, owned and marketplace channels.
+      - name: Pricing Workbench
+        icon: market
+        short: Elasticity
+        summary: Price gaps and elasticity scenarios before changes go live.
+      - name: Fulfillment Command
+        icon: gauge
+        short: Delivery SLA
+        summary: Promise vs actual ship and delivery by node and carrier.
+      - name: CX Console
+        icon: custlake
+        short: Customer health
+        summary: CSAT, returns and repeat rate by cohort and segment.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Growth & Conversion
+        icon: aibi
+        summary: Conversion, AOV, revenue and channel performance on certified Metric Views.
+        kpis:
+          - Conversion rate
+          - AOV
+          - GMV
+          - Blended CAC
+          - Return on ad spend
+        teams:
+          - Growth Marketing
+          - CEO & Growth CFO
+          - Merchandising
+      - name: Fulfillment & SLA
+        icon: aibi
+        summary: On-time delivery, fill rate and cost to serve across nodes and carriers.
+        kpis:
+          - On-time delivery
+          - Fill rate
+          - Cost to serve
+          - Split-shipment rate
+          - ATP accuracy
+        teams:
+          - Operations
+          - Customer Experience
+          - Growth Marketing
+      - name: Payments & Fraud
+        icon: aibi
+        summary: Authorization rate, chargebacks and fraud loss across processors.
+        kpis:
+          - Authorization rate
+          - Chargeback rate
+          - Fraud loss rate
+          - Dispute volume
+          - False-positive rate
+        teams:
+          - CEO & Growth CFO
+          - Operations
+          - Customer Experience
+      - name: Retention & LTV
+        icon: aibi
+        summary: Repeat rate, lifetime value and CX health across cohorts.
+        kpis:
+          - Repeat rate
+          - Customer lifetime value
+          - Return rate
+          - CSAT
+          - Churn risk
+        teams:
+          - Customer Experience
+          - Growth Marketing
+          - CEO & Growth CFO
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Growth & Revenue Agent
+        icon: genie
+        summary: Ask about conversion, revenue, CAC and channel performance in plain language.
+        feeds:
+          - Shopify Plus
+          - Google Analytics 4
+          - Klaviyo
+          - Conversion, AOV, LTV
+        teams:
+          - Growth Marketing
+          - CEO & Growth CFO
+          - Merchandising
+        questions:
+          - What was yesterday's conversion rate by channel?
+          - What is blended CAC and LTV-to-CAC by acquisition channel?
+          - Which campaigns drove the most incremental revenue this week?
+          - How is AOV trending across paid, owned and marketplace?
+          - What is return on ad spend by channel and campaign?
+      - name: Fulfillment & Inventory Agent
+        icon: genie
+        summary: Explore delivery SLA, available-to-promise and cost to serve across nodes.
+        feeds:
+          - Manhattan Active Omni
+          - ShipBob WMS
+          - Flexport Logistics
+          - Conformed customers and orders
+        teams:
+          - Operations
+          - Customer Experience
+          - Growth Marketing
+        questions:
+          - What is on-time delivery by node and carrier right now?
+          - Where is available-to-promise drifting from actual stock?
+          - What is cost to serve per order by fulfillment node?
+          - Which orders are at risk of missing the promise date?
+          - Which nodes have the highest split-shipment rate?
+      - name: Payments & Fraud Agent
+        icon: genie
+        summary: Answer questions on payment success, disputes and checkout fraud.
+        feeds:
+          - Stripe Payments
+          - Adyen Platform
+          - Manhattan Active Omni
+        teams:
+          - CEO & Growth CFO
+          - Operations
+          - Customer Experience
+        questions:
+          - What is our payment authorization rate by processor?
+          - How is the chargeback rate trending this month?
+          - Which fraud patterns are driving the most declines?
+          - What is dispute volume by reason code and market?
+          - Where are false-positive declines costing us good orders?
+      - name: Customer & Lifecycle Agent
+        icon: genie
+        summary: Ask about retention, LTV segments and CX health across cohorts.
+        feeds:
+          - Klaviyo
+          - Braze
+          - Narvar Post-Purchase
+        teams:
+          - Customer Experience
+          - Growth Marketing
+          - CEO & Growth CFO
+        questions:
+          - What is repeat purchase rate by acquisition cohort?
+          - Which LTV segments respond best to lifecycle journeys?
+          - What is our return rate by category and reason?
+          - How does CSAT compare across support channels?
+          - Which cohorts are at highest churn risk right now?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Personalization
+        short: Growth
+        icon: custlake
+        summary: Product recommendations and content ranked per visitor.
+        problem: Every visitor sees the same merchandising, so relevant products stay buried and conversion leaks, and the signals to rank per shopper sit split across web, CRM and order systems.
+        who_benefits: Growth Marketing
+        how_built: Clickstream and order features are engineered in Feature Store and scored through Model Serving in the storefront path, so recommendations rank per visitor at page latency.
+        components:
+          - Model Serving
+          - Feature Store
+          - MLflow
+          - AI Functions
+          - Klaviyo
+        stories:
+          - title: Flaconi delivers real-time recommendations that lift conversion
+            url: https://www.databricks.com/customers/flaconi
+          - title: Myntra powers personalized shopping for 70M monthly users
+            url: https://www.databricks.com/customers/myntra
+      - name: Cart Abandonment
+        short: Lifecycle
+        icon: apps
+        summary: Recovery sequences timed to session behavior.
+        problem: Most carts are abandoned and recovery fires on a fixed timer that ignores intent, so shoppers are nagged or missed and the session context that would time the nudge is already gone.
+        who_benefits: Growth Marketing
+        how_built: Live session and cart state land in Lakebase and Lakehouse//RT, and propensity scores from Model Serving trigger recovery journeys in Klaviyo and Braze at the right moment.
+        components:
+          - Lakebase
+          - Lakehouse//RT
+          - Model Serving
+          - Klaviyo
+          - Braze
+        stories:
+          - title: Pandora scales personalized email recommendations across markets
+            url: https://www.databricks.com/customers/pandora
+      - name: Dynamic Pricing
+        short: Merchandising
+        icon: market
+        summary: Prices adjusted to elasticity and competitive signals.
+        problem: Prices are set on cost-plus rules and stale competitor checks, so margin leaks on some SKUs and demand is left on the table on others while true elasticity goes unmeasured.
+        who_benefits: Merchandising
+        how_built: Demand, inventory and competitive signals feed elasticity models in Pricing Workbench, scored with Model Serving and pushed to the storefront and marketplaces.
+        components:
+          - Pricing Workbench
+          - Model Serving
+          - AI Functions
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Seven ways AI reshapes retail pricing and operations
+            url: https://www.databricks.com/blog/top-7-ways-ai-retail-enhances-customer-experience-and-operations
+      - name: Inventory ATP
+        short: Operations
+        icon: stream
+        summary: Available-to-promise accurate at add-to-cart.
+        problem: Available-to-promise is computed from a nightly snapshot, so the cart shows stock that is already gone and oversells trigger cancellations, split shipments and refunds.
+        who_benefits: Operations
+        how_built: OMS and WMS events stream through Zerobus into Lakehouse//RT, and Fulfillment Command serves an ATP position accurate at add-to-cart across every node.
+        components:
+          - Fulfillment Command
+          - Lakehouse//RT
+          - Zerobus
+          - Manhattan Active Omni
+          - Delta Lake
+        stories:
+          - title: Walgreens right-sizes inventory across 9,000 stores on Databricks
+            url: https://www.databricks.com/customers/walgreens
+      - name: Fraud Prevention
+        short: Payments
+        icon: gavel
+        summary: Checkout fraud scored before capture.
+        problem: Checkout fraud and chargebacks eat margin, but rules-only screening blocks good customers and misses new patterns, and the score has to land before capture in milliseconds.
+        who_benefits: CEO & Growth CFO
+        how_built: Per-card velocity features are served from Lakebase and scored by Model Serving in the checkout path, with every model tracked in MLflow for audit and dispute defense.
+        components:
+          - Model Serving
+          - Feature Store
+          - MLflow
+          - Lakebase
+          - Stripe Payments
+        stories:
+          - title: Real-time fraud detection with Spark Real-Time Mode and Lakebase
+            url: https://www.databricks.com/blog/how-build-real-time-fraud-detection-using-spark-real-time-mode-and-lakebase
+      - name: Search Relevance
+        short: Discovery
+        icon: observ
+        summary: Query understanding and ranking tuned to conversion.
+        problem: On-site search misreads intent and synonyms, so shoppers land on empty or irrelevant results and bounce, and merchandisers cannot see which queries quietly lose the sale.
+        who_benefits: Merchandising
+        how_built: Query and catalog embeddings in AI Search rank results with Model Serving, and AI/BI surfaces zero-result and low-conversion queries merchandisers tune against.
+        components:
+          - AI Search
+          - Model Serving
+          - AI Functions
+          - Feature Store
+          - AI/BI
+      - name: Returns Optimization
+        short: CX
+        icon: partner
+        summary: Return reasons analyzed to reduce preventable volume.
+        problem: Returns are processed blind to why they happen, so preventable returns from sizing, defects or misleading detail keep recurring and reverse-logistics cost climbs every season.
+        who_benefits: Customer Experience
+        how_built: Return reasons, reviews and order history are conformed on Delta Lake and analysed with AI Functions in the CX Console, feeding fixes back to detail pages and sizing.
+        components:
+          - CX Console
+          - AI Functions
+          - Narvar Post-Purchase
+          - Delta Lake
+          - AI/BI
+      - name: Marketplace Sync
+        short: Channels
+        icon: globe
+        summary: Listings, fees and ads optimized across marketplaces.
+        problem: Listings, fees, inventory and ad spend live in each marketplace console, so price and stock drift out of sync, buy-box is lost and true per-channel profit is never clear.
+        who_benefits: Merchandising
+        how_built: Amazon and eBay order, fee and ad feeds land through Lakeflow onto Delta Lake, and AI/BI reconciles price, stock and margin per channel into a single sync view.
+        components:
+          - Amazon Seller Central
+          - eBay Managed Payments
+          - Lakeflow
+          - Delta Lake
+          - AI/BI
+      - name: LTV Segmentation
+        short: CRM
+        icon: custlake
+        summary: Cohorts scored for retention and upsell campaigns.
+        problem: Campaigns target broad lists because lifetime value is guessed from last purchase, so budget chases one-time buyers while high-value cohorts get the same generic offer.
+        who_benefits: Growth Marketing
+        how_built: Purchase, engagement and margin features in Feature Store drive LTV and churn models in Model Serving, and Klaviyo activates the scored cohorts for retention and upsell.
+        components:
+          - Model Serving
+          - Feature Store
+          - MLflow
+          - Klaviyo
+          - AI/BI
+        stories:
+          - title: Skechers lifts CTR 324% and cuts acquisition cost with segmentation
+            url: https://www.databricks.com/customers/skechers
+      - name: Fulfillment Network
+        short: Logistics
+        icon: stream
+        summary: Orders routed to the lowest-cost node meeting SLA.
+        problem: Orders route on static warehouse rules, so shipments travel farther than needed, split across nodes and miss the promise date while carrier and labor cost creep up.
+        who_benefits: Operations
+        how_built: Inventory, carrier-rate and demand signals are scored in Model Serving and served through Fulfillment Command, routing each order to the lowest-cost node that still meets SLA.
+        components:
+          - Fulfillment Command
+          - Model Serving
+          - Manhattan Active Omni
+          - ShipBob WMS
+          - Delta Lake
+medallion:
+  Bronze:
+    short: Raw clickstream and orders
+    summary: Web events, OMS orders, payment captures and WMS shipments landed exactly as received.
+  Silver:
+    short: Conformed customers and orders
+    summary: Customers, sessions, orders and SKUs resolved across storefront, OMS and fulfillment.
+  Gold:
+    short: Conversion, AOV, LTV
+    summary: 'Contracted products growth and ops run on: conversion rate, AOV, repeat rate and fulfillment SLA.'
+citation_index:
+  shopify-ec:
+    title: Shopify Plus
+    url: https://www.shopify.com/plus
+  sfcc:
+    title: Salesforce Commerce Cloud
+    url: https://www.salesforce.com/commerce/
+  adobe-commerce:
+    title: Adobe Commerce
+    url: https://business.adobe.com/products/magento/magento-commerce.html
+  manhattan:
+    title: Manhattan Associates
+    url: https://www.manh.com/
+  stripe:
+    title: Stripe
+    url: https://stripe.com/
+  adyen:
+    title: Adyen
+    url: https://www.adyen.com/
+  shipbob:
+    title: ShipBob
+    url: https://www.shipbob.com/
+  flexport:
+    title: Flexport
+    url: https://www.flexport.com/
+  narvar:
+    title: Narvar
+    url: https://corp.narvar.com/
+  klaviyo:
+    title: Klaviyo
+    url: https://en.wikipedia.org/wiki/Klaviyo
+  braze:
+    title: Braze
+    url: https://www.braze.com/
+  ga4:
+    title: Google Analytics 4
+    url: https://marketingplatform.google.com/about/analytics/
+  amazon-sc:
+    title: Amazon Seller Central
+    url: https://sellercentral.amazon.com/
+  ebay:
+    title: eBay
+    url: https://www.ebay.com/
+  similarweb:
+    title: Similarweb
+    url: https://www.similarweb.com/
+  jungle-scout:
+    title: Jungle Scout
+    url: https://www.junglescout.com/
+  shipstation:
+    title: ShipStation
+    url: https://www.shipstation.com/

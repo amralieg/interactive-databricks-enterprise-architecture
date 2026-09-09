@@ -1,0 +1,952 @@
+name: Water Utilities
+description: 'Municipal and investor-owned water utilities: SCADA and AMI metering, network asset management, customer billing, field work orders, and regulatory quality reporting.'
+sources:
+  - name: CIS & Billing
+    icon: erp
+    tiles:
+      - name: Oracle Utilities C2M
+        icon: erp
+        summary: Customer information, billing, payments and credit collections.
+        citations:
+          - oracle-c2m
+        category: Customer Information System (CIS)
+        what_it_is: Holds customer information, billing, payments and credit collections across the meter-to-cash process.
+        who_uses_it: Billing analysts, contact centre and credit & collections teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + billing cycles
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: SAP IS-U
+        icon: market
+        summary: Utility billing and device management for multi-commodity utilities.
+        citations:
+          - sap-isu
+        category: Utility Customer Information System (CIS)
+        what_it_is: Runs utility billing and device management for multi-commodity utilities on the SAP IS-U core.
+        who_uses_it: Billing operations, device management and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + billing cycles
+      - name: VertexOne CIS
+        icon: chart
+        summary: Cloud CIS for water and wastewater with customer self-service.
+        citations:
+          - vertexone
+        category: Cloud Customer Information System (CIS)
+        what_it_is: Cloud CIS for water and wastewater with customer self-service, billing and engagement.
+        who_uses_it: Billing analysts, customer operations and digital teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+  - name: SCADA & Operations
+    icon: stream
+    tiles:
+      - name: AVEVA PI System
+        icon: stream
+        summary: Historian for pumps, tanks, pressure and flow across the distribution network.
+        citations:
+          - aveva-pi
+        category: Process/Time-Series Historian
+        what_it_is: Stores pump, tank, pressure and flow tags across the distribution network as the operational time-series system of record.
+        who_uses_it: Control-room operators, pump & energy leads and hydraulic modellers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day tag history
+            interval: Hourly aggregates
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k tags/sec
+            interval: Continuous (sub-second)
+      - name: Ignition SCADA
+        icon: iot
+        summary: Plant and remote site SCADA for treatment and pumping stations.
+        citations:
+          - ignition
+        category: SCADA / Control System
+        what_it_is: Plant and remote-site SCADA for treatment and pumping stations, emitting analogs, states and alarms.
+        who_uses_it: Plant operators, control-room operators and instrumentation teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-20k signals/sec
+            interval: Continuous (sub-second)
+      - name: Schneider EcoStruxure
+        icon: partner
+        summary: Edge control and telemetry for lift stations and PRVs.
+        citations:
+          - schneider-eco
+        category: Edge Control & Telemetry Platform
+        what_it_is: Edge control and telemetry for lift stations and pressure-reducing valves across the network.
+        who_uses_it: Distribution operations, pressure management and field teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of readings/sec
+            interval: Continuous telemetry
+  - name: AMI & Metering
+    icon: iot
+    tiles:
+      - name: Itron OpenWay
+        icon: iot
+        summary: 'Advanced metering infrastructure: interval reads, tamper and leak flags.'
+        citations:
+          - itron
+        category: AMI Head-End System
+        what_it_is: Collects interval meter reads, tamper flags and leak alerts from the advanced metering estate.
+        who_uses_it: Metering operations, leak & NRW team and billing analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-60 GB/day interval reads
+            interval: Hourly / daily reads
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous meter events
+      - name: Sensus FlexNet
+        icon: api
+        summary: AMI head-end for residential and commercial meter populations.
+        citations:
+          - sensus
+        category: AMI Head-End System
+        what_it_is: RF-mesh AMI head-end collecting reads and endpoint alarms for residential and commercial meter populations.
+        who_uses_it: Metering operations and leak & NRW analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Hourly reads
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous endpoint alarms
+      - name: Badger Beacon
+        icon: db
+        summary: Encoder registers and mobile collection for legacy meter routes.
+        citations:
+          - badger
+        category: Meter Data Collection System
+        what_it_is: Encoder registers and mobile/drive-by collection for legacy meter routes feeding billing determinants.
+        who_uses_it: Metering operations, meter readers and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Route cycle (daily/monthly)
+  - name: GIS & Assets
+    icon: db
+    tiles:
+      - name: Esri ArcGIS Utility
+        icon: globe
+        summary: Pipe network, valves, hydrants and service connections geospatially modeled.
+        citations:
+          - esri-utility
+        category: Geographic Information System (GIS)
+        what_it_is: Holds the pipe network, valves, hydrants and service connections geospatially modelled for planning and risk analysis.
+        who_uses_it: GIS & asset data, reliability engineers and distribution planning.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-20 GB network model
+            interval: Daily / weekly model syncs
+      - name: IBM Maximo
+        icon: erp
+        summary: Asset registry, work orders and preventive maintenance for treatment plants.
+        citations:
+          - maximo
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages the asset registry, work orders and preventive maintenance for treatment plants and network assets.
+        who_uses_it: Reliability engineers, maintenance planning and asset management.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch
+      - name: Cityworks AMS
+        icon: sheet
+        summary: Work management for mains breaks, service line replacements and inspections.
+        citations:
+          - cityworks
+        category: Work & Asset Management System
+        what_it_is: Work management for mains breaks, service-line replacements and inspections across the distribution network.
+        who_uses_it: Field service dispatch, capital planning and operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Continuous work orders + daily batch
+  - name: Lab & Quality
+    icon: gavel
+    tiles:
+      - name: Hach WIMS
+        icon: gavel
+        summary: Water quality lab results, chain of custody and regulatory limits.
+        citations:
+          - hach-wims
+        category: Water Quality LIMS
+        what_it_is: Manages water-quality lab results, chain of custody and regulatory limits for drinking-water compliance.
+        who_uses_it: Compliance officers, water-quality lab and public-notification teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day results
+            interval: Per-sample + daily
+      - name: KISTERS WISKI
+        icon: chart
+        summary: Hydrological and water quality time series for source water monitoring.
+        citations:
+          - kisters
+        category: Hydrological Time-Series System
+        what_it_is: Stores hydrological and water-quality time series for source-water monitoring and quality analytics.
+        who_uses_it: Source water team, compliance officers and hydrologists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Hourly / daily
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of readings/sec
+            interval: Continuous sensor series
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Regional Agency Marts
+        icon: fed
+        summary: Wholesale and intertie flow marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Wholesale and intertie flow marts kept in the regional-agency warehouse and queried in place through federation rather than copied.
+        who_uses_it: Source water team, operations planning and regulatory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: EPA SDWIS Feed
+        icon: gavel
+        summary: Safe Drinking Water Information System reference for compliance benchmarking.
+        citations:
+          - epa-sdwis
+        category: Regulatory Reference Data
+        what_it_is: Safe Drinking Water Information System reference data used for compliance benchmarking and reporting.
+        who_uses_it: Compliance officers and regulatory affairs teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs reference data
+            interval: Periodic (regulatory updates)
+      - name: NOAA Hydrology API
+        icon: stream
+        summary: River flow and drought indices for source water planning.
+        citations:
+          - noaa
+        category: Hydrology & Drought Data Provider
+        what_it_is: River flow, reservoir and drought-index feeds used for source-water planning and drought contingency.
+        who_uses_it: Source water team and GM & executive office.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day
+            interval: Hourly / daily updates
+      - name: Weather Forecast API
+        icon: observ
+        summary: Demand and infiltration forecasting inputs from meteorological services.
+        citations:
+          - noaa
+        category: Weather & Climate Data Provider
+        what_it_is: Forecast temperature and precipitation feeds used as inputs to demand and infiltration forecasting models.
+        who_uses_it: Demand forecasting, distribution operations and planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day gridded forecasts
+            interval: Multiple forecast cycles daily
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: GM & Executive Office
+        mark: Genie One
+        summary: The general manager on cost per gallon and the capital plan; the COO on non-revenue water and the response time on a distribution outage.
+        uses:
+          - - Genie One
+            - Ask what last month's NRW was without analyst delay.
+          - - AI/BI
+            - Pressure and quality KPIs on certified Metric Views.
+          - - Unity Catalog
+            - One consumption definition across AMI and billing.
+        sub:
+          - name: General Manager
+            cares: cost per thousand gallons and the capital plan the board and rate case rest on.
+          - name: Chief Operating Officer
+            cares: non-revenue water and the response time when a main breaks or a zone loses pressure.
+          - name: CFO & Rates
+            cares: the revenue requirement, collections and the capital budget behind the next rate filing.
+        ucs:
+          - Capital Planning
+          - Leak Detection
+          - Drought Contingency
+      - name: Distribution Ops
+        mark: Lakehouse//RT
+        summary: Control room operators on pressure, storage and pump scheduling, holding pressure zones in compliance while trimming energy at the pumps.
+        uses:
+          - - Network Control Center
+            - Live SCADA, AMI leak flags and crew dispatch on one screen.
+          - - Lakehouse//RT
+            - Telemetry at control-room latency.
+        sub:
+          - name: Control Room Operators
+            cares: pressure, storage and pump status held in compliance across every zone each shift.
+          - name: Pump & Energy Lead
+            cares: pumping energy cost against tariff windows and tank targets.
+          - name: Leak & NRW Team
+            cares: night-flow anomalies and where to send crews to cut non-revenue water.
+        ucs:
+          - Pressure Management
+          - Pump Optimization
+          - Leak Detection
+          - Outage Response
+      - name: Customer Operations
+        mark: CustomerLake
+        summary: Call centre and field service on outages, high-bill disputes and leak investigations, giving agents restoration ETA and account context.
+        uses:
+          - - Customer Impact Console
+            - Outage map, estimated restoration and high-bill triage.
+          - - CustomerLake
+            - Account context without copying into a separate CRM.
+        sub:
+          - name: Call Centre Agents
+            cares: outage restoration ETAs and high-bill disputes answered on the first call.
+          - name: Field Service Dispatch
+            cares: leak, meter and service-line work orders routed to the right crew.
+          - name: Billing Analysts
+            cares: unusual consumption explained from meter intervals before a bill is disputed.
+        ucs:
+          - Outage Response
+          - High Bill Investigation
+      - name: Asset Management
+        mark: AI/BI
+        summary: Engineers on main-replacement priority, pump health and capex planning, ranking mains on break risk, age and soil against renewal budget.
+        uses:
+          - - AI/BI
+            - Asset risk and remaining life on certified views.
+          - - Genie One
+            - Ask which mains exceed break rate thresholds.
+        sub:
+          - name: Reliability Engineers
+            cares: main break risk, pipe condition and pump health across the network.
+          - name: Capital Planning
+            cares: the renewal and growth program ranked on risk, consequence and ROI.
+          - name: GIS & Asset Data
+            cares: the pipe, valve and hydrant network kept accurate for every risk model.
+        ucs:
+          - Main Break Prediction
+          - Capital Planning
+          - Pump Optimization
+      - name: Water Quality
+        mark: Lakeflow
+        summary: Quality teams on sample results, regulatory exceedances and public notification, tying lab and sensor data to limits before a deadline.
+        uses:
+          - - Quality Compliance Hub
+            - Lab results against limits with notification workflows.
+          - - Lakeflow
+            - SCADA, lab and AMI feeds conformed for quality analytics.
+        sub:
+          - name: Compliance Officers
+            cares: sampling results against limits and the primacy-agency reporting deadlines.
+          - name: Source Water Team
+            cares: raw-water quality and the drought and contamination risks to supply.
+          - name: Public Notification
+            cares: boil-water and exceedance notices issued to customers on time.
+        ucs:
+          - Water Quality Exceedance
+          - Drought Contingency
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land SCADA historian tags, AMI interval reads, work orders and lab results; own Bronze to Silver and the pager when an NRW table stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for CIS, SCADA and AMI sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on meter and telemetry feeds.
+          - - Lakewatch
+            - Freshness on the NRW tables the control room reads each shift.
+        sub:
+          - name: Ingestion Engineers
+            cares: SCADA historian, AMI reads, work orders and lab results landed reliably.
+          - name: Pipeline Owners
+            cares: Bronze-to-Silver quality and the pager when an NRW table stalls before a shift.
+          - name: Streaming Engineers
+            cares: control-room latency on pressure and leak-flag telemetry.
+        ucs:
+          - Leak Detection
+          - Demand Forecasting
+          - Water Quality Exceedance
+      - name: Data Scientists
+        mark: MLflow
+        summary: Leak-detection, demand-forecast, main-break and pump-optimisation models, and whether they still hold as weather and network state shift.
+        uses:
+          - - Feature Store
+            - Meter and asset features read identically in training and serving.
+          - - MLflow
+            - Every leak and break-risk experiment tracked for audit.
+          - - Model Serving
+            - Leak and demand models scored in the operational path.
+        sub:
+          - name: Hydraulic Modellers
+            cares: leak, demand and pressure models that hold as weather and network state shift.
+          - name: Asset Risk Modellers
+            cares: main-break and pump remaining-life scoring against condition data.
+          - name: MLOps
+            cares: every leak and break-risk model tracked, evaluated and monitored for audit.
+        ucs:
+          - Leak Detection
+          - Demand Forecasting
+          - Main Break Prediction
+          - Pump Optimization
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Network Control Center, Customer Impact and Quality Compliance apps control-room and quality teams work in, next to governed SCADA data.
+        uses:
+          - - Apps
+            - Control-room screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for work order and notification state writes.
+          - - Agent Bricks
+            - Agents that draft pump setpoints against governed tools.
+        sub:
+          - name: App Engineers
+            cares: the control-room, customer and quality screens built on governed data.
+          - name: Integration Engineers
+            cares: work order and notification writeback state on Lakebase.
+          - name: Agent Developers
+            cares: agents that draft pump setpoints and outage notices against governed tools.
+        ucs:
+          - Outage Response
+          - High Bill Investigation
+          - Water Quality Exceedance
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Operations and regulatory dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for pressure and outage questions in the control room channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Hydraulic and demand notebooks against governed SCADA and AMI data.
+  - name: Customer & Agency
+    icon: partner
+    tiles:
+      - name: Outage Notification API
+        icon: api
+        summary: Estimated restoration and boil-water alerts pushed to customer channels.
+        citations:
+          - oracle-c2m
+      - name: Regional Intertie Portal
+        icon: share
+        summary: Wholesale flow and quality shared to regional agencies over Delta Sharing.
+      - name: Contractor Work Portal
+        icon: globe
+        summary: Main replacement and inspection work packages shared to contractors.
+        citations:
+          - cityworks
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Pump Setpoint Adjust
+        icon: stream
+        summary: Optimised pump schedules written back to SCADA setpoints within limits.
+        citations:
+          - aveva-pi
+      - name: Field Work Orders
+        icon: apps
+        summary: Leak repair and meter exchange orders dispatched to crews.
+        citations:
+          - cityworks
+      - name: AMI Valves & Alerts
+        icon: iot
+        summary: Remote valve commands and customer leak notifications from AMI flags.
+        citations:
+          - itron
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: SDWIS Compliance
+        icon: gavel
+        summary: Sampling and exceedance reports filed to the primacy agency.
+        citations:
+          - epa-sdwis
+      - name: Consumer Confidence
+        icon: share
+        summary: Annual water quality reports published from contracted Gold products.
+        citations:
+          - hach-wims
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Network and quality products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Regional agencies reading live flow via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Network Control Center
+        icon: gauge
+        short: SCADA ops
+        summary: Live pressure, storage, pump status and AMI leak flags on Databricks Apps over Lakebase.
+      - name: Customer Impact Console
+        icon: custlake
+        short: Outages & billing
+        summary: Outage map, restoration ETA and high-bill triage for call centre agents.
+      - name: Quality Compliance Hub
+        icon: gavel
+        short: Lab results
+        summary: Sample results against regulatory limits with public notification workflows.
+      - name: Main Replacement Planner
+        icon: db
+        short: Asset capex
+        summary: Main break history and risk scores prioritising replacement capital.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Network & NRW
+        icon: aibi
+        summary: Non-revenue water, pressure compliance, leak activity and pump energy on certified Metric Views.
+        kpis:
+          - Non-revenue water
+          - Pressure compliance
+          - Night-flow anomalies
+          - Pump energy cost
+          - Leak repairs
+        teams:
+          - Distribution Ops
+          - Leak & NRW Team
+          - Pump & Energy Lead
+      - name: Customer & Outages
+        icon: aibi
+        summary: Outage restoration, high-bill disputes, first-call resolution and service orders.
+        kpis:
+          - Estimated restoration time
+          - High-bill disputes
+          - First-call resolution
+          - Open service orders
+          - Customers affected
+        teams:
+          - Customer Operations
+          - Call Centre Agents
+          - Field Service Dispatch
+      - name: Asset Health & Capital
+        icon: aibi
+        summary: Main-break risk, pump health, work-order backlog and replacement priority.
+        kpis:
+          - Main-break risk
+          - Break rate
+          - Pump condition
+          - Work-order backlog
+          - Risk reduction per capital dollar
+        teams:
+          - Asset Management
+          - Reliability Engineers
+          - Capital Planning
+      - name: Water Quality & Compliance
+        icon: aibi
+        summary: Sample results against limits, exceedances and sampling completeness.
+        kpis:
+          - Exceedance count
+          - Samples vs limit
+          - Sampling completeness
+          - Chlorine residual
+          - Notification timeliness
+        teams:
+          - Water Quality
+          - Compliance Officers
+          - Source Water Team
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Network & NRW Agent
+        icon: genie
+        summary: Ask about pressure, non-revenue water, leaks and pump energy across the network in plain language.
+        feeds:
+          - AVEVA PI System
+          - Itron OpenWay
+          - Schneider EcoStruxure
+          - NRW, pressure, compliance
+        teams:
+          - Distribution Ops
+          - Leak & NRW Team
+          - Pump & Energy Lead
+        questions:
+          - What was non-revenue water by district last month?
+          - Which zones show the largest night-flow anomalies right now?
+          - Where is pressure out of compliance across the network?
+          - How much pumping energy did we use against tariff windows this week?
+          - Which areas should crews investigate first for leaks?
+      - name: Customer & Billing Agent
+        icon: genie
+        summary: Explore outages, high-bill disputes and consumption from AMI intervals.
+        feeds:
+          - Oracle Utilities C2M
+          - Itron OpenWay
+          - Cityworks AMS
+          - Conformed meter, asset, account
+        teams:
+          - Customer Operations
+          - Call Centre Agents
+          - Billing Analysts
+        questions:
+          - Which accounts have open high-bill disputes right now?
+          - What is the restoration ETA for the current outages?
+          - Which premises show consumption spikes that look like private-side leaks?
+          - What is first-call resolution in the contact centre this week?
+          - How many service orders are open past their SLA?
+      - name: Asset & Capital Agent
+        icon: genie
+        summary: Answer questions on main-break risk, pump health and replacement priority.
+        feeds:
+          - Esri ArcGIS Utility
+          - IBM Maximo
+          - AVEVA PI System
+          - Conformed meter, asset, account
+        teams:
+          - Asset Management
+          - Reliability Engineers
+          - Capital Planning
+        questions:
+          - Which mains exceed our break-rate threshold this year?
+          - Where is main-break risk highest by material and soil type?
+          - Which pumps are showing the worst condition trend?
+          - What replacement candidates give the most risk reduction per dollar?
+          - What is remaining life on our aging cast-iron mains?
+      - name: Water Quality Agent
+        icon: genie
+        summary: Ask about sample results, exceedances and source-water risk against regulatory limits.
+        feeds:
+          - Hach WIMS
+          - KISTERS WISKI
+          - EPA SDWIS Feed
+          - NRW, pressure, compliance
+        teams:
+          - Water Quality
+          - Compliance Officers
+          - Source Water Team
+        questions:
+          - Which sample results are approaching a regulatory limit right now?
+          - Are there any exceedances that need public notification today?
+          - How is source-water quality trending against drought conditions?
+          - Which sites are behind on their sampling schedule?
+          - What is our chlorine residual trend across the distribution system?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Leak Detection
+        short: NRW
+        icon: iot
+        summary: Distribution leaks inferred from AMI night flow and pressure transients.
+        problem: Distribution leaks hide as background loss until a main bursts, and crews chase them across thousands of miles of buried pipe with little night-flow evidence to say where to dig first.
+        who_benefits: Distribution Ops
+        how_built: AMI night-flow and PI pressure transients land in Lakehouse//RT and score against leak models in Model Serving, so anomalies surface on the Network Control Center for crew dispatch.
+        components:
+          - Network Control Center
+          - Itron OpenWay
+          - AVEVA PI System
+          - Model Serving
+          - Lakehouse//RT
+          - Delta Lake
+        stories:
+          - title: Turning smart digital water meter data into autonomous actions
+            url: https://www.databricks.com/customers/water-link
+          - title: Pipeline Flow Monitoring
+            url: https://www.databricks.com/blog/pipeline-flow-monitoring
+      - name: Demand Forecasting
+        short: Planning
+        icon: chart
+        summary: Consumption forecast by district, weather and season.
+        problem: Demand is planned off last year's averages, so pumping, storage and purchases are set blind to weather, growth and seasonal swings, and the utility over-pumps or runs storage too low.
+        who_benefits: Distribution Ops
+        how_built: AMI intervals, weather and calendar features are engineered in Feature Store and forecast per district through Model Serving, published to planners on certified AI/BI Metric Views.
+        components:
+          - AI/BI
+          - Weather Forecast API
+          - Itron OpenWay
+          - Model Serving
+          - Feature Store
+          - Delta Lake
+        stories:
+          - title: Sabesp Transforms Water Utility Operations with Lakehouse
+            url: https://www.databricks.com/customers/sabesp
+      - name: Pressure Management
+        short: Operations
+        icon: stream
+        summary: Pressure zones optimised for compliance and energy cost.
+        problem: Pressure zones are tuned by hand to avoid low-pressure complaints, so the network runs over-pressured, wasting pump energy and driving the main breaks and leakage it was meant to prevent.
+        who_benefits: Distribution Ops
+        how_built: PI pressure and Schneider PRV telemetry land in Lakehouse//RT and feed optimisation models in Model Serving, so setpoints hold compliance at lowest energy from the Network Control Center.
+        components:
+          - Network Control Center
+          - AVEVA PI System
+          - Schneider EcoStruxure
+          - Model Serving
+          - Lakehouse//RT
+      - name: Pump Optimization
+        short: Energy
+        icon: iot
+        summary: Pump scheduling minimising energy while meeting storage targets.
+        problem: Pumps run on fixed schedules blind to tariff windows and tank state, so the utility burns energy at peak price and cycles equipment harder than storage targets actually require.
+        who_benefits: Distribution Ops
+        how_built: Pump, tank and tariff data feed scheduling models tracked in MLflow and scored in Model Serving, so optimised setpoints reach SCADA from the Network Control Center within hydraulic limits.
+        components:
+          - Network Control Center
+          - AVEVA PI System
+          - Model Serving
+          - MLflow
+          - Lakehouse//RT
+        stories:
+          - title: Vattenfall Builds Real-Time Energy Intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
+          - title: What is Predictive Maintenance?
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Water Quality Exceedance
+        short: Compliance
+        icon: gavel
+        summary: Lab and online sensor exceedances flagged before reporting deadlines.
+        problem: Lab results and online sensor readings sit in separate systems, so a chlorine or turbidity exceedance can be missed until a reporting deadline or notification clock has already started.
+        who_benefits: Water Quality
+        how_built: Hach WIMS lab results and WISKI sensor series are conformed through Lakeflow under Unity Catalog and checked against limits, flagging exceedances early in the Quality Compliance Hub.
+        components:
+          - Quality Compliance Hub
+          - Hach WIMS
+          - KISTERS WISKI
+          - Lakeflow
+          - Unity Catalog
+        stories:
+          - title: Turning smart digital water meter data into autonomous actions
+            url: https://www.databricks.com/customers/water-link
+      - name: Main Break Prediction
+        short: Assets
+        icon: db
+        summary: Pipe material, age and soil corrosivity scored for break risk.
+        problem: Mains are replaced on age alone, so sound pipe is dug up while corrosive-soil segments fail without warning, flooding streets and cutting service before any renewal budget reaches them.
+        who_benefits: Asset Management
+        how_built: Pipe material, age, break history and soil corrosivity from GIS and Maximo feed break-risk models in Model Serving tracked in MLflow, ranking segments in the Main Replacement Planner.
+        components:
+          - Main Replacement Planner
+          - Esri ArcGIS Utility
+          - IBM Maximo
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: What is Predictive Maintenance?
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Pipeline Flow Monitoring
+            url: https://www.databricks.com/blog/pipeline-flow-monitoring
+      - name: Outage Response
+        short: Customer
+        icon: gauge
+        summary: Outage scope, crew dispatch and restoration ETA for public communication.
+        problem: When a main breaks the call centre learns the scope from complaints, so agents cannot give a restoration time and crews are dispatched without knowing who is affected or how many.
+        who_benefits: Customer Operations
+        how_built: Network state, work orders and account data conform under Unity Catalog and surface in the Customer Impact Console on Lakebase, giving agents outage scope and a restoration ETA.
+        components:
+          - Customer Impact Console
+          - Cityworks AMS
+          - CustomerLake
+          - Lakebase
+          - AI/BI
+      - name: High Bill Investigation
+        short: Billing
+        icon: market
+        summary: Unusual consumption patterns explained from AMI intervals.
+        problem: A high-bill dispute lands with no way to see the meter's own intervals, so agents open a field visit for what is usually a private-side leak or a seasonal fill the data already explains.
+        who_benefits: Customer Operations
+        how_built: AMI interval reads from Itron join billing from Oracle C2M in the Customer Impact Console, so agents and Genie explain a spike from the consumption pattern before a truck rolls.
+        components:
+          - Customer Impact Console
+          - Itron OpenWay
+          - Oracle Utilities C2M
+          - Genie One
+          - AI/BI
+        stories:
+          - title: Turning smart digital water meter data into autonomous actions
+            url: https://www.databricks.com/customers/water-link
+          - title: Sabesp Transforms Water Utility Operations with Lakehouse
+            url: https://www.databricks.com/customers/sabesp
+      - name: Capital Planning
+        short: Finance
+        icon: erp
+        summary: Asset replacement and growth capital prioritised on risk and ROI.
+        problem: Renewal and growth capital is argued in spreadsheets, so replacement dollars chase the last failure instead of the risk-and-consequence ranking that would defend the plan to the board.
+        who_benefits: Asset Management
+        how_built: Asset condition, break risk and hydraulic constraint data are conformed under Unity Catalog and ranked on ROI in the Main Replacement Planner, published to finance on certified AI/BI views.
+        components:
+          - Main Replacement Planner
+          - IBM Maximo
+          - Esri ArcGIS Utility
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: How Scottish Water Made Its Capital Investment Data Conversational
+            url: https://www.databricks.com/blog/how-scottish-water-made-its-capital-investment-data-conversational-databricks-genie
+      - name: Drought Contingency
+        short: Resilience
+        icon: globe
+        summary: Stage restrictions and supply alternatives modeled against source levels.
+        problem: Drought stages are called late off manual reservoir reads, so restrictions and alternative-supply moves lag the shortage and the utility loses the lead time to soften customer impact.
+        who_benefits: GM & Executive Office
+        how_built: NOAA hydrology and forecast feeds join source-level and demand data on Delta Lake and model supply scenarios in Model Serving, so restriction stages and interties are planned in AI/BI.
+        components:
+          - NOAA Hydrology API
+          - Weather Forecast API
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+medallion:
+  Bronze:
+    short: Raw network and meter feeds
+    summary: SCADA historian tags, AMI interval reads, work orders, billing cycles and lab sample results, landed exactly as received so a leak alert or a quality exceedance can always be replayed.
+  Silver:
+    short: Conformed meter, asset, account
+    summary: Meters, assets, service accounts and pressure zones resolved into single conformed entities across CIS, SCADA and GIS, with consumption intervals stitched to one account.
+  Gold:
+    short: NRW, pressure, compliance
+    summary: 'Contracted products operations and regulators run on: non-revenue water, pressure compliance, boil-water event response, and cost per thousand gallons by district.'
+citation_index:
+  oracle-c2m:
+    title: Oracle Utilities C2M
+    url: https://www.oracle.com/industries/utilities/
+  sap-isu:
+    title: SAP for Utilities
+    url: https://www.sap.com/industries/utilities.html
+  vertexone:
+    title: VertexOne
+    url: https://vertexone.net/
+  aveva-pi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/pi-system/
+  ignition:
+    title: Ignition SCADA
+    url: https://inductiveautomation.com/
+  schneider-eco:
+    title: Schneider EcoStruxure
+    url: https://www.se.com/ww/en/work/solutions/system/s1/ecostruxure/
+  itron:
+    title: Itron OpenWay
+    url: https://www.itron.com/
+  sensus:
+    title: Sensus FlexNet
+    url: https://sensus.com/
+  badger:
+    title: Badger Meter Beacon
+    url: https://www.badgermeter.com/
+  esri-utility:
+    title: Esri ArcGIS Utility Network
+    url: https://www.esri.com/en-us/industries/water
+  maximo:
+    title: IBM Maximo
+    url: https://www.ibm.com/products/maximo
+  cityworks:
+    title: Cityworks AMS
+    url: https://www.cityworks.com/
+  hach-wims:
+    title: Hach WIMS
+    url: https://www.hach.com/
+  kisters:
+    title: KISTERS WISKI
+    url: https://www.kisters.net/
+  epa-sdwis:
+    title: EPA SDWIS
+    url: https://www.epa.gov/ground-water-and-drinking-water
+  noaa:
+    title: NOAA National Weather Service
+    url: https://www.weather.gov/

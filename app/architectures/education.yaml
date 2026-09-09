@@ -1,0 +1,902 @@
+name: Education
+description: 'Higher education and K-12: student lifecycle from inquiry through alumni, learning outcomes, financial aid, and campus operations.'
+sources:
+  - name: Student Information
+    icon: erp
+    tiles:
+      - name: Ellucian Banner
+        icon: erp
+        summary: 'Student information system of record: enrollments, registrations, grades, degree progress and transcript history.'
+        citations:
+          - ellucian-banner
+        category: Student Information System (SIS)
+        what_it_is: System-of-record for enrollments, registrations, grades, degree progress and transcript history across the institution.
+        who_uses_it: Registrar, Advising and Institutional research teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Nightly batch + intraday deltas
+      - name: Workday Student
+        icon: erp
+        summary: Cloud SIS for academic records, advising holds, program completion and residency rules.
+        citations:
+          - workday-student
+        category: Student Information System (SIS)
+        what_it_is: Cloud SIS holding academic records, advising holds, program completion and residency rules.
+        who_uses_it: Registrar, Advising and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-15 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: PowerSchool SIS
+        icon: erp
+        summary: 'Dominant K-12 student information system: enrollments, attendance, grades and state reporting across districts.'
+        citations:
+          - peoplesoft-campus
+        category: Student Information System (SIS)
+        what_it_is: K-12 SIS covering enrollments, attendance, grades and mandated state reporting across districts.
+        who_uses_it: District administration, State reporting and Attendance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day
+            interval: Nightly batch
+  - name: Learning & Content
+    icon: notebook
+    tiles:
+      - name: Canvas LMS
+        icon: notebook
+        summary: Course shells, assignments, discussion activity and outcome mastery data from the primary learning environment.
+        citations:
+          - canvas-lms
+        category: Learning Management System (LMS)
+        what_it_is: Primary learning environment emitting course activity, assignment submissions, discussion events and outcome mastery data.
+        who_uses_it: Student success, Faculty and Learning analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 10-50 GB/day activity logs
+            interval: Hourly / nightly
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous (activity events)
+      - name: Blackboard Learn
+        icon: notebook
+        summary: LMS engagement, assessment attempts and content access for institutions on the Blackboard estate.
+        citations:
+          - blackboard
+        category: Learning Management System (LMS)
+        what_it_is: LMS engagement, assessment attempts and content access for institutions running on the Blackboard estate.
+        who_uses_it: Student success, Faculty and Learning analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB/day
+            interval: Hourly / nightly
+      - name: Panopto Lecture Capture
+        icon: stream
+        summary: Recorded lecture views, watch time and search queries joined to course enrollment for engagement analysis.
+        citations:
+          - panopto
+        category: Lecture Capture / Video Platform
+        what_it_is: Captures lecture recordings and emits view, watch-time and search events joined to enrollment for engagement analysis.
+        who_uses_it: Learning analytics, Faculty and Instructional design teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs of video + view logs
+            interval: Continuous / daily
+  - name: Admissions & CRM
+    icon: partner
+    tiles:
+      - name: Slate by Technolutions
+        icon: partner
+        summary: Inquiry, application, decision and yield events from the admissions CRM the recruitment team works in.
+        citations:
+          - slate
+        category: Admissions CRM
+        what_it_is: Admissions CRM capturing inquiry, application, decision and yield events across the recruitment funnel.
+        who_uses_it: Admissions, Recruitment operations and Enrollment management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+      - name: Salesforce Education Cloud
+        icon: custlake
+        summary: Prospect journeys, recruiter activities and conversion funnels for institutions on Education Cloud.
+        citations:
+          - sf-edu-cloud
+        category: Education CRM
+        what_it_is: Holds prospect journeys, recruiter activities and conversion funnels for institutions on Education Cloud.
+        who_uses_it: Admissions, Marketing and Enrollment management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: National Student Clearinghouse
+        icon: share
+        summary: Enrollment verification, degree completion and transfer research files exchanged with peer institutions.
+        citations:
+          - nsc
+        category: Enrollment Verification Exchange
+        what_it_is: Exchanges enrollment verification, degree completion and transfer research files with peer institutions.
+        who_uses_it: Registrar, Institutional research and Enrollment management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB per exchange
+            interval: Periodic file exchanges
+  - name: Finance & Student Aid
+    icon: market
+    tiles:
+      - name: PowerFAIDS
+        icon: market
+        summary: Need analysis, packaging rules and ISIR-driven award letters the financial aid office certifies.
+        citations:
+          - powerfaids
+        category: Financial Aid Management System
+        what_it_is: Runs need analysis, packaging rules and ISIR-driven award letters the financial aid office certifies under Title IV.
+        who_uses_it: Financial aid, Bursar and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day awards + ISIR
+            interval: Nightly batch + award cycles
+      - name: Nelnet Campus Commerce
+        icon: erp
+        summary: Tuition billing, payment plans and bursar receivables reconciled against enrollment status.
+        citations:
+          - nelnet
+        category: Tuition Billing & Payments
+        what_it_is: Handles tuition billing, payment plans and bursar receivables reconciled against enrollment status.
+        who_uses_it: Bursar, Student accounts and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + intraday deltas
+      - name: Web & Portal Clickstream
+        icon: observ
+        summary: Prospect and student portal events from search through registration, joined to applications and enrollments.
+        category: Web & Portal Clickstream
+        what_it_is: Captures prospect and student portal events from search through registration, joined to applications and enrollments.
+        who_uses_it: Admissions, Marketing and Learning analytics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous clickstream
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Research Grants Ledger
+        icon: fed
+        summary: Sponsored research accounting and effort certification marts left where they are and queried in place under Unity Catalog.
+        category: Sponsored Research Data Warehouse
+        what_it_is: Sponsored-research accounting and effort-certification marts kept in the incumbent system and queried in place through federation.
+        who_uses_it: Sponsored programs, Research finance and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale ledgers
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Ed-Fi Data Standard
+        icon: api
+        summary: Interoperable student and assessment APIs normalised on ingest for state reporting and district exchange.
+        citations:
+          - ed-fi
+        category: Education Data Standard / API
+        what_it_is: Provides interoperable student and assessment APIs normalised on ingest for state reporting and district data exchange.
+        who_uses_it: Integration engineering, State reporting and District data teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Nightly / on schedule
+      - name: IMS Global LTI
+        icon: api
+        summary: Learning tool interoperability launches and grade passback events from third-party publishers.
+        citations:
+          - ims-lti
+        category: Learning Interoperability Standard (LTI)
+        what_it_is: Carries learning-tool launch and grade-passback events between the LMS and third-party publisher tools.
+        who_uses_it: Learning platforms, Integration engineering and Faculty teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of events/sec at peak
+            interval: Continuous (launch / passback)
+      - name: IPEDS / State Reporting
+        icon: gavel
+        summary: Federal and state compliance file layouts consumed inbound for validation before submission season.
+        citations:
+          - ipeds
+        category: Regulatory Reporting Data
+        what_it_is: Supplies federal and state compliance file layouts consumed for validation before submission season.
+        who_uses_it: Institutional research, Compliance and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB per submission
+            interval: Per reporting cycle
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: President & Provost
+        mark: Genie One
+        summary: The president and provost on enrollment health, first-year retention and six-year completion, and the trade between access and net-tuition sustainability.
+        uses:
+          - - Genie One
+            - Ask what fall enrollment looks like against target without waiting on institutional research.
+          - - AI/BI
+            - Retention, yield and net tuition on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "retention" means one thing across campus.
+        sub:
+          - name: President
+            cares: enrollment health, the completion rate and the trade between access and net-tuition sustainability.
+          - name: Provost
+            cares: academic program quality, learning outcomes and faculty resourcing across colleges.
+          - name: Institutional Research
+            cares: the certified numbers behind every board report and accreditation submission.
+        ucs:
+          - Enrollment Forecasting
+          - Learning Analytics
+          - Accreditation Reporting
+          - Alumni Engagement
+      - name: Registrar & Records
+        mark: AI/BI
+        summary: Official academic records, transfer articulation and degree-audit exceptions, and who is eligible to walk at commencement this term.
+        uses:
+          - - AI/BI
+            - Registration velocity, credit accumulation and stop-out patterns on governed definitions.
+          - - Genie One
+            - Ask which programs are behind on degree progress this term.
+          - - Unity Catalog
+            - One definition of enrollment status across SIS and LMS.
+        sub:
+          - name: University Registrar
+            cares: official academic records, transfer articulation and degree-audit integrity.
+          - name: Scheduling Office
+            cares: room utilisation, prime-time conflicts and section capacity each term.
+          - name: Degree Audit
+            cares: credit accumulation and who is eligible to walk at commencement this term.
+        ucs:
+          - Curriculum Optimisation
+          - Space & Scheduling
+          - Accreditation Reporting
+      - name: Student Success
+        mark: Model Serving
+        summary: Advising, tutoring and early-alert teams intervening on rising-risk students from LMS inactivity, grade slippage and aid gaps before one silently stops out.
+        uses:
+          - - Retention Risk Hub
+            - Risk scores and recommended outreach before census.
+          - - Model Serving
+            - Persistence models scored against live LMS and SIS signals.
+          - - CustomerLake
+            - Student segments without copying profiles into a separate CDP.
+        sub:
+          - name: Advising & Coaching
+            cares: rising-risk students and the outreach that keeps them enrolled.
+          - name: Tutoring & Learning Centers
+            cares: where students struggle by course and when to intervene.
+          - name: Early Alert Coordinators
+            cares: LMS inactivity and grade slippage before census closes.
+        ucs:
+          - Early Alert & Retention
+          - Learning Analytics
+          - Curriculum Optimisation
+      - name: Admissions & Enrollment
+        mark: CustomerLake
+        summary: Recruitment yield by channel and territory, melt between deposit and day one, and section fill measured against instructional and housing capacity.
+        uses:
+          - - Enrollment Forecast
+            - Cohort scenarios scored on instructional and housing capacity.
+          - - CustomerLake
+            - Prospect journeys joined to application and enrollment outcomes.
+          - - AI/BI
+            - Yield and melt dashboards the cabinet reads each cycle.
+        sub:
+          - name: Director of Admissions
+            cares: the funnel from inquiry to deposit by channel and territory.
+          - name: Enrollment Management
+            cares: yield, melt and the class the cabinet promised.
+          - name: Recruitment Operations
+            cares: recruiter activity and the events that move applications.
+        ucs:
+          - Recruitment Yield
+          - Enrollment Forecasting
+          - Financial Aid Packaging
+      - name: Finance & Financial Aid
+        mark: AI/BI
+        summary: Net tuition revenue, the aid discount rate and packaging that stays inside federal Title IV rules while hitting the class the cabinet promised.
+        uses:
+          - - Aid Packaging Workbench
+            - Award scenarios tested against policy before letters release.
+          - - AI/BI
+            - Discount rate and tuition revenue on certified Metric Views.
+          - - Unity Catalog
+            - One definition of aid and billing across bursar and aid systems.
+        sub:
+          - name: Financial Aid Director
+            cares: packaging inside Title IV rules and the aid discount rate.
+          - name: Bursar
+            cares: tuition billing and receivables reconciled to enrollment status.
+          - name: Sponsored Programs
+            cares: effort certification and cost share on research grants.
+        ucs:
+          - Financial Aid Packaging
+          - Research Compliance
+          - Enrollment Forecasting
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the SIS, LMS and admissions CRM feeds; own the Bronze to Silver path and the pager when a nightly enrollment or grade load breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for Banner, Canvas and Slate.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on enrollment and grade feeds.
+          - - Lakewatch
+            - Freshness on the tables the registrar and advisors read every morning.
+        sub:
+          - name: Pipeline Engineering
+            cares: the Bronze-to-Silver path off Banner, Canvas and Slate.
+          - name: Integration & Reporting
+            cares: state and federal file layouts and the nightly enrollment load.
+          - name: Platform & Reliability
+            cares: the pager when a grade or aid load breaks before dawn.
+        ucs:
+          - Early Alert & Retention
+          - Enrollment Forecasting
+          - Accreditation Reporting
+      - name: Data Scientists
+        mark: MLflow
+        summary: Retention-risk, enrollment-yield and course-demand models, and whether they still hold a term after deployment.
+        uses:
+          - - Feature Store
+            - Student features defined once and read identically in training and serving.
+          - - MLflow
+            - Every retention model run tracked for audit and reproduction.
+          - - Model Serving
+            - Persistence and yield models scored against live LMS and SIS signals.
+        sub:
+          - name: Retention Modeling
+            cares: persistence and stop-out risk from LMS and SIS signals.
+          - name: Enrollment Modeling
+            cares: yield, melt and course-demand forecasts by cohort.
+          - name: MLOps
+            cares: whether a retention model still holds a term after deployment.
+        ucs:
+          - Early Alert & Retention
+          - Enrollment Forecasting
+          - Recruitment Yield
+      - name: App Developers
+        mark: Apps
+        summary: Ship the advising, retention and aid-packaging applications the campus works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Advising and retention screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for advising notes and aid-decision writes.
+          - - Agent Bricks
+            - Agents that draft outreach or an aid scenario against governed tools.
+        sub:
+          - name: Advising Apps
+            cares: the screens coordinators work early alerts and notes in.
+          - name: Aid & Student Apps
+            cares: aid-scenario and student-portal writes over governed data.
+          - name: Platform Services
+            cares: auth, hosting and the API surface next to the lakehouse.
+        ucs:
+          - Early Alert & Retention
+          - Financial Aid Packaging
+          - Alumni Engagement
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and advising updates in the channel teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Student Systems
+    icon: opdb
+    tiles:
+      - name: Banner Registration Writeback
+        icon: db
+        summary: Section capacity and registration holds written back into the SIS so the answer reaches the student portal.
+        citations:
+          - ellucian-banner
+      - name: Canvas Grade Passback
+        icon: notebook
+        summary: Final grades and outcome mastery pushed to the LMS of record after faculty approval.
+        citations:
+          - canvas-lms
+      - name: Advising Mobile
+        icon: apps
+        summary: Early alerts, appointment notes and degree exceptions pushed to advisors in the field.
+  - name: Learning Platforms
+    icon: partner
+    tiles:
+      - name: LTI Tool Provisioning
+        icon: api
+        summary: Publisher tools entitled from governed roster and outcome data rather than flat CSV exports.
+        citations:
+          - ims-lti
+      - name: Ed-Fi Partner Exchange
+        icon: share
+        summary: District and state partners reading roster and assessment tables over Delta Sharing.
+        citations:
+          - ed-fi
+      - name: Alumni & Advancement
+        icon: custlake
+        summary: Graduate outcomes and giving propensity shared to advancement without nightly flat files.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: IPEDS & Federal Reporting
+        icon: gavel
+        summary: IPEDS, Clery and financial responsibility metrics produced from the same governed tables the institution runs on.
+        citations:
+          - ipeds
+      - name: FERPA Audit Trail
+        icon: share
+        summary: Directory and disclosure logs filed from contracted Gold products for compliance review.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Consortia, researchers and state agencies reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Student 360
+        icon: custlake
+        short: Unified learner view
+        summary: 'Every touchpoint from inquiry through alumni on one screen: academics, aid, engagement and risk, on Databricks Apps over Lakebase.'
+      - name: Retention Risk Hub
+        icon: gauge
+        short: Early intervention
+        summary: Cohort risk ranked before census with recommended outreach and advising appointments queued for coordinators.
+      - name: Course Demand Planner
+        icon: sheet
+        short: Section planning
+        summary: Historical fill and waitlist patterns scored against instructional capacity before the schedule locks.
+      - name: Aid Packaging Workbench
+        icon: market
+        short: Award decisions
+        summary: Packaging scenarios tested against policy and budget before award letters release to students.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Enrollment & Yield
+        icon: aibi
+        summary: Funnel, yield, melt and net tuition on certified Metric Views.
+        kpis:
+          - Enrollment vs target
+          - Yield rate
+          - Melt rate
+          - Net tuition revenue
+          - Aid discount rate
+        teams:
+          - Admissions & Enrollment
+          - President & Provost
+          - Finance & Financial Aid
+      - name: Retention & Persistence
+        icon: aibi
+        summary: Cohort persistence, stop-out risk and early-alert outreach.
+        kpis:
+          - Retention rate
+          - Persistence rate
+          - Stop-out risk
+          - Early-alert volume
+          - Outreach completion
+        teams:
+          - Student Success
+          - Advising & Coaching
+          - Institutional Research
+      - name: Learning Outcomes
+        icon: aibi
+        summary: Mastery attainment, completion and course effectiveness across programs.
+        kpis:
+          - Outcome mastery
+          - Completion rate
+          - Time-to-degree
+          - Modality effectiveness
+          - Course pass rate
+        teams:
+          - President & Provost
+          - Registrar & Records
+          - Institutional Research
+      - name: Aid & Finance
+        icon: aibi
+        summary: Discount rate, net tuition and packaging compliance on governed tables.
+        kpis:
+          - Aid discount rate
+          - Net tuition revenue
+          - Packaging compliance
+          - Receivables aging
+          - Cost per enrolled student
+        teams:
+          - Finance & Financial Aid
+          - Financial Aid Director
+          - Bursar
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Enrollment & Yield Agent
+        icon: genie
+        summary: Ask about the funnel, yield and melt against target across cycles in plain language.
+        feeds:
+          - Slate by Technolutions
+          - Salesforce Education Cloud
+          - Ellucian Banner
+          - Retention, enrollment, outcomes
+        teams:
+          - Admissions & Enrollment
+          - Director of Admissions
+          - Enrollment Management
+        questions:
+          - What does fall enrollment look like against target right now?
+          - Which channels and territories convert inquiry to deposit best?
+          - How much melt is occurring between deposit and day one?
+          - Which programs are behind on their enrollment goal this cycle?
+          - How does yield compare to the same point last cycle?
+      - name: Student Success & Retention Agent
+        icon: genie
+        summary: Explore persistence risk, LMS activity and early-alert outreach across cohorts.
+        feeds:
+          - Canvas LMS
+          - Blackboard Learn
+          - Ellucian Banner
+          - Conformed student, course
+        teams:
+          - Student Success
+          - Advising & Coaching
+          - Early Alert Coordinators
+        questions:
+          - Which students show rising stop-out risk before census?
+          - Which courses have the most students with LMS inactivity this week?
+          - Where is grade slippage concentrated by program and term?
+          - Which advising interventions correlate with improved persistence?
+          - Which cohorts are below their expected retention rate?
+      - name: Learning Outcomes Agent
+        icon: genie
+        summary: Answer questions on mastery, completion and course effectiveness across programs.
+        feeds:
+          - Canvas LMS
+          - Panopto Lecture Capture
+          - Ellucian Banner
+          - Retention, enrollment, outcomes
+        teams:
+          - President & Provost
+          - Institutional Research
+          - Registrar & Records
+        questions:
+          - Which courses have the lowest outcome-mastery attainment this term?
+          - How does completion differ by course modality?
+          - Which pathways bottleneck time-to-degree?
+          - How does lecture-capture engagement relate to course grades?
+          - Which programs improved learning outcomes year over year?
+      - name: Aid & Finance Agent
+        icon: genie
+        summary: Ask about the aid discount rate, net tuition and Title IV packaging compliance.
+        feeds:
+          - PowerFAIDS
+          - Nelnet Campus Commerce
+          - IPEDS / State Reporting
+          - Retention, enrollment, outcomes
+        teams:
+          - Finance & Financial Aid
+          - Financial Aid Director
+          - Bursar
+        questions:
+          - What is the aid discount rate this cycle versus last?
+          - Which award packages are drifting outside Title IV rules?
+          - How does net tuition revenue track against budget by program?
+          - Which students have unresolved bursar holds affecting enrollment?
+          - How does packaging affect yield across need bands?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Early Alert & Retention
+        short: Persistence
+        icon: gauge
+        summary: Identifying students likely to stop out from LMS inactivity, grades and aid gaps, and intervening before census.
+        problem: LMS inactivity, grade slippage and aid gaps hide across the SIS, LMS and aid systems, so advisors usually find a rising-risk student only after they have quietly stopped out.
+        who_benefits: Student Success
+        how_built: LMS activity, grades and aid signals land through Lakeflow and score persistence models in Model Serving, ranking risk in the Retention Risk Hub with outreach queued before census.
+        components:
+          - Retention Risk Hub
+          - Model Serving
+          - Canvas LMS
+          - Feature Store
+          - Ellucian Banner
+        stories:
+          - title: Western Governors University predicts dropout patterns and retention
+            url: https://www.databricks.com/customers/western-governors-university
+          - title: Flinders University improves student success with data and ML
+            url: https://www.databricks.com/customers/flinders-university
+      - name: Enrollment Forecasting
+        short: Capacity
+        icon: sheet
+        summary: Fall and spring headcount scenarios scored against housing, staffing and section capacity before the board commits.
+        problem: Headcount is projected from last year's melt and gut feel, so the board commits to a class the campus cannot house, staff or fill sections for once deposits convert.
+        who_benefits: Admissions & Enrollment
+        how_built: Admissions CRM, deposit and historical yield feeds are conformed on Delta Lake and scored into headcount scenarios read against housing and section capacity in the Course Demand Planner.
+        components:
+          - Course Demand Planner
+          - AI/BI
+          - Slate by Technolutions
+          - MLflow
+          - Delta Lake
+        stories:
+          - title: Flinders University gains a consistent view of student enrollment
+            url: https://www.databricks.com/customers/flinders-university
+      - name: Learning Analytics
+        short: Outcomes
+        icon: notebook
+        summary: Course and modality effectiveness measured on mastery and completion, not satisfaction surveys alone.
+        problem: Course and modality effectiveness is judged on end-of-term satisfaction surveys, so the mastery and completion signals sitting in the LMS never reach the leaders deciding what to fund.
+        who_benefits: President & Provost
+        how_built: LMS mastery, lecture-capture engagement and completion data are conformed on Delta Lake under Unity Catalog and surfaced as certified outcome measures in AI/BI.
+        components:
+          - Canvas LMS
+          - Panopto Lecture Capture
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Western Governors University tailors curriculum from learning data
+            url: https://www.databricks.com/customers/western-governors-university
+      - name: Financial Aid Packaging
+        short: Compliance
+        icon: market
+        summary: Need-based awards optimised within discount rate targets and federal packaging rules.
+        problem: Aid is packaged in tools that cannot test a scenario against the discount-rate target and Title IV rules at once, so awards drift over budget or out of compliance before letters release.
+        who_benefits: Finance & Financial Aid
+        how_built: Need analysis, ISIR and budget data feed award scenarios scored in the Aid Packaging Workbench, with Model Serving optimising packages inside policy and Unity Catalog holding one aid definition.
+        components:
+          - Aid Packaging Workbench
+          - PowerFAIDS
+          - Model Serving
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: AI-enabled advisory services for higher education financial aid
+            url: https://www.databricks.com/blog/ai-enabled-advisory-services-higher-education
+      - name: Recruitment Yield
+        short: Admissions
+        icon: partner
+        summary: Inquiry-to-enroll funnels by channel and territory, with melt between deposit and day one surfaced early.
+        problem: Inquiry-to-enroll funnels sit split across the admissions CRM and marketing tools, so recruiters cannot see which channels convert or catch deposit-to-day-one melt until it is too late.
+        who_benefits: Admissions & Enrollment
+        how_built: Prospect journeys from Slate and Education Cloud land in CustomerLake and score conversion and melt models in Model Serving, with yield read by channel and territory in AI/BI.
+        components:
+          - CustomerLake
+          - Slate by Technolutions
+          - Salesforce Education Cloud
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Baylor University unlocks the student voice across enrollment
+            url: https://www.databricks.com/customers/baylor-university
+          - title: AI-enabled advisory services for admissions and enrollment
+            url: https://www.databricks.com/blog/ai-enabled-advisory-services-higher-education
+      - name: Curriculum Optimisation
+        short: Programs
+        icon: sheet
+        summary: Which courses and pathways drive time-to-degree and which bottleneck completion.
+        problem: Course sequences and prerequisites that stall time-to-degree are invisible until a cohort graduates late, and the registration data that would flag them lives only in the SIS.
+        who_benefits: Registrar & Records
+        how_built: Registration, grade and degree-audit data from the SIS are conformed on Delta Lake and analysed in AI/BI and Genie to surface the courses and pathways that bottleneck completion.
+        components:
+          - Course Demand Planner
+          - Ellucian Banner
+          - AI/BI
+          - Delta Lake
+          - Genie One
+        stories:
+          - title: Flinders University advises on curriculum changes from data
+            url: https://www.databricks.com/customers/flinders-university
+      - name: Accreditation Reporting
+        short: Assurance
+        icon: gavel
+        summary: Learning outcomes and employment metrics produced from governed tables accreditors can trace.
+        problem: Accreditors want learning-outcome and employment evidence traced to source, but the metrics are rebuilt by hand each cycle from spreadsheets no one can audit back to the record.
+        who_benefits: President & Provost
+        how_built: Outcome and employment data are conformed into governed data products on Delta Lake under Unity Catalog, so accreditation metrics in AI/BI trace to the same tables the institution runs on.
+        components:
+          - IPEDS / State Reporting
+          - Data Products
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: How the English Office for Students enhances higher education standards
+            url: https://www.databricks.com/blog/how-english-office-students-leverages-databricks-enhance-higher-education-standards-and-drive
+      - name: Space & Scheduling
+        short: Operations
+        icon: stream
+        summary: Room utilisation and prime-time conflicts resolved before students register into overloaded sections.
+        problem: Rooms sit empty off-peak while prime-time sections collide, because utilisation and registration demand are reconciled only after students have already registered into overloaded slots.
+        who_benefits: Registrar & Records
+        how_built: Registration, section and room data are conformed on Delta Lake through Lakeflow and modelled against demand in the Course Demand Planner, resolving prime-time conflicts before registration opens.
+        components:
+          - Course Demand Planner
+          - Ellucian Banner
+          - Lakeflow
+          - AI/BI
+          - Delta Lake
+      - name: Alumni Engagement
+        short: Advancement
+        icon: custlake
+        summary: Graduate outcomes and giving propensity scored from the same student record advancement already trusts.
+        problem: Advancement works from nightly flat-file extracts of the student record, so graduate outcomes and giving propensity are stale and disconnected from the academic history they depend on.
+        who_benefits: President & Provost
+        how_built: The conformed student record feeds giving-propensity models in Model Serving and a graduate-outcome view in Student 360, so advancement reads live segments in AI/BI without a copied file.
+        components:
+          - Student 360
+          - CustomerLake
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+      - name: Research Compliance
+        short: Grants
+        icon: product
+        summary: Effort certification and cost share reconciled against sponsored project ledgers without a second shadow mart.
+        problem: Effort certification and cost share are reconciled in a shadow mart split from the sponsored-project ledger, so a grant audit means chasing numbers that no longer agree with the books.
+        who_benefits: Finance & Financial Aid
+        how_built: The sponsored-research ledger is queried in place under Unity Catalog and reconciled on Delta Lake, so effort and cost-share reports in AI/BI trace to the ledger without a second copy.
+        components:
+          - Research Grants Ledger
+          - Unity Catalog
+          - Data Products
+          - AI/BI
+          - Delta Lake
+medallion:
+  Bronze:
+    short: Raw campus feeds
+    summary: SIS enrollments, LMS activity logs, admissions CRM events, aid awards and bursar transactions, landed exactly as received so a grade or an aid decision can always be replayed as it stood.
+  Silver:
+    short: Conformed student, course
+    summary: Students, courses, sections and terms resolved into single conformed entities across the SIS, LMS and CRM estates, with cross-system identifiers reconciled and transfer credit stitched to one academic record.
+  Gold:
+    short: Retention, enrollment, outcomes
+    summary: 'Contracted products academic and finance leaders run on: retention and persistence by cohort, enrollment yield and melt, learning outcome attainment, and aid packaging compliance.'
+citation_index:
+  ellucian-banner:
+    title: Ellucian Banner SIS
+    url: https://www.ellucian.com/solutions/ellucian-banner
+  workday-student:
+    title: Workday Student
+    url: https://www.workday.com/en-us/products/student.html
+  peoplesoft-campus:
+    title: PowerSchool SIS
+    url: https://www.powerschool.com/
+  canvas-lms:
+    title: Instructure Canvas LMS
+    url: https://www.instructure.com/canvas
+  blackboard:
+    title: Anthology Blackboard Learn
+    url: https://www.anthology.com/products/teaching-and-learning/learning-effectiveness/blackboard
+  panopto:
+    title: Panopto video platform
+    url: https://www.panopto.com/
+  slate:
+    title: Technolutions Slate
+    url: https://technolutions.com/slate
+  sf-edu-cloud:
+    title: Salesforce Education Cloud
+    url: https://www.salesforce.com/education/
+  nsc:
+    title: National Student Clearinghouse
+    url: https://www.studentclearinghouse.org/
+  powerfaids:
+    title: PowerFAIDS
+    url: https://www.powerfaids.org/
+  nelnet:
+    title: Nelnet Campus Commerce
+    url: https://en.wikipedia.org/wiki/Nelnet
+  ed-fi:
+    title: Ed-Fi data standard
+    url: https://www.ed-fi.org/
+  ims-lti:
+    title: IMS Global Learning Tools Interoperability
+    url: https://www.imsglobal.org/activity/learning-tools-interoperability
+  ipeds:
+    title: IPEDS federal reporting
+    url: https://nces.ed.gov/ipeds/

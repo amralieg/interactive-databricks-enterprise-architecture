@@ -1,0 +1,882 @@
+name: Genomics & Biotech
+description: 'Genomics and biotechnology: sequencing pipelines, variant interpretation, lab operations, clinical trial biomarkers and regulated research data.'
+sources:
+  - name: Sequencing & Omics
+    icon: stream
+    tiles:
+      - name: Illumina BaseSpace
+        icon: db
+        summary: Run metadata, cluster density and demultiplexed FASTQ from NovaSeq and NextSeq instruments.
+        citations:
+          - illumina-basespace
+        category: Sequencing Platform (NGS)
+        what_it_is: Runs short-read sequencing and emits run metadata, QC metrics and demultiplexed FASTQ from NovaSeq and NextSeq instruments into the analysis pipeline.
+        who_uses_it: Bioinformatics, Pipeline Engineers and Lab Operations.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 0.5-5 TB/run (FASTQ/BAM)
+            interval: Per-run on completion (hours)
+      - name: Oxford Nanopore EPI2ME
+        icon: iot
+        summary: Long-read basecalls, methylation and structural variant calls from MinION and PromethION.
+        citations:
+          - nanopore-epi2me
+        category: Long-Read Sequencing Platform
+        what_it_is: Produces long-read basecalls, methylation and structural-variant calls in real time from MinION and PromethION devices for genome assembly and SV detection.
+        who_uses_it: Bioinformatics, Computational Biologists and Pipeline Engineers.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 0.1-3 TB/run
+            interval: Per-run
+          stream:
+            types:
+              - semi-structured
+            volume: reads as basecalled
+            interval: Continuous during run
+      - name: 10x Genomics Cloud
+        icon: api
+        summary: Single-cell and spatial gene expression matrices from Chromium and Visium workflows.
+        citations:
+          - 10x-cloud
+        category: Single-Cell / Spatial Genomics Platform
+        what_it_is: Processes Chromium and Visium workflows into single-cell and spatial gene-expression matrices for target discovery and tumour-microenvironment analysis.
+        who_uses_it: Computational Biologists, Single-Cell Analysts and Bioinformatics.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 10-200 GB/run (matrices)
+            interval: Per-run
+  - name: Lab & Sample Mgmt
+    icon: erp
+    tiles:
+      - name: Benchling R&D Cloud
+        icon: notebook
+        summary: Sample registration, chain of custody and structured experiment records.
+        citations:
+          - benchling
+        category: Electronic Lab Notebook / R&D Platform
+        what_it_is: Registers samples, records structured experiments and holds chain of custody so bench work and molecular biology data stay linked to a sample identity.
+        who_uses_it: Research scientists, Computational Biologists and Biobank Managers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + on save
+      - name: LabVantage LIMS
+        icon: db
+        summary: Clinical and research sample accessioning, aliquots and result release.
+        citations:
+          - labvantage
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Manages sample accessioning, aliquots, testing workflow and result release across clinical and research labs, the operational spine of the lab.
+        who_uses_it: Lab Operations, Lab Directors and Variant Scientists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day
+            interval: Nightly batch + intraday updates
+      - name: Thermo SampleManager
+        icon: sheet
+        summary: Biobank specimen tracking, storage location and stability across sample freezers.
+        citations:
+          - samplemanager
+        category: Biobank / Sample Management System
+        what_it_is: Tracks biobank specimens, freezer storage location and stability so aliquot custody and conditions are known from collection through use.
+        who_uses_it: Biobank Managers, Reagent & Inventory Leads and Lab Operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch
+  - name: Clinical & Trials
+    icon: people
+    tiles:
+      - name: Medidata Rave EDC
+        icon: gavel
+        summary: Electronic case report forms, visit schedules and protocol deviations.
+        citations:
+          - medidata-rave
+        category: Electronic Data Capture (EDC)
+        what_it_is: Captures case report forms, visit schedules and protocol deviations for the trials that consume biomarker and genomic results.
+        who_uses_it: Clinical Operations, Clinical Trial Managers and Site Monitors.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-8 GB/day per study
+            interval: Nightly extracts
+      - name: Veeva Vault CTMS
+        icon: partner
+        summary: Site activation, enrolment milestones and monitoring visit findings.
+        citations:
+          - veeva-ctms
+        category: Clinical Trial Management System (CTMS)
+        what_it_is: Tracks site activation, enrolment milestones and monitoring visit findings so trial operations see enrolment against target by site.
+        who_uses_it: Clinical Operations, Clinical Trial Managers and Patient Recruitment Leads.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly sync
+      - name: Flatiron Oncology EHR
+        icon: custlake
+        summary: De-identified oncology clinical records for real-world evidence cohorts.
+        citations:
+          - flatiron
+        category: Real-World Oncology Data (EHR-derived)
+        what_it_is: De-identified, curated oncology EHR records used to build real-world-evidence cohorts and link genomic results to treatment outcomes.
+        who_uses_it: CSO & CFO, Computational Biologists and Patient Recruitment Leads.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 10-50 GB per cohort
+            interval: Periodic curated refreshes
+  - name: Knowledge & Reference
+    icon: globe
+    tiles:
+      - name: ClinVar & gnomAD
+        icon: share
+        summary: Public variant pathogenicity and population frequency references for annotation.
+        citations:
+          - clinvar
+        category: Variant Reference Database
+        what_it_is: Public references for variant pathogenicity (ClinVar) and population allele frequency (gnomAD) used to annotate and classify called variants.
+        who_uses_it: Bioinformatics, Variant Scientists and Reference Data Curators.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (reference releases)
+            interval: Periodic version releases
+      - name: COSMIC Cancer DB
+        icon: db
+        summary: Somatic mutation catalogue for oncology biomarker interpretation.
+        citations:
+          - cosmic
+        category: Somatic Mutation Reference Database
+        what_it_is: Catalogue of somatic mutations in cancer used to interpret oncology biomarkers and prioritise variants for review.
+        who_uses_it: Bioinformatics, Variant Scientists and Computational Biologists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (reference releases)
+            interval: Periodic version releases
+      - name: Instrument QC Telemetry
+        icon: observ
+        summary: Sequencer health, reagent lot and calibration drift joined to run outcomes.
+        category: Sequencer Instrument Telemetry
+        what_it_is: Streams sequencer health, reagent-lot and calibration-drift signals joined to run outcomes so failing runs are caught before bad calls propagate.
+        who_uses_it: Lab Operations, Pipeline Engineers and Quality Managers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: continuous instrument metrics
+            interval: Continuous during runs
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: CRO Analysis Results
+        icon: fed
+        summary: Contract research organisation variant reports left at partners and queried in place under Unity Catalog.
+        category: CRO Bioinformatics Results
+        what_it_is: Variant and QC analysis results produced by contract research organisations, left at the partner and queried in place through federation rather than copied.
+        who_uses_it: Bioinformatics, Regulatory & Quality and Compliance Leads.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: TB-scale partner results
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: GA4GH WES/WGS APIs
+        icon: api
+        summary: Beacon and phenopacket exchange endpoints consumed inbound for federated discovery.
+        citations:
+          - ga4gh
+        category: Genomics Data Exchange Standard (GA4GH)
+        what_it_is: Beacon and phenopacket exchange endpoints consumed inbound for federated variant discovery across institutions without moving patient-level files.
+        who_uses_it: Bioinformatics, Computational Biologists and Compliance Leads.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of API calls/query
+            interval: Continuous (API / federated)
+      - name: HL7 FHIR Genomics
+        icon: stream
+        summary: Diagnostic report and observation resources normalised on ingest for clinical integration.
+        citations:
+          - fhir-genomics
+        category: Clinical Interoperability Standard (FHIR Genomics)
+        what_it_is: Diagnostic-report and observation resources normalised on ingest so genomic results integrate with clinical systems at ordering and reporting.
+        who_uses_it: Bioinformatics, Clinical Operations and App Developers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10s-100s of resources/sec
+            interval: Continuous (API / event)
+      - name: dbGaP Authorised Access
+        icon: gavel
+        summary: Controlled-access cohort files retrieved under DAC-approved scopes.
+        category: Controlled-Access Genomic Data Repository
+        what_it_is: Controlled-access cohort files (genotypes and phenotypes) retrieved under Data Access Committee-approved scopes for research cohorts.
+        who_uses_it: Computational Biologists, Bioinformatics and Compliance Leads.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 100s of GB per cohort
+            interval: On approval / periodic pulls
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CSO & CFO
+        mark: Genie One
+        summary: The CSO on sequencing throughput and biomarker programme progress; the CFO on CRO spend, cost-per-sample and trial enrolment velocity.
+        uses:
+          - - Genie One
+            - Ask how many samples cleared QC this week without waiting on bioinformatics.
+          - - AI/BI
+            - Throughput, QC and trial metrics on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "pathogenic" means one thing across labs.
+        sub:
+          - name: Chief Scientific Officer
+            cares: sequencing throughput and whether biomarker programmes are converting into targets.
+          - name: Chief Financial Officer
+            cares: CRO spend, cost-per-sample and trial enrolment velocity against the budget.
+          - name: Head of Translational Research
+            cares: which discovery programmes are ready to move into the clinic.
+        ucs:
+          - Biomarker Discovery
+          - Real-World Evidence
+          - Trial Enrolment
+      - name: Bioinformatics
+        mark: Model Serving
+        summary: Pipeline engineers and analysts on variant calling, annotation and the VUS queue, deciding what is safe to release to clinicians at sign-out.
+        uses:
+          - - Variant Review Workbench
+            - VUS queues prioritised by evidence tier before sign-out.
+          - - Model Serving
+            - Classifier models scored in the interpretation path.
+          - - MLflow
+            - Pipeline runs tracked for CLIA and CAP audit.
+        sub:
+          - name: Variant Scientists
+            cares: the VUS queue and the evidence tier behind every classification at sign-out.
+          - name: Pipeline Engineers
+            cares: that variant calling and annotation stay reproducible release to release.
+          - name: Computational Biologists
+            cares: single-cell and multi-omic signals that point to a new target.
+        ucs:
+          - Variant Interpretation
+          - Single-Cell Analytics
+          - Reference Data Harmonisation
+          - Pharmacogenomics
+      - name: Clinical Operations
+        mark: AI/BI
+        summary: Trial managers on site enrolment against target, sample-collection SLAs and protocol deviations before a site is at risk of closing.
+        uses:
+          - - Trial Enrolment Tracker
+            - Biomarker-positive screen failures surfaced before sites close.
+          - - AI/BI
+            - Enrolment and deviation metrics on certified Metric Views.
+          - - Unity Catalog
+            - One definition of subject status across EDC and LIMS.
+        sub:
+          - name: Clinical Trial Managers
+            cares: site enrolment against target and the screen-failure rate by protocol.
+          - name: Site Monitors
+            cares: protocol deviations and sample-collection SLAs before a site is at risk.
+          - name: Patient Recruitment Leads
+            cares: matching biomarker-positive candidates to open protocols.
+        ucs:
+          - Trial Enrolment
+          - Real-World Evidence
+          - Biomarker Discovery
+      - name: Lab Operations
+        mark: Lakeflow
+        summary: Lab directors on assay turnaround time, reagent-lot inventory and instrument utilisation before a client escalates a late result.
+        uses:
+          - - Lab Ops Dashboard
+            - Queue depth and TAT by assay before clients escalate.
+          - - Lakeflow
+            - LIMS and instrument feeds conformed for operations analytics.
+          - - Lakewatch
+            - Freshness on the tables sign-out depends on.
+        sub:
+          - name: Lab Directors
+            cares: assay turnaround time and whether sign-out will hit its SLA today.
+          - name: Reagent & Inventory Leads
+            cares: reagent-lot availability and expiry before it stops a run.
+          - name: Biobank Managers
+            cares: aliquot location, storage conditions and sample chain of custody.
+        ucs:
+          - Lab Turnaround Optimisation
+          - Sample Chain of Custody
+      - name: Regulatory & Quality
+        mark: AI/BI
+        summary: Quality and regulatory affairs on CAP and CLIA audits, QC failure rates and the validation documentation a submission stands or falls on.
+        uses:
+          - - Quality Metrics
+            - QC failure rates and CAPA aging on governed definitions.
+          - - AI/BI
+            - Audit-ready dashboards regulators can trace.
+          - - Unity Catalog
+            - Lineage from raw FASTQ to signed report.
+        sub:
+          - name: Quality Managers
+            cares: QC failure rates, CAPA aging and proficiency testing outcomes.
+          - name: Regulatory Affairs
+            cares: the validation and reproducibility evidence a submission stands on.
+          - name: Compliance Leads
+            cares: CAP and CLIA audit readiness and lineage from FASTQ to signed report.
+        ucs:
+          - Pipeline Reproducibility
+          - Sample Chain of Custody
+          - Reference Data Harmonisation
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the sequencer, LIMS and trial EDC feeds; own the Bronze to Silver path and the pager when a run or sample feed breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for BaseSpace, LIMS and EDC sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on FASTQ and sample feeds.
+          - - Lakewatch
+            - Freshness on the tables sign-out and trial teams read every morning.
+        sub:
+          - name: Ingestion Engineers
+            cares: the BaseSpace, LIMS and EDC connectors and the Bronze-to-Silver path.
+          - name: Pipeline Reliability
+            cares: the pager when a sequencing run or a sample feed breaks overnight.
+          - name: Reference Data Curators
+            cares: versioned ClinVar, gnomAD and COSMIC tables downstream teams depend on.
+        ucs:
+          - Lab Turnaround Optimisation
+          - Reference Data Harmonisation
+          - Sample Chain of Custody
+      - name: Data Scientists
+        mark: MLflow
+        summary: Variant-classification, biomarker-discovery and turnaround-time models, and whether they still hold under CAP and CLIA validation.
+        uses:
+          - - Feature Store
+            - Sample and variant features defined once for training and serving.
+          - - MLflow
+            - Every pipeline run tracked for CLIA and CAP audit.
+          - - Model Serving
+            - Classifier models scored in the interpretation path.
+        sub:
+          - name: ML Engineers
+            cares: variant-classification and biomarker models and their drift over time.
+          - name: Validation Scientists
+            cares: whether a model still holds under CAP and CLIA validation.
+          - name: Single-Cell Analysts
+            cares: clustering, annotation and perturbation across large cell atlases.
+        ucs:
+          - Variant Interpretation
+          - Biomarker Discovery
+          - Single-Cell Analytics
+          - Pharmacogenomics
+      - name: App Developers
+        mark: Apps
+        summary: Ship the variant review, enrolment-tracking and lab-ops applications the labs work in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Review and lab screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for sign-out and sample writes.
+          - - Agent Bricks
+            - Agents that draft a variant summary or enrolment check against governed tools.
+        sub:
+          - name: Full-Stack Engineers
+            cares: the variant review, enrolment and lab-ops screens scientists work in.
+          - name: Lakebase Engineers
+            cares: serverless Postgres for sign-out and sample writes next to governed data.
+          - name: Agent Developers
+            cares: agents that draft a variant summary or an enrolment check against governed tools.
+        ucs:
+          - Variant Interpretation
+          - Trial Enrolment
+          - Lab Turnaround Optimisation
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and lab alerts in the channel teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Clinical Writeback
+    icon: opdb
+    tiles:
+      - name: Signed Report Release
+        icon: gavel
+        summary: Interpreted variants and diagnostic narratives written back into LIMS for clinician delivery.
+        citations:
+          - labvantage
+      - name: EDC Biomarker Flags
+        icon: db
+        summary: Enrolment eligibility results pushed to the trial EDC at screening.
+        citations:
+          - medidata-rave
+      - name: Lab Queue Mobile
+        icon: apps
+        summary: Sample prep tasks and exception handling pushed to bench technologists.
+  - name: Research Partners
+    icon: partner
+    tiles:
+      - name: CRO Data Exchange
+        icon: share
+        summary: Variant and QC tables shared with contract labs over Delta Sharing under study agreements.
+      - name: Academic Collaborations
+        icon: globe
+        summary: Federated cohort queries via GA4GH beacons without exporting patient-level files.
+        citations:
+          - ga4gh
+      - name: Pharma Alliance Feeds
+        icon: product
+        summary: Biomarker prevalence and response summaries exchanged under collaboration MSAs.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CLIA/CAP Compliance
+        icon: gavel
+        summary: QC, proficiency and corrective action records produced from governed lab tables.
+      - name: FDA Submission Packages
+        icon: share
+        summary: Validation summaries and analysis reproducibility filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: CROs, pharma partners and consortia reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Variant Review Workbench
+        icon: gauge
+        short: Clinical sign-out
+        summary: VUS and pathogenic calls ranked by evidence tier with literature and population frequency at the curator's fingertips.
+      - name: Trial Enrolment Tracker
+        icon: people
+        short: Biomarker screening
+        summary: Sites, screen failures and biomarker-positive enrolment against protocol targets in real time.
+      - name: Lab Ops Dashboard
+        icon: stream
+        short: Throughput & TAT
+        summary: Instrument queues, reagent lots and turnaround time by assay before clients escalate.
+      - name: Pipeline QC Console
+        icon: iot
+        short: Bioinformatics
+        summary: Run-level QC metrics and pipeline failures surfaced before downstream annotation consumes bad calls.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Sequencing Throughput & QC
+        icon: aibi
+        summary: Samples through QC, pipeline pass rate and cost per sample on certified Metric Views.
+        kpis:
+          - Samples through QC
+          - Pipeline QC pass rate
+          - Cost per sample
+          - Sequencing turnaround
+          - Rework rate
+        teams:
+          - CSO & CFO
+          - Lab Operations
+          - Bioinformatics
+      - name: Variant Review & Sign-out
+        icon: aibi
+        summary: VUS queue depth, time to sign-out and reclassification across the review workbench.
+        kpis:
+          - VUS queue depth
+          - Time to sign-out
+          - Reclassification rate
+          - Evidence-tier coverage
+          - Cases per curator
+        teams:
+          - Bioinformatics
+          - Variant Scientists
+          - Computational Biologists
+      - name: Trial Enrolment
+        icon: aibi
+        summary: Enrolment against target, biomarker-positive rate and deviations across trials.
+        kpis:
+          - Enrolment vs target
+          - Biomarker-positive rate
+          - Screen-failure rate
+          - Sample-collection SLA
+          - Protocol deviations
+        teams:
+          - Clinical Operations
+          - CSO & CFO
+          - Patient Recruitment Leads
+      - name: Lab Quality & Accreditation
+        icon: aibi
+        summary: QC failure, CAPA aging and proficiency testing for CAP and CLIA readiness.
+        kpis:
+          - QC failure rate
+          - CAPA aging
+          - Proficiency-testing outcome
+          - Assay TAT
+          - Chain-of-custody exceptions
+        teams:
+          - Regulatory & Quality
+          - Lab Operations
+          - Quality Managers
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Variant Interpretation Agent
+        icon: genie
+        summary: Ask about variant classifications, evidence and the VUS queue in plain language.
+        feeds:
+          - Illumina BaseSpace
+          - ClinVar & gnomAD
+          - COSMIC Cancer DB
+          - Conformed sample, variant
+        teams:
+          - Bioinformatics
+          - Variant Scientists
+          - Computational Biologists
+        questions:
+          - How many variants are in the VUS queue awaiting review?
+          - Which variants were reclassified since the last reference release?
+          - What evidence supports the pathogenic calls signed out this week?
+          - Which genes carry the most variants of uncertain significance?
+          - How does our classification agree with ClinVar for this variant?
+      - name: Lab Operations & Turnaround Agent
+        icon: genie
+        summary: Explore assay turnaround, sample custody and instrument QC across the lab.
+        feeds:
+          - LabVantage LIMS
+          - Thermo SampleManager
+          - Instrument QC Telemetry
+          - Conformed sample, variant
+        teams:
+          - Lab Operations
+          - Lab Directors
+          - Biobank Managers
+        questions:
+          - What is turnaround time by assay against SLA today?
+          - Where are samples stalling between accession and sign-out?
+          - Which reagent lots are near expiry or running low?
+          - How many samples cleared QC this week without rework?
+          - Which instruments are drifting toward a QC failure?
+      - name: Trial Enrolment & Biomarkers Agent
+        icon: genie
+        summary: Answer enrolment, screen-failure and biomarker-matching questions across trials.
+        feeds:
+          - Medidata Rave EDC
+          - Veeva Vault CTMS
+          - Flatiron Oncology EHR
+          - Actionable clinical biomarkers
+        teams:
+          - Clinical Operations
+          - Clinical Trial Managers
+          - Patient Recruitment Leads
+        questions:
+          - How is enrolment tracking to target by site and protocol?
+          - What is the biomarker-positive screen-failure rate this month?
+          - Which sites are behind on sample-collection SLAs?
+          - How many biomarker-positive candidates match open protocols?
+          - Which protocols have the highest protocol-deviation rate?
+      - name: Quality & Compliance Agent
+        icon: genie
+        summary: Ask about QC failures, CAPA aging and lineage for CAP, CLIA and FDA audits.
+        feeds:
+          - LabVantage LIMS
+          - Instrument QC Telemetry
+          - CRO Analysis Results
+          - Raw sequence and LIMS
+        teams:
+          - Regulatory & Quality
+          - Quality Managers
+          - Compliance Leads
+        questions:
+          - What is our QC failure rate by assay this quarter?
+          - Which CAPAs are open past their target closure date?
+          - Can we trace this signed report from FASTQ to release?
+          - How did we perform on the last proficiency-testing round?
+          - Which pipeline versions produced the reports under audit?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Variant Interpretation
+        short: Diagnostics
+        icon: gauge
+        summary: Somatic and germline variants classified with reproducible evidence chains clinicians can defend.
+        problem: Somatic and germline calls are assembled by hand from scattered tools and papers, so curators cannot reproduce the evidence behind a classification when a clinician or auditor questions it.
+        who_benefits: Bioinformatics
+        how_built: Sequencer output lands through Lakeflow onto Delta Lake, classifier scores from Model Serving and ClinVar and COSMIC evidence surface in the Variant Review Workbench for sign-out.
+        components:
+          - Variant Review Workbench
+          - Model Serving
+          - ClinVar & gnomAD
+          - COSMIC Cancer DB
+          - Unity Catalog
+        stories:
+          - title: How Regeneron accelerates genomic discovery and drug-target ID
+            url: https://www.databricks.com/customers/regeneron
+          - title: Biogen annotates two million variants in minutes with Databricks
+            url: https://www.databricks.com/customers/biogen
+      - name: Biomarker Discovery
+        short: Research
+        icon: sheet
+        summary: Multi-omic signals ranked for trial enrichment and companion diagnostic development.
+        problem: Candidate biomarkers hide across sequencing, expression and outcome data in separate systems, so ranking signals for trial enrichment takes months of manual joins and one-off scripts.
+        who_benefits: CSO & CFO
+        how_built: Multi-omic features are engineered in Feature Store and scored through Model Serving, with runs tracked in MLflow and results explored in AI/BI to rank biomarkers for enrichment.
+        components:
+          - Model Serving
+          - Feature Store
+          - MLflow
+          - 10x Genomics Cloud
+          - AI/BI
+        stories:
+          - title: AstraZeneca builds a knowledge graph to generate novel target hypotheses
+            url: https://www.databricks.com/customers/astrazeneca
+      - name: Trial Enrolment
+        short: Clinical ops
+        icon: people
+        summary: Screening workflows that match patients to protocols from genomic and clinical criteria.
+        problem: Matching patients to protocols means reconciling genomic criteria against EDC and EHR records by hand, so biomarker-positive candidates are missed and sites fall behind enrolment targets.
+        who_benefits: Clinical Operations
+        how_built: EDC and LIMS feeds conform under Unity Catalog and eligibility is scored against genomic criteria, surfacing screen failures and biomarker-positive candidates in the Trial Enrolment Tracker.
+        components:
+          - Trial Enrolment Tracker
+          - Medidata Rave EDC
+          - Veeva Vault CTMS
+          - AI/BI
+          - Unity Catalog
+      - name: Lab Turnaround Optimisation
+        short: Operations
+        icon: stream
+        summary: Queue bottlenecks identified from accession through sign-out, not average TAT alone.
+        problem: Turnaround is judged on an average that hides where samples stall, so a bottleneck between accession and sign-out is only found after a client escalates a late result.
+        who_benefits: Lab Operations
+        how_built: LIMS and instrument feeds conform through Lakeflow with Lakewatch guarding freshness, so queue depth and TAT by assay surface in the Lab Ops Dashboard before clients escalate.
+        components:
+          - Lab Ops Dashboard
+          - LabVantage LIMS
+          - Lakeflow
+          - Lakewatch
+          - AI/BI
+      - name: Real-World Evidence
+        short: Outcomes
+        icon: custlake
+        summary: Treatment response cohorts built from linked genomic and oncology EHR records under governance.
+        problem: Treatment-response cohorts need genomic results linked to oncology EHR records held in different systems under different consent, so building a governed, defensible cohort is slow.
+        who_benefits: CSO & CFO
+        how_built: De-identified EHR and genomic data are conformed on Delta Lake under Unity Catalog governance and explored in AI/BI, so outcome cohorts are built with lineage instead of ad hoc extracts.
+        components:
+          - Flatiron Oncology EHR
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+          - Genie One
+      - name: Single-Cell Analytics
+        short: Discovery
+        icon: notebook
+        summary: Cell-type resolution across tumour microenvironment for target identification.
+        problem: Single-cell and spatial matrices run to millions of cells, so clustering and differential expression overwhelm a workstation and only a specialist can turn a run into a target hypothesis.
+        who_benefits: Bioinformatics
+        how_built: Expression matrices land on Delta Lake and are processed at scale with Apache Spark in Notebooks & IDEs, with runs tracked in MLflow so cell-type signals feed target identification.
+        components:
+          - 10x Genomics Cloud
+          - Apache Spark
+          - Notebooks & IDEs
+          - MLflow
+          - Delta Lake
+        stories:
+          - title: Transforming omics data management on the Databricks Platform
+            url: https://www.databricks.com/blog/transforming-omics-data-management-databricks-data-intelligence-platform
+          - title: 'Genesis Workbench: a blueprint for life sciences applications on Databricks'
+            url: https://www.databricks.com/blog/genesis-workbench-blueprint-life-sciences-applications-databricks
+      - name: Pipeline Reproducibility
+        short: Quality
+        icon: gavel
+        summary: Every analysis from FASTQ to report traced for CAP, CLIA and FDA inspection.
+        problem: An inspector can ask how a report was produced years later, but pipeline versions, parameters and reference data are scattered across scripts and servers, so reconstructing a run is painful.
+        who_benefits: Regulatory & Quality
+        how_built: Every run is tracked in MLflow and its inputs and outputs versioned on Delta Lake under Unity Catalog, so the Pipeline QC Console can replay any analysis from FASTQ to signed report.
+        components:
+          - Pipeline QC Console
+          - MLflow
+          - Unity Catalog
+          - Delta Lake
+          - Lakeflow
+        stories:
+          - title: Amgen modernizes analytics with a unified lakehouse to speed drug development
+            url: https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html
+      - name: Reference Data Harmonisation
+        short: Annotation
+        icon: globe
+        summary: ClinVar, gnomAD and COSMIC updates propagated without breaking historical calls.
+        problem: ClinVar, gnomAD and COSMIC release on their own cadence, so an annotation refresh can silently change historical calls and no one can tell which reports would move if a reference updated.
+        who_benefits: Bioinformatics
+        how_built: Reference releases land through Lakeflow as versioned Delta tables under Unity Catalog, so annotation is reproducible and the impact of an update on prior calls is traceable.
+        components:
+          - ClinVar & gnomAD
+          - COSMIC Cancer DB
+          - Lakeflow
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: 'Genesis Workbench: GPU-accelerated variant calling and ClinVar annotation'
+            url: https://www.databricks.com/blog/genesis-workbench-blueprint-industry-ai-life-sciences-powered-databricks-and-nvidia
+      - name: Sample Chain of Custody
+        short: Compliance
+        icon: product
+        summary: Aliquot location and handling events reconciled from collection through destruction.
+        problem: A sample moves through collection, aliquoting, storage and analysis logged in different systems, so reconstructing its handling for an audit means chasing records across LIMS and freezers.
+        who_benefits: Lab Operations
+        how_built: Registration and custody events from Benchling and LIMS conform on Delta Lake under Unity Catalog, so each aliquot's location and handling is reconciled from collection through destruction.
+        components:
+          - Benchling R&D Cloud
+          - LabVantage LIMS
+          - Unity Catalog
+          - Delta Lake
+          - Lakeflow
+      - name: Pharmacogenomics
+        short: Therapeutics
+        icon: market
+        summary: Drug-gene interactions surfaced at ordering for precision prescribing programmes.
+        problem: Drug-gene interactions live in guidelines and prior sequencing that never reach the clinician at ordering, so a prescription is written without the genotype that should shape the dose.
+        who_benefits: Bioinformatics
+        how_built: Prior variant results are conformed under Unity Catalog and matched to drug-gene rules with AI Functions and Model Serving, surfacing interactions in the Variant Review Workbench at ordering.
+        components:
+          - Variant Review Workbench
+          - HL7 FHIR Genomics
+          - Model Serving
+          - AI Functions
+          - Unity Catalog
+        stories:
+          - title: How Regeneron pairs genomic and EHR data to find drug targets
+            url: https://www.databricks.com/customers/regeneron
+medallion:
+  Bronze:
+    short: Raw sequence and LIMS
+    summary: FASTQ and BAM files, LIMS sample metadata, instrument QC metrics and electronic lab notebook entries, landed exactly as received so a variant call or a sample chain can always be replayed.
+  Silver:
+    short: Conformed sample, variant
+    summary: Samples, subjects, assays and variant calls resolved into single conformed entities across LIMS, sequencers and analysis pipelines, with sample lineage reconciled from collection through report.
+  Gold:
+    short: Actionable clinical biomarkers
+    summary: 'Contracted products clinical and research teams run on: variant classification tiers, trial enrolment biomarker rates, lab turnaround time, and pipeline QC pass rates.'
+citation_index:
+  illumina-basespace:
+    title: Illumina BaseSpace Sequence Hub
+    url: https://www.illumina.com/products/by-type/informatics-products/basespace-sequence-hub.html
+  nanopore-epi2me:
+    title: Oxford Nanopore EPI2ME
+    url: https://epi2me.nanoporetech.com/
+  10x-cloud:
+    title: 10x Genomics Cloud Analysis
+    url: https://www.10xgenomics.com/products/cloud-analysis
+  benchling:
+    title: Benchling R&D Cloud
+    url: https://www.benchling.com/
+  labvantage:
+    title: LabVantage LIMS
+    url: https://www.labvantage.com/
+  samplemanager:
+    title: Thermo Fisher SampleManager LIMS
+    url: https://www.thermofisher.com/samplemanager
+  medidata-rave:
+    title: Medidata Rave EDC
+    url: https://www.medidata.com/en/clinical-trial-products/clinical-data-management/edc-systems/
+  veeva-ctms:
+    title: Veeva Vault CTMS
+    url: https://www.veeva.com/products/vault-ctms/
+  flatiron:
+    title: Flatiron Health oncology data
+    url: https://flatiron.com/
+  clinvar:
+    title: NCBI ClinVar
+    url: https://www.ncbi.nlm.nih.gov/clinvar/
+  cosmic:
+    title: COSMIC cancer database
+    url: https://cancer.sanger.ac.uk/cosmic
+  ga4gh:
+    title: Global Alliance for Genomics and Health
+    url: https://www.ga4gh.org/
+  fhir-genomics:
+    title: HL7 FHIR genomics implementation guide
+    url: https://hl7.org/fhir/uv/genomics-reporting/

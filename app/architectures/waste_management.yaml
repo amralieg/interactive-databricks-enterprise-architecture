@@ -1,0 +1,934 @@
+name: Waste Management
+description: 'Collection, transfer and disposal: route optimisation, scalehouse and landfill operations, customer billing, fleet telematics, and environmental compliance across municipal and commercial contracts.'
+sources:
+  - name: Billing & CRM
+    icon: erp
+    tiles:
+      - name: AMCS Platform
+        icon: erp
+        summary: Customer accounts, service schedules, pricing and invoicing for haulers.
+        citations:
+          - amcs
+        category: Waste ERP & Billing Platform
+        what_it_is: Holds customer accounts, service schedules, pricing and invoicing as the core billing platform for haulers.
+        who_uses_it: Billing operations, account managers and pricing & revenue teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Routeware Account
+        icon: market
+        summary: Commercial and residential billing with container asset tracking.
+        citations:
+          - routeware
+        category: Waste Billing & Container Tracking
+        what_it_is: Commercial and residential billing with container asset tracking across the customer base.
+        who_uses_it: Billing analysts, account managers and container asset teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Salesforce Service Cloud
+        icon: custlake
+        summary: Service cases, missed pickups and contract amendments.
+        citations:
+          - sf-service
+        category: Customer Service CRM
+        what_it_is: Manages service cases, missed-pickup reports and contract amendments across commercial and residential accounts.
+        who_uses_it: Customer service, account managers and contract renewals teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+  - name: Dispatch & Routes
+    icon: sheet
+    tiles:
+      - name: RouteSmart
+        icon: sheet
+        summary: Route design, sequencing and balance for residential and commercial lines.
+        citations:
+          - routesmart
+        category: Route Optimization System
+        what_it_is: Designs, sequences and balances residential and commercial routes for the collection fleet.
+        who_uses_it: Route managers, dispatch supervisors and operations planning.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day route plans
+            interval: Daily route builds
+      - name: AMCS Dispatch
+        icon: stream
+        summary: Daily dispatch, turn-by-turn and completion confirmation.
+        citations:
+          - amcs-dispatch
+        category: Dispatch & Route Execution
+        what_it_is: Runs daily dispatch, turn-by-turn navigation and stop-completion confirmation for collection crews.
+        who_uses_it: Dispatch supervisors, drivers and route managers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (completion events)
+      - name: Rubicon Route Assist
+        icon: partner
+        summary: Dynamic routing and contamination feedback from driver devices.
+        citations:
+          - rubicon
+        category: Digital Routing & Driver App
+        what_it_is: Provides dynamic routing and contamination feedback captured from driver devices in the field.
+        who_uses_it: Dispatch supervisors, drivers and sustainability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of events/sec
+            interval: Continuous (driver events)
+  - name: Fleet & Telematics
+    icon: iot
+    tiles:
+      - name: Geotab Fleet
+        icon: iot
+        summary: Vehicle location, idle time, fuel and maintenance for collection fleets.
+        citations:
+          - geotab
+        category: Fleet Telematics Platform
+        what_it_is: Streams vehicle location, idle time, fuel and engine/maintenance data for the collection fleet.
+        who_uses_it: Fleet & safety, route managers and maintenance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k readings/sec
+            interval: Continuous (GPS + engine telemetry)
+      - name: Motive ELD
+        icon: stream
+        summary: Hours of service and safety events for CDL drivers.
+        citations:
+          - motive
+        category: ELD & Driver Safety System
+        what_it_is: Captures hours-of-service compliance and driver safety events for CDL drivers on the fleet.
+        who_uses_it: Fleet & safety, compliance and dispatch teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day logs
+            interval: Daily HOS logs
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous safety events
+      - name: Lift Sensors & RFID
+        icon: partner
+        summary: Automated lift counts and container identification on trucks.
+        citations:
+          - rubicon
+        category: Container Identification & Lift Sensors
+        what_it_is: Emits automated lift counts and container RFID identification from onboard truck sensors.
+        who_uses_it: Route managers, billing verification and sustainability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of lifts/sec at peak
+            interval: Continuous (lift events)
+  - name: Disposal & MRF
+    icon: db
+    tiles:
+      - name: Paradigm Software
+        icon: db
+        summary: Inbound and outbound scale tickets, tare and moisture adjustments.
+        citations:
+          - scalehouse
+        category: Scalehouse / Weighbridge System
+        what_it_is: Records inbound and outbound scale tickets with tare and moisture adjustments at disposal and transfer sites.
+        who_uses_it: Scalehouse leads, landfill managers and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day tickets
+            interval: Continuous tickets + daily batch
+      - name: Landfill Gas Monitor
+        icon: iot
+        summary: Gas extraction, flare and wellfield readings for compliance.
+        citations:
+          - landfill-gas
+        category: Landfill Gas Monitoring System
+        what_it_is: Monitors gas extraction, flare and wellfield readings across the landfill for compliance and capture optimisation.
+        who_uses_it: Landfill managers, environmental and compliance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of readings/sec
+            interval: Continuous wellfield monitoring
+      - name: Machinex MRF SCADA
+        icon: stream
+        summary: Material recovery throughput, contamination and bale weights.
+        citations:
+          - machinex
+        category: MRF Plant SCADA
+        what_it_is: Captures material-recovery throughput, contamination and bale weights from the recycling plant.
+        who_uses_it: MRF plant managers, operators and sustainability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of signals/sec
+            interval: Continuous (plant telemetry)
+  - name: Compliance & ESG
+    icon: gavel
+    tiles:
+      - name: Enablon EHS
+        icon: gavel
+        summary: Permits, inspections and incident reporting for disposal sites.
+        citations:
+          - enablon
+        category: EHS Management System
+        what_it_is: Manages permits, inspections and incident reporting for landfills and disposal sites.
+        who_uses_it: Regulatory affairs, environmental and site compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Hourly / daily
+      - name: Wastebits Reporting
+        icon: chart
+        summary: Diversion, recycling and landfill tonnage for municipal reporting.
+        citations:
+          - wastebits
+        category: Diversion & Tonnage Reporting Platform
+        what_it_is: Aggregates diversion, recycling and landfill tonnage for municipal and regulatory reporting.
+        who_uses_it: ESG reporting, regulatory affairs and municipal contract teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Daily + reporting cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Municipal Contract Marts
+        icon: fed
+        summary: City tonnage and franchise fee marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: City tonnage and franchise-fee marts kept in the incumbent finance warehouse and queried in place through federation rather than copied.
+        who_uses_it: VP finance, contract renewals and ESG reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: EPA LMOP Data
+        icon: gavel
+        summary: Landfill gas and emissions reference data for compliance benchmarking.
+        citations:
+          - epa-lmop
+        category: Regulatory Reference Data
+        what_it_is: Landfill Methane Outreach Program gas and emissions reference data used for compliance benchmarking.
+        who_uses_it: ESG reporting and regulatory affairs teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs reference data
+            interval: Periodic (regulatory updates)
+      - name: State Diversion Reports
+        icon: api
+        summary: Mandatory recycling reporting files consumed for municipal contracts.
+        citations:
+          - wastebits
+        category: Mandatory Recycling Reporting Feed
+        what_it_is: Mandatory state recycling and diversion reporting files consumed inbound to satisfy municipal contract obligations.
+        who_uses_it: ESG reporting, regulatory affairs and municipal contract teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs
+            interval: Monthly / quarterly filings
+      - name: Recycling Market Indices
+        icon: market
+        summary: Commodity bale price indices for MRF revenue planning.
+        citations:
+          - machinex
+        category: Commodity Price Index Provider
+        what_it_is: Commodity bale price indices used to forecast MRF revenue and time bale sales against the market.
+        who_uses_it: MRF plant managers, pricing & revenue and sustainability teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs reference data
+            interval: Daily / weekly index updates
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Ops Office
+        mark: Genie One
+        summary: The CEO on margin per ton and contract renewal; the COO on route productivity, missed stops and the collection fleet's safety record.
+        uses:
+          - - Genie One
+            - Ask what last month's diversion rate was without analyst delay.
+          - - AI/BI
+            - Cost per ton and missed stops on certified Metric Views.
+          - - Unity Catalog
+            - One ton definition across scale and billing.
+        sub:
+          - name: CEO
+            cares: margin per ton, contract renewals and the growth-versus-cost trade across the book.
+          - name: Chief Operating Officer
+            cares: route productivity, missed stops and the collection fleet's safety record.
+          - name: VP Finance
+            cares: cost per ton, disposal spend and cash across municipal and commercial contracts.
+        ucs:
+          - Route Optimization
+          - Missed Stop Prediction
+          - Dynamic Pricing
+          - Fleet Maintenance
+      - name: Collection Ops
+        mark: Lakehouse//RT
+        summary: Dispatchers on route completion, missed stops and contamination callbacks, re-sequencing trucks before a service gap becomes a credit.
+        uses:
+          - - Dispatch Console
+            - Live trucks, stops and exceptions on one map.
+          - - Lakehouse//RT
+            - GPS and lift events at route latency.
+        sub:
+          - name: Dispatch Supervisors
+            cares: live route completion, exceptions and re-sequencing trucks before a service gap.
+          - name: Route Managers
+            cares: route balance, productivity and the miles and time each line runs.
+          - name: Fleet & Safety
+            cares: vehicle uptime, driver hours-of-service and the collection fleet's safety record.
+        ucs:
+          - Route Optimization
+          - Missed Stop Prediction
+          - Fleet Maintenance
+      - name: Disposal & MRF
+        mark: Apps
+        summary: Landfill and MRF managers on remaining airspace, throughput and commodity revenue, balancing inbound tons against permitted daily capacity.
+        uses:
+          - - Scalehouse Dashboard
+            - Inbound tons, diversion and bale inventory in real time.
+          - - Apps
+            - Site apps hosted next to governed scale data.
+        sub:
+          - name: Landfill Managers
+            cares: remaining permitted airspace, gas capture and inbound tons against daily capacity.
+          - name: MRF Plant Managers
+            cares: recovery throughput, bale quality and contamination in the recycling stream.
+          - name: Scalehouse Leads
+            cares: tare, moisture and material class on every inbound and outbound ticket.
+        ucs:
+          - Landfill Airspace
+          - Contamination Detection
+          - MRF Commodity Revenue
+      - name: Commercial Sales
+        mark: AI/BI
+        summary: Account managers on pricing, service changes and churn risk, protecting margin per customer segment before a contract comes up for renewal.
+        uses:
+          - - AI/BI
+            - Revenue and margin by customer segment on certified views.
+          - - Genie One
+            - Ask which accounts are below target margin.
+        sub:
+          - name: Account Managers
+            cares: service changes, churn risk and margin per commercial account.
+          - name: Pricing & Revenue
+            cares: container and service fees against cost-to-serve and the market.
+          - name: Contract Renewals
+            cares: at-risk accounts and the terms up for renewal this quarter.
+        ucs:
+          - Dynamic Pricing
+          - Customer Churn
+          - Municipal Franchise
+      - name: Sustainability
+        mark: Lakeflow
+        summary: ESG teams on diversion rate, circularity and municipal reporting, proving material flows by customer and site against franchise commitments.
+        uses:
+          - - Diversion Registry
+            - Material flows and diversion evidence by customer and site.
+          - - Lakeflow
+            - Scale and route feeds conformed for ESG analytics.
+        sub:
+          - name: ESG Reporting
+            cares: diversion rate, carbon and methane against franchise and corporate commitments.
+          - name: Diversion & Circularity
+            cares: material flows and recovered-tonnage evidence by customer and site.
+          - name: Regulatory Affairs
+            cares: permits, EPR obligations and the mandatory municipal reporting calendar.
+        ucs:
+          - Carbon & Methane
+          - Municipal Franchise
+          - Contamination Detection
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land route completion events, scale tickets, GPS and lift sensor reads; own Bronze to Silver and the pager when a cost-per-ton table breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for billing, dispatch and scale sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on route and scale feeds.
+          - - Lakewatch
+            - Freshness on the diversion tables operations reads each morning.
+        sub:
+          - name: Ingestion Engineers
+            cares: billing, dispatch, scale and telematics sources landed exactly as received.
+          - name: Pipeline & Streaming
+            cares: GPS and lift events at route latency and the Bronze-to-Silver path.
+          - name: Data Quality & SRE
+            cares: expectations and freshness on the cost-per-ton and diversion tables.
+        ucs:
+          - Route Optimization
+          - Missed Stop Prediction
+          - MRF Commodity Revenue
+      - name: Data Scientists
+        mark: MLflow
+        summary: Missed-stop, contamination-detection, churn and commodity-revenue models, and whether they still hold as routes and bale indices shift.
+        uses:
+          - - Feature Store
+            - Route and customer features read identically in training and serving.
+          - - MLflow
+            - Every routing and churn experiment tracked for audit.
+          - - Model Serving
+            - Missed-stop and churn models scored in the dispatch path.
+        sub:
+          - name: Routing & Ops ML
+            cares: miss-risk, route and remaining-life models scored in the dispatch path.
+          - name: Vision & Contamination
+            cares: camera and lift-sensor models flagging contaminated recycling loads.
+          - name: Churn & Pricing
+            cares: commercial churn and price-elasticity models against service and billing.
+        ucs:
+          - Missed Stop Prediction
+          - Contamination Detection
+          - Customer Churn
+          - Fleet Maintenance
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Dispatch Console, Scalehouse Dashboard and Diversion Registry apps operations and ESG teams work in, next to governed scale data.
+        uses:
+          - - Apps
+            - Site and dispatch screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for stop and ticket state writes.
+          - - Agent Bricks
+            - Agents that draft route changes against governed tools.
+        sub:
+          - name: Dispatch & Ops Apps
+            cares: the Dispatch Console dispatchers and drivers run the day from.
+          - name: Scalehouse & Site Apps
+            cares: the Scalehouse Dashboard for inbound tons, material class and bale inventory.
+          - name: ESG & Registry Apps
+            cares: the Diversion Registry that assembles diversion and emissions evidence.
+        ucs:
+          - Route Optimization
+          - Landfill Airspace
+          - Carbon & Methane
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Operations and ESG dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for route and diversion questions in the dispatch channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Route optimisation notebooks against governed telematics data.
+  - name: Customer & Municipal
+    icon: partner
+    tiles:
+      - name: Customer Service Portal
+        icon: api
+        summary: Pickup status and billing inquiries served from governed data.
+        citations:
+          - amcs
+      - name: Municipal Reporting API
+        icon: share
+        summary: Diversion and tonnage reports shared to city contracts over Delta Sharing.
+        citations:
+          - wastebits
+      - name: Broker Bale Sales
+        icon: market
+        summary: Commodity availability shared to recycling brokers.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Route Re-sequence
+        icon: sheet
+        summary: Optimised stop order written back to driver devices.
+        citations:
+          - routesmart
+      - name: Service Order Dispatch
+        icon: apps
+        summary: Extra pickups and container swaps dispatched to crews.
+        citations:
+          - amcs-dispatch
+      - name: Scale Ticket Posting
+        icon: db
+        summary: Tonnage and material class written to billing and inventory.
+        citations:
+          - scalehouse
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Landfill Compliance
+        icon: gavel
+        summary: Gas, leachate and cover inspection reports filed from site logs.
+        citations:
+          - enablon
+      - name: Extended Producer Resp
+        icon: share
+        summary: EPR tonnage evidence submitted from contracted Gold products.
+        citations:
+          - wastebits
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Diversion and route performance products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Municipal clients reading live tonnage via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Dispatch Console
+        icon: gauge
+        short: Route execution
+        summary: Live trucks, stop completion and exceptions on a map with driver messaging.
+      - name: Scalehouse Dashboard
+        icon: db
+        short: Disposal ops
+        summary: Inbound tons, material class and bale inventory for landfill and MRF sites.
+      - name: Diversion Registry
+        icon: gavel
+        short: ESG reporting
+        summary: Material flows and diversion evidence by customer, route and facility.
+      - name: Commercial Pricing Hub
+        icon: market
+        short: Account margin
+        summary: Service pricing and margin by customer segment before renewal.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Route Performance
+        icon: aibi
+        summary: Route completion, missed stops, productivity and fleet utilisation on certified Metric Views.
+        kpis:
+          - Missed stops
+          - Cost per stop
+          - Route productivity
+          - Idle time
+          - Service credits
+        teams:
+          - Collection Ops
+          - Dispatch Supervisors
+          - Route Managers
+      - name: Disposal & MRF
+        icon: aibi
+        summary: Inbound tonnage, landfill airspace, contamination and bale revenue.
+        kpis:
+          - Inbound tonnage
+          - Airspace consumption
+          - Contamination rate
+          - Bale revenue
+          - Gas capture
+        teams:
+          - Disposal & MRF
+          - Landfill Managers
+          - MRF Plant Managers
+      - name: Commercial Margin
+        icon: aibi
+        summary: Account margin, cost-to-serve, churn risk and renewals.
+        kpis:
+          - Margin per account
+          - Cost-to-serve
+          - Churn risk
+          - Contracts up for renewal
+          - Price realization
+        teams:
+          - Commercial Sales
+          - Account Managers
+          - Pricing & Revenue
+      - name: Sustainability & ESG
+        icon: aibi
+        summary: Diversion rate, methane emissions, carbon intensity and franchise compliance.
+        kpis:
+          - Diversion rate
+          - Landfill methane
+          - Fleet carbon intensity
+          - Recovered tonnage
+          - Franchise compliance
+        teams:
+          - Sustainability
+          - ESG Reporting
+          - Diversion & Circularity
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Routes & Collection Agent
+        icon: genie
+        summary: Ask about route completion, missed stops and productivity across the fleet in plain language.
+        feeds:
+          - AMCS Dispatch
+          - Geotab Fleet
+          - RouteSmart
+          - Conformed customer, route
+        teams:
+          - Collection Ops
+          - Dispatch Supervisors
+          - Route Managers
+        questions:
+          - Which routes are running behind schedule right now?
+          - How many stops are at risk of being missed today?
+          - Which routes have the highest cost per stop this week?
+          - Where are trucks idling the most across the fleet?
+          - How many service credits did missed stops cost us last month?
+      - name: Disposal & MRF Agent
+        icon: genie
+        summary: Explore inbound tonnage, landfill airspace, contamination and bale revenue.
+        feeds:
+          - Paradigm Software
+          - Machinex MRF SCADA
+          - Landfill Gas Monitor
+          - Cost per ton, diversion
+        teams:
+          - Disposal & MRF
+          - Landfill Managers
+          - MRF Plant Managers
+        questions:
+          - How much inbound tonnage did we take yesterday by material class?
+          - How fast is landfill airspace being consumed against permit?
+          - What is our contamination rate in the recycling stream this week?
+          - What is forecast bale revenue against current commodity indices?
+          - How is gas capture tracking across the wellfield?
+      - name: Commercial & Churn Agent
+        icon: genie
+        summary: Answer questions on account margin, pricing and churn risk across the book.
+        feeds:
+          - AMCS Platform
+          - Salesforce Service Cloud
+          - Routeware Account
+          - Cost per ton, diversion
+        teams:
+          - Commercial Sales
+          - Account Managers
+          - Pricing & Revenue
+        questions:
+          - Which accounts are below target margin right now?
+          - Which commercial accounts are at highest churn risk this quarter?
+          - How does cost-to-serve compare to price by segment?
+          - Which contracts are up for renewal in the next 90 days?
+          - Where would a price adjustment most improve margin without raising churn?
+      - name: Sustainability & ESG Agent
+        icon: genie
+        summary: Ask about diversion, methane and emissions against franchise commitments.
+        feeds:
+          - Wastebits Reporting
+          - Landfill Gas Monitor
+          - EPA LMOP Data
+          - Machinex MRF SCADA
+        teams:
+          - Sustainability
+          - ESG Reporting
+          - Diversion & Circularity
+        questions:
+          - What is our diversion rate by customer and site this month?
+          - How are landfill methane emissions trending this year?
+          - Which municipal contracts are behind on diversion targets?
+          - What is fleet carbon intensity per ton collected?
+          - How much recovered tonnage can we evidence for EPR obligations?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Route Optimization
+        short: Collection
+        icon: sheet
+        summary: Residential and commercial routes rebalanced for miles, time and safety.
+        problem: Residential and commercial routes are planned on last year's map, so trucks run extra miles, miss time windows and burn fuel while dispatchers cannot see the day as it actually unfolds.
+        who_benefits: Collection Ops
+        how_built: GPS, lift and completion feeds land in Lakehouse//RT and feed routing models in Model Serving, with optimised stop order pushed to driver devices from the Dispatch Console.
+        components:
+          - Dispatch Console
+          - Lakehouse//RT
+          - Model Serving
+          - Geotab Fleet
+          - RouteSmart
+          - Delta Lake
+        stories:
+          - title: Cleanaway champions a sustainable means to waste management
+            url: https://www.databricks.com/customers/cleanaway
+          - title: Fleet optimization with CARTO & Databricks
+            url: https://www.databricks.com/blog/fleet-optimization-carto-databricks
+      - name: Missed Stop Prediction
+        short: Service
+        icon: stream
+        summary: Stops at risk of miss flagged from GPS and historical patterns.
+        problem: Missed pickups surface only when the customer calls, and by then the crew has left the street, a service credit is owed and the route has to be sent back the next day.
+        who_benefits: Collection Ops
+        how_built: GPS traces, lift-sensor reads and service history land through Lakeflow and score a miss-risk model in Model Serving, raising exceptions on the Dispatch Console before the truck leaves the zone.
+        components:
+          - Dispatch Console
+          - Lakeflow
+          - Model Serving
+          - Lift Sensors & RFID
+          - Salesforce Service Cloud
+          - Feature Store
+        stories:
+          - title: Cleanaway champions a sustainable means to waste management
+            url: https://www.databricks.com/customers/cleanaway
+      - name: Contamination Detection
+        short: Recycling
+        icon: iot
+        summary: Contamination events from lift sensors and MRF cameras.
+        problem: Contaminated loads are caught at the MRF or not at all, so bales are downgraded, customers keep filling bins wrong and the recycling stream loses value with no feedback to the route.
+        who_benefits: Disposal & MRF
+        how_built: Lift-sensor events and MRF camera streams feed vision models in Model Serving, and contamination flags are written back to the customer account and the driver's next visit via the Dispatch Console.
+        components:
+          - Dispatch Console
+          - Machinex MRF SCADA
+          - Model Serving
+          - Lift Sensors & RFID
+          - AI Functions
+          - Delta Lake
+        stories:
+          - title: Cleanaway champions a sustainable means to waste management
+            url: https://www.databricks.com/customers/cleanaway
+      - name: Landfill Airspace
+        short: Disposal
+        icon: db
+        summary: Airspace consumption forecast against permitted capacity.
+        problem: Remaining permitted airspace is tracked in spreadsheets from occasional surveys, so the site cannot see how fast it is filling or price inbound tonnage against the capacity it has left.
+        who_benefits: Disposal & MRF
+        how_built: Scale tickets and survey volumes are conformed on Delta Lake under Unity Catalog and forecast against permitted capacity in the Scalehouse Dashboard, so airspace burn is visible daily.
+        components:
+          - Scalehouse Dashboard
+          - Paradigm Software
+          - Delta Lake
+          - Unity Catalog
+          - AI/BI
+          - Model Serving
+      - name: Dynamic Pricing
+        short: Commercial
+        icon: market
+        summary: Container and service fees adjusted to margin and churn risk.
+        problem: Container and service fees are set once at contract and rarely revisited, so rising disposal and fuel cost quietly erodes margin and increases land as blunt across-the-board hikes.
+        who_benefits: Commercial Sales
+        how_built: Cost-to-serve, disposal and churn signals are conformed under Unity Catalog and scored in Model Serving, surfacing per-account price and margin guidance in the Commercial Pricing Hub.
+        components:
+          - Commercial Pricing Hub
+          - Model Serving
+          - Unity Catalog
+          - AMCS Platform
+          - AI/BI
+          - Delta Lake
+      - name: Fleet Maintenance
+        short: Assets
+        icon: iot
+        summary: Predictive maintenance from telematics before breakdown on route.
+        problem: A truck that breaks down mid-route strands a full load and blows the day's schedule, yet maintenance runs on fixed mileage rather than the engine and idle data the fleet already streams.
+        who_benefits: Collection Ops
+        how_built: Geotab and ELD telemetry stream into Lakehouse//RT and feed remaining-life models tracked in MLflow and scored in Model Serving, so a service is booked before a breakdown lands on route.
+        components:
+          - Dispatch Console
+          - Geotab Fleet
+          - Motive ELD
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+        stories:
+          - title: What is Predictive Maintenance?
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: 'Vinli: fleet optimization powered by AI'
+            url: https://www.databricks.com/customers/vinli
+      - name: MRF Commodity Revenue
+        short: Recycling
+        icon: market
+        summary: Bale revenue forecast against commodity index movements.
+        problem: Bale revenue swings with volatile commodity indices, but throughput, quality and price sit in separate systems so the MRF cannot forecast revenue or decide when to sell against the market.
+        who_benefits: Disposal & MRF
+        how_built: MRF throughput and bale weights are conformed on Delta Lake and joined to commodity indices, with revenue forecast in the Scalehouse Dashboard and AI/BI so the site sells into strength.
+        components:
+          - Scalehouse Dashboard
+          - Machinex MRF SCADA
+          - Recycling Market Indices
+          - Delta Lake
+          - AI/BI
+          - Model Serving
+        stories:
+          - title: Sustainability in Aluminum Production
+            url: https://www.databricks.com/blog/sustainability-aluminum-production
+      - name: Customer Churn
+        short: Sales
+        icon: custlake
+        summary: Commercial account churn scored from service quality and price.
+        problem: Commercial accounts leave after a run of missed pickups or a price rise, but service quality, billing and pricing live in separate systems so churn first shows as the cancellation notice.
+        who_benefits: Commercial Sales
+        how_built: Service, billing and interaction history are conformed under Unity Catalog and scored in Model Serving, with at-risk accounts surfaced in the Commercial Pricing Hub before renewal.
+        components:
+          - Commercial Pricing Hub
+          - Salesforce Service Cloud
+          - Model Serving
+          - Unity Catalog
+          - Feature Store
+          - AI/BI
+      - name: Municipal Franchise
+        short: Contracts
+        icon: gavel
+        summary: Franchise fee and service level evidence for city audits.
+        problem: City franchise contracts demand tonnage, diversion and service-level evidence on schedule, and assembling it by hand from scale and route systems for each audit is slow and hard to defend.
+        who_benefits: Sustainability
+        how_built: Scale, route and diversion data are conformed into governed Gold products under Unity Catalog and published to city contracts over OpenSharing from the Diversion Registry.
+        components:
+          - Diversion Registry
+          - Wastebits Reporting
+          - Unity Catalog
+          - OpenSharing
+          - Data Products
+          - Delta Lake
+      - name: Carbon & Methane
+        short: ESG
+        icon: chart
+        summary: Landfill gas capture and fleet emissions for sustainability reporting.
+        problem: Landfill gas capture and fleet emissions are reported from spreadsheets months late, so the team cannot show franchise partners live progress against methane and carbon commitments.
+        who_benefits: Sustainability
+        how_built: Landfill gas readings and fleet telemetry are conformed on Delta Lake under Unity Catalog and modelled for capture and emissions, with evidence assembled in the Diversion Registry and AI/BI.
+        components:
+          - Diversion Registry
+          - Landfill Gas Monitor
+          - EPA LMOP Data
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: How Dow Built a Carbon Footprint Ledger on Databricks
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+          - title: From emissions reporting to decarbonization decisions
+            url: https://www.databricks.com/blog/emissions-reporting-decarbonization-decisions
+medallion:
+  Bronze:
+    short: Raw route and scale feeds
+    summary: Route completion events, scalehouse tickets, GPS and lift sensor reads, customer service orders and billing cycles, landed exactly as received so a missed stop or a tonnage line can always be replayed.
+  Silver:
+    short: Conformed customer, route
+    summary: Customers, routes, stops and disposal tickets resolved into single conformed entities across billing, dispatch and scale systems, with service history stitched to one account.
+  Gold:
+    short: Cost per ton, diversion
+    summary: 'Contracted products operations and sustainability teams run on: cost per ton, diversion rate, missed stops, landfill airspace and customer churn by segment.'
+citation_index:
+  amcs:
+    title: AMCS Platform
+    url: https://www.amcsgroup.com/
+  routeware:
+    title: Routeware
+    url: https://www.routeware.com/
+  sf-service:
+    title: Salesforce Service Cloud
+    url: https://www.salesforce.com/service/
+  routesmart:
+    title: RouteSmart
+    url: https://www.routesmart.com/
+  amcs-dispatch:
+    title: AMCS Dispatch
+    url: https://www.amcsgroup.com/
+  rubicon:
+    title: Rubicon
+    url: https://www.rubicon.com/
+  geotab:
+    title: Geotab
+    url: https://www.geotab.com/
+  motive:
+    title: Motive
+    url: https://gomotive.com/
+  scalehouse:
+    title: Paradigm Software
+    url: https://www.paradigmsoftware.com/
+  landfill-gas:
+    title: Landfill gas monitoring
+    url: https://www.epa.gov/lmop
+  machinex:
+    title: Machinex MRF
+    url: https://www.machinexrecycling.com/
+  enablon:
+    title: Enablon EHS
+    url: https://www.wolterskluwer.com/en/solutions/enablon
+  wastebits:
+    title: Wastebits
+    url: https://www.wastebits.com/
+  epa-lmop:
+    title: EPA LMOP
+    url: https://www.epa.gov/lmop

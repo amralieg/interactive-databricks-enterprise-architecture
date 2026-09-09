@@ -1,0 +1,1041 @@
+name: Software & Technology
+description: 'B2B and SaaS software: product-led activation and conversion, usage-based billing and metering, customer health and churn, developer velocity, and cloud cost and margin.'
+sources:
+  - name: CRM & Sales
+    icon: crm
+    tiles:
+      - name: Salesforce Sales Cloud
+        icon: crm
+        summary: The system of record for accounts, opportunities and the pipeline, and the source of the customer hierarchy every revenue metric rolls up to.
+        citations:
+          - salesforce
+        category: CRM / Sales Force Automation
+        what_it_is: System of record for accounts, opportunities and pipeline, and the customer hierarchy every revenue metric rolls up to.
+        who_uses_it: Sales, RevOps and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: HubSpot CRM
+        icon: custlake
+        summary: Contacts, deals and marketing engagement for the self-serve and mid-market motion, joined to product signups.
+        citations:
+          - hubspot
+        category: CRM / Marketing Automation
+        what_it_is: Contacts, deals and marketing engagement for the self-serve and mid-market motion, joined to product signups.
+        who_uses_it: Marketing, self-serve sales and RevOps.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (webhook)
+      - name: Gong Revenue AI
+        icon: dial
+        summary: Conversation intelligence on sales and renewal calls, the signal for deal risk and competitive mentions.
+        citations:
+          - gong
+        category: Conversation Intelligence
+        what_it_is: Records and analyzes sales and renewal calls, surfacing deal risk and competitive mentions.
+        who_uses_it: Sales leadership, RevOps and Enablement.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-4 GB/day (transcripts + metadata)
+            interval: Daily
+      - name: Outreach Engagement
+        icon: market
+        summary: Sales sequences, activity and reply data feeding rep productivity and pipeline-generation analysis.
+        citations:
+          - outreach
+        category: Sales Engagement Platform
+        what_it_is: Sales sequences, activity and reply data feeding rep productivity and pipeline-generation analysis.
+        who_uses_it: Sales development, RevOps and Enablement.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+  - name: Billing & Metering
+    icon: market
+    tiles:
+      - name: Stripe Billing
+        icon: market
+        summary: Subscriptions, invoices, usage records and payment events, the source of MRR, ARR and collected revenue.
+        citations:
+          - stripe
+        category: Subscription Billing & Payments
+        what_it_is: Subscriptions, invoices, usage records and payment events, the source of MRR, ARR and collected revenue.
+        who_uses_it: Finance, RevOps and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily billing runs
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of events/sec
+            interval: Continuous (webhook)
+      - name: Zuora Billing
+        icon: erp
+        summary: Recurring and usage-based billing, rating and revenue schedules for the enterprise subscription estate.
+        citations:
+          - zuora
+        category: Recurring / Usage-Based Billing
+        what_it_is: Recurring and usage-based billing, rating and revenue schedules for the enterprise subscription estate.
+        who_uses_it: Finance, revenue accounting and RevOps.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Nightly billing cycles
+      - name: Chargebee
+        icon: product
+        summary: Subscription lifecycle, dunning and revenue operations for the self-serve and PLG billing motion.
+        citations:
+          - chargebee
+        category: Subscription Management
+        what_it_is: Subscription lifecycle, dunning and revenue operations for the self-serve and PLG billing motion.
+        who_uses_it: RevOps, finance and growth billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day
+            interval: Daily
+      - name: m3ter Metering
+        icon: gauge
+        summary: Usage metering and rating that turns raw consumption events into billable, reconcilable line items.
+        citations:
+          - m3ter
+        category: Usage Metering & Rating
+        what_it_is: Meters and rates raw consumption events into billable, reconcilable line items for usage-based pricing.
+        who_uses_it: RevOps, billing engineering and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day rated rollups
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: 10-50k usage events/sec
+            interval: Continuous
+  - name: Product Telemetry
+    icon: stream
+    tiles:
+      - name: Segment CDP
+        icon: custlake
+        summary: The customer data platform routing product, web and server events into one schema of identified and anonymous activity.
+        citations:
+          - segment
+        category: Customer Data Platform (CDP)
+        what_it_is: Routes product, web and server events into one schema of identified and anonymous activity.
+        who_uses_it: Growth, product analytics and lifecycle marketing.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-50k events/sec at peak
+            interval: Continuous clickstream
+      - name: Amplitude Analytics
+        icon: chart
+        summary: Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.
+        citations:
+          - amplitude
+        category: Product Analytics
+        what_it_is: Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.
+        who_uses_it: Product analytics and growth teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous
+      - name: Snowplow Behavioral
+        icon: stream
+        summary: First-party behavioural event pipeline with a governed schema, the raw stream behind product and growth models.
+        citations:
+          - snowplow
+        category: Behavioral Event Pipeline
+        what_it_is: First-party behavioural event pipeline with a governed schema, the raw stream behind product and growth models.
+        who_uses_it: Data engineering, growth and product data science.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous
+  - name: Dev & Delivery
+    icon: code
+    tiles:
+      - name: GitHub
+        icon: code
+        summary: Commits, pull requests and Actions runs, the source of developer velocity and deployment-frequency signals.
+        citations:
+          - github
+        category: Source Control / CI
+        what_it_is: Commits, pull requests and Actions runs, the source of developer velocity and deployment-frequency signals.
+        who_uses_it: Engineering, platform and developer-experience teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 0.2-1 GB/day
+            interval: Daily + webhook
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (webhook)
+      - name: GitLab
+        icon: cicd
+        summary: Repositories, pipelines and merge requests where the delivery motion runs on a single DevOps platform.
+        citations:
+          - gitlab
+        category: DevOps Platform
+        what_it_is: Repositories, pipelines and merge requests where the delivery motion runs on a single DevOps platform.
+        who_uses_it: Engineering and platform teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 0.2-1 GB/day
+            interval: Daily + webhook
+      - name: Jira Software
+        icon: sheet
+        summary: Issues, sprints and cycle time, the planning system of record joined to delivery and incident data.
+        citations:
+          - jira
+        category: Project / Issue Tracking
+        what_it_is: Issues, sprints and cycle time, the planning system of record joined to delivery and incident data.
+        who_uses_it: Engineering, product and program management.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day
+            interval: Hourly / nightly
+      - name: PagerDuty
+        icon: observ
+        summary: Incidents, on-call and escalation events, the source of reliability and mean-time-to-resolve measurement.
+        citations:
+          - pagerduty
+        category: Incident Management / On-Call
+        what_it_is: Incidents, on-call and escalation events, the source of reliability and mean-time-to-resolve measurement.
+        who_uses_it: SRE, platform engineering and on-call teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (webhook)
+  - name: Support & Back Office
+    icon: chat
+    tiles:
+      - name: Zendesk Support
+        icon: chat
+        summary: Support tickets, CSAT and macros, a leading signal for churn risk and the corpus behind support deflection.
+        citations:
+          - zendesk
+        category: Customer Support / Ticketing
+        what_it_is: Support tickets, CSAT and macros, a leading signal for churn risk and the corpus behind support deflection.
+        who_uses_it: Support, customer success and product teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.5-2 GB/day
+            interval: Hourly
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (webhook)
+      - name: Intercom
+        icon: dial
+        summary: In-product messaging, conversations and resolution data across the onboarding and support journey.
+        citations:
+          - intercom
+        category: In-Product Messaging / Support
+        what_it_is: In-product messaging, conversations and resolution data across the onboarding and support journey.
+        who_uses_it: Support, growth and lifecycle teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of events/sec
+            interval: Continuous
+      - name: Workday HCM
+        icon: people
+        summary: Headcount, roles and cost centres, the reference for engineering capacity and cost-of-delivery analysis.
+        citations:
+          - workday
+        category: Human Capital Management (HCM)
+        what_it_is: Headcount, roles and cost centres, the reference for engineering capacity and cost-of-delivery analysis.
+        who_uses_it: Finance, People and engineering leadership.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.1-0.5 GB/day
+            interval: Nightly
+      - name: NetSuite ERP
+        icon: erp
+        summary: General ledger, revenue and expense, the finance system of record reconciled against billing and metering.
+        citations:
+          - netsuite
+        category: ERP / Financials
+        what_it_is: General ledger, revenue and expense, the finance system of record reconciled against billing and metering.
+        who_uses_it: Finance and accounting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Nightly
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Cloud Warehouse Marts
+        icon: fed
+        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Cloud Data Warehouse
+        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance, RevOps and analytics engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Kafka Event Streams
+        icon: eventbus
+        summary: Product and billing event topics on Kafka or managed streaming, carrying signup, feature-usage and invoice events, parsed on arrival and landed as structured events.
+        citations:
+          - kafka
+        category: Event Streaming Platform
+        what_it_is: Product and billing event topics carrying signup, feature-usage and invoice events, parsed on arrival.
+        who_uses_it: Streaming and platform data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 20-100k events/sec at peak
+            interval: Continuous
+      - name: Product Webhooks
+        icon: api
+        summary: Stripe, GitHub and Zendesk webhooks delivering near-real-time billing, commit and ticket events. Managed ELT connectors and existing streaming topics carrying usage and telemetry land here too, drawn generically on the reference board.
+        category: Webhook / ELT Ingest
+        what_it_is: Stripe, GitHub and Zendesk webhooks and managed ELT connectors delivering near-real-time billing, commit and ticket events.
+        who_uses_it: Integration and platform data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (webhook)
+      - name: FinOps Cost Exports
+        icon: market
+        summary: FOCUS-format cloud cost and usage exports feeding cloud COGS and gross-margin analysis by product and customer.
+        citations:
+          - focus
+        category: Cloud Cost & Usage (FinOps)
+        what_it_is: FOCUS-format cloud cost and usage exports feeding cloud COGS and gross-margin analysis by product and customer.
+        who_uses_it: FinOps, finance and platform teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day
+            interval: Daily exports
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Exec & Product
+        mark: Genie One
+        summary: The CEO on growth, net revenue retention and the path to profitable scale; the Chief Product Officer on activation, engagement and the roadmap that actually moves retention.
+        uses:
+          - - Genie One
+            - Ask what this month's NRR was by segment, or which features drive retention, without booking analyst time.
+          - - AI/BI
+            - ARR, NRR, activation and engagement on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "active" and "retained" mean one thing across the company.
+        sub:
+          - name: CEO
+            cares: growth, net revenue retention and the path to profitable scale.
+          - name: Chief Product Officer
+            cares: activation, engagement and the roadmap that moves retention.
+        ucs:
+          - Product Usage Analytics
+          - Churn & NRR Prediction
+          - PLG Activation
+          - Cloud COGS & Margin
+      - name: Revenue & Sales
+        mark: Model Serving
+        summary: The Chief Revenue Officer on pipeline coverage and win rate; sales leadership on forecast accuracy and expansion in the installed base; RevOps on territory, quota and the accuracy of the number.
+        uses:
+          - - Revenue Cockpit
+            - Coverage, slip and win-rate on the same numbers the board sees.
+          - - Model Serving
+            - Win-propensity and expansion-likelihood scored inside the CRM path.
+          - - AI/BI
+            - Forecast, coverage and net expansion on governed pipeline data.
+        sub:
+          - name: Chief Revenue Officer
+            cares: pipeline coverage, win rate and net expansion.
+          - name: Sales leadership
+            cares: forecast accuracy and expansion in the installed base.
+          - name: RevOps
+            cares: territory, quota and the accuracy of the number.
+        ucs:
+          - Sales Pipeline Forecast
+          - Customer Health Scoring
+          - Usage-Based Billing
+      - name: Finance & RevOps
+        mark: AI/BI
+        summary: The CFO on gross margin, cash and the efficiency of growth; RevOps and finance on usage-based revenue recognition, metering accuracy and the reconciliation of billed to consumed.
+        uses:
+          - - AI/BI
+            - Margin, the ARR bridge and cash efficiency on certified Metric Views.
+          - - Metering Console
+            - Metered consumption reconciled to invoices before the close.
+          - - Genie One
+            - Ask which accounts are under-billed this month without a finance pull.
+        sub:
+          - name: CFO
+            cares: gross margin, cash and the efficiency of growth.
+          - name: RevOps & billing
+            cares: usage-based revenue, metering accuracy and billed-to-consumed.
+        ucs:
+          - Usage-Based Billing
+          - Cloud COGS & Margin
+          - Sales Pipeline Forecast
+      - name: Growth & Analytics
+        mark: Lakehouse//RT
+        summary: Growth teams on activation, conversion and expansion loops; product analytics on funnels, feature adoption and experiment readouts; lifecycle marketing on onboarding and reactivation.
+        uses:
+          - - Growth Command Center
+            - Onboarding funnels and activation nudges scored per account.
+          - - AI/BI
+            - A/B readouts on governed event data with one metric definition.
+          - - Lakehouse//RT
+            - Live product state at the latency an onboarding flow moves at.
+        sub:
+          - name: Growth
+            cares: activation, free-to-paid conversion and expansion loops.
+          - name: Product analytics
+            cares: funnels, feature adoption and experiment readouts.
+          - name: Lifecycle marketing
+            cares: onboarding, reactivation and in-product messaging.
+        ucs:
+          - PLG Activation
+          - Product Usage Analytics
+          - Experimentation & A/B
+          - GenAI Support Deflection
+      - name: Platform & Security
+        mark: Lakeflow
+        summary: The CTO on developer velocity and reliability; platform engineering on the pipelines and the golden signals; the security and trust team on entitlement drift and access telemetry.
+        uses:
+          - - Lakeflow
+            - Product, billing and telemetry feeds conformed for analytics.
+          - - Entitlement Sync
+            - Access and permission events monitored for drift and abuse.
+          - - MLflow
+            - Reliability and anomaly models tracked for audit and reproduction.
+        sub:
+          - name: CTO
+            cares: developer velocity, reliability and platform cost.
+          - name: Platform engineering
+            cares: the pipelines, golden signals and incident response.
+          - name: Security & trust
+            cares: entitlement drift, access telemetry and abuse.
+        ucs:
+          - Entitlement Telemetry
+          - Churn & NRR Prediction
+          - Product Usage Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Platform & Data Eng
+        mark: Lakeflow
+        summary: Land the CRM, billing, telemetry and Git feeds with Fivetran, Airbyte and Kafka; run dbt and Airflow on the Bronze to Silver path; own the pager when the activation and revenue tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for Salesforce, Stripe and SaaS telemetry sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on event and billing feeds.
+          - - Lakewatch
+            - Freshness on the activation and revenue tables the business reads every morning.
+        sub:
+          - name: Ingestion engineers
+            cares: CRM, billing and telemetry feeds into Bronze.
+          - name: Streaming engineers
+            cares: Kafka product and usage events into Lakehouse//RT.
+          - name: Platform & governance
+            cares: Unity Catalog permissions and the pipeline SLAs.
+        ucs:
+          - Product Usage Analytics
+          - Usage-Based Billing
+          - Entitlement Telemetry
+      - name: Applied ML Scientists
+        mark: MLflow
+        summary: Churn, expansion, propensity and support-deflection models built in Python with PyTorch, scikit-learn and Hugging Face, and whether they still hold once pricing, packaging and the product change.
+        uses:
+          - - Feature Store
+            - Account and usage features read identically in training and serving.
+          - - MLflow
+            - Every churn and experiment run tracked for audit and reproduction.
+          - - Model Serving
+            - Propensity and deflection models scored in the product and CRM path.
+        sub:
+          - name: Growth & churn modelers
+            cares: activation, conversion and churn-risk models.
+          - name: Applied GenAI
+            cares: support-deflection and copilot agents on governed data.
+          - name: MLOps
+            cares: tracking and serving models in the operational path.
+        ucs:
+          - Churn & NRR Prediction
+          - Sales Pipeline Forecast
+          - GenAI Support Deflection
+      - name: Analytics Engineers
+        mark: AI/BI
+        summary: Model the semantic layer in dbt and serve it to Looker, Hex and Mode; own the metric definitions behind NRR, activation and margin so every team reads the same number.
+        uses:
+          - - AI/BI
+            - Certified Metric Views for NRR, activation and gross margin.
+          - - Genie One
+            - Natural-language answers over the governed semantic layer.
+          - - Unity Catalog
+            - One definition of active, retained and billed across the stack.
+        sub:
+          - name: Metrics engineers
+            cares: the NRR, activation and margin definitions.
+          - name: BI & enablement
+            cares: self-serve dashboards and Genie for the business teams.
+        ucs:
+          - Product Usage Analytics
+          - Cloud COGS & Margin
+          - Customer Health Scoring
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and board dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, in the channel product and revenue teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks, VS Code and JetBrains against governed product and revenue data with Genie Code.
+  - name: Growth Activation
+    icon: zfunnel
+    tiles:
+      - name: Reverse ETL to CDP
+        icon: reverse
+        summary: Health scores and lifecycle segments synced back to Segment and the CRM for in-product and email activation.
+        citations:
+          - segment
+      - name: In-Product Messaging
+        icon: dial
+        summary: Onboarding nudges and expansion prompts served into the app from governed activation scores.
+        citations:
+          - intercom
+      - name: Marketing Automation
+        icon: market
+        summary: Lifecycle and reactivation campaigns triggered from governed cohorts in Braze and the marketing stack.
+        citations:
+          - braze
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: CRM Health Writeback
+        icon: crm
+        summary: Customer health scores and churn risk written back to Salesforce so CSMs act in the system they live in.
+        citations:
+          - salesforce
+      - name: Usage to Billing
+        icon: gauge
+        summary: Rated consumption written to Stripe and Zuora so invoices match what was actually used.
+        citations:
+          - stripe
+      - name: Entitlement Sync
+        icon: key
+        summary: Plan limits and feature flags pushed back to the app so entitlements match the contract.
+  - name: Partners & Sharing
+    icon: share
+    tiles:
+      - name: Customer Data Products
+        icon: product
+        summary: Usage and benchmark products published in Unity Catalog Domains and shared over OpenSharing.
+      - name: Embedded Analytics
+        icon: aibi
+        summary: Customer-facing dashboards embedded in the product against governed tables with row-level isolation.
+      - name: Investor & Board Share
+        icon: share
+        summary: Board and investor metrics shared live over Delta Sharing rather than a quarterly spreadsheet.
+  - name: Regulatory & Trust
+    icon: gavel
+    tiles:
+      - name: SOC 2 & Audit Evidence
+        icon: gavel
+        summary: Access and change evidence for SOC 2 and ISO 27001 produced from the same governed tables the company runs on.
+      - name: Privacy & DSAR
+        icon: zshield
+        summary: GDPR and CCPA subject access and deletion requests fulfilled from one governed customer record.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Growth Command Center
+        icon: zfunnel
+        short: Activation & conversion
+        summary: Live activation, free-to-paid conversion and expansion funnels across every account, flagging the onboarding steps where users stall before they ever reach value.
+      - name: Revenue Cockpit
+        icon: market
+        short: Pipeline & forecast
+        summary: Pipeline coverage, slip and win-rate with expansion signals drawn from product usage, so the forecast reflects what the installed base is actually doing.
+      - name: Customer Health Hub
+        icon: gauge
+        short: Health & churn
+        summary: Account health scores and churn risk composed from usage, support and billing signals, routed to the CSM who owns the renewal.
+      - name: Metering Console
+        icon: gauge
+        short: Usage-based billing
+        summary: Rated consumption reconciled to invoices before the close, with metering accuracy and revenue-at-risk visible per account.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Growth & Activation
+        icon: aibi
+        summary: PLG activation, conversion and engagement funnels on certified Metric Views.
+        kpis:
+          - Activation rate
+          - Free-to-paid conversion
+          - WAU/MAU
+          - Feature adoption
+          - Time-to-value
+        teams:
+          - Growth & Analytics
+          - Exec & Product
+          - Analytics Engineers
+      - name: Revenue & NRR
+        icon: aibi
+        summary: ARR bridge, net revenue retention and churn by cohort and segment.
+        kpis:
+          - ARR
+          - NRR
+          - Gross churn
+          - Expansion rate
+          - Win rate
+        teams:
+          - Revenue & Sales
+          - Finance & RevOps
+          - Exec & Product
+      - name: Usage & Margin
+        icon: aibi
+        summary: Metered consumption, billing accuracy and cloud COGS by product and account.
+        kpis:
+          - Usage-based revenue
+          - Metering accuracy
+          - Gross margin
+          - Cloud COGS
+          - Revenue at risk
+        teams:
+          - Finance & RevOps
+          - Revenue & Sales
+          - Analytics Engineers
+      - name: Engineering Delivery
+        icon: aibi
+        summary: Developer velocity, reliability and incident metrics across teams.
+        kpis:
+          - Deployment frequency
+          - Change-failure rate
+          - MTTR
+          - Cycle time
+          - Open incidents
+        teams:
+          - Platform & Security
+          - Platform & Data Eng
+          - Applied ML Scientists
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Product & Growth Agent
+        icon: genie
+        summary: Ask about activation, engagement and retention across the product in plain language.
+        feeds:
+          - Segment CDP
+          - Amplitude Analytics
+          - Snowplow Behavioral
+          - Conformed account, user, subscription
+        teams:
+          - Growth & Analytics
+          - Exec & Product
+          - Analytics Engineers
+        questions:
+          - What is activation rate by signup cohort this month?
+          - Which features correlate most with 90-day retention?
+          - Where in onboarding do free users most often stall?
+          - Which accounts show rising engagement but no paid upgrade?
+          - What is free-to-paid conversion by acquisition channel?
+      - name: Revenue & Retention Agent
+        icon: genie
+        summary: Explore ARR, net revenue retention and churn across segments and cohorts.
+        feeds:
+          - Salesforce Sales Cloud
+          - Stripe Billing
+          - Zuora Billing
+          - NRR, activation, health, margin
+        teams:
+          - Revenue & Sales
+          - Finance & RevOps
+          - Exec & Product
+        questions:
+          - What is net revenue retention by segment this quarter?
+          - Which accounts are at highest churn risk right now?
+          - How does ARR bridge from new, expansion and churn this month?
+          - Which cohorts show the strongest expansion?
+          - What is win rate and pipeline coverage this quarter?
+      - name: Usage & Billing Agent
+        icon: genie
+        summary: Answer metering, billing accuracy and usage-based revenue questions.
+        feeds:
+          - m3ter Metering
+          - Stripe Billing
+          - FinOps Cost Exports
+          - Conformed account, user, subscription
+        teams:
+          - Finance & RevOps
+          - Revenue & Sales
+          - Platform & Data Eng
+        questions:
+          - Which accounts are under-billed versus metered consumption this month?
+          - What is metering-to-invoice accuracy by product?
+          - Which customers are approaching their plan limits?
+          - What is revenue at risk from metering discrepancies?
+          - How much usage-based revenue is unbilled right now?
+      - name: Platform & Reliability Agent
+        icon: genie
+        summary: Ask about developer velocity, reliability and incident trends across teams.
+        feeds:
+          - GitHub
+          - Jira Software
+          - PagerDuty
+          - Raw product and billing events
+        teams:
+          - Platform & Security
+          - Platform & Data Eng
+          - Applied ML Scientists
+        questions:
+          - What is deployment frequency and change-failure rate by team?
+          - Which services have the worst MTTR this quarter?
+          - How does cycle time trend across squads?
+          - Which incidents correlate with recent deploys?
+          - Where are access or entitlement anomalies concentrated?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Product Usage Analytics
+        short: Product
+        icon: chart
+        summary: Feature adoption, funnels and engagement measured on one governed event stream so product, growth and finance read the same activity.
+        problem: Product events sit in a CDP and three analytics tools that each define "active" differently, so no two teams agree on adoption or what actually drives retention.
+        who_benefits: Growth & Analytics
+        how_built: Segment and Snowplow events land through Lakeflow and are conformed to certified Metric Views; funnels and adoption are explored in AI/BI from the Growth Command Center.
+        components:
+          - Amplitude Analytics
+          - Snowplow Behavioral
+          - AI/BI
+          - Growth Command Center
+          - Unity Catalog
+        stories:
+          - title: Grammarly scales product analytics on Databricks
+            url: https://www.databricks.com/customers/grammarly
+          - title: Adobe brings creativity to life with data intelligence
+            url: https://www.databricks.com/customers/adobe
+      - name: PLG Activation
+        short: Activation
+        icon: zfunnel
+        summary: Product-led onboarding and free-to-paid conversion, with the activation moment identified and nudged per account rather than left to chance.
+        problem: Most self-serve signups never reach the activation moment, and the teams that could intervene find out weeks later from a dashboard instead of in the flow.
+        who_benefits: Growth & Analytics
+        how_built: Product events are scored against activation and conversion models in Model Serving; nudges are pushed back through Reverse ETL to CDP and the Growth Command Center on Lakehouse//RT.
+        components:
+          - Segment CDP
+          - Model Serving
+          - Reverse ETL to CDP
+          - Growth Command Center
+          - Lakehouse//RT
+        stories:
+          - title: Iterable activates lifecycle journeys on Databricks
+            url: https://www.databricks.com/customers/iterable
+          - title: Zapier powers real-time customer experiences
+            url: https://www.databricks.com/customers/zapier
+      - name: Churn & NRR Prediction
+        short: Retention
+        icon: people
+        summary: Predicting churn and net revenue retention from product, support and billing signals so the save happens before the renewal, not at it.
+        problem: Churn shows up in the renewal number when it is too late to act, while the leading signals sit unjoined across product usage, support tickets and billing.
+        who_benefits: Exec & Product
+        how_built: Usage, support and billing features feed churn and expansion models tracked in MLflow and scored in Model Serving; risk surfaces in the Customer Health Hub for the owning team.
+        components:
+          - Segment CDP
+          - Model Serving
+          - Feature Store
+          - Customer Health Hub
+          - MLflow
+        stories:
+          - title: SciPlay lifts retention with churn prediction
+            url: https://www.databricks.com/customers/sciplay
+          - title: SEGA Europe improves player retention with AI
+            url: https://www.databricks.com/customers/sega
+      - name: Usage-Based Billing
+        short: Monetization
+        icon: gauge
+        summary: Metered consumption rated and reconciled to invoices before the close, so the company bills exactly what customers actually used.
+        problem: Usage-based pricing leaks revenue when metering, rating and the invoice disagree, and the reconciliation of consumed to billed only surfaces after the period closes.
+        who_benefits: Finance & RevOps
+        how_built: Raw usage from the metering layer is conformed in the lakehouse, rated against the plan, and written back to billing from the Metering Console so invoices match consumption.
+        components:
+          - m3ter Metering
+          - Stripe Billing
+          - Usage to Billing
+          - Metering Console
+          - AI/BI
+      - name: Customer Health Scoring
+        short: Success
+        icon: custlake
+        summary: A single account health score composed from product, support and billing signals and routed to the CSM in the CRM they already work in.
+        problem: Customer success works from gut feel and a stale spreadsheet because the signals of health live in product, support and billing systems that never meet.
+        who_benefits: Revenue & Sales
+        how_built: Health features are assembled in the Feature Store and scored in Model Serving; the score and its drivers are written back to Salesforce through CRM Health Writeback and shown in the Customer Health Hub.
+        components:
+          - Salesforce Sales Cloud
+          - Model Serving
+          - CRM Health Writeback
+          - Customer Health Hub
+          - Feature Store
+        stories:
+          - title: Calculate customer lifetime value on Databricks
+            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
+      - name: GenAI Support Deflection
+        short: Support
+        icon: chat
+        summary: A governed assistant that resolves common support questions from the product docs and ticket history, deflecting volume before it reaches an agent.
+        problem: Support volume scales with the customer base, and the answers already exist in docs and past tickets, but agents re-solve the same questions by hand every day.
+        who_benefits: Growth & Analytics
+        how_built: Zendesk and Intercom history and product docs are governed in Unity Catalog and served to an Agent Bricks assistant with AI Functions and Model Serving, deflecting and summarising tickets.
+        components:
+          - Zendesk Support
+          - Intercom
+          - Agent Bricks
+          - AI Functions
+          - Model Serving
+        stories:
+          - title: Lumen reaches 35% ticket deflection with GenAI
+            url: https://www.databricks.com/customers/lumen-technologies
+          - title: Lippert improves customer support with Agent Bricks
+            url: https://www.databricks.com/customers/lippert
+      - name: Entitlement Telemetry
+        short: Security
+        icon: key
+        summary: Access, permission and feature-entitlement events monitored for drift and abuse, so what a customer can reach always matches what they bought.
+        problem: Entitlements drift as plans change and integrations proliferate, and access anomalies hide in event logs no one joins to the contract or the customer record.
+        who_benefits: Platform & Security
+        how_built: Access and permission events stream into Lakehouse//RT; anomaly models in Model Serving flag drift and abuse, and corrected limits are pushed back through Entitlement Sync under Unity Catalog.
+        components:
+          - Kafka Event Streams
+          - Lakehouse//RT
+          - Entitlement Sync
+          - Model Serving
+          - Unity Catalog
+      - name: Experimentation & A/B
+        short: Experiments
+        icon: ztarget
+        summary: A/B and feature-flag experiments read out on one governed metric definition, so product ships on evidence rather than the loudest opinion.
+        problem: Experiment readouts disagree with the analytics tool and with finance because each computes the metric its own way, so results are argued rather than trusted.
+        who_benefits: Growth & Analytics
+        how_built: Exposure and outcome events are conformed to certified Metric Views; experiments are analysed in AI/BI with runs tracked in MLflow and surfaced from the Growth Command Center.
+        components:
+          - Amplitude Analytics
+          - AI/BI
+          - MLflow
+          - Growth Command Center
+          - Unity Catalog
+        stories:
+          - title: Statsig runs experimentation at scale on Databricks
+            url: https://www.databricks.com/customers/statsig
+      - name: Sales Pipeline Forecast
+        short: Forecast
+        icon: market
+        summary: Pipeline coverage and win-rate forecast enriched with product-usage and conversation signals, so the number reflects what the installed base is doing.
+        problem: The forecast is a rep-entered guess disconnected from how accounts actually use the product, so coverage looks healthy right up until the quarter misses.
+        who_benefits: Revenue & Sales
+        how_built: Salesforce pipeline and Gong conversation data are conformed and scored for win and expansion propensity in Model Serving; coverage and slip are read in the Revenue Cockpit on AI/BI.
+        components:
+          - Salesforce Sales Cloud
+          - Gong Revenue AI
+          - Model Serving
+          - Revenue Cockpit
+          - AI/BI
+        stories:
+          - title: Sales forecasting and attribution solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/sales-forecasting
+      - name: Cloud COGS & Margin
+        short: Margin
+        icon: zcloudgear
+        summary: Cloud cost of goods allocated to product and customer so gross margin is known per account, not just at the company level.
+        problem: Cloud spend is the largest line in COGS but lands as one undifferentiated bill, so no one can say which product or customer is actually margin-positive.
+        who_benefits: Finance & RevOps
+        how_built: FOCUS-format cost exports are joined to usage and the customer hierarchy in the lakehouse; margin by product and account is served in AI/BI and the Metering Console under one definition.
+        components:
+          - FinOps Cost Exports
+          - AI/BI
+          - Cloud Warehouse Marts
+          - Metering Console
+          - Unity Catalog
+medallion:
+  Bronze:
+    short: Raw product and billing events
+    summary: Product telemetry from the CDP and behavioural stack, Stripe and Zuora billing and metering records, CRM opportunities, support tickets and Git and CI events, landed exactly as received so a usage spike or an invoice can always be replayed as it stood.
+  Silver:
+    short: Conformed account, user, subscription
+    summary: Accounts, users, subscriptions and product entities resolved into single conformed entities across the CRM, billing and telemetry estates, with anonymous device ids stitched to known users and free and paid workspaces reconciled to one customer hierarchy.
+  Gold:
+    short: NRR, activation, health, margin
+    summary: 'Contracted products the revenue and product teams run on: net revenue retention and churn by cohort, PLG activation and conversion funnels, customer health scores, usage-based revenue and metering accuracy, and cloud cost of goods and gross margin by product.'
+citation_index:
+  salesforce:
+    title: Salesforce Sales Cloud
+    url: https://www.salesforce.com/sales/
+  hubspot:
+    title: HubSpot CRM
+    url: https://www.hubspot.com/products/crm
+  gong:
+    title: Gong Revenue AI
+    url: https://www.gong.io/
+  outreach:
+    title: Outreach
+    url: https://www.outreach.io/
+  stripe:
+    title: Stripe Billing
+    url: https://stripe.com/billing
+  zuora:
+    title: Zuora Billing
+    url: https://www.zuora.com/
+  chargebee:
+    title: Chargebee
+    url: https://www.chargebee.com/
+  m3ter:
+    title: m3ter usage metering
+    url: https://www.m3ter.com/
+  segment:
+    title: Twilio Segment CDP
+    url: https://segment.com/
+  amplitude:
+    title: Amplitude product analytics
+    url: https://amplitude.com/
+  snowplow:
+    title: Snowplow behavioral data
+    url: https://snowplow.io/
+  github:
+    title: GitHub
+    url: https://github.com/features
+  gitlab:
+    title: GitLab
+    url: https://about.gitlab.com/
+  jira:
+    title: Atlassian Jira Software
+    url: https://www.atlassian.com/software/jira
+  pagerduty:
+    title: PagerDuty
+    url: https://www.pagerduty.com/
+  zendesk:
+    title: Zendesk
+    url: https://www.zendesk.com/
+  intercom:
+    title: Intercom
+    url: https://www.intercom.com/
+  workday:
+    title: Workday HCM
+    url: https://www.workday.com/
+  netsuite:
+    title: Oracle NetSuite ERP
+    url: https://www.netsuite.com/portal/products/erp.shtml
+  kafka:
+    title: Apache Kafka
+    url: https://kafka.apache.org/
+  focus:
+    title: FinOps FOCUS specification
+    url: https://focus.finops.org/
+  braze:
+    title: Braze customer engagement
+    url: https://www.braze.com/

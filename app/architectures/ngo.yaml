@@ -1,0 +1,913 @@
+name: NGO & Non-Profit
+description: Donor stewardship, grant compliance, program delivery and field operations for humanitarian, development and advocacy organisations operating across borders.
+sources:
+  - name: CRM & Fundraising
+    icon: custlake
+    tiles:
+      - name: Salesforce Nonprofit Cloud
+        icon: custlake
+        summary: Donor profiles, campaigns, pledges and recurring gifts from the CRM fundraisers work in.
+        citations:
+          - sf-nonprofit
+        category: Nonprofit CRM / Fundraising
+        what_it_is: Holds donor profiles, campaigns, pledges and recurring gifts as the CRM fundraisers and development teams work in.
+        who_uses_it: Development, digital fundraising and donor care teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of gift and engagement events/sec
+            interval: Continuous CDC
+      - name: Blackbaud Raiser's Edge
+        icon: people
+        summary: Major-gift pipelines, events and acknowledgment history for development teams.
+        citations:
+          - blackbaud-re
+        category: Fundraising / Donor Management
+        what_it_is: Manages major-gift pipelines, events and acknowledgment history for development teams.
+        who_uses_it: Major gifts, events and donor stewardship teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch
+      - name: Classy Donation Pages
+        icon: partner
+        summary: Peer-to-peer and crowdfunding transactions with UTM and appeal codes.
+        citations:
+          - classy
+        category: Online Giving Platform
+        what_it_is: Processes peer-to-peer and crowdfunding donations and carries UTM and appeal codes for campaign attribution.
+        who_uses_it: Digital fundraising and campaign analytics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of transactions/hour at peak
+            interval: Continuous (API / webhook)
+  - name: Grants & Finance
+    icon: erp
+    tiles:
+      - name: Blackbaud Financial Edge
+        icon: erp
+        summary: Restricted and unrestricted funds, allocations and grant drawdowns.
+        citations:
+          - blackbaud-fe
+        category: Fund Accounting System
+        what_it_is: Fund accounting system of record for restricted and unrestricted funds, allocations and grant drawdowns.
+        who_uses_it: Finance, fund accounting and grant compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + close cycles
+      - name: Fluxx Grantmaker
+        icon: sheet
+        summary: Sub-grant applications, awards and milestone reporting to institutional donors.
+        citations:
+          - fluxx
+        category: Grants Management System
+        what_it_is: Manages sub-grant applications, awards and milestone reporting to and from institutional donors.
+        who_uses_it: Grant managers, program teams and compliance staff.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: Daily + reporting cycles
+      - name: SAP Public Sector
+        icon: erp
+        summary: Project accounting, procurement and audit-ready financial close for large NGOs.
+        citations:
+          - sap-public
+        category: ERP / Financials Suite
+        what_it_is: Runs project accounting, procurement and audit-ready financial close for large NGOs.
+        who_uses_it: Finance, procurement and controllership teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + monthly close
+  - name: Program & Field M&E
+    icon: globe
+    tiles:
+      - name: CommCare Mobile
+        icon: api
+        summary: Field surveys, case management and visit logs from community health and protection programs.
+        citations:
+          - commcare
+        category: Field Case Management / Mobile Data
+        what_it_is: Captures field surveys, case management and visit logs from community health and protection programs, often offline-first.
+        who_uses_it: Field workers, program officers and M&E advisors.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.2-2 GB/day
+            interval: Sync on connectivity (batched)
+          stream:
+            types:
+              - semi-structured
+            volume: tens of submissions/min at peak
+            interval: Continuous when online
+      - name: KoBoToolbox
+        icon: notebook
+        summary: Rapid assessments and baseline surveys deployed in low-connectivity settings.
+        citations:
+          - kobo
+        category: Mobile Survey / Data Collection
+        what_it_is: Collects rapid assessments and baseline surveys in low-connectivity field settings for program teams.
+        who_uses_it: M&E advisors, assessment teams and field enumerators.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.1-1 GB/day
+            interval: Sync on connectivity (batched)
+      - name: DevResults M&E
+        icon: chart
+        summary: Indicator frameworks, results chains and portfolio dashboards for program teams.
+        citations:
+          - devresults
+        category: Monitoring & Evaluation (M&E) System
+        what_it_is: Holds indicator frameworks, results chains and portfolio dashboards program teams manage outcomes against.
+        who_uses_it: M&E advisors, program directors and country teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.2-1 GB/day
+            interval: Daily + reporting cycles
+  - name: Logistics & HR
+    icon: stream
+    tiles:
+      - name: RITA (Logistics Cluster)
+        icon: stream
+        summary: 'WFP and Logistics Cluster relief-item tracking: warehouse stock and dispatch to distribution points.'
+        citations:
+          - logistics-cluster
+        category: Humanitarian Logistics / Supply Chain
+        what_it_is: Tracks relief-item warehouse stock and dispatch to distribution points across the humanitarian supply chain.
+        who_uses_it: Logistics, supply chain and field operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.2-1 GB/day
+            interval: Daily + surge cadence
+          stream:
+            types:
+              - semi-structured
+            volume: dispatch events during surges
+            interval: Continuous during response
+      - name: Workday HCM
+        icon: people
+        summary: Staff roster, payroll and duty-of-care records across country offices.
+        citations:
+          - workday
+        category: HCM / Payroll Suite
+        what_it_is: Holds the staff roster, payroll and duty-of-care records across country offices.
+        who_uses_it: Human resources, payroll and security/duty-of-care teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly batch + payroll cycles
+      - name: International SOS
+        icon: gavel
+        summary: Travel risk approvals, incident reports and security check-ins for field staff.
+        category: Travel Risk & Security Platform
+        what_it_is: Manages travel risk approvals, incident reports and security check-ins for field staff duty of care.
+        who_uses_it: Security, duty-of-care and country management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: check-in and incident events
+            interval: Continuous (event-driven)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: UN Agency Data Mart
+        icon: fed
+        summary: OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog.
+        category: Partner Data Warehouse / Marts
+        what_it_is: OCHA and cluster reference datasets kept at partner agencies and queried in place through federation instead of being copied.
+        who_uses_it: Program, coordination and M&E analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GB-scale reference marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Guidestar / Candid
+        icon: partner
+        summary: Charity registry and 990 filings consumed inbound for due diligence on partners.
+        citations:
+          - candid
+        category: Charity Registry / Nonprofit Data
+        what_it_is: Provides charity registry profiles and 990 filings consumed inbound for due diligence on partners and grantees.
+        who_uses_it: Grants compliance, partnerships and due-diligence teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs reference
+            interval: Periodic + on-demand API
+      - name: OFAC Sanctions Lists
+        icon: gavel
+        summary: Watchlist updates parsed on arrival for donor and vendor screening.
+        citations:
+          - ofac
+        category: Sanctions & Watchlist Provider
+        what_it_is: Publishes sanctions and watchlist updates parsed on arrival for donor, vendor and partner screening.
+        who_uses_it: Compliance, sub-grantee risk and finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs per update
+            interval: Daily + on-change
+      - name: IATI d-portal / HXL (HDX)
+        icon: globe
+        summary: Aid-flow (IATI) and 3W activity data on HDX parsed on arrival for coordination and targeting.
+        citations:
+          - openweather
+        category: Aid-Flow & Coordination Data
+        what_it_is: Carries aid-flow (IATI) and 3W (who-does-what-where) activity data on HDX parsed on arrival for coordination and targeting.
+        who_uses_it: Program coordination, M&E and targeting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GB-scale activity data
+            interval: Periodic + on-demand
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Executive Directors
+        mark: Genie One
+        summary: The CEO on funds raised and program reach; the CFO on restricted-fund compliance and audit readiness when a major institutional grant closes out.
+        uses:
+          - - Genie One
+            - Ask what unrestricted reserves are after last quarter's campaigns without waiting on finance.
+          - - AI/BI
+            - Fundraising, program cost and compliance on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "restricted" means one thing across CRM and ERP.
+        sub:
+          - name: CEO & Board
+            cares: funds raised, program reach and whether the mission is moving for the money spent.
+          - name: CFO & Finance
+            cares: restricted-fund compliance, reserves and a clean audit when a major grant closes out.
+          - name: Country Directors
+            cares: portfolio delivery and cost per outcome across programs and geographies.
+        ucs:
+          - Cost per Outcome
+          - Program Outcomes
+          - Grant Compliance
+          - Donor Churn
+      - name: Development & Marketing
+        mark: CustomerLake
+        summary: Major gifts, digital campaigns and donor journeys when appeal season peaks, tracked on donor retention and cost per dollar raised.
+        uses:
+          - - Donor Journey Hub
+            - Lapsed and upgrade segments before year-end mail drops.
+          - - CustomerLake
+            - Household segments without copying CRM into a separate CDP.
+          - - AI/BI
+            - Retention and cost per dollar raised on governed definitions.
+        sub:
+          - name: Major Gifts
+            cares: the major-gift pipeline and which prospects are ready for the ask this quarter.
+          - name: Digital Fundraising
+            cares: appeal performance, cost per dollar raised and donor acquisition channels.
+          - name: Donor Care
+            cares: stewardship, retention and the lapsed and upgrade journeys before year-end.
+        ucs:
+          - Donor Propensity
+          - Donor Churn
+          - Impact Storytelling
+          - Volunteer Mobilisation
+      - name: Programs & M&E
+        mark: AI/BI
+        summary: Country directors on indicator progress, beneficiary reach and field data quality, and cost per outcome compared across programs and geographies.
+        uses:
+          - - Program Portfolio
+            - Outcome indicators by grant and geography on one surface.
+          - - Genie One
+            - Ask which sites missed their vaccination target last month.
+          - - Unity Catalog
+            - One beneficiary definition across mobile and grant systems.
+        sub:
+          - name: Country Directors
+            cares: indicator progress and beneficiary reach across the country portfolio.
+          - name: M&E Advisors
+            cares: results chains, indicator definitions and the evidence behind outcome claims.
+          - name: Field Data Quality
+            cares: survey completeness and one beneficiary definition across mobile and grant systems.
+        ucs:
+          - Program Outcomes
+          - Beneficiary Targeting
+          - Cost per Outcome
+      - name: Grants & Compliance
+        mark: Unity Catalog
+        summary: Grant managers on eligibility, reporting deadlines and sub-grantee risk, watching spend against budget and the compliance exception rate.
+        uses:
+          - - Grant Compliance Desk
+            - Milestone and budget exceptions before funder reports lock.
+          - - Unity Catalog
+            - Lineage from field survey to funder disclosure.
+          - - AI/BI
+            - Spend against budget on certified Metric Views.
+        sub:
+          - name: Grant Managers
+            cares: eligibility, reporting deadlines and spend against budget on every award.
+          - name: Compliance & Audit
+            cares: restricted-fund rules, audit readiness and the exception rate funders see.
+          - name: Sub-grantee Risk
+            cares: due diligence, sanctions screening and sub-grantee monitoring.
+        ucs:
+          - Grant Compliance
+          - Sanctions Screening
+          - Cost per Outcome
+      - name: Field Operations
+        mark: Apps
+        summary: Logistics and security on stock positions, convoy movements and duty of care, tracked on distribution reach and lead time during emergency surges.
+        uses:
+          - - Field Ops Console
+            - Stock and distribution status during emergency surges.
+          - - Apps
+            - Approval workflows hosted next to governed data.
+          - - Lakehouse//RT
+            - Dispatch updates at the latency a crisis moves at.
+        sub:
+          - name: Logistics & Supply
+            cares: stock positions, in-kind donations and dispatch to distribution points.
+          - name: Security & Duty of Care
+            cares: travel approvals, incident reports and staff check-ins in the field.
+          - name: Volunteer Coordination
+            cares: volunteer capacity and rostering for campaigns and emergency surges.
+        ucs:
+          - Emergency Surge
+          - Volunteer Mobilisation
+          - Beneficiary Targeting
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the CRM gift, grant ledger, mobile survey and logistics feeds; own the Bronze to Silver path and the pager when a field pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for CRM, ERP and mobile M&E sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on gift and survey feeds.
+          - - Lakewatch
+            - Freshness on the fundraising and indicator tables leadership reads.
+        sub:
+          - name: Ingestion
+            cares: managed connectors for CRM, grant ledger, mobile M&E and logistics feeds.
+          - name: Pipeline Reliability
+            cares: Bronze-to-Silver expectations and the pager when a field feed breaks.
+          - name: Governance
+            cares: lineage and freshness on the fundraising and indicator tables leadership reads.
+        ucs:
+          - Grant Compliance
+          - Program Outcomes
+          - Emergency Surge
+      - name: Data Scientists
+        mark: MLflow
+        summary: Donor propensity, churn, beneficiary-targeting and anticipatory-action models, and whether they still hold six months after deployment in the field.
+        uses:
+          - - Feature Store
+            - Giving and field features read identically in training and serving.
+          - - MLflow
+            - Every propensity and churn run tracked for audit and reproduction.
+          - - Model Serving
+            - Donor and targeting models scored in the campaign and field path.
+        sub:
+          - name: Donor Modeling
+            cares: propensity and churn models on giving and engagement history.
+          - name: Targeting & Anticipatory
+            cares: beneficiary-targeting and anticipatory-action models for the field.
+          - name: Model Ops
+            cares: whether a model still holds six months after deployment in the field.
+        ucs:
+          - Donor Propensity
+          - Donor Churn
+          - Beneficiary Targeting
+          - Emergency Surge
+      - name: App Developers
+        mark: Apps
+        summary: Ship the donor journey, grant compliance and field-ops applications development and program teams work in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for case and approval state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a funder narrative against governed tools.
+        sub:
+          - name: Donor & Marketing Apps
+            cares: the donor journey and stewardship screens fundraisers work in.
+          - name: Field & Grant Apps
+            cares: grant compliance and field-ops apps hosted next to governed data.
+          - name: Agents
+            cares: agents that draft a funder narrative against governed tools.
+        ucs:
+          - Impact Storytelling
+          - Volunteer Mobilisation
+          - Grant Compliance
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and surge updates in the channel field teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Donor Writeback
+        icon: custlake
+        summary: Gift thank-you and pledge reminders written back into CRM from governed segments.
+        citations:
+          - sf-nonprofit
+      - name: Grant Milestone Posts
+        icon: erp
+        summary: Approved narrative and financial actuals posted to grantmaker portals.
+        citations:
+          - fluxx
+      - name: Field Case Updates
+        icon: api
+        summary: Supervisor approvals pushed to mobile case management after data review.
+        citations:
+          - commcare
+  - name: Partners & Donors
+    icon: partner
+    tiles:
+      - name: Institutional Funder Portal
+        icon: share
+        summary: Portfolio indicators and financial summaries shared over Delta Sharing instead of emailed PDFs.
+        citations:
+          - fluxx
+      - name: Corporate Partner API
+        icon: api
+        summary: Campaign impact metrics served to corporate sponsors from governed outcomes.
+        citations:
+          - classy
+      - name: Consortium Data Exchange
+        icon: globe
+        summary: Cluster partners reading live program tables during joint responses.
+        citations:
+          - logistics-cluster
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: 990 / Charity Filings
+        icon: gavel
+        summary: Annual charity returns produced from the same governed tables finance closes on.
+        citations:
+          - candid
+      - name: Funder Narrative Reports
+        icon: share
+        summary: Indicator and financial annexes filed from contracted Gold products.
+        citations:
+          - devresults
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Funders, partners and auditors reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Donor Journey Hub
+        icon: custlake
+        short: Stewardship
+        summary: Upgrade, lapse and major-gift pipelines on Databricks Apps over Lakebase before appeal windows close.
+      - name: Program Portfolio
+        icon: chart
+        short: M&E live
+        summary: Indicator progress and beneficiary reach by grant and country on one surface.
+      - name: Grant Compliance Desk
+        icon: gavel
+        short: Funder reporting
+        summary: Budget variance and milestone risk before quarterly submissions lock.
+      - name: Field Ops Console
+        icon: stream
+        short: Surge logistics
+        summary: Stock, convoy and distribution status during emergency deployments.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Fundraising Performance
+        icon: aibi
+        summary: Funds raised, donor retention and cost per dollar raised across campaigns and channels.
+        kpis:
+          - Funds raised
+          - Donor retention
+          - Cost per dollar raised
+          - Average gift
+          - Lapsed rate
+        teams:
+          - Development & Marketing
+          - Executive Directors
+          - Donor Care
+      - name: Program Outcomes
+        icon: aibi
+        summary: Indicator attainment, beneficiary reach and cost per outcome by program and geography.
+        kpis:
+          - Indicator attainment
+          - Beneficiary reach
+          - Cost per outcome
+          - Data completeness
+          - On-track programs
+        teams:
+          - Programs & M&E
+          - Executive Directors
+          - M&E Advisors
+      - name: Grant Compliance
+        icon: aibi
+        summary: Spend against budget, restricted-fund exceptions and reporting deadline status.
+        kpis:
+          - Spend vs budget
+          - Compliance exception rate
+          - Reporting on-time rate
+          - Restricted-fund balance
+          - Sub-grantee risk
+        teams:
+          - Grants & Compliance
+          - Compliance & Audit
+          - Executive Directors
+      - name: Field Operations
+        icon: aibi
+        summary: Stock positions, distribution reach, dispatch lead time and duty-of-care status during surges.
+        kpis:
+          - Stock on hand
+          - Distribution reach
+          - Dispatch lead time
+          - Open check-ins
+          - Volunteer coverage
+        teams:
+          - Field Operations
+          - Logistics & Supply
+          - Security & Duty of Care
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Donor & Fundraising Agent
+        icon: genie
+        summary: Ask about funds raised, retention and campaign performance across donors in plain language.
+        feeds:
+          - Salesforce Nonprofit Cloud
+          - Blackbaud Raiser's Edge
+          - Classy Donation Pages
+          - Reach, cost, compliance
+        teams:
+          - Development & Marketing
+          - Executive Directors
+          - Major Gifts
+        questions:
+          - What did we raise this quarter versus last, by campaign and channel?
+          - Which major-gift prospects are ready for an ask now?
+          - What is our donor retention rate and how is it trending?
+          - Which lapsed donors are the best win-back candidates?
+          - What is cost per dollar raised by acquisition channel?
+      - name: Program & M&E Agent
+        icon: genie
+        summary: Explore indicator progress, beneficiary reach and cost per outcome across the portfolio.
+        feeds:
+          - DevResults M&E
+          - CommCare Mobile
+          - KoBoToolbox
+          - Conformed donor, grant
+        teams:
+          - Programs & M&E
+          - Executive Directors
+          - M&E Advisors
+        questions:
+          - Which sites missed their targets last month and by how much?
+          - What is cost per outcome by program and geography?
+          - How complete is field survey data across active projects?
+          - Which cohorts are falling behind on program outcomes?
+          - What is beneficiary reach this quarter versus plan?
+      - name: Grants & Compliance Agent
+        icon: genie
+        summary: Answer questions on grant spend, restricted-fund exceptions and reporting deadlines.
+        feeds:
+          - Fluxx Grantmaker
+          - Blackbaud Financial Edge
+          - SAP Public Sector
+          - Reach, cost, compliance
+        teams:
+          - Grants & Compliance
+          - Executive Directors
+          - Compliance & Audit
+        questions:
+          - Which grants are near closeout or reporting deadlines?
+          - Where is spend running ahead of or behind budget by award?
+          - What is our compliance exception rate across active grants?
+          - Which restricted funds are at risk of misallocation?
+          - Which sub-grantees are behind on milestone reporting?
+      - name: Field & Logistics Agent
+        icon: genie
+        summary: Ask about stock positions, dispatch and duty of care during emergency responses.
+        feeds:
+          - RITA (Logistics Cluster)
+          - Workday HCM
+          - IATI d-portal / HXL (HDX)
+          - Conformed donor, grant
+        teams:
+          - Field Operations
+          - Logistics & Supply
+          - Security & Duty of Care
+        questions:
+          - What is current relief-item stock by warehouse and item?
+          - Which distribution points are short of supply right now?
+          - How many field staff have outstanding security check-ins?
+          - What is dispatch lead time during the current response?
+          - Where is need concentrating based on the latest activity data?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Donor Propensity
+        short: Fundraising
+        icon: custlake
+        summary: Major-gift and upgrade likelihood scored from engagement and giving history.
+        problem: Major-gift and upgrade potential is buried in years of gifts, events and email history, so gift officers chase warm names by instinct and the best prospects go unworked before the ask.
+        who_benefits: Development & Marketing
+        how_built: Engagement and giving history are engineered in Feature Store and scored through Model Serving, surfacing ranked prospects into the Donor Journey Hub before the ask.
+        components:
+          - Donor Journey Hub
+          - Model Serving
+          - Feature Store
+          - Salesforce Nonprofit Cloud
+          - MLflow
+        stories:
+          - title: MissionWired drives strong donor campaigns through predictive data
+            url: https://www.databricks.com/customers/missionwired
+      - name: Donor Churn
+        short: Retention
+        icon: people
+        summary: Lapsed and downgraded donors surfaced before renewal campaigns launch.
+        problem: Lapsed and downgraded donors are noticed only after the renewal fails, when reactivation costs far more than the retention touch that would have kept the relationship alive.
+        who_benefits: Development & Marketing
+        how_built: Giving cadence and engagement signals feed churn models scored in Model Serving, pushing at-risk and win-back segments into the Donor Journey Hub before renewal campaigns launch.
+        components:
+          - Donor Journey Hub
+          - Model Serving
+          - MLflow
+          - CustomerLake
+          - Feature Store
+        stories:
+          - title: MissionWired drives strong donor campaigns through predictive data
+            url: https://www.databricks.com/customers/missionwired
+          - title: 'Australian Red Cross Lifeblood: 2023 Databricks Data Team Awards'
+            url: https://www.databricks.com/blog/announcing-winners-2023-databricks-data-team-awards
+      - name: Grant Compliance
+        short: Audit
+        icon: gavel
+        summary: Restricted-fund exceptions flagged before funder and board review.
+        problem: Restricted-fund rules, milestones and budgets live in separate finance, grants and field systems, so exceptions surface in the funder audit rather than before the report is filed.
+        who_benefits: Grants & Compliance
+        how_built: Grant ledger, budget and milestone data are conformed under Unity Catalog and checked in the Grant Compliance Desk, flagging restricted-fund exceptions before funder and board review.
+        components:
+          - Grant Compliance Desk
+          - Unity Catalog
+          - Blackbaud Financial Edge
+          - Fluxx Grantmaker
+          - AI/BI
+      - name: Program Outcomes
+        short: M&E
+        icon: chart
+        summary: Indicator attainment linked to spend and geography for portfolio reviews.
+        problem: Indicator results sit in mobile survey tools while spend sits in finance, so no one can show whether a program actually moved its outcomes for the money it consumed.
+        who_benefits: Programs & M&E
+        how_built: Survey and grant data are conformed on Delta Lake and served through the Program Portfolio and AI/BI, linking indicator attainment to spend and geography for portfolio reviews.
+        components:
+          - Program Portfolio
+          - AI/BI
+          - Unity Catalog
+          - DevResults M&E
+          - Delta Lake
+        stories:
+          - title: Turning insight into impact with Databricks and Global Orphan Project
+            url: https://www.databricks.com/blog/turning-insight-impact-databricks-and-global-orphan-go-project
+          - title: How World Bank Group uses Databricks to eradicate poverty through shared knowledge
+            url: https://www.databricks.com/blog/how-world-bank-group-uses-databricks-eradicate-poverty-through-shared-knowledge
+      - name: Beneficiary Targeting
+        short: Equity
+        icon: globe
+        summary: Underserved communities identified from field and census overlays.
+        problem: Aid is allocated on last year's caseload and gut feel, so underserved households are missed while served areas get revisited and equity claims cannot be evidenced.
+        who_benefits: Programs & M&E
+        how_built: Field survey and census overlays are scored in Model Serving against a conformed beneficiary model, surfacing underserved communities into program planning.
+        components:
+          - Model Serving
+          - CommCare Mobile
+          - Unity Catalog
+          - AI/BI
+          - Feature Store
+        stories:
+          - title: Virtue Foundation scales global health with data and AI
+            url: https://www.databricks.com/customers/virtue-foundation
+      - name: Emergency Surge
+        short: Humanitarian
+        icon: stream
+        summary: Logistics and staffing scaled from early signals before peaks hit.
+        problem: When a crisis breaks, stock, staff and cash are mobilised from spreadsheets and phone calls, so the response lags the need and pre-positioning decisions are made blind.
+        who_benefits: Field Operations
+        how_built: Hazard, logistics and roster feeds land in Lakehouse//RT and drive anticipatory-action triggers in the Field Ops Console, scaling supply and staffing before peaks hit.
+        components:
+          - Field Ops Console
+          - Lakehouse//RT
+          - IATI d-portal / HXL (HDX)
+          - RITA (Logistics Cluster)
+          - Model Serving
+        stories:
+          - title: Zipline delivers critical medical supplies with data and AI
+            url: https://www.databricks.com/customers/zipline
+      - name: Sanctions Screening
+        short: Risk
+        icon: gavel
+        summary: Donor and vendor matches resolved against watchlists on every gift.
+        problem: Every gift and vendor must clear watchlists, yet manual name matching against sanctions lists is slow and error-prone, leaving the organisation exposed on the matches it misses.
+        who_benefits: Grants & Compliance
+        how_built: Donor and vendor records are matched against parsed OFAC lists with AI Functions under Unity Catalog, resolving hits on every gift with a lineage trail for audit.
+        components:
+          - OFAC Sanctions Lists
+          - AI Functions
+          - Unity Catalog
+          - Salesforce Nonprofit Cloud
+          - Model Serving
+      - name: Cost per Outcome
+        short: Efficiency
+        icon: sheet
+        summary: Program economics compared across interventions and geographies.
+        problem: Comparing what an outcome costs across programs and countries means reconciling incompatible budgets and indicators by hand, so leadership debates anecdotes instead of unit economics.
+        who_benefits: Executive Directors
+        how_built: Conformed spend and outcome products are exposed as certified Metric Views in AI/BI and the Program Portfolio, comparing cost per outcome across interventions and geographies.
+        components:
+          - Program Portfolio
+          - AI/BI
+          - Unity Catalog
+          - Blackbaud Financial Edge
+          - Data Products
+      - name: Volunteer Mobilisation
+        short: Community
+        icon: people
+        summary: Volunteer capacity matched to campaigns and field events by region.
+        problem: Volunteer availability, skills and history are scattered across events and offices, so campaigns and field surges are staffed late and willing volunteers are never asked.
+        who_benefits: Field Operations
+        how_built: Volunteer and campaign data are conformed under Unity Catalog and matched in an Apps console on Lakebase, aligning volunteer capacity to campaigns and field events by region.
+        components:
+          - Apps
+          - Lakebase
+          - Unity Catalog
+          - Workday HCM
+          - AI/BI
+        stories:
+          - title: Crisis Text Line supports people in crisis with data and AI
+            url: https://www.databricks.com/customers/crisis-text-line
+      - name: Impact Storytelling
+        short: Communications
+        icon: notebook
+        summary: Outcome evidence assembled for appeals without manual spreadsheet chases.
+        problem: Appeals and funder narratives are assembled by chasing outcome numbers across spreadsheets and inboxes, so the story lands late and rarely reflects the latest governed evidence.
+        who_benefits: Development & Marketing
+        how_built: Agent Bricks drafts appeal and funder narratives with AI Functions against governed Gold outcome products, so evidence-backed stories assemble without manual spreadsheet chases.
+        components:
+          - Agent Bricks
+          - AI Functions
+          - Genie One
+          - Data Products
+          - AI/BI
+        stories:
+          - title: Turning insight into impact with Databricks and Global Orphan Project
+            url: https://www.databricks.com/blog/turning-insight-impact-databricks-and-global-orphan-go-project
+medallion:
+  Bronze:
+    short: Raw donor and field
+    summary: CRM gifts, grant ledger entries, mobile survey responses, logistics waybills and banking settlements, landed exactly as received so a donation or a beneficiary visit can always be replayed as it stood.
+  Silver:
+    short: Conformed donor, grant
+    summary: Donors, households, grants, projects and beneficiaries resolved into single conformed entities across CRM, ERP and field systems, with restricted-fund balances reconciled and program outcomes stitched to one intervention record.
+  Gold:
+    short: Reach, cost, compliance
+    summary: 'Contracted products leadership and boards run on: funds raised and donor retention, cost per outcome by program, grant spend against budget and compliance exception rates.'
+citation_index:
+  sf-nonprofit:
+    title: Salesforce Nonprofit Cloud
+    url: https://www.salesforce.com/nonprofit/
+  blackbaud-re:
+    title: Blackbaud Raiser's Edge NXT
+    url: https://www.blackbaud.com/products/raisers-edge-nxt
+  classy:
+    title: Classy fundraising
+    url: https://www.classy.org/
+  blackbaud-fe:
+    title: Blackbaud Financial Edge NXT
+    url: https://www.blackbaud.com/financial-management/financial-edge-nxt
+  fluxx:
+    title: Fluxx Grantmaker
+    url: https://www.fluxx.io/grantmaker
+  sap-public:
+    title: SAP for public sector
+    url: https://www.sap.com/industries/public-sector.html
+  commcare:
+    title: CommCare
+    url: https://www.commcare.org/
+  kobo:
+    title: KoBoToolbox
+    url: https://www.kobotoolbox.org/
+  devresults:
+    title: DevResults
+    url: https://www.devresults.com/
+  logistics-cluster:
+    title: Logistics Cluster (RITA)
+    url: https://rita.logcluster.org/
+  workday:
+    title: Workday HCM
+    url: https://www.workday.com/en-us/products/human-capital-management/overview.html
+  candid:
+    title: Candid
+    url: https://candid.org/
+  ofac:
+    title: US Treasury OFAC sanctions
+    url: https://ofac.treasury.gov/
+  openweather:
+    title: IATI Standard / HDX (HXL)
+    url: https://iatistandard.org

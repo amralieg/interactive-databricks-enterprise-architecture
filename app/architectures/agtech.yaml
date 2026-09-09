@@ -1,0 +1,1036 @@
+name: AgTech
+description: 'Agriculture technology vendors: precision-ag platforms, farm-management software, equipment telematics, satellite and sensor networks, crop-science R&D, and sustainability programs.'
+sources:
+  - name: Farm Mgmt Platforms
+    icon: appbuilder
+    tiles:
+      - name: Climate FieldView
+        icon: appbuilder
+        summary: 'Bayer''s digital farming platform and the system of record for connected field data: planting, application and harvest layers synced off the FieldView Drive across tens of millions of acres.'
+        citations:
+          - fieldview
+        category: Farm Management System (FMS)
+        what_it_is: 'System of record for connected field data: planting, application and harvest layers synced off the FieldView Drive across tens of millions of acres.'
+        who_uses_it: Digital Product, Precision Ag Product and Agronomy Advisory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: tens of millions of acre-layers
+            interval: Daily field sync
+      - name: JD Operations Center
+        icon: apps
+        summary: 'John Deere''s farm-management hub: fields, jobs, guidance lines and agronomic layers, the offboard home for the data machines generate in the field.'
+        citations:
+          - jd-opscenter
+        category: Farm Management System (FMS)
+        what_it_is: Farm-management hub for fields, jobs, guidance lines and agronomic layers, the offboard home for machine-generated field data.
+        who_uses_it: Digital Product, Grower Success and Agronomy Advisory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: millions of jobs and field records
+            interval: Daily field sync
+      - name: Trimble Ag Software
+        icon: sheet
+        summary: Precision-ag field records, mapping and prescription authoring used across mixed-fleet operations, feeding boundaries and as-applied data into the estate.
+        citations:
+          - trimble-ag
+        category: Precision Ag Software
+        what_it_is: Precision-ag field records, mapping and prescription authoring across mixed-fleet operations, feeding boundaries and as-applied data.
+        who_uses_it: Precision Ag Product, Agronomy Advisory and Geospatial Eng teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of thousands of field records
+            interval: Daily field sync
+      - name: Granular Insights
+        icon: product
+        summary: Corteva's agronomic planning and field-data insights; the farm-financials business was divested.
+        citations:
+          - granular
+        category: Agronomic Planning Software
+        what_it_is: Agronomic planning and field-data insights tied to the crop portfolio, feeding planning layers into the estate.
+        who_uses_it: Agronomy Advisory, Digital Product and Crop Science R&D teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: hundreds of thousands of plan records
+            interval: Daily field sync
+  - name: Equipment Telematics
+    icon: iot
+    tiles:
+      - name: JDLink Telematics
+        icon: iot
+        summary: 'John Deere machine connectivity: position, engine, implement and as-applied telemetry streamed off the machine into the Operations Center and the data platform.'
+        citations:
+          - jdlink
+        category: Equipment Telematics
+        what_it_is: Machine connectivity for position, engine, implement and as-applied telemetry streamed off the machine into the platform.
+        who_uses_it: Telematics Engineering, Machine Reliability and Autonomy & Guidance teams.
+        data_out:
+          stream:
+            types:
+              - structured
+              - semi-structured
+            volume: petabyte-scale telemetry across the fleet
+            interval: Continuous (machine bus)
+      - name: CNH AFS Connect
+        icon: iot
+        summary: 'Case IH and New Holland fleet telematics and remote display access: machine health, location and agronomic data across the CNH equipment estate.'
+        citations:
+          - cnh-afs
+        category: Equipment Telematics
+        what_it_is: Fleet telematics and remote display access for machine health, location and agronomic data across the CNH estate.
+        who_uses_it: Telematics Engineering, Machine Reliability and Dealer Network teams.
+        data_out:
+          stream:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of GB/day of telemetry
+            interval: Continuous (machine bus)
+      - name: PTx (AGCO)
+        icon: stream
+        summary: 'AGCO''s precision ag brand across Fendt, Massey Ferguson and Valtra (Precision Planting and PTx Trimble): mixed-fleet machine and agronomic data brought together for the operation.'
+        citations:
+          - agco-fuse
+        category: Equipment Telematics
+        what_it_is: Precision-ag brand bringing mixed-fleet machine and agronomic data across Fendt, Massey Ferguson and Valtra together for the operation.
+        who_uses_it: Telematics Engineering, Precision Ag Product and Machine Reliability teams.
+        data_out:
+          stream:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of GB/day of telemetry
+            interval: Continuous (machine bus)
+      - name: ISOBUS Task Data
+        icon: connect
+        summary: 'The ISO 11783 in-cab standard for task controllers and implement data: as-applied logs and prescriptions exchanged between terminal and machine, parsed on arrival.'
+        citations:
+          - isobus
+        category: Machine Data Standard
+        what_it_is: 'ISO 11783 task-controller and implement data: as-applied logs and prescriptions exchanged between terminal and machine, parsed on arrival.'
+        who_uses_it: Geospatial Eng, Telematics Engineering and Precision Ag Product teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: millions of as-applied task files
+            interval: Per field pass
+  - name: Imagery & Remote Sensing
+    icon: globe
+    tiles:
+      - name: Planet Imagery
+        icon: globe
+        summary: Daily high-cadence satellite imagery over every field, the raster source behind vegetation-index time series and in-season crop monitoring.
+        citations:
+          - planet
+        category: Satellite Imagery Provider
+        what_it_is: Daily high-cadence satellite imagery over every field, the raster source behind vegetation-index time series and in-season crop monitoring.
+        who_uses_it: Geospatial Eng, Ag Data Science and Agronomy Advisory teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - semi-structured
+            volume: terabytes of raster tiles/day
+            interval: Daily imagery pass
+      - name: Sentinel Hub
+        icon: globe
+        summary: Copernicus Sentinel-2 and Landsat archive access with on-the-fly processing, the free-tier backbone for NDVI and change-detection layers.
+        citations:
+          - sentinelhub
+        category: Satellite Imagery Provider
+        what_it_is: Copernicus Sentinel-2 and Landsat archive access with on-the-fly processing, the backbone for NDVI and change-detection layers.
+        who_uses_it: Geospatial Eng, Ag Data Science and Sustainability teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - semi-structured
+            volume: hundreds of GB of raster/day
+            interval: Per revisit cycle
+      - name: DJI Ag Drones
+        icon: media
+        summary: Low-altitude drone imagery and multispectral capture for scouting and trial plots, landed as high-resolution rasters alongside the satellite feeds.
+        citations:
+          - dji-ag
+        category: Drone / Aerial Imagery
+        what_it_is: Low-altitude drone imagery and multispectral capture for scouting and trial plots, landed as high-resolution rasters.
+        who_uses_it: Field Trials, Agronomy Advisory and Geospatial Eng teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+            volume: high-resolution rasters per flight
+            interval: Per scouting flight
+      - name: EarthDaily (EarthOne)
+        icon: network
+        summary: Analysis-ready geospatial data and remote-sensing models over large areas, used for regional crop and yield signals.
+        citations:
+          - descartes
+        category: Geospatial Analytics Provider
+        what_it_is: Analysis-ready geospatial data and remote-sensing models over large areas, used for regional crop and yield signals.
+        who_uses_it: Ag Data Science, Geospatial Eng and Agronomy & R&D teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: regional raster and index products
+            interval: Daily to weekly
+  - name: Weather & Field Sensors
+    icon: iot
+    tiles:
+      - name: DTN Weather
+        icon: stream
+        summary: Hyper-local forecasts, historical weather and field-level conditions, the meteorology layer behind spray windows, disease risk and yield modelling.
+        citations:
+          - dtn
+        category: Weather Data Provider
+        what_it_is: Hyper-local forecasts, historical weather and field-level conditions behind spray windows, disease risk and yield modelling.
+        who_uses_it: Agronomy Advisory, Ag Data Science and Field Trials teams.
+        data_out:
+          stream:
+            types:
+              - structured
+            volume: field-level obs and forecasts
+            interval: Continuous (hourly refresh)
+      - name: CropX Soil Probes
+        icon: iot
+        summary: In-ground soil moisture, temperature and salinity sensors feeding irrigation and nutrient decisions at the root zone.
+        citations:
+          - cropx
+        category: Soil Sensor Network
+        what_it_is: In-ground soil moisture, temperature and salinity sensors feeding irrigation and nutrient decisions at the root zone.
+        who_uses_it: Agronomy Advisory, App & IoT Eng and Grower Success teams.
+        data_out:
+          stream:
+            types:
+              - structured
+            volume: thousands of probe readings/min
+            interval: Continuous (sensor)
+      - name: Semios IoT Network
+        icon: network
+        summary: In-canopy pest, disease and microclimate sensors for permanent crops, streamed as time series for scouting and spray timing.
+        citations:
+          - semios
+        category: Crop IoT Sensor Network
+        what_it_is: In-canopy pest, disease and microclimate sensors for permanent crops, streamed as time series for scouting and spray timing.
+        who_uses_it: Agronomy Advisory, Ag Data Science and App & IoT Eng teams.
+        data_out:
+          stream:
+            types:
+              - structured
+              - semi-structured
+            volume: tens of thousands of sensor events/min
+            interval: Continuous (sensor)
+      - name: Pessl METOS Stations
+        icon: iot
+        summary: Field weather stations and disease-model dataloggers from Pessl Instruments, the on-farm ground truth calibrating remote signals.
+        citations:
+          - metos
+        category: Weather Station Network
+        what_it_is: Field weather stations and disease-model dataloggers, the on-farm ground truth calibrating remote signals.
+        who_uses_it: Agronomy Advisory, Field Trials and Ag Data Science teams.
+        data_out:
+          stream:
+            types:
+              - structured
+            volume: thousands of station readings/min
+            interval: Continuous (station)
+  - name: R&D, Agronomy & ERP
+    icon: erp
+    tiles:
+      - name: Cropwise Agronomy
+        icon: sheet
+        summary: 'Syngenta''s digital agronomy suite: field scouting, agronomic recommendations and product performance tied to the crop-protection portfolio.'
+        citations:
+          - cropwise
+        category: Digital Agronomy Suite
+        what_it_is: Field scouting, agronomic recommendations and product performance tied to the crop-protection portfolio.
+        who_uses_it: Agronomy Advisory, Crop Science R&D and Field Trials teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: hundreds of thousands of scouting and rec records
+            interval: Daily
+      - name: LabWare LIMS
+        icon: docs
+        summary: 'The laboratory information management system of record for seed, trait and crop-protection R&D: sample results, assays and study data.'
+        citations:
+          - labware
+        category: Laboratory Information Management (LIMS)
+        what_it_is: 'System of record for seed, trait and crop-protection R&D: sample results, assays and study data.'
+        who_uses_it: Crop Science R&D, Field Trials and Ag Data Science teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of sample and assay results
+            interval: Daily lab batch
+      - name: SAP S/4HANA
+        icon: erp
+        summary: 'The commercial system of record for the ag vendor: orders, inventory, dealer settlements and the input supply chain behind the products in the field.'
+        citations:
+          - sap-s4
+        category: Enterprise Resource Planning (ERP)
+        what_it_is: Commercial system of record for orders, inventory, dealer settlements and the input supply chain behind the products in the field.
+        who_uses_it: Input Supply & Pricing, Dealer Network and Commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of order and inventory rows
+            interval: Nightly ERP extract
+      - name: DSSAT & APSIM Models
+        icon: model
+        summary: Crop-simulation frameworks turning weather, soil and genetics into growth-stage and yield estimates, run at scale against the conformed field data.
+        citations:
+          - dssat
+        category: Crop Simulation Models
+        what_it_is: Crop-simulation frameworks turning weather, soil and genetics into growth-stage and yield estimates, run at scale against conformed field data.
+        who_uses_it: Ag Data Science, Crop Science R&D and Agronomy Advisory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: simulation outputs per field-scenario
+            interval: Per model run
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Commercial Data Mart
+        icon: fed
+        summary: Legacy commercial, dealer and R&D data marts left where they are and queried in place under Unity Catalog, which avoids a second copy of numbers still under retention and contract.
+        category: Federated Data Warehouse / Marts
+        what_it_is: Legacy commercial, dealer and R&D marts queried in place under Unity Catalog, avoiding a second copy of numbers still under retention and contract.
+        who_uses_it: Commercial, Dealer Network and Crop Science R&D teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: billions of historical rows queried in place
+            interval: Query-time federation
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: AgGateway ADAPT
+        icon: connect
+        summary: The industry data-interoperability framework and plugins that normalise as-applied, prescription and setup files across mixed equipment brands.
+        citations:
+          - adapt
+        category: Ag Data Interoperability Framework
+        what_it_is: Industry framework and plugins normalising as-applied, prescription and setup files across mixed equipment brands.
+        who_uses_it: Geospatial Eng, Telematics Engineering and Precision Ag Product teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: millions of normalised task files
+            interval: Per field pass
+      - name: Leaf Ag API
+        icon: api
+        summary: A unified API over FieldView, Operations Center, CNH and other providers, pulling machine and field data through one governed connector.
+        citations:
+          - leaf
+        category: Ag Data Aggregation API
+        what_it_is: Unified API over FieldView, Operations Center, CNH and other providers, pulling machine and field data through one governed connector.
+        who_uses_it: Geospatial Eng, App & IoT Eng and Digital Product teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: millions of field and machine records/day
+            interval: Scheduled API pulls
+      - name: Machine Event Streams
+        icon: eventbus
+        summary: Existing Kafka and MQTT topics carrying live machine, sensor and gateway events, landed generically as structured streaming tables.
+        category: Event Streaming Platform
+        what_it_is: Existing Kafka and MQTT topics carrying live machine, sensor and gateway events, landed generically as structured streaming tables.
+        who_uses_it: App & IoT Eng, Telematics Engineering and Geospatial Eng teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of thousands of events/sec at peak
+            interval: Continuous (topics)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Digital Product
+        mark: Genie One
+        summary: 'The leaders of the digital ag platform: the chief digital officer and precision-ag product managers who own FieldView, Operations Center and the grower and agronomist experience, and the platform GM who answers for adoption and connected acres.'
+        uses:
+          - - Genie One
+            - Ask how many acres synced last week or which prescription workflow is stalling without booking analyst time.
+          - - AI/BI
+            - Connected acres, feature adoption and platform reliability on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary, so "active acre" and "as-applied" mean one thing across the platform.
+        sub:
+          - name: Chief Digital Officer
+            cares: the digital farming strategy and the connected-acre growth target.
+          - name: Precision Ag Product
+            cares: FieldView and Operations Center feature adoption and grower retention.
+          - name: Platform GM
+            cares: reliability, partner integrations and the data-sharing ecosystem.
+        ucs:
+          - FMS Platform
+          - VRA Prescriptions
+          - Imagery at Scale
+      - name: Agronomy & R&D
+        mark: AI/BI
+        summary: 'The crop scientists and agronomists: seed and crop-protection R&D running multi-year trials, field research turning plots into product claims, and the agronomy advisory team standing behind the recommendations growers act on.'
+        uses:
+          - - AI/BI
+            - Trial results, product performance and agronomic signals on governed, certified data.
+          - - Model Serving
+            - Yield, pest and disease models scored into the products agronomists use.
+          - - Genie One
+            - Ask how a hybrid performed by geography or which trials are ready to read without an analyst pull.
+        sub:
+          - name: Crop Science R&D
+            cares: seed, trait and crop-protection discovery and development pipelines.
+          - name: Field Trials
+            cares: multi-location protocols and the statistics behind product claims.
+          - name: Agronomy Advisory
+            cares: the recommendations and prescriptions growers act on in season.
+        ucs:
+          - Yield Prediction
+          - Crop R&D Analytics
+          - Pest & Disease
+      - name: Equipment Eng
+        mark: Lakehouse//RT
+        summary: 'The OEM engineering side: telematics engineers landing machine telemetry at fleet scale, reliability engineers on component life and in-season uptime, and the autonomy and guidance teams building the systems that steer and spray the machine.'
+        uses:
+          - - Lakehouse//RT
+            - Live machine and implement state at the latency an in-season fleet moves at.
+          - - Model Serving
+            - Remaining-life and anomaly models scored against streaming telemetry.
+          - - Apache Spark
+            - Petabyte-scale geospatial and telemetry processing across the connected fleet.
+        sub:
+          - name: Telematics Engineering
+            cares: machine, implement and as-applied telemetry off the CAN bus.
+          - name: Machine Reliability
+            cares: component life, warranty and in-season uptime.
+          - name: Autonomy & Guidance
+            cares: steering, See & Spray and the perception data behind them.
+        ucs:
+          - Fleet Telematics
+          - Predictive Uptime
+          - VRA Prescriptions
+      - name: Sustainability
+        mark: Model Serving
+        summary: 'The teams behind the carbon and stewardship programs: carbon program operators enrolling acres, the MRV and verification team standing behind every credit, and regenerative-ag leads proving practice change across the supply shed.'
+        uses:
+          - - Model Serving
+            - Soil-carbon and emissions models scored against imagery and practice data.
+          - - Unity Catalog
+            - Auditable lineage from field practice to reported credit under one governance model.
+          - - AI/BI
+            - Enrolled acres, practice adoption and verified outcomes on certified views.
+        sub:
+          - name: Carbon Programs
+            cares: enrolment, baselining and grower payments across the supply shed.
+          - name: MRV & Verification
+            cares: measurement, reporting and verification behind every issued credit.
+          - name: Regenerative Ag
+            cares: cover crops, tillage and the practice-change evidence base.
+        ucs:
+          - Carbon MRV
+          - Traceability
+          - Imagery at Scale
+      - name: Commercial
+        mark: AI/BI
+        summary: 'The go-to-market side: the dealer and channel network selling and servicing equipment and inputs, grower-success teams on retention and expansion, and input supply and pricing balancing demand against the season.'
+        uses:
+          - - AI/BI
+            - Dealer performance, grower retention and input demand on certified Metric Views.
+          - - Genie One
+            - Ask which dealers are trending down or where input demand is spiking without a finance pull.
+          - - Model Serving
+            - Churn, demand and cross-sell models scored into the commercial workflow.
+        sub:
+          - name: Dealer Network
+            cares: channel performance, parts and service revenue.
+          - name: Grower Success
+            cares: onboarding, retention and expansion on the platform.
+          - name: Input Supply & Pricing
+            cares: seed and crop-protection demand against the season.
+        ucs:
+          - Traceability
+          - Fleet Telematics
+          - FMS Platform
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Geospatial Eng
+        mark: Lakeflow
+        summary: Land the imagery, boundary and telemetry feeds from Planet, Sentinel, JDLink and ISOBUS; own the raster-to-tabular path with GDAL, rasterio and H3, and the pager when a tile or telemetry feed stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for FMS, telematics and imagery providers.
+          - - Apache Spark
+            - Mosaic and Spatial SQL H3 indexing turning rasters into governed tables.
+          - - Lakewatch
+            - Freshness on the field and fleet tables agronomists read every morning.
+        ucs:
+          - Imagery at Scale
+          - Yield Prediction
+          - Fleet Telematics
+      - name: Ag Data Science
+        mark: MLflow
+        summary: Yield, pest, disease and remaining-life models built on remote-sensing computer vision, crop simulations and telemetry, and whether they still hold a season after deployment.
+        uses:
+          - - Feature Store
+            - Field, weather and machine features read identically in training and serving.
+          - - MLflow
+            - Every run tracked for audit and reproduction across seasons and geographies.
+          - - Model Serving
+            - Yield, pest and uptime models scored in the product and operational path.
+        ucs:
+          - Yield Prediction
+          - Pest & Disease
+          - Predictive Uptime
+      - name: App & IoT Eng
+        mark: Apps
+        summary: Ship the grower, agronomist and dealer applications and the ingestion behind millions of connected machines, hosted next to governed data.
+        uses:
+          - - Apps
+            - Grower and dealer screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for prescription, workflow and roster state with governed writes.
+          - - Zerobus
+            - High-volume machine and sensor events ingested directly to the lakehouse.
+        ucs:
+          - Fleet Telematics
+          - FMS Platform
+          - VRA Prescriptions
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Product, agronomy and commercial dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers in the channel product and agronomy teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Data-scientist notebooks, VS Code and JetBrains against governed field, imagery and telemetry data.
+  - name: Grower & Dealer Apps
+    icon: partner
+    tiles:
+      - name: FMS Grower Apps
+        icon: apps
+        summary: The grower and agronomist mobile and web apps served next to governed data on Databricks Apps over Lakebase.
+        citations:
+          - fieldview
+      - name: Dealer Portals
+        icon: globe
+        summary: Equipment and input dealer portals reading machine health, parts demand and grower activity from certified products.
+      - name: Genie for Agronomists
+        icon: genie
+        summary: Plain-language answers on hybrid performance, disease risk and field history grounded in governed data.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: VRA Writeback
+        icon: db
+        summary: Variable-rate seeding and nutrient prescriptions written back into the FMS and machine terminal so the answer reaches the field.
+        citations:
+          - fieldview
+      - name: Telematics Alerts
+        icon: stream
+        summary: Predicted faults and service needs pushed to dealer service and the machine's connected display before the failure lands.
+        citations:
+          - jdlink
+      - name: Agronomy Recs
+        icon: sheet
+        summary: Scouting and product recommendations synced back into the agronomy apps advisors work in.
+        citations:
+          - cropwise
+  - name: Sustainability & Reg
+    icon: gavel
+    tiles:
+      - name: Carbon Registry
+        icon: gavel
+        summary: Practice-change and soil-carbon evidence filed to the registry from the same governed tables the program runs on.
+        citations:
+          - verra
+      - name: EUDR Traceability
+        icon: share
+        summary: Deforestation-free due-diligence and geolocation evidence produced for the EU Deforestation Regulation from governed provenance data.
+        citations:
+          - eudr
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Growers, food and CPG partners and regulators reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Field Insights Hub
+        icon: gauge
+        short: Agronomy view
+        summary: 'The screen agronomists and product teams run a field from: yield, vegetation index, soil and weather layers stitched to the boundary, on Databricks Apps over Lakebase so a recommendation reaches the grower app.'
+      - name: Fleet Watchtower
+        icon: iot
+        short: Machine health
+        summary: Connected-fleet health and utilisation by machine and region, so engineering and dealers plan a service before an in-season breakdown costs a planting or harvest window.
+      - name: Prescription Studio
+        icon: sheet
+        short: Variable-rate ag
+        summary: Where variable-rate seeding and nutrient prescriptions are built from conformed field data and pushed to the FMS and machine terminal in the ISOBUS format the implement reads.
+      - name: Carbon MRV Console
+        icon: gavel
+        short: Sustainability
+        summary: Where the sustainability team baselines acres, scores practice change against imagery and models, and assembles the audit trail behind every carbon credit.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Field & Yield
+        icon: aibi
+        summary: Yield, vegetation index and prescription performance on certified Metric Views.
+        kpis:
+          - Average yield by hybrid
+          - Vegetation index trend
+          - VRA performance
+          - Acres monitored
+          - Forecast accuracy
+        teams:
+          - Agronomy & R&D
+          - Digital Product
+          - Agronomy Advisory
+      - name: Fleet Health
+        icon: aibi
+        summary: Connected-fleet health, utilisation and predicted service on governed telemetry.
+        kpis:
+          - Fleet utilisation
+          - Predicted service alerts
+          - Machine uptime
+          - Anomaly rate
+          - Connected acres
+        teams:
+          - Equipment Eng
+          - Machine Reliability
+          - Dealer Network
+      - name: Carbon & Sustainability
+        icon: aibi
+        summary: Enrolled acres, practice change and verified carbon outcomes by supply shed.
+        kpis:
+          - Enrolled acres
+          - Practice adoption
+          - Verified credits
+          - Evidence completeness
+          - MRV throughput
+        teams:
+          - Sustainability
+          - Carbon Programs
+          - MRV & Verification
+      - name: Commercial & Dealers
+        icon: aibi
+        summary: Dealer performance, grower retention and input demand on certified views.
+        kpis:
+          - Dealer revenue
+          - Grower retention
+          - Input demand
+          - Cross-sell rate
+          - Connected-acre growth
+        teams:
+          - Commercial
+          - Dealer Network
+          - Grower Success
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Field & Yield Agent
+        icon: genie
+        summary: Ask about yield, vegetation index and field performance by hybrid and geography in plain language.
+        feeds:
+          - Climate FieldView
+          - Planet Imagery
+          - DTN Weather
+          - Yield, agronomy, sustainability
+        teams:
+          - Agronomy & R&D
+          - Digital Product
+          - Agronomy Advisory
+        questions:
+          - What was average yield by hybrid and region this season?
+          - Which fields are trending below their vegetation-index norm right now?
+          - How did variable-rate prescriptions perform against flat-rate blocks?
+          - Where is disease or pest pressure emerging from the latest imagery?
+          - Which hybrids are ready to read out of this season's trials?
+      - name: Fleet & Uptime Agent
+        icon: genie
+        summary: Explore connected-machine health, utilisation and predicted service needs across the fleet.
+        feeds:
+          - JDLink Telematics
+          - CNH AFS Connect
+          - ISOBUS Task Data
+          - Conformed field, grower, machine
+        teams:
+          - Equipment Eng
+          - Machine Reliability
+          - Dealer Network
+        questions:
+          - Which machines are flagged for a service before harvest this week?
+          - What is fleet utilisation by machine class and region?
+          - Where are anomaly signals concentrated across the connected fleet?
+          - Which components are trending toward end of life this season?
+          - How does uptime compare across dealer service territories?
+      - name: Sustainability & Carbon Agent
+        icon: genie
+        summary: Answer questions on enrolled acres, practice change and verified carbon outcomes.
+        feeds:
+          - Planet Imagery
+          - Sentinel Hub
+          - DSSAT & APSIM Models
+          - Yield, agronomy, sustainability
+        teams:
+          - Sustainability
+          - Carbon Programs
+          - MRV & Verification
+        questions:
+          - How many acres are enrolled and baselined by supply shed?
+          - Which practice changes show the strongest verified carbon outcome?
+          - Where is cover-crop adoption growing fastest this season?
+          - Which enrolled acres are missing evidence for verification?
+          - What is the trend in verified credits versus enrolment?
+      - name: Commercial & Dealers Agent
+        icon: genie
+        summary: Ask about dealer performance, grower retention and input demand.
+        feeds:
+          - SAP S/4HANA
+          - JD Operations Center
+          - Climate FieldView
+          - Conformed field, grower, machine
+        teams:
+          - Commercial
+          - Dealer Network
+          - Grower Success
+        questions:
+          - Which dealers are trending down on parts and service revenue?
+          - What is grower retention and expansion on the platform this quarter?
+          - Where is input demand spiking against the season?
+          - Which growers are strong cross-sell candidates for new inputs?
+          - How do connected acres relate to grower expansion?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: FMS Platform
+        short: Digital ag
+        icon: appbuilder
+        summary: Unifying connected field, machine and agronomy data into the farm-management platform at scale, so growers and advisors see one governed view of the operation.
+        problem: Field, machine and agronomy data arrive from dozens of brands and formats, so the platform stitches them by hand and every new source is a bespoke integration project.
+        who_benefits: Digital Product
+        how_built: FMS, telematics and imagery feeds land through Lakeflow and are conformed on Delta Lake under Unity Catalog, giving the platform one governed field-and-grower model to build features on.
+        components:
+          - Field Insights Hub
+          - Climate FieldView
+          - Lakeflow
+          - Unity Catalog
+          - Delta Lake
+        stories:
+          - title: Bayer transforms global data management with Databricks
+            url: https://www.databricks.com/customers/bayer
+          - title: Accelerating Corteva's data source onboarding with Lakeflow
+            url: https://www.databricks.com/dataaisummit/session/accelerating-cortevas-data-source-onboarding-lakeflow
+      - name: Yield Prediction
+        short: Agronomy
+        icon: chart
+        summary: Predicting field and hybrid yield from imagery, weather, soil and management history, so agronomists and growers act on a forecast rather than last year's average.
+        problem: Yield is estimated from spotty history and gut feel, so agronomic and commercial decisions are made without a defensible forecast per field and hybrid.
+        who_benefits: Agronomy & R&D
+        how_built: Imagery, weather and soil features are engineered in Feature Store and scored through Model Serving, with runs tracked in MLflow for audit across seasons and geographies.
+        components:
+          - Field Insights Hub
+          - Model Serving
+          - MLflow
+          - Planet Imagery
+          - Feature Store
+        stories:
+          - title: Agerpoint partners with Databricks for agriculture data intelligence
+            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
+      - name: Crop R&D Analytics
+        short: Product dev
+        icon: notebook
+        summary: Unifying lab, trial, imagery and field data so crop-science R&D reads results in minutes and shortens the multi-year path from discovery to a product claim.
+        problem: R&D data is siloed across countries, labs and legacy systems, so scientists wait months for insights and the eight-to-twelve-year development cycle stretches further.
+        who_benefits: Agronomy & R&D
+        how_built: Lab, trial and imagery data are conformed into governed data products under Unity Catalog and explored in AI/BI and Genie, cutting access time from months to minutes.
+        components:
+          - LabWare LIMS
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+          - Genie One
+        stories:
+          - title: Syngenta accelerates crop protection research with Gaia
+            url: https://www.databricks.com/customers/syngenta
+          - title: FMC optimizes harvests with data and AI
+            url: https://www.databricks.com/customers/fmc-corporation
+      - name: Fleet Telematics
+        short: Equipment
+        icon: iot
+        summary: Ingesting machine and implement telemetry at petabyte scale so the OEM turns raw CAN-bus feeds into engineering, service and agronomic insight.
+        problem: Machine data doubles or triples each year, and legacy stores cannot ingest and geospatially analyse it fast enough to feed engineering, sales and service teams.
+        who_benefits: Equipment Eng
+        how_built: Telemetry streams into Lakehouse//RT and is processed with Apache Spark and H3 indexing on Delta Lake, giving every downstream team one scalable view of the connected fleet.
+        components:
+          - Fleet Watchtower
+          - JDLink Telematics
+          - Lakehouse//RT
+          - Apache Spark
+          - Delta Lake
+        stories:
+          - title: How John Deere uses industrial AI for precision agriculture
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
+          - title: CNH analyzes geospatial data to improve crop outputs
+            url: https://www.databricks.com/customers/cnh
+      - name: Predictive Uptime
+        short: Machine health
+        icon: gauge
+        summary: Predicting component failure on connected machines so a service is planned at the dealer instead of discovered mid-harvest.
+        problem: A breakdown in a planting or harvest window costs the grower the season, yet failures are found after the machine stops rather than predicted from its own telemetry.
+        who_benefits: Equipment Eng
+        how_built: Streaming telemetry feeds remaining-life and anomaly models tracked in MLflow and scored in Model Serving, so predicted faults raise service alerts from the Fleet Watchtower.
+        components:
+          - Fleet Watchtower
+          - Model Serving
+          - MLflow
+          - CNH AFS Connect
+          - Lakehouse//RT
+        stories:
+          - title: How John Deere uses industrial AI for precision agriculture
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: VRA Prescriptions
+        short: Precision ag
+        icon: sheet
+        summary: Building variable-rate seeding and nutrient prescriptions from conformed field data and pushing them to the machine in the format the implement reads.
+        problem: Prescriptions are authored in one tool and executed in another, so field data, agronomic models and the machine terminal rarely line up and rates default to flat.
+        who_benefits: Digital Product
+        how_built: Field, soil and yield layers are scored with AI Functions and Model Serving in Prescription Studio, then written back to FieldView and the ISOBUS task controller.
+        components:
+          - Prescription Studio
+          - Model Serving
+          - Climate FieldView
+          - ISOBUS Task Data
+          - AI Functions
+        stories:
+          - title: How John Deere uses industrial AI for precision agriculture
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
+      - name: Pest & Disease
+        short: Scouting
+        icon: globe
+        summary: Detecting pest and disease pressure from imagery, traps and weather so growers intervene on the acres at risk before an infestation spreads.
+        problem: Infestations are found on foot after they establish, and the geospatial and weather signals that would flag them early sit in disconnected systems.
+        who_benefits: Agronomy & R&D
+        how_built: Vision models on trap and imagery data are enriched with weather and location features in Feature Store and scored in Model Serving to anticipate where pressure will emerge.
+        components:
+          - Model Serving
+          - Planet Imagery
+          - DTN Weather
+          - Feature Store
+          - AI Functions
+        stories:
+          - title: FMC optimizes harvests with data and AI (Arc farm intelligence)
+            url: https://www.databricks.com/customers/fmc-corporation
+      - name: Imagery at Scale
+        short: Remote sensing
+        icon: globe
+        summary: Turning daily satellite and drone rasters into governed, query-ready analytics with H3 indexing, without an expensive legacy GIS in the middle.
+        problem: Raster imagery is slow and costly to process, so vegetation-index and change layers arrive too late and only a GIS specialist can touch them.
+        who_benefits: Digital Product
+        how_built: Rasters are H3-indexed into tabular Delta with Apache Spark and Spatial SQL, so imagery joins field and weather data and anyone can query it in AI/BI.
+        components:
+          - Planet Imagery
+          - Sentinel Hub
+          - Apache Spark
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: CNH analyzes geospatial data to improve crop outputs
+            url: https://www.databricks.com/customers/cnh
+          - title: Built-in H3 for geospatial analytics
+            url: https://www.databricks.com/blog/announcing-built-h3-expressions-geospatial-processing-and-analytics
+      - name: Carbon MRV
+        short: Sustainability
+        icon: gavel
+        summary: Measuring, reporting and verifying practice-change carbon at supply-shed scale so every credit stands up to an audit.
+        problem: Carbon programs enrol acres faster than they can prove the outcome, and measurement stitched from spreadsheets and one-off models will not survive verification.
+        who_benefits: Sustainability
+        how_built: Imagery, practice and soil data feed carbon and emissions models scored in Model Serving, with Unity Catalog holding an auditable lineage from field practice to reported credit.
+        components:
+          - Carbon MRV Console
+          - Model Serving
+          - Planet Imagery
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Agerpoint partners with Databricks for agriculture and nature systems
+            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
+          - title: Geospatial AI Accelerator by Lovelytics
+            url: https://www.databricks.com/company/partners/consulting-and-si/partner-solutions/lovelytics-geospatial-accelerator
+      - name: Traceability
+        short: Supply chain
+        icon: share
+        summary: Following crop and input provenance from field to processor so deforestation-free and scope-3 claims are backed by governed evidence, not attestation.
+        problem: Provenance evidence for regulations like EUDR and for scope-3 sourcing is scattered across ERP, field and partner systems, so due diligence is manual and hard to defend.
+        who_benefits: Commercial
+        how_built: Field, ERP and partner data are conformed under Unity Catalog and published as governed data products shared to partners and regulators over OpenSharing.
+        components:
+          - SAP S/4HANA
+          - Unity Catalog
+          - OpenSharing
+          - Data Products
+          - Delta Lake
+medallion:
+  Bronze:
+    short: Raw field & fleet feeds
+    summary: Machine telemetry off the CAN bus, satellite and drone imagery tiles, weather-station and soil-probe readings, agronomy trial and lab results, and FMS field boundaries landed exactly as received, so a yield map or a spray pass can always be replayed as it stood.
+  Silver:
+    short: Conformed field, grower, machine
+    summary: Fields, growers, crops, seasons and machines resolved into single conformed entities across the FMS, telematics, imagery and agronomy estates, with field boundaries reconciled to a common geometry and trial plots stitched to their protocols.
+  Gold:
+    short: Yield, agronomy, sustainability
+    summary: 'Contracted products the agronomy, product and sustainability teams run on: yield and vegetation index by field and hybrid, variable-rate prescription performance, machine uptime and utilisation, and verified carbon and practice-change outcomes by supply shed.'
+citation_index:
+  fieldview:
+    title: Bayer Climate FieldView
+    url: https://climate.com/
+  jd-opscenter:
+    title: John Deere Operations Center
+    url: https://www.deere.com/en/technology-products/precision-ag-technology/data-management/operations-center/
+  trimble-ag:
+    title: Trimble Agriculture
+    url: https://agriculture.trimble.com/
+  granular:
+    title: Granular Insights (Corteva)
+    url: https://granular.ag/
+  jdlink:
+    title: John Deere JDLink telematics
+    url: https://www.deere.com/en/technology-products/precision-ag-technology/data-management/jdlink/
+  cnh-afs:
+    title: Case IH Advanced Farming Systems (AFS Connect)
+    url: https://www.caseih.com/en-us/unitedstates/products/advanced-farming-systems/afs-connect
+  agco-fuse:
+    title: PTx by AGCO
+    url: https://www.ptxag.com/
+  isobus:
+    title: ISO 11783 (ISOBUS)
+    url: https://en.wikipedia.org/wiki/ISO_11783
+  planet:
+    title: Planet Labs
+    url: https://www.planet.com/
+  sentinelhub:
+    title: Sentinel Hub
+    url: https://www.sentinel-hub.com/
+  dji-ag:
+    title: DJI Agriculture
+    url: https://ag.dji.com/
+  descartes:
+    title: EarthDaily Analytics (EarthOne)
+    url: https://earthdaily.com
+  dtn:
+    title: DTN Agriculture
+    url: https://www.dtn.com/agriculture/
+  cropx:
+    title: CropX soil sensing
+    url: https://cropx.com/
+  semios:
+    title: Semios crop intelligence
+    url: https://semios.com/
+  metos:
+    title: Pessl Instruments METOS
+    url: https://metos.global/en/
+  cropwise:
+    title: Syngenta Cropwise
+    url: https://www.cropwise.com/
+  labware:
+    title: LabWare LIMS
+    url: https://www.labware.com/
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  dssat:
+    title: DSSAT crop simulation
+    url: https://dssat.net/
+  adapt:
+    title: AgGateway ADAPT framework
+    url: https://adaptframework.org/
+  leaf:
+    title: Leaf agriculture API
+    url: https://withleaf.io/
+  verra:
+    title: Verra carbon registry
+    url: https://verra.org/
+  eudr:
+    title: EU Deforestation Regulation
+    url: https://environment.ec.europa.eu/topics/forests/deforestation/regulation-deforestation-free-products_en

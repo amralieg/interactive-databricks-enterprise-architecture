@@ -1,0 +1,1051 @@
+name: EdTech
+description: 'EdTech software vendors: online learning platforms, LMS and courseware, assessment and proctoring, adaptive learning, learner engagement, and subscription billing and outcomes analytics.'
+sources:
+  - name: CRM & Subscriptions
+    icon: crm
+    tiles:
+      - name: Salesforce Sales Cloud
+        icon: crm
+        summary: The system of record for institution and district accounts, opportunities and the pipeline, and the source of the customer hierarchy every revenue metric rolls up to.
+        citations:
+          - salesforce
+        category: CRM
+        what_it_is: System-of-record for institution and district accounts, opportunities and pipeline, and the customer hierarchy every revenue metric rolls up to.
+        who_uses_it: Sales, RevOps and Customer success teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: HubSpot CRM
+        icon: custlake
+        summary: Contacts, deals and marketing engagement for the self-serve and teacher-led motion, joined to product signups.
+        citations:
+          - hubspot
+        category: CRM & Marketing Automation
+        what_it_is: Holds contacts, deals and marketing engagement for the self-serve and teacher-led motion, joined to product signups.
+        who_uses_it: Marketing, Growth and Self-serve sales teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB to 2 GB/day
+            interval: Hourly / nightly sync
+      - name: Chargebee Billing
+        icon: market
+        summary: Subscription lifecycle, dunning and revenue operations for the self-serve and B2C billing motion, the source of MRR and churn.
+        citations:
+          - chargebee
+        category: Subscription Billing Platform
+        what_it_is: Runs subscription lifecycle, dunning and revenue operations for the self-serve and B2C motion, the source of MRR and churn.
+        who_uses_it: Finance, RevOps and Renewals teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (billing webhooks)
+      - name: Stripe Billing
+        icon: market
+        summary: Subscriptions, invoices, seat and usage records and payment events, reconciled against enrolment and consumption.
+        citations:
+          - stripe
+        category: Payments & Subscription Billing
+        what_it_is: Manages subscriptions, invoices, seat and usage records and payment events reconciled against enrolment and consumption.
+        who_uses_it: Finance, RevOps and Billing engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB to 2 GB/day
+            interval: Nightly reconciliation
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous (payment webhooks)
+  - name: LMS & Rostering
+    icon: notebook
+    tiles:
+      - name: Instructure Canvas
+        icon: notebook
+        summary: Course shells, assignment activity and gradebook events from the LMS the product launches into over LTI, the source of in-course engagement.
+        citations:
+          - instructure
+        category: Learning Management System (LMS)
+        what_it_is: The LMS the product launches into over LTI, emitting course, assignment and gradebook events behind in-course engagement.
+        who_uses_it: Learning science, Product analytics and Integration teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day
+            interval: Hourly / nightly
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec at peak
+            interval: Continuous (LTI events)
+      - name: Moodle LMS
+        icon: notebook
+        summary: Open-source LMS activity, submission and completion logs for the institutions and markets running on the Moodle estate.
+        citations:
+          - moodle
+        category: Learning Management System (LMS)
+        what_it_is: Open-source LMS supplying activity, submission and completion logs for institutions running on the Moodle estate.
+        who_uses_it: Learning science, Product analytics and Integration teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-8 GB/day
+            interval: Hourly / nightly
+      - name: Clever Rostering
+        icon: people
+        summary: 'Single sign-on and roster sync for K-12: students, sections and teachers provisioned from the district into the product.'
+        citations:
+          - clever
+        category: Rostering & SSO Provider
+        what_it_is: Single sign-on and roster sync for K-12, provisioning students, sections and teachers from the district into the product.
+        who_uses_it: Integration engineering, Onboarding and Trust & safety teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: sub-GB/day
+            interval: Daily roster sync
+      - name: OneRoster & LTI
+        icon: api
+        summary: The 1EdTech interoperability standards carrying rostering, launch and grade passback between the product and the customer's LMS and SIS.
+        citations:
+          - oneroster
+        category: Learning Interoperability Standard
+        what_it_is: The 1EdTech standards carrying rostering, launch and grade passback between the product and the customer's LMS and SIS.
+        who_uses_it: Integration engineering, Learning platforms and Product teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of events/sec at peak
+            interval: Continuous (launch / passback)
+  - name: Learning Telemetry
+    icon: stream
+    tiles:
+      - name: Segment CDP
+        icon: custlake
+        summary: The customer data platform routing product, web and lesson events into one schema of identified and anonymous learner activity.
+        citations:
+          - segment
+        category: Customer Data Platform (CDP)
+        what_it_is: Routes product, web and lesson events into one schema of identified and anonymous learner activity.
+        who_uses_it: Growth, Engagement analysts and Lifecycle marketing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of events/sec at peak
+            interval: Continuous (event stream)
+      - name: Amplitude Analytics
+        icon: chart
+        summary: Product analytics events, funnels and feature adoption, the source of activation and engagement measurement.
+        citations:
+          - amplitude
+        category: Product Analytics Platform
+        what_it_is: Captures product events, funnels and feature adoption, the source of activation and engagement measurement.
+        who_uses_it: Product, Growth and Learning science teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of events/sec at peak
+            interval: Continuous (event stream)
+      - name: Snowplow Behavioral
+        icon: stream
+        summary: First-party behavioural event pipeline with a governed schema, the raw clickstream behind engagement and drop-off models.
+        citations:
+          - snowplow
+        category: Behavioural Event Pipeline
+        what_it_is: First-party behavioural event pipeline with a governed schema, the raw clickstream behind engagement and drop-off models.
+        who_uses_it: Data engineering, ML scientists and Engagement analysts.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of thousands of events/sec at peak
+            interval: Continuous clickstream
+      - name: xAPI Record Store
+        icon: db
+        summary: The Experience API learning record store capturing granular lesson, attempt and mastery statements across content and tools.
+        citations:
+          - xapi
+        category: Learning Record Store (LRS)
+        what_it_is: Experience API learning record store capturing granular lesson, attempt and mastery statements across content and tools.
+        who_uses_it: Learning science, Curriculum designers and ML scientists.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of statements/sec at peak
+            interval: Continuous (xAPI statements)
+  - name: Assessment & Proctoring
+    icon: gavel
+    tiles:
+      - name: Proctorio
+        icon: watch
+        summary: Remote proctoring session events, gaze and behaviour signals and integrity flags captured during online exams.
+        citations:
+          - proctorio
+        category: Remote Proctoring Platform
+        what_it_is: Captures remote-proctoring session events, gaze and behaviour signals and integrity flags during online exams.
+        who_uses_it: Trust & safety, Assessment integrity and Privacy teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+              - unstructured
+            volume: GBs of session signals per exam window
+            interval: Continuous during exams
+      - name: ExamSoft Assessment
+        icon: gavel
+        summary: Secure exam delivery, item-level response data and category analytics for high-stakes computer-based testing.
+        citations:
+          - examsoft
+        category: Assessment Delivery Platform
+        what_it_is: Delivers secure exams and supplies item-level response data and category analytics for high-stakes computer-based testing.
+        who_uses_it: Assessment integrity, Psychometricians and Learning science teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs per exam window
+            interval: Per exam sitting
+      - name: Respondus LockDown
+        icon: key
+        summary: Lockdown browser and monitoring events restricting and recording the exam environment for online assessment.
+        citations:
+          - respondus
+        category: Exam Lockdown & Monitoring
+        what_it_is: Restricts and records the exam environment, emitting lockdown-browser and monitoring events for online assessment.
+        who_uses_it: Trust & safety and Assessment integrity teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec during exams
+            interval: Continuous during exams
+      - name: QTI Question Banks
+        icon: sheet
+        summary: Question and Test Interoperability item banks and rubrics, the interchange format for assessment content and scoring keys.
+        citations:
+          - qti
+        category: Assessment Content Standard
+        what_it_is: Question and Test Interoperability item banks and rubrics, the interchange format for assessment content and scoring keys.
+        who_uses_it: Learning science, Curriculum designers and Assessment teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: sub-GB item banks
+            interval: On content publish
+  - name: Content & Support
+    icon: docs
+    tiles:
+      - name: SCORM Cloud
+        icon: docs
+        summary: SCORM and xAPI content packaging, launch and completion tracking for the courseware the platform delivers.
+        citations:
+          - scorm
+        category: Courseware Packaging & Tracking
+        what_it_is: Packages and launches SCORM and xAPI courseware and tracks completion for the content the platform delivers.
+        who_uses_it: Content operations, Learning science and Product teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (launch / completion)
+      - name: Contentful CMS
+        icon: docs
+        summary: Headless content management for lessons, media and metadata, the source of the courseware catalogue.
+        citations:
+          - contentful
+        category: Headless CMS
+        what_it_is: Headless content management for lessons, media and metadata, the source of the courseware catalogue.
+        who_uses_it: Content operations, Curriculum designers and Product teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs of content + metadata
+            interval: On publish / nightly
+      - name: Zendesk Support
+        icon: chat
+        summary: Learner and educator support tickets, CSAT and macros, a leading churn signal and the corpus behind support deflection.
+        citations:
+          - zendesk
+        category: Customer Support Platform
+        what_it_is: Holds learner and educator support tickets, CSAT and macros, a leading churn signal and the corpus behind support deflection.
+        who_uses_it: Support, Customer success and Growth teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs of tickets + transcripts
+            interval: Continuous / hourly
+      - name: Intercom
+        icon: dial
+        summary: In-product messaging, conversations and resolution data across the onboarding and support journey.
+        citations:
+          - intercom
+        category: In-Product Messaging & Support
+        what_it_is: Runs in-product messaging and captures conversations and resolution data across the onboarding and support journey.
+        who_uses_it: Support, Lifecycle marketing and Onboarding teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous (messaging events)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Warehouse Marts
+        icon: fed
+        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Cloud Data Warehouse
+        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation, avoiding a second copy of the reported numbers.
+        who_uses_it: Finance, RevOps and Analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Kafka Event Streams
+        icon: eventbus
+        summary: Learning-event topics on Kafka or managed streaming carrying lesson-start, submission and grade events, parsed on arrival and landed as structured events.
+        citations:
+          - kafka
+        category: Event Streaming Platform
+        what_it_is: Learning-event topics on Kafka or managed streaming carrying lesson-start, submission and grade events, parsed on arrival.
+        who_uses_it: Data engineering and Streaming engineering teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of thousands of events/sec at peak
+            interval: Continuous (topics)
+      - name: LTI & Webhooks
+        icon: api
+        summary: LTI launch, deep-linking and grade-passback callbacks plus Stripe and Zendesk webhooks delivering near-real-time enrolment, billing and ticket events. Managed ELT connectors and existing streaming topics land here too, drawn generically on the reference board.
+        category: Webhooks & Integration APIs
+        what_it_is: LTI launch, deep-linking and grade-passback callbacks plus Stripe and Zendesk webhooks delivering near-real-time enrolment, billing and ticket events.
+        who_uses_it: Integration engineering, Data engineering and RevOps teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of callbacks/sec at peak
+            interval: Continuous (webhooks)
+      - name: Clickstream Firehose
+        icon: stream
+        summary: High-volume web and mobile app clickstream from the learning experience, joined to enrolments for engagement and drop-off analysis.
+        category: Clickstream Ingestion
+        what_it_is: High-volume web and mobile clickstream from the learning experience, joined to enrolments for engagement and drop-off analysis.
+        who_uses_it: Engagement analysts, Growth and Data engineering teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of thousands of events/sec at peak
+            interval: Continuous clickstream
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Exec & Product
+        mark: Genie One
+        summary: The CEO on growth, net revenue retention and the efficacy story that wins renewals; the Chief Product Officer on activation, engagement and the roadmap that moves learning outcomes; the Chief Learning Officer on whether the product actually teaches.
+        uses:
+          - - Genie One
+            - Ask what this month's retention was by cohort, or which features move outcomes, without booking analyst time.
+          - - AI/BI
+            - Growth, engagement and learning-outcome metrics on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the glossary, so "active learner" and "mastery" mean one thing across the company.
+        sub:
+          - name: CEO
+            cares: growth, net revenue retention and the efficacy story behind renewals.
+          - name: Chief Product Officer
+            cares: activation, engagement and the roadmap that moves outcomes.
+          - name: Chief Learning Officer
+            cares: whether the product actually teaches, measured on outcomes.
+        ucs:
+          - Learner Engagement
+          - At-Risk & Retention
+          - Subscription Churn
+          - Adaptive Learning
+      - name: Learning Science
+        mark: Model Serving
+        summary: Learning scientists and psychometricians validating that content teaches, curriculum designers sequencing adaptive paths, and efficacy researchers proving outcome gains against a control cohort.
+        uses:
+          - - Adaptive Path Engine
+            - The next best lesson sequenced per learner from live mastery estimates.
+          - - Model Serving
+            - Knowledge-tracing and item-response models scored inside the learning path.
+          - - MLflow
+            - Every efficacy and knowledge-tracing run tracked for audit and reproduction.
+        sub:
+          - name: Learning scientists
+            cares: knowledge tracing, item response and mastery modelling.
+          - name: Curriculum designers
+            cares: adaptive sequencing and content-to-standard alignment.
+          - name: Efficacy researchers
+            cares: outcome gains proven against a control cohort.
+        ucs:
+          - Adaptive Learning
+          - Content Efficacy
+          - Automated Scoring
+          - GenAI Tutor
+      - name: Growth & Engage
+        mark: Lakehouse//RT
+        summary: Growth teams on signup-to-activation and free-to-paid conversion, lifecycle marketing on onboarding and reactivation nudges, and engagement analysts on the clickstream signals that predict who quietly disengages.
+        uses:
+          - - Learner 360
+            - Engagement, streaks and risk on one profile per learner.
+          - - AI/BI
+            - Activation and engagement funnels on governed event data with one metric definition.
+          - - Lakehouse//RT
+            - Live learner state at the latency an onboarding flow moves at.
+        sub:
+          - name: Growth
+            cares: signup-to-activation and free-to-paid conversion loops.
+          - name: Lifecycle marketing
+            cares: onboarding, reactivation and in-app nudges.
+          - name: Engagement analysts
+            cares: the clickstream signals behind quiet disengagement.
+        ucs:
+          - Learner Engagement
+          - GenAI Tutor
+          - Support Deflection
+      - name: Finance & RevOps
+        mark: AI/BI
+        summary: The CFO on gross margin, cash and the efficiency of growth; RevOps on seat and usage-based revenue, metering accuracy and billed-to-consumed; the renewals desk on the accounts quietly heading for non-renewal.
+        uses:
+          - - AI/BI
+            - MRR, the ARR bridge and net revenue retention on certified Metric Views.
+          - - Model Serving
+            - Churn and expansion propensity scored inside the renewals path.
+          - - Genie One
+            - Ask which accounts are under-billed this month without a finance pull.
+        sub:
+          - name: CFO
+            cares: gross margin, cash and the efficiency of growth.
+          - name: RevOps & billing
+            cares: seat and usage revenue, metering accuracy and billed-to-consumed.
+          - name: Renewals desk
+            cares: the accounts quietly heading for non-renewal.
+        ucs:
+          - Subscription Churn
+          - Usage-Based Billing
+          - At-Risk & Retention
+      - name: Trust & Safety
+        mark: Unity Catalog
+        summary: Assessment-integrity teams on exam anomalies and proctoring signals, the trust and safety desk on student-safety alerts in K-12 environments, and the privacy office on FERPA, COPPA and GDPR obligations across minors' data.
+        uses:
+          - - Integrity Monitor
+            - Exam-session anomalies and proctoring flags ranked for human review.
+          - - Unity Catalog
+            - Row and column governance so minors' data is reachable only by who may see it.
+          - - Model Serving
+            - Anomaly and safety-signal models scored on assessment and clickstream events.
+        sub:
+          - name: Assessment integrity
+            cares: exam anomalies and proctoring-signal review.
+          - name: Trust & safety
+            cares: student-safety alerts in K-12 environments.
+          - name: Privacy office
+            cares: FERPA, COPPA and GDPR across minors' data.
+        ucs:
+          - Exam Integrity
+          - Automated Scoring
+          - At-Risk & Retention
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the LMS, rostering, clickstream, billing and assessment feeds with Fivetran, Airbyte and Kafka; run dbt and Airflow on the Bronze to Silver path; own the pager when the engagement and billing tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for Salesforce, Stripe and the SaaS learning sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on clickstream and grade feeds.
+          - - Lakewatch
+            - Freshness on the engagement and outcome tables the business reads every morning.
+        sub:
+          - name: Ingestion engineers
+            cares: LMS, rostering and billing feeds into Bronze.
+          - name: Streaming engineers
+            cares: clickstream and xAPI events into Lakehouse//RT.
+          - name: Platform & governance
+            cares: Unity Catalog permissions and the pipeline SLAs.
+        ucs:
+          - Learner Engagement
+          - Adaptive Learning
+          - Usage-Based Billing
+      - name: ML Scientists
+        mark: MLflow
+        summary: Knowledge-tracing, item-response, churn and content-recommendation models built in Python with PyTorch and scikit-learn, and whether they still hold once the curriculum and the cohort change.
+        uses:
+          - - Feature Store
+            - Learner and content features read identically in training and serving.
+          - - MLflow
+            - Every knowledge-tracing and churn run tracked for audit and reproduction.
+          - - Model Serving
+            - Mastery, recommendation and churn models scored in the learning and CRM path.
+        sub:
+          - name: Learning modelers
+            cares: knowledge tracing, item response and mastery estimation.
+          - name: Applied GenAI
+            cares: tutoring and grading agents on governed content.
+          - name: MLOps
+            cares: tracking and serving models in the learning path.
+        ucs:
+          - Adaptive Learning
+          - Automated Scoring
+          - GenAI Tutor
+      - name: App Developers
+        mark: Apps
+        summary: Ship the learner, tutor, adaptive and integrity applications the product runs in, hosted next to governed data with LTI launch into the customer's LMS.
+        uses:
+          - - Apps
+            - Learner and educator screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for learner state, streaks and governed writes.
+          - - Agent Bricks
+            - Tutor and grading agents that act against governed tools.
+        sub:
+          - name: Learning app developers
+            cares: learner, educator and tutor screens.
+          - name: Backend & Lakebase
+            cares: learner state and progress with governed writes.
+          - name: Agent developers
+            cares: tutoring and grading agents over MCP.
+        ucs:
+          - GenAI Tutor
+          - Exam Integrity
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and board dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, in the channel product and learning teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analyst notebooks, VS Code and JetBrains against governed learning and revenue data with Genie Code.
+  - name: Learner Activation
+    icon: zfunnel
+    tiles:
+      - name: Reverse ETL to CDP
+        icon: reverse
+        summary: Engagement scores and lifecycle segments synced back to Segment and the CRM for in-app and email activation.
+        citations:
+          - segment
+      - name: In-App Nudges
+        icon: dial
+        summary: Onboarding and re-engagement nudges served into the learning app from governed engagement and risk scores.
+      - name: Email & Push
+        icon: market
+        summary: Lifecycle and reactivation campaigns triggered from governed cohorts in Braze and the marketing stack.
+        citations:
+          - braze
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: LTI Grade Passback
+        icon: reverse
+        summary: Grades and mastery written back into the customer's LMS gradebook over LTI so the score reaches the course the learner works in.
+        citations:
+          - oneroster
+      - name: CRM Health Writeback
+        icon: crm
+        summary: Account health and churn risk written back to Salesforce so success teams act in the system they live in.
+        citations:
+          - salesforce
+      - name: Adaptive Content Push
+        icon: product
+        summary: Next-best content decisions pushed into the learning platform so the path adapts in the flow.
+  - name: Partners & Sharing
+    icon: share
+    tiles:
+      - name: Institution Products
+        icon: product
+        summary: Engagement and outcome products published in Unity Catalog Domains and shared with customer institutions over OpenSharing.
+      - name: Publisher Sharing
+        icon: share
+        summary: Content usage and efficacy shared live with courseware publishers over Delta Sharing rather than quarterly file exchange.
+      - name: Embedded Analytics
+        icon: aibi
+        summary: Educator- and admin-facing dashboards embedded in the product against governed tables with per-tenant row isolation.
+  - name: Privacy & Compliance
+    icon: gavel
+    tiles:
+      - name: FERPA & COPPA Evidence
+        icon: gavel
+        summary: Access and consent evidence for FERPA and COPPA produced from the same governed tables the product runs on.
+      - name: Privacy & DSAR
+        icon: zshield
+        summary: GDPR and CCPA subject access and deletion for learners and guardians fulfilled from one governed learner record.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Learner 360
+        icon: custlake
+        short: Engagement & risk
+        summary: 'One profile per learner across every product and LMS: streaks, mastery, engagement and disengagement risk composed from clickstream, assessment and billing signals, on Databricks Apps over Lakebase.'
+      - name: Adaptive Path Engine
+        icon: ztarget
+        short: Personalized learning
+        summary: The next best lesson sequenced per learner from live mastery estimates, so each learner sees content pitched at the edge of what they can already do rather than a fixed syllabus.
+      - name: Outcomes Studio
+        icon: chart
+        short: Efficacy analytics
+        summary: Where learning scientists and product prove which content, sequence and intervention actually move outcomes, on the same certified metrics the executive team reads.
+      - name: Integrity Monitor
+        icon: watch
+        short: Exam integrity
+        summary: Exam-session anomalies and proctoring signals ranked for human review, so integrity cases surface from the data instead of a spot check after grades post.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Engagement & Activation
+        icon: aibi
+        summary: Activation, engagement and disengagement funnels on certified Metric Views.
+        kpis:
+          - Activation rate
+          - Weekly active learners
+          - Engagement score
+          - Disengagement risk
+          - Feature adoption
+        teams:
+          - Growth & Engage
+          - Exec & Product
+          - Engagement analysts
+      - name: Learning Outcomes
+        icon: aibi
+        summary: Mastery, adaptive-path performance and content efficacy across the product.
+        kpis:
+          - Mastery attainment
+          - Completion rate
+          - Efficacy lift
+          - Adaptive-path progress
+          - Outcome gain vs control
+        teams:
+          - Learning Science
+          - Exec & Product
+          - Curriculum designers
+      - name: Revenue & Retention
+        icon: aibi
+        summary: MRR, net revenue retention, churn and metering accuracy on governed tables.
+        kpis:
+          - MRR
+          - Net revenue retention
+          - Churn rate
+          - Billed-to-consumed
+          - ARR bridge
+        teams:
+          - Finance & RevOps
+          - Renewals desk
+          - Exec & Product
+      - name: Trust & Integrity
+        icon: aibi
+        summary: Exam-integrity throughput, proctoring signals and support deflection.
+        kpis:
+          - Integrity cases reviewed
+          - Proctoring false-positive rate
+          - Support deflection rate
+          - CSAT
+          - DSAR timeliness
+        teams:
+          - Trust & Safety
+          - Assessment integrity
+          - Privacy office
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Learner Engagement Agent
+        icon: genie
+        summary: Ask about activation, engagement and quiet disengagement across the base in plain language.
+        feeds:
+          - Segment CDP
+          - Snowplow Behavioral
+          - Amplitude Analytics
+          - Outcomes, engagement, retention, NRR
+        teams:
+          - Growth & Engage
+          - Engagement analysts
+          - Lifecycle marketing
+        questions:
+          - What was activation by cohort this month versus last?
+          - Which learners are drifting toward disengagement right now?
+          - Where does the onboarding funnel drop off most?
+          - Which features correlate with sustained engagement?
+          - How does engagement differ between free and paid learners?
+      - name: Learning Outcomes Agent
+        icon: genie
+        summary: Explore mastery, adaptive-path performance and content efficacy across the product.
+        feeds:
+          - xAPI Record Store
+          - Instructure Canvas
+          - Amplitude Analytics
+          - Conformed learner, course, tenant
+        teams:
+          - Learning Science
+          - Curriculum designers
+          - Efficacy researchers
+        questions:
+          - Which content moves mastery most against a control cohort?
+          - Where does the adaptive path stall learners by topic?
+          - How does mastery attainment differ by content sequence?
+          - Which lessons show high engagement but low outcome gain?
+          - Which cohorts improved outcomes after the last content update?
+      - name: Revenue & Retention Agent
+        icon: genie
+        summary: Answer questions on MRR, net revenue retention and subscription churn.
+        feeds:
+          - Chargebee Billing
+          - Stripe Billing
+          - Instructure Canvas
+          - Outcomes, engagement, retention, NRR
+        teams:
+          - Finance & RevOps
+          - Renewals desk
+          - RevOps & billing
+        questions:
+          - What is net revenue retention by cohort this month?
+          - Which accounts are quietly heading for non-renewal?
+          - Which accounts are under-billed against consumption this month?
+          - How does churn relate to engagement and outcome signals?
+          - What is the ARR bridge for the quarter so far?
+      - name: Trust & Integrity Agent
+        icon: genie
+        summary: Ask about exam anomalies, proctoring signals and support deflection.
+        feeds:
+          - Proctorio
+          - Zendesk Support
+          - xAPI Record Store
+          - Conformed learner, course, tenant
+        teams:
+          - Trust & Safety
+          - Assessment integrity
+          - Privacy office
+        questions:
+          - Which exam sessions rank highest for integrity review this week?
+          - How many proctoring flags are false positives on review?
+          - Which support topics could an assistant deflect today?
+          - Where are student-safety alerts concentrated in K-12 tenants?
+          - Which tenants have open DSAR requests approaching their deadline?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Learner Engagement
+        short: Engagement
+        icon: stream
+        summary: Engagement, streaks and quiet disengagement measured on one governed event stream, so product, growth and learning-science read the same activity instead of three tools' versions of it.
+        problem: Learning events sit in a CDP and two analytics tools that each define "active" differently, so no two teams agree on engagement or spot the learner drifting toward churn until they are gone.
+        who_benefits: Growth & Engage
+        how_built: Segment and Snowplow clickstream land through Lakeflow and are conformed to certified Metric Views; engagement and risk are composed per learner in Learner 360 on Lakehouse//RT.
+        components:
+          - Segment CDP
+          - Snowplow Behavioral
+          - Lakehouse//RT
+          - Learner 360
+          - AI/BI
+        stories:
+          - title: HOMER lifts engagement and cuts churn with Databricks
+            url: https://www.databricks.com/customers/homer
+          - title: GoGuardian improves learning outcomes with Databricks
+            url: https://www.databricks.com/customers/goguardian
+      - name: Adaptive Learning
+        short: Personalization
+        icon: ztarget
+        summary: The next best lesson chosen per learner from live mastery estimates, so each learner works at the edge of what they can already do rather than a fixed syllabus.
+        problem: A one-size syllabus bores the learner who is ahead and loses the one who is behind, and the mastery signal needed to adapt is scattered across LMS activity and assessment attempts.
+        who_benefits: Learning Science
+        how_built: xAPI and assessment events feed knowledge-tracing models tracked in MLflow and scored in Model Serving; the Adaptive Path Engine sequences the next item from live mastery.
+        components:
+          - xAPI Record Store
+          - Model Serving
+          - Feature Store
+          - Adaptive Path Engine
+          - MLflow
+        stories:
+          - title: McGraw Hill drives adaptive learning on Databricks Delta
+            url: https://www.databricks.com/blog/leveraging-delta-across-teams-mcgraw-hill
+          - title: Democratizing big data and ML at McGraw-Hill
+            url: https://www.databricks.com/blog/2017/10/18/using-databricks-democratize-big-data-machine-learning-mcgraw-hill-education.html
+      - name: Content Efficacy
+        short: Efficacy
+        icon: chart
+        summary: Proving which content, sequence and intervention actually move learning outcomes, measured against a control rather than asserted from a content calendar.
+        problem: Content is shipped on intuition and refreshed on a calendar, while the evidence of what actually teaches sits unjoined across engagement, assessment and outcome data.
+        who_benefits: Learning Science
+        how_built: Engagement and outcome events are conformed to certified Metric Views; efficacy is measured in AI/BI from the Outcomes Studio on one definition of mastery under Unity Catalog.
+        components:
+          - Amplitude Analytics
+          - AI/BI
+          - Outcomes Studio
+          - Unity Catalog
+          - xAPI Record Store
+        stories:
+          - title: Democratizing big data and ML at McGraw-Hill
+            url: https://www.databricks.com/blog/2017/10/18/using-databricks-democratize-big-data-machine-learning-mcgraw-hill-education.html
+          - title: Data analytics and AI in education
+            url: https://www.databricks.com/solutions/industries/education
+      - name: At-Risk & Retention
+        short: Retention
+        icon: people
+        summary: Predicting the learner who will disengage or fail from LMS activity, assessment and support signals, so the intervention happens before the term is lost, not in the post-mortem.
+        problem: At-risk learners are identified after they fail or churn, when the leading signals of struggle were visible weeks earlier across activity, grades and support tickets.
+        who_benefits: Exec & Product
+        how_built: Activity, assessment and support features feed risk models tracked in MLflow and scored in Model Serving; risk and its drivers surface per learner in Learner 360 for the owning team.
+        components:
+          - Instructure Canvas
+          - Model Serving
+          - Feature Store
+          - Learner 360
+          - MLflow
+        stories:
+          - title: GoGuardian improves learning outcomes with Databricks
+            url: https://www.databricks.com/customers/goguardian
+          - title: Data analytics and AI in education
+            url: https://www.databricks.com/solutions/industries/education
+      - name: Automated Scoring
+        short: Assessment
+        icon: gauge
+        summary: Open-response and behavioural assessments scored by governed models with human oversight, turning a multi-day human backlog into near-instant, consistent feedback.
+        problem: Open-response and simulation scoring is a slow, expensive human bottleneck, and inconsistent scoring undermines both the learner's feedback and the assessment's validity.
+        who_benefits: Trust & Safety
+        how_built: Item banks and rubrics are governed in Unity Catalog; scoring runs through AI Functions and fine-tuned models in Model Serving with an Agent Bricks review loop, tracked in MLflow.
+        components:
+          - QTI Question Banks
+          - AI Functions
+          - Model Serving
+          - Agent Bricks
+          - MLflow
+        stories:
+          - title: DDI automates behavioral simulation scoring with GenAI
+            url: https://www.databricks.com/customers/ddi
+      - name: Exam Integrity
+        short: Integrity
+        icon: gavel
+        summary: Exam-session anomalies and proctoring signals ranked for human review, so integrity cases surface from the data rather than a spot check after grades post.
+        problem: Proctoring generates far more signal than reviewers can watch, so real cheating hides in the volume while honest learners are flagged by blunt rules.
+        who_benefits: Trust & Safety
+        how_built: Proctoring, keystroke and response-timing events stream into Lakehouse//RT; anomaly models in Model Serving rank sessions for review in the Integrity Monitor, tracked in MLflow.
+        components:
+          - Proctorio
+          - Model Serving
+          - Lakehouse//RT
+          - Integrity Monitor
+          - MLflow
+      - name: GenAI Tutor
+        short: Tutoring
+        icon: chat
+        summary: A governed AI tutor that explains, hints and quizzes from the product's own content and the learner's mastery state, at a scale one-to-one human tutoring never reaches.
+        problem: One-to-one tutoring is the strongest lever on outcomes and the least scalable, and an ungoverned chatbot risks hallucinating answers or leaking a minor's data.
+        who_benefits: Learning Science
+        how_built: Product content is governed in Unity Catalog and retrieved by an Agent Bricks tutor using AI Functions and Model Serving, grounded in the learner's mastery from the Adaptive Path Engine.
+        components:
+          - Agent Bricks
+          - AI Functions
+          - Model Serving
+          - Adaptive Path Engine
+          - Unity Catalog
+        stories:
+          - title: 'AI applications: tools, use cases and platforms'
+            url: https://www.databricks.com/blog/ai-applications
+          - title: Data analytics and AI in education
+            url: https://www.databricks.com/solutions/industries/education
+      - name: Subscription Churn
+        short: Retention
+        icon: market
+        summary: Predicting subscription churn and expansion from engagement, outcome and billing signals so the save happens before the renewal date, not at it.
+        problem: Churn shows up in the renewal number when it is too late to act, while the leading signals sit unjoined across product engagement, learning outcomes and billing.
+        who_benefits: Finance & RevOps
+        how_built: Engagement, outcome and billing features feed churn and expansion models tracked in MLflow and scored in Model Serving; risk is activated through CustomerLake and read in AI/BI.
+        components:
+          - Chargebee Billing
+          - Model Serving
+          - Feature Store
+          - CustomerLake
+          - AI/BI
+        stories:
+          - title: HOMER lowers churn and lifts conversion with Databricks
+            url: https://www.databricks.com/customers/homer
+      - name: Usage-Based Billing
+        short: Monetization
+        icon: gauge
+        summary: Seat and usage consumption rated and reconciled to invoices before the close, so the vendor bills exactly what institutions and learners actually used.
+        problem: Seat- and usage-based pricing leaks revenue when metering, rating and the invoice disagree, and the reconciliation of consumed to billed only surfaces after the period closes.
+        who_benefits: Finance & RevOps
+        how_built: Raw seat and usage events are conformed in the lakehouse, rated against the plan and reconciled to Stripe and Chargebee invoices, with margin and revenue-at-risk read in AI/BI.
+        components:
+          - Stripe Billing
+          - Chargebee Billing
+          - AI/BI
+          - Lakeflow
+          - Unity Catalog
+      - name: Support Deflection
+        short: Support
+        icon: chat
+        summary: A governed assistant that resolves common learner and educator questions from the product docs and ticket history, deflecting volume before it reaches an agent.
+        problem: Support volume scales with the learner base, and the answers already exist in docs and past tickets, but agents re-solve the same questions by hand every day.
+        who_benefits: Growth & Engage
+        how_built: Zendesk and Intercom history and product docs are governed in Unity Catalog and served to an Agent Bricks assistant with AI Functions and Model Serving, deflecting and summarising tickets.
+        components:
+          - Zendesk Support
+          - Intercom
+          - Agent Bricks
+          - AI Functions
+          - Model Serving
+medallion:
+  Bronze:
+    short: Raw learning and billing events
+    summary: Clickstream and lesson events from the learning platform, LMS activity and grade-passback callbacks over LTI, rostering files from Clever and OneRoster, Stripe and Chargebee billing records and proctoring and assessment logs, landed exactly as received so an engagement spike or a disputed grade can always be replayed as it stood.
+  Silver:
+    short: Conformed learner, course, tenant
+    summary: Learners, courses, content items and tenants resolved into single conformed entities across the LMS, telemetry, billing and assessment estates, with anonymous device ids stitched to known learners and multi-tenant institution data isolated to one governed hierarchy.
+  Gold:
+    short: Outcomes, engagement, retention, NRR
+    summary: 'Contracted products the product, learning-science and revenue teams run on: engagement and activation funnels, mastery and learning-outcome attainment, at-risk and retention scores by cohort, subscription NRR and churn, and metering accuracy for usage-based billing.'
+citation_index:
+  salesforce:
+    title: Salesforce Sales Cloud
+    url: https://www.salesforce.com/sales/
+  hubspot:
+    title: HubSpot CRM
+    url: https://www.hubspot.com/products/crm
+  chargebee:
+    title: Chargebee
+    url: https://www.chargebee.com/
+  stripe:
+    title: Stripe Billing
+    url: https://stripe.com/billing
+  instructure:
+    title: Instructure Canvas LMS
+    url: https://www.instructure.com/canvas
+  moodle:
+    title: Moodle LMS
+    url: https://moodle.org/
+  clever:
+    title: Clever rostering and SSO
+    url: https://www.clever.com/
+  oneroster:
+    title: 1EdTech OneRoster & LTI
+    url: https://www.1edtech.org/standards/oneroster
+  segment:
+    title: Twilio Segment CDP
+    url: https://segment.com/
+  amplitude:
+    title: Amplitude product analytics
+    url: https://amplitude.com/
+  snowplow:
+    title: Snowplow behavioral data
+    url: https://snowplow.io/
+  xapi:
+    title: Experience API (xAPI)
+    url: https://xapi.com/
+  proctorio:
+    title: Proctorio remote proctoring
+    url: https://proctorio.com/
+  examsoft:
+    title: ExamSoft assessment
+    url: https://examsoft.com/
+  respondus:
+    title: Respondus LockDown Browser
+    url: https://web.respondus.com/
+  qti:
+    title: 1EdTech QTI standard
+    url: https://www.1edtech.org/standards/qti
+  scorm:
+    title: SCORM Cloud (Rustici)
+    url: https://scorm.com/
+  contentful:
+    title: Contentful headless CMS
+    url: https://www.contentful.com/
+  zendesk:
+    title: Zendesk
+    url: https://www.zendesk.com/
+  intercom:
+    title: Intercom
+    url: https://www.intercom.com/
+  kafka:
+    title: Apache Kafka
+    url: https://kafka.apache.org/
+  braze:
+    title: Braze customer engagement
+    url: https://www.braze.com/

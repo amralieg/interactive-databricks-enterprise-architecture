@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  },
+  "dependencies": {
+    "js-yaml": "^4.3.2"
+  }
+}

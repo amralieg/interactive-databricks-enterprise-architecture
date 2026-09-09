@@ -1,0 +1,898 @@
+name: Food & Beverage
+description: 'CPG food and beverage manufacturers: recipe and batch production, quality and traceability, demand planning, and cold-chain logistics.'
+sources:
+  - name: Manufacturing & MES
+    icon: erp
+    tiles:
+      - name: Rockwell FactoryTalk
+        icon: iot
+        summary: Line speeds, filler weights, CIP cycles and downtime reason codes from the plant floor.
+        citations:
+          - rockwell-ft
+        category: Industrial Automation / SCADA
+        what_it_is: Streams line speeds, filler weights, CIP cycles and downtime reason codes from the plant floor, the base signal for OEE and yield.
+        who_uses_it: Plant Operations, Line Leads and Maintenance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of tag reads/sec
+            interval: Continuous telemetry
+      - name: Siemens Opcenter MES
+        icon: sheet
+        summary: Batch recipes, material consumption and electronic batch records for regulated plants.
+        citations:
+          - siemens-opcenter
+        category: Manufacturing Execution System (MES)
+        what_it_is: Manages batch recipes, material consumption and electronic batch records for regulated plants, the backbone of lot genealogy and release.
+        who_uses_it: Plant Operations, Quality and Food Safety teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Per-batch + nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous batch events
+      - name: SAP S/4HANA PP
+        icon: erp
+        summary: Production orders, BOM explosions, confirmations and co-product yields.
+        citations:
+          - sap-s4
+        category: ERP / Production Planning
+        what_it_is: Holds production orders, BOM explosions, confirmations and co-product yields, the commercial and planning system of record.
+        who_uses_it: Supply Chain, Plant Operations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Nightly close + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous CDC
+  - name: Quality & Safety
+    icon: gavel
+    tiles:
+      - name: Veeva QualityDocs
+        icon: gavel
+        summary: Specifications, deviations, CAPA and release documentation for food safety programs.
+        citations:
+          - veeva-quality
+        category: Quality Management System (QMS)
+        what_it_is: Manages specifications, deviations, CAPA and release documentation for food-safety programs, the audit trail behind quality release.
+        who_uses_it: Quality, Food Safety and Regulatory Affairs teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs/day docs + records
+            interval: Hourly / nightly sync
+      - name: SafetyChain Plant Mgmt
+        icon: gauge
+        summary: HACCP checks, temperature logs and sanitation records from production shifts.
+        citations:
+          - safetychain
+        category: Food Safety / Plant Management
+        what_it_is: Captures HACCP checks, temperature logs and sanitation records from production shifts for food-safety compliance.
+        who_uses_it: Food Safety, Quality and Plant Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Per-shift + hourly
+      - name: LabWare LIMS
+        icon: db
+        summary: Microbiology, allergen and nutritional assay results tied to lot and line.
+        category: Laboratory Information System (LIMS)
+        what_it_is: Holds microbiology, allergen and nutritional assay results tied to lot and line, gating release on lab confirmation.
+        who_uses_it: Quality Lab, Food Safety and Regulatory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day results
+            interval: Per-assay + nightly batch
+  - name: Supply & Logistics
+    icon: stream
+    tiles:
+      - name: Blue Yonder TMS
+        icon: stream
+        summary: Inbound raw material and outbound finished goods movements with carrier ETA and temperature probes.
+        citations:
+          - blue-yonder
+        category: Transportation Management System (TMS)
+        what_it_is: Tracks inbound raw material and outbound finished-goods movements with carrier ETA and temperature probes for service and cold chain.
+        who_uses_it: Logistics, Supply Chain and Cold-Chain teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Multiple daily loads
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous shipment events
+      - name: Manhattan WMS
+        icon: product
+        summary: Warehouse inventory, pick/pack and shipment confirmation against customer orders.
+        citations:
+          - manhattan-wms
+        category: Warehouse Management System (WMS)
+        what_it_is: Runs warehouse inventory, pick/pack and shipment confirmation against customer orders, emitting movements behind OTIF.
+        who_uses_it: DC Operations, Logistics and Inventory teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous movement events
+      - name: Sensitech TempTale
+        icon: iot
+        summary: Cold-chain logger readings from plant dock through DC to customer delivery.
+        citations:
+          - sensitech
+        category: Cold-Chain Monitoring Platform
+        what_it_is: Streams cold-chain logger readings from plant dock through DC to customer delivery, the excursion signal behind shelf life.
+        who_uses_it: Cold-Chain, Logistics and Quality teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: thousands of sensor reads/sec
+            interval: Continuous telemetry
+  - name: Commercial & Retail
+    icon: market
+    tiles:
+      - name: NielsenIQ POS
+        icon: market
+        summary: Syndicated and direct retail sell-through by SKU, banner and geography.
+        citations:
+          - nielseniq
+        category: Syndicated Market Data Provider
+        what_it_is: Supplies syndicated and direct retail sell-through by SKU, banner and geography for demand and category analytics.
+        who_uses_it: Sales & Marketing, Supply Chain and Insights teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/week
+            interval: Weekly / monthly syndicated feed
+      - name: Circana/IRI Panel
+        icon: chart
+        summary: Household panel and causal analytics for category and brand performance.
+        citations:
+          - circana
+        category: Consumer Panel / Consumption Data
+        what_it_is: Provides household-panel and causal analytics for category and brand performance used in promotion and share analysis.
+        who_uses_it: Sales & Marketing, Category and Insights teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/week
+            interval: Weekly feed
+      - name: Trade Promotion Mgmt
+        icon: partner
+        summary: Promotional calendars, scan data and accrual settlements with retail partners.
+        category: Trade Promotion Management (TPM)
+        what_it_is: Holds promotional calendars, scan data and accrual settlements with retail partners, the base for trade-ROI reconciliation.
+        who_uses_it: Sales & Marketing, Trade Marketing and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily + settlement cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Co-manufacturer Inventory
+        icon: fed
+        summary: Third-party production inventory and batch status left at co-packers and queried in place under Unity Catalog.
+        category: External Partner Data Source
+        what_it_is: Third-party production inventory and batch status left at co-packers and queried in place through federation instead of manual spreadsheet chases.
+        who_uses_it: Supply Chain, Planning and Co-pack Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10s-100s GB (federated)
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: GS1 EPCIS Events
+        icon: api
+        summary: Serial shipping container and lot traceability events normalised on ingest for recall readiness.
+        citations:
+          - gs1-epcis
+        category: Traceability Event Standard
+        what_it_is: Normalises serial shipping container and lot traceability events on ingest so recall lists can be built forward and backward.
+        who_uses_it: Quality & Food Safety, Regulatory and Logistics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous trace events
+      - name: FDA FSMA 204 Trace
+        icon: gavel
+        summary: Key data elements for high-risk foods consumed inbound for compliance validation.
+        citations:
+          - fsma-204
+        category: Food Traceability Compliance Feed
+        what_it_is: Supplies the key data elements for high-risk foods consumed inbound to validate FSMA Rule 204 traceability compliance.
+        who_uses_it: Regulatory Affairs, Quality and Food Safety teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day KDEs
+            interval: Daily + event-driven
+      - name: Weather & Commodity
+        icon: globe
+        summary: Crop condition and commodity price feeds for agricultural input planning.
+        category: Commodity / Weather Data Source
+        what_it_is: Provides crop-condition and commodity-price feeds consumed inbound for agricultural input and margin planning.
+        who_uses_it: Supply Chain, Procurement and Sustainability teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day
+            interval: Daily feed
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & COO
+        mark: Genie One
+        summary: The CEO on volume, gross margin and category share; the COO on plant OEE, OTIF service level and recall exposure across the network.
+        uses:
+          - - Genie One
+            - Ask what yesterday's OTIF was by customer without waiting on supply analytics.
+          - - AI/BI
+            - Volume, margin and quality on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "yield" means one thing across plants.
+        sub:
+          - name: CEO
+            cares: volume, gross margin and category share, and the recall exposure that can undo a brand overnight.
+          - name: COO
+            cares: plant OEE, OTIF service level and the resilience of the plant-and-co-pack network.
+          - name: Chief Sustainability Officer
+            cares: scope-3 emissions and the provenance behind every pack claim.
+        ucs:
+          - Recall Readiness
+          - OEE & Downtime
+          - Sustainable Sourcing
+      - name: Plant Operations
+        mark: Lakehouse//RT
+        summary: Plant managers and line leads on changeover time, downtime reason codes and batch release, chasing line yield and scrap before the shift ends.
+        uses:
+          - - Batch Genealogy Console
+            - Lot trace from raw material to pallet in one view.
+          - - Lakehouse//RT
+            - Live filler and CIP state at line speed.
+          - - AI/BI
+            - OEE and scrap on governed definitions.
+        sub:
+          - name: Plant Manager
+            cares: site OEE, changeover time and the cost of scrap before the shift ends.
+          - name: Line Lead
+            cares: filler drift, downtime reason codes and batch release on the line.
+          - name: Maintenance Lead
+            cares: planned downtime and the failures that stop a line mid-run.
+        ucs:
+          - Line Yield Optimisation
+          - OEE & Downtime
+          - Allergen Control
+      - name: Quality & Food Safety
+        mark: AI/BI
+        summary: Quality managers on hold rate, open deviations, CAPA aging and sanitation compliance across sites when a supplier alert lands.
+        uses:
+          - - Quality Hold Dashboard
+            - Open deviations and release status by plant and SKU.
+          - - AI/BI
+            - Hold rate and CAPA aging on certified Metric Views.
+          - - Unity Catalog
+            - One definition of lot status across MES and LIMS.
+        sub:
+          - name: Quality Manager
+            cares: hold rate, open deviations and CAPA aging across sites.
+          - name: Food Safety Lead
+            cares: HACCP, allergen control and sanitation compliance on every shift.
+          - name: Regulatory Affairs
+            cares: FSMA traceability and the recall record that proves control.
+        ucs:
+          - Recall Readiness
+          - Allergen Control
+          - Shelf-Life Optimisation
+      - name: Supply Chain
+        mark: Model Serving
+        summary: Planners on forecast accuracy and bias, inventory days of supply and which customer orders are at risk before the S&OP cycle locks.
+        uses:
+          - - Demand Planning Workbench
+            - Consensus forecast scenarios before S&OP locks.
+          - - Model Serving
+            - Demand and service models scored against live orders.
+          - - AI/BI
+            - OTIF and inventory turns the sales team reads.
+        sub:
+          - name: Demand Planner
+            cares: forecast accuracy and bias before the S&OP cycle locks.
+          - name: Logistics Lead
+            cares: cold-chain integrity, OTIF and the cost of a spoiled load.
+          - name: Inventory Manager
+            cares: days of supply, FEFO allocation and short-dated write-offs.
+        ucs:
+          - Demand Forecasting
+          - Cold Chain Integrity
+          - Shelf-Life Optimisation
+          - Co-pack Visibility
+      - name: Sales & Marketing
+        mark: CustomerLake
+        summary: Category managers on promotion lift versus cannibalised base, distribution voids and the retailer scorecards that decide the next line review.
+        uses:
+          - - Trade ROI Analytics
+            - Promotion spend versus incremental volume by banner.
+          - - CustomerLake
+            - Retailer segments without copying syndicated data elsewhere.
+          - - Genie One
+            - Ask which SKUs lost distribution last month.
+        sub:
+          - name: Category Manager
+            cares: promotion lift versus cannibalised base and the retailer line review.
+          - name: Trade Marketing
+            cares: promotion spend, accruals and the ROI of each retail event.
+          - name: Brand Manager
+            cares: distribution voids and share against the category.
+        ucs:
+          - Trade Promotion ROI
+          - Demand Forecasting
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the MES, ERP, quality and retailer POS feeds; own the Bronze to Silver path and the pager when a plant or trace feed breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for S/4HANA, MES and WMS sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on batch and POS feeds.
+          - - Lakewatch
+            - Freshness on the tables plant and supply teams read every morning.
+        sub:
+          - name: Ingestion Engineer
+            cares: the MES, ERP, quality and POS connectors and their freshness SLAs.
+          - name: Pipeline Engineer
+            cares: the Bronze-to-Silver path and expectations on batch and trace feeds.
+          - name: Platform Ops
+            cares: the pager when a plant or trace feed breaks before the morning read.
+        ucs:
+          - Recall Readiness
+          - OEE & Downtime
+          - Co-pack Visibility
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand, shelf-life and line-yield models, and whether they still hold six months after deployment.
+        uses:
+          - - Feature Store
+            - SKU and plant features defined once for training and serving.
+          - - MLflow
+            - Every demand and yield run tracked for audit and reproduction.
+          - - Model Serving
+            - Forecast and quality models scored against live orders.
+        sub:
+          - name: Forecasting DS
+            cares: demand, bias and shelf-life models against live orders.
+          - name: Manufacturing DS
+            cares: line-yield and scrap models tied to filler and crew data.
+          - name: MLOps
+            cares: whether every model still holds six months after deployment.
+        ucs:
+          - Demand Forecasting
+          - Line Yield Optimisation
+          - Shelf-Life Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the genealogy, demand-planning and quality-hold applications operations works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Plant and quality screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for batch-release and hold writes.
+          - - Agent Bricks
+            - Agents that draft a recall trace or hold decision against governed tools.
+        sub:
+          - name: Full-Stack Dev
+            cares: the genealogy, demand and quality-hold screens operations work in.
+          - name: Lakebase Dev
+            cares: serverless Postgres for batch-release and hold writes.
+          - name: Agent Dev
+            cares: agents that draft a recall trace or hold decision against governed tools.
+        ucs:
+          - Recall Readiness
+          - Demand Forecasting
+          - Allergen Control
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and quality alerts in the channel plants already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Plant Writeback
+    icon: opdb
+    tiles:
+      - name: MES Batch Release
+        icon: erp
+        summary: Quality release decisions written back into MES so pallets ship from governed lot status.
+        citations:
+          - siemens-opcenter
+      - name: SAP Order Reschedule
+        icon: db
+        summary: Production order dates adjusted from forecast consensus before materials are staged.
+        citations:
+          - sap-s4
+      - name: Floor Mobile Apps
+        icon: apps
+        summary: Sanitation tasks, line checks and downtime codes pushed to tablets on the line.
+  - name: Retail & Co-pack
+    icon: partner
+    tiles:
+      - name: Retailer VMI Portal
+        icon: share
+        summary: Inventory and forecast positions shared with key retailers over Delta Sharing instead of weekly spreadsheets.
+      - name: Co-manufacturer Portal
+        icon: partner
+        summary: Production schedules and lot genealogy exchanged with co-pack partners under contract.
+      - name: 3PL Cold Chain
+        icon: stream
+        summary: Temperature excursions and delivery proof shared back to carriers and customers.
+        citations:
+          - sensitech
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: FSMA Traceability
+        icon: gavel
+        summary: Traceability lot records and recall simulations produced from governed genealogy tables.
+        citations:
+          - fsma-204
+      - name: Nutrition Label Compliance
+        icon: share
+        summary: Label claims and allergen controls filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Retailers, co-packers and auditors reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Batch Genealogy Console
+        icon: stream
+        short: Lot traceability
+        summary: Forward and backward trace from ingredient lot to retail case in seconds during a quality hold or recall.
+      - name: Demand Planning Workbench
+        icon: sheet
+        short: S&OP consensus
+        summary: Statistical and commercial forecast scenarios reconciled before production and procurement lock.
+      - name: Quality Hold Dashboard
+        icon: gauge
+        short: Release control
+        summary: Open deviations, lab results and sanitation checks blocking shipment by plant and SKU.
+      - name: Trade ROI Analytics
+        icon: market
+        short: Promotion lift
+        summary: Scan data and accruals reconciled to incremental volume and margin by retailer event.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Plant OEE & Yield
+        icon: aibi
+        summary: Line yield, OEE, scrap and downtime by line and shift on certified Metric Views.
+        kpis:
+          - OEE
+          - Line yield
+          - Scrap rate
+          - Giveaway
+          - Changeover time
+        teams:
+          - Plant Operations
+          - CEO & COO
+          - Supply Chain
+      - name: Quality & Recall
+        icon: aibi
+        summary: Hold rate, deviations, CAPA aging and recall readiness across sites.
+        kpis:
+          - Quality hold rate
+          - Open deviations
+          - CAPA aging
+          - Recall trace time
+          - Sanitation compliance
+        teams:
+          - Quality & Food Safety
+          - Plant Operations
+          - CEO & COO
+      - name: Service & Cold Chain
+        icon: aibi
+        summary: OTIF, forecast accuracy, cold-chain integrity and inventory across the network.
+        kpis:
+          - OTIF
+          - Forecast accuracy
+          - Cold-chain excursion rate
+          - Days of supply
+          - Short-dated write-offs
+        teams:
+          - Supply Chain
+          - Sales & Marketing
+          - Plant Operations
+      - name: Commercial & Trade
+        icon: aibi
+        summary: Promotion ROI, share and distribution across retailers.
+        kpis:
+          - Promo lift
+          - Trade-spend ROI
+          - Category share
+          - Distribution voids
+          - Accrual balance
+        teams:
+          - Sales & Marketing
+          - Supply Chain
+          - CEO & COO
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Plant & OEE Agent
+        icon: genie
+        summary: Ask about line yield, OEE and downtime by line and shift in plain language.
+        feeds:
+          - Rockwell FactoryTalk
+          - Siemens Opcenter MES
+          - Yield, OTIF, quality
+        teams:
+          - Plant Operations
+          - CEO & COO
+          - Supply Chain
+        questions:
+          - What is OEE by line and shift this week?
+          - Which downtime reason codes are driving the most loss?
+          - Where is filler giveaway highest across the plants?
+          - What is line yield and scrap by SKU today?
+          - Which lines have the longest changeover times?
+      - name: Quality & Traceability Agent
+        icon: genie
+        summary: Explore hold rate, deviations and recall readiness across sites.
+        feeds:
+          - Siemens Opcenter MES
+          - SafetyChain Plant Mgmt
+          - GS1 EPCIS Events
+          - Conformed SKU, batch
+        teams:
+          - Quality & Food Safety
+          - Plant Operations
+          - CEO & COO
+        questions:
+          - What is the quality hold rate by plant and SKU?
+          - Which lots are affected by a supplier ingredient alert?
+          - How many deviations are open past their CAPA SLA?
+          - Where are allergen cross-contact risks by changeover?
+          - How fast can we build a recall list for a given lot?
+      - name: Demand & Cold Chain Agent
+        icon: genie
+        summary: Answer forecast, OTIF and cold-chain questions across the network.
+        feeds:
+          - NielsenIQ POS
+          - Blue Yonder TMS
+          - Sensitech TempTale
+        teams:
+          - Supply Chain
+          - Sales & Marketing
+          - Plant Operations
+        questions:
+          - What is OTIF by customer and DC this week?
+          - Where is forecast bias worst by SKU-location?
+          - Which loads had cold-chain excursions in transit?
+          - What is days of supply and short-dated risk by SKU?
+          - Which shipments are at risk of missing the delivery window?
+      - name: Commercial & Trade Agent
+        icon: genie
+        summary: Ask about promotion ROI, share and distribution across retailers.
+        feeds:
+          - NielsenIQ POS
+          - Circana/IRI Panel
+          - Trade Promotion Mgmt
+        teams:
+          - Sales & Marketing
+          - Supply Chain
+          - CEO & COO
+        questions:
+          - Which promotions drove incremental volume versus base?
+          - What is our category share by banner and geography?
+          - Which SKUs lost distribution last month?
+          - How much trade spend is accrued but unsettled?
+          - Which retailer scorecards are trending down?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Recall Readiness
+        short: Traceability
+        icon: gauge
+        summary: Lot genealogy and distribution lists produced in minutes, not days, when a supplier alert arrives.
+        problem: Lot genealogy is scattered across MES, ERP and warehouse systems, so a supplier alert means days of manual spreadsheet tracing while suspect product still sits on retail shelves.
+        who_benefits: Quality & Food Safety
+        how_built: EPCIS, MES and shipment feeds are conformed on Delta Lake under Unity Catalog, and the Batch Genealogy Console walks lot links forward and backward to build recall lists in minutes.
+        components:
+          - Batch Genealogy Console
+          - GS1 EPCIS Events
+          - FDA FSMA 204 Trace
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Managing recalls with barcode traceability in the data lakehouse
+            url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
+          - title: 'The EU Digital Product Passport: a traceability deadline'
+            url: https://www.databricks.com/blog/eu-digital-product-passport-traceability-deadline
+      - name: Demand Forecasting
+        short: Planning
+        icon: sheet
+        summary: SKU-location forecasts that blend syndicated POS, promotions and plant capacity constraints.
+        problem: SKU-location demand is forecast from aggregate history in legacy tools, so promotions, seasonality and plant capacity are missed and the plan is stale before S&OP even locks.
+        who_benefits: Supply Chain
+        how_built: Syndicated POS, promotion and capacity features are engineered in Feature Store and scored through Model Serving into the Demand Planning Workbench for the S&OP consensus.
+        components:
+          - Demand Planning Workbench
+          - NielsenIQ POS
+          - Feature Store
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Build fine-grained demand forecasts at scale
+            url: https://www.databricks.com/solutions/accelerators/demand-forecasting
+          - title: Suntory Beverage and Food accelerates decisions with Databricks
+            url: https://www.databricks.com/customers/suntorybeveragefood
+      - name: Line Yield Optimisation
+        short: Manufacturing
+        icon: iot
+        summary: Scrap and giveaway reduced by correlating filler drift, changeover time and operator crew.
+        problem: Scrap and giveaway are reviewed after the shift from disconnected filler, changeover and crew logs, so drift is corrected too late and margin is lost on every over-filled case.
+        who_benefits: Plant Operations
+        how_built: Filler, downtime and MES feeds stream into Lakehouse//RT and are scored with Model Serving, so yield-loss drivers surface on the line before the run ends.
+        components:
+          - Rockwell FactoryTalk
+          - Siemens Opcenter MES
+          - Lakehouse//RT
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Predictive quality starts where defect detection stops
+            url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+          - title: 'Agents for production lines: trusted decisions in real time'
+            url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
+      - name: Cold Chain Integrity
+        short: Logistics
+        icon: stream
+        summary: Temperature excursions predicted and rerouted before product quality is compromised.
+        problem: Temperature excursions in transit are found on arrival when product is already compromised, because logger readings sit in a carrier portal cut off from the shipment and the order.
+        who_benefits: Supply Chain
+        how_built: Sensitech logger and TMS feeds land through Lakeflow into Lakehouse//RT, where excursion models in Model Serving flag at-risk loads for reroute before quality is lost.
+        components:
+          - Sensitech TempTale
+          - Blue Yonder TMS
+          - Lakehouse//RT
+          - Model Serving
+          - Lakeflow
+        stories:
+          - title: 'IoT in manufacturing: strategy, components, use cases and challenges'
+            url: https://www.databricks.com/blog/iot-in-manufacturing
+      - name: Trade Promotion ROI
+        short: Commercial
+        icon: market
+        summary: Which promotions paid for themselves in incremental volume versus cannibalised base.
+        problem: Promotions are settled months later against scan data in spreadsheets, so nobody can tell which events drove incremental volume versus cannibalised base until the money is already spent.
+        who_benefits: Sales & Marketing
+        how_built: Scan, POS and accrual feeds are conformed on Delta Lake and reconciled to incremental volume in the Trade ROI Analytics app on certified AI/BI Metric Views.
+        components:
+          - Trade ROI Analytics
+          - NielsenIQ POS
+          - Trade Promotion Mgmt
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Reckitt empowers marketing teams to drive greater impact
+            url: https://www.databricks.com/customers/reckitt
+      - name: Allergen Control
+        short: Food safety
+        icon: gavel
+        summary: Cross-contact risk flagged from scheduling, cleaning records and shared equipment genealogy.
+        problem: Cross-contact risk hides in the gap between production scheduling, cleaning records and shared-equipment genealogy, so an allergen exposure is often caught only after a line has already run.
+        who_benefits: Quality & Food Safety
+        how_built: MES scheduling, sanitation and lot-genealogy data are conformed under Unity Catalog and scored with AI Functions in the Quality Hold Dashboard to flag cross-contact before a changeover.
+        components:
+          - Quality Hold Dashboard
+          - Siemens Opcenter MES
+          - SafetyChain Plant Mgmt
+          - Unity Catalog
+          - AI Functions
+        stories:
+          - title: Building an agentic food label reader for greater transparency
+            url: https://www.databricks.com/blog/building-agentic-food-label-reader-greater-transparency
+      - name: Shelf-Life Optimisation
+        short: Quality
+        icon: product
+        summary: FEFO allocation scored against remaining shelf life and customer distance.
+        problem: Stock is allocated first-in-first-out with no view of remaining shelf life or customer distance, so short-dated product ships to the wrong lane and returns and write-offs pile up.
+        who_benefits: Supply Chain
+        how_built: Batch age, inventory and order data are joined on Delta Lake and scored in Model Serving to drive FEFO allocation surfaced in the Demand Planning Workbench.
+        components:
+          - Demand Planning Workbench
+          - Manhattan WMS
+          - Model Serving
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: Albert Heijn reduces waste and transport costs with data insights
+            url: https://www.databricks.com/customers/albert-heijn
+          - title: Scaling supply chain AI with Databricks Apps
+            url: https://www.databricks.com/customers/a2go/databricks-apps
+      - name: OEE & Downtime
+        short: Operations
+        icon: chart
+        summary: Top loss categories by line and shift with root cause tied to MES reason codes.
+        problem: OEE is stitched together from spreadsheets and unlogged stoppages, so the dashboard number hides the real losses and the top downtime causes stay invisible by line and shift.
+        who_benefits: Plant Operations
+        how_built: Filler, MES and downtime feeds land in Lakehouse//RT and roll up into governed OEE Metric Views in AI/BI, with Genie answering loss questions by line and shift.
+        components:
+          - Rockwell FactoryTalk
+          - Siemens Opcenter MES
+          - Lakehouse//RT
+          - AI/BI
+          - Genie
+        stories:
+          - title: Why your OEE dashboard is lying to you
+            url: https://www.databricks.com/blog/why-your-oee-dashboard-lying-you
+          - title: 'Agents for production lines: trusted decisions in real time'
+            url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
+      - name: Sustainable Sourcing
+        short: ESG
+        icon: globe
+        summary: Ingredient provenance and carbon intensity traced from farm through finished goods.
+        problem: Ingredient provenance and carbon intensity sit in disconnected spreadsheets, so scope-3 and sourcing claims cannot be traced from farm to finished goods when a buyer or regulator asks.
+        who_benefits: CEO & COO
+        how_built: Supplier, ERP and commodity data are conformed into governed data products under Unity Catalog and shared to partners and auditors over OpenSharing with lineage intact.
+        components:
+          - SAP S/4HANA PP
+          - Weather & Commodity
+          - Unity Catalog
+          - Data Products
+          - OpenSharing
+        stories:
+          - title: Mondelez facilitates model experimentation at enterprise scale
+            url: https://www.databricks.com/customers/mondelez
+          - title: How Dow built a carbon footprint ledger to accelerate sustainability at scale
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+      - name: Co-pack Visibility
+        short: Network
+        icon: partner
+        summary: Third-party production status and inventory reconciled without manual spreadsheet chases.
+        problem: Third-party production status and inventory at co-packers arrive by email and spreadsheet, so planners chase batch and stock positions by hand and the network view is always stale.
+        who_benefits: Supply Chain
+        how_built: Co-manufacturer inventory is queried in place through Unity Catalog federation and reconciled with WMS and production orders in the Demand Planning Workbench.
+        components:
+          - Co-manufacturer Inventory
+          - Manhattan WMS
+          - SAP S/4HANA PP
+          - Unity Catalog
+          - Demand Planning Workbench
+medallion:
+  Bronze:
+    short: Raw plant and ERP
+    summary: MES batch records, ERP production orders, quality lab results, warehouse movements and retailer POS feeds, landed exactly as received so a lot code or a fill weight can always be replayed.
+  Silver:
+    short: Conformed SKU, batch
+    summary: SKUs, batches, plants and distribution nodes resolved into single conformed entities across ERP, MES and WMS, with lot genealogy reconciled from raw material to finished case.
+  Gold:
+    short: Yield, OTIF, quality
+    summary: 'Contracted products operations and sales run on: line yield and scrap, OTIF to retail customers, quality hold rates, and trade promotion ROI.'
+citation_index:
+  rockwell-ft:
+    title: Rockwell FactoryTalk
+    url: https://www.rockwellautomation.com/en-us/products/software/factorytalk.html
+  siemens-opcenter:
+    title: Siemens Opcenter MES
+    url: https://plm.sw.siemens.com/en-US/opcenter/execution/
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  veeva-quality:
+    title: Veeva QualityDocs
+    url: https://www.veeva.com/products/qualitydocs/
+  safetychain:
+    title: SafetyChain plant management
+    url: https://safetychain.com/
+  blue-yonder:
+    title: Blue Yonder transportation management
+    url: https://blueyonder.com/solutions/transportation-management
+  manhattan-wms:
+    title: Manhattan Active Warehouse Management
+    url: https://www.manh.com/solutions/warehouse-management
+  sensitech:
+    title: Sensitech TempTale
+    url: https://www.sensitech.com/en/solutions/
+  nielseniq:
+    title: NielsenIQ retail measurement
+    url: https://nielseniq.com/global/en/solutions/
+  circana:
+    title: Circana market measurement
+    url: https://www.circana.com/
+  gs1-epcis:
+    title: GS1 EPCIS standard
+    url: https://www.gs1.org/standards/epcis
+  fsma-204:
+    title: FDA FSMA Rule 204
+    url: https://www.fda.gov/food/food-safety-modernization-act-fsma/fsma-final-rule-requirements-additional-traceability-records-certain-foods

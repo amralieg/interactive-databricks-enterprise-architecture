@@ -1,0 +1,938 @@
+name: Staffing & HR
+description: 'Staffing firms and HR service providers: candidate sourcing, placement lifecycle, vendor management systems, payroll and compliance, and workforce analytics across clients and geographies.'
+sources:
+  - name: ATS & Recruiting
+    icon: erp
+    tiles:
+      - name: Bullhorn ATS/CRM
+        icon: erp
+        summary: Candidate records, submissions, interviews and placement history for staffing firms.
+        citations:
+          - bullhorn
+        category: Applicant Tracking System (ATS/CRM)
+        what_it_is: System of record for candidate records, submissions, interviews and placement history at staffing firms.
+        who_uses_it: Recruiters, account managers and sourcing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of submission events/sec
+            interval: Continuous CDC
+      - name: Workday Recruiting
+        icon: people
+        summary: Requisitions, offers and onboarding for corporate HR and RPO programs.
+        citations:
+          - workday-rec
+        category: Talent Acquisition / Recruiting
+        what_it_is: Manages requisitions, offers and onboarding for corporate HR and RPO programs.
+        who_uses_it: RPO recruiters, HR and onboarding teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Greenhouse
+        icon: sheet
+        summary: Structured hiring pipelines, scorecards and DEI reporting for enterprise clients.
+        citations:
+          - greenhouse
+        category: Applicant Tracking System (ATS)
+        what_it_is: Runs structured hiring pipelines, interview scorecards and DEI reporting for enterprise clients.
+        who_uses_it: Recruiters, hiring managers and DEI/compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day
+            interval: Hourly / nightly sync
+  - name: VMS & Contingent
+    icon: market
+    tiles:
+      - name: Beeline VMS
+        icon: market
+        summary: Client requisitions, rate cards, approvals and supplier scorecards.
+        citations:
+          - beeline
+        category: Vendor Management System (VMS)
+        what_it_is: Holds client requisitions, rate cards, approvals and supplier scorecards for contingent labour programs.
+        who_uses_it: Program managers, MSP teams and supplier managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of requisition events/sec
+            interval: Continuous CDC
+      - name: SAP Fieldglass
+        icon: partner
+        summary: Contingent workforce procurement, statements of work and compliance tracking.
+        citations:
+          - fieldglass
+        category: Contingent Workforce Procurement (VMS)
+        what_it_is: Manages contingent workforce procurement, statements of work and compliance tracking.
+        who_uses_it: Procurement, MSP and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day
+            interval: Nightly batch
+      - name: Magnit VMS
+        icon: api
+        summary: 'MSP-managed programs: spend, tenure limits and conversion tracking.'
+        citations:
+          - magnit
+        category: Managed Service Provider (MSP/VMS)
+        what_it_is: Runs MSP-managed programs tracking spend, tenure limits and conversion across suppliers.
+        who_uses_it: MSP program managers and procurement analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Daily batch + on-demand API
+  - name: Payroll & Time
+    icon: chart
+    tiles:
+      - name: ADP Workforce Now
+        icon: erp
+        summary: Payroll, tax and benefits for placed workers across jurisdictions.
+        citations:
+          - adp
+        category: Payroll / HCM Suite
+        what_it_is: Runs payroll, tax and benefits for placed workers across jurisdictions.
+        who_uses_it: Payroll operations, tax and benefits teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-15 GB/day
+            interval: Per pay run + nightly batch
+      - name: UKG Pro WFM
+        icon: people
+        summary: Time and attendance, scheduling and accruals for hourly placements.
+        citations:
+          - ukg-pro
+        category: Workforce Management (Time & Attendance)
+        what_it_is: Captures time and attendance, scheduling and accruals for hourly placements.
+        who_uses_it: Schedulers, field operations and payroll teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-8 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of punch events/sec
+            interval: Continuous (near real-time)
+      - name: Deel Global Payroll
+        icon: globe
+        summary: Contractor payments and compliance in international staffing programs.
+        citations:
+          - deel
+        category: Global Payroll / EOR
+        what_it_is: Processes contractor payments and compliance for international staffing programs.
+        who_uses_it: Global payroll, contractor operations and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Per pay cycle + daily batch
+  - name: Credentialing
+    icon: gavel
+    tiles:
+      - name: Symplr Credentialing
+        icon: gavel
+        summary: Licence verification, expirations and privileging for healthcare staffing.
+        citations:
+          - symplr
+        category: Credentialing / Provider Enrolment
+        what_it_is: Manages licence verification, expirations and privileging for healthcare staffing.
+        who_uses_it: Credentialing specialists and compliance officers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Nightly batch
+      - name: Checkr Background
+        icon: partner
+        summary: Criminal, employment and education checks with adverse action workflow.
+        citations:
+          - checkr
+        category: Background Screening Service
+        what_it_is: Runs criminal, employment and education checks with adverse-action workflow.
+        who_uses_it: Screening, compliance and onboarding teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day
+            interval: On-demand + daily batch
+      - name: Everify I-9
+        icon: gavel
+        summary: Employment eligibility verification and audit trail for US placements.
+        citations:
+          - everify
+        category: Employment Eligibility Verification
+        what_it_is: Performs employment eligibility verification and audit trail for US placements.
+        who_uses_it: Onboarding, HR and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of verification records
+            interval: On-demand + daily batch
+  - name: Learning & Skills
+    icon: product
+    tiles:
+      - name: Cornerstone LMS
+        icon: product
+        summary: Client-mandated training completion and skills certifications.
+        citations:
+          - cornerstone
+        category: Learning Management System (LMS)
+        what_it_is: Tracks client-mandated training completion and skills certifications.
+        who_uses_it: Learning & development, compliance and recruiting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Nightly batch
+      - name: LinkedIn Talent Insights
+        icon: chart
+        summary: Labour market supply, demand and skill adjacency by geography.
+        citations:
+          - linkedin-ti
+        category: Labour Market Intelligence
+        what_it_is: Provides labour market supply, demand and skill adjacency by geography.
+        who_uses_it: Talent intelligence, sourcing and strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs across datasets
+            interval: Weekly / on-demand API
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Client HRIS Marts
+        icon: fed
+        summary: Client employee and cost centre marts queried in place under Unity Catalog.
+        category: HRIS Data Warehouse / Marts
+        what_it_is: Client employee and cost-centre marts queried in place via federation under Unity Catalog.
+        who_uses_it: HR analytics, finance and client reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale HRIS marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Indeed Job Feed
+        icon: api
+        summary: Job postings and application funnel metrics ingested for sourcing analytics.
+        citations:
+          - indeed
+        category: Job Board / Sourcing Feed
+        what_it_is: Supplies job postings and application funnel metrics for sourcing analytics.
+        who_uses_it: Sourcing, recruitment marketing and analytics teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs of posting and funnel data
+            interval: Daily + on-demand API
+      - name: Lightcast Labour Market
+        icon: chart
+        summary: Occupation demand, wage benchmarks and skills taxonomy updates.
+        citations:
+          - lightcast
+        category: Labour Market Intelligence
+        what_it_is: Provides occupation demand, wage benchmarks and skills taxonomy updates.
+        who_uses_it: Pricing, talent intelligence and strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of benchmark data
+            interval: Weekly / monthly refresh
+      - name: State Licence Boards
+        icon: gavel
+        summary: Professional licence status files consumed for credential monitoring.
+        citations:
+          - symplr
+        category: Regulatory Licence Registry
+        what_it_is: Publishes professional licence status files consumed for credential monitoring.
+        who_uses_it: Credentialing and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs of licence files
+            interval: Daily / weekly refresh
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Growth Office
+        mark: Genie One
+        summary: The CEO on gross margin and client concentration; the COO on fill rate, redeployment and the compliance exposure sitting in open placements.
+        uses:
+          - - Genie One
+            - Ask what last quarter's margin by client was without analyst delay.
+          - - AI/BI
+            - Fill rate and spread on certified Metric Views.
+          - - Unity Catalog
+            - One placement definition across ATS and payroll.
+        sub:
+          - name: Chief Executive
+            cares: gross margin, client concentration and the bets that grow the book without eroding spread.
+          - name: Chief Operating Officer
+            cares: fill rate, redeployment and the compliance exposure sitting in open placements.
+          - name: Growth & Strategy
+            cares: which client segments and skills to expand into against where the market is moving.
+        ucs:
+          - Client Profitability
+          - Time-to-Fill
+          - Attrition Prediction
+          - Rate Benchmarking
+      - name: Recruiting & Sales
+        mark: Model Serving
+        summary: Recruiters and account managers on req pipelines, submittal quality and rate negotiations, defending time-to-fill and interview velocity.
+        uses:
+          - - Recruiter Workbench
+            - Open reqs, submittal quality and interview velocity.
+          - - Model Serving
+            - Candidate match scores in the submission path.
+        sub:
+          - name: Recruiters
+            cares: submittal quality, interview velocity and getting a strong candidate to the client first.
+          - name: Account Managers
+            cares: open reqs by client, rate negotiations and defending time-to-fill on the account.
+          - name: Sourcing
+            cares: building candidate pipelines against scarce skills before the req even opens.
+        ucs:
+          - Candidate Matching
+          - Time-to-Fill
+          - Rate Benchmarking
+          - Skills Taxonomy
+      - name: Workforce Operations
+        mark: Lakehouse//RT
+        summary: Schedulers on shift coverage, overtime creep and credential gaps that would block a worker from starting the client assignment on time.
+        uses:
+          - - Coverage Console
+            - Open shifts and credential expiry on one screen.
+          - - Lakehouse//RT
+            - Timecard and credential state at shift latency.
+        sub:
+          - name: Schedulers
+            cares: shift coverage, open shifts and credential gaps that would stop a worker starting on time.
+          - name: Redeployment
+            cares: keeping workers on back-to-back assignments and catching flight risk before an end date.
+          - name: Field Operations
+            cares: overtime creep and the on-site issues that break a client's coverage plan.
+        ucs:
+          - Overtime Control
+          - Attrition Prediction
+          - Credential Monitoring
+          - Candidate Matching
+      - name: Payroll & Finance
+        mark: AI/BI
+        summary: Payroll and billing teams on bill-pay spread, accrual accuracy and client invoicing, chasing margin leakage that hides in missed approvals.
+        uses:
+          - - AI/BI
+            - Margin and leakage on certified views.
+          - - Genie One
+            - Ask which clients are below target spread this month.
+        sub:
+          - name: Payroll Operations
+            cares: accurate pay runs, timecard approvals and accruals across jurisdictions.
+          - name: Billing & Invoicing
+            cares: bill-pay spread, client invoicing and the leakage hiding in missed approvals.
+          - name: Finance & Margin
+            cares: gross margin by client, rebates and chargebacks against target spread.
+        ucs:
+          - Payroll Leakage
+          - Client Profitability
+          - Overtime Control
+          - Rate Benchmarking
+      - name: Compliance & Risk
+        mark: Lakeflow
+        summary: Compliance officers on credential expirations, tenure limits and audit response, keeping every placement defensible under client and law.
+        uses:
+          - - Compliance Dashboard
+            - Credential and I-9 status by placement.
+          - - Lakeflow
+            - ATS, VMS and payroll feeds conformed for audit.
+        sub:
+          - name: Compliance Officers
+            cares: credential expirations, tenure limits and keeping every placement defensible.
+          - name: Background & Screening
+            cares: background checks, adverse-action workflow and I-9 eligibility on time.
+          - name: Audit & Reporting
+            cares: EEO, OFCCP and client DEI reporting that stands up to an audit.
+        ucs:
+          - Credential Monitoring
+          - DEI Hiring Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land ATS submittals, VMS requisitions, timecards and payroll runs; own Bronze to Silver and the pager when a fill-rate or margin table breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for ATS, VMS and payroll sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on placement and timecard feeds.
+          - - Lakewatch
+            - Freshness on the margin tables finance reads each morning.
+        sub:
+          - name: Ingestion Engineers
+            cares: managed connectors for ATS, VMS and payroll and the Bronze landing zone.
+          - name: Pipeline Engineers
+            cares: Silver conforming of worker, req and placement and the expectations that guard them.
+          - name: Platform Reliability
+            cares: freshness and the pager when a fill-rate or margin table breaks before finance reads it.
+        ucs:
+          - Time-to-Fill
+          - Payroll Leakage
+          - Credential Monitoring
+      - name: Data Scientists
+        mark: MLflow
+        summary: Candidate-match, time-to-fill, attrition and rate-benchmark models, and whether they still hold as skills demand and client mix shift.
+        uses:
+          - - Feature Store
+            - Candidate and req features read identically in training and serving.
+          - - MLflow
+            - Every match and attrition experiment tracked for audit.
+          - - Model Serving
+            - Match and attrition models scored in the submission path.
+        sub:
+          - name: ML Engineers
+            cares: candidate-match, attrition and rate models in both training and serving.
+          - name: Analytics Science
+            cares: time-to-fill decomposition and the margin drivers behind the metrics.
+          - name: MLOps
+            cares: tracking every match and attrition experiment for audit as skills demand shifts.
+        ucs:
+          - Candidate Matching
+          - Attrition Prediction
+          - Rate Benchmarking
+          - Skills Taxonomy
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Recruiter Workbench, Coverage Console and Margin Analyzer apps recruiting and finance work in, next to governed placement data.
+        uses:
+          - - Apps
+            - Recruiting screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for shift and credential state writes.
+          - - Agent Bricks
+            - Agents that draft submittals against governed tools.
+        sub:
+          - name: Workbench Developers
+            cares: the Recruiter Workbench and Coverage Console recruiting and ops live in.
+          - name: Margin & Compliance Apps
+            cares: the Margin Analyzer and Compliance Dashboard finance and risk run on.
+          - name: Agent Developers
+            cares: agents that draft submittals and renewal tasks against governed tools.
+        ucs:
+          - Candidate Matching
+          - Overtime Control
+          - Credential Monitoring
+          - Payroll Leakage
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Client and recruiter dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for fill rate and margin questions in the sales channel.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Workforce analytics notebooks against governed placement data.
+  - name: Client & Supplier
+    icon: partner
+    tiles:
+      - name: VMS Requisition API
+        icon: api
+        summary: Submittals and rate confirmations exchanged with client VMS platforms.
+        citations:
+          - beeline
+      - name: Client Billing Portal
+        icon: share
+        summary: Invoice backup and timesheet detail shared over Delta Sharing.
+      - name: Supplier Scorecards
+        icon: globe
+        summary: Fill rate and quality metrics returned to MSP programs.
+        citations:
+          - magnit
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: ATS Status Updates
+        icon: erp
+        summary: Interview and offer status written back to Bullhorn.
+        citations:
+          - bullhorn
+      - name: Shift Offers
+        icon: apps
+        summary: Open shift notifications pushed to worker mobile apps.
+      - name: Credential Renewals
+        icon: gavel
+        summary: Renewal tasks dispatched before expiry blocks placement.
+        citations:
+          - symplr
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: EEO & OFCCP Reports
+        icon: gavel
+        summary: Hiring diversity metrics filed from governed ATS data.
+        citations:
+          - greenhouse
+      - name: Pay Equity Analysis
+        icon: share
+        summary: Compensation parity evidence for client audits.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Workforce analytics products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Clients reading live fill and spend metrics via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Recruiter Workbench
+        icon: people
+        short: Req pipeline
+        summary: Open requisitions, submittal quality and interview velocity for each recruiter pod.
+      - name: Coverage Console
+        icon: gauge
+        short: Shift staffing
+        summary: Open shifts, credential gaps and overtime risk before the client shift starts.
+      - name: Margin Analyzer
+        icon: market
+        short: Bill-pay spread
+        summary: Gross margin and leakage by client, skill and geography on governed payroll data.
+      - name: Compliance Dashboard
+        icon: gavel
+        short: Credential status
+        summary: Licence, background and I-9 status by placement with renewal workflows.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Fill & Time-to-Fill
+        icon: aibi
+        summary: Requisition ageing, submittal quality and interview velocity on certified Metric Views.
+        kpis:
+          - Time-to-fill
+          - Fill rate
+          - Submittal-to-interview rate
+          - Open req ageing
+          - Interview velocity
+        teams:
+          - Recruiting & Sales
+          - Account Managers
+          - Sourcing
+      - name: Client Profitability
+        icon: aibi
+        summary: Gross margin, bill-pay spread and leakage by client and skill.
+        kpis:
+          - Gross margin by client
+          - Bill-pay spread
+          - Payroll leakage
+          - Rebates & chargebacks
+          - Rate-card variance
+        teams:
+          - Payroll & Finance
+          - Billing & Invoicing
+          - Finance & Margin
+      - name: Workforce Coverage
+        icon: aibi
+        summary: Shift coverage, overtime risk and redeployment across active assignments.
+        kpis:
+          - Shift coverage
+          - Overtime hours
+          - Redeployment rate
+          - Attrition risk
+          - Open shifts
+        teams:
+          - Workforce Operations
+          - Schedulers
+          - Field Operations
+      - name: Compliance & Credentials
+        icon: aibi
+        summary: Credential, background and I-9 status by placement with expiry risk.
+        kpis:
+          - Credential expiry risk
+          - Background check SLA
+          - I-9 completion rate
+          - Tenure-limit breaches
+          - DEI pipeline metrics
+        teams:
+          - Compliance & Risk
+          - Background & Screening
+          - Audit & Reporting
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Fill & Pipeline Agent
+        icon: genie
+        summary: Ask about requisition ageing, submittal quality and time-to-fill in plain language.
+        feeds:
+          - Bullhorn ATS/CRM
+          - Beeline VMS
+          - Indeed Job Feed
+          - Conformed worker, req, client
+        teams:
+          - Recruiting & Sales
+          - Account Managers
+          - Sourcing
+        questions:
+          - What is our average time-to-fill by client this quarter versus last?
+          - Which open requisitions have aged past 30 days without a submittal?
+          - Which recruiters have the highest submittal-to-interview conversion?
+          - Where are reqs stalling most, at client approval, sourcing or interview?
+          - Which skills have the fewest available candidates against open demand?
+      - name: Client Margin Agent
+        icon: genie
+        summary: Explore gross margin, bill-pay spread and leakage across client accounts.
+        feeds:
+          - ADP Workforce Now
+          - Beeline VMS
+          - Client HRIS Marts
+          - Fill rate, margin, compliance
+        teams:
+          - Payroll & Finance
+          - Billing & Invoicing
+          - Finance & Margin
+        questions:
+          - Which clients are below target spread this month?
+          - Where is margin leaking through missed timecard approvals?
+          - What is gross margin by client and skill this quarter?
+          - Which rate cards are out of line with the market benchmark?
+          - How much did off-cycle adjustments cost us last pay run?
+      - name: Workforce Operations Agent
+        icon: genie
+        summary: Ask about shift coverage, overtime and credential gaps at shift latency.
+        feeds:
+          - UKG Pro WFM
+          - Symplr Credentialing
+          - State Licence Boards
+          - Conformed worker, req, client
+        teams:
+          - Workforce Operations
+          - Schedulers
+          - Redeployment
+        questions:
+          - Which open shifts have no covered worker for tomorrow?
+          - Which workers are approaching an overtime threshold this week?
+          - Which placements have a credential expiring in the next 30 days?
+          - Which assignments are at highest risk of early termination?
+          - Where is overtime creep eroding margin by client?
+      - name: Compliance & Credentials Agent
+        icon: genie
+        summary: Answer credential, background and eligibility questions across active placements.
+        feeds:
+          - Symplr Credentialing
+          - Checkr Background
+          - Everify I-9
+          - Fill rate, margin, compliance
+        teams:
+          - Compliance & Risk
+          - Background & Screening
+          - Audit & Reporting
+        questions:
+          - How many active placements have a lapsed licence right now?
+          - Which background checks are pending past SLA?
+          - Which placements are missing a completed I-9?
+          - What is our EEO pipeline diversity by client this quarter?
+          - Which credentials must renew before the next shift starts?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Candidate Matching
+        short: Recruiting
+        icon: people
+        summary: Skills and availability scored against open reqs before submittal.
+        problem: Recruiters read resumes and reqs by hand across the ATS and job boards, so strong candidates sit unseen while low-fit submittals burn the client's screening time and the req ages.
+        who_benefits: Recruiting & Sales
+        how_built: ATS, VMS and job-board data land through Lakeflow and conform on Delta Lake; match models in Model Serving score skills and availability against open reqs inside the Recruiter Workbench.
+        components:
+          - Recruiter Workbench
+          - Model Serving
+          - Bullhorn ATS/CRM
+          - Feature Store
+          - Delta Lake
+        stories:
+          - title: How DXC built a GenAI workforce agent on Lakebase
+            url: https://www.databricks.com/customers/dxc/lakebase
+          - title: 104 Corporation personalizes talent acquisition to improve hiring
+            url: https://www.databricks.com/customers/104-corporation
+      - name: Time-to-Fill
+        short: Operations
+        icon: chart
+        summary: Req ageing decomposed by client approval, sourcing and interview stages.
+        problem: Reqs age for reasons buried across client approvals, sourcing and interview loops, so managers argue over anecdotes instead of seeing where each requisition actually stalls.
+        who_benefits: Recruiting & Sales
+        how_built: Requisition events from the ATS and VMS conform under Unity Catalog and decompose into stage-level metrics in AI/BI, so time-to-fill breaks out by client, stage and recruiter on certified views.
+        components:
+          - Recruiter Workbench
+          - Beeline VMS
+          - Unity Catalog
+          - AI/BI
+          - Genie One
+        stories:
+          - title: LA County cuts hiring bottlenecks with a unified lakehouse
+            url: https://www.databricks.com/customers/la-county
+      - name: Credential Monitoring
+        short: Compliance
+        icon: gavel
+        summary: Expiring licences flagged before they block placement or shift.
+        problem: Licences, background checks and I-9s expire quietly across thousands of active placements, and one lapsed credential can pull a worker off a client shift or void a healthcare contract.
+        who_benefits: Compliance & Risk
+        how_built: Credential and licence-board feeds land through Lakeflow and conform under Unity Catalog; expiry rules surface on the Compliance Dashboard so renewals dispatch before a placement is blocked.
+        components:
+          - Compliance Dashboard
+          - Symplr Credentialing
+          - State Licence Boards
+          - Lakeflow
+          - Unity Catalog
+        stories:
+          - title: BAYADA builds an AI-ready platform for compliance monitoring
+            url: https://www.databricks.com/customers/bayada
+      - name: Overtime Control
+        short: Workforce
+        icon: stream
+        summary: Overtime hours predicted and capped against client rules.
+        problem: Overtime accrues shift by shift against client-specific rules, and by the time it lands on the invoice the margin on the assignment is already gone and hard to claw back.
+        who_benefits: Workforce Operations
+        how_built: Timecard and schedule data stream into Lakehouse//RT and feed overtime-forecast models in Model Serving, so the Coverage Console flags at-risk shifts before the hours are worked.
+        components:
+          - Coverage Console
+          - UKG Pro WFM
+          - Lakehouse//RT
+          - Model Serving
+          - AI/BI
+      - name: Payroll Leakage
+        short: Finance
+        icon: erp
+        summary: Bill-pay mismatches and missed timecard approvals surfaced before close.
+        problem: Bill-pay spread leaks through missed timecard approvals, wrong rate cards and off-cycle adjustments, and the gap only surfaces after payroll has run and the client has been invoiced.
+        who_benefits: Payroll & Finance
+        how_built: Payroll, timecard and VMS rate data conform on Delta Lake and reconcile in the Margin Analyzer, with AI/BI surfacing bill-pay mismatches before the pay run closes.
+        components:
+          - Margin Analyzer
+          - ADP Workforce Now
+          - Delta Lake
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: BAYADA validates complex payroll on a governed lakehouse
+            url: https://www.databricks.com/customers/bayada
+      - name: Client Profitability
+        short: Finance
+        icon: market
+        summary: Gross margin by client account including rebates and chargebacks.
+        problem: Gross margin by client hides behind rebates, chargebacks and spread that live in different systems, so account teams renew low-margin clients without ever seeing the true number.
+        who_benefits: Payroll & Finance
+        how_built: Payroll, billing and placement data conform under Unity Catalog into certified margin metrics in the Margin Analyzer, so profitability by client and skill is one governed number in AI/BI.
+        components:
+          - Margin Analyzer
+          - Unity Catalog
+          - AI/BI
+          - ADP Workforce Now
+          - Genie One
+      - name: Attrition Prediction
+        short: Retention
+        icon: custlake
+        summary: Assignment completion and extension likelihood scored per worker.
+        problem: Contract workers churn or decline extensions with little warning, leaving the client short mid-assignment and forcing a rushed, expensive backfill that the recruiter absorbs.
+        who_benefits: Workforce Operations
+        how_built: Assignment, timecard and engagement features build in Feature Store and score through attrition models in Model Serving, with runs tracked in MLflow so redeployment is planned before a worker leaves.
+        components:
+          - Coverage Console
+          - Feature Store
+          - Model Serving
+          - MLflow
+          - Lakehouse//RT
+        stories:
+          - title: Addressing HR's widening capacity gap with AI
+            url: https://www.databricks.com/blog/addressing-hrs-widening-capacity-gap-ai
+      - name: Rate Benchmarking
+        short: Pricing
+        icon: chart
+        summary: Bill rates compared to market benchmarks by skill and metro.
+        problem: Bill and pay rates are set from stale spreadsheets and gut feel, so recruiters lose deals by overpricing scarce skills and leave margin on the table where the market has already moved.
+        who_benefits: Recruiting & Sales
+        how_built: Internal placement rates join external market benchmarks under Unity Catalog and serve in AI/BI, so recruiters see market spread by skill and metro inside the Recruiter Workbench.
+        components:
+          - Recruiter Workbench
+          - Lightcast Labour Market
+          - LinkedIn Talent Insights
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Crafting a data-driven talent intelligence strategy
+            url: https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare
+      - name: DEI Hiring Analytics
+        short: Compliance
+        icon: gavel
+        summary: Pipeline diversity metrics for client and regulatory reporting.
+        problem: Diversity metrics for client and regulatory reporting are stitched together by hand from ATS exports, so pipeline gaps and reporting errors surface only when an audit is already underway.
+        who_benefits: Compliance & Risk
+        how_built: ATS pipeline data conforms under Unity Catalog into governed diversity metrics in AI/BI, so EEO and client DEI reports run from the same certified data behind the Compliance Dashboard.
+        components:
+          - Compliance Dashboard
+          - Greenhouse
+          - Unity Catalog
+          - AI/BI
+          - Data Products
+        stories:
+          - title: LA County democratizes hiring data to compete for diverse talent
+            url: https://www.databricks.com/customers/la-county
+      - name: Skills Taxonomy
+        short: Talent
+        icon: product
+        summary: Skills inferred from placements and training for future req matching.
+        problem: Skills live as free text in resumes, LMS records and placement notes, so the same capability is named a dozen ways and no two systems agree on what a worker can actually do.
+        who_benefits: Recruiting & Sales
+        how_built: Placement, training and resume text normalize with AI Functions into a governed skills taxonomy under Unity Catalog, feeding candidate features in Feature Store for future req matching.
+        components:
+          - AI Functions
+          - Unity Catalog
+          - Feature Store
+          - Cornerstone LMS
+          - Delta Lake
+        stories:
+          - title: DXC scales a competency agent across 130,000 consultants
+            url: https://www.databricks.com/customers/dxc/lakebase
+          - title: Crafting a data-driven talent intelligence strategy
+            url: https://www.databricks.com/blog/crafting-data-driven-talent-intelligence-strategy-healthcare
+medallion:
+  Bronze:
+    short: Raw HR and placement feeds
+    summary: ATS applications, VMS requisitions, timecards, payroll runs and compliance documents, landed exactly as received so a placement margin or a credential can always be replayed.
+  Silver:
+    short: Conformed worker, req, client
+    summary: Candidates, requisitions, placements and time entries resolved into single conformed entities across ATS, VMS and payroll, with assignment dates stitched to one engagement.
+  Gold:
+    short: Fill rate, margin, compliance
+    summary: 'Contracted products sales and finance run on: time-to-fill, gross margin by client, credential expiry risk, overtime and bill-pay spread by skill.'
+citation_index:
+  bullhorn:
+    title: Bullhorn ATS/CRM
+    url: https://www.bullhorn.com/
+  workday-rec:
+    title: Workday Recruiting
+    url: https://www.workday.com/en-us/products/talent-management/talent-acquisition.html
+  greenhouse:
+    title: Greenhouse
+    url: https://www.greenhouse.com/
+  beeline:
+    title: Beeline VMS
+    url: https://www.beeline.com/
+  fieldglass:
+    title: SAP Fieldglass
+    url: https://www.sap.com/products/spend-management/fieldglass-vms.html
+  magnit:
+    title: Magnit VMS
+    url: https://magnitglobal.com/
+  adp:
+    title: ADP Workforce Now
+    url: https://www.adp.com/what-we-offer/products/adp-workforce-now.aspx
+  ukg-pro:
+    title: UKG Pro
+    url: https://www.ukg.com/solutions/human-capital-management
+  deel:
+    title: Deel global payroll
+    url: https://www.deel.com/
+  symplr:
+    title: Symplr credentialing
+    url: https://www.symplr.com/
+  checkr:
+    title: Checkr
+    url: https://checkr.com/
+  everify:
+    title: E-Verify
+    url: https://www.e-verify.gov/
+  cornerstone:
+    title: Cornerstone LMS
+    url: https://www.cornerstoneondemand.com/
+  linkedin-ti:
+    title: LinkedIn Talent Insights
+    url: https://business.linkedin.com/talent-solutions/talent-insights
+  indeed:
+    title: Indeed
+    url: https://www.indeed.com/hire
+  lightcast:
+    title: Lightcast labour market data
+    url: https://lightcast.io/

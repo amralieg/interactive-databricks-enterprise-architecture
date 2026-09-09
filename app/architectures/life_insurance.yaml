@@ -1,0 +1,887 @@
+name: Life Insurance
+description: 'Life and annuity carriers: policy administration, underwriting, claims, actuarial reserving, reinsurance and distribution across individual and group blocks.'
+sources:
+  - name: Policy Administration
+    icon: erp
+    tiles:
+      - name: FINEOS Life
+        icon: erp
+        summary: Individual and group life policy issuance, servicing, billing and claims on one admin platform.
+        citations:
+          - fineos
+        category: Life & Annuity Policy Admin System
+        what_it_is: System of record for individual and group life issuance, servicing, billing and claims, emitting policy, premium and claim transactions.
+        who_uses_it: Actuarial & Reserving, policy operations and Claims teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 15-60 GB/day
+            interval: Nightly batch + intraday deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of transactions/sec
+            interval: Continuous CDC
+      - name: Majesco LifePlus
+        icon: db
+        summary: Policy, billing and claims for life, annuity and supplemental benefits.
+        citations:
+          - majesco
+        category: Life & Annuity Policy Admin System
+        what_it_is: Administers policy, billing and claims for life, annuity and supplemental benefits, feeding the conformed policy and party entities.
+        who_uses_it: Policy operations, Actuarial & Reserving and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day
+            interval: Nightly batch
+      - name: Oracle Insurance Policy
+        icon: sheet
+        summary: Product configuration, policy transactions and financial integration for carriers.
+        citations:
+          - oracle-insurance
+        category: Life & Annuity Policy Admin System
+        what_it_is: Handles product configuration, policy transactions and financial integration for carriers, emitting policy and accounting records.
+        who_uses_it: Product configuration, policy operations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day
+            interval: Nightly batch
+  - name: New Business & UW
+    icon: people
+    tiles:
+      - name: Munich Re ALLFINANZ
+        icon: partner
+        summary: Automated underwriting rules, evidence ordering and risk classification.
+        citations:
+          - munich-allfinanz
+        category: Automated Underwriting Engine
+        what_it_is: Runs automated underwriting rules, evidence ordering and risk classification, emitting risk-class decisions and requirement status.
+        who_uses_it: Underwriting, case underwriters and underwriting-rules teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day decisions
+            interval: Daily batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of decisions/sec
+            interval: Continuous (API at application)
+      - name: ExamOne Lab Results
+        icon: stream
+        summary: Paramedical exams, labs and APS retrieval tied to application case IDs.
+        citations:
+          - examone
+        category: Paramedical & Lab Evidence Provider
+        what_it_is: Supplies paramedical exams, lab results and attending-physician-statement retrieval tied to application case IDs.
+        who_uses_it: Underwriting, case underwriters and evidence-ordering teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+              - unstructured
+            volume: hundreds of results/hour
+            interval: Continuous feed as evidence returns
+      - name: MIB Underwriting Exchange
+        icon: gavel
+        summary: Industry application history and code hits at point of underwriting.
+        citations:
+          - mib
+        category: Industry Underwriting Exchange
+        what_it_is: Provides industry application history and coded hits checked at point of underwriting to surface prior disclosures and risk signals.
+        who_uses_it: Underwriting, chief underwriters and fraud/anti-selection teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of lookups/sec
+            interval: Continuous (API at application)
+  - name: Claims & Customer
+    icon: market
+    tiles:
+      - name: Sedgwick Life Claims
+        icon: market
+        summary: Death, disability and waiver claims intake, adjudication and payment.
+        citations:
+          - sedgwick
+        category: Claims Administration (TPA)
+        what_it_is: Third-party claims administration for death, disability and waiver claims intake, adjudication and payment, emitting claim and payment records.
+        who_uses_it: Claims, claims operations and contestable-review teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 2-10 GB/day incl. claim docs
+            interval: Daily claims cycle
+      - name: Salesforce Financial Services
+        icon: custlake
+        summary: Agent and policyholder relationships, service cases and cross-sell opportunities.
+        citations:
+          - sf-finserv
+        category: Insurance CRM
+        what_it_is: Holds agent and policyholder relationships, service cases and cross-sell opportunities, emitting account, case and activity events.
+        who_uses_it: Distribution, agency leadership and sales-enablement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: Call Centre Telephony
+        icon: chat
+        summary: IVR, call recordings and disposition codes joined to policy and claim events.
+        category: Contact Center Platform
+        what_it_is: Captures IVR paths, call recordings and disposition codes joined to policy and claim events for service and quality analysis.
+        who_uses_it: Claims operations, customer service and quality-assurance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+              - unstructured
+            volume: hundreds of calls/hour incl. recordings
+            interval: Continuous call stream
+  - name: Actuarial & Finance
+    icon: chart
+    tiles:
+      - name: Moody's Analytics AXIS
+        icon: chart
+        summary: Actuarial models, reserves, capital and asset-liability management projections.
+        citations:
+          - axis
+        category: Actuarial Modeling Platform
+        what_it_is: Runs actuarial models for reserves, capital and asset-liability management projections, producing reserve, capital and ALM results.
+        who_uses_it: Actuarial & Reserving, appointed actuary and Treasury & Investments teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/valuation run
+            interval: Monthly / quarterly valuation runs
+      - name: SAP S/4HANA Insurance
+        icon: erp
+        summary: General ledger, statutory reporting and investment accounting integration.
+        citations:
+          - sap-insurance
+        category: Insurance ERP / General Ledger
+        what_it_is: Provides the general ledger, statutory reporting and investment accounting integration, emitting financial postings and ledger balances.
+        who_uses_it: Finance, financial reporting and Treasury & Investments teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly close + period-end
+      - name: Reinsurance Bordereaux
+        icon: partner
+        summary: Ceded premium, claims and experience reports exchanged with reinsurance partners.
+        category: Reinsurance Bordereau Exchange
+        what_it_is: Carries ceded premium, claims and experience reports exchanged with reinsurance partners for treaty reconciliation and recovery.
+        who_uses_it: Finance, ceded-reinsurance and reserving teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/cycle
+            interval: Monthly / quarterly treaty cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: MGU Admin Feeds
+        icon: fed
+        summary: Managing general underwriter policy detail left at partners and queried in place under Unity Catalog.
+        category: Delegated Authority Admin System
+        what_it_is: Managing-general-underwriter policy and bordereau detail kept at partners and queried in place through federation instead of being copied in.
+        who_uses_it: Actuarial & Reserving, delegated-authority and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale partner marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: ACORD Life Standards
+        icon: api
+        summary: Application, policy and claims XML messages normalised on ingest for straight-through processing.
+        citations:
+          - acord
+        category: Insurance Data Standard (ACORD)
+        what_it_is: Standard application, policy and claims XML messages normalised on ingest to drive straight-through processing across systems.
+        who_uses_it: Data Engineers, Underwriting and integration teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of messages/sec at peak
+            interval: Continuous message flow
+      - name: NAIC Statutory Filings
+        icon: gavel
+        summary: Annual statement schedules and risk-based capital specifications consumed inbound.
+        citations:
+          - naic
+        category: Regulatory Filing Specification
+        what_it_is: Inbound annual-statement schedules and risk-based-capital specifications that define the statutory returns finance must produce.
+        who_uses_it: Finance, financial reporting and Actuarial & Reserving teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs (specifications)
+            interval: Annual / on release
+      - name: Mortality Table Updates
+        icon: chart
+        summary: Industry mortality and lapse assumptions published by regulators and reinsurers.
+        category: Actuarial Assumption Reference
+        what_it_is: Industry mortality and lapse assumption tables published by regulators and reinsurers, consumed as reference for pricing and reserving.
+        who_uses_it: Actuarial & Reserving, experience-studies and pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs (tables)
+            interval: Periodic release
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & CFO
+        mark: Genie One
+        summary: The CEO on new-business volume and embedded value; the CFO on statutory reserves, risk-based capital and the expense ratio by product line.
+        uses:
+          - - Genie One
+            - Ask what last month's issued premium was by product without waiting on actuarial.
+          - - AI/BI
+            - Persistency, mortality and margin on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "in-force" means one thing across admin and finance.
+        sub:
+          - name: Chief Executive
+            cares: new-business volume, embedded value and the growth-versus-capital trade across the book.
+          - name: Chief Financial Officer
+            cares: statutory reserves, risk-based capital and the expense ratio by product line.
+          - name: Treasury & Investments
+            cares: asset-liability matching and the investment income backing long-dated liabilities.
+        ucs:
+          - Embedded Value
+          - New Business Strain
+          - Reserve Adequacy
+          - Reinsurance Recovery
+      - name: Actuarial & Reserving
+        mark: AI/BI
+        summary: Appointed actuaries on reserve adequacy, mortality and lapse experience studies and the model governance a statutory opinion depends on.
+        uses:
+          - - Reserve Analytics Workbench
+            - Experience versus pricing assumptions before opinion sign-off.
+          - - AI/BI
+            - Reserve roll-forward and variance on certified Metric Views.
+          - - Unity Catalog
+            - One definition of claim and policy counts across systems.
+        sub:
+          - name: Appointed Actuary
+            cares: reserve adequacy and the statutory opinion that stands behind it.
+          - name: Experience Studies
+            cares: mortality, morbidity and lapse experience versus pricing assumptions.
+          - name: Model Governance
+            cares: assumption controls and the audit trail every valuation depends on.
+        ucs:
+          - Reserve Adequacy
+          - New Business Strain
+          - Embedded Value
+      - name: Underwriting
+        mark: Model Serving
+        summary: Chief underwriters on straight-through-processing rates, evidence-ordering bottlenecks and mortality leakage before an offer expires.
+        uses:
+          - - Underwriting Decision Hub
+            - Risk class and evidence status before offers expire.
+          - - Model Serving
+            - Mortality and lapse models scored at application.
+          - - MLflow
+            - Every underwriting model run tracked for audit.
+        sub:
+          - name: Chief Underwriter
+            cares: straight-through-processing rates and mortality leakage before offers expire.
+          - name: Case Underwriters
+            cares: evidence completeness and risk classification on individual applications.
+          - name: Underwriting Rules
+            cares: the automated rules and evidence-ordering logic behind accelerated issue.
+        ucs:
+          - Mortality Underwriting
+          - Straight-Through Processing
+      - name: Claims
+        mark: Lakehouse//RT
+        summary: Claims operations on death verification, contestable-period review and beneficiary payout, ranking open claims by SLA and fraud signal before disbursement.
+        uses:
+          - - Claims Adjudication Console
+            - Open claims ranked by SLA and fraud signals.
+          - - Lakehouse//RT
+            - Claim status at operational latency.
+          - - AI/BI
+            - Severity and cycle time on governed definitions.
+        sub:
+          - name: Claims Operations
+            cares: death and disability intake, cycle time and the payout SLA.
+          - name: Contestable Review
+            cares: early-duration and contestable-period investigation before benefit release.
+          - name: Claims Fraud & SIU
+            cares: fraud signals and referrals raised ahead of disbursement.
+        ucs:
+          - Claims Fraud Detection
+          - Reinsurance Recovery
+          - Reserve Adequacy
+      - name: Distribution
+        mark: CustomerLake
+        summary: Agency leaders on producer productivity, block persistency and suitability compliance when a lapse or replacement spike shows up.
+        uses:
+          - - Agent Performance Hub
+            - Production, persistency and complaints by channel.
+          - - CustomerLake
+            - Household segments without copying CRM exports elsewhere.
+          - - Genie One
+            - Ask which agents drove last month's lapse spike.
+        sub:
+          - name: Agency Leadership
+            cares: producer productivity, block persistency and channel mix.
+          - name: Suitability & Compliance
+            cares: replacement activity and suitable-sale monitoring across the field.
+          - name: Sales Enablement
+            cares: next-best-offer and cross-sell into in-force households.
+        ucs:
+          - Lapse & Persistency
+          - Agent Suitability
+          - Cross-sell Propensity
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the policy-admin, underwriting and reinsurance feeds; own the Bronze to Silver path and the pager when a bordereau load breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for FINEOS, underwriting and finance sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on policy and claims feeds.
+          - - Lakewatch
+            - Freshness on the tables actuarial and distribution read every morning.
+        sub:
+          - name: Ingestion Engineering
+            cares: the FINEOS, underwriting and reinsurance feeds and the bordereau loads.
+          - name: Pipeline Reliability
+            cares: Bronze-to-Silver expectations and the pager when a load breaks.
+          - name: Platform & Governance
+            cares: Unity Catalog structure and access across admin and finance data.
+        ucs:
+          - Straight-Through Processing
+          - Reinsurance Recovery
+          - Reserve Adequacy
+      - name: Data Scientists
+        mark: MLflow
+        summary: Mortality, lapse and claims-fraud models, and whether they still hold across an experience study.
+        uses:
+          - - Feature Store
+            - Policy and party features defined once for training and serving.
+          - - MLflow
+            - Every underwriting model run tracked for audit and reproduction.
+          - - Model Serving
+            - Mortality and lapse models scored at application and renewal.
+        sub:
+          - name: Mortality & Lapse Modelling
+            cares: the mortality, morbidity and lapse models scored at application and renewal.
+          - name: Claims Fraud Science
+            cares: the anomaly and network models behind claims referrals.
+          - name: Model Validation
+            cares: whether a model still holds across an experience study.
+        ucs:
+          - Mortality Underwriting
+          - Lapse & Persistency
+          - Claims Fraud Detection
+          - Cross-sell Propensity
+      - name: App Developers
+        mark: Apps
+        summary: Ship the underwriting, claims and agent-performance applications the carrier works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Underwriting and claims screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for servicing and claims writes.
+          - - Agent Bricks
+            - Agents that draft an underwriting or claims decision against governed tools.
+        sub:
+          - name: Underwriting & Claims Apps
+            cares: the decision hub and adjudication console underwriters and adjusters work in.
+          - name: Servicing & Writeback
+            cares: Lakebase-backed servicing and claims writes into admin.
+          - name: Agent Experience
+            cares: the producer-facing performance and suitability screens.
+        ucs:
+          - Straight-Through Processing
+          - Claims Fraud Detection
+          - Agent Suitability
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Actuarial and distribution dashboards on serverless SQL with Unity Catalog permissions.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and claims alerts in the channel teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Actuarial notebooks against governed policy and experience data.
+  - name: Admin Writeback
+    icon: opdb
+    tiles:
+      - name: Policy Servicing Updates
+        icon: db
+        summary: Beneficiary and address changes written back into admin after verification.
+        citations:
+          - fineos
+      - name: Underwriting Decisions
+        icon: people
+        summary: Approved risk classes and requirements released to issuance workflows.
+        citations:
+          - munich-allfinanz
+      - name: Claims Payments
+        icon: market
+        summary: Adjudicated claim amounts released to disbursement after fraud review.
+        citations:
+          - sedgwick
+  - name: Dist. & Reinsurance
+    icon: partner
+    tiles:
+      - name: Agent Portal Reporting
+        icon: share
+        summary: Production and persistency scorecards shared with agencies over Delta Sharing.
+      - name: Reinsurer Bordereaux
+        icon: partner
+        summary: Ceded experience and claims detail exchanged under treaty agreements.
+      - name: Broker Illustration Systems
+        icon: api
+        summary: Approved product illustrations and rates pushed to broker platforms.
+        citations:
+          - acord
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: NAIC Statutory Statements
+        icon: gavel
+        summary: Annual statement schedules produced from the same governed tables finance runs on.
+        citations:
+          - naic
+      - name: Experience Study Filing
+        icon: share
+        summary: Mortality and lapse studies filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Reinsurers, distributors and regulators reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Underwriting Decision Hub
+        icon: people
+        short: New business
+        summary: Application evidence, risk class and straight-through eligibility on one screen before offers expire.
+      - name: Claims Adjudication Console
+        icon: gauge
+        short: Benefit payout
+        summary: Death and disability claims ranked by SLA, contestability and fraud signals before disbursement.
+      - name: Reserve Analytics Workbench
+        icon: chart
+        short: Actuarial
+        summary: Experience versus pricing assumptions reconciled before reserve opinion and statutory filing.
+      - name: Agent Performance Hub
+        icon: custlake
+        short: Distribution
+        summary: Production, persistency and complaint rates by agent and channel for compensation and compliance.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Embedded Value & Capital
+        icon: aibi
+        summary: Embedded value, new business strain and statutory capital on certified finance Metric Views.
+        kpis:
+          - Embedded value
+          - New business strain
+          - RBC ratio
+          - Statutory reserves
+          - Expense ratio
+        teams:
+          - CEO & CFO
+          - Actuarial & Reserving
+          - Treasury & Investments
+      - name: Mortality & Persistency
+        icon: aibi
+        summary: Mortality, morbidity and lapse experience against pricing assumptions.
+        kpis:
+          - Mortality experience
+          - Lapse rate
+          - Persistency
+          - Actual-to-expected ratio
+          - Morbidity experience
+        teams:
+          - Actuarial & Reserving
+          - Experience Studies
+          - Underwriting
+      - name: Underwriting Throughput
+        icon: aibi
+        summary: Straight-through-processing, cycle time and evidence completeness in new business.
+        kpis:
+          - STP rate
+          - Cycle time
+          - Evidence completeness
+          - Placement rate
+          - Mortality leakage
+        teams:
+          - Underwriting
+          - Chief Underwriter
+          - Case Underwriters
+      - name: Distribution Performance
+        icon: aibi
+        summary: Producer production, persistency, replacements and complaints by agent and channel.
+        kpis:
+          - Issued premium
+          - Persistency by agent
+          - Replacement rate
+          - Complaint rate
+          - Cross-sell rate
+        teams:
+          - Distribution
+          - Agency Leadership
+          - Suitability & Compliance
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Actuarial & Reserving Agent
+        icon: genie
+        summary: Ask about reserve adequacy, experience versus assumptions and margin by product.
+        feeds:
+          - Moody's Analytics AXIS
+          - FINEOS Life
+          - Persistency, mortality, margin
+          - Conformed policy, party
+        teams:
+          - Actuarial & Reserving
+          - Appointed Actuary
+          - Experience Studies
+        questions:
+          - How does mortality experience compare to pricing assumptions by product?
+          - What is the reserve roll-forward and variance since last quarter?
+          - Which products show the weakest embedded value this period?
+          - How have lapse rates moved against assumption by cohort?
+          - What is new business strain by product and distribution channel?
+      - name: Underwriting & New Business Agent
+        icon: genie
+        summary: Explore straight-through-processing rates, evidence bottlenecks and risk classification.
+        feeds:
+          - Munich Re ALLFINANZ
+          - ExamOne Lab Results
+          - MIB Underwriting Exchange
+          - Conformed policy, party
+        teams:
+          - Underwriting
+          - Chief Underwriter
+          - Case Underwriters
+        questions:
+          - What is our straight-through-processing rate this month by product?
+          - Which evidence types are the biggest bottleneck to placement?
+          - Where are offers expiring before evidence completes?
+          - How does risk-class distribution compare to the pricing assumption?
+          - Which cases show anti-selection signals from MIB hits?
+      - name: Claims & Integrity Agent
+        icon: genie
+        summary: Answer death, disability and waiver claim questions with fraud and contestability signals.
+        feeds:
+          - Sedgwick Life Claims
+          - Call Centre Telephony
+          - FINEOS Life
+        teams:
+          - Claims
+          - Contestable Review
+          - Claims Fraud & SIU
+        questions:
+          - How many claims are open past their payout SLA and why?
+          - Which claims fall inside the contestable period and need review?
+          - What is average claim cycle time by benefit type?
+          - Which claims carry the highest fraud signal before disbursement?
+          - What is the trend in disability and waiver claim volume?
+      - name: Distribution & Persistency Agent
+        icon: genie
+        summary: Ask about producer production, block persistency and suitability across the field.
+        feeds:
+          - Salesforce Financial Services
+          - Persistency, mortality, margin
+          - Conformed policy, party
+        teams:
+          - Distribution
+          - Agency Leadership
+          - Suitability & Compliance
+        questions:
+          - Which agents drove last month's lapse spike and where?
+          - What is block persistency by channel and product?
+          - Where is replacement activity concentrated across the field?
+          - Which in-force households are the strongest cross-sell candidates?
+          - Which producers show suitability outliers this quarter?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Mortality Underwriting
+        short: Risk selection
+        icon: people
+        summary: Applicant risk classified with evidence completeness tracked before bind.
+        problem: Applications wait on labs, APS and exam evidence scattered across vendors, so cases sit for days and a mortality misread only surfaces after the offer is already bound.
+        who_benefits: Underwriting
+        how_built: Application, exam and MIB evidence land through Lakeflow, are conformed on Delta Lake and scored against mortality models in Model Serving from the Underwriting Decision Hub before bind.
+        components:
+          - Underwriting Decision Hub
+          - Munich Re ALLFINANZ
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: 'From static policies to autonomous insurance: how AI enables real-time coverage'
+            url: https://www.databricks.com/blog/static-policies-autonomous-insurance-how-ai-enables-real-time-coverage
+      - name: Lapse & Persistency
+        short: Retention
+        icon: gauge
+        summary: Policies at risk of lapse identified from payment, service and engagement signals.
+        problem: Lapse signals sit in billing, servicing and contact-centre systems that never join up, so a policy is flagged only after the grace period closes and the block quietly erodes.
+        who_benefits: Distribution
+        how_built: Payment, servicing and engagement features are built in Feature Store and scored in Model Serving, surfacing at-risk policies by agent and channel in the Agent Performance Hub.
+        components:
+          - Agent Performance Hub
+          - Model Serving
+          - Feature Store
+          - AI/BI
+          - CustomerLake
+        stories:
+          - title: Distribution optimization reference architecture for insurance
+            url: https://www.databricks.com/resources/architectures/distribution-optimization-reference-architecture-for-insurance
+      - name: Claims Fraud Detection
+        short: Integrity
+        icon: stream
+        summary: Suspicious death and disability claims flagged before payout.
+        problem: Death and disability claims run under payout SLAs, yet contestability checks and fraud signals sit in separate tools, so questionable claims are paid before anyone connects them.
+        who_benefits: Claims
+        how_built: Claims, policy and party feeds land in Lakehouse//RT and are scored with AI Functions and Model Serving, ranking suspect claims in the Claims Adjudication Console before disbursement.
+        components:
+          - Claims Adjudication Console
+          - Sedgwick Life Claims
+          - Model Serving
+          - Lakehouse//RT
+          - AI Functions
+        stories:
+          - title: 'Smart Claims: automating claims processing on Databricks'
+            url: https://www.databricks.com/resources/demos/tutorials/lakehouse-platform/dbdemos-fsi-smart-claims
+          - title: 'Navigating the impact of AI in insurance: opportunities and challenges'
+            url: https://www.databricks.com/blog/navigating-impact-ai-insurance-opportunities-and-challenges
+      - name: Reserve Adequacy
+        short: Actuarial
+        icon: chart
+        summary: Reserve roll-forward and experience variance explained before opinion sign-off.
+        problem: Reserve roll-forwards lean on experience data stitched from admin, claims and actuarial systems by hand, so variance surfaces late and the opinion rests on numbers no one can quickly replay.
+        who_benefits: Actuarial & Reserving
+        how_built: Conformed policy and claims data feed the Reserve Analytics Workbench, with Unity Catalog holding one definition of counts and AI/BI showing reserve variance on Delta Lake before sign-off.
+        components:
+          - Reserve Analytics Workbench
+          - Moody's Analytics AXIS
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Milliman modernizes actuarial data infrastructure and governance with Databricks
+            url: https://www.databricks.com/customers/milliman
+      - name: New Business Strain
+        short: Finance
+        icon: market
+        summary: Acquisition costs and strain capital modelled by product and distribution channel.
+        problem: Acquisition cost and reserve strain are modelled per product long after issue, so finance cannot see how a distribution push or a new rider drains capital until the quarter closes.
+        who_benefits: CEO & CFO
+        how_built: Issued-business, commission and reserve data are conformed on Delta Lake and modelled in the Reserve Analytics Workbench, so strain by product and channel is queryable in AI/BI and Genie One.
+        components:
+          - Reserve Analytics Workbench
+          - Moody's Analytics AXIS
+          - AI/BI
+          - Unity Catalog
+          - Genie One
+      - name: Agent Suitability
+        short: Compliance
+        icon: gavel
+        summary: Sales practices and replacement activity monitored against suitability rules.
+        problem: Suitability and replacement rules are checked in periodic manual reviews, so a churning book or an unsuitable annuity sale is caught in audit rather than when the pattern first appears.
+        who_benefits: Distribution
+        how_built: Sales, replacement and complaint data are conformed under Unity Catalog and scored with AI Functions, surfacing suitability outliers by producer in the Agent Performance Hub for review.
+        components:
+          - Agent Performance Hub
+          - Salesforce Financial Services
+          - AI Functions
+          - Unity Catalog
+          - AI/BI
+      - name: Reinsurance Recovery
+        short: Treaty
+        icon: partner
+        summary: Ceded claims and experience reconciled to bordereaux without manual disputes.
+        problem: Ceded premium and claims are reconciled to reinsurer bordereaux by hand across treaties, so recoveries are missed, disputes drag on and the net position is never quite trusted.
+        who_benefits: CEO & CFO
+        how_built: Bordereaux, ceded claims and treaty terms are conformed on Delta Lake under Unity Catalog and reconciled in AI/BI, then shared back to reinsurers over OpenSharing without file swaps.
+        components:
+          - Reinsurance Bordereaux
+          - Unity Catalog
+          - Delta Lake
+          - OpenSharing
+          - AI/BI
+      - name: Cross-sell Propensity
+        short: Growth
+        icon: custlake
+        summary: Annuity and supplemental offers scored from in-force household relationships.
+        problem: In-force households hold obvious annuity and supplemental openings, but relationships are locked in CRM and admin silos, so agents chase cold lists instead of the next best offer.
+        who_benefits: Distribution
+        how_built: Household relationships from CustomerLake and admin feed propensity models in Model Serving, with scored offers surfaced by agent in the Agent Performance Hub and explored in Genie One.
+        components:
+          - Agent Performance Hub
+          - CustomerLake
+          - Model Serving
+          - Feature Store
+          - Genie One
+        stories:
+          - title: Customer 360 reference architecture for insurance
+            url: https://www.databricks.com/resources/architectures/c360-reference-architecture-for-insurance
+      - name: Straight-Through Processing
+        short: Operations
+        icon: api
+        summary: Clean applications issued without manual touch when evidence and rules align.
+        problem: Clean applications still stop for manual touch because evidence, rules and admin systems never line up, so simple cases take as long as complex ones and applicants abandon.
+        who_benefits: Underwriting
+        how_built: ACORD messages land via Lakeflow, are evidence-checked with AI Functions and scored in Model Serving, then auto-issued from the Underwriting Decision Hub with servicing state on Lakebase.
+        components:
+          - Underwriting Decision Hub
+          - ACORD Life Standards
+          - AI Functions
+          - Model Serving
+          - Lakebase
+        stories:
+          - title: AXA Japan modernizes data and analytics with Databricks
+            url: https://www.databricks.com/customers/axa-japan
+          - title: 'Navigating the impact of AI in insurance: opportunities and challenges'
+            url: https://www.databricks.com/blog/navigating-impact-ai-insurance-opportunities-and-challenges
+      - name: Embedded Value
+        short: Strategy
+        icon: product
+        summary: In-force value and new business contribution tracked for portfolio decisions.
+        problem: Embedded value and new-business contribution are assembled from actuarial extracts quarters late, so portfolio and reinsurance decisions run on a picture of the book that is already stale.
+        who_benefits: CEO & CFO
+        how_built: In-force, reserve and margin data are conformed under Unity Catalog and rolled up in the Reserve Analytics Workbench, so embedded value by product is queryable in AI/BI and Genie One.
+        components:
+          - Reserve Analytics Workbench
+          - Moody's Analytics AXIS
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+medallion:
+  Bronze:
+    short: Raw policy and claims feeds
+    summary: Policy administration transactions, underwriting evidence, claims files, agent commissions and reinsurance bordereaux, landed exactly as received so a premium or a reserve can always be replayed.
+  Silver:
+    short: Conformed policy, party
+    summary: Policies, insureds, agents and claims resolved into single conformed entities across admin, underwriting and finance systems, with rider and beneficiary relationships stitched to one contract.
+  Gold:
+    short: Persistency, mortality, margin
+    summary: 'Contracted products actuarial and distribution leaders run on: persistency and lapse rates, mortality and morbidity experience, new business strain, and embedded value by product.'
+citation_index:
+  fineos:
+    title: FINEOS Life
+    url: https://www.fineos.com/
+  majesco:
+    title: Majesco LifePlus
+    url: https://www.majesco.com/solutions/life-insurance/
+  oracle-insurance:
+    title: Oracle Insurance Policy Administration
+    url: https://www.oracle.com/industries/financial-services/insurance/
+  munich-allfinanz:
+    title: Munich Re ALLFINANZ
+    url: https://www.munichre.com/automation-solutions/en.html
+  examone:
+    title: ExamOne paramedical services
+    url: https://www.examone.com/
+  mib:
+    title: MIB underwriting exchange
+    url: https://www.mib.com/
+  sedgwick:
+    title: Sedgwick claims management
+    url: https://www.sedgwick.com/
+  sf-finserv:
+    title: Salesforce Financial Services Cloud
+    url: https://www.salesforce.com/financial-services/
+  axis:
+    title: Moody's Analytics AXIS
+    url: https://www.moodysanalytics.com/product-list/axis
+  sap-insurance:
+    title: SAP for Insurance
+    url: https://www.sap.com/industries/insurance.html
+  acord:
+    title: ACORD standards
+    url: https://www.acord.org/
+  naic:
+    title: NAIC statutory reporting
+    url: https://www.naic.org/

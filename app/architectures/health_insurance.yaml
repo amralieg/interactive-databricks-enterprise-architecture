@@ -1,0 +1,858 @@
+name: Health Insurance
+description: 'Health payers: member enrollment, claims adjudication, provider network, care management and regulatory reporting.'
+sources:
+  - name: Core Admin & Claims
+    icon: erp
+    tiles:
+      - name: Facets Core Admin
+        icon: erp
+        summary: Membership, benefits, premium billing and claims adjudication for commercial and government lines.
+        citations:
+          - facets
+        category: Payer Core Administration System
+        what_it_is: System of record for membership, benefits, premium billing and claims adjudication across commercial and government lines, emitting member, enrollment and paid-claim transactions.
+        who_uses_it: Actuarial & Finance, claims operations and enrollment teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-200 GB/day
+            interval: Nightly adjudication cycle + intraday deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of claims/sec at peak
+            interval: Continuous CDC
+      - name: HealthEdge Source
+        icon: db
+        summary: Claims pricing, reimbursement and payment integrity for Medicare Advantage and Exchange plans.
+        citations:
+          - healthedge
+        category: Claims Pricing & Payment Engine
+        what_it_is: Prices claims, applies reimbursement logic and payment integrity for Medicare Advantage and Exchange plans, emitting priced and edited claim lines.
+        who_uses_it: Payment integrity, Actuarial & Finance and claims operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-60 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of claims/sec at peak
+            interval: Continuous (pre-pay edits)
+      - name: Cotiviti Payment Integrity
+        icon: market
+        summary: Pre- and post-pay edits, DRG validation and recovery findings on paid claims.
+        citations:
+          - cotiviti
+        category: Payment Integrity Platform
+        what_it_is: Applies pre- and post-pay edits, DRG validation and recovery findings on claims, emitting edit results and recovery findings.
+        who_uses_it: Fraud & Integrity, payment integrity and recovery teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day findings
+            interval: Daily edit + recovery cycle
+  - name: Clinical & UM
+    icon: people
+    tiles:
+      - name: Epic Payer Platform
+        icon: custlake
+        summary: Prior authorization, care management notes and member clinical summaries from provider connectivity.
+        citations:
+          - epic-payer
+        category: Payer Care Management Platform
+        what_it_is: Carries prior authorization, care management notes and member clinical summaries from provider connectivity, emitting authorization and clinical-summary records.
+        who_uses_it: Care Management, utilization management and nurse care coordinators.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 5-20 GB/day incl. notes
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: NaviNet Prior Auth
+        icon: api
+        summary: Authorization requests, determinations and appeal status exchanged with provider portals.
+        citations:
+          - navinet
+        category: Prior Authorization Exchange
+        what_it_is: Exchanges authorization requests, determinations and appeal status with provider portals, emitting auth request and determination events.
+        who_uses_it: Utilization management, Care Management and provider-relations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens of requests/sec at peak
+            interval: Continuous (portal / API)
+      - name: Optum (Change Healthcare)
+        icon: stream
+        summary: Lab, imaging and ADT feeds supplementing claims with clinical context.
+        citations:
+          - change-healthcare
+        category: Clinical Connectivity Network
+        what_it_is: Supplies lab, imaging and ADT feeds that supplement claims with clinical context for risk and care use cases.
+        who_uses_it: Care Management, risk-adjustment and clinical-data teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of HL7 msgs/sec at peak
+            interval: Continuous HL7/clinical feed
+  - name: Pharmacy & Network
+    icon: product
+    tiles:
+      - name: CVS Caremark PBM
+        icon: market
+        summary: Pharmacy claims, formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.
+        citations:
+          - caremark
+          - mmit
+          - accredo
+        category: Pharmacy Benefit Manager (PBM)
+        what_it_is: Adjudicates pharmacy claims and carries formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.
+        who_uses_it: Actuarial & Finance, pharmacy integrity and clinical-pharmacy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Daily pharmacy claims cycle
+      - name: Symplr Provider Data
+        icon: people
+        summary: Credentialing, roster and directory accuracy for network adequacy.
+        citations:
+          - symplr
+        category: Provider Data Management System
+        what_it_is: Manages credentialing, roster and directory accuracy for network adequacy, emitting provider, roster and credential records.
+        who_uses_it: Provider Relations, provider-data management and compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Daily roster refresh
+      - name: CMS Encounter Data
+        icon: gavel
+        summary: Risk adjustment diagnoses and encounter records submitted for Medicare Advantage.
+        citations:
+          - cms-encounter
+        category: Risk Adjustment Submission System
+        what_it_is: Holds risk-adjustment diagnoses and encounter records submitted for Medicare Advantage, emitting encounter and response files.
+        who_uses_it: Actuarial & Finance, risk-adjustment and regulatory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-20 GB/submission
+            interval: Submission windows + response files
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: TPA Sub-claims
+        icon: fed
+        summary: Third-party administrator claim detail left at TPAs and queried in place under Unity Catalog.
+        category: Third-Party Administrator System
+        what_it_is: Third-party-administrator claim detail kept at TPAs and queried in place through federation instead of being copied into the payer estate.
+        who_uses_it: Actuarial & Finance, claims operations and Fraud & Integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale TPA marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: X12 EDI Clearinghouse
+        icon: stream
+        summary: 837 institutional and professional claims normalised on ingest through the multi-payer network with companion guide validation.
+        citations:
+          - x12-edi
+          - avality
+        category: EDI Claims Clearinghouse
+        what_it_is: Normalises 837 institutional and professional claims on ingest through the multi-payer network with companion-guide validation.
+        who_uses_it: Data Engineers, EDI and claims-operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of 837s/sec at peak
+            interval: Continuous EDI feed
+      - name: NCQA HEDIS Measures
+        icon: gavel
+        summary: Measure specification updates consumed inbound before HEDIS season.
+        citations:
+          - ncqa-hedis
+        category: Quality Measure Specification
+        what_it_is: Inbound HEDIS measure specification updates that define the quality measures the plan computes each season.
+        who_uses_it: Care Management, quality and Actuarial & Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs (specifications)
+            interval: Annual / on release
+      - name: CMS Risk Model Files
+        icon: chart
+        summary: HCC coefficients and model software updates for risk adjustment scoring.
+        category: Risk Adjustment Model Reference
+        what_it_is: HCC coefficients and risk-model software updates from CMS used to score risk adjustment for Medicare Advantage.
+        who_uses_it: Actuarial & Finance, risk-adjustment and data-science teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs (coefficients)
+            interval: Annual model release
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & CFO
+        mark: Genie One
+        summary: The CEO on membership growth and medical loss ratio; the CFO on risk-adjusted revenue, medical trend and reserve adequacy by line of business.
+        uses:
+          - - Genie One
+            - Ask what medical trend was last month by line of business without waiting on actuarial.
+          - - AI/BI
+            - MLR, membership and quality on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "paid claim" means one thing across admin systems.
+        sub:
+          - name: Chief Executive Officer
+            cares: membership growth, medical loss ratio and the margin that ultimately funds the plan.
+          - name: Chief Financial Officer
+            cares: risk-adjusted revenue, medical trend and reserve adequacy by line of business.
+          - name: VP Actuarial
+            cares: pricing discipline, IBNR reserves and whether this year's trend assumptions still hold.
+        ucs:
+          - Medical Loss Ratio
+          - Risk Adjustment
+          - Member Retention
+          - Pharmacy Trend
+      - name: Actuarial & Finance
+        mark: AI/BI
+        summary: Pricing, reserving and risk-score reconciliation for Medicare and commercial blocks, chasing HCC completeness before the submission window closes.
+        uses:
+          - - Risk Adjustment Workbench
+            - HCC gaps and encounter completeness before submission.
+          - - AI/BI
+            - MLR and trend on certified Metric Views the board reads.
+          - - Unity Catalog
+            - One definition of premium and claims across lines.
+        sub:
+          - name: Chief Actuary
+            cares: pricing, reserving and hitting the annual risk-score submission window cleanly.
+          - name: Risk Adjustment Lead
+            cares: HCC completeness and encounter accuracy before the CMS deadlines land.
+          - name: Financial Reporting
+            cares: medical loss ratio, medical trend and rebate accruals by line of business.
+        ucs:
+          - Risk Adjustment
+          - Medical Loss Ratio
+          - Pharmacy Trend
+      - name: Care Management
+        mark: Model Serving
+        summary: Nurses and care coordinators on rising-risk members, open gaps in care and readmission prevention before an avoidable ED visit or admission.
+        uses:
+          - - Care Manager Console
+            - Rising-risk members ranked before ED utilisation spikes.
+          - - Model Serving
+            - Risk models scored at enrollment and monthly refresh.
+          - - CustomerLake
+            - Member segments without copying clinical exports elsewhere.
+        sub:
+          - name: VP Care Management
+            cares: rising-risk members and avoidable admissions across the managed panel.
+          - name: Nurse Care Coordinators
+            cares: open gaps in care and which member to reach out to and call today.
+          - name: Utilization Management
+            cares: authorization turnaround and medical necessity without over-denying care.
+        ucs:
+          - Care Management
+          - HEDIS Quality
+          - Prior Auth Optimisation
+      - name: Provider Relations
+        mark: AI/BI
+        summary: Contracting on network adequacy, value-based arrangement performance and out-of-network leakage when a provider dispute lands.
+        uses:
+          - - Provider Scorecard
+            - Quality and cost metrics by TIN and contract.
+          - - AI/BI
+            - Network leakage and adequacy on governed definitions.
+          - - Genie One
+            - Ask which specialties drive out-of-network spend.
+        sub:
+          - name: VP Network
+            cares: network adequacy, contracting economics and out-of-network leakage.
+          - name: Value-Based Contracting
+            cares: shared-savings settlement and quality-bonus accuracy providers will trust.
+          - name: Provider Data Management
+            cares: directory accuracy and roster currency by TIN for compliance.
+        ucs:
+          - Network Adequacy
+          - Value-Based Contracts
+          - HEDIS Quality
+      - name: Fraud & Integrity
+        mark: Lakehouse//RT
+        summary: SIU investigators on aberrant provider billing patterns, duplicate claims and pharmacy fraud, flagged pre-pay before dollars go out the door.
+        uses:
+          - - FWA Command Centre
+            - Anomaly clusters flagged before payment releases.
+          - - Lakehouse//RT
+            - Pre-pay edits scored at adjudication latency.
+          - - AI/BI
+            - Recovery and avoidance on certified Metric Views.
+        sub:
+          - name: SIU Director
+            cares: aberrant billing patterns and the case pipeline from lead to recovery.
+          - name: Payment Integrity
+            cares: pre-pay edit yield and how much post-pay recovery is actually collectable.
+          - name: Pharmacy Integrity
+            cares: specialty and controlled-substance dispensing anomalies at the PBM.
+        ucs:
+          - Fraud Waste & Abuse
+          - Pharmacy Trend
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the EDI claims, enrollment and clinical feeds; own the Bronze to Silver path and the pager when an 837 load breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for core admin, clinical and pharmacy sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on claims and enrollment feeds.
+          - - Lakewatch
+            - Freshness on the tables actuarial and care teams read every morning.
+        sub:
+          - name: EDI & Claims Engineering
+            cares: the 837 and 835 loads and the pager when an EDI feed breaks overnight.
+          - name: Enrollment & Eligibility
+            cares: 834 enrollment files and member-month reconciliation across lines.
+          - name: Clinical Data Integration
+            cares: lab, ADT and prior-auth feeds conformed into the Silver layer.
+        ucs:
+          - Risk Adjustment
+          - HEDIS Quality
+          - Fraud Waste & Abuse
+      - name: Data Scientists
+        mark: MLflow
+        summary: Risk-adjustment, rising-risk and fraud-waste-and-abuse models, and whether they still hold across a plan year.
+        uses:
+          - - Feature Store
+            - Member features defined once for training and serving.
+          - - MLflow
+            - Every risk model run tracked for audit and reproduction.
+          - - Model Serving
+            - Risk and FWA models scored at enrollment and adjudication.
+        sub:
+          - name: Risk Adjustment Modelling
+            cares: HCC suspecting and RAF-score gap models against clinical text.
+          - name: Clinical Risk Science
+            cares: rising-risk and readmission prediction across the whole plan year.
+          - name: FWA Modelling
+            cares: anomaly and provider-network models scored pre-pay at adjudication.
+        ucs:
+          - Risk Adjustment
+          - Care Management
+          - Fraud Waste & Abuse
+      - name: App Developers
+        mark: Apps
+        summary: Ship the care manager, risk-adjustment and FWA applications the plan works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Care and integrity screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for care-plan and claims-edit writes.
+          - - Agent Bricks
+            - Agents that draft an outreach or edit override against governed tools.
+        sub:
+          - name: Care & UM Apps
+            cares: the care manager and prior-auth review screens nurses work in daily.
+          - name: Integrity Apps
+            cares: the FWA command centre and the claims-edit override workflow.
+          - name: Member & Provider Apps
+            cares: member care-gap nudges and the provider scorecard experience.
+        ucs:
+          - Care Management
+          - Prior Auth Optimisation
+          - Fraud Waste & Abuse
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and care team updates in the channel coordinators already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Admin Writeback
+    icon: opdb
+    tiles:
+      - name: Claims Edit Overrides
+        icon: db
+        summary: Medical director and SIU decisions written back into adjudication before payment.
+        citations:
+          - facets
+      - name: Care Plan Tasks
+        icon: apps
+        summary: Outreach and intervention tasks pushed to care manager workflows.
+        citations:
+          - epic-payer
+      - name: Provider Roster Updates
+        icon: people
+        summary: Directory corrections written back after credentialing review.
+        citations:
+          - symplr
+  - name: Provider & Members
+    icon: partner
+    tiles:
+      - name: Provider Portal Data
+        icon: share
+        summary: Quality scorecards and remittance detail shared with provider groups over Delta Sharing.
+      - name: Member App Personalisation
+        icon: custlake
+        summary: Benefit and care gap nudges triggered from governed member segments.
+      - name: Broker & Employer Reporting
+        icon: partner
+        summary: Group renewal and experience metrics exchanged with distribution partners.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CMS Star & HEDIS
+        icon: gavel
+        summary: HEDIS, Stars and MLR reports produced from the same governed tables operations runs on.
+        citations:
+          - ncqa-hedis
+      - name: State Filing Packages
+        icon: share
+        summary: Rate and form filings assembled from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Employers, providers and regulators reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Care Manager Console
+        icon: people
+        short: Population health
+        summary: Rising-risk members, gaps in care and authorised interventions on one screen for nurse care managers.
+      - name: Risk Adjustment Workbench
+        icon: chart
+        short: Medicare revenue
+        summary: HCC capture gaps and encounter completeness scored before CMS submission windows close.
+      - name: FWA Command Centre
+        icon: gauge
+        short: Payment integrity
+        summary: Provider and pharmacy anomaly clusters flagged before claims pay or after for recovery.
+      - name: Provider Scorecard
+        icon: market
+        short: Network value
+        summary: Quality, cost and patient experience by TIN for value-based contract negotiations.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: MLR & Medical Trend
+        icon: aibi
+        summary: Medical loss ratio, trend and risk-adjusted revenue on certified finance Metric Views.
+        kpis:
+          - Medical loss ratio
+          - Medical trend
+          - Risk-adjusted revenue
+          - IBNR reserves
+          - Membership
+        teams:
+          - CEO & CFO
+          - Actuarial & Finance
+          - Financial Reporting
+      - name: Risk Adjustment & RAF
+        icon: aibi
+        summary: RAF score, HCC recapture and encounter completeness before submission windows.
+        kpis:
+          - RAF score
+          - HCC recapture rate
+          - Encounter completeness
+          - Suspected gaps
+          - Submission accuracy
+        teams:
+          - Actuarial & Finance
+          - Risk Adjustment Lead
+          - Chief Actuary
+      - name: Quality & Care
+        icon: aibi
+        summary: HEDIS, Stars, gap closure and prior-auth turnaround across the managed panel.
+        kpis:
+          - HEDIS measure rate
+          - Star rating
+          - Gap-closure rate
+          - Readmission rate
+          - PA turnaround
+        teams:
+          - Care Management
+          - Nurse Care Coordinators
+          - Utilization Management
+      - name: Payment Integrity & FWA
+        icon: aibi
+        summary: Edit yield, recoveries and FWA savings across medical and pharmacy claims.
+        kpis:
+          - Pre-pay edit yield
+          - Post-pay recovery
+          - FWA savings
+          - Duplicate-claim rate
+          - Pharmacy anomaly rate
+        teams:
+          - Fraud & Integrity
+          - Payment Integrity
+          - Pharmacy Integrity
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Medical Cost & Trend Agent
+        icon: genie
+        summary: Ask about medical loss ratio, trend drivers and membership by line of business.
+        feeds:
+          - Facets Core Admin
+          - HealthEdge Source
+          - MLR, risk, quality
+          - Conformed member, claim
+        teams:
+          - CEO & CFO
+          - Actuarial & Finance
+          - Financial Reporting
+        questions:
+          - What is our medical loss ratio by line of business this month?
+          - Which categories are driving medical trend versus last year?
+          - How has membership grown by market and product?
+          - What is risk-adjusted revenue per member month by line?
+          - Where are IBNR reserves moving against booked estimates?
+      - name: Risk Adjustment Agent
+        icon: genie
+        summary: Explore HCC completeness, suspected gaps and encounter accuracy before submission.
+        feeds:
+          - CMS Encounter Data
+          - Optum (Change Healthcare)
+          - CMS Risk Model Files
+          - Conformed member, claim
+        teams:
+          - Actuarial & Finance
+          - Risk Adjustment Lead
+          - Chief Actuary
+        questions:
+          - Which members have suspected HCCs not yet captured this year?
+          - What is our encounter data completeness before the submission window?
+          - How does average RAF score compare to last plan year?
+          - Which providers have the largest documentation gaps?
+          - Where would recapture most improve risk-adjusted revenue?
+      - name: Care & Quality Agent
+        icon: genie
+        summary: Answer rising-risk, gap-in-care and prior-auth questions in plain language.
+        feeds:
+          - Epic Payer Platform
+          - NaviNet Prior Auth
+          - NCQA HEDIS Measures
+          - MLR, risk, quality
+        teams:
+          - Care Management
+          - Nurse Care Coordinators
+          - Utilization Management
+        questions:
+          - Which members are rising-risk and should be outreached this week?
+          - What is our HEDIS gap-closure rate by measure before season?
+          - Where is prior-auth turnaround exceeding target?
+          - Which members have open gaps in care across multiple measures?
+          - What is the readmission rate for the managed panel?
+      - name: Payment Integrity & FWA Agent
+        icon: genie
+        summary: Ask about edit yield, recoveries and pharmacy and provider anomalies.
+        feeds:
+          - Cotiviti Payment Integrity
+          - CVS Caremark PBM
+          - X12 EDI Clearinghouse
+          - Conformed member, claim
+        teams:
+          - Fraud & Integrity
+          - Payment Integrity
+          - Pharmacy Integrity
+        questions:
+          - Which providers show the most aberrant billing patterns this quarter?
+          - What is pre-pay edit yield versus post-pay recovery by category?
+          - Where are duplicate claims concentrated across the book?
+          - Which pharmacies show specialty or controlled-substance anomalies?
+          - How much FWA savings did we realise this month?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Risk Adjustment
+        short: Medicare
+        icon: chart
+        summary: HCC capture and encounter data completeness maximised before annual risk model runs.
+        problem: HCC-coded conditions sit unread across claims, encounters and clinical notes, so risk scores are submitted incomplete and the plan is paid below the true acuity of its members.
+        who_benefits: Actuarial & Finance
+        how_built: Claims and encounter feeds land through Lakeflow on Delta Lake; NLP and HCC models score suspected gaps in Model Serving, surfaced in the Risk Adjustment Workbench before submission.
+        components:
+          - Risk Adjustment Workbench
+          - CMS Encounter Data
+          - Model Serving
+          - MLflow
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Empowering smarter decisions to transform healthcare outcomes
+            url: https://www.databricks.com/customers/abacus-insights
+      - name: Medical Loss Ratio
+        short: Finance
+        icon: market
+        summary: MLR tracked by line and market with trend drivers actuaries can explain to regulators.
+        problem: Medical trend surfaces only after the quarter closes, stitched from actuarial spreadsheets, so finance sees a rising loss ratio too late to act on the drivers behind it.
+        who_benefits: CEO & CFO
+        how_built: Paid claims, premium and membership conform on Delta Lake and serve as certified Metric Views in AI/BI, with Genie One letting finance interrogate trend by line of business.
+        components:
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+          - Delta Lake
+          - Facets Core Admin
+        stories:
+          - title: Quality care is the mission. Finance protects the margin.
+            url: https://www.databricks.com/blog/quality-care-mission-finance-protects-margin
+      - name: HEDIS Quality
+        short: Stars
+        icon: gavel
+        summary: Measure gaps closed through outreach before submission season, not after chart chase.
+        problem: Care gaps are found in the retrospective chart chase after the measurement year, so outreach happens too late to close them and the plan's Stars rating and bonus slip.
+        who_benefits: Care Management
+        how_built: Claims, lab and clinical feeds conform on Delta Lake and run against certified HEDIS measures, so open gaps rank for outreach in AI/BI and the Care Manager Console before season.
+        components:
+          - Care Manager Console
+          - NCQA HEDIS Measures
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Quality care is the mission. Finance protects the margin.
+            url: https://www.databricks.com/blog/quality-care-mission-finance-protects-margin
+      - name: Fraud Waste & Abuse
+        short: Integrity
+        icon: gauge
+        summary: Billing patterns and pharmacy anomalies detected pre-pay and recovered post-pay.
+        problem: Aberrant billing, duplicate claims and pharmacy schemes hide in millions of lines, and rule-only edits catch them after payment when recovery is slow, partial and often uncollectable.
+        who_benefits: Fraud & Integrity
+        how_built: Adjudicating claims stream into Lakehouse//RT where anomaly models tracked in MLflow score them pre-pay in Model Serving, clustering suspect providers in the FWA Command Centre.
+        components:
+          - FWA Command Centre
+          - Cotiviti Payment Integrity
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Orizon commits to helping the healthcare system prevent fraud
+            url: https://www.databricks.com/customers/orizon
+      - name: Care Management
+        short: Clinical
+        icon: people
+        summary: High-cost members identified and engaged before preventable admissions.
+        problem: Rising-risk members are spotted only after an avoidable ED visit or admission, because claims, pharmacy and clinical signals live apart and nurses cannot see who is deteriorating now.
+        who_benefits: Care Management
+        how_built: Member features from claims and clinical feeds are built in Feature Store and scored monthly in Model Serving, ranking rising-risk members in the Care Manager Console for outreach.
+        components:
+          - Care Manager Console
+          - Feature Store
+          - Model Serving
+          - Epic Payer Platform
+          - CustomerLake
+        stories:
+          - title: SCAN Health Plan improves member care with Databricks
+            url: https://www.databricks.com/customers/scan-health
+      - name: Network Adequacy
+        short: Provider
+        icon: globe
+        summary: Directory accuracy and time-and-distance standards monitored for regulatory compliance.
+        problem: Provider directories drift out of date across systems, so time-and-distance standards are proven with stale rosters and the plan risks a regulatory adequacy finding.
+        who_benefits: Provider Relations
+        how_built: Credentialing and roster feeds conform under Unity Catalog on Delta Lake and are measured against adequacy standards in AI/BI, with directory fixes written back after review.
+        components:
+          - Symplr Provider Data
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+          - Provider Scorecard
+      - name: Prior Auth Optimisation
+        short: Utilisation
+        icon: api
+        summary: Authorization turnaround and denial overturn rates improved without loosening medical necessity.
+        problem: Authorization requests pile up in manual queues, so turnaround drags, providers are abraded, and inconsistent evidence handling drives avoidable denials that resurface as costly appeals.
+        who_benefits: Care Management
+        how_built: Authorization and clinical documents land through connectors, and AI Functions rank approval likelihood and missing evidence in Model Serving, drafting determinations for nurse review.
+        components:
+          - NaviNet Prior Auth
+          - AI Functions
+          - Model Serving
+          - Lakebase
+          - Unity Catalog
+        stories:
+          - title: Modernizing Prior Authorization with Advanced Analytics
+            url: https://www.databricks.com/blog/modernizing-prior-authorization-advanced-analytics
+      - name: Pharmacy Trend
+        short: PBM
+        icon: product
+        summary: Specialty spend, formulary adherence and rebate performance reconciled to medical trend.
+        problem: Pharmacy claims, rebates and specialty spend sit with the PBM on a lag, so the plan cannot reconcile drug trend to medical trend or catch rebate leakage until the accrual is booked.
+        who_benefits: Actuarial & Finance
+        how_built: PBM and medical claims conform on Delta Lake under Unity Catalog and reconcile as certified Metric Views in AI/BI, so specialty trend and rebate performance read against one set.
+        components:
+          - CVS Caremark PBM
+          - AI/BI
+          - Unity Catalog
+          - Delta Lake
+          - Genie One
+        stories:
+          - title: How Caresource modernized its data architecture for better healthcare
+            url: https://www.databricks.com/blog/2022/04/07/how-caresource-modernized-its-data-architecture-to-provide-better-healthcare-to-members.html
+      - name: Member Retention
+        short: Growth
+        icon: custlake
+        summary: Disenrollment risk scored from service complaints, claims gaps and digital engagement.
+        problem: Members disenroll after a bad service experience or unmet care need, but the complaint, claims-gap and engagement signals that predict it are scattered and seen only after they leave.
+        who_benefits: CEO & CFO
+        how_built: Service, claims and engagement features are built in Feature Store and scored in Model Serving to flag disenrollment risk, driving retention outreach from governed member segments.
+        components:
+          - Feature Store
+          - Model Serving
+          - AI/BI
+          - CustomerLake
+          - MLflow
+        stories:
+          - title: SCAN Health Plan improves member care with Databricks
+            url: https://www.databricks.com/customers/scan-health
+      - name: Value-Based Contracts
+        short: Provider
+        icon: partner
+        summary: Shared savings and quality bonuses calculated from governed claims and clinical data.
+        problem: Shared-savings and quality bonuses settle months late from claims and clinical data that never line up, so providers dispute the numbers and neither side trusts the scorecard.
+        who_benefits: Provider Relations
+        how_built: Claims, quality and attribution data are conformed as governed Data Products under Unity Catalog and shared with providers over OpenSharing, surfaced in the Provider Scorecard.
+        components:
+          - Provider Scorecard
+          - Data Products
+          - Unity Catalog
+          - OpenSharing
+          - Delta Lake
+        stories:
+          - title: Empowering smarter decisions to transform healthcare outcomes
+            url: https://www.databricks.com/customers/abacus-insights
+medallion:
+  Bronze:
+    short: Raw claims and enrollment
+    summary: EDI 837/835 transactions, enrollment files, provider directories, prior auth decisions and pharmacy claims, landed exactly as received so a paid claim or a member month can always be replayed.
+  Silver:
+    short: Conformed member, claim
+    summary: Members, providers, claims and authorizations resolved into single conformed entities across core admin and clinical systems, with ICD and CPT codes reconciled to one service line.
+  Gold:
+    short: MLR, risk, quality
+    summary: 'Contracted products actuarial and quality teams run on: medical loss ratio, risk-adjusted revenue, HEDIS measure rates, and fraud waste and abuse savings.'
+citation_index:
+  facets:
+    title: Oracle Health Facets
+    url: https://www.oracle.com/health/
+  healthedge:
+    title: HealthEdge Source
+    url: https://healthedge.com/solutions/source
+  cotiviti:
+    title: Cotiviti payment integrity
+    url: https://www.cotiviti.com/solutions/payment-accuracy
+  epic-payer:
+    title: Epic Payer Platform
+    url: https://www.epic.com/software/payer-platform
+  navinet:
+    title: NaviNet prior authorization
+    url: https://www.navinet.net/
+  change-healthcare:
+    title: Optum (Change Healthcare) clinical connectivity
+    url: https://business.optum.com/en/changehealthcare.html
+  caremark:
+    title: CVS Caremark pharmacy benefits
+    url: https://www.caremark.com/
+  accredo:
+    title: Accredo specialty pharmacy
+    url: https://www.accredo.com/
+  mmit:
+    title: MMIT formulary access
+    url: https://www.mmitnetwork.com/
+  symplr:
+    title: Symplr provider management
+    url: https://www.symplr.com/
+  avality:
+    title: Avality multi-payer network
+    url: https://www.availity.com/
+  cms-encounter:
+    title: CMS encounter data submission
+    url: https://www.cms.gov/medicare/payment/medicare-advantage-rates-statistics/risk-adjustment
+  x12-edi:
+    title: X12 EDI standards
+    url: https://x12.org/
+  ncqa-hedis:
+    title: NCQA HEDIS measures
+    url: https://www.ncqa.org/hedis/

@@ -1,0 +1,977 @@
+name: Pharmaceuticals
+description: 'Drug discovery through commercial: clinical trials, GxP manufacturing, regulatory submissions and pharmacovigilance for biopharma and generics.'
+sources:
+  - name: Clinical & EDC
+    icon: people
+    tiles:
+      - name: Medidata Rave EDC
+        icon: people
+        summary: Case report forms, visit schedules and query management from pivotal trials.
+        citations:
+          - medidata-rave
+        category: Electronic Data Capture (EDC)
+        what_it_is: Captures case report forms, visit schedules and query management from pivotal trials, the operational system of record for clinical data collection.
+        who_uses_it: Clinical Data Management, Clinical Trial Managers and CRAs.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day per study
+            interval: Nightly extracts + intraday queries
+          stream:
+            types:
+              - semi-structured
+            volume: form events on save
+            interval: Continuous CDC on eCRF
+      - name: Veeva Vault CTMS
+        icon: sheet
+        summary: Site feasibility, monitoring visits and enrollment tracking.
+        citations:
+          - veeva-ctms
+        category: Clinical Trial Management System (CTMS)
+        what_it_is: Tracks site feasibility, monitoring visits and enrollment against plan across the trial's sites and countries.
+        who_uses_it: Clinical Operations, Clinical Trial Managers and Clinical Supply.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-3 GB/day
+            interval: Nightly sync
+      - name: Oracle Clinical One
+        icon: db
+        summary: Unified clinical data hub for trials across modalities and regions.
+        citations:
+          - oracle-clinical
+        category: Clinical Data Management & Randomization Platform
+        what_it_is: Unified clinical data hub combining data capture and randomization for trials across modalities and regions on one platform.
+        who_uses_it: Clinical Data Management, Clinical Supply and Biostatistics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-6 GB/day per study
+            interval: Nightly batch extracts
+          stream:
+            types:
+              - semi-structured
+            volume: randomization events on demand
+            interval: Continuous at randomization
+  - name: GxP Manufacturing
+    icon: stream
+    tiles:
+      - name: Werum PAS-X
+        icon: stream
+        summary: Electronic batch records, weighing and dispensing, and review by exception across GMP suites.
+        citations:
+          - opcenter-pharma
+        category: Manufacturing Execution System (MES)
+        what_it_is: Runs electronic batch records, weighing and dispensing and review-by-exception across GMP suites, the system of record for how a batch was made.
+        who_uses_it: Manufacturing Operations, Quality Assurance and GxP Validation Engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB/day batch records
+            interval: Per-batch + shift batch
+          stream:
+            types:
+              - semi-structured
+            volume: line events at batch latency
+            interval: Continuous during runs
+      - name: Rockwell PharmaSuite
+        icon: iot
+        summary: Packaging line events, serialization and line clearance records.
+        citations:
+          - pharmasuite
+        category: Manufacturing Execution System (MES)
+        what_it_is: Captures packaging-line events, serialization and line-clearance records for finished-goods packaging and DSCSA compliance.
+        who_uses_it: Manufacturing Operations, Serialization & Distribution and Quality Assurance.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous on the line
+      - name: SAP S/4HANA PP
+        icon: erp
+        summary: Production orders, material consumption and co-product yields.
+        citations:
+          - sap-s4
+        category: ERP (Production Planning)
+        what_it_is: Holds production orders, material consumption and co-product yields, tying the plant to procurement, inventory and finance.
+        who_uses_it: Supply Chain Planning, Manufacturing Operations and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + hourly deltas
+  - name: Quality & LIMS
+    icon: gavel
+    tiles:
+      - name: LabWare LIMS
+        icon: gavel
+        summary: Stability, release and environmental monitoring assay results.
+        citations:
+          - labware
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Manages stability, release and environmental-monitoring assay results so QC testing gates batch release from one record.
+        who_uses_it: Quality Control, Quality Assurance and Manufacturing Operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-8 GB/day
+            interval: Nightly batch + result release
+      - name: MasterControl QMS
+        icon: gavel
+        summary: Deviations, CAPA and change control tied to batches and sites.
+        citations:
+          - mastercontrol
+        category: Quality Management System (QMS)
+        what_it_is: Manages deviations, CAPA and change control tied to batches and sites, the quality system of record for GxP compliance.
+        who_uses_it: Quality Assurance, Regulatory Affairs and Manufacturing Operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.5-3 GB/day
+            interval: Nightly + event-driven
+      - name: Veeva QualityDocs
+        icon: product
+        summary: Specifications, SOPs and approved label artwork.
+        citations:
+          - veeva-quality
+        category: Quality Document / Content Management
+        what_it_is: Controls specifications, SOPs and approved label artwork so the current, approved document governs every batch and submission.
+        who_uses_it: Quality Assurance, Regulatory Affairs and Manufacturing Operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 0.2-1 GB/day
+            interval: Nightly + on approval
+  - name: Safety & Commercial
+    icon: custlake
+    tiles:
+      - name: ArisGlobal LifeSphere
+        icon: gavel
+        summary: Individual case safety reports, signal detection and regulatory submissions.
+        citations:
+          - arisglobal
+        category: Pharmacovigilance / Safety System
+        what_it_is: Processes individual case safety reports, runs signal detection and drives regulatory safety submissions for marketed and investigational products.
+        who_uses_it: Pharmacovigilance, Medical Affairs and Regulatory Affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-4 GB/day cases + narratives
+            interval: Hourly / daily intake
+      - name: IQVIA OCE
+        icon: partner
+        summary: Field force activity, sample accountability and call notes.
+        citations:
+          - iqvia-oce
+        category: Life Sciences CRM / Commercial Engagement
+        what_it_is: Captures field-force activity, sample accountability and call notes for commercial engagement with healthcare professionals.
+        who_uses_it: Commercial Field, Sales Operations and Medical Affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + intraday
+      - name: Veeva CRM
+        icon: custlake
+        summary: HCP engagement, consent and medical inquiry workflows.
+        citations:
+          - veeva-crm
+        category: Life Sciences CRM (HCP Engagement)
+        what_it_is: Runs HCP engagement, consent and medical-inquiry workflows across field and medical teams for compliant omnichannel outreach.
+        who_uses_it: Commercial Field, Medical Affairs and Compliance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: engagement events as they occur
+            interval: Continuous CDC
+      - name: Salesforce Life Sciences Cloud
+        icon: custlake
+        summary: Commercial CRM for field engagement, HCP and account management and market access, the go-to-market system of record for the commercial team.
+        citations:
+          - sf-lsc
+        category: Life Sciences CRM (Commercial)
+        what_it_is: Runs commercial field engagement, HCP and account management and market-access workflows, the go-to-market CRM emitting call, sample and engagement activity for the commercial organisation kept separate from medical.
+        who_uses_it: Commercial Field, Sales Operations and Market Access teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + intraday
+          stream:
+            types:
+              - semi-structured
+            volume: engagement events as they occur
+            interval: Continuous CDC
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Partner CMO Inventory
+        icon: fed
+        summary: Contract manufacturer batch status queried in place under Unity Catalog.
+        category: Contract Manufacturer (CMO) Inventory System
+        what_it_is: Batch status and inventory held at contract manufacturers, queried in place through federation rather than copied into the platform.
+        who_uses_it: Supply Chain Planning, Manufacturing Operations and Quality Assurance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale partner inventory
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: CDISC SDTM / ADaM
+        icon: api
+        summary: Clinical datasets validated on ingest against CDISC standards before submission builds.
+        citations:
+          - cdisc
+        category: Clinical Data Standards (CDISC)
+        what_it_is: Clinical datasets validated on ingest against the SDTM and ADaM standards so submission builds start from conformant, traceable data.
+        who_uses_it: Biostatistics, Clinical Data Management and Regulatory Affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB per study
+            interval: Per submission build
+      - name: FDA FAERS Feeds
+        icon: gavel
+        summary: Public safety reference cases consumed inbound for signal triage.
+        citations:
+          - fda-faers
+        category: Public Adverse-Event Database
+        what_it_is: Public FDA adverse-event reports consumed inbound as a reference for signal triage and disproportionality benchmarking against the safety database.
+        who_uses_it: Pharmacovigilance, Safety Signal Science and Medical Affairs.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs (quarterly case files)
+            interval: Quarterly reference releases
+      - name: GS1 EPCIS Pharma
+        icon: stream
+        summary: Serialization and distribution events for DSCSA traceability.
+        citations:
+          - gs1-epcis
+        category: Serialization / Track-and-Trace Standard (EPCIS)
+        what_it_is: Serialization and distribution events in the EPCIS standard that give item-level traceability across the supply chain for DSCSA compliance.
+        who_uses_it: Serialization & Distribution, Supply Chain Planning and Quality Assurance.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (event)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Biopharma Leaders
+        mark: Genie One
+        summary: The CEO on pipeline milestones and supply readiness; the CFO on inventory and write-offs when a pivotal trial reads out or a launch scales.
+        uses:
+          - - Genie One
+            - Ask what enrollment pace is versus protocol without waiting on clinical ops.
+          - - AI/BI
+            - Enrollment, yield and safety on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so "SAE" means one thing across safety and clinical.
+        sub:
+          - name: CEO
+            cares: the pipeline milestones and whether supply is ready when a launch scales.
+          - name: CFO & Treasury
+            cares: inventory, write-offs and the capital a launch and its trials consume.
+          - name: Chief Commercial Officer
+            cares: launch uptake, country sequencing and revenue against forecast.
+        ucs:
+          - Enrollment Forecast
+          - Demand & Supply
+          - Safety Signal Detect
+      - name: Clinical Operations
+        mark: AI/BI
+        summary: Study managers on enrollment versus plan, data quality and monitoring backlog, watching the protocol deviation rate before database lock.
+        uses:
+          - - Trial Command Centre
+            - Site enrollment and query aging before database lock.
+          - - AI/BI
+            - Enrollment and protocol deviation on governed definitions.
+          - - Genie One
+            - Ask which sites are under-enrolling this month.
+        sub:
+          - name: Clinical Trial Managers
+            cares: enrollment versus plan, site activation and monitoring backlog.
+          - name: Clinical Data Management
+            cares: query aging and data quality before database lock.
+          - name: Clinical Supply
+            cares: drug supply forecast against enrollment and protocol demand.
+        ucs:
+          - Enrollment Forecast
+          - Protocol Deviation
+          - Demand & Supply
+      - name: Mfg & Supply
+        mark: Lakehouse//RT
+        summary: Plant and supply on batch release rate, yield and cold-chain integrity when a launch scales past the demand the supply plan forecast.
+        uses:
+          - - Batch Release Cockpit
+            - Open deviations blocking release before ship.
+          - - Lakehouse//RT
+            - Line state at the latency a batch runs at.
+          - - Model Serving
+            - Yield models scored on historian and LIMS feeds.
+        sub:
+          - name: Manufacturing Operations
+            cares: batch release rate and yield across the GMP suites.
+          - name: Supply Chain Planning
+            cares: launch supply, cold-chain lanes and shortage risk.
+          - name: Serialization & Distribution
+            cares: DSCSA trace and saleable returns across partners.
+        ucs:
+          - Yield Optimisation
+          - Batch Genealogy
+          - Cold Chain Integrity
+          - Serialization Trace
+      - name: Quality & Reg
+        mark: Unity Catalog
+        summary: QA and RA on deviations, submissions and inspection readiness, tracking batch release rate and CAPA aging before FDA and EMA audits.
+        uses:
+          - - Quality Command
+            - CAPA aging and repeat deviations before audits.
+          - - Unity Catalog
+            - Lineage from batch record to submission annex.
+          - - AI/BI
+            - Release rate and deviation rate on certified Metric Views.
+        sub:
+          - name: Quality Assurance
+            cares: deviations, CAPA aging and repeat findings before inspections.
+          - name: Regulatory Affairs
+            cares: submissions and inspection readiness across FDA and EMA.
+          - name: Quality Control
+            cares: release and stability testing turnaround from the LIMS.
+        ucs:
+          - Inspection Readiness
+          - Batch Genealogy
+          - Serialization Trace
+      - name: Medical & Safety
+        mark: Model Serving
+        summary: Pharmacovigilance and medical affairs on safety narratives and scientific engagement, watching serious adverse event rates and signal timeliness, kept firewalled from commercial so medical stays non-promotional.
+        uses:
+          - - Safety Signal Hub
+            - Emerging signals triaged before periodic reports.
+          - - Model Serving
+            - Disproportionality and signal models scored on case data.
+          - - Apps
+            - Medical inquiry workflows on governed data.
+        sub:
+          - name: Pharmacovigilance
+            cares: adverse-event signals and SAE rates before periodic reports.
+          - name: Medical Affairs
+            cares: medical inquiries and non-promotional scientific engagement with HCPs.
+          - name: Drug Safety Physician
+            cares: causality, labeling impact and the benefit-risk narrative.
+        ucs:
+          - Safety Signal Detect
+      - name: Commercial
+        mark: CustomerLake
+        summary: 'The go-to-market side: field force, sales operations and market access on HCP engagement, launch uptake and payer coverage, firewalled from medical so promotional activity stays compliant.'
+        uses:
+          - - CustomerLake
+            - HCP segments and next-best-action without copying CRM elsewhere.
+          - - Model Serving
+            - Next-best-action and launch-uptake models scored into the field workflow.
+          - - AI/BI
+            - Launch uptake, coverage and field activity on certified Metric Views.
+        sub:
+          - name: Commercial Field
+            cares: compliant outreach coverage and the next action per HCP.
+          - name: Sales Operations
+            cares: targeting, incentive compensation and field-force effectiveness.
+          - name: Market Access
+            cares: payer coverage, contracting and launch uptake by market.
+        ucs:
+          - HCP Engagement
+          - Demand & Supply
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the EDC, LIMS, MES batch and safety-case feeds; own the Bronze to Silver path and the pager when a GxP pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for EDC, LIMS and MES sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on batch and safety-case feeds.
+          - - Lakewatch
+            - Freshness on the enrollment and release tables study teams read.
+        sub:
+          - name: Ingestion Engineering
+            cares: the EDC, LIMS, MES and safety-case connectors and their freshness.
+          - name: GxP Validation Engineering
+            cares: validated pipelines and expectations that hold under audit.
+          - name: Streaming Platform
+            cares: cold-chain and packaging-line events landed at batch latency.
+        ucs:
+          - Batch Genealogy
+          - Protocol Deviation
+          - Cold Chain Integrity
+      - name: Data Scientists
+        mark: MLflow
+        summary: Enrollment-forecast, yield, safety-signal and cold-chain models, and whether they still hold six months after deployment under GxP validation.
+        uses:
+          - - Feature Store
+            - Historian and LIMS features read identically in training and serving.
+          - - MLflow
+            - Every enrollment and yield run tracked for audit and reproduction.
+          - - Model Serving
+            - Yield and signal models scored on historian and ICSR feeds.
+        sub:
+          - name: Clinical Modelling
+            cares: enrollment-forecast and protocol-deviation models per site.
+          - name: Manufacturing Modelling
+            cares: yield and cold-chain models on historian and LIMS history.
+          - name: Safety Signal Science
+            cares: disproportionality and NLP models over ICSR and case text.
+        ucs:
+          - Enrollment Forecast
+          - Yield Optimisation
+          - Safety Signal Detect
+      - name: App Developers
+        mark: Apps
+        summary: Ship the trial command, batch release and safety-signal applications clinical and quality teams work in, hosted next to governed GxP data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for release-decision state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a deviation summary against governed tools.
+        sub:
+          - name: Clinical & Safety Apps
+            cares: the Trial Command Centre and Safety Signal Hub screens.
+          - name: Quality & Release Apps
+            cares: the Batch Release Cockpit and Quality Command workflows.
+          - name: Commercial Apps
+            cares: the HCP engagement and medical-inquiry screens over governed data.
+        ucs:
+          - Batch Genealogy
+          - Safety Signal Detect
+          - Inspection Readiness
+          - HCP Engagement
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and trial updates in the channel study teams work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: GxP Writeback
+    icon: opdb
+    tiles:
+      - name: MES Batch Release
+        icon: stream
+        summary: Quality release decisions written back into MES before pallets ship.
+        citations:
+          - opcenter-pharma
+      - name: EDC Query Resolution
+        icon: people
+        summary: Data queries closed in EDC from governed discrepancy reports.
+        citations:
+          - medidata-rave
+      - name: CAPA Work Orders
+        icon: gavel
+        summary: Corrective actions assigned in QMS from trending deviations.
+        citations:
+          - mastercontrol
+  - name: Partners & CMO
+    icon: partner
+    tiles:
+      - name: CMO Batch Exchange
+        icon: share
+        summary: Batch genealogy and release status shared to contract manufacturers over Delta Sharing.
+      - name: CRO Data Transfer
+        icon: api
+        summary: Clinical datasets exchanged with audit trail not unsecured email.
+        citations:
+          - medidata-rave
+      - name: Wholesaler Trace API
+        icon: stream
+        summary: DSCSA transaction statements served from governed serialization events.
+        citations:
+          - gs1-epcis
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: FDA / EMA Submissions
+        icon: gavel
+        summary: eCTD packages and periodic safety reports from governed clinical and safety tables.
+        citations:
+          - cdisc
+      - name: GxP Audit Evidence
+        icon: share
+        summary: Batch and clinical lineage evidence filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: CROs, CMOs and regulators reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Trial Command Centre
+        icon: people
+        short: Enrollment live
+        summary: Site enrollment, queries and monitoring backlog on Databricks Apps over Lakebase.
+      - name: Batch Release Cockpit
+        icon: gavel
+        short: GxP release
+        summary: Open deviations and LIMS results blocking shipment before pallets leave.
+      - name: Safety Signal Hub
+        icon: gauge
+        short: Pharmacovigilance
+        summary: Emerging adverse event signals triaged before periodic safety reports.
+      - name: Quality Command
+        icon: product
+        short: CAPA control
+        summary: Deviation trends and CAPA aging before regulatory inspections.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Trial Enrollment
+        icon: aibi
+        summary: Enrollment versus plan, query aging and deviations across the clinical portfolio.
+        kpis:
+          - Enrollment vs plan
+          - Site activation
+          - Query aging
+          - Protocol deviation rate
+          - Screen-failure rate
+        teams:
+          - Clinical Operations
+          - Biopharma Leaders
+          - Clinical Trial Managers
+      - name: Batch Release & Yield
+        icon: aibi
+        summary: Batch release rate, first-pass yield and open deviations on certified Metric Views.
+        kpis:
+          - Batch release rate
+          - First-pass yield
+          - Open deviations
+          - LIMS TAT
+          - Right-first-time
+        teams:
+          - Mfg & Supply
+          - Quality & Reg
+          - Manufacturing Operations
+      - name: Pharmacovigilance
+        icon: aibi
+        summary: SAE rates, signal counts and case throughput across the safety database.
+        kpis:
+          - SAE rate
+          - Signal count
+          - ICSR backlog
+          - Expedited-report timeliness
+          - Case processing time
+        teams:
+          - Medical & Safety
+          - Quality & Reg
+          - Pharmacovigilance
+      - name: Quality & Compliance
+        icon: aibi
+        summary: CAPA aging, repeat deviations and inspection readiness across sites.
+        kpis:
+          - CAPA aging
+          - Repeat deviations
+          - Right-first-time
+          - Inspection findings
+          - Change-control cycle time
+        teams:
+          - Quality & Reg
+          - Quality Assurance
+          - Regulatory Affairs
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Enrollment & Trials Agent
+        icon: genie
+        summary: Ask how enrollment is tracking and where data quality is at risk before database lock.
+        feeds:
+          - Medidata Rave EDC
+          - Veeva Vault CTMS
+          - Oracle Clinical One
+          - Enrollment, yield, safety
+        teams:
+          - Clinical Operations
+          - Biopharma Leaders
+          - Clinical Trial Managers
+        questions:
+          - How is enrollment pacing versus protocol by site and country?
+          - Which sites are under-enrolling this month?
+          - What is query aging by site ahead of database lock?
+          - Where is the protocol-deviation rate trending up?
+          - Which studies are at risk of missing their readout date?
+      - name: Manufacturing & Batch Release Agent
+        icon: genie
+        summary: Explore batch release, yield and open deviations across the GMP suites.
+        feeds:
+          - Werum PAS-X
+          - LabWare LIMS
+          - SAP S/4HANA PP
+          - Conformed subject, batch
+        teams:
+          - Mfg & Supply
+          - Manufacturing Operations
+          - Quality Control
+        questions:
+          - Which batches are held by open deviations right now?
+          - What is first-pass yield by product and line this month?
+          - Where is LIMS release testing behind schedule?
+          - Which lines have the most right-first-time failures?
+          - How does batch release rate compare to the plan?
+      - name: Safety Signals Agent
+        icon: genie
+        summary: Answer adverse-event, signal and reporting-timeliness questions across the safety database.
+        feeds:
+          - ArisGlobal LifeSphere
+          - FDA FAERS Feeds
+          - Enrollment, yield, safety
+        teams:
+          - Medical & Safety
+          - Pharmacovigilance
+          - Quality & Reg
+        questions:
+          - What is the SAE rate by product this quarter?
+          - Which events are disproportionate versus FAERS reference?
+          - How many ICSRs are in the processing backlog?
+          - Which expedited reports are near their reporting deadline?
+          - What is the average case-processing time this month?
+      - name: Quality & Inspection Agent
+        icon: genie
+        summary: Ask about CAPA aging, repeat deviations and lineage before FDA and EMA inspections.
+        feeds:
+          - MasterControl QMS
+          - Veeva QualityDocs
+          - LabWare LIMS
+          - Conformed subject, batch
+        teams:
+          - Quality & Reg
+          - Quality Assurance
+          - Regulatory Affairs
+        questions:
+          - Which CAPAs are open past their target closure date?
+          - What deviations are repeating across sites and products?
+          - Can we trace this batch from record to submission annex?
+          - How long is change control taking to close?
+          - Which sites carry the most audit exposure right now?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Enrollment Forecast
+        short: Clinical
+        icon: chart
+        summary: Site and country enrollment predicted against protocol timelines.
+        problem: Enrollment slips against protocol timelines and nobody sees it until a site is months behind, so rescue sites and budget are approved late and the readout date drifts.
+        who_benefits: Clinical Operations
+        how_built: EDC and CTMS feeds land through Lakeflow and enrollment is modelled in Model Serving, surfaced site by site in the Trial Command Centre on Lakebase before database lock.
+        components:
+          - Trial Command Centre
+          - Medidata Rave EDC
+          - Lakeflow
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Novo Nordisk transforms clinical trials with AI
+            url: https://www.databricks.com/customers/novo-nordisk
+          - title: How Amgen modernized analytics to speed drug development
+            url: https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html
+      - name: Protocol Deviation
+        short: Data quality
+        icon: people
+        summary: Visit and dosing deviations surfaced before database lock.
+        problem: Visit-window and dosing deviations hide inside EDC queries and monitoring notes, so data managers find them at database lock when a fix means reopening the study and re-monitoring sites.
+        who_benefits: Clinical Operations
+        how_built: Query, visit and dosing data are conformed on Delta Lake under Unity Catalog with expectations in Lakeflow, so deviations surface in the Trial Command Centre while the visit can still be fixed.
+        components:
+          - Trial Command Centre
+          - Medidata Rave EDC
+          - Veeva Vault CTMS
+          - Lakeflow
+          - Unity Catalog
+          - Delta Lake
+        stories:
+          - title: Novo Nordisk transforms clinical trials with AI
+            url: https://www.databricks.com/customers/novo-nordisk
+      - name: Safety Signal Detect
+        short: PV
+        icon: gavel
+        summary: Disproportionality analysis on ICSRs before manual medical review queues swell.
+        problem: Adverse events arrive as free text in calls, emails and literature and manual review queues swell, so a real signal can sit unseen while case volume climbs faster than reviewers can read.
+        who_benefits: Medical & Safety
+        how_built: ICSR and case text are processed with AI Functions and disproportionality models in Model Serving, ranked in the Safety Signal Hub so reviewers triage emerging signals before periodic reports.
+        components:
+          - Safety Signal Hub
+          - ArisGlobal LifeSphere
+          - FDA FAERS Feeds
+          - AI Functions
+          - Model Serving
+          - Unity Catalog
+        stories:
+          - title: Improving drug safety with adverse event detection using NLP
+            url: https://www.databricks.com/blog/2022/01/17/improving-drug-safety-with-adverse-event-detection-using-nlp.html
+      - name: Batch Genealogy
+        short: Traceability
+        icon: stream
+        summary: Raw material to finished dose traced in minutes during quality holds.
+        problem: When a quality hold hits, tracing raw-material lots to finished doses across MES, LIMS and ERP takes days of manual reconciliation, and every hour the batch sits is cost and supply risk.
+        who_benefits: Mfg & Supply
+        how_built: Batch records, LIMS results and material moves are conformed on Delta Lake under Unity Catalog, so genealogy from raw lot to finished dose resolves in minutes in the Batch Release Cockpit.
+        components:
+          - Batch Release Cockpit
+          - Werum PAS-X
+          - LabWare LIMS
+          - SAP S/4HANA PP
+          - Unity Catalog
+          - Delta Lake
+        stories:
+          - title: Managing recalls with barcode traceability in the data lakehouse
+            url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
+          - title: How TetraScience accelerates biopharma with production-ready data
+            url: https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence
+      - name: Yield Optimisation
+        short: Manufacturing
+        icon: iot
+        summary: Process parameters scored on yield using historian and LIMS history.
+        problem: Batch yield swings with process parameters nobody can correlate in time, so investigations run weeks after a low-yield lot and the same loss repeats on the next campaign.
+        who_benefits: Mfg & Supply
+        how_built: Historian and LIMS history feed yield models in Feature Store and Model Serving, with runs tracked in MLflow, so process parameters are scored against yield before the next batch runs.
+        components:
+          - Batch Release Cockpit
+          - Werum PAS-X
+          - LabWare LIMS
+          - Feature Store
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Smart Manufacturing Command Center by Tredence and Databricks
+            url: https://www.databricks.com/company/partners/consulting-and-si/partner-solutions/tredence-smart-manufacturing-command-center
+          - title: 'Agents for production lines: trusted decisions in real time'
+            url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
+      - name: Cold Chain Integrity
+        short: Distribution
+        icon: observ
+        summary: Temperature excursions predicted and rerouted before product quality is lost.
+        problem: Temperature excursions in transit are found after delivery when a shipment is already spoiled, so product is written off and patients wait while lanes that keep failing go unfixed.
+        who_benefits: Mfg & Supply
+        how_built: Shipment sensor and logistics events stream into Lakehouse//RT and excursion-risk models in Model Serving flag lanes early, so distribution reroutes before product quality is lost.
+        components:
+          - Lakehouse//RT
+          - Model Serving
+          - GS1 EPCIS Pharma
+          - SAP S/4HANA PP
+          - Delta Lake
+        stories:
+          - title: How Johnson & Johnson uses data to optimize its supply chain
+            url: https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html
+      - name: Demand & Supply
+        short: Commercial
+        icon: sheet
+        summary: Launch supply aligned to enrollment and country approval waves.
+        problem: Launch demand and country approvals move faster than the supply plan, so a scaling launch either stocks out in a new market or writes off product the forecast never needed.
+        who_benefits: Biopharma Leaders
+        how_built: Enrollment, approval and commercial signals are conformed under Unity Catalog and demand models in Model Serving align launch supply to approval waves, read in AI/BI by planning and finance.
+        components:
+          - SAP S/4HANA PP
+          - Model Serving
+          - Unity Catalog
+          - AI/BI
+          - Genie One
+        stories:
+          - title: How Amgen modernized analytics to speed drug development
+            url: https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html
+          - title: Integra Life Sciences gains supply and demand visibility
+            url: https://www.databricks.com/customers/integra-life-sciences
+      - name: Inspection Readiness
+        short: Quality
+        icon: gavel
+        summary: Repeat deviations and open CAPAs ranked before FDA or EMA visits.
+        problem: Repeat deviations and open CAPAs scatter across QMS and quality systems, so audit prep is a fire drill and a finding a prior inspection raised is still open when the next one lands.
+        who_benefits: Quality & Reg
+        how_built: Deviation, CAPA and batch data are conformed under Unity Catalog and ranked in the Quality Command app on Lakebase, so repeat issues and audit exposure are visible before FDA or EMA visits.
+        components:
+          - Quality Command
+          - MasterControl QMS
+          - Veeva QualityDocs
+          - Unity Catalog
+          - AI/BI
+          - Lakebase
+        stories:
+          - title: Partner solutions built on Databricks Genie for pharma operations
+            url: https://www.databricks.com/blog/transforming-industries-conversational-ai-partner-solutions-built-databricks-genie
+          - title: How TetraScience accelerates biopharma with production-ready data
+            url: https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence
+      - name: HCP Engagement
+        short: Commercial
+        icon: custlake
+        summary: Field and medical touchpoints scored for compliant outreach prioritisation.
+        problem: Field, medical and digital touchpoints sit in separate systems, so HCPs get uncoordinated, non-compliant outreach and reps cannot see which next action actually matters for each physician.
+        who_benefits: Commercial
+        how_built: CRM, prescription and engagement signals are unified in CustomerLake and next-best-action models in Model Serving prioritise compliant outreach delivered into the field workflow.
+        components:
+          - Veeva CRM
+          - IQVIA OCE
+          - CustomerLake
+          - Model Serving
+          - AI Functions
+        stories:
+          - title: Elevating customer experience with AI-enabled omnichannel Next Best Action
+            url: https://www.databricks.com/blog/elevating-customer-experience-ai-enabled-omnichannel-next-best-action
+          - title: Next Best Action for healthcare and life sciences
+            url: https://www.databricks.com/solutions/accelerators/next-best-action-healthcare-and-life-sciences
+      - name: Serialization Trace
+        short: DSCSA
+        icon: api
+        summary: Saleable returns and suspect product investigations from EPCIS lineage.
+        problem: Saleable-return verification and suspect-product checks need item-level history, but serialization events sit in the packaging line and partner systems, so a DSCSA query is a manual hunt.
+        who_benefits: Mfg & Supply
+        how_built: EPCIS serialization events are conformed on Delta Lake under Unity Catalog and served as transaction statements over OpenSharing, so returns and suspect-product traces resolve from one lineage.
+        components:
+          - GS1 EPCIS Pharma
+          - Rockwell PharmaSuite
+          - Unity Catalog
+          - Delta Lake
+          - OpenSharing
+        stories:
+          - title: How Johnson & Johnson uses data to optimize its supply chain
+            url: https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html
+          - title: Managing recalls with barcode traceability in the data lakehouse
+            url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
+medallion:
+  Bronze:
+    short: Raw trial and plant
+    summary: EDC case reports, lab LIMS results, MES batch records, safety cases and distribution shipments, landed exactly as received so a subject visit or a batch lot can always be replayed as it stood.
+  Silver:
+    short: Conformed subject, batch
+    summary: Patients, sites, batches and products resolved into single conformed entities across clinical, quality and supply systems, with randomisation and genealogy reconciled and adverse events stitched to one safety record.
+  Gold:
+    short: Enrollment, yield, safety
+    summary: 'Contracted products clinical and commercial leaders run on: enrollment versus plan, batch yield and release rate, and serious adverse event rates by product.'
+citation_index:
+  medidata-rave:
+    title: Medidata Rave EDC
+    url: https://www.medidata.com/en/clinical-trial-products/clinical-data-management/
+  veeva-ctms:
+    title: Veeva Vault CTMS
+    url: https://www.veeva.com/products/vault-ctms/
+  oracle-clinical:
+    title: Oracle Clinical One
+    url: https://www.oracle.com/life-sciences/clinical-trials/
+  opcenter-pharma:
+    title: Körber Werum PAS-X MES
+    url: https://www.koerber-pharma.com/en/solutions/software/werum-pas-x-mes-suite
+  pharmasuite:
+    title: Rockwell PharmaSuite
+    url: https://www.rockwellautomation.com/en-us/industries/life-sciences.html
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  labware:
+    title: LabWare LIMS
+    url: https://www.labware.com/
+  mastercontrol:
+    title: MasterControl QMS
+    url: https://www.mastercontrol.com/
+  veeva-quality:
+    title: Veeva QualityDocs
+    url: https://www.veeva.com/products/qualitydocs/
+  arisglobal:
+    title: ArisGlobal LifeSphere
+    url: https://www.arisglobal.com/lifesphere/
+  iqvia-oce:
+    title: IQVIA OCE
+    url: https://www.iqvia.com/solutions/commercialization
+  veeva-crm:
+    title: Veeva CRM
+    url: https://www.veeva.com/products/crm/
+  sf-lsc:
+    title: Salesforce Life Sciences Cloud
+    url: https://www.salesforce.com/industries/life-sciences/
+  cdisc:
+    title: CDISC standards
+    url: https://www.cdisc.org/
+  fda-faers:
+    title: FDA FAERS
+    url: https://www.fda.gov/drugs/surveillance/questions-and-answers-fdas-adverse-event-reporting-system-faers
+  gs1-epcis:
+    title: GS1 EPCIS
+    url: https://www.gs1.org/standards/epcis

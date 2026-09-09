@@ -1,0 +1,896 @@
+name: Manufacturing
+description: 'Discrete and process manufacturing: ERP and MES shop-floor execution, quality and traceability, supply chain planning, and asset maintenance.'
+sources:
+  - name: ERP & Planning
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Manufacturing orders, BOMs, routings, inventory and financial postings. The system of record for what was planned to be made and what was consumed.
+        citations:
+          - sap-s4
+        category: Manufacturing ERP
+        what_it_is: Holds the production orders, bills of material, routings, inventory and financial postings that define what was planned, made and consumed across plants.
+        who_uses_it: Production planning, plant controllers and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-100 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of postings/sec
+            interval: Continuous CDC
+      - name: Oracle SCM Cloud
+        icon: erp
+        summary: Supply planning, work definitions and costed transactions for plants on the Oracle manufacturing estate.
+        citations:
+          - oracle-scm
+        category: Supply Chain Management (SCM) Cloud
+        what_it_is: Runs supply planning, work definitions and costed manufacturing transactions for plants standardized on the Oracle cloud estate.
+        who_uses_it: Supply planners, manufacturing engineering and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch
+      - name: Kinaxis Maestro
+        icon: sheet
+        summary: Concurrent S&OP scenarios, constraint-based planning and what-if responses when a supplier or line goes down.
+        citations:
+          - kinaxis
+        category: Supply Chain Planning (S&OP/IBP)
+        what_it_is: Runs concurrent constraint-based S&OP scenarios and what-if replanning when a supplier or line goes down.
+        who_uses_it: S&OP planners, demand planning and Supply Chain leadership.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day scenarios
+            interval: Planning cycles + on-demand what-if
+  - name: MES & Shop Floor
+    icon: stream
+    tiles:
+      - name: Siemens Opcenter
+        icon: stream
+        summary: Work instructions, cycle counts, downtime reason codes and WIP status from the MES the operators work in.
+        citations:
+          - opcenter
+        category: Manufacturing Execution System (MES)
+        what_it_is: Executes work instructions and captures cycle counts, downtime reason codes and WIP status from the shop floor the operators work in.
+        who_uses_it: Line operators, shift supervisors and Manufacturing engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5k events/sec at peak
+            interval: Continuous shop-floor events
+      - name: Rockwell FactoryTalk
+        icon: iot
+        summary: Line state, OEE counters and recipe execution from Allen-Bradley controlled assets.
+        citations:
+          - factorytalk
+        category: Industrial Automation / SCADA
+        what_it_is: Streams line state, OEE counters and recipe execution from Allen-Bradley PLC-controlled assets on the plant network.
+        who_uses_it: Controls engineers, plant operations and Continuous improvement.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k tags/sec
+            interval: Continuous high-frequency telemetry
+      - name: AVEVA MES
+        icon: db
+        summary: Batch records, electronic batch tickets and equipment logbooks for process manufacturing sites.
+        citations:
+          - aveva-mes
+        category: Process MES / Electronic Batch Records
+        what_it_is: Captures electronic batch records, batch tickets and equipment logbooks for process and hybrid manufacturing sites.
+        who_uses_it: Process operators, Quality and Regulatory affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 2-10 GB/day batch records
+            interval: Per-batch + hourly
+  - name: Quality & PLM
+    icon: gavel
+    tiles:
+      - name: PTC Windchill
+        icon: product
+        summary: Engineering BOMs, change orders and approved drawings the shop floor must build to.
+        citations:
+          - windchill
+        category: PLM System
+        what_it_is: Manages engineering BOMs, change orders and released drawings and revisions the shop floor must build to.
+        who_uses_it: Design engineering, change management and Manufacturing engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: On change release + nightly
+      - name: MasterControl QMS
+        icon: gavel
+        summary: Non-conformance, CAPA and audit findings tied to lots and suppliers.
+        citations:
+          - mastercontrol
+        category: Quality Management System (QMS)
+        what_it_is: Manages non-conformances, CAPA and audit findings tied back to the lots, suppliers and processes that caused them.
+        who_uses_it: Quality managers, Regulatory affairs and Supplier quality.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / event-driven
+      - name: ETQ Reliance
+        icon: gavel
+        summary: Inspection plans, SPC results and supplier quality scorecards for regulated industries.
+        citations:
+          - etq
+        category: Quality Management System (QMS)
+        what_it_is: Runs inspection plans, SPC results and supplier quality scorecards for regulated and safety-critical industries.
+        who_uses_it: Quality engineers, SPC analysts and Supplier quality.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (inspection + SPC)
+            interval: Hourly / per-inspection
+  - name: IoT & Historians
+    icon: iot
+    tiles:
+      - name: AVEVA PI System
+        icon: iot
+        summary: High-frequency sensor and actuator tags from lines, utilities and environmental systems.
+        citations:
+          - aveva-pi
+        category: Process/Time-Series Historian
+        what_it_is: Collects high-frequency sensor and actuator tags from lines, utilities and environmental systems for OEE, energy and anomaly analytics.
+        who_uses_it: Reliability engineers, Process engineering and Energy management.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k tags/sec
+            interval: Continuous historian stream
+      - name: AspenTech IP.21
+        icon: stream
+        summary: Process historian data for batch analytics, energy intensity and abnormal event detection.
+        citations:
+          - aspen-ip21
+        category: Process/Time-Series Historian
+        what_it_is: Stores process historian time-series for batch analytics, energy intensity and abnormal-event detection at process sites.
+        who_uses_it: Process engineers, batch analytics and Energy teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k tags/sec
+            interval: Continuous historian stream
+      - name: Machine Vision QC
+        icon: observ
+        summary: Inline defect images and measurement vectors joined to lot and serial for root-cause analysis.
+        category: Machine Vision Inspection
+        what_it_is: Captures inline defect images and measurement vectors and joins them to lot and serial for defect classification and root-cause analysis.
+        who_uses_it: Quality engineers, Vision/ML teams and Manufacturing engineering.
+        data_out:
+          stream:
+            types:
+              - unstructured
+              - structured
+            volume: 100s of images/sec + vectors
+            interval: Continuous inline capture
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Data Warehouse
+        icon: fed
+        summary: Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost allocations.
+        who_uses_it: Finance, HR analytics and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: OPC-UA Plant Gateway
+        icon: iot
+        summary: Shop-floor protocol bridges normalising PLC and robot telemetry on ingest before historian landing.
+        citations:
+          - opc-ua
+        category: OT Protocol Gateway
+        what_it_is: Bridges shop-floor OPC-UA and PLC/robot protocols, normalizing controller telemetry on ingest before historian landing.
+        who_uses_it: Controls engineers, OT/IT integration and Streaming data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k tags/sec
+            interval: Continuous OT telemetry
+      - name: EDI ASN / DESADV
+        icon: api
+        summary: Supplier advance ship notices and delivery confirmations parsed into structured receipt events.
+        citations:
+          - edi-asn
+        category: Supplier EDI
+        what_it_is: Parses supplier advance ship notices and delivery confirmations (DESADV) into structured inbound receipt events.
+        who_uses_it: Inbound logistics, Procurement and Materials planning.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - structured
+            volume: 100s of MB/day
+            interval: Continuous EDI messages
+      - name: GS1 EPCIS Events
+        icon: stream
+        summary: Serialised product movement events for track-and-trace across plants, DCs and customers.
+        citations:
+          - gs1-epcis
+        category: Track & Trace Events (EPCIS)
+        what_it_is: Streams serialized product movement (commissioning, aggregation, shipping) events for track-and-trace across plants, DCs and customers.
+        who_uses_it: Traceability, Serialization and Supply chain teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec
+            interval: Continuous serialization events
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Plant Leadership
+        mark: Genie One
+        summary: The plant manager and VP operations on OEE by line, cost per unit produced and OTIF service level when a line stalls or a key supplier slips.
+        uses:
+          - - Genie One
+            - Ask what yesterday's scrap cost or which customer orders are at risk without waiting on manufacturing IT.
+          - - AI/BI
+            - OEE, yield and OTIF on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "downtime" means one thing across plants.
+        sub:
+          - name: Plant Manager
+            cares: daily OEE, downtime cost and hitting the production plan across every line.
+          - name: VP Operations
+            cares: cost per unit, safety and the capital case for new capacity.
+          - name: Continuous Improvement
+            cares: the loss buckets and the Kaizen backlog that lift throughput.
+        ucs:
+          - OEE & Downtime
+          - Energy Intensity
+          - Yield Optimisation
+      - name: Production & Scheduling
+        mark: AI/BI
+        summary: Finite scheduling, changeover sequencing and labour loading against orders commercial already promised, watched on schedule adherence and WIP ageing.
+        uses:
+          - - Production Scheduler
+            - Sequence and changeover plans scored before the shift board posts.
+          - - AI/BI
+            - Schedule adherence and WIP ageing on governed definitions.
+          - - Lakehouse//RT
+            - Live line state at the latency a bottleneck moves at.
+        sub:
+          - name: Master Scheduler
+            cares: finite sequencing and changeover order against the dates commercial promised.
+          - name: Shift Supervisor
+            cares: the shift board, labour loading and WIP ageing on the floor.
+          - name: Production Planner
+            cares: the NPI ramp and cut-over from pilot to volume.
+        ucs:
+          - OEE & Downtime
+          - New Product Intro
+          - Digital Twin & Industrial AI
+      - name: Quality & Compliance
+        mark: Model Serving
+        summary: Lot release, SPC violations and supplier corrective actions scored on first-pass yield and non-conformance rate before product leaves the site.
+        uses:
+          - - Quality Cockpit
+            - Hold and release decisions with genealogy back to supplier lot.
+          - - Model Serving
+            - Defect and drift models scored on inline vision and SPC signals.
+          - - Unity Catalog
+            - One definition of non-conformance across MES and QMS.
+        sub:
+          - name: Quality Manager
+            cares: first-pass yield, SPC violations and lot release before shipment.
+          - name: Regulatory Affairs
+            cares: FDA and ISO lot genealogy and the audit trail behind a recall.
+          - name: Supplier Quality
+            cares: non-conformance and corrective action across the supplier base.
+        ucs:
+          - Yield Optimisation
+          - Genealogy & Recall
+          - Digital Twin & Industrial AI
+      - name: Supply Chain
+        mark: AI/BI
+        summary: S&OP, inventory positioning and supplier OTIF when lead times stretch, balancing inventory turns against the customer service level finance commits.
+        uses:
+          - - Supply Control Tower
+            - Shortages and expedites costed across alternate BOMs and sites.
+          - - AI/BI
+            - Inventory turns and supplier OTIF on certified Metric Views.
+          - - Genie One
+            - Ask which SKUs will stock out before the next planning cycle.
+        sub:
+          - name: S&OP Lead
+            cares: the demand-supply balance and the plan when a plant goes offline.
+          - name: Inventory Planner
+            cares: safety stock and reorder points against real lead-time variability.
+          - name: Procurement
+            cares: supplier OTIF and single-source concentration risk.
+        ucs:
+          - S&OP / IBP
+          - Inventory Optimisation
+          - Supplier Risk
+      - name: Maintenance & Reliability
+        mark: Lakeflow
+        summary: Planned downtime, spare parts and technician capacity tracked on MTBF and maintenance cost per unit so failures become scheduled work not line stops.
+        uses:
+          - - Maintenance Hub
+            - Work orders raised from predicted failures before the line stops.
+          - - Lakeflow
+            - Historian and CMMS feeds conformed for reliability analytics.
+          - - MLflow
+            - Remaining-useful-life models tracked for audit and reproduction.
+        sub:
+          - name: Reliability Engineer
+            cares: MTBF, failure modes and the remaining-life models per asset.
+          - name: Maintenance Planner
+            cares: spare parts, technician capacity and the planned-downtime window.
+          - name: Asset Manager
+            cares: maintenance cost per unit and the capital-repair decision.
+        ucs:
+          - Predictive Maintenance
+          - OEE & Downtime
+          - Inventory Optimisation
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the ERP order, MES cycle, SCADA historian and supplier ASN feeds; own the Bronze to Silver path and the pager when a plant pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for SAP, Opcenter MES and quality sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on downtime and inspection feeds.
+          - - Lakewatch
+            - Freshness on the OEE and inventory tables the shift board reads each morning.
+        sub:
+          - name: Platform Data Engineer
+            cares: the Bronze-to-Silver path for ERP, MES and historian feeds.
+          - name: Streaming Engineer
+            cares: OPC-UA and SCADA telemetry landed at line latency.
+          - name: Pipeline On-call
+            cares: freshness on the OEE and inventory tables the shift board reads.
+        ucs:
+          - OEE & Downtime
+          - Predictive Maintenance
+          - Genealogy & Recall
+      - name: Data Scientists
+        mark: MLflow
+        summary: First-pass yield, remaining-useful-life, demand and defect-vision models, and whether they still hold six months after deployment on the floor.
+        uses:
+          - - Feature Store
+            - Historian and SPC features read identically in training and serving.
+          - - MLflow
+            - Every yield and RUL run tracked for audit and reproduction.
+          - - Model Serving
+            - Defect and failure models scored on inline vision and SPC signals.
+        sub:
+          - name: Reliability Data Scientist
+            cares: remaining-useful-life and anomaly models on historian data.
+          - name: Quality Data Scientist
+            cares: defect-vision and first-pass-yield models on inline signals.
+          - name: Demand Scientist
+            cares: demand and inventory models across plants and SKUs.
+        ucs:
+          - Predictive Maintenance
+          - Yield Optimisation
+          - Inventory Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the plant performance, quality cockpit and maintenance applications operators and planners work in, hosted next to governed shop-floor data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for work-order state and governed writes.
+          - - Agent Bricks
+            - Agents that draft a maintenance work order against governed tools.
+        sub:
+          - name: Apps Developer
+            cares: the plant, quality and maintenance screens over governed data.
+          - name: Lakebase Engineer
+            cares: work-order and hold-release state with governed writes.
+          - name: Agent Developer
+            cares: agents that draft a work order against governed tools.
+        ucs:
+          - Predictive Maintenance
+          - Genealogy & Recall
+          - OEE & Downtime
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse and floor andon updates in the channel the plant already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Plant & ERP
+    icon: opdb
+    tiles:
+      - name: SAP Order Confirmation
+        icon: db
+        summary: Production confirmations and component backflush written back into ERP so finance sees reality.
+        citations:
+          - sap-s4
+      - name: MES Recipe Download
+        icon: stream
+        summary: Approved recipes and work instructions pushed to lines after engineering change release.
+        citations:
+          - opcenter
+      - name: CMMS Work Orders
+        icon: erp
+        summary: Predicted failures raised as maintenance work orders the technician crew already schedules.
+  - name: Customers & Suppliers
+    icon: partner
+    tiles:
+      - name: Customer ASN Portal
+        icon: api
+        summary: Shipment and lot certificates served to OEM customers from governed genealogy rather than emailed spreadsheets.
+        citations:
+          - gs1-epcis
+      - name: Supplier Scorecards
+        icon: share
+        summary: OTIF and quality metrics shared to tier-one suppliers over Delta Sharing.
+        citations:
+          - edi-asn
+      - name: Contract Manufacturer
+        icon: globe
+        summary: Co-man sites reading BOM and quality limits live instead of nightly flat files.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: FDA / ISO Lot Trace
+        icon: gavel
+        summary: Lot genealogy and deviation records produced from the same governed tables production runs on.
+        citations:
+          - mastercontrol
+      - name: Carbon & ESG Reporting
+        icon: share
+        summary: Scope 1 and 2 intensity filed from contracted Gold products for buyer sustainability programs.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Customers, co-mans and auditors reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Plant Performance
+        icon: gauge
+        short: Live OEE
+        summary: 'The screen the shift supervisor runs the day from: downtime pareto, scrap by reason and orders at risk, on Databricks Apps over Lakebase.'
+      - name: Quality Cockpit
+        icon: gavel
+        short: Hold and release
+        summary: Lot status, SPC violations and supplier genealogy on one surface before product ships.
+      - name: Supply Control Tower
+        icon: sheet
+        short: Shortage response
+        summary: Component shortages and alternate sourcing costed before customer OTIF is missed.
+      - name: Maintenance Hub
+        icon: iot
+        short: Asset health
+        summary: Predicted failures and spare parts by line so downtime becomes a planned window.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Plant OEE & Downtime
+        icon: aibi
+        summary: Line and shift OEE, downtime pareto and throughput on certified Metric Views.
+        kpis:
+          - OEE
+          - Availability
+          - Performance
+          - Quality rate
+          - Downtime by reason
+        teams:
+          - Plant Leadership
+          - Production & Scheduling
+          - Continuous Improvement
+      - name: Quality & Yield
+        icon: aibi
+        summary: First-pass yield, scrap, non-conformance and supplier quality trends.
+        kpis:
+          - First-pass yield
+          - Scrap rate
+          - Non-conformance rate
+          - CAPA cycle time
+          - Supplier PPM
+        teams:
+          - Quality & Compliance
+          - Supplier Quality
+          - Manufacturing Engineering
+      - name: Supply Chain & OTIF
+        icon: aibi
+        summary: Inventory turns, supplier OTIF and S&OP plan attainment across plants.
+        kpis:
+          - OTIF
+          - Inventory turns
+          - Days of supply
+          - Forecast accuracy
+          - Plan attainment
+        teams:
+          - Supply Chain
+          - S&OP Lead
+          - Procurement
+      - name: Reliability & Maintenance
+        icon: aibi
+        summary: Asset MTBF, predicted failures and maintenance cost per unit.
+        kpis:
+          - MTBF
+          - Unplanned downtime
+          - Maintenance cost per unit
+          - PM compliance
+          - Predicted failures
+        teams:
+          - Maintenance & Reliability
+          - Reliability Engineer
+          - Asset Manager
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Plant Performance Agent
+        icon: genie
+        summary: Ask about OEE, downtime and scrap by line and shift in plain language.
+        feeds:
+          - Siemens Opcenter
+          - Rockwell FactoryTalk
+          - AVEVA PI System
+          - OEE, yield, OTIF
+        teams:
+          - Plant Leadership
+          - Production & Scheduling
+          - Continuous Improvement
+        questions:
+          - What was OEE by line and shift yesterday, and where did the losses go?
+          - Which downtime reason codes cost the most this week?
+          - What is scrap cost by line and product this month versus last?
+          - Which lines are behind the production plan right now?
+          - What would a line-rate or changeover change do to throughput before we run it?
+          - What is the biggest loss bucket dragging throughput this quarter?
+      - name: Quality & Traceability Agent
+        icon: genie
+        summary: Explore first-pass yield, non-conformance and lot genealogy across MES and QMS.
+        feeds:
+          - MasterControl QMS
+          - ETQ Reliance
+          - GS1 EPCIS Events
+          - Conformed order, lot
+        teams:
+          - Quality & Compliance
+          - Quality Manager
+          - Supplier Quality
+        questions:
+          - What is first-pass yield by product and line this month?
+          - Which suppliers drive the most non-conformances and CAPA?
+          - Which lots are affected if we recall this supplier batch?
+          - What is the scrap and rework rate trend by defect type?
+          - Which inspection plans are failing SPC limits right now?
+      - name: Supply Chain & Inventory Agent
+        icon: genie
+        summary: Answer S&OP, inventory and supplier OTIF questions across plants.
+        feeds:
+          - Kinaxis Maestro
+          - SAP S/4HANA
+          - EDI ASN / DESADV
+          - OEE, yield, OTIF
+        teams:
+          - Supply Chain
+          - S&OP Lead
+          - Procurement
+        questions:
+          - Which SKUs will stock out before the next planning cycle?
+          - What is supplier OTIF by supplier and plant this quarter?
+          - Where do we carry the most excess and obsolete inventory?
+          - Which parts are single-source and exposed to disruption?
+          - What is inventory turns by plant versus target?
+      - name: Maintenance & Reliability Agent
+        icon: genie
+        summary: Ask about asset health, MTBF and maintenance cost across the plant.
+        feeds:
+          - AVEVA PI System
+          - AspenTech IP.21
+          - OEE, yield, OTIF
+        teams:
+          - Maintenance & Reliability
+          - Reliability Engineer
+          - Maintenance Planner
+        questions:
+          - Which assets have the worst MTBF this quarter?
+          - What is maintenance cost per unit by line and asset?
+          - Which machines are predicted to fail in the next two weeks?
+          - How much unplanned downtime came from each asset class?
+          - Which spare parts are at risk of stockout for planned work?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Predictive Maintenance
+        short: Reliability
+        icon: iot
+        summary: Component failure predicted from historian and vibration signals before the line stops.
+        problem: Failures surface only when a line stops, and the historian and vibration signals that would have warned days earlier sit unused in a plant historian nobody queries.
+        who_benefits: Maintenance & Reliability
+        how_built: Historian and vibration signals feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Maintenance Hub before the line stops.
+        components:
+          - Maintenance Hub
+          - AVEVA PI System
+          - Model Serving
+          - MLflow
+          - Lakehouse//RT
+        stories:
+          - title: Rolls-Royce keeps their engines running with data intelligence
+            url: https://www.databricks.com/customers/rolls-royce
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: OEE & Downtime
+        short: Throughput
+        icon: gauge
+        summary: Loss buckets by line and shift attacked with pareto evidence rather than anecdote.
+        problem: Downtime and loss are argued from shift anecdote and manual spreadsheets, so the real pareto by line and shift stays invisible and the same losses recur quarter after quarter.
+        who_benefits: Plant Leadership
+        how_built: FactoryTalk and Opcenter line state land in Lakehouse//RT and are conformed on Delta Lake, so Plant Performance shows loss buckets by line and shift on certified AI/BI Metric Views.
+        components:
+          - Plant Performance
+          - Rockwell FactoryTalk
+          - Siemens Opcenter
+          - AI/BI
+          - Lakehouse//RT
+        stories:
+          - title: What is Overall Equipment Effectiveness (OEE)?
+            url: https://www.databricks.com/blog/what-is-overall-equipment-effectiveness
+          - title: 'Solution Accelerator: Multi-factory OEE and KPI monitoring'
+            url: https://www.databricks.com/blog/2022/11/29/solution-accelerator-multi-factory-overall-equipment-effectiveness.html
+      - name: S&OP / IBP
+        short: Planning
+        icon: sheet
+        summary: Demand, supply and inventory balanced when a plant or supplier goes offline mid-quarter.
+        problem: Demand, supply and inventory live in separate ERP and planning tools, so when a plant or supplier goes offline mid-quarter the replan is a spreadsheet scramble finance cannot trust.
+        who_benefits: Supply Chain
+        how_built: Kinaxis and SAP demand, supply and inventory feeds are conformed on Delta Lake and balanced in the Supply Control Tower, on the certified AI/BI Metric Views the S&OP cycle runs on.
+        components:
+          - Supply Control Tower
+          - Kinaxis Maestro
+          - SAP S/4HANA
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: What is supply chain management on Databricks
+            url: https://www.databricks.com/blog/what-is-supply-chain-management
+          - title: How DuPont achieved 11x latency reduction with Photon
+            url: https://www.databricks.com/blog/how-dupont-achieved-11x-latency-reduction-and-4x-cost-reduction-photon
+      - name: Genealogy & Recall
+        short: Traceability
+        icon: product
+        summary: Every serial traced from supplier lot through WIP to customer shipment in minutes not days.
+        problem: When a defect escapes, tracing every affected serial from supplier lot through WIP to customer shipment takes days of manual joins across MES, ERP and quality systems while risk grows.
+        who_benefits: Quality & Compliance
+        how_built: EPCIS movement events and QMS records are conformed under Unity Catalog on Delta Lake, so the Quality Cockpit resolves full serial and lot genealogy in minutes for a targeted recall.
+        components:
+          - Quality Cockpit
+          - GS1 EPCIS Events
+          - MasterControl QMS
+          - Unity Catalog
+          - Delta Lake
+      - name: Yield Optimisation
+        short: Scrap reduction
+        icon: chart
+        summary: Recipe and parameter sets scored on first-pass yield using historian and quality history.
+        problem: Scrap and first-pass-yield loss is diagnosed after the fact, and the recipe, parameter and inline-inspection history that would explain it sits scattered across historians and quality tools.
+        who_benefits: Quality & Compliance
+        how_built: Machine-vision and SPC signals become features in Feature Store scored by Model Serving and tracked in MLflow, so the Quality Cockpit ties parameter sets to first-pass yield.
+        components:
+          - Quality Cockpit
+          - Machine Vision QC
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: How Corning built end-to-end ML on Databricks
+            url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
+          - title: 'IoT in manufacturing: strategy, components and use cases'
+            url: https://www.databricks.com/blog/iot-in-manufacturing
+      - name: Energy Intensity
+        short: Sustainability
+        icon: stream
+        summary: kWh per unit by line and product for carbon reporting and cost reduction.
+        problem: Energy is billed at the meter and the site, not the line or product, so nobody can see kWh per unit or act on the biggest intensity offenders for cost or carbon reporting.
+        who_benefits: Plant Leadership
+        how_built: PI System and IP.21 tags are conformed on Delta Lake and modelled to kWh per unit by line and product, surfaced in Plant Performance and certified AI/BI views for ESG and cost.
+        components:
+          - Plant Performance
+          - AVEVA PI System
+          - AspenTech IP.21
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: How Tata Steel is shifting manufacturing toward sustainability
+            url: https://www.databricks.com/blog/2022/08/02/how-tata-steel-is-shifting-global-manufacturing-and-production-toward-sustainability.html
+      - name: Supplier Risk
+        short: Resilience
+        icon: partner
+        summary: Single-source and geographic concentration surfaced before a port or plant disruption.
+        problem: Single-source parts and geographic concentration only become visible after a port, plant or supplier disruption has already stopped a line and there is no time left to qualify an alternate.
+        who_benefits: Supply Chain
+        how_built: EDI ASN and SAP supplier data are conformed on Delta Lake, so the Supply Control Tower scores concentration and OTIF risk and Genie One answers which parts are exposed before disruption.
+        components:
+          - Supply Control Tower
+          - EDI ASN / DESADV
+          - SAP S/4HANA
+          - AI/BI
+          - Genie One
+        stories:
+          - title: Smarter supply chains with data and AI
+            url: https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management
+      - name: Inventory Optimisation
+        short: Working capital
+        icon: market
+        summary: Safety stock and reorder points tuned to actual lead-time variability not policy tables.
+        problem: Safety stock and reorder points are set from static policy tables, so the same network carries too much of the wrong stock and still stocks out when lead times actually vary.
+        who_benefits: Supply Chain
+        how_built: SAP and Oracle SCM demand and lead-time data are conformed on Delta Lake and scored in Model Serving, so the Supply Control Tower tunes safety stock to real variability on AI/BI views.
+        components:
+          - Supply Control Tower
+          - SAP S/4HANA
+          - Oracle SCM Cloud
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Mondelez facilitates model experimentation at enterprise scale
+            url: https://www.databricks.com/customers/mondelez
+          - title: Databricks announces Lakehouse for Manufacturing
+            url: https://www.databricks.com/company/newsroom/press-releases/databricks-announces-lakehouse-manufacturing-empowering-worlds
+      - name: New Product Intro
+        short: NPI
+        icon: product
+        summary: Pilot builds scored on ramp yield and cost before volume cut-over.
+        problem: New products ramp on gut feel, with pilot-build yield, cost and process capability trapped in disconnected systems, so volume cut-over happens before anyone knows the line will hold.
+        who_benefits: Production & Scheduling
+        how_built: Windchill change and Opcenter pilot-build data are conformed on Delta Lake and scored with Model Serving tracked in MLflow, so ramp yield and cost are read in AI/BI before volume cut-over.
+        components:
+          - PTC Windchill
+          - Siemens Opcenter
+          - Model Serving
+          - MLflow
+          - AI/BI
+      - name: Digital Twin & Industrial AI
+        short: Simulation
+        icon: network
+        summary: A live virtual model of the line and its assets, so a process or capacity change is simulated before it runs on the floor.
+        problem: Process and capacity changes are trialled on the physical line because there is no governed, live model of the plant to simulate against, so every experiment costs real output and risk.
+        who_benefits: Production & Scheduling
+        how_built: Historian, MES and quality signals are conformed on Delta Lake and mirrored in Lakehouse//RT, and physics-plus-ML models in Model Serving tracked in MLflow simulate throughput, quality and failure so a change is proven virtually before it runs.
+        components:
+          - AVEVA PI System
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+          - AI Functions
+medallion:
+  Bronze:
+    short: Raw plant feeds
+    summary: ERP production orders, MES cycle and downtime events, SCADA historian tags, quality inspection results and supplier ASNs, landed exactly as received so a lot or a downtime code can always be replayed as it stood.
+  Silver:
+    short: Conformed order, lot
+    summary: Work orders, lots, equipment and materials resolved into single conformed entities across ERP, MES and quality estates, with serial and batch genealogy reconciled and multi-site BOM revisions stitched to one product definition.
+  Gold:
+    short: OEE, yield, OTIF
+    summary: 'Contracted products operations and supply chain leaders run on: overall equipment effectiveness by line, first-pass yield and scrap, on-time-in-full to customer promise, and maintenance cost per unit produced.'
+citation_index:
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  oracle-scm:
+    title: Oracle SCM Cloud
+    url: https://www.oracle.com/scm/manufacturing/
+  kinaxis:
+    title: Kinaxis Maestro
+    url: https://www.kinaxis.com/
+  opcenter:
+    title: Siemens Opcenter MES
+    url: https://plm.sw.siemens.com/en-US/opcenter/
+  factorytalk:
+    title: Rockwell FactoryTalk
+    url: https://www.rockwellautomation.com/en-us/products/software/factorytalk.html
+  aveva-mes:
+    title: AVEVA MES
+    url: https://www.aveva.com/en/products/manufacturing-execution-system/
+  windchill:
+    title: PTC Windchill
+    url: https://www.ptc.com/en/products/windchill
+  mastercontrol:
+    title: MasterControl QMS
+    url: https://www.mastercontrol.com/
+  etq:
+    title: ETQ Reliance
+    url: https://www.etq.com/
+  aveva-pi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/pi-system/
+  aspen-ip21:
+    title: AspenTech IP.21
+    url: https://www.aspentech.com/en/products/ip21
+  opc-ua:
+    title: OPC Unified Architecture
+    url: https://opcfoundation.org/about/opc-technologies/opc-ua/
+  edi-asn:
+    title: GS1 EDI DESADV
+    url: https://www.gs1.org/standards/edi
+  gs1-epcis:
+    title: GS1 EPCIS
+    url: https://www.gs1.org/standards/epcis

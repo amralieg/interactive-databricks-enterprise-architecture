@@ -1,0 +1,952 @@
+name: Banking
+description: 'Retail and commercial banking: core ledger, payments, lending, fraud, and regulatory reporting across branches and digital channels.'
+sources:
+  - name: Core Banking
+    icon: erp
+    tiles:
+      - name: Temenos Transact
+        icon: erp
+        summary: Deposits, loans, GL and end-of-day across retail and commercial.
+        citations:
+          - temenos
+        category: Core Banking System
+        what_it_is: Holds the system-of-record ledger for deposits, loans and the general ledger, and runs the end-of-day cycle that posts interest, fees and balances.
+        who_uses_it: Core banking operations, retail and commercial product teams, and Finance for the general ledger.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-200 GB/day
+            interval: End-of-day batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: 0.5-3k postings/sec at peak
+            interval: Continuous CDC (near real-time)
+      - name: FIS Profile
+        icon: erp
+        summary: Account processing, interest accrual and regulatory extracts.
+        citations:
+          - fis-profile
+        category: Core Banking System
+        what_it_is: Processes retail and commercial accounts, accrues interest and produces the regulatory and statement extracts the back office depends on.
+        who_uses_it: Deposit operations, Finance and Regulatory reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day
+            interval: Nightly batch extracts
+      - name: Fiserv DNA
+        icon: erp
+        summary: 'US core account processing: deposits, loans and GL on Fiserv DNA and Premier.'
+        citations:
+          - finastra
+        category: Core Banking System
+        what_it_is: US community and regional bank core platform covering deposits, loans and the GL, with real-time posting on the DNA architecture.
+        who_uses_it: Core operations and branch systems teams at US community and regional banks.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-60 GB/day
+            interval: Nightly batch
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous CDC
+  - name: Cards & Payments
+    icon: market
+    tiles:
+      - name: Visa DPS / Auth
+        icon: market
+        summary: Authorization, clearing and dispute messages.
+        citations:
+          - visa
+        category: Card Authorization & Clearing
+        what_it_is: Carries the real-time card authorization decisions and the clearing and dispute (chargeback) messages that settle them.
+        who_uses_it: Fraud, Cards & Payments operations and Dispute/chargeback teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-30 GB/day clearing files
+            interval: Multiple settlement cycles daily
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k auths/sec at peak
+            interval: Continuous (sub-second)
+      - name: Mastercard Smart Data
+        icon: market
+        summary: Commercial-card expense and spend analytics with merchant category enrichment.
+        citations:
+          - mastercard
+        category: Commercial Card Spend Analytics
+        what_it_is: Enriches commercial-card transactions with merchant, category and tax detail for expense management and spend analytics.
+        who_uses_it: Commercial Banking, Corporate card program managers and client Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Daily feed
+      - name: SWIFT FIN Messages
+        icon: api
+        summary: Cross-border payment instructions and confirmations.
+        citations:
+          - swift
+        category: Interbank Messaging Network
+        what_it_is: Standardized MT/MX financial messages for cross-border payments, confirmations and correspondent-bank instructions.
+        who_uses_it: Payments operations, Treasury and Correspondent banking teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500 msgs/sec
+            interval: Continuous message flow
+  - name: Digital Channels
+    icon: apps
+    tiles:
+      - name: Temenos Infinity
+        icon: apps
+        summary: Mobile and web sessions, transfers and self-service events.
+        citations:
+          - temenos-infinity
+        category: Digital Banking Platform
+        what_it_is: Runs the mobile and web banking experience and emits the clickstream, transfer and self-service events behind digital journeys.
+        who_uses_it: Digital Banking, Product and Marketing analytics teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-20k events/sec at peak
+            interval: Continuous clickstream
+      - name: Salesforce FSC
+        icon: custlake
+        summary: Households, opportunities and service cases.
+        citations:
+          - sf-fsc
+        category: Banking CRM
+        what_it_is: Financial Services CRM holding household and relationship models, opportunities and service cases across channels.
+        who_uses_it: Retail and Commercial relationship managers, and Service teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: NICE Actimize
+        icon: gavel
+        summary: AML alerts, cases and SAR workflow.
+        citations:
+          - actimize
+        category: Financial Crime / AML Platform
+        what_it_is: Generates AML transaction-monitoring alerts, manages investigation cases and drives the SAR filing workflow.
+        who_uses_it: Financial crime investigators, AML compliance and Fraud operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 2-8 GB/day alerts + cases
+            interval: Hourly
+  - name: Risk & Finance
+    icon: chart
+    tiles:
+      - name: Moody's RiskCalc
+        icon: chart
+        summary: PD/LGD models and rating migrations for commercial names.
+        citations:
+          - moodys
+        category: Credit Risk Model Library
+        what_it_is: Provides probability-of-default and loss-given-default models and rating migrations for commercial and corporate exposures.
+        who_uses_it: Credit risk modelers, Commercial credit officers and Regulatory capital teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (reference + scores)
+            interval: Daily / monthly refresh
+      - name: FIS Ambit Focus
+        icon: chart
+        summary: ALM, liquidity and interest rate risk measurement.
+        citations:
+          - fis-alm
+        category: Asset & Liability Management System
+        what_it_is: Measures balance-sheet interest-rate risk, liquidity and funding under scenarios for asset-liability management.
+        who_uses_it: Treasury, ALM and Liquidity risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day positions
+            interval: Daily + scenario runs
+      - name: Nasdaq AxiomSL Reg Reporting
+        icon: gavel
+        summary: Basel, CCAR and local regulatory templates.
+        citations:
+          - axiomsl
+        category: Regulatory Reporting Platform
+        what_it_is: Assembles Basel, CCAR and local regulatory returns from risk and finance data with full lineage and validation.
+        who_uses_it: Regulatory reporting, Finance and Risk control teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/reporting cycle
+            interval: Daily / monthly / quarterly cycles
+  - name: Open Banking
+    icon: api
+    tiles:
+      - name: Plaid Aggregation
+        icon: api
+        summary: External account verification and aggregation with consent.
+        citations:
+          - plaid
+        category: Account Aggregation Provider
+        what_it_is: Connects to external accounts with customer consent to verify ownership and aggregate balances and transactions.
+        who_uses_it: Digital Banking, Lending origination and Personal financial management teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of API calls/sec
+            interval: Continuous (API / webhook)
+      - name: Tink Open Banking
+        icon: partner
+        summary: AIS/PIS traffic and consent registry.
+        citations:
+          - tink
+        category: Open Banking Platform
+        what_it_is: Handles account-information and payment-initiation traffic under PSD2 with a consent registry for third-party access.
+        who_uses_it: Open banking, Payments and Compliance teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (API)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Data Warehouse Mart
+        icon: fed
+        summary: Historical GL and risk marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy general-ledger and risk marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Finance, Risk and Regulatory reporting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: FICO Falcon
+        icon: gavel
+        summary: Card fraud scores and consortium intelligence.
+        citations:
+          - fico
+        category: Card Fraud Scoring
+        what_it_is: Scores card transactions for fraud in real time using consortium models and returns a risk score to the authorization path.
+        who_uses_it: Fraud operations and Card risk teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-10k scores/sec at peak
+            interval: Continuous (sub-second)
+      - name: LexisNexis Risk
+        icon: partner
+        summary: KYC, sanctions and adverse media screening.
+        citations:
+          - lexisnexis
+        category: KYC & Screening Provider
+        what_it_is: Provides identity verification, sanctions and adverse-media screening used at onboarding and in ongoing due diligence.
+        who_uses_it: Financial crime compliance, KYC/onboarding and Sanctions teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-4 GB/day
+            interval: Daily + on-demand
+      - name: Experian Bureau
+        icon: custlake
+        summary: Credit bureau pulls and attribute refreshes.
+        citations:
+          - experian
+        category: Credit Bureau
+        what_it_is: Supplies credit reports, scores and attribute refreshes used in lending decisions and portfolio monitoring.
+        who_uses_it: Lending, Credit risk and Collections teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Daily + on-demand pulls
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Chief Credit Officer & CFO
+        mark: Genie One
+        summary: The CEO on ROE and deposit growth; the CFO on net interest margin, cost-to-income and CET1 capital against NPL formation across the book.
+        uses:
+          - - Genie One
+            - Ask what last quarter's NIM was by segment.
+          - - AI/BI
+            - Capital and liquidity on certified Metric Views.
+          - - Unity Catalog
+            - One customer definition across channels.
+        sub:
+          - name: Chief Executive Officer
+            cares: return on equity, deposit growth and the balance between growth and capital strength.
+          - name: Chief Financial Officer
+            cares: net interest margin, cost-to-income and the certified numbers behind the results.
+          - name: Chief Credit Officer
+            cares: portfolio credit quality, NPL formation and provisioning across the book.
+        ucs:
+          - Regulatory Reporting
+          - Credit Early Warning
+          - Liquidity Forecasting
+      - name: Retail Banking
+        mark: AI/BI
+        summary: Branch productivity, product penetration and attrition, judged on deposit and loan growth, household profitability and cross-sell.
+        uses:
+          - - Branch Performance
+            - Household profitability by branch and RM.
+          - - AI/BI
+            - Deposit and loan growth on governed core data.
+        sub:
+          - name: Head of Branch Network
+            cares: branch productivity, deposit and loan growth and household profitability by region.
+          - name: Head of Digital Banking
+            cares: mobile and web engagement, digital sales and self-service adoption.
+          - name: Cards & Payments Lead
+            cares: card spend, interchange and fraud loss across the portfolio.
+        ucs:
+          - Customer 360
+          - Next-Best-Product
+          - Collections Optimization
+          - Open Banking Analytics
+      - name: Commercial Banking
+        mark: Model Serving
+        summary: Relationship profitability, covenants and limit utilization, tracked on risk-adjusted return, exposure at default and rating migration.
+        uses:
+          - - RM Workbench
+            - Exposure and cross-sell opportunities by relationship.
+          - - Model Serving
+            - Early warning models on commercial books.
+        sub:
+          - name: Head of Corporate Banking
+            cares: relationship profitability and risk-adjusted return across the commercial book.
+          - name: Relationship Managers
+            cares: exposure, covenant status and cross-sell across their named clients.
+          - name: Credit Risk Officers
+            cares: limit utilization, rating migration and early signs of deterioration.
+        ucs:
+          - Credit Early Warning
+          - Customer 360
+          - Regulatory Reporting
+      - name: Risk & Compliance
+        mark: Lakehouse//RT
+        summary: Credit, market and operational risk with regulatory reporting, run on PD/LGD, fraud loss rate and AML alert-to-SAR conversion.
+        uses:
+          - - AML Investigator
+            - Alert prioritization and case narrative drafting.
+          - - Lakehouse//RT
+            - Fraud scores at authorization latency.
+        sub:
+          - name: Chief Risk Officer
+            cares: credit, market and operational risk appetite and the loss rate across the bank.
+          - name: Head of Financial Crime
+            cares: AML alert quality, SAR conversion and sanctions screening coverage.
+          - name: Head of Fraud
+            cares: real-time fraud loss, false-positive rate and dispute volumes.
+        ucs:
+          - Real-Time Fraud
+          - AML Transaction Monitoring
+          - Operational Loss
+          - Credit Early Warning
+      - name: Treasury & ALM
+        mark: AI/BI
+        summary: Funding, liquidity buffers and hedge effectiveness, measured on LCR, NSFR and interest-rate gap under stress across the balance sheet.
+        uses:
+          - - ALM Dashboard
+            - Gap and duration under rate scenarios.
+          - - AI/BI
+            - LCR and NSFR on certified regulatory views.
+        sub:
+          - name: Group Treasurer
+            cares: funding, liquidity buffers and the cost of funds across the balance sheet.
+          - name: ALM Manager
+            cares: interest-rate gap, duration and hedge effectiveness under rate scenarios.
+          - name: Liquidity Risk Lead
+            cares: LCR, NSFR and intraday liquidity under stress.
+        ucs:
+          - Liquidity Forecasting
+          - Regulatory Reporting
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land core-banking postings, card-network authorizations, wire messages and market-data feeds; own Bronze to Silver and the pager when risk tables stall.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for core, cards and credit-bureau sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on posting and authorization feeds.
+          - - Lakewatch
+            - Freshness on the exposure and liquidity tables risk reads at open.
+        sub:
+          - name: Ingestion Engineers
+            cares: core-banking postings, card authorizations and wire messages landed on time.
+          - name: Pipeline Engineers
+            cares: Bronze-to-Silver conforming and expectations on posting and auth feeds.
+          - name: Platform Reliability
+            cares: freshness of the exposure and liquidity tables risk reads at open.
+        ucs:
+          - Real-Time Fraud
+          - Regulatory Reporting
+          - Open Banking Analytics
+      - name: Data Scientists
+        mark: MLflow
+        summary: PD/LGD credit-risk, AML transaction-monitoring, card-fraud and next-best-action models, and whether they still hold through a rate cycle.
+        uses:
+          - - Feature Store
+            - Customer and transaction features read identically in training and serving.
+          - - MLflow
+            - Every PD and fraud model tracked for audit and reproduction.
+          - - Model Serving
+            - Fraud and PD models scored in the authorization path.
+        sub:
+          - name: Credit Risk Modelers
+            cares: PD, LGD and early-warning models that hold through a rate cycle.
+          - name: Financial Crime DS
+            cares: AML and card-fraud models and keeping false positives low.
+          - name: Marketing DS
+            cares: propensity, churn and next-best-action models on the retail book.
+        ucs:
+          - Credit Early Warning
+          - Real-Time Fraud
+          - AML Transaction Monitoring
+          - Next-Best-Product
+      - name: App Developers
+        mark: Apps
+        summary: Ship the limit, case-management, RM workbench and AML investigator apps risk and RMs work in, hosted next to governed customer data.
+        uses:
+          - - Apps
+            - Risk and RM screens with no separate web tier to secure.
+          - - Lakebase
+            - Serverless Postgres for limit and case-management state.
+          - - Agent Bricks
+            - Agents that draft case narratives and limit changes against governed tools.
+        sub:
+          - name: Full-Stack Engineers
+            cares: the limit, case-management and RM workbench screens bankers work in.
+          - name: Agent Developers
+            cares: agents that draft case narratives and limit changes on governed tools.
+          - name: Integration Engineers
+            cares: writeback of blocks, limits and offers into core and channels.
+        ucs:
+          - AML Transaction Monitoring
+          - Credit Early Warning
+          - Collections Optimization
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Finance and risk dashboards on serverless SQL.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for liquidity and exposure questions.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Model development notebooks on governed customer data.
+  - name: Partners & Networks
+    icon: partner
+    tiles:
+      - name: Card Network Files
+        icon: api
+        summary: Clearing and settlement files to Visa and Mastercard.
+        citations:
+          - visa
+      - name: Open Banking APIs
+        icon: api
+        summary: Account information and payment initiation to TPPs.
+        citations:
+          - tink
+      - name: Correspondent Banking
+        icon: globe
+        summary: SWIFT payment routing to correspondent banks.
+        citations:
+          - swift
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Limit Updates
+        icon: gauge
+        summary: Credit limits adjusted in core from early warning triggers.
+      - name: Fraud Block Rules
+        icon: gavel
+        summary: Card blocks propagated to authorization switches.
+        citations:
+          - fico
+      - name: CRM Next-Best-Action
+        icon: custlake
+        summary: Offers pushed to digital channels from governed models.
+        citations:
+          - sf-fsc
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Basel III Returns
+        icon: gavel
+        summary: RWA and capital returns filed from contracted Gold tables.
+        citations:
+          - axiomsl
+      - name: FinCEN SAR Filing
+        icon: share
+        summary: Suspicious activity reports assembled from AML cases.
+        citations:
+          - actimize
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Customer and exposure products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Partners and regulators via governed sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Branch Performance
+        icon: chart
+        short: Household P&L
+        summary: Deposit, loan and fee profitability by branch and relationship manager.
+      - name: RM Workbench
+        icon: custlake
+        short: Commercial CRM
+        summary: Exposure, covenant status and cross-sell pipeline on governed relationship data.
+      - name: AML Investigator
+        icon: gavel
+        short: Case prioritization
+        summary: Alerts ranked and narratives drafted against transaction graphs.
+      - name: ALM Dashboard
+        icon: gauge
+        short: Liquidity gaps
+        summary: Rate and liquidity scenarios with hedge recommendations.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Capital & Liquidity
+        icon: aibi
+        summary: Basel capital ratios, LCR and NSFR on certified regulatory Metric Views.
+        kpis:
+          - CET1 ratio
+          - LCR
+          - NSFR
+          - RWA
+          - Interest-rate gap
+        teams:
+          - Chief Credit Officer & CFO
+          - Treasury & ALM
+          - Regulatory Reporting
+      - name: Fraud & AML Operations
+        icon: aibi
+        summary: Fraud loss, alert volumes, false-positive rates and SAR throughput.
+        kpis:
+          - Fraud loss rate
+          - Alert volume
+          - False-positive rate
+          - Alert-to-SAR conversion
+          - Dispute volume
+        teams:
+          - Risk & Compliance
+          - Head of Fraud
+          - Head of Financial Crime
+      - name: Retail Growth & Cross-Sell
+        icon: aibi
+        summary: Deposit and loan growth, product penetration and household profitability.
+        kpis:
+          - Deposit growth
+          - Loan growth
+          - Products per household
+          - Cross-sell rate
+          - Household profitability
+        teams:
+          - Retail Banking
+          - Marketing & Sales
+          - Head of Branch Network
+      - name: Credit Portfolio Quality
+        icon: aibi
+        summary: NPL formation, rating migration and expected loss across the book.
+        kpis:
+          - NPL ratio
+          - Rating migration
+          - Expected loss
+          - PD/LGD trend
+          - Coverage ratio
+        teams:
+          - Commercial Banking
+          - Credit Risk Officers
+          - Chief Credit Officer & CFO
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Fraud & Financial Crime Agent
+        icon: genie
+        summary: Ask about fraud losses, alert quality and AML case backlogs in plain language.
+        feeds:
+          - Visa DPS / Auth
+          - NICE Actimize
+          - FICO Falcon
+          - Conformed customers and accounts
+        teams:
+          - Risk & Compliance
+          - Head of Fraud
+          - AML Investigators
+        questions:
+          - What is our card fraud loss rate this month versus last?
+          - Which alert types have the worst false-positive rate right now?
+          - How many AML cases are open past their SLA, and for which segments?
+          - Which merchant categories are driving the most confirmed fraud?
+          - What is the alert-to-SAR conversion rate by investigator team?
+      - name: Credit Risk Agent
+        icon: genie
+        summary: Explore portfolio credit quality, early-warning signals and provisioning across the book.
+        feeds:
+          - Moody's RiskCalc
+          - Experian Bureau
+          - Conformed customers and accounts
+          - NIM, NPL, liquidity ratios
+        teams:
+          - Commercial Banking
+          - Chief Credit Officer & CFO
+          - Credit Risk Officers
+        questions:
+          - Which commercial names moved to a worse rating band this quarter?
+          - What is our NPL ratio by segment and region?
+          - Which exposures are approaching a covenant breach?
+          - How has expected loss changed since last month and why?
+          - Which borrowers show the strongest early-warning deterioration signals?
+      - name: Customer 360 Agent
+        icon: genie
+        summary: Answer household and relationship questions across deposits, loans, cards and digital.
+        feeds:
+          - Salesforce FSC
+          - Temenos Transact
+          - Temenos Infinity
+          - Conformed customers and accounts
+        teams:
+          - Retail Banking
+          - Relationship Managers
+          - Marketing & Sales
+        questions:
+          - What is the total relationship value of this household across all products?
+          - Which customers hold only one product but look like cross-sell candidates?
+          - What is deposit and loan growth by branch and relationship manager?
+          - Which digitally-active customers have never been offered a card?
+          - What is attrition risk for our top-decile households?
+      - name: Treasury & Liquidity Agent
+        icon: genie
+        summary: Ask about funding, liquidity buffers and rate risk under stress.
+        feeds:
+          - FIS Ambit Focus
+          - SWIFT FIN Messages
+          - NIM, NPL, liquidity ratios
+        teams:
+          - Treasury & ALM
+          - Group Treasurer
+          - Liquidity Risk Lead
+        questions:
+          - What is our LCR and NSFR today, and the trend this quarter?
+          - How does the interest-rate gap look under a +200bp shock?
+          - What is projected deposit runoff under the stress scenario?
+          - Which currencies show the tightest intraday liquidity?
+          - How effective are our current hedges against rate moves?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Real-Time Fraud
+        short: Payments
+        icon: gavel
+        summary: Authorization decisions scored before funds leave the account.
+        problem: A stolen card or account is drained in the seconds between swipe and settlement, and overnight batch fraud checks only tell you how much you lost after the money is gone.
+        who_benefits: Risk & Compliance
+        how_built: Authorization messages land in Lakehouse//RT, fraud models in Model Serving score transaction features within the authorization window, and a decline returns before funds leave the account.
+        components:
+          - Visa DPS / Auth
+          - Lakehouse//RT
+          - Model Serving
+          - Feature Store
+          - MLflow
+        stories:
+          - title: Coinbase scales real-time fraud detection on Databricks
+            url: https://www.databricks.com/customers/coinbase/lakeflow
+          - title: Maya cuts fraud losses by up to 98%
+            url: https://www.databricks.com/customers/maya
+      - name: AML Transaction Monitoring
+        short: Compliance
+        icon: gavel
+        summary: Suspicious patterns surfaced across channels and entities.
+        problem: Money-laundering signals are scattered across accounts, channels and entities, and rules-only monitoring buries analysts under alerts that are mostly false positives while real networks slip through.
+        who_benefits: Risk & Compliance
+        how_built: Transactions and KYC land under Unity Catalog, Model Serving scores alerts, and Agent Bricks agents build case files and draft SAR narratives in the AML Investigator for human sign-off.
+        components:
+          - AML Investigator
+          - NICE Actimize
+          - Agent Bricks
+          - Unity Catalog
+          - Model Serving
+        stories:
+          - title: Modern BSA/AML compliance on Databricks
+            url: https://www.databricks.com/blog/modern-bsaaml-compliance-databricks
+      - name: Credit Early Warning
+        short: Risk
+        icon: chart
+        summary: Commercial deterioration flagged before covenant breach.
+        problem: Commercial borrowers deteriorate months before a covenant breach, but early signals sit in separate risk, transaction and market systems, so managers see trouble only once it is on the books.
+        who_benefits: Commercial Banking
+        how_built: Exposure, rating and transaction features are engineered in Feature Store and scored by early-warning models in Model Serving, with runs tracked in MLflow and alerts surfaced in the RM Workbench.
+        components:
+          - RM Workbench
+          - Moody's RiskCalc
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: Techcombank runs 100+ credit risk models on Databricks
+            url: https://www.databricks.com/customers/techcombank
+          - title: Capital One powers faster credit decisions
+            url: https://www.databricks.com/customers/capital-one
+      - name: Customer 360
+        short: Retail
+        icon: custlake
+        summary: Household view across deposits, loans, cards and digital.
+        problem: A household's deposits, loans, cards and digital activity live in separate core and channel systems, so nobody sees the whole relationship and the same customer looks like a stranger in every silo.
+        who_benefits: Retail Banking
+        how_built: Core, card and channel feeds are resolved into golden customer and account records on Delta Lake under Unity Catalog, and the household view is served to bankers through AI/BI and Salesforce FSC.
+        components:
+          - Salesforce FSC
+          - Temenos Transact
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: HSBC scales customer analytics and network science
+            url: https://www.databricks.com/customers/hsbc
+          - title: Siam Commercial Bank builds a single customer view
+            url: https://www.databricks.com/customers/siam-commercial-bank
+      - name: Next-Best-Product
+        short: Marketing
+        icon: market
+        summary: Offers ranked by propensity and profitability.
+        problem: Offers go out on product-centric campaign calendars rather than what a household needs next, so conversion is low, the wrong customers are targeted and profitable cross-sell is left on the table.
+        who_benefits: Retail Banking
+        how_built: Propensity and profitability features in Feature Store feed ranking models in Model Serving, and next-best offers surface in Branch Performance and are pushed to Salesforce FSC.
+        components:
+          - Branch Performance
+          - Salesforce FSC
+          - Model Serving
+          - Feature Store
+          - AI Functions
+        stories:
+          - title: Discovery Bank's next-best-action lifts engagement 40%
+            url: https://www.databricks.com/customers/discovery-bank
+          - title: Banco Bradesco doubles conversion with next best action
+            url: https://www.databricks.com/customers/banco-bradesco/lakeflow-declarative-pipelines
+      - name: Liquidity Forecasting
+        short: Treasury
+        icon: gauge
+        summary: Cash and collateral projections under stress scenarios.
+        problem: Treasury projects cash, collateral and deposit runoff from monthly snapshots and spreadsheets, so buffers are sized on stale positions and a funding squeeze shows up too late to hedge.
+        who_benefits: Treasury & ALM
+        how_built: Deposit, market and position feeds land on Delta Lake, runoff models in Model Serving project buffers under stress, and gap and LCR scenarios surface in the ALM Dashboard and AI/BI.
+        components:
+          - ALM Dashboard
+          - FIS Ambit Focus
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: How Databricks helps banks navigate interest rate changes
+            url: https://www.databricks.com/blog/how-databricks-helps-banks-navigate-interest-rate-changes
+      - name: Regulatory Reporting
+        short: Finance
+        icon: erp
+        summary: Basel, CCAR and local returns from one governed model.
+        problem: Basel, CCAR and local returns are stitched from dozens of risk and finance systems each cycle, so reconciliation is manual, lineage is hard to prove and one restatement can trigger a finding.
+        who_benefits: Chief Credit Officer & CFO
+        how_built: Risk and finance data conform into governed Gold tables under Unity Catalog with full lineage, and returns are assembled for Nasdaq AxiomSL Reg Reporting and published as Data Products.
+        components:
+          - Nasdaq AxiomSL Reg Reporting
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+          - Data Products
+        stories:
+          - title: BCBS 239 compliance in the age of AI (ABN AMRO)
+            url: https://www.databricks.com/blog/bcbs-239-compliance-age-ai-turning-regulatory-burden-strategic-advantage
+      - name: Open Banking Analytics
+        short: Digital
+        icon: api
+        summary: Consent, aggregation and payment initiation insights.
+        problem: Consent, aggregation and payment-initiation traffic from third parties arrives in fragmented API logs, so the bank cannot see how open-banking journeys perform or which partners drive value.
+        who_benefits: Retail Banking
+        how_built: Aggregation and consent feeds land through Lakeflow onto Delta Lake, are conformed under governance, and partner, consent and payment-initiation metrics are analyzed in AI/BI.
+        components:
+          - Plaid Aggregation
+          - Tink Open Banking
+          - Lakeflow
+          - Delta Lake
+          - AI/BI
+      - name: Collections Optimization
+        short: Lending
+        icon: people
+        summary: Treatment strategies ranked by recovery probability.
+        problem: Delinquent accounts get the same generic dunning regardless of who will actually pay, so recoveries are low, good customers are pushed away and collections cost more than they return.
+        who_benefits: Retail Banking
+        how_built: Servicing and behavior features in Feature Store feed recovery-probability models in Model Serving tracked in MLflow, so each account gets the treatment most likely to cure.
+        components:
+          - Fiserv DNA
+          - Model Serving
+          - Feature Store
+          - MLflow
+          - AI Functions
+        stories:
+          - title: Ophelos optimizes debt collection on Databricks
+            url: https://www.databricks.com/customers/ophelos
+          - title: Oakbrook builds a collections decision engine
+            url: https://www.databricks.com/customers/oakbrook
+      - name: Operational Loss
+        short: Risk
+        icon: gavel
+        summary: Loss events captured and capitalized for AMA frameworks.
+        problem: Operational loss events are logged in scattered spreadsheets and case tools, so capital under advanced measurement is modeled on incomplete history and control failures recur unseen.
+        who_benefits: Risk & Compliance
+        how_built: Loss events and near-misses are captured into governed Delta Lake tables under Unity Catalog, aggregated for AMA capital, and analyzed in AI/BI and published as Data Products.
+        components:
+          - Unity Catalog
+          - Delta Lake
+          - Nasdaq AxiomSL Reg Reporting
+          - AI/BI
+          - Data Products
+medallion:
+  Bronze:
+    short: Raw core and channel logs
+    summary: Core banking postings, card authorizations, wire messages and CRM events landed exactly as received for audit replay.
+  Silver:
+    short: Conformed customers and accounts
+    summary: Customers, accounts, facilities and parties resolved into golden records across core, cards and channels.
+  Gold:
+    short: NIM, NPL, liquidity ratios
+    summary: 'Contracted products finance and risk run on: net interest margin, NPL ratio, LCR and customer profitability.'
+citation_index:
+  temenos:
+    title: Temenos Transact
+    url: https://www.temenos.com/products/transact/
+  fis-profile:
+    title: FIS Profile
+    url: https://www.fisglobal.com/products/core-banking
+  finastra:
+    title: Fiserv DNA
+    url: https://www.fiserv.com/
+  visa:
+    title: Visa
+    url: https://www.visa.com/
+  mastercard:
+    title: Mastercard
+    url: https://www.mastercard.com/
+  swift:
+    title: SWIFT
+    url: https://www.swift.com/
+  temenos-infinity:
+    title: Temenos Infinity
+    url: https://www.temenos.com/products/infinity/
+  sf-fsc:
+    title: Salesforce Financial Services Cloud
+    url: https://www.salesforce.com/financial-services/
+  actimize:
+    title: NICE Actimize
+    url: https://www.niceactimize.com/
+  moodys:
+    title: Moody's Analytics
+    url: https://www.moodys.com/
+  fis-alm:
+    title: FIS ALM
+    url: https://www.fisglobal.com/products/treasury-and-risk
+  axiomsl:
+    title: Nasdaq AxiomSL
+    url: https://www.nasdaq.com/solutions/fintech/nasdaq-axiomsl/regulatory-reporting
+  plaid:
+    title: Plaid
+    url: https://plaid.com/
+  tink:
+    title: Tink
+    url: https://tink.com/
+  fico:
+    title: FICO
+    url: https://www.fico.com/
+  lexisnexis:
+    title: LexisNexis Risk Solutions
+    url: https://risk.lexisnexis.com/
+  experian:
+    title: Experian
+    url: https://www.experian.com/business/

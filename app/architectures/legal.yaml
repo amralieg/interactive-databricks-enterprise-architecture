@@ -1,0 +1,874 @@
+name: Legal
+description: 'Law firms and corporate legal departments: matter management, e-discovery, contract lifecycle, time and billing, and regulatory compliance.'
+sources:
+  - name: Document & DMS
+    icon: db
+    tiles:
+      - name: iManage Work
+        icon: db
+        summary: Matter workspaces, document versions, metadata and ethical wall enforcement.
+        citations:
+          - imanage
+        category: Document Management System (DMS)
+        what_it_is: Holds matter workspaces, document versions and metadata and enforces ethical walls as the DMS of record.
+        who_uses_it: Attorneys, paralegals and knowledge management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 10-50 GB/day docs + metadata
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: tens of document events/sec
+            interval: Continuous CDC
+      - name: NetDocuments
+        icon: sheet
+        summary: Cloud DMS profiles, collaboration and client matter security.
+        citations:
+          - netdocuments
+        category: Document Management System (DMS)
+        what_it_is: Cloud DMS holding document profiles, collaboration and client-matter security across the firm.
+        who_uses_it: Attorneys, paralegals and records teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 5-30 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Microsoft Purview
+        icon: gavel
+        summary: Records classification, retention labels and legal hold across M365 estates.
+        citations:
+          - purview
+        category: Information Governance / Records Platform
+        what_it_is: Classifies records, applies retention labels and manages legal hold across the M365 estate.
+        who_uses_it: Records, compliance and information governance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-8 GB/day classification + labels
+            interval: Nightly batch
+  - name: Practice & Billing
+    icon: erp
+    tiles:
+      - name: Elite 3E
+        icon: erp
+        summary: Time entries, disbursements, WIP and matter accounting for large firms.
+        citations:
+          - elite-3e
+        category: Legal Practice Management / Billing
+        what_it_is: System of record for time entries, disbursements, WIP and matter accounting at large firms.
+        who_uses_it: Billing, finance and practice management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 3-15 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Aderant Expert
+        icon: market
+        summary: Billing, collections and financial reporting across practice groups.
+        citations:
+          - aderant
+        category: Legal Practice Management / Billing
+        what_it_is: Runs billing, collections and financial reporting across practice groups for the firm.
+        who_uses_it: Billing, collections and practice finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 2-10 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Intapp
+        icon: apps
+        summary: Client and matter intake, conflicts clearance, time capture and risk management across the firm.
+        citations:
+          - clio
+        category: Intake, Conflicts & Risk Platform
+        what_it_is: Manages client and matter intake, conflicts clearance, time capture and risk across the firm.
+        who_uses_it: New business intake, conflicts counsel and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Hourly / nightly sync
+  - name: E-Discovery
+    icon: gavel
+    tiles:
+      - name: RelativityOne
+        icon: gavel
+        summary: Processing, review, analytics and production for litigation and investigations.
+        citations:
+          - relativity
+        category: E-Discovery Platform
+        what_it_is: Handles processing, review, analytics and production for litigation and investigations across custodians.
+        who_uses_it: E-discovery managers, review teams and litigation paralegals.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: TB-scale per matter
+            interval: Per-matter loads + nightly batch
+      - name: Everlaw
+        icon: partner
+        summary: Collaborative review, storybuilder and deposition preparation workflows.
+        citations:
+          - everlaw
+        category: E-Discovery Platform
+        what_it_is: Provides collaborative review, storybuilder and deposition-preparation workflows for litigation teams.
+        who_uses_it: Review teams, litigation associates and paralegals.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GB-TB per matter
+            interval: Per-matter loads + nightly batch
+      - name: PACER Court Records
+        icon: api
+        summary: Federal docket filings, orders and party events from public court systems.
+        citations:
+          - pacer
+        category: Court Docket / Public Records
+        what_it_is: Carries federal docket filings, orders and party events from public court systems for docket monitoring.
+        who_uses_it: Litigation paralegals, docketing and case teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: docket events on filing
+            interval: Continuous (API polling)
+  - name: Contracts & Research
+    icon: sheet
+    tiles:
+      - name: Ironclad CLM
+        icon: product
+        summary: 'Contract lifecycle management: intake, negotiation workflow and obligation tracking.'
+        citations:
+          - ironclad
+        category: Contract Lifecycle Management (CLM)
+        what_it_is: Manages contract intake, negotiation workflow and obligation tracking across the contract lifecycle.
+        who_uses_it: Practice management, contract owners and knowledge management.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 1-6 GB/day contracts + metadata
+            interval: Nightly batch + hourly deltas
+      - name: Thomson Reuters Westlaw
+        icon: globe
+        summary: 'Legal research corpus: case law, statutes and citator research with usage telemetry.'
+        citations:
+          - westlaw
+        category: Legal Research Platform
+        what_it_is: Legal research corpus of case law, statutes and citator research, emitting usage telemetry per timekeeper and matter.
+        who_uses_it: Attorneys, knowledge management and research analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day usage telemetry
+            interval: Daily feed
+      - name: LexisNexis Guidance
+        icon: notebook
+        summary: 'Legal knowledge: practice notes, checklists and standard clauses referenced at drafting.'
+        citations:
+          - lexis
+        category: Legal Knowledge / Practical Guidance
+        what_it_is: Legal knowledge base of practice notes, checklists and standard clauses referenced at drafting.
+        who_uses_it: Attorneys, knowledge management and drafting teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - unstructured
+            volume: GB-scale reference + usage
+            interval: Periodic + on-demand
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Client ERP Contract Mart
+        icon: fed
+        summary: Corporate customer contract and vendor obligation marts left in place and queried under Unity Catalog.
+        category: Corporate Contract / Obligation Mart
+        what_it_is: Corporate customer contract and vendor-obligation marts queried in place through federation instead of being copied.
+        who_uses_it: Corporate legal, contract management and finance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale contract marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: EDRM XML Load Files
+        icon: api
+        summary: Standardised processing and review metadata consumed inbound for cross-tool portability.
+        citations:
+          - edrm
+        category: E-Discovery Interchange Format
+        what_it_is: Standardised processing and review metadata consumed inbound so evidence moves between e-discovery tools without loss.
+        who_uses_it: E-discovery managers and litigation support engineers.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs per production
+            interval: Per-production loads
+      - name: LEDES Billing
+        icon: market
+        summary: Outside counsel invoice formats validated before accrual and payment.
+        citations:
+          - ledes
+        category: Legal E-Billing Format
+        what_it_is: Standardised outside-counsel invoice files validated before accrual and payment against matter budgets.
+        who_uses_it: Billing, accounts payable and corporate legal operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs-GBs per cycle
+            interval: Billing cycles + on-receipt
+      - name: Sanctions & PEP Lists
+        icon: gavel
+        summary: Watchlist updates consumed inbound for client intake screening.
+        citations:
+          - worldcheck
+        category: Sanctions & PEP Screening Provider
+        what_it_is: Sanctions and politically-exposed-person watchlist updates consumed inbound for client-intake and conflicts screening.
+        who_uses_it: Conflicts counsel, KYC/intake and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs per update
+            interval: Daily + on-change
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Managing Partner & GC
+        mark: Genie One
+        summary: The managing partner on realization rate and leverage; the general counsel on outside-counsel spend against budget and matter profitability by practice group.
+        uses:
+          - - Genie One
+            - Ask firm-wide realization this quarter without waiting on finance.
+          - - AI/BI
+            - Realization, leverage and WIP on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "realization" means one thing across practices.
+        sub:
+          - name: Managing Partner
+            cares: firm-wide realization, leverage and the trade between growth and profit per equity partner.
+          - name: General Counsel
+            cares: outside-counsel spend against budget and matter profitability by practice group.
+          - name: Firm CFO
+            cares: WIP, collections and the gap between billed and collected across the firm.
+        ucs:
+          - Matter Profitability
+          - Outside Counsel Spend
+          - Time Entry Compliance
+      - name: Practice Management
+        mark: AI/BI
+        summary: Practice leaders on matter staffing and leverage, budget burn by phase and whether contracts hold to the firm playbook before write-offs pile up.
+        uses:
+          - - Matter Profitability Console
+            - Budget versus actual by matter phase and timekeeper.
+          - - Contract Intelligence Hub
+            - Non-standard clauses flagged at intake against the playbook.
+          - - AI/BI
+            - Matter margin and leverage on certified Metric Views.
+        sub:
+          - name: Practice Group Leader
+            cares: staffing, leverage and budget burn by matter phase before write-offs pile up.
+          - name: Matter Pricing
+            cares: alternative fee arrangements and whether a matter holds to its budget.
+          - name: Knowledge Management
+            cares: the firm playbook and standard clauses reused across the practice.
+        ucs:
+          - Matter Profitability
+          - Contract Playbook Compliance
+          - Legal Research Analytics
+          - Time Entry Compliance
+      - name: Litigation Support
+        mark: Lakehouse//RT
+        summary: E-discovery managers on custodian completeness, processing queues and reviewer throughput against the court deadline that will not move.
+        uses:
+          - - Review Command Centre
+            - Reviewer throughput and custodian completeness before court deadlines.
+          - - Lakehouse//RT
+            - Live review progress at case latency.
+          - - AI/BI
+            - Review cost and pace per matter on governed definitions.
+        sub:
+          - name: E-Discovery Manager
+            cares: custodian completeness, processing queues and throughput against the deadline.
+          - name: Review Team Lead
+            cares: reviewer quality, privilege calls and the pace and cost per matter.
+          - name: Litigation Paralegal
+            cares: docket deadlines, production sets and certificates of service.
+        ucs:
+          - E-Discovery Review
+          - Privilege Prediction
+          - Docket Monitoring
+      - name: Compliance
+        mark: AI/BI
+        summary: Conflicts, KYC and ethics on new-business intake and ongoing matter monitoring, clearing party hits before an engagement letter releases.
+        uses:
+          - - Conflicts Clearance
+            - Party and relationship hits before engagement letters release.
+          - - AI/BI
+            - Sanctions and PEP screening on certified views.
+          - - Unity Catalog
+            - One definition of party and matter across DMS and billing.
+        sub:
+          - name: Conflicts Counsel
+            cares: party and relationship hits cleared before an engagement letter releases.
+          - name: Ethics & Risk
+            cares: ethical walls, privilege logs and the firm's professional-responsibility record.
+          - name: KYC & Intake
+            cares: client screening against sanctions and PEP watchlists at new business.
+        ucs:
+          - Conflicts Screening
+          - Records Retention
+          - Privilege Prediction
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the DMS, billing, docket and CLM feeds; own the Bronze to Silver path and the pager when a review or billing load breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for iManage, Elite 3E and Relativity sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on billing and review feeds.
+          - - Lakewatch
+            - Freshness on the tables practice and finance leaders read every morning.
+        sub:
+          - name: Ingestion Engineering
+            cares: the iManage, Elite 3E, Relativity and docket connectors and the Bronze-to-Silver path.
+          - name: Pipeline Reliability
+            cares: the pager when a review or billing load breaks before the morning read.
+          - name: Data Quality
+            cares: expectations on billing and review feeds so matter numbers reconcile.
+        ucs:
+          - E-Discovery Review
+          - Matter Profitability
+          - Docket Monitoring
+      - name: Data Scientists
+        mark: MLflow
+        summary: Privilege-prediction, realization and clause-risk models, and whether they still hold six months after deployment.
+        uses:
+          - - Feature Store
+            - Matter and document features defined once for training and serving.
+          - - MLflow
+            - Every review model run tracked for audit and reproduction.
+          - - Model Serving
+            - Privilege and clause models scored in the review path.
+        sub:
+          - name: ML Engineering
+            cares: privilege, realization and clause-risk models from features to serving.
+          - name: Model Governance
+            cares: whether a model still holds six months on, tracked in MLflow for audit.
+          - name: NLP & Documents
+            cares: clause extraction and time-narrative scoring over legal text.
+        ucs:
+          - Privilege Prediction
+          - Contract Playbook Compliance
+          - Matter Profitability
+      - name: App Developers
+        mark: Apps
+        summary: Ship the matter-profitability, review and conflicts applications the firm works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Matter and review screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for review assignments and pre-bill writes.
+          - - Agent Bricks
+            - Agents that draft a clause review or conflicts check against governed tools.
+        sub:
+          - name: Application Engineering
+            cares: the matter-profitability, review and conflicts screens the firm works in.
+          - name: Platform & Lakebase
+            cares: serverless Postgres for review assignments and pre-bill writes.
+          - name: Agent Engineering
+            cares: agents that draft a clause review or conflicts check against governed tools.
+        ucs:
+          - Matter Profitability
+          - E-Discovery Review
+          - Conflicts Screening
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Practice and finance dashboards on serverless SQL with Unity Catalog permissions.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and matter alerts in the channel teams already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Analytics notebooks against governed billing and review data.
+  - name: Matter Writeback
+    icon: opdb
+    tiles:
+      - name: DMS Metadata Updates
+        icon: db
+        summary: Privilege and issue codes written back into document profiles after review.
+        citations:
+          - imanage
+      - name: Billing Pre-bill Release
+        icon: market
+        summary: Approved time and disbursement entries released from WIP to client invoices.
+        citations:
+          - elite-3e
+      - name: Review Assignments
+        icon: apps
+        summary: Reviewer queues and issue tags pushed to Relativity workspaces.
+        citations:
+          - relativity
+  - name: Clients & Counsel
+    icon: partner
+    tiles:
+      - name: Outside Counsel Guidelines
+        icon: share
+        summary: Budget and staffing compliance shared with panel firms over Delta Sharing.
+      - name: Corporate Legal Portal
+        icon: partner
+        summary: Matter status and spend dashboards exchanged with in-house clients.
+      - name: Court E-filing
+        icon: api
+        summary: Production sets and certificates of service filed through e-filing gateways.
+        citations:
+          - pacer
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: LEDES & Accrual Reporting
+        icon: gavel
+        summary: Outside counsel invoice accruals reconciled to matter budgets from governed billing tables.
+        citations:
+          - ledes
+      - name: Ethics & Audit Trail
+        icon: share
+        summary: Conflicts clearance and privilege logs filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Corporate clients and co-counsel reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Matter Profitability Console
+        icon: market
+        short: Practice economics
+        summary: Budget, WIP and realization by matter phase and timekeeper before write-offs accumulate.
+      - name: Review Command Centre
+        icon: gauge
+        short: E-discovery ops
+        summary: Custodian completeness, reviewer throughput and production deadlines on one litigation ops screen.
+      - name: Contract Intelligence Hub
+        icon: product
+        short: CLM analytics
+        summary: Non-standard clauses, renewal risk and obligation calendars scored against the firm playbook.
+      - name: Conflicts Clearance
+        icon: gavel
+        short: New business
+        summary: Party and relationship hits surfaced before engagement letters and ethical walls are set.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Practice Economics
+        icon: aibi
+        summary: Realization, leverage, matter margin and WIP across practice groups on certified views.
+        kpis:
+          - Realization rate
+          - Leverage
+          - Matter margin
+          - WIP ageing
+          - Collections rate
+        teams:
+          - Managing Partner & GC
+          - Practice Management
+          - Firm CFO
+      - name: Litigation Operations
+        icon: aibi
+        summary: Reviewer throughput, custodian completeness, review cost and docket-deadline risk.
+        kpis:
+          - Review throughput
+          - Custodian completeness
+          - Review cost per matter
+          - Privilege call rate
+          - Deadline risk
+        teams:
+          - Litigation Support
+          - E-Discovery Manager
+          - Litigation Paralegal
+      - name: Contract Intelligence
+        icon: aibi
+        summary: Clause deviations, obligation calendars, renewal risk and research usage by matter.
+        kpis:
+          - Non-standard clause rate
+          - Obligations due
+          - Renewal risk
+          - Negotiation cycles
+          - Research usage
+        teams:
+          - Practice Management
+          - Knowledge Management
+          - Matter Pricing
+      - name: Risk & Compliance
+        icon: aibi
+        summary: Conflicts hits, sanctions screening coverage, legal holds and retention exceptions.
+        kpis:
+          - Open conflicts hits
+          - Screening coverage
+          - Active legal holds
+          - Retention exceptions
+          - Intake cycle time
+        teams:
+          - Compliance
+          - Conflicts Counsel
+          - Ethics & Risk
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Matter Profitability Agent
+        icon: genie
+        summary: Ask about realization, leverage and matter margin across the firm in plain language.
+        feeds:
+          - Elite 3E
+          - Aderant Expert
+          - LEDES Billing
+          - Realization, risk, compliance
+        teams:
+          - Managing Partner & GC
+          - Practice Management
+          - Firm CFO
+        questions:
+          - What is firm-wide realization this quarter versus last?
+          - Which matters are running over budget by phase?
+          - What is leverage and margin by practice group?
+          - Where is WIP ageing beyond target across matters?
+          - How does outside-counsel spend compare to budget by matter?
+      - name: E-Discovery & Litigation Agent
+        icon: genie
+        summary: Explore review throughput, custodian completeness and docket deadlines across matters.
+        feeds:
+          - RelativityOne
+          - Everlaw
+          - PACER Court Records
+          - Conformed matter, client
+        teams:
+          - Litigation Support
+          - E-Discovery Manager
+          - Litigation Paralegal
+        questions:
+          - What is reviewer throughput and cost per matter this week?
+          - Which custodians are still incomplete against the collection plan?
+          - Which matters have upcoming court deadlines from recent orders?
+          - How much data remains to review against the deadline?
+          - Which documents are flagged as likely privileged?
+      - name: Contracts & Knowledge Agent
+        icon: genie
+        summary: Answer questions on clause risk, obligations and research usage across the practice.
+        feeds:
+          - Ironclad CLM
+          - Thomson Reuters Westlaw
+          - LexisNexis Guidance
+          - Conformed matter, client
+        teams:
+          - Practice Management
+          - Knowledge Management
+          - Matter Pricing
+        questions:
+          - Which contracts contain non-standard clauses against the playbook?
+          - Which obligations and renewals are due in the next 30 days?
+          - Which precedent work is most reused across the practice?
+          - Where does research spend not tie to a matter outcome?
+          - Which clauses drive the most negotiation cycles?
+      - name: Conflicts & Compliance Agent
+        icon: genie
+        summary: Ask about conflicts hits, sanctions screening and records retention at intake and beyond.
+        feeds:
+          - Intapp
+          - Sanctions & PEP Lists
+          - Microsoft Purview
+          - Realization, risk, compliance
+        teams:
+          - Compliance
+          - Conflicts Counsel
+          - Ethics & Risk
+        questions:
+          - Which new-business intakes have unresolved conflicts hits?
+          - Which parties match a sanctions or PEP watchlist?
+          - Which documents are past their retention policy?
+          - Which matters have active legal holds right now?
+          - Where are ethical walls required but not yet set?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Matter Profitability
+        short: Finance
+        icon: market
+        summary: Realization, leverage and matter margin tracked before year-end write-offs.
+        problem: Realization and matter margin surface only at year-end, when write-offs are already booked, because WIP, billing and staffing live in separate systems no partner can reconcile in time.
+        who_benefits: Managing Partner & GC
+        how_built: Billing, WIP and timekeeper feeds land through Lakeflow and conform on Delta Lake, so the Matter Profitability Console shows budget-versus-actual by phase on certified Metric Views in AI/BI.
+        components:
+          - Matter Profitability Console
+          - Elite 3E
+          - Lakeflow
+          - Delta Lake
+          - AI/BI
+      - name: E-Discovery Review
+        short: Litigation
+        icon: gauge
+        summary: Processing, prioritisation and reviewer throughput optimised against court deadlines.
+        problem: Review runs against a court deadline that will not move, yet custodian completeness, processing queues and reviewer throughput sit in the e-discovery tool with no governed view of cost.
+        who_benefits: Litigation Support
+        how_built: Relativity load files and review metadata land through Lakeflow into Lakehouse//RT, so the Review Command Centre tracks reviewer throughput live against the court deadline.
+        components:
+          - Review Command Centre
+          - RelativityOne
+          - Lakeflow
+          - Lakehouse//RT
+          - AI/BI
+        stories:
+          - title: How Clifford Chance improves legal document review with data science
+            url: https://www.databricks.com/blog/2020/03/31/data-science-with-azure-databricks-at-clifford-chance.html
+      - name: Privilege Prediction
+        short: Risk
+        icon: gavel
+        summary: Attorney-client and work-product calls assisted with reproducible model evidence.
+        problem: Privilege review is manual and inconsistent across reviewers, so attorney-client and work-product calls vary by matter and a missed call risks waiver or an over-broad, costly withholding.
+        who_benefits: Litigation Support
+        how_built: Document and matter features are engineered in Feature Store and scored through Model Serving in the review path, with every run tracked in MLflow for defensible, reproducible evidence.
+        components:
+          - Review Command Centre
+          - Model Serving
+          - MLflow
+          - Feature Store
+          - RelativityOne
+        stories:
+          - title: How Clifford Chance improves legal document review with data science
+            url: https://www.databricks.com/blog/2020/03/31/data-science-with-azure-databricks-at-clifford-chance.html
+      - name: Contract Playbook Compliance
+        short: Commercial
+        icon: product
+        summary: Clause deviations flagged at intake before negotiation cycles expand.
+        problem: Non-standard clauses are caught late in negotiation, if at all, because contract terms sit in the CLM while the firm playbook lives in checklists no one opens at intake.
+        who_benefits: Practice Management
+        how_built: Ironclad contract text is parsed with AI Functions and scored against the playbook in the Contract Intelligence Hub, flagging clause deviations at intake before negotiation cycles expand.
+        components:
+          - Contract Intelligence Hub
+          - Ironclad CLM
+          - AI Functions
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Cracking complex contracts with GenAI on Databricks
+            url: https://www.databricks.com/blog/cracking-complex-contracts-genai-azure-databricks
+          - title: EY-Parthenon turns unstructured M&A data into strategy
+            url: https://www.databricks.com/customers/ey-parthenon
+      - name: Conflicts Screening
+        short: Ethics
+        icon: people
+        summary: New business intake screened against parties, matters and watchlists in one governed graph.
+        problem: New business intake is screened against parties, matters and watchlists held in DMS, billing and CLM silos, so a conflict hit can slip through before an engagement letter releases.
+        who_benefits: Compliance
+        how_built: Party and matter data conform under Unity Catalog into one governed graph, and the Conflicts Clearance app surfaces relationship and watchlist hits before an engagement letter releases.
+        components:
+          - Conflicts Clearance
+          - Sanctions & PEP Lists
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+      - name: Outside Counsel Spend
+        short: Corporate
+        icon: chart
+        summary: Panel firm invoices reconciled to matter budgets and LEDES guidelines.
+        problem: In-house teams accrue panel-firm invoices against budgets they cannot see line by line, because LEDES files and matter budgets never meet in one place until the bill is already paid.
+        who_benefits: Managing Partner & GC
+        how_built: LEDES invoices are validated on ingest and reconciled to matter budgets on Delta Lake, so outside-counsel spend against guidelines shows in the Matter Profitability Console and AI/BI.
+        components:
+          - Matter Profitability Console
+          - LEDES Billing
+          - Delta Lake
+          - Unity Catalog
+          - AI/BI
+      - name: Legal Research Analytics
+        short: Knowledge
+        icon: notebook
+        summary: Precedent and research usage tied to matter outcomes and staffing decisions.
+        problem: Research spend on Westlaw and Lexis is untethered from matter outcomes and staffing, so no one knows which precedent work actually moved a matter or justified the hours it cost.
+        who_benefits: Practice Management
+        how_built: Research usage telemetry conforms with matter and billing data under Unity Catalog and is explored in AI/BI and Genie, tying precedent work to outcomes and staffing decisions.
+        components:
+          - Thomson Reuters Westlaw
+          - LexisNexis Guidance
+          - Unity Catalog
+          - AI/BI
+          - Genie One
+        stories:
+          - title: JLL turns lease data into governed, queryable knowledge
+            url: https://www.databricks.com/customers/jll/dealsumm
+      - name: Docket Monitoring
+        short: Litigation
+        icon: api
+        summary: Court filings and orders tracked across matters without manual PACER pulls.
+        problem: Court filings and orders are tracked by manual PACER pulls per matter, so a deadline-setting order can land unseen for days across a large litigation portfolio.
+        who_benefits: Litigation Support
+        how_built: PACER docket events land through Lakeflow onto Delta Lake and stream into Lakehouse//RT, so new filings raise alerts across matters in the Review Command Centre without manual pulls.
+        components:
+          - Review Command Centre
+          - PACER Court Records
+          - Lakeflow
+          - Lakehouse//RT
+          - Delta Lake
+      - name: Records Retention
+        short: Compliance
+        icon: db
+        summary: Legal holds and disposition executed from governed retention policies.
+        problem: Legal holds and disposition depend on retention rules scattered across the DMS and records tools, so holds are missed and documents kept long past policy, raising cost and discovery risk.
+        who_benefits: Compliance
+        how_built: Retention labels from Microsoft Purview conform under Unity Catalog, so holds and disposition execute from one governed policy with auditable lineage from rule to document.
+        components:
+          - Microsoft Purview
+          - Unity Catalog
+          - Delta Lake
+          - iManage Work
+          - AI/BI
+        stories:
+          - title: Building document intelligence pipelines with Lakeflow
+            url: https://www.databricks.com/blog/building-databricks-document-intelligence-and-lakeflow
+      - name: Time Entry Compliance
+        short: Billing
+        icon: erp
+        summary: Narrative and UTBMS code quality scored before invoices reach clients.
+        problem: Time narratives and UTBMS codes are corrected only after a client rejects the bill, so realization leaks to write-downs and pre-bill review eats partner hours late in the cycle.
+        who_benefits: Practice Management
+        how_built: Time entries are scored for narrative and UTBMS code quality with AI Functions on Delta Lake, flagging weak entries in the Matter Profitability Console before invoices reach clients.
+        components:
+          - Matter Profitability Console
+          - Elite 3E
+          - AI Functions
+          - Delta Lake
+          - AI/BI
+medallion:
+  Bronze:
+    short: Raw matter and document feeds
+    summary: DMS documents, billing entries, court docket events, contract repository versions and e-discovery load files, landed exactly as received so a privilege call or a time entry can always be replayed.
+  Silver:
+    short: Conformed matter, client
+    summary: Clients, matters, documents and timekeepers resolved into single conformed entities across DMS, billing and CLM systems, with matter IDs reconciled and related-party conflicts stitched to one engagement.
+  Gold:
+    short: Realization, risk, compliance
+    summary: 'Contracted products practice and finance leaders run on: realization rate and leverage, matter profitability, e-discovery review throughput, and outside counsel spend against budget.'
+citation_index:
+  imanage:
+    title: iManage Work
+    url: https://imanage.com/product/imanage-work/
+  netdocuments:
+    title: NetDocuments
+    url: https://www.netdocuments.com/
+  purview:
+    title: Microsoft Purview
+    url: https://learn.microsoft.com/en-us/purview/
+  elite-3e:
+    title: Elite 3E
+    url: https://www.elite.com/products/3e/
+  aderant:
+    title: Aderant Expert
+    url: https://www.aderant.com/products/expert/
+  clio:
+    title: Intapp
+    url: https://www.intapp.com/legal/
+  relativity:
+    title: RelativityOne
+    url: https://www.relativity.com/
+  everlaw:
+    title: Everlaw
+    url: https://www.everlaw.com/
+  pacer:
+    title: PACER court records
+    url: https://pacer.uscourts.gov/
+  ironclad:
+    title: Ironclad CLM
+    url: https://ironcladapp.com/
+  westlaw:
+    title: Thomson Reuters Westlaw
+    url: https://legal.thomsonreuters.com/en/westlaw
+  lexis:
+    title: LexisNexis Practical Guidance
+    url: https://www.lexisnexis.com/
+  edrm:
+    title: EDRM resources
+    url: https://edrm.net/
+  ledes:
+    title: LEDES billing formats
+    url: https://ledes.org/
+  worldcheck:
+    title: LSEG World-Check
+    url: https://www.lseg.com/en/risk-intelligence/screening-solutions/world-check-kyc-screening

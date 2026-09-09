@@ -1,0 +1,917 @@
+name: Semiconductors
+description: 'Fab and foundry operations: wafer manufacturing execution, yield and test analytics, design-to-silicon traceability, and supply chain resilience across the semiconductor value chain.'
+sources:
+  - name: Fab & MES
+    icon: erp
+    tiles:
+      - name: Applied E3 MES
+        icon: erp
+        summary: 'Manufacturing execution for wafer fabs: lot tracking, recipe management, equipment dispatch and hold/release.'
+        citations:
+          - applied-e3
+        category: Semiconductor MES
+        what_it_is: Manufacturing execution for wafer fabs covering lot tracking, recipe management, equipment dispatch and hold/release.
+        who_uses_it: Fab operations, dispatch and Process engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec
+            interval: Continuous lot/step events
+      - name: Camstar Semiconductor
+        icon: sheet
+        summary: MES routings, BOMs, component traceability and quality holds against each lot.
+        citations:
+          - camstar
+        category: Semiconductor MES
+        what_it_is: Manages MES routings, BOMs, component traceability and quality holds against each lot through the route.
+        who_uses_it: Fab operations, quality and Traceability teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of events/sec
+            interval: Continuous lot events
+      - name: camLine LineWorks
+        icon: db
+        summary: 'Fab APC, FDC and SPC with equipment integration: run-to-run control and tool health across the wafer line.'
+        citations:
+          - brooks-pfab
+        category: APC / FDC / SPC Platform
+        what_it_is: Runs advanced process control, fault detection and SPC with equipment integration for run-to-run control and tool health.
+        who_uses_it: Process engineering, equipment engineering and Yield engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-20k tags/sec
+            interval: Continuous equipment telemetry
+  - name: Design & IP
+    icon: sheet
+    tiles:
+      - name: Synopsys Fusion Design
+        icon: sheet
+        summary: 'RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.'
+        citations:
+          - synopsys-fusion
+        category: EDA Digital Design
+        what_it_is: 'Takes RTL through sign-off: synthesis, place-and-route and timing closure feeding the tape-out record.'
+        who_uses_it: Digital design, physical design and Sign-off teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs-TBs per block
+            interval: Per design run
+      - name: Cadence Virtuoso
+        icon: code
+        summary: 'Custom and analog design: schematic, layout and LVS for IP blocks on each die.'
+        citations:
+          - cadence-virtuoso
+        category: EDA Custom/Analog Design
+        what_it_is: 'Supports custom and analog design: schematic, layout and LVS for IP blocks on each die.'
+        who_uses_it: Analog/mixed-signal designers and IP teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs per IP block
+            interval: Per design run
+      - name: Siemens Calibre
+        icon: gavel
+        summary: DRC, LVS and OPC verification against foundry rules before mask order.
+        citations:
+          - calibre
+        category: EDA Physical Verification
+        what_it_is: Runs DRC, LVS and OPC verification against foundry rules before the mask is ordered.
+        who_uses_it: Physical verification, DFM and Tape-out teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs (verification results)
+            interval: Per verification run
+  - name: Yield & Test
+    icon: iot
+    tiles:
+      - name: Teradyne UltraFLEX
+        icon: iot
+        summary: 'ATE parametric and functional test: bin maps, shmoo plots and bin history per die.'
+        citations:
+          - teradyne
+        category: Automated Test Equipment (ATE)
+        what_it_is: Runs parametric and functional test producing bin maps, shmoo plots and bin history per die.
+        who_uses_it: Test engineering, product engineering and Yield engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: GBs/hour parametric dumps
+            interval: Continuous during test
+      - name: PDF Solutions Exensio
+        icon: chart
+        summary: 'Yield management: defect classification, spatial signatures and excursion detection.'
+        citations:
+          - pdf-exensio
+        category: Yield Management System (YMS)
+        what_it_is: Yield management for defect classification, spatial signature analysis and excursion detection across the fab.
+        who_uses_it: Yield engineering, defect analysis and Process engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Hourly + per-lot
+      - name: KLA 5D Analyzer
+        icon: stream
+        summary: 'Inspection and metrology: defect maps, overlay and CD measurements by tool and recipe.'
+        citations:
+          - kla-5d
+        category: Inspection & Metrology
+        what_it_is: Inspection and metrology producing defect maps, overlay and CD measurements by tool and recipe.
+        who_uses_it: Metrology, defect engineering and Yield engineering.
+        data_out:
+          stream:
+            types:
+              - unstructured
+              - structured
+            volume: TBs/day images + measures
+            interval: Continuous inline inspection
+  - name: Equipment & Sensors
+    icon: stream
+    tiles:
+      - name: SECS/GEM Tool Interface
+        icon: stream
+        summary: Equipment events, alarms and trace data from lithography, etch and deposition tools.
+        citations:
+          - secs-gem
+        category: Equipment Interface (SECS/GEM)
+        what_it_is: Carries equipment events, alarms and trace data from lithography, etch and deposition tools to the host.
+        who_uses_it: Equipment engineering, process control and Data engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k events/sec
+            interval: Continuous tool telemetry
+      - name: ASML YieldStar
+        icon: iot
+        summary: In-line overlay and CD metrology from the scanner feeding litho feedback.
+        citations:
+          - asml-yieldstar
+        category: Lithography Metrology
+        what_it_is: Provides in-line overlay and CD metrology from the scanner feeding litho run-to-run feedback.
+        who_uses_it: Litho engineering, metrology and Process control.
+        data_out:
+          stream:
+            types:
+              - structured
+            volume: GBs/day metrology
+            interval: Continuous inline metrology
+      - name: Lam Equipment Analytics
+        icon: partner
+        summary: Chamber health, RF matching and preventive maintenance signals from process tools.
+        citations:
+          - lam-analytics
+        category: Equipment Analytics
+        what_it_is: Supplies chamber health, RF matching and preventive-maintenance signals from process tools for reliability.
+        who_uses_it: Equipment engineering, maintenance and Reliability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k tags/sec
+            interval: Continuous chamber telemetry
+  - name: Supply & Materials
+    icon: market
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Procurement, inventory and cost accounting for wafers, chemicals and substrates.
+        citations:
+          - sap-s4
+        category: Enterprise ERP
+        what_it_is: System of record for procurement, inventory and cost accounting for wafers, chemicals and substrates.
+        who_uses_it: Procurement, materials planning and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: Resilinc Supply Risk
+        icon: globe
+        summary: Multi-tier supplier mapping and disruption alerts for critical materials.
+        citations:
+          - resilinc
+        category: Supply Chain Risk Intelligence
+        what_it_is: Provides multi-tier supplier mapping and disruption alerts for critical materials and sub-tier fabs.
+        who_uses_it: Supply chain risk, procurement and Materials planning.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 100s of MB/day
+            interval: Daily + event-driven alerts
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Partner Foundry Marts
+        icon: fed
+        summary: Yield and capacity marts left at the foundry and queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Yield and capacity marts kept at the foundry and queried in place through federation instead of copied into the lakehouse.
+        who_uses_it: Yield engineering, capacity planning and Foundry interface teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale yield/capacity marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: SEMI E134 Data Collection
+        icon: stream
+        summary: Industry data collection standard for equipment and MES events parsed on arrival.
+        citations:
+          - semi-e134
+        category: Equipment Data Collection Standard
+        what_it_is: Industry standard (SEMI E134) for collecting equipment and MES event and trace data, parsed on arrival into structured events.
+        who_uses_it: Data engineering, equipment engineering and Process control.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k events/sec
+            interval: Continuous equipment events
+      - name: SECS/GEM Message Bus
+        icon: api
+        summary: Equipment host communication for remote commands, trace reports and alarms.
+        citations:
+          - secs-gem
+        category: Equipment Host Messaging
+        what_it_is: Equipment-host communication carrying remote commands, trace reports and alarms between tools and the fab host.
+        who_uses_it: Equipment engineering, automation and Data engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 2-20k messages/sec
+            interval: Continuous host messaging
+      - name: OSAT Test File Exchange
+        icon: zplug
+        summary: STDF parametric files from outsourced assembly and test partners.
+        citations:
+          - stdf
+        category: Outsourced Test Data Exchange
+        what_it_is: Delivers STDF parametric and bin files from outsourced assembly and test (OSAT) partners for yield correlation.
+        who_uses_it: Test engineering, quality and OSAT interface teams.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: GBs/day STDF files
+            interval: Per-lot file drops
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & Fab Strategy
+        mark: Genie One
+        summary: The CEO on capacity utilisation and margin; the COO on cycle time, yield ramp and the cost of a fab excursion by product and layer.
+        uses:
+          - - Genie One
+            - Ask what yesterday's fab output cost without booking analyst time.
+          - - AI/BI
+            - Yield, cycle time and OEE on certified Metric Views.
+          - - Unity Catalog
+            - Certification so yield means one thing across the enterprise.
+        sub:
+          - name: CEO
+            cares: fab capacity utilisation, margin and the return on each new fab and node.
+          - name: COO
+            cares: cycle time, yield ramp and the cost of an excursion by product and layer.
+          - name: VP Manufacturing
+            cares: wafer starts, output commitments and the plan behind capacity.
+        ucs:
+          - Cycle Time & WIP
+          - Yield Excursion Detection
+          - Supply Risk & Allocation
+      - name: Fab Operations
+        mark: Lakehouse//RT
+        summary: Fab managers on WIP position, tool availability and lot disposition through each critical layer, defending cycle time and wafer starts.
+        uses:
+          - - Fab Control Tower
+            - Live WIP and bottleneck tools on Databricks Apps over Lakebase.
+          - - Lakehouse//RT
+            - Equipment and lot state at fab-line latency.
+        sub:
+          - name: Fab Shift Manager
+            cares: WIP position, tool availability and hitting the day's wafer starts.
+          - name: Dispatch & Scheduling
+            cares: lot priority, bottleneck tools and keeping the route moving.
+          - name: Process Engineering
+            cares: recipe stability and run-to-run drift on critical layers.
+        ucs:
+          - Cycle Time & WIP
+          - Run-to-Run Control
+          - Chamber Matching
+          - Predictive Maintenance
+      - name: Yield Engineering
+        mark: Model Serving
+        summary: Yield engineers on defect pareto, spatial signatures and the designed experiments that recover margin before a lot is dispositioned.
+        uses:
+          - - Yield Workbench
+            - Bin maps and excursion history before disposition is signed.
+          - - Model Serving
+            - Defect classification and yield prediction on incoming lots.
+        sub:
+          - name: Yield Engineer
+            cares: defect pareto, spatial signatures and recovering margin before disposition.
+          - name: Product & Test Engineering
+            cares: bin trends, test coverage and good-die cost per product.
+          - name: Failure Analysis
+            cares: tracing an excursion or return to the layer, tool and process step.
+        ucs:
+          - Yield Excursion Detection
+          - Defect Classification
+          - Test Optimization
+          - Design-Fab Feedback
+      - name: Supply Chain
+        mark: AI/BI
+        summary: Materials planners on substrate lead times, wafer allocation and single-source risk, trading inventory cost against line-down risk.
+        uses:
+          - - AI/BI
+            - Inventory, consumption and supplier OTIF on certified Metric Views.
+          - - Genie One
+            - Ask which lots are at risk from a supplier delay.
+        sub:
+          - name: Materials Planning
+            cares: substrate and chemical lead times and buffer against line-down risk.
+          - name: Wafer Allocation
+            cares: allocating scarce capacity and wafers against demand and priority.
+          - name: Supplier Risk
+            cares: single-source exposure and multi-tier disruption on critical materials.
+        ucs:
+          - Supply Risk & Allocation
+          - Cycle Time & WIP
+      - name: Quality & Reliability
+        mark: Lakeflow
+        summary: Quality teams on customer returns, failure-analysis correlation and qualification change controls tied back to the fab lot and test bin.
+        uses:
+          - - FA Correlation Lab
+            - Returns tied to fab lot, test bin and assembly trace.
+          - - Lakeflow
+            - Test, MES and returns feeds conformed for quality analytics.
+        sub:
+          - name: Quality Engineering
+            cares: customer returns, RMA correlation and qualification change control.
+          - name: Reliability Engineering
+            cares: failure-mode life data tied back to fab lot and test bin.
+          - name: Customer Quality
+            cares: CoA, PPAP and reliability submissions to fabless customers.
+        ucs:
+          - Customer Quality CoA
+          - Defect Classification
+          - Yield Excursion Detection
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land SECS/GEM tool events, MES lot history, ATE parametric dumps and ERP feeds; own Bronze to Silver and the pager when a yield pipeline stalls.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for MES, ERP and equipment host sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on SECS/GEM and test feeds.
+          - - Lakewatch
+            - Freshness on the yield tables engineering reads each shift.
+        sub:
+          - name: Pipeline Engineering
+            cares: SECS/GEM, MES and ATE feeds landed Bronze to Silver on time.
+          - name: Streaming & Ingest
+            cares: equipment-host and STDF streams parsed and conformed on arrival.
+          - name: Data Reliability
+            cares: freshness and the pager when a yield pipeline stalls mid-shift.
+        ucs:
+          - Yield Excursion Detection
+          - Cycle Time & WIP
+          - Predictive Maintenance
+      - name: Data Scientists
+        mark: MLflow
+        summary: Defect-classification, yield-prediction, chamber-matching and test-optimisation models, and whether they still hold as processes and nodes shift.
+        uses:
+          - - Feature Store
+            - Wafer and tool features read identically in training and serving.
+          - - MLflow
+            - Every excursion experiment tracked for audit and reproduction.
+          - - Model Serving
+            - Defect and yield models scored on incoming lots.
+        sub:
+          - name: Yield & Defect Modelling
+            cares: excursion, defect-classification and yield-prediction models.
+          - name: Equipment ML
+            cares: chamber-matching and remaining-life models on tool telemetry.
+          - name: Test Analytics
+            cares: test-time optimisation and coverage models per product.
+        ucs:
+          - Defect Classification
+          - Chamber Matching
+          - Test Optimization
+          - Predictive Maintenance
+      - name: App Developers
+        mark: Apps
+        summary: Ship the Fab Control Tower, Yield Workbench and Chamber Match apps engineering runs the line from, hosted next to governed MES and test data.
+        uses:
+          - - Apps
+            - Fab screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for hold state and disposition writes.
+          - - Agent Bricks
+            - Agents that draft dispositions against governed tools.
+        sub:
+          - name: Apps Engineering
+            cares: the Fab Control Tower, Yield Workbench and Chamber Match apps.
+          - name: Lakebase & Writeback
+            cares: hold state and disposition writes on serverless Postgres.
+          - name: Agents
+            cares: agents that draft dispositions and work orders against governed tools.
+        ucs:
+          - Cycle Time & WIP
+          - Yield Excursion Detection
+          - Run-to-Run Control
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against serverless SQL warehouses with Unity Catalog permissions end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and yield alerts in the channel the fab works in.
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Engineering notebooks against governed MES, test and equipment data.
+  - name: Distribution & Partners
+    icon: partner
+    tiles:
+      - name: Foundry Partner Portal
+        icon: api
+        summary: Yield summaries and lot status shared to fabless customers over Delta Sharing.
+      - name: OSAT & Assembly Partners
+        icon: partner
+        summary: Test results and ship authorisation read by assembly partners under governed sharing.
+      - name: Equipment OEM Feeds
+        icon: globe
+        summary: Chamber matching and maintenance recommendations exchanged with tool vendors.
+        citations:
+          - secs-gem
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: MES Hold & Release
+        icon: db
+        summary: Automated hold and release written back into MES for dispatch lists.
+        citations:
+          - applied-e3
+      - name: Recipe & R2R Adjust
+        icon: erp
+        summary: Run-to-run adjustments pushed to equipment hosts within approved guard bands.
+      - name: Maintenance Work Orders
+        icon: apps
+        summary: Predicted tool removals raised as maintenance work orders on technician devices.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Export & Trade Compliance
+        icon: gavel
+        summary: Technology node and end-use reporting from governed tables.
+      - name: Customer Quality Reports
+        icon: share
+        summary: CoA, reliability and PPAP submissions from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Yield and traceability products in Unity Catalog Domains.
+      - name: Sharing Recipients
+        icon: share
+        summary: Fabless customers and OSAT partners reading live tables via Delta Sharing.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Fab Control Tower
+        icon: gauge
+        short: Live WIP state
+        summary: Fab managers run the line from bottleneck tools, hold queues and lot disposition on Databricks Apps over Lakebase.
+      - name: Yield Workbench
+        icon: chart
+        short: Excursion analysis
+        summary: Yield engineers see bin maps, defect overlays and excursion history before lot disposition.
+      - name: Chamber Match Console
+        icon: iot
+        short: Tool health
+        summary: Chamber matching scores and drift alerts by tool and recipe before yield moves.
+      - name: FA Correlation Lab
+        icon: partner
+        short: Returns trace
+        summary: Customer returns tied to fab lot, test bin and assembly genealogy in one view.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Yield & Bin Analysis
+        icon: aibi
+        summary: Yield, bin pareto and excursion trends by layer, tool and product.
+        kpis:
+          - Yield
+          - Bin pareto
+          - Excursion count
+          - Cost per good die
+          - Defect density
+        teams:
+          - Yield Engineering
+          - Product & Test Engineering
+          - Failure Analysis
+      - name: Fab Cycle Time & OEE
+        icon: aibi
+        summary: WIP, cycle time, tool availability and OEE across the route.
+        kpis:
+          - Cycle time
+          - WIP ageing
+          - Tool availability
+          - OEE
+          - Wafer starts
+        teams:
+          - Fab Operations
+          - Dispatch & Scheduling
+          - CEO & Fab Strategy
+      - name: Equipment Reliability
+        icon: aibi
+        summary: Chamber matching, run-to-run drift and predicted tool failures.
+        kpis:
+          - Chamber match score
+          - R2R variability
+          - Predicted failures
+          - Unplanned downtime
+          - PM compliance
+        teams:
+          - Fab Operations
+          - Process Engineering
+          - Equipment ML
+      - name: Supply & Customer Quality
+        icon: aibi
+        summary: Material risk, wafer allocation and returns correlation to fab lots.
+        kpis:
+          - Supplier OTIF
+          - Single-source exposure
+          - Wafer allocation fill
+          - Return rate
+          - CoA right-first-time
+        teams:
+          - Supply Chain
+          - Quality & Reliability
+          - Customer Quality
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Yield & Excursion Agent
+        icon: genie
+        summary: Ask about yield, bin pareto and excursions by layer, tool and product in plain language.
+        feeds:
+          - PDF Solutions Exensio
+          - Teradyne UltraFLEX
+          - KLA 5D Analyzer
+          - Yield, cycle time, OEE
+        teams:
+          - Yield Engineering
+          - Yield Engineer
+          - Failure Analysis
+        questions:
+          - What is yield by layer and product this week versus last?
+          - Which tools or steps are correlated with the current excursion?
+          - What is the bin pareto for this failing lot?
+          - Which spatial defect signatures are trending up?
+          - Which lots are at risk of falling below yield target before disposition?
+      - name: Fab Operations & WIP Agent
+        icon: genie
+        summary: Explore WIP position, cycle time and tool availability across the route.
+        feeds:
+          - Applied E3 MES
+          - Camstar Semiconductor
+          - SECS/GEM Tool Interface
+          - Yield, cycle time, OEE
+        teams:
+          - Fab Operations
+          - Fab Shift Manager
+          - Dispatch & Scheduling
+        questions:
+          - Where is WIP piling up and which tools are the bottleneck?
+          - What is cycle time by route and layer versus target?
+          - Which tools have the worst availability this shift?
+          - Are we on track to hit today's wafer starts?
+          - Which hot lots are behind schedule right now?
+      - name: Equipment Health Agent
+        icon: genie
+        summary: Answer chamber-matching, drift and predictive-maintenance questions from tool telemetry.
+        feeds:
+          - Lam Equipment Analytics
+          - camLine LineWorks
+          - ASML YieldStar
+          - Yield, cycle time, OEE
+        teams:
+          - Fab Operations
+          - Process Engineering
+          - Equipment ML
+        questions:
+          - Which chambers are drifting apart on process signatures?
+          - Which tools are predicted to fail in the next two weeks?
+          - Which recipes show the most run-to-run variability by tool?
+          - Where is overlay or CD drifting toward guard bands?
+          - Which preventive-maintenance actions are overdue on bottleneck tools?
+      - name: Supply & Quality Agent
+        icon: genie
+        summary: Ask about material lead times, allocation and customer returns tied to fab lots.
+        feeds:
+          - Resilinc Supply Risk
+          - SAP S/4HANA
+          - OSAT Test File Exchange
+          - Conformed lot, wafer, die
+        teams:
+          - Supply Chain
+          - Quality & Reliability
+          - Customer Quality
+        questions:
+          - Which lots are at risk from a supplier or substrate delay?
+          - How is scarce wafer capacity allocated against demand and priority?
+          - Which customer returns trace back to which fab lot and test bin?
+          - What is single-source exposure on critical materials?
+          - What is right-first-time CoA release rate by product?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Yield Excursion Detection
+        short: Fab quality
+        icon: chart
+        summary: Detecting yield loss by layer, tool and product before wafers complete the route.
+        problem: A yield excursion can ruin whole lots before anyone sees it, yet defect, parametric and tool data sit apart, so root cause takes weeks and the loss compounds shift after shift.
+        who_benefits: Yield Engineering
+        how_built: SECS/GEM, MES and ATE feeds land in Lakehouse//RT and correlate on Delta Lake; excursion models score in Model Serving and surface in the Yield Workbench before a lot is dispositioned.
+        components:
+          - Yield Workbench
+          - PDF Solutions Exensio
+          - Lakehouse//RT
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
+      - name: Chamber Matching
+        short: Equipment
+        icon: iot
+        summary: Matching chambers across a fleet on process signatures without manual tuning.
+        problem: Nominally identical chambers drift apart, so the same recipe yields differently by tool, and engineers chase the mismatch with manual golden-wafer runs that burn capacity.
+        who_benefits: Fab Operations
+        how_built: Chamber trace and metrology stream through SECS/GEM into Lakehouse//RT; matching models score signatures in Model Serving and flag drift in the Chamber Match Console before yield moves.
+        components:
+          - Chamber Match Console
+          - Lam Equipment Analytics
+          - SECS/GEM Tool Interface
+          - Model Serving
+          - Feature Store
+        stories:
+          - title: Acond advances equipment anomaly detection with Databricks
+            url: https://www.databricks.com/customers/acond/datasentics
+      - name: Cycle Time & WIP
+        short: Operations
+        icon: stream
+        summary: Cycle time and WIP ageing by route and bottleneck for capacity plans.
+        problem: Cycle time and WIP ageing hide in MES snapshots that refresh too slowly, so bottleneck tools and capacity risk are seen after the fact, not while there is still time to react.
+        who_benefits: CEO & Fab Strategy
+        how_built: MES lot and step history land through Lakeflow, conform on Delta Lake, and drive cycle-time, WIP-ageing and OEE Metric Views in AI/BI and the Fab Control Tower for capacity planning.
+        components:
+          - Fab Control Tower
+          - Applied E3 MES
+          - Lakeflow
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Applied Materials modernizes its manufacturing data foundation on Databricks
+            url: https://www.databricks.com/blog/announcing-winners-2026-databricks-customer-awards
+      - name: Defect Classification
+        short: Metrology
+        icon: gauge
+        summary: Automated defect classification from inspection images feeding disposition rules.
+        problem: Inspection images pile up faster than engineers can classify them by hand, so defect signatures are labelled inconsistently and disposition rules lag the real failure modes.
+        who_benefits: Yield Engineering
+        how_built: Metrology inspection images are scored by vision models in Model Serving with features in Feature Store, feeding automated defect classes and disposition rules into the Yield Workbench.
+        components:
+          - Yield Workbench
+          - KLA 5D Analyzer
+          - Model Serving
+          - AI Functions
+          - Feature Store
+        stories:
+          - title: How Corning built end-to-end ML for visual defect detection
+            url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
+      - name: Run-to-Run Control
+        short: Process
+        icon: erp
+        summary: Closed-loop recipe adjustments within guard bands against inline metrology.
+        problem: Run-to-run adjustments rely on delayed metrology and spreadsheets, so recipe corrections arrive a lot too late and drift pushes wafers past guard bands before anyone intervenes.
+        who_benefits: Fab Operations
+        how_built: Inline overlay and CD metrology land in Lakehouse//RT; AI Functions compute closed-loop offsets in Model Serving and write back to equipment hosts via SECS/GEM within approved guard bands.
+        components:
+          - ASML YieldStar
+          - SECS/GEM Tool Interface
+          - Model Serving
+          - AI Functions
+          - Lakehouse//RT
+      - name: Predictive Maintenance
+        short: Tool uptime
+        icon: iot
+        summary: Predicting tool failures from SECS/GEM traces before unplanned downtime.
+        problem: Process tools fail between planned maintenance windows, and unplanned downtime on a bottleneck tool stalls the line while the symptoms sat in trace data no one was watching.
+        who_benefits: Fab Operations
+        how_built: SECS/GEM trace and chamber-health signals stream into Lakehouse//RT; models tracked in MLflow score in Model Serving and raise maintenance work orders from the Chamber Match Console.
+        components:
+          - Chamber Match Console
+          - Lam Equipment Analytics
+          - MLflow
+          - Model Serving
+          - Lakehouse//RT
+        stories:
+          - title: What is predictive maintenance on the Databricks Platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Training 10,000 explainable anomaly-detection models for predictive maintenance
+            url: https://www.databricks.com/blog/training-10000-anomaly-detection-models-one-billion-records-explainable-predictions
+      - name: Supply Risk & Allocation
+        short: Materials
+        icon: globe
+        summary: Multi-tier supplier risk when lead times stretch or a sub-tier fab goes offline.
+        problem: Substrate and chemical lead times swing and a single sub-tier fab can go dark, yet supplier risk and wafer allocation sit in ERP exports stale the moment they are pulled.
+        who_benefits: Supply Chain
+        how_built: ERP and multi-tier supplier feeds conform on Delta Lake; allocation and risk are served on certified Metric Views in AI/BI, and Genie One answers which lots a supplier delay puts at risk.
+        components:
+          - Resilinc Supply Risk
+          - SAP S/4HANA
+          - AI/BI
+          - Genie One
+          - Delta Lake
+        stories:
+          - title: Mipox accelerates demand forecasting on Databricks
+            url: https://www.databricks.com/customers/mipox
+          - title: Part-level demand forecasting at scale for the chip supply chain
+            url: https://www.databricks.com/blog/part-level-demand-forecasting-scale
+      - name: Test Optimization
+        short: Cost per die
+        icon: market
+        summary: Test time and coverage trade-offs scored per product for good die cost.
+        problem: Test time is a big slice of good-die cost, yet coverage and time trade-offs are guessed per product because parametric results and escape data never sit together for analysis.
+        who_benefits: Yield Engineering
+        how_built: ATE parametric dumps and OSAT files conform on Delta Lake; models in Model Serving score coverage-versus-time trade-offs per product to trim test flows without losing quality.
+        components:
+          - Teradyne UltraFLEX
+          - OSAT Test File Exchange
+          - Model Serving
+          - AI Functions
+          - Delta Lake
+      - name: Design-Fab Feedback
+        short: DTCO
+        icon: sheet
+        summary: Closing the loop from yield data back to design rules and IP revisions.
+        problem: Yield learning stays trapped in the fab, so design and IP teams revise rules on old assumptions and the design-technology loop that should close in weeks drags across nodes.
+        who_benefits: Yield Engineering
+        how_built: Fab yield and test data conform under Unity Catalog and join tape-out and verification records, surfaced in AI/BI so design rules and IP revisions are driven by silicon, not assumption.
+        components:
+          - Synopsys Fusion Design
+          - Siemens Calibre
+          - Unity Catalog
+          - AI/BI
+          - Delta Lake
+      - name: Customer Quality CoA
+        short: Ship release
+        icon: product
+        summary: Certificates of analysis and ship-hold logic joined to final test gates.
+        problem: Certificates of analysis and ship-hold calls are stitched by hand from test, MES and returns systems, so releases slow and a field return is hard to trace back to its fab lot.
+        who_benefits: Quality & Reliability
+        how_built: Final-test gates, genealogy and returns conform under Unity Catalog in the FA Correlation Lab, and certified quality products ship to customers over OpenSharing as Data Products.
+        components:
+          - FA Correlation Lab
+          - SAP S/4HANA
+          - Unity Catalog
+          - OpenSharing
+          - Data Products
+        stories:
+          - title: HP cuts consumable traceability from days to minutes with Unity Catalog
+            url: https://www.databricks.com/customers/hp-indigo
+medallion:
+  Bronze:
+    short: Raw fab and test feeds
+    summary: SECS/GEM equipment events, MES lot and step history, ATE parametric dumps and WIP snapshots, landed exactly as received so a yield excursion can always be replayed.
+  Silver:
+    short: Conformed lot, wafer, die
+    summary: Lots, wafers, dies and equipment resolved into single conformed entities across MES, test and ERP, with die IDs reconciled and rework genealogy stitched to one trace.
+  Gold:
+    short: Yield, cycle time, OEE
+    summary: 'Contracted products engineering runs on: yield and bin pareto by layer and tool, cycle time and WIP ageing, OEE and downtime attribution, and cost per good die.'
+citation_index:
+  applied-e3:
+    title: Applied Materials E3 MES
+    url: https://www.appliedmaterials.com/us/en/products/e3.html
+  camstar:
+    title: Camstar Semiconductor Suite
+    url: https://plm.sw.siemens.com/en-US/opcenter/
+  brooks-pfab:
+    title: camLine LineWorks (Elisa IndustrIQ)
+    url: https://www.elisaindustriq.com/camline/products
+  synopsys-fusion:
+    title: Synopsys Fusion Design Platform
+    url: https://www.synopsys.com/implementation-and-signoff.html
+  cadence-virtuoso:
+    title: Cadence Virtuoso
+    url: https://www.cadence.com/en_US/home/tools/custom-ic-analog-rf-design/virtuoso-studio.html
+  calibre:
+    title: Siemens Calibre
+    url: https://eda.sw.siemens.com/en-US/ic/calibre-design/
+  teradyne:
+    title: Teradyne UltraFLEX
+    url: https://www.teradyne.com/products/test-systems/ultraflex/
+  pdf-exensio:
+    title: PDF Solutions Exensio
+    url: https://www.pdf.com/exensio
+  kla-5d:
+    title: KLA 5D Analyzer
+    url: https://www.kla.com/
+  secs-gem:
+    title: SECS/GEM equipment interface
+    url: https://www.semi.org/en/standards
+  asml-yieldstar:
+    title: ASML YieldStar metrology
+    url: https://www.asml.com/en/products/metrology-and-inspection-systems
+  lam-analytics:
+    title: Lam Research equipment analytics
+    url: https://www.lamresearch.com/
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  resilinc:
+    title: Resilinc supply risk
+    url: https://resilinc.com/
+  semi-e134:
+    title: SEMI E134 data collection
+    url: https://www.semi.org/en/products-services/standards
+  stdf:
+    title: STDF test data format
+    url: https://www.semi.org/en/products-services/standards
