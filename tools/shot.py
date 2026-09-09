@@ -181,8 +181,9 @@ def montage(name, spec, port, size="1500,1000"):
 
 
 if __name__ == "__main__":
-    for stale in glob.glob(os.path.join(APP_DIR, "_shot_*.html")):
-        os.remove(stale)
+    for pat in ("_shot_*.html", os.path.join("ai", "_shot_*.html")):
+        for stale in glob.glob(os.path.join(APP_DIR, pat)):
+            os.remove(stale)
     want = sys.argv[1:] or list(SHOTS) + list(MONTAGES) + ["screenshot-ai"]
     httpd, port = serve()
     try:
