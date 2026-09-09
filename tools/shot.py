@@ -4,12 +4,20 @@
 Each shot injects a little setup JS, waits for the board to settle, then asks
 Chrome for a full-page capture. Chrome is run the same way probe.py runs it,
 since --screenshot on its own occasionally returns before the board has fitted.
+
+The board lazy-loads its industry descriptors, reference JSON and translations
+over fetch(), which browsers block on file://, so the app folder is served over
+a local http server for the duration of the run and Chrome loads the temp page
+from inside it, where those relative fetches resolve.
 """
-import os, shutil, subprocess, sys, tempfile, time
+import glob, os, shutil, subprocess, sys, tempfile, threading
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APP = os.path.join(ROOT, "app", "index.html")
+APP_DIR = os.path.join(ROOT, "app")
+APP = os.path.join(APP_DIR, "index.html")
 DOCS = os.path.join(ROOT, "docs")
 
 SETTLE = ("document.querySelectorAll('.tip,.drawer.open,#shape-menu.open')"
@@ -25,6 +33,52 @@ HEAD = ("<head><script>try{localStorage.setItem('dbx-arch-tour-v1','1');}"
 def prep(html):
     return html.replace("<head>", HEAD, 1)
 
+
+class _QuietHandler(SimpleHTTPRequestHandler):
+    def log_message(self, *a):
+        pass
+
+
+def serve():
+    """Serve app/ on an ephemeral local port so lazy-loaded descriptors,
+    resources and translations resolve. Returns (httpd, port)."""
+    httpd = ThreadingHTTPServer(
+        ("127.0.0.1", 0), partial(_QuietHandler, directory=APP_DIR))
+    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    return httpd, httpd.server_address[1]
+
+
+# The board is built after its descriptors land, so a setup that touches
+# nameIndex or the tiles has to wait for that rather than fire on load. Poll for
+# a populated board, then run the setup, then the settle. Under Chrome's virtual
+# time the poll pauses while fetches are pending, so it does not race the network.
+def _boot(setup, extra=""):
+    ready = "window.nameIndex&&Object.keys(window.nameIndex).length>10"
+    return ("<script>window.addEventListener('load',function(){var n=0;"
+            "var iv=setInterval(function(){n++;if((" + ready + ")||n>80){"
+            "clearInterval(iv);try{" + setup + "}catch(e){}"
+            "try{" + SETTLE + extra + "}catch(e){}}},100);});</script>\n</body>")
+
+
+def _capture(boot, out, size, scale, port, budget=20000, src=APP, subdir=""):
+    html = prep(open(src, encoding="utf-8").read()).replace("</body>", boot, 1)
+    dest = os.path.join(APP_DIR, subdir) if subdir else APP_DIR
+    fd, page = tempfile.mkstemp(prefix="_shot_", suffix=".html", dir=dest)
+    os.write(fd, html.encode("utf-8"))
+    os.close(fd)
+    rel = (subdir + "/" if subdir else "") + os.path.basename(page)
+    url = "http://127.0.0.1:%d/%s" % (port, rel)
+    try:
+        subprocess.run(
+            [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+             "--force-device-scale-factor=" + scale, "--no-first-run",
+             "--window-size=" + size, "--virtual-time-budget=" + str(budget),
+             "--screenshot=" + out, url],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
+    finally:
+        os.remove(page)
+
+
 SHOTS = {
     "screenshot-light": "document.body.classList.remove('theme-dark');",
     "screenshot-dark": "document.body.classList.add('theme-dark');",
@@ -38,24 +92,35 @@ SHOTS = {
                          "openDetail(nameIndex['Customer & Revenue Agent']);"),
     "screenshot-dashboard": ("document.body.classList.remove('theme-dark');"
                              "openDetail(nameIndex['Revenue & Growth']);"),
+    "screenshot-language": ("document.body.classList.remove('theme-dark');"
+                            "document.getElementById('lang-wrap').classList.add('open');"
+                            "if(typeof syncLangMenu==='function')syncLangMenu();"),
+    "screenshot-share": ("document.body.classList.remove('theme-dark');"
+                         "if(typeof buildShareMenu==='function')buildShareMenu();"
+                         "document.getElementById('share-wrap').classList.add('open');"),
 }
 
 
-def shoot(name, setup, size="1728,1180"):
-    html = prep(open(APP, encoding="utf-8").read())
-    boot = ("<script>window.addEventListener('load',function(){setTimeout(function(){"
-            + setup + SETTLE + "},250)});</script>\n</body>")
-    tmp = tempfile.mkdtemp()
-    page = os.path.join(tmp, "p.html")
-    open(page, "w", encoding="utf-8").write(html.replace("</body>", boot, 1))
+def shoot(name, setup, port, size="1728,1180"):
     out = os.path.join(DOCS, name + ".png")
-    subprocess.run(
-        [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
-         "--force-device-scale-factor=2", "--no-first-run",
-         "--window-size=" + size, "--virtual-time-budget=12000",
-         "--screenshot=" + out, "file://" + page],
-        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
-    shutil.rmtree(tmp, ignore_errors=True)
+    _capture(_boot(setup), out, size, "2", port)
+    print(name, os.path.getsize(out) if os.path.exists(out) else "FAILED")
+
+
+# The assistant lives in app/ai/index.html as a docked panel over the board. Show
+# it open with the status set to its normal connected appearance, the way it reads
+# in a real deployment (the backend is not running during a capture).
+AI_SETUP = ("var f=document.querySelector('.ai-fab');if(f)f.classList.add('hide');"
+            "var p=document.querySelector('.ai-panel');if(p)p.classList.add('show');"
+            "var d=document.querySelector('.ai-dot');if(d){d.classList.remove('busy');"
+            "d.classList.add('on');}var c=document.querySelector('.ai-conn');"
+            "if(c)c.textContent='Connected';")
+
+
+def shoot_ai(name, port, size="1728,1180"):
+    out = os.path.join(DOCS, name + ".png")
+    _capture(_boot(AI_SETUP), out, size, "2", port,
+             src=os.path.join(APP_DIR, "ai", "index.html"), subdir="ai")
     print(name, os.path.getsize(out) if os.path.exists(out) else "FAILED")
 
 
@@ -87,23 +152,13 @@ MONTAGES = {
 }
 
 
-def montage(name, spec, size="1500,1000"):
+def montage(name, spec, port, size="1500,1000"):
     from PIL import Image
     tmp = tempfile.mkdtemp()
     tiles = []
     for key, setup in spec["cells"]:
         p = os.path.join(tmp, key + ".png")
-        html = prep(open(APP, encoding="utf-8").read())
-        boot = ("<script>window.addEventListener('load',function(){setTimeout("
-                "function(){" + setup + SETTLE + NO_BAR + "},250)});</script>\n</body>")
-        page = os.path.join(tmp, key + ".html")
-        open(page, "w", encoding="utf-8").write(html.replace("</body>", boot, 1))
-        subprocess.run(
-            [CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
-             "--force-device-scale-factor=1", "--no-first-run",
-             "--window-size=" + size, "--virtual-time-budget=12000",
-             "--screenshot=" + p, "file://" + page],
-            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
+        _capture(_boot(setup, extra=NO_BAR), p, size, "1", port)
         im = Image.open(p).convert("RGB")
         bg = im.getpixel((4, im.height - 4))
         tiles.append(im.crop(im.getbbox() or (0, 0, im.width, im.height)))
@@ -126,12 +181,20 @@ def montage(name, spec, size="1500,1000"):
 
 
 if __name__ == "__main__":
-    want = sys.argv[1:] or list(SHOTS) + list(MONTAGES)
-    for n in want:
-        if n in SHOTS:
-            shoot(n, SHOTS[n])
-        elif n in MONTAGES:
-            montage(n, MONTAGES[n])
-        else:
-            sys.exit("unknown shot %r, have: %s"
-                     % (n, ", ".join(list(SHOTS) + list(MONTAGES))))
+    for stale in glob.glob(os.path.join(APP_DIR, "_shot_*.html")):
+        os.remove(stale)
+    want = sys.argv[1:] or list(SHOTS) + list(MONTAGES) + ["screenshot-ai"]
+    httpd, port = serve()
+    try:
+        for n in want:
+            if n in SHOTS:
+                shoot(n, SHOTS[n], port)
+            elif n in MONTAGES:
+                montage(n, MONTAGES[n], port)
+            elif n == "screenshot-ai":
+                shoot_ai(n, port)
+            else:
+                sys.exit("unknown shot %r, have: %s"
+                         % (n, ", ".join(list(SHOTS) + list(MONTAGES) + ["screenshot-ai"])))
+    finally:
+        httpd.shutdown()

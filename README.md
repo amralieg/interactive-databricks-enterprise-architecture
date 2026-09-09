@@ -326,6 +326,8 @@ first load stays small and a language a reader never opens is never downloaded.
 The choice carries into the PDF and PowerPoint exports too, so a board read in
 Japanese exports a Japanese deck.
 
+![The language menu: sixteen languages, each in its own script](docs/screenshot-language.png)
+
 ### Share: a preview card per industry
 
 The **Share** control posts the board to LinkedIn, X, Reddit, Facebook, Hacker
@@ -335,6 +337,8 @@ cloud, so when one of those links is pasted into Slack, Teams, an email or a
 social feed it unfurls with a picture and a title tailored to that industry,
 rather than a bare URL. The images and stubs are generated, one per industry and
 one per industry-and-cloud, and live under `assets/og/` and `share/`.
+
+![The share menu: a link straight to the industry and cloud on screen](docs/screenshot-share.png)
 
 ---
 
@@ -421,6 +425,8 @@ A chat-driven sub-app that lets you describe a customer or use case and receive 
 editable, persisted tab containing a tailored architecture, without touching the
 reference board. The reference board stays live and unmodified; the generated tab is its
 own independent copy.
+
+![The AI Architecture Assistant, docked over the reference board](docs/screenshot-ai.png)
 
 **What it does.** Type a description in the chat input. The assistant detects the
 best-fit industry from what you wrote, generates a tab filtered to the components most
