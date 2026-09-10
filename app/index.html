@@ -594,8 +594,8 @@
     stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   /* Highlights glyph is the corner-dot motif, filled and deliberately muted so it
      reads as a quiet legend, not a glowing call to action. */
-  .ico-svg.hl-ico { opacity:.6; }
-  .ico-svg.hl-ico circle { fill:currentColor; stroke:none; }
+  .ico-svg.hl-ico { opacity:.85; overflow:visible; }
+  .ico-svg.hl-ico circle { fill:currentColor; stroke:none; filter:drop-shadow(0 0 1.4px currentColor); }
   /* Industry decides what the whole board is about, so it leads the bar as a
      wider, emphasised control rather than one chip among equals. */
   #ind-btn { font-weight:750; color:var(--ink); border-color:var(--line-strong); }
@@ -2358,6 +2358,8 @@
   .d-region .d-regcodes { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
   .d-region .d-regcode { font-size:10.5px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
     padding:2px 6px; border-radius:6px; border:1px solid var(--line); color:var(--muted); }
+  .d-region .d-regcode.is-go { cursor:pointer; transition:border-color .12s, color .12s, background .12s; }
+  .d-region .d-regcode.is-go:hover { border-color:var(--brand); color:var(--brand); background:var(--brand-wash); }
   /* Demos and interactive product tours attached to this product. The title sits
      on the left; the coloured kind label (Product tour / Hands-on tutorial) and
      the host align to the RIGHT before the arrow, matching the course rows. */
@@ -2421,6 +2423,8 @@
     margin:0 5px 5px 0; cursor:pointer; background:var(--well); }
   .chip:hover { border-color:var(--brand); color:var(--brand); }
   .chip.static { cursor:default; } .chip.static:hover { border-color:var(--line); color:var(--ink); }
+  a.chip, a.chip.ext { text-decoration:none; color:inherit; }
+  a.chip.ext:hover { border-color:var(--brand); color:var(--brand); }
   .d-close { position:absolute; top:14px; right:16px; border:none; background:var(--well); width:29px; height:29px;
     border-radius:8px; cursor:pointer; font-size:15px; color:var(--muted); }
   /* Pin the overlay panel open as a side dock. Sits left of the close button in
@@ -2436,6 +2440,20 @@
      width to reserve, and zoom manages its own docking. */
   body:not(.fitting) .d-dock, body.zoom .d-dock { display:none; }
   @media print { .d-dock { display:none; } }
+  /* Back control for in-panel chip navigation: sits top-left so it never fights
+     the close/dock cluster on the right. Hidden until there is a history to pop;
+     JS toggles .hasback on the drawer, which also reserves head room so the
+     eyebrow never slides under the button. */
+  .d-back { position:absolute; top:14px; left:16px; border:none; background:var(--well); width:29px; height:29px;
+    border-radius:8px; cursor:pointer; color:var(--muted); padding:0; display:none;
+    align-items:center; justify-content:center; }
+  .d-back svg { width:16px; height:16px; display:block; }
+  .d-back:hover { color:var(--ink); }
+  .drawer.hasback .d-back { display:inline-flex; }
+  .drawer.hasback .d-head { padding-left:56px; }
+  html[data-lang="ar"] .d-back { left:auto; right:16px; }
+  html[data-lang="ar"] .drawer.hasback .d-head { padding-left:24px; padding-right:56px; }
+  @media print { .d-back { display:none!important; } }
   .d-refbox { background:var(--brand-wash); border:1px solid var(--brand-soft); border-radius:9px; padding:9px 12px; }
   /* No bullet glyph: the leading chip already marks where each row starts, and a
      disc in front of it read as a second, competing marker. */
@@ -2663,7 +2681,7 @@
     <div class="pal-menu" id="stage-menu"></div>
   </div>
   <div class="pal-wrap" id="hl-wrap">
-    <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg hl-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.1"/><circle cx="16" cy="8" r="2.1"/><circle cx="8" cy="16" r="2.1"/><circle cx="16" cy="16" r="2.1"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
+    <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg hl-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="8" cy="16" r="3"/><circle cx="16" cy="16" r="3"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
     <div class="pal-menu" id="hl-menu"></div>
   </div>
   <div class="dl-wrap" id="dl-wrap">
@@ -2803,6 +2821,7 @@
 <aside class="drawer" id="drawer">
   <button class="d-dock" id="ddock" type="button" title="Dock panel to the side" aria-label="Dock panel to the side" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></button>
   <button class="d-close" id="dclose">✕</button>
+  <button class="d-back" id="d-back" type="button" title="Back to the previous box" aria-label="Back to the previous box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5 5 8l4.5 4.5M5 8h7"/></svg></button>
   <div class="d-head" id="d-head">
     <div class="d-eyebrow" id="d-eyebrow"></div>
     <div class="d-title" id="d-title"></div>
@@ -3190,14 +3209,21 @@ function tileCourseIds(t){
 function hlKinds(t){
   if(!t) return [];
   const out = [];
-  if(t.stories && t.stories.length) out.push("story");
-  if(connectorFor(t)) out.push("conn");
-  const ds = tileDemos(t);
+  /* Persona tiles carry no media of their own; they inherit it from the products
+     they use and the use cases they drive, so the tile dots read from the same
+     aggregation the panel renders (keeps the tile and its panel in lockstep).
+     Connectors and accelerators stay product-only. */
+  const persona = isPersonaTile(t);
+  const stories = persona ? personaStories(t) : (t.stories || []);
+  if(stories.length) out.push("story");
+  if(!persona && connectorFor(t)) out.push("conn");
+  const ds = persona ? personaDemos(t) : tileDemos(t);
   if(ds.some(d=>d.kind === "tour")) out.push("tour");
-  if(ds.some(d=>d.kind === "tutorial")) out.push("demo");
+  if(ds.some(d=>d.kind !== "tour")) out.push("demo");
   if(tileCourseIds(t).length) out.push("course");
-  if(tileVideos(t).length) out.push("video");
-  if(accelFor(t)) out.push("accel");
+  const vids = persona ? personaVideos(t) : tileVideos(t);
+  if(vids.length) out.push("video");
+  if(!persona && accelFor(t)) out.push("accel");
   return out;
 }
 function hlDotsHtml(t){
@@ -3906,8 +3932,8 @@ const ARCH = {
         ],
         services:[
           { n:"ADLS Gen2", role:"storage", s:"Object storage", ic:"storage", long:"Azure Data Lake Storage Gen2 holds the open-format lake. Databricks reads and writes in place; you keep the data." },
-          { n:"Serverless Compute", role:"network", s:"Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
           { n:"Azure Monitor", role:"observability", s:"Observability", ic:"observ", long:"Platform logs, metrics and diagnostics forwarded to Azure Monitor and Log Analytics." },
           { n:"SQL DB / Cosmos DB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3943,8 +3969,8 @@ const ARCH = {
         ],
         services:[
           { n:"Amazon S3", role:"storage", s:"Object storage", ic:"storage", long:"S3 buckets in your account hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
           { n:"CloudWatch", role:"observability", s:"Observability", ic:"observ", long:"Audit logs, metrics and diagnostics delivery." },
           { n:"RDS / DynamoDB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3978,8 +4004,8 @@ const ARCH = {
         ],
         services:[
           { n:"Cloud Storage", role:"storage", s:"Object storage", ic:"storage", long:"GCS buckets hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"Private Service Connect", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Service Connect", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
           { n:"Cloud Logging", role:"observability", s:"Observability", ic:"observ", long:"Audit logs and metrics into Cloud Logging and Monitoring." },
           { n:"Cloud SQL / Bigtable", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -5424,8 +5450,14 @@ function docUrl(path){
 /* The last box opened, so the drawer can redraw itself when the cloud changes
    underneath it: the documentation link it is showing belongs to a cloud. */
 let openId = null;
+/* Chip-to-chip navigation history. Clicking a cross-reference chip pushes the
+   box currently on screen, so the back control can walk the reader home one hop
+   at a time. A fresh open from the board clears it; a "keep" refresh (theme /
+   region / stage change) and a "back" pop both leave it untouched. */
+let navStack = [];
 
 function linkRow(href, label, sub){
+  if(!isDatabricksUrl(href)) return "";   /* never link off-Databricks */
   return `<a class="d-link" href="${esc(href)}" target="_blank" rel="noopener">` +
     `<span class="dl-t">${esc(label)}</span>` +
     (sub ? `<span class="dl-s">${esc(sub)}</span>` : "") +
@@ -5434,7 +5466,7 @@ function linkRow(href, label, sub){
 function detailLinks(name){
   const L = LINKS[name]; if(!L) return "";
   const cloud = (ARCH.cloud.providers[ARCH.cloud.provider] || {}).label || ARCH.cloud.provider;
-  const rows = [];
+  let rows = [];
   /* Every sublabel is derived from the URL it sits on. It used to be written out
      as "docs.databricks.com" for the two Databricks rows, which was a plain lie
      on Azure: the link goes to Microsoft Learn, and the row said otherwise. */
@@ -5442,7 +5474,7 @@ function detailLinks(name){
   /* Databricks docs first for a Databricks box, vendor docs first for a cloud
      service: whichever one the reader actually needs is the one at the top. */
   if(L.doc) rows.push(linkRow(docUrl(L.doc), T("Documentation"), dcloud(host(docUrl(L.doc)))));
-  if(L.url) rows.push(linkRow(L.url, T("Vendor documentation"), host(L.url)));
+  /* L.url is the third-party VENDOR doc (AWS/Azure/GCP/OSS project); never linked. */
   if(L.dbx) rows.push(linkRow(docUrl(L.dbx), T("Connecting it to Databricks"), dcloud(host(docUrl(L.dbx)))));
   /* Generic vendor/product landing pages (the cloud's "Databricks on <cloud>"
      marketing page and each product's databricks.com/product page) are dropped:
@@ -5458,9 +5490,12 @@ function detailLinks(name){
      heading. Names are real product names, so they are not run through T(). */
   (L.seealso || []).forEach(name=>{
     const tl = LINKS[name]; if(!tl) return;
-    const href = tl.doc ? docUrl(tl.doc) : tl.dbx ? docUrl(tl.dbx) : tl.site || tl.url;
+    /* Only a Databricks target is linkable: its docs page, else its databricks.com
+       product page. A seealso whose only URL is an OSS/vendor site is skipped. */
+    const href = tl.doc ? docUrl(tl.doc) : tl.dbx ? docUrl(tl.dbx) : (isDatabricksUrl(tl.site) ? tl.site : "");
     if(href) rows.push(linkRow(href, name, host(href)));
   });
+  rows = rows.filter(Boolean);
   if(!rows.length) return "";
   return `<h4>${esc(T("Learn more"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
@@ -5471,10 +5506,9 @@ function detailLinks(name){
    language, matching how product and brand names are never translated. The
    thumbnail is the standard YouTube still; onerror degrades the row to a plain
    titled link so a blocked image never leaves a broken icon. */
-function videoLinks(name){
-  const L = LINKS[name];
-  if(!L || !Array.isArray(L.videos) || !L.videos.length) return "";
-  const rows = L.videos.map(v=>{
+function videoSection(videos, head){
+  if(!Array.isArray(videos) || !videos.length) return "";
+  const rows = videos.map(v=>{
     const url = "https://www.youtube.com/watch?v=" + v.id;
     const thumb = "https://i.ytimg.com/vi/" + v.id + "/hqdefault.jpg";
     return `<a class="d-vid" href="${esc(url)}" target="_blank" rel="noopener">` +
@@ -5483,14 +5517,32 @@ function videoLinks(name){
       `<span class="d-vt">${esc(v.t)}</span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
   }).join("");
-  return `<h4>${esc(T("Databricks YouTube channel"))}${sectionDot("video")}</h4><div class="d-vids">${rows}</div>`;
+  return `<h4>${esc(head || T("Databricks YouTube channel"))}${sectionDot("video")}</h4><div class="d-vids">${rows}</div>`;
 }
+function videoLinks(name){ const L = LINKS[name]; return videoSection(L && L.videos); }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
+/* A link is allowed in the side panel ONLY if Databricks runs it: databricks.com
+   and its subdomains (docs, customer-academy, marketplace), the Databricks docs
+   on Azure (learn.microsoft.com/azure/databricks, never other Microsoft docs),
+   the Databricks YouTube channel, and the Databricks GitHub orgs (solution
+   accelerators + industry data models). Vendor docs, OSS project sites (delta.io,
+   mlflow.org, spark.apache.org, iceberg.apache.org, opensharing.io, ...) and any
+   third-party source citation are refused, so nothing off-Databricks is linked. */
+function isDatabricksUrl(u){
+  if(!u) return false;
+  let url; try { url = new URL(u, location.href); } catch(e){ return false; }
+  const h = url.hostname.toLowerCase(), p = url.pathname.toLowerCase();
+  if(h === "databricks.com" || h.endsWith(".databricks.com")) return true;
+  if(h === "youtube.com" || h.endsWith(".youtube.com") || h === "youtu.be") return true;
+  if(h === "learn.microsoft.com") return p.startsWith("/azure/databricks");
+  if(h === "github.com") return /^\/databricks(-|\/|$)/.test(p);
+  return false;
+}
 /* Regional availability for the cloud in the header. Only Databricks products
    carry it (a `doc` path in LINKS). Green when the product runs in every
    supported region, amber with the region codes listed when it is a subset. */
 function regionLine(t){
-  if(typeof REGIONS === "undefined" || !REGIONS || !isDbxProduct(t)) return "";
+  if(typeof REGIONS === "undefined" || !REGIONS || !isPlatformProduct(t)) return "";
   const r = regionsFor(t); if(!r) return "";
   const cl = cloudLabelNow();
   if(r.all){
@@ -5499,7 +5551,7 @@ function regionLine(t){
   }
   const cr = cloudRegions();
   const codes = cr.regions.filter(x=>r.codes.has(x.code))
-    .map(x=>`<span class="d-regcode" title="${esc(x.loc)}">${esc(x.code)}</span>`).join("");
+    .map(x=>`<span class="d-regcode is-go" data-rc="${esc(x.code)}" title="${esc(x.loc)} — ${esc(T("switch to this region"))}">${esc(x.code)}</span>`).join("");
   return `<div class="d-region some"><h4>${esc(T("Regional availability"))}</h4>` +
     `<span class="d-regsum">${esc(T("Available in"))} ${r.codes.size} ${esc(T("of"))} ${r.total} ${esc(cl)} ${esc(T("regions"))}</span>` +
     `<div class="d-regcodes">${codes}</div></div>`;
@@ -5508,9 +5560,8 @@ function regionLine(t){
    built into LINKS[name].demos by tools/build_demos.py from the live demo-center
    sitemap and HEAD-verified by linkgate. Titles are the real page titles, so
    like the YouTube titles they render verbatim and are not run through T(). */
-function demoLinks(name){
-  const L = LINKS[name];
-  if(!L || !Array.isArray(L.demos) || !L.demos.length) return "";
+function demoSection(demos){
+  if(!Array.isArray(demos) || !demos.length) return "";
   const row = d=>{
     const isTour = d.kind === "tour";
     const kind = isTour ? T("Product tour") : T("Hands-on tutorial");
@@ -5520,14 +5571,64 @@ function demoLinks(name){
       `<span class="dl-host">${esc(host(d.u))}</span></span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
   };
-  const tours = L.demos.filter(d=>d.kind === "tour");
-  const tuts  = L.demos.filter(d=>d.kind !== "tour");
+  const tours = demos.filter(d=>d.kind === "tour");
+  const tuts  = demos.filter(d=>d.kind !== "tour");
   let out = "";
   if(tours.length) out += `<h4>${esc(T("Product tours"))}${sectionDot("tour")}</h4>` +
     `<div class="d-links">${tours.map(row).join("")}</div>`;
   if(tuts.length)  out += `<h4>${esc(T("Demos"))}${sectionDot("demo")}</h4>` +
     `<div class="d-links">${tuts.map(row).join("")}</div>`;
   return out;
+}
+function demoLinks(name){ const L = LINKS[name]; return demoSection(L && L.demos); }
+/* Customer-story links (product/use-case tiles carry them directly; a persona
+   inherits them from the use cases it drives). One renderer so the story section
+   looks identical wherever it appears. */
+function storySection(stories){
+  if(!Array.isArray(stories) || !stories.length) return "";
+  return `<h4>${esc(T("Databricks customer stories"))}${sectionDot("story")}</h4><div class="d-links">` +
+    stories.map(s=> linkRow(s.u, T(s.t), T(s.sub))).join("") + `</div>`;
+}
+/* Persona panels aggregate from what the persona actually touches, so the videos,
+   demos, tours and stories are relevant to that team by construction and stay in
+   step with the board rather than a hand-kept side list. `uses` names the
+   products the team works in; `ucs` names the use cases it drives (which carry
+   the customer stories). dedup keeps a product shared by two teams from doubling
+   a link, and a modest cap keeps the panel readable. */
+function dedupBy(arr, keyFn){
+  const seen = new Set(), out = [];
+  (arr || []).forEach(x=>{ const k = keyFn(x); if(k && !seen.has(k)){ seen.add(k); out.push(x); } });
+  return out;
+}
+function personaProductNames(t){
+  return (t && Array.isArray(t.uses) ? t.uses : []).map(u=> Array.isArray(u) ? u[0] : u).filter(Boolean);
+}
+function personaCollect(t, field){
+  const out = [];
+  personaProductNames(t).forEach(n=>{ const L = LINKS[n]; if(L && Array.isArray(L[field])) out.push(...L[field]); });
+  return out;
+}
+function personaVideos(t){ return dedupBy(personaCollect(t, "videos"), v=>v.id).slice(0, 6); }
+function personaDemos(t){ return dedupBy(personaCollect(t, "demos"), d=>d.u).slice(0, 8); }
+/* Resolve a use-case name to its tile. At drawer time nameIndex/byId are fully
+   populated; at build time (when the persona tile's highlight dots are computed)
+   they may not be, so fall back to the authored use-case band on ARCH. */
+function ucTileByName(n){
+  const rec = nameIndex[n] && byId[nameIndex[n]];
+  if(rec && rec.tile) return rec.tile;
+  const top = (typeof ARCH !== "undefined") && ARCH && ARCH.top;
+  if(top && Array.isArray(top.secs)){
+    for(const s of top.secs){ for(const tt of (s.tiles || [])){ if(tt && tt.n === n) return tt; } }
+  }
+  return null;
+}
+function personaStories(t){
+  const out = [];
+  (t && Array.isArray(t.ucs) ? t.ucs : []).forEach(n=>{
+    const uc = ucTileByName(n);
+    if(uc && Array.isArray(uc.stories)) out.push(...uc.stories);
+  });
+  return dedupBy(out, s=>s.u).slice(0, 6);
 }
 /* Free Databricks Academy courses (tools/build_academy.py). Products get their
    curated courses; a Teams persona gets a learning track sorted beginner ->
@@ -5601,8 +5702,10 @@ function citeLinks(t){
   if(!t.cite || !t.cite.length) return "";
   const ind = INDUSTRIES[ARCH.industry];
   const tbl = (ind && ind.sources) || {};
+  /* Source citations point at the vendor/provider's own site, which is not
+     Databricks, so linkRow drops them; the section only shows if any survive. */
   const rows = t.cite.map(k=> tbl[k]).filter(Boolean)
-    .map(r=> linkRow(r.u, r.t, host(r.u)));
+    .map(r=> linkRow(r.u, r.t, host(r.u))).filter(Boolean);
   if(!rows.length) return "";
   return `<h4>${esc(T("Sources"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
@@ -5612,15 +5715,92 @@ function citeLinks(t){
    the use cases it drives, both walking to the same drawer the chip wiring below
    already opens. A name with no atom stays a static label rather than a dead
    link. */
-function detailChips(names){
-  return (names || []).map(n=>{
-    const to = resolveAtom(n);
-    return to ? `<span class="chip" data-go="${to}">${esc(dispName(n))}</span>`
-              : `<span class="chip static">${esc(dispName(n))}</span>`;
-  }).join("");
+/* Capability pills and cross-reference chips name features that are not always
+   their own box on the board. Rather than leave those dead, every chip resolves
+   to SOMETHING: the board box if one owns the name, else the product's own
+   product/doc page (reusing the verified LINKS entries, directly or via the alias
+   below so a sub-feature pill points at its parent product), else a cloud-correct
+   documentation search for the term. So a chip is never a dead label. */
+const CHIP_ALIAS = {
+  "AI/BI Dashboards":"AI/BI", "AI/BI Genie":"Genie",
+  "ai_parse_document":"AI Functions", "ai_classify":"AI Functions", "In-SQL":"AI Functions",
+  "Governed output":"AI Functions", "Information Extraction":"Document Parsing",
+  "Zero-shot labels":"Text Classification",
+  "Declarative Pipelines":"Lakeflow", "Spark Declarative Pipelines":"Lakeflow",
+  "Jobs":"Lakeflow", "Data engineering":"Lakeflow", "Ingest • Transform • Orchestrate":"Lakeflow",
+  "Spark Connect":"Apache Spark",
+  "100+ connectors":"Lakeflow Connect", "CDC":"Lakeflow Connect",
+  "Schema evolution":"Delta Lake", "Managed tables":"Delta Lake",
+  "Iceberg v3":"Apache Iceberg", "Reyden engine":"Lakehouse//RT",
+  "Kafka / Kinesis / Event Hubs":"Streaming", "Real-Time Mode":"Streaming", "Exactly-once":"Streaming",
+  "Serverless Postgres":"Lakebase", "SQL Data Warehousing":"SQL Warehouses",
+  "Model registry":"MLflow", "Tracking":"MLflow", "Evaluation":"MLflow", "Tracing":"MLflow",
+  "AI Runtime (serverless GPU)":"Model Serving", "Models":"Model Serving",
+  "Business Glossary":"Unity Catalog", "Domains":"Unity Catalog", "Access":"Unity Catalog",
+  "Semantics":"Unity Catalog", "Lineage":"Unity Catalog", "Observability":"Unity Catalog",
+  "Security":"Unity Catalog", "Metrics":"Unity Catalog", "Unity Catalog Semantics upload":"Unity Catalog",
+  "Medallion: bronze / silver / gold":"Medallion Architecture",
+  "Serverless Micro Apps (Private Preview)":"Apps", "App Spaces (Private Preview)":"Apps",
+  "50+ app connections":"Apps", "50+ connected apps":"Apps", "Slack & Teams":"Apps", "Mobile":"Apps",
+  "Marketplace":"Marketplace Listings", "AI assets":"Marketplace Listings",
+  "Open protocol":"OpenSharing", "No copy":"OpenSharing", "Cross-cloud":"OpenSharing",
+  "Document Intelligence":"Document Parsing", "IDE + notebooks":"Notebooks & IDEs",
+  "Genie Code for ML":"Genie Code", "From Genie Spaces":"Genie", "Shareable":"Genie",
+  "Takes action":"Genie", "Managed memory":"Genie",
+  "MCP assistants":"Any MCP Harness",
+  "Grounded answers":"Knowledge Assistant", "Citations":"Knowledge Assistant", "No RAG plumbing":"Knowledge Assistant",
+  "OntoRank":"Genie Ontology", "Living knowledge graph":"Genie Ontology",
+  "Unified profiles":"CustomerLake", "Segmentation":"CustomerLake", "Campaign activation":"CustomerLake",
+};
+/* Real features with a stable databricks.com product page but no LINKS entry. */
+const CHIP_URL = { "Photon":"https://www.databricks.com/product/photon" };
+/* Cloud-correct documentation search for any term with no product/doc of its own:
+   AWS/GCP on docs.databricks.com, Azure on Microsoft Learn scoped to Databricks. */
+function docsSearchUrl(term){
+  const q = encodeURIComponent(String(term));
+  const cl = curCloud();
+  if(cl === "azure") return "https://learn.microsoft.com/en-us/search/?terms=" + q + "&scope=Azure%20Databricks";
+  return "https://docs.databricks.com/" + cl + "/en/search.html?q=" + q;
 }
+/* Databricks-only resolution for a chip: its databricks.com product page if it
+   has one, else its Databricks docs page (cloud-correct). Never the OSS/vendor
+   site (L.url / a non-databricks L.site), so a chip never links off-Databricks. */
+function linksHref(L){
+  if(!L) return "";
+  if(L.site && isDatabricksUrl(L.site)) return L.site;
+  if(L.doc) return docUrl(L.doc);
+  if(L.dbx) return docUrl(L.dbx);
+  return "";
+}
+/* {go:id} to walk to a board box, or {href:url} to open a product/doc/search. */
+function chipHref(name){
+  const id = resolveAtom(name);
+  if(id) return { go:id };
+  const direct = linksHref(LINKS[name]); if(direct) return { href:direct };
+  const alias = CHIP_ALIAS[name]; const aliased = alias && linksHref(LINKS[alias]);
+  if(aliased) return { href:aliased };
+  if(CHIP_URL[name]) return { href:CHIP_URL[name] };
+  return { href:docsSearchUrl(name) };
+}
+/* One chip renderer for every cross-reference: an internal nav span (walks the
+   board, remembered by the back control) or an external anchor. Labels always go
+   through dispName -> T so translation is never dropped; the href keeps the
+   English term so search resolves. */
+function chipHtml(name, extraCls){
+  const r = chipHref(name);
+  const label = esc(dispName(name));
+  const cls = "chip" + (extraCls ? " " + extraCls : "");
+  if(r.go) return `<span class="${cls}" data-go="${r.go}">${label}</span>`;
+  return `<a class="${cls} ext" href="${esc(r.href)}" target="_blank" rel="noopener">${label}</a>`;
+}
+function detailChips(names){ return (names || []).map(n=> chipHtml(n)).join(""); }
 function openDetail(id, via){
   const rec = byId[id]; if(!rec) return;
+  /* History bookkeeping: a chip jump ("nav") remembers where we were; opening
+     straight off the board (no via) is a new root and clears the trail; "keep"
+     (in-place refresh) and "back" (a pop) must not mutate it. */
+  if(via === "nav"){ if(openId && openId !== id) navStack.push(openId); }
+  else if(!via){ navStack = []; }
   openId = id;
   if(!via) ideaTrack("tile", [rec.tile && rec.tile.n]);
   const t = rec.tile;
@@ -5654,7 +5834,7 @@ function openDetail(id, via){
   if(t.users) html += `<h4>${esc(T("Who uses it"))}</h4><p>${esc(dispProse(t.users))}</p>`;
   if(t.dataOut){
     const seg = (label, d)=> d ? `<div class="d-dataseg"><span class="d-datalbl">${label}</span>` +
-      `<div class="d-datatypes">${(d.types||[]).map(x=>`<span class="chip static">${esc(T(x))}</span>`).join("")}</div>` +
+      `<div class="d-datatypes">${(d.types||[]).map(x=> chipHtml(x)).join("")}</div>` +
       `<div class="d-datmeta">${[d.vol, d.interval].filter(Boolean).map(x=>esc(T(x))).join(" &middot; ")}</div></div>` : "";
     const body = seg(T("Batch"), t.dataOut.batch) + seg(T("Streaming"), t.dataOut.stream);
     if(body) html += `<h4>${esc(T("Data it produces"))}</h4><div class="d-data">${body}</div>`;
@@ -5674,18 +5854,12 @@ function openDetail(id, via){
      so this stays backward-compatible with tiles that only have a `long`. */
   if(t.problem) html += `<h4>${esc(T("The problem it solves"))}</h4><p>${esc(dispProse(t.problem))}</p>`;
   if(t.who){
-    const to = resolveAtom(t.who);
-    const chip = to ? `<span class="chip" data-go="${to}">${esc(T(t.who))}</span>`
-                    : `<b>${esc(T(t.who))}</b>`;
-    html += `<h4>${esc(T("Who benefits"))}</h4><div>${chip}</div>`;
+    html += `<h4>${esc(T("Who benefits"))}</h4><div>${chipHtml(t.who)}</div>`;
   }
   if(t.how) html += `<h4>${esc(T("How it is built"))}</h4><p>${esc(dispProse(t.how))}</p>`;
   if(t.comps && t.comps.length)
     html += `<h4>${esc(T("Architecture it uses"))}</h4><div>${detailChips(t.comps)}</div>`;
-  if(t.stories && t.stories.length){
-    html += `<h4>${esc(T("Databricks customer stories"))}${sectionDot("story")}</h4><div class="d-links">` +
-      t.stories.map(s=> linkRow(s.u, T(s.t), T(s.sub))).join("") + `</div>`;
-  }
+  if(t.stories && t.stories.length) html += storySection(t.stories);
   /* A team tile names the sub-personas inside it and what each cares about, then
      the use cases the team drives as live chips into those use-case atoms. */
   if(t.sub && t.sub.length){
@@ -5704,41 +5878,57 @@ function openDetail(id, via){
   if(t.uses && t.uses.length){
     html += `<h4>${esc(T("Databricks capabilities used"))}</h4><ul class="d-uses">` + t.uses.map(u=>{
       const s = Array.isArray(u) ? u[0] : u, txt = Array.isArray(u) ? (u[1] || "") : "";
-      const to = nameIndex[s];
-      const head = to ? `<span class="chip" data-go="${to}">${esc(s)}</span>`
-                      : `<b>${esc(s)}</b>`;
-      return `<li>${head} ${esc(T(txt))}</li>`;
+      return `<li>${chipHtml(s)} ${esc(T(txt))}</li>`;
     }).join("") + `</ul>`;
   }
   const L = LINKS[t.n];
   if(L && L.note) html += `<h4>${esc(T("Worth knowing"))}</h4><p class="d-note">${esc(T(L.note))}</p>`;
   const caps = [].concat(t.caps||[], t.caps2||[]);
   if(caps.length){
-    html += `<h4>${esc(T("Capabilities"))}</h4><div>` + caps.map(c=>`<span class="chip static">${esc(T(c))}</span>`).join("") + `</div>`;
+    html += `<h4>${esc(T("Capabilities"))}</h4><div>` + caps.map(c=> chipHtml(c)).join("") + `</div>`;
   }
   /* `arr` is the live array the atom was registered from, so identity against the
      stages array is what identifies a medallion stage. Cheaper and harder to get
      wrong than a flag copied onto three tiles in every industry. */
   if(rec.arr && rec.arr === medallionStages()) html += modelLinks();
   html += detailLinks(t.n);
-  html += demoLinks(t.n);
-  html += academyLinks(t);
-  html += videoLinks(t.n);
+  if(isPersonaTile(t)){
+    /* A team panel inherits its media from the products it uses and the use cases
+       it drives, so it gets the learning track plus the stories, tours, demos and
+       videos relevant to that team. */
+    html += academyLinks(t);
+    html += storySection(personaStories(t));
+    html += demoSection(personaDemos(t));
+    html += videoSection(personaVideos(t), T("Videos to watch"));
+  } else {
+    html += demoLinks(t.n);
+    html += academyLinks(t);
+    html += videoLinks(t.n);
+  }
   if(!catMode) html += citeLinks(t);
   if(t.rel && t.rel.length){
-    const chips = t.rel.filter(r=>nameIndex[r]).map(r=>`<span class="chip" data-go="${nameIndex[r]}">${esc(dispName(r))}</span>`).join("");
+    const chips = t.rel.map(r=> chipHtml(r)).join("");
     if(chips) html += `<h4>${esc(T("Related"))}</h4><div>${chips}</div>`;
   }
   document.getElementById("d-body").innerHTML = html;
-  document.querySelectorAll(".chip[data-go]").forEach(c=> c.onclick = ()=> openDetail(c.dataset.go));
+  /* Every cross-reference chip that resolved to a real box walks there as a nav
+     hop, so the back control can return. Scoped to the panel body so it never
+     rebinds chips living in the reference overlay. */
+  document.getElementById("d-body").querySelectorAll(".chip[data-go]").forEach(c=> c.onclick = ()=> openDetail(c.dataset.go, "nav"));
+  /* A region code in the availability line is a live switch: clicking it sets the
+     header region, which re-runs the board filter and refreshes this very line. */
+  document.getElementById("d-body").querySelectorAll(".d-regcode[data-rc]").forEach(c=> c.onclick = ()=> setRegion(c.dataset.rc));
+  drawer.classList.toggle("hasback", navStack.length > 0);
   scrim.classList.add("show"); drawer.classList.add("show");
   document.body.classList.add("detail-open");
   clearHits();
   (t.rel||[]).forEach(r=> nameIndex[r] && byId[nameIndex[r]].el.classList.add("hit"));
 }
-function closeDrawer(){ openId = null; scrim.classList.remove("show"); drawer.classList.remove("show"); document.body.classList.remove("detail-open"); clearHits(); }
+function closeDrawer(){ openId = null; navStack = []; drawer.classList.remove("hasback"); scrim.classList.remove("show"); drawer.classList.remove("show"); document.body.classList.remove("detail-open"); clearHits(); }
+function drawerBack(){ if(!navStack.length) return; openDetail(navStack.pop(), "back"); }
 function clearHits(){ document.querySelectorAll(".hit").forEach(e=>e.classList.remove("hit")); }
 document.getElementById("dclose").onclick = closeDrawer;
+document.getElementById("d-back").onclick = drawerBack;
 /* Pin the panel open as a right-hand dock. Docked, it stays visible showing the
    empty state when nothing is selected (the zoom view already works this way),
    and the board reserves --dock-w and scales into the width that is left. */
@@ -6774,6 +6964,18 @@ function cloudRegions(){ return (REGIONS && REGIONS.clouds && REGIONS.clouds[cur
    is exactly the tiles that carry a `doc` path in LINKS (the same test linkgate
    uses). Third-party and concept tiles are never dimmed. */
 function isDbxProduct(t){ return !!(t && t.n && LINKS[t.n] && LINKS[t.n].doc); }
+/* A Databricks platform product/feature, as opposed to an external source, a BI
+   consumer, a customer persona or a use case. Regional availability is a property
+   of the platform's own products, so this is the gate the availability line uses
+   to appear on every product (not only the ones that happen to carry a doc link).
+   Signals: a release stage (every platform box tile has one), a docs link, or a
+   network role (the Serverless / Classic Compute boxes carry no stage but are
+   products). Personas, use cases and the external sources/consumers carry none
+   of these, so they stay out. */
+function isPlatformProduct(t){
+  if(!t || !t.n || isPersonaTile(t)) return false;
+  return !!(stageFor(t) || isDbxProduct(t) || t.role === "network");
+}
 /* The limited-availability feature column this product maps to on this cloud, or
    null when it is available everywhere. Substring match so "Lakehouse Real-Time"
    resolves the "(Beta)" column and survives doc-side relabels. */
@@ -6819,7 +7021,7 @@ function applyRegionFilter(){
     document.querySelectorAll(".atom").forEach(el=>{
       const rec = byId[el.dataset.id]; const t = rec && rec.tile;
       if(!t) return;
-      if(isDbxProduct(t) && !regionAvail(t, regionSel)) el.classList.add("rg-off");
+      if(isPlatformProduct(t) && !regionAvail(t, regionSel)) el.classList.add("rg-off");
     });
   }
   paintRegionMenu();
