@@ -106,6 +106,10 @@ def collect_urls(d):
         for pair in (L.get("also") or []):
             if isinstance(pair, list) and len(pair) == 2:
                 add(pair[1], f"LINKS[{name}].also")
+        # Product tours and hands-on tutorials shown in the drawer (build_demos.py).
+        for dm in (L.get("demos") or []):
+            if isinstance(dm, dict) and dm.get("u"):
+                add(dm["u"], f"LINKS[{name}].demos/{dm.get('kind', '?')}")
     for iid, o in d["inds"].items():
         for uc in o["uc"]:
             for u in uc["stories"]:

@@ -11,13 +11,17 @@ const path = require('path');
 
 const APP = path.resolve(__dirname, '..', 'app', 'index.html');
 const OUT = process.argv[2] || '/tmp/gate_dump.json';
+/* LINKS / INDUSTRIES now live in external JSON the page fetch()es at runtime, and
+   file:// blocks fetch, so a file:// load yields an empty dump. Point PW_DUMP_URL
+   (or argv[3]) at the running server to capture the real merged data. */
+const URL = process.argv[3] || process.env.PW_DUMP_URL || ('file://' + APP);
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newContext().then(c => c.newPage());
   const errs = [];
   page.on('pageerror', e => errs.push(String(e.message)));
-  await page.goto('file://' + APP, { waitUntil: 'load', timeout: 60000 });
+  await page.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
   const out = await page.evaluate(() => {
     function vol(t){ return t.dataOut && ((t.dataOut.batch&&t.dataOut.batch.vol)||(t.dataOut.stream&&t.dataOut.stream.vol)); }
     function srow(t){ return {n:t.n, what:!!t.what, users:!!t.users, dataOut:!!t.dataOut, vol:!!vol(t)}; }

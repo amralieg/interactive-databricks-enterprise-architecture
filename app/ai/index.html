@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<base href="../">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -1907,47 +1908,8 @@
     background:var(--bd); pointer-events:none; z-index:3;
     box-shadow:0 0 7px 2px var(--bd), 0 0 0 1px rgba(255,255,255,.55);
     animation:badgePulse 1.6s ease-out infinite; }
-  /* One dot per highlight kind, each its own colour. A tile can carry several,
-     so the position comes from an hl-p* anchor assigned by paintHighlights: a
-     lone dot sits top-left, extras line up beside it left-to-right. */
-  .hl-accel { --bd:#ff5f2e; }
-  .hl-conn  { --bd:#12b6ef; }
-  .hl-story { --bd:#f5b400; }
-  .hl-tour  { --bd:#8b5cf6; }
-  .hl-demo  { --bd:#17b877; }
-  .hl-course { --bd:#e6398a; }
-  .hl-video  { --bd:#ef4444; }
-  /* Swatch beside each row in the Highlights menu, same colour as the dot. */
-  .hl-swatch { display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--bd);
-    box-shadow:0 0 5px 1px var(--bd); flex:0 0 auto; margin-right:2px; }
-  /* Search box at the top of the Region menu, and the location gloss per row. */
-  .pal-menu .men-search { padding:6px 8px 4px; }
-  .pal-menu .men-search input { width:100%; box-sizing:border-box; font-size:12px; padding:6px 9px;
-    border:1px solid var(--line); border-radius:7px; background:var(--card); color:inherit; }
-  .pal-menu button em { font-style:normal; color:var(--faint); font-size:11px; }
-  #region-menu { max-height:62vh; overflow-y:auto; }
-  /* Dots straddle the TOP BORDER LINE of the box (top:-4px centres the 8px dot on
-     the 1px edge) in a left-to-right row starting just past the rounded corner
-     (11px pitch = 8px dot + 3px gap). */
-  .badge-dot.hl-p1 { top:-4px; left:7px;  bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p2 { top:-4px; left:18px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p3 { top:-4px; left:29px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p4 { top:-4px; left:40px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p5 { top:-4px; left:51px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p6 { top:-4px; left:62px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p7 { top:-4px; left:73px; bottom:auto; right:auto; transform:none; }
-  /* A highlight switched off in the Highlights menu hides that colour everywhere;
-     paintHighlights re-packs the survivors into the corners after each toggle. */
-  body.hl-off-accel  .badge-dot.hl-accel,
-  body.hl-off-conn   .badge-dot.hl-conn,
-  body.hl-off-story  .badge-dot.hl-story,
-  body.hl-off-tour   .badge-dot.hl-tour,
-  body.hl-off-demo   .badge-dot.hl-demo,
-  body.hl-off-course .badge-dot.hl-course,
-  body.hl-off-video  .badge-dot.hl-video { display:none; }
-  /* A region chosen in the Region menu dims the products that region cannot run,
-     rather than removing them: the shape stays whole and the gap is legible. */
-  .atom.rg-off { opacity:.16; filter:grayscale(1); }
+  .badge-dot.accel { --bd:#ff5f2e; }
+  .badge-dot.conn  { --bd:#12b6ef; }
   @keyframes badgePulse {
     0%   { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 var(--bd); }
     70%  { box-shadow:0 0 7px 2px var(--bd), 0 0 0 7px transparent; }
@@ -2341,47 +2303,6 @@
   .d-stage.ga { border-color:var(--g-green-bd); background:var(--g-green-bg); color:var(--g-green-ink); }
   .d-stage.pre { border-color:var(--g-amber-bd); background:var(--g-amber-bg); color:var(--g-amber-ink); }
   .d-stage em { font-style:normal; font-weight:600; opacity:.8; }
-  /* Regional availability, resolved for the cloud selected in the header. Green
-     when the product runs in every supported region, amber when only a subset;
-     the codes list which regions when it is a subset. */
-  .d-region { margin-top:7px; }
-  .d-region .d-regsum { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:750;
-    padding:3px 9px 3px 7px; border-radius:999px; border:1px solid var(--g-slate-bd);
-    background:var(--g-slate-bg); color:var(--g-slate-ink); }
-  .d-region .d-regsum::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
-  .d-region.all .d-regsum { border-color:var(--g-green-bd); background:var(--g-green-bg); color:var(--g-green-ink); }
-  .d-region.some .d-regsum { border-color:var(--g-amber-bd); background:var(--g-amber-bg); color:var(--g-amber-ink); }
-  .d-region .d-regcodes { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
-  .d-region .d-regcode { font-size:10.5px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-    padding:2px 6px; border-radius:6px; border:1px solid var(--line); color:var(--muted); }
-  /* Demos and interactive product tours attached to this product. The title sits
-     on the left; the coloured kind label (Product tour / Hands-on tutorial) and
-     the host align to the RIGHT before the arrow, matching the course rows. */
-  .d-demo { align-items:center; }
-  .d-demo .dl-main { display:flex; flex-direction:column; gap:2px; flex:1 1 auto; min-width:0; }
-  .d-demo .dl-meta { flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end;
-    gap:1px; text-align:right; white-space:nowrap; }
-  .d-demo .dl-meta .dkind { font-weight:800; font-size:11px; }
-  .d-demo .dl-meta .dkind.tour { color:#8b5cf6; }
-  .d-demo .dl-meta .dkind.tutorial { color:#17b877; }
-  .d-demo .dl-host { font-size:11px; color:var(--faint); }
-  .d-demo .dl-go { margin-left:8px; flex:0 0 auto; }
-  /* Academy course rows: name + "Free course" stack on the left, the skill-level
-     pill (Introductory / Onboarding / Associate / Professional) aligns to the
-     RIGHT before the arrow, and the beginner->advanced note sits above a
-     persona's learning track. */
-  .d-course { align-items:center; }
-  .d-course .dl-main { display:flex; flex-direction:column; gap:2px; flex:1 1 auto; min-width:0; }
-  .d-course .dl-lvl { flex:0 0 auto; font-weight:800; font-size:11px; white-space:nowrap; text-align:right; }
-  .d-course .dl-lvl.course { color:#e6398a; }
-  .d-course .dl-go { margin-left:8px; flex:0 0 auto; }
-  .d-note { font-size:11.5px; color:var(--muted); margin:0 0 8px; }
-  /* A highlight dot pinned to the SECTION heading of the thing the tile has (its
-     customer stories, connector, demos, courses, videos), in that highlight's
-     colour. It flows inline in the h4 and hides when the kind is switched off in
-     the Highlights menu (shared .badge-dot.hl-* classes). */
-  h4 .d-secdot { position:static; top:auto; left:auto; right:auto; bottom:auto; transform:none;
-    display:inline-block; width:8px; height:8px; margin-inline-start:8px; vertical-align:middle; }
   .d-body { padding:18px 24px 40px; overflow-y:auto; }
   .d-body h4 { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); margin:17px 0 7px; font-weight:800; }
   .d-body h4:first-child { margin-top:0; }
@@ -2437,9 +2358,6 @@
      disc in front of it read as a second, competing marker. */
   .d-uses { list-style:none; margin:0; padding:0; }
   .d-uses li { margin:0 0 9px; line-height:1.5; }
-  /* Top-questions render as a real bulleted list, not bare lines. */
-  .d-uses.d-bullets { list-style:disc; padding-inline-start:20px; }
-  .d-uses.d-bullets li { margin:0 0 7px; }
   .d-uses .chip { margin:0 6px 0 0; vertical-align:baseline; }
   .d-uses b { color:var(--ink); }
   /* Data-it-produces: Batch and Streaming stacked, each a labelled row of
@@ -2573,8 +2491,6 @@
   .tour-btn.accent{background:var(--brand);border-color:var(--brand);color:var(--on-accent)}
   .tour-btn.accent:hover{filter:brightness(1.05);color:var(--on-accent)}
   @media print { .tour-hole,.tour-catch,.tour-pop{display:none !important;} }
-  /* Highlight dots are an interactive overlay; keep them out of print/PDF too. */
-  @media print { .badge-dot,.d-secdot{display:none !important;} }
   /* Top loading bar for lazy fetches (industry module, language shard, resources),
      modelled on the model-viewer's: a moving accent sliver while a fetch is in
      flight, invisible otherwise. Pointer-transparent so it never blocks a click. */
@@ -2585,6 +2501,54 @@
     background:var(--brand); border-radius:0 3px 3px 0; animation:navslide 1.1s ease-in-out infinite; }
   @keyframes navslide{ 0%{ left:-35%; } 60%{ left:100%; } 100%{ left:100%; } }
   @media print { #nav-progress{ display:none !important; } }
+  /* ---------- AI architecture assistant (Ask AI) ---------- */
+  .ai-fab { position:fixed; bottom:22px; right:22px; z-index:60; display:flex; align-items:center; gap:8px;
+    border:none; cursor:pointer; padding:12px 18px; border-radius:26px; font:inherit; font-size:14px; font-weight:700;
+    color:#fff; background:linear-gradient(135deg,var(--brand),#ff7a45); box-shadow:0 8px 24px rgba(255,54,33,.35); }
+  .ai-fab svg { width:18px; height:18px; }
+  .ai-fab.hide { display:none; }
+  .ai-panel { position:fixed; bottom:22px; right:22px; z-index:61; width:400px; max-width:calc(100vw - 32px);
+    height:min(620px,calc(100vh - 44px)); background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 24px 60px rgba(16,24,40,.28); display:none; flex-direction:column; overflow:hidden; }
+  .ai-panel.show { display:flex; }
+  .ai-head { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line); }
+  .ai-head .ai-logo { width:28px; height:28px; border-radius:8px; flex:0 0 auto; display:grid; place-items:center;
+    color:#fff; background:linear-gradient(135deg,var(--brand),#ff7a45); }
+  .ai-head .ai-logo svg { width:16px; height:16px; }
+  .ai-head h4 { margin:0; font-size:14px; color:var(--ink); }
+  .ai-head .ai-dot { width:8px; height:8px; border-radius:50%; background:#c2c8d0; flex:0 0 auto; }
+  .ai-head .ai-dot.on { background:#2f9e50; } .ai-head .ai-dot.busy { background:#e8a41a; }
+  .ai-head .ai-conn { font-size:11px; color:var(--muted); }
+  .ai-head .ai-x { margin-left:auto; border:none; background:var(--well); width:28px; height:28px; border-radius:8px;
+    cursor:pointer; font-size:15px; color:var(--muted); }
+  .ai-msgs { flex:1 1 auto; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
+  .ai-msg { font-size:13.5px; line-height:1.5; max-width:88%; padding:10px 13px; border-radius:12px; white-space:pre-wrap; }
+  .ai-msg.user { align-self:flex-end; background:var(--brand); color:#fff; border-bottom-right-radius:4px; }
+  .ai-msg.bot { align-self:flex-start; background:var(--bg); color:var(--ink); border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .ai-msg.err { align-self:flex-start; background:var(--brand-wash); color:var(--brand); border:1px solid var(--brand-bd); }
+  .ai-msg .applied { margin-top:8px; font-size:11.5px; font-weight:600; color:var(--brand); }
+  .ai-sugg { display:flex; flex-wrap:wrap; gap:6px; padding:0 16px 8px; }
+  .ai-sugg button { font:inherit; font-size:11.5px; color:var(--muted); background:var(--bg); border:1px solid var(--line);
+    border-radius:16px; padding:5px 10px; cursor:pointer; }
+  .ai-sugg button:hover { border-color:var(--brand); color:var(--brand); }
+  .ai-indhint { display:flex; flex-wrap:wrap; gap:6px; align-items:center; padding:8px 12px 0; }
+  .ai-indhint[hidden] { display:none; }
+  .ai-indhint .lbl { font-size:11px; color:var(--muted); }
+  .ai-indhint button { font:inherit; font-size:11.5px; font-weight:600; color:var(--brand); background:var(--brand-wash);
+    border:1px solid var(--brand-bd); border-radius:16px; padding:4px 11px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .ai-indhint button:hover { background:var(--brand); color:#fff; border-color:var(--brand); }
+  .ai-indhint button .arr { opacity:.7; }
+  .ai-input { border-top:1px solid var(--line); padding:10px 12px; display:flex; gap:8px; align-items:flex-end; }
+  .ai-input textarea { flex:1 1 auto; resize:none; font:inherit; font-size:13.5px; border:1px solid var(--line);
+    border-radius:10px; padding:9px 11px; max-height:120px; outline:none; background:var(--bg); color:var(--ink); }
+  .ai-input textarea:focus { border-color:var(--brand); background:var(--card); }
+  .ai-send { border:none; background:var(--brand); color:#fff; border-radius:10px; width:38px; height:38px; flex:0 0 auto;
+    cursor:pointer; font-size:16px; } .ai-send:disabled { opacity:.5; cursor:default; }
+  .ai-foot { display:flex; align-items:center; gap:10px; padding:0 14px 10px; font-size:11px; color:var(--muted); }
+  .ai-foot a { color:var(--brand); cursor:pointer; text-decoration:none; }
+  .ai-foot input { flex:1 1 auto; min-width:0; font:inherit; font-size:11px; border:1px solid var(--line);
+    border-radius:7px; padding:4px 7px; background:var(--bg); color:var(--ink); }
+  .ai-key-row { display:none; gap:8px; padding:0 14px 10px; } .ai-key-row.show { display:flex; }
 </style>
 </head>
 <body>
@@ -2642,10 +2606,7 @@
   </div>
   <div class="seg" id="display-seg" title="Show products by commercial brand name, or rooted back to their generic category"></div>
   <div class="seg" id="cloud-seg" title="Switch the cloud services band"></div>
-  <div class="pal-wrap" id="region-wrap">
-    <button class="hbtn ico-only" id="region-btn" title="Pick a cloud region to see which products are available there"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/><path d="M12 3a14 14 0 0 0 0 18"/></svg> <span id="region-lbl" class="btn-lbl">Region</span></button>
-    <div class="pal-menu" id="region-menu"></div>
-  </div>
+  <button class="hbtn ico-only" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl" class="btn-lbl">Dark</span></button>
   <div class="pal-wrap" id="pal-wrap">
     <button class="hbtn ico-only" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span></button>
     <div class="pal-menu" id="pal-menu"></div>
@@ -2657,10 +2618,6 @@
   <div class="pal-wrap" id="stage-wrap">
     <button class="hbtn ico-only" id="stage-btn" title="Choose which release stages the platform box shows"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg> <span id="stage-lbl" class="btn-lbl">Stage</span></button>
     <div class="pal-menu" id="stage-menu"></div>
-  </div>
-  <div class="pal-wrap" id="hl-wrap">
-    <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 14.9 8.6 21.5 9.5 16.8 14.2 17.9 20.8 12 17.7 6.1 20.8 7.2 14.2 2.5 9.5 9.1 8.6Z"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
-    <div class="pal-menu" id="hl-menu"></div>
   </div>
   <div class="dl-wrap" id="dl-wrap">
     <button class="hbtn ico-only" id="dl-btn" title="Download this architecture"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
@@ -2690,10 +2647,9 @@
   </div>
   <button class="hbtn ico-only" id="side-btn" type="button" title="Show the details panel docked on the side" aria-label="Show the details panel docked on the side" aria-pressed="false"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
   <div class="pal-wrap" id="lang-wrap">
-    <button class="hbtn ico-only" id="lang-btn" title="Translate the architecture content. The toolbar and menus stay in English; product and brand names are never translated."><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg></button>
+    <button class="hbtn ico-only" id="lang-btn" title="Translate the architecture content. The toolbar and menus stay in English; product and brand names are never translated."><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg></button>
     <div class="pal-menu" id="lang-menu"></div>
   </div>
-  <button class="hbtn ico-only" id="theme-btn" title="Switch between the light and dark palette. Downloads follow whichever is on screen."><span id="theme-ico">◐</span> <span id="theme-lbl" class="btn-lbl">Dark</span></button>
   <button class="hbtn ico-only" id="tour-btn" type="button" aria-label="Take a guided tour of the board" title="Take a guided tour of the board"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z"/></svg></button>
   </div>
 </header>
@@ -2810,6 +2766,43 @@
   <div class="d-credit" id="d-credit">&#169; Databricks Industry Solutions</div>
 </aside>
 <div class="tip" id="tip" role="tooltip"></div>
+
+<!-- ===================== AI Architecture Assistant ===================== -->
+<button class="ai-fab" id="ai-fab" title="Tailor this architecture to a customer with AI">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/><path d="M18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>
+  Ask AI
+</button>
+
+<section class="ai-panel" id="ai-panel" aria-label="AI architecture assistant">
+  <div class="ai-head">
+    <span class="ai-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5 10.1 7.6z"/></svg></span>
+    <div>
+      <h4>Architecture Assistant</h4>
+      <div class="ai-conn"><span class="ai-dot" id="ai-dot"></span> <span id="ai-conn-txt">checking…</span></div>
+    </div>
+    <button class="ai-x" id="ai-x" title="Close">✕</button>
+  </div>
+  <div class="ai-msgs" id="ai-msgs"></div>
+  <div class="ai-sugg" id="ai-sugg">
+    <button data-q="Design a real-time fraud detection solution for a retail bank.">Fraud detection</button>
+    <button data-q="Map a customer 360 and churn prediction use case.">Customer 360</button>
+    <button data-q="Show an agentic RAG assistant over enterprise documents.">Agentic RAG</button>
+  </div>
+  <div class="ai-key-row" id="ai-key-row">
+    <input type="password" id="ai-key" placeholder="Anthropic API key (sk-ant-…) — kept in memory this session only; used if the bridge is offline" autocomplete="off">
+  </div>
+  <div class="ai-foot">
+    <span id="ai-model-lbl">Claude Sonnet 5</span>
+    <a id="ai-key-toggle">API key</a>
+    <a id="ai-edit-toggle" hidden style="margin-left:auto">✎ Editing: on</a>
+    <a id="ai-clear">Clear highlight</a>
+  </div>
+  <div class="ai-indhint" id="ai-indhint" hidden></div>
+  <div class="ai-input">
+    <textarea id="ai-text" rows="1" placeholder="Describe your customer, use case, and data sources…"></textarea>
+    <button class="ai-send" id="ai-send" title="Send">➤</button>
+  </div>
+</section>
 
 <script>
 /* ==================================================================
@@ -3118,89 +3111,9 @@ function markBadge(t){
   if(c) return { kind:"conn", head:"Lakeflow Connector Available", n:c.n, note:c.note, u:c.u };
   return null;
 }
-/* Highlight dots. A tile can carry several at once (a customer story AND a
-   product tour AND a connector), each its own colour, so the canvas advertises
-   what is behind a box before it is opened. hlKinds resolves the set present on a
-   tile; hlDotsHtml renders one dot per kind. reg() injects these on EVERY atom in
-   one place, so the platform cards get them too, not just the rails and bands
-   the old single dot reached. Position (which corner) is assigned by
-   paintHighlights so the survivors re-pack when a kind is toggled off. Order here
-   is the corner fill order: a lone dot lands top-right, extras spread from there. */
-const HL_ORDER = ["story", "conn", "tour", "demo", "course", "video", "accel"];
-const DEFAULT_HL_OFF = ["tour", "demo", "course", "video"];
-const HL_TITLE = { story:"Customer Stories", conn:"Lakeflow Connectors",
-  tour:"Product Tours", demo:"Product Demos", course:"Free Academy Courses",
-  video:"Videos", accel:"Solution Accelerators" };
-/* A glowing dot for a drawer SECTION, in that highlight's colour. Placed on the
-   heading of the thing the tile HAS (its customer stories, connector, demos,
-   courses, videos) rather than on the tile's own name, and it hides when that
-   highlight is switched off, same classes as the canvas dots. */
-function sectionDot(kind){ return `<span class="badge-dot hl-${kind} d-secdot" aria-hidden="true"></span>`; }
-function tileVideos(t){ const L = t && t.n && LINKS[t.n]; return (L && Array.isArray(L.videos)) ? L.videos : []; }
-function tileDemos(t){ const L = t && t.n && LINKS[t.n]; return (L && Array.isArray(L.demos)) ? L.demos : []; }
-/* Persona (Teams) tiles are the only tiles that carry BOTH sub-roles and a
-   capabilities `uses` list — products and use cases never have both. Testing that
-   pair is format-agnostic, unlike probing sub[0]'s shape: industry boards author
-   `sub` either as {n,cares} objects (toTerse normalises {name,cares} to that) or
-   as [name,cares] pairs, and only the pair form would fail a shape probe, which
-   is exactly why airlines lost its learning track and its "who is in this team". */
-function isPersonaTile(t){ return !!(t && Array.isArray(t.sub) && t.sub.length && Array.isArray(t.uses) && t.uses.length); }
-/* One sub-role, read from either authored shape: an {n,cares} object or a
-   [name,cares] pair (same dual shape `uses` already tolerates below). */
-function subRole(p){ return Array.isArray(p) ? { n:p[0], cares:p[1] || "" } : { n:(p.n || p.name || ""), cares:(p.cares || "") }; }
-/* Industry boards rename the business personas (the reference "Business Teams"
-   becomes "Retail Banking", "Chief Credit Officer & CFO", etc.), so an exact
-   byPersona lookup misses on every industry board and the learning track
-   disappears. Map an unknown persona to the nearest canonical Academy track by
-   keyword on its name and sub-role titles; the technical personas keep their
-   reference names and match directly. Business personas that match nothing fall
-   back to the general "Business Teams" track. */
-const PERSONA_CANON = [
-  [/\b(risk|compliance|audit|regulat|governance)\b/i, "Risk & Compliance"],
-  [/\b(chief|ceo|cfo|coo|cro|c-suite|executive|leadership)\b/i, "Executives"],
-  [/analytics engineer/i, "Analytics Engineers"],
-  [/\b(data engineer|pipeline|ingest|platform)\b/i, "Data Engineers"],
-  [/\b(scientist|machine learning|ml|model)\b/i, "Data Scientists"],
-  [/\b(developer|application|software|app)\b/i, "App Developers"],
-  [/\b(analyst|analytics|bi)\b/i, "Data Analysts"],
-];
-function personaTrackKey(t){
-  if(!ACADEMY || !ACADEMY.byPersona || !t || !t.n) return null;
-  if(ACADEMY.byPersona[t.n]) return t.n;
-  /* Classify on the persona NAME only. Folding in sub-role titles was too noisy:
-     a business persona like "Commercial Banking" carries a "Credit Risk Officers"
-     sub-role and would wrongly resolve to the Risk & Compliance track. */
-  const name = t.n.toLowerCase();
-  for(const [re, key] of PERSONA_CANON){ if(re.test(name) && ACADEMY.byPersona[key]) return key; }
-  return ACADEMY.byPersona["Business Teams"] ? "Business Teams" : null;
-}
-/* Academy course ids attached to a tile: a Teams persona via byPersona (with the
-   canonical fallback above so industry-renamed personas still resolve), or a
-   board product via byProduct. One resolver so the dot, the drawer track and the
-   highlight count all read the same source. */
-function tileCourseIds(t){
-  if(!t || !t.n || !ACADEMY) return [];
-  if(isPersonaTile(t)){ const k = personaTrackKey(t); return (k && ACADEMY.byPersona[k]) || []; }
-  return (ACADEMY.byProduct && ACADEMY.byProduct[t.n]) || [];
-}
-function hlKinds(t){
-  if(!t) return [];
-  const out = [];
-  if(t.stories && t.stories.length) out.push("story");
-  if(connectorFor(t)) out.push("conn");
-  const ds = tileDemos(t);
-  if(ds.some(d=>d.kind === "tour")) out.push("tour");
-  if(ds.some(d=>d.kind === "tutorial")) out.push("demo");
-  if(tileCourseIds(t).length) out.push("course");
-  if(tileVideos(t).length) out.push("video");
-  if(accelFor(t)) out.push("accel");
-  return out;
-}
-function hlDotsHtml(t){
-  return hlKinds(t).map(k=>
-    `<span class="badge-dot hl-${k}" data-hl="${k}" title="${esc(T(HL_TITLE[k]))}" aria-hidden="true"></span>`
-  ).join("");
-}
+/* The tile-corner dot markup, shared by the source rail and the horizontal bands so
+   both surfaces mark accelerators and connectors identically. */
+function badgeDotHtml(t){ const b = markBadge(t); return b ? `<span class="badge-dot ${b.kind}" title="${esc(T(b.head))}" aria-hidden="true"></span>` : ""; }
 function titleIcon(t, cls){
   const m = t && (t.mark || t.n);
   return markSvg(m, cls) || svg((t && t.ic) || "dot", cls);
@@ -3856,9 +3769,8 @@ const ARCH = {
      highlight survives an Azure → AWS → GCP switch. */
   cloud: {
     name:"Cloud Services & Integrations", ic:"zcloudgear",
-    /* The board represents serverless compute, so the caption keeps to it: the
-       data stays in the customer's cloud while serverless compute reaches it from
-       the Databricks account over private connectivity. */
+    /* An earlier caption claimed everything runs inside the customer perimeter.
+       The board represents serverless compute, so the caption keeps to it. */
     sub:"Your data stays in your own cloud storage under Unity Catalog, and serverless compute reaches it from the Databricks account over private connectivity.",
     provider:"azure",
     /* vendor-neutral integrations, present whichever cloud is selected */
@@ -4250,12 +4162,8 @@ async function loadIndustry(id){
    in JSON; rebuild it here. */
 let INDUSTRY_BUILT = null;
 let _resLoaded = false;
-let REGIONS = null;
-let ACADEMY = null;
 function useResources(r){
   if(r.links) Object.assign(LINKS, r.links);
-  if(r.regions && r.regions.clouds) REGIONS = r.regions;
-  if(r.academy && r.academy.courses) ACADEMY = r.academy;
   if(Array.isArray(r.references) && !REFERENCES.length) REFERENCES.push(...r.references);
   if(r.accelerators) Object.assign(ACCEL_BY_NAME, r.accelerators);
   const conn = r.connectors || {};
@@ -4273,7 +4181,7 @@ async function loadResources(){
   const froz = frozenJson("frozen-resources");
   if(froz){ useResources(froz); return; }
   navStart();
-  const names = ["links", "references", "accelerators", "connectors", "regions", "academy"];
+  const names = ["links", "references", "accelerators", "connectors"];
   const out = {};
   await Promise.all(names.map(async n => {
     try { const r = await fetch("resources/" + n + ".json", { cache:"no-store" }); out[n] = r.ok ? await r.json() : (n === "references" ? [] : {}); }
@@ -4468,15 +4376,6 @@ function translateContent(){
     if(en) el.removeAttribute("dir");
   });
   applyContentDir();
-  /* The corner credit carries the data-freshness date and feeds the PDF/deck
-     cover through creditText(); refreshed here so "Last Updated" re-localises on
-     a language swap. The brand line itself stays English, as it always was. */
-  const upd = dataUpdated();
-  ["credit", "d-credit"].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.textContent = "\u00a9 Databricks Industry Solutions" +
-      (upd ? " - " + T("Last Updated") + ": " + upd : "");
-  });
 }
 
 const DISPLAY_LS = "dbxarch.dais2026.display";
@@ -4567,14 +4466,6 @@ function reg(el, tile, arr, sectionName){
      gets it in the one place every atom is created */
   const sk = stageKey(stageFor(tile));
   if(sk) el.dataset.stage = sk;
-  /* Highlight dots mark the leaf that actually carries the highlight, never a
-     container. Every container/title atom is registered with arr===null (the
-     section titles, the panel heads, the rlbl bookends, the band foot); a leaf
-     product or use case always carries the live ARCH array it came from. Skipping
-     the null-arr atoms keeps a section header from lighting up with every child's
-     dot. Positions are packed by paintHighlights, which build() runs at the end. */
-  const dots = arr == null ? "" : hlDotsHtml(tile);
-  if(dots) el.insertAdjacentHTML("beforeend", dots);
   byId[id] = { tile, arr, section:sectionName, el };
   /* A product shown in two places declares `alias` on the second appearance, so
      the name keeps pointing at the card that owns it. Without this the later
@@ -4918,7 +4809,7 @@ function renderRail(rail, target){
       if(seenLabels){ if(seenLabels.has(label)){ if(tile.cat) nameToCat[tile.n] = tile.cat; return; } seenLabels.add(label); }
       const b = document.createElement("button");
       b.className = "rtile" + (cloudy ? " cloudy" : "");
-      b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(label)}</span>`;
+      b.innerHTML = titleIcon(tile,"ic") + `<span class="t-name">${esc(label)}</span>` + badgeDotHtml(tile);
       reg(b, tile, arr, rail.name);
       box.appendChild(b);
     });
@@ -4993,7 +4884,8 @@ function renderHBand(target, zone, chip, secs){
       const ctSub = tile.s || genieDomain(tile);
       b.innerHTML = titleIcon(tile,"ic") +
         `<span class="ct"><span class="ct-name">${esc(displayName(tile))}</span>` +
-        (ctSub ? `<span class="ct-sub">${esc(T(ctSub))}</span>` : "") + `</span>`;
+        (ctSub ? `<span class="ct-sub">${esc(T(ctSub))}</span>` : "") + `</span>` +
+        badgeDotHtml(tile);
       reg(b, tile, arr, s.title);
       body.appendChild(b);
     }));
@@ -5350,12 +5242,6 @@ function build(){
   /* the filter is a property of the view, not of the model, so it is re-applied
      to the fresh DOM here rather than at each of build()'s callers */
   applyStageFilter();
-  /* Region dimming and highlight-dot packing are view state, re-applied to the
-     fresh DOM here rather than at each of build()'s callers, same as the stage
-     filter above. Both read the header's active cloud, so a cloud switch (which
-     rebuilds) re-resolves them. */
-  if(typeof applyRegionFilter === "function") applyRegionFilter();
-  if(typeof paintHighlights === "function") paintHighlights();
   document.body.classList.toggle("ind-active", ARCH.industry !== "generic");
   if(typeof syncZoomBtns === "function") syncZoomBtns();
   /* The board just changed (industry, tab, or mode), so re-evaluate whether the
@@ -5428,6 +5314,15 @@ function linkRow(href, label, sub){
     (sub ? `<span class="dl-s">${esc(sub)}</span>` : "") +
     `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
 }
+/* Where each cloud's own Databricks page lives. Azure Databricks is a
+   first-party Microsoft service and Microsoft hosts its product page, so on
+   Azure that page is the one a reader wants; AWS and Google have marketplace
+   listings rather than product pages, so there Databricks hosts its own. */
+const PLATFORM_PAGE = {
+  azure: "https://azure.microsoft.com/en-us/products/databricks",
+  aws:   "https://www.databricks.com/product/aws",
+  gcp:   "https://www.databricks.com/product/google-cloud",
+};
 function detailLinks(name){
   const L = LINKS[name]; if(!L) return "";
   const cloud = (ARCH.cloud.providers[ARCH.cloud.provider] || {}).label || ARCH.cloud.provider;
@@ -5441,10 +5336,14 @@ function detailLinks(name){
   if(L.doc) rows.push(linkRow(docUrl(L.doc), T("Documentation"), dcloud(host(docUrl(L.doc)))));
   if(L.url) rows.push(linkRow(L.url, T("Vendor documentation"), host(L.url)));
   if(L.dbx) rows.push(linkRow(docUrl(L.dbx), T("Connecting it to Databricks"), dcloud(host(docUrl(L.dbx)))));
-  /* Generic vendor/product landing pages (the cloud's "Databricks on <cloud>"
-     marketing page and each product's databricks.com/product page) are dropped:
-     they add no detail over the documentation, vendor docs and blog rows above.
-     L.site stays in the data because seealso resolution still uses it as a URL. */
+  /* A `doc` path is what marks a box as a Databricks product, and for those the
+     cloud's own page belongs above the generic one: a reader on Azure is buying
+     Azure Databricks, not Databricks. */
+  if(L.doc && PLATFORM_PAGE[ARCH.cloud.provider]){
+    const p = PLATFORM_PAGE[ARCH.cloud.provider];
+    rows.push(linkRow(p, "Databricks on " + cloud, host(p)));
+  }
+  if(L.site) rows.push(linkRow(L.site, T("Product page"), host(L.site)));
   if(L.blog) rows.push(linkRow(L.blog, T("Blog and deep dive"), host(L.blog)));
   (L.also || []).forEach(([label, url])=> rows.push(linkRow(url, T(label), host(url))));
   /* `seealso` is the docs' own "directly-linked related features": a list of the
@@ -5480,83 +5379,9 @@ function videoLinks(name){
       `<span class="d-vt">${esc(v.t)}</span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
   }).join("");
-  return `<h4>${esc(T("Databricks YouTube channel"))}${sectionDot("video")}</h4><div class="d-vids">${rows}</div>`;
+  return `<h4>${esc(T("Databricks YouTube channel"))}</h4><div class="d-vids">${rows}</div>`;
 }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
-/* Regional availability for the cloud in the header. Only Databricks products
-   carry it (a `doc` path in LINKS). Green when the product runs in every
-   supported region, amber with the region codes listed when it is a subset. */
-function regionLine(t){
-  if(typeof REGIONS === "undefined" || !REGIONS || !isDbxProduct(t)) return "";
-  const r = regionsFor(t); if(!r) return "";
-  const cl = cloudLabelNow();
-  if(r.all){
-    return `<div class="d-region all"><h4>${esc(T("Regional availability"))}</h4>` +
-      `<span class="d-regsum">${esc(T("Available in all"))} ${r.total} ${esc(cl)} ${esc(T("regions"))}</span></div>`;
-  }
-  const cr = cloudRegions();
-  const codes = cr.regions.filter(x=>r.codes.has(x.code))
-    .map(x=>`<span class="d-regcode" title="${esc(x.loc)}">${esc(x.code)}</span>`).join("");
-  return `<div class="d-region some"><h4>${esc(T("Regional availability"))}</h4>` +
-    `<span class="d-regsum">${esc(T("Available in"))} ${r.codes.size} ${esc(T("of"))} ${r.total} ${esc(cl)} ${esc(T("regions"))}</span>` +
-    `<div class="d-regcodes">${codes}</div></div>`;
-}
-/* Interactive product tours and hands-on tutorials attached to this product,
-   built into LINKS[name].demos by tools/build_demos.py from the live demo-center
-   sitemap and HEAD-verified by linkgate. Titles are the real page titles, so
-   like the YouTube titles they render verbatim and are not run through T(). */
-function demoLinks(name){
-  const L = LINKS[name];
-  if(!L || !Array.isArray(L.demos) || !L.demos.length) return "";
-  const row = d=>{
-    const isTour = d.kind === "tour";
-    const kind = isTour ? T("Product tour") : T("Hands-on tutorial");
-    return `<a class="d-link d-demo" href="${esc(d.u)}" target="_blank" rel="noopener">` +
-      `<span class="dl-main"><span class="dl-t">${esc(d.t)}</span></span>` +
-      `<span class="dl-meta"><span class="dkind ${isTour ? "tour" : "tutorial"}">${esc(kind)}</span>` +
-      `<span class="dl-host">${esc(host(d.u))}</span></span>` +
-      `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
-  };
-  const tours = L.demos.filter(d=>d.kind === "tour");
-  const tuts  = L.demos.filter(d=>d.kind !== "tour");
-  let out = "";
-  if(tours.length) out += `<h4>${esc(T("Product tours"))}${sectionDot("tour")}</h4>` +
-    `<div class="d-links">${tours.map(row).join("")}</div>`;
-  if(tuts.length)  out += `<h4>${esc(T("Demos"))}${sectionDot("demo")}</h4>` +
-    `<div class="d-links">${tuts.map(row).join("")}</div>`;
-  return out;
-}
-/* Free Databricks Academy courses (tools/build_academy.py). Products get their
-   curated courses; a Teams persona gets a learning track sorted beginner ->
-   advanced. Course titles are the real catalogue titles, so like the demo and
-   YouTube titles they render verbatim; only the CHROME goes through T(). The link
-   resolves to the course in the reader's language when Academy ships that
-   variant, else English (the app has 15 languages, Academy 7). */
-const ACAD_LANG = { pt:"pt-br" };   /* app code -> Academy code where they differ */
-function courseUrl(c){
-  const code = ACAD_LANG[I18N.lang] || I18N.lang;
-  return (c.langs && (c.langs[code] || c.langs.en)) || "#";
-}
-function academyLinks(t){
-  if(!ACADEMY || !t || !t.n) return "";
-  const isPersona = isPersonaTile(t);
-  const ids = tileCourseIds(t);
-  if(!ids || !ids.length) return "";
-  const head = isPersona ? T("Learning track") : T("Free Academy Courses");
-  const rows = ids.map(id=>{
-    const c = ACADEMY.courses[id];
-    if(!c) return "";
-    const lvl = c.level ? `<span class="dl-lvl course">${esc(T(c.level))}</span>` : "";
-    return `<a class="d-link d-course" href="${esc(courseUrl(c))}" target="_blank" rel="noopener">` +
-      `<span class="dl-main"><span class="dl-t">${esc(c.t)}</span>` +
-      `<span class="dl-s">${esc(T("Free course"))} &middot; customer-academy.databricks.com</span></span>` +
-      lvl +
-      `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
-  }).join("");
-  const note = isPersona
-    ? `<p class="d-note">${esc(T("Suggested courses for this team, from beginner to advanced."))}</p>` : "";
-  return `<h4>${esc(head)}${sectionDot("course")}</h4>${note}<div class="d-links">${rows}</div>`;
-}
 
 /* Every id in INDUSTRY_CATALOG is also the folder name under data-models in the
    published repo, which is why the menu was built from those names in the first
@@ -5627,7 +5452,7 @@ function openDetail(id, via){
   document.getElementById("d-stage").innerHTML = stageBadge(stageFor(t));
   const dbody = document.getElementById("d-body");
   if(dbody) dbody.setAttribute("dir", I18N.dir);
-  let html = regionLine(t);
+  let html = "";
   if(activeRef && activeRef.map[t.n]){
     html += `<h4>${T("How it is used in this architecture")}</h4><div class="d-refbox"><ul>` +
       activeRef.map[t.n].map(x=>`<li>${esc(T(x))}</li>`).join("") + `</ul></div>`;
@@ -5662,7 +5487,7 @@ function openDetail(id, via){
   if(t.feeds && t.feeds.length) html += `<h4>${esc(T("Data sources it reads"))}</h4><div>${detailChips(t.feeds)}</div>`;
   if(t.kpis && t.kpis.length) html += `<h4>${esc(T("Metrics & KPIs"))}</h4><div>${detailChips(t.kpis)}</div>`;
   if(t.teams && t.teams.length) html += `<h4>${esc(T("Interested teams"))}</h4><div>${detailChips(t.teams)}</div>`;
-  if(t.questions && t.questions.length) html += `<h4>${esc(T("Top questions it answers"))}</h4><ul class="d-uses d-bullets">` +
+  if(t.questions && t.questions.length) html += `<h4>${esc(T("Top questions it answers"))}</h4><ul class="d-uses">` +
     t.questions.map(qq=>`<li>${esc(dispProse(qq))}</li>`).join("") + `</ul>`;
   /* A use-case tile carries the reasoning behind it, not just a caption: the
      problem it exists to solve, who in the People box benefits, how it is built,
@@ -5680,14 +5505,14 @@ function openDetail(id, via){
   if(t.comps && t.comps.length)
     html += `<h4>${esc(T("Architecture it uses"))}</h4><div>${detailChips(t.comps)}</div>`;
   if(t.stories && t.stories.length){
-    html += `<h4>${esc(T("Databricks customer stories"))}${sectionDot("story")}</h4><div class="d-links">` +
+    html += `<h4>${esc(T("Databricks customer stories"))}</h4><div class="d-links">` +
       t.stories.map(s=> linkRow(s.u, T(s.t), T(s.sub))).join("") + `</div>`;
   }
   /* A team tile names the sub-personas inside it and what each cares about, then
      the use cases the team drives as live chips into those use-case atoms. */
   if(t.sub && t.sub.length){
     html += `<h4>${esc(T("Who is in this team"))}</h4><ul class="d-uses">` +
-      t.sub.map(p=>{ const r = subRole(p); return `<li><b>${esc(T(r.n))}</b> ${esc(T(r.cares))}</li>`; }).join("") + `</ul>`;
+      t.sub.map(p=>`<li><b>${esc(T(p.n))}</b> ${esc(T(p.cares))}</li>`).join("") + `</ul>`;
   }
   if(t.ucs && t.ucs.length)
     html += `<h4>${esc(T("Use cases"))}</h4><div>${detailChips(t.ucs)}</div>`;
@@ -5718,8 +5543,6 @@ function openDetail(id, via){
      wrong than a flag copied onto three tiles in every industry. */
   if(rec.arr && rec.arr === medallionStages()) html += modelLinks();
   html += detailLinks(t.n);
-  html += demoLinks(t.n);
-  html += academyLinks(t);
   html += videoLinks(t.n);
   if(!catMode) html += citeLinks(t);
   if(t.rel && t.rel.length){
@@ -5782,6 +5605,13 @@ function clearRefPaint(){
   });
 }
 function paintRef(ref){
+  /* __tab__ refs show the banner and make notes accessible but do NOT dim the
+     board — no ref-mode class, no .mapped badges — because the generated tab's
+     own arch is the board and dimming it would make it unreadable. */
+  if(ref && ref.id === "__tab__"){
+    clearRefPaint();
+    return;
+  }
   clearRefPaint();
   document.body.classList.add("ref-mode");
   Object.entries(ref.map).forEach(([name, items])=>{
@@ -6045,6 +5875,8 @@ let restoredActive = null;
       (t.snap && typeof t.snap === "object") ? t.snap : null);
     /* keep the counter ahead of every restored id so + cannot collide */
     tabSeq = Math.max(tabSeq, parseInt(t.id.slice(6), 10) || 0);
+    const rec = customTabs.get(t.id);
+    if(rec){ if(t.blurb!=null) rec.blurb = String(t.blurb); if(t.notes && typeof t.notes==="object") rec.notes = t.notes; rec.edit = !!t.edit; }
   });
   if(customTabs.has(s.active)) restoredActive = s.active;
   updateEditVisibility();
@@ -6331,17 +6163,18 @@ function shareTitle(){
 }
 /* The localized page/browser-tab title. Unlike the share card it follows the on-
    screen language: the phrase and the industry name localise, while "Databricks"
-   and the cloud label stay verbatim. No industry glyph leads it, so the tab shows
-   only the fixed Databricks favicon. */
+   and the cloud label stay verbatim, and the industry glyph leads so the tab is
+   recognisable at a glance. */
 function pageTitleText(){
   const id = ARCH.industry;
   const named = id && id !== "generic" && id.indexOf("__import__") !== 0;
+  const icon = (typeof IndustryIcons !== "undefined") ? IndustryIcons.iconFor(named ? id : "generic") : "";
   const cloud = cloudLabelNow();
   const on = cloud ? " " + T("on") + " " + cloud : "";
   const core = named
     ? T("Databricks Reference Architecture for") + " " + T(industryLabel(id)) + on
     : T("Databricks Reference Architecture") + on;
-  return core;
+  return (icon ? icon + " " : "") + core;
 }
 function updatePageTitle(){ try { document.title = pageTitleText(); } catch(e){} updateFavicon(); }
 /* The browser tab icon: a single fixed app icon (the Databricks mark on the
@@ -6699,11 +6532,9 @@ function applyStageFilter(){
 }
 function paintStageMenu(){
   const off = stagesOff(), c = stageCounts();
-  const upd = dataUpdated();
-  const rows = ['<div class="men-hd">Release stage</div>'];
-  if(upd) rows.push('<div class="dl-note">' + esc(T("Up to the last updated date")) + ': ' + esc(upd) + '</div>');
-  rows.push('<button data-stage-all="1" class="' + (off.size ? "" : "on") + '">' +
-    '<span>All stages</span></button>');
+  const rows = ['<div class="men-hd">Release stage</div>',
+    '<button data-stage-all="1" class="' + (off.size ? "" : "on") + '">' +
+    '<span>All stages</span></button>'];
   STAGES.forEach(s=>{
     if(!c[s.k]) return;          /* nothing at this stage in this tab */
     rows.push('<button class="cnt' + (off.has(s.k) ? "" : " on") + '" data-stage="' + s.k +
@@ -6744,203 +6575,6 @@ function setStages(off, remember){
 }
 document.getElementById("stage-btn").onclick = e=>{
   e.stopPropagation(); stageWrap.classList.toggle("open");
-};
-
-/* ==================================================================
-   7a-2b. REGION AVAILABILITY (per cloud)
-   ==================================================================
-   Databricks does not publish a product x region matrix; it publishes the list
-   of supported regions per cloud plus a "features with limited regional
-   availability" table. regions.json carries both (scraped by scrape_regions.py)
-   plus a curated product -> limited-feature ALIAS. So a product is available in
-   every supported region UNLESS it maps to a limited feature, in which case that
-   feature's per-region truth applies. Picking a region dims the products it
-   cannot run; the drawer spells out the count and the regions. Everything reads
-   the header's active cloud, so a cloud switch re-resolves it. */
-const REGION_STORE = "dbx-arch-region";
-const regionWrap = document.getElementById("region-wrap");
-const regionMenu = document.getElementById("region-menu");
-const regionBtn = document.getElementById("region-btn");
-let regionSel = store.get(REGION_STORE) || "";   /* "" = All regions */
-let regionQuery = "";
-
-function curCloud(){ return (typeof ARCH !== "undefined" && ARCH.cloud && ARCH.cloud.provider) || "aws"; }
-function cloudRegions(){ return (REGIONS && REGIONS.clouds && REGIONS.clouds[curCloud()]) || null; }
-/* A product is subject to region rules only if it is a Databricks product, which
-   is exactly the tiles that carry a `doc` path in LINKS (the same test linkgate
-   uses). Third-party and concept tiles are never dimmed. */
-function isDbxProduct(t){ return !!(t && t.n && LINKS[t.n] && LINKS[t.n].doc); }
-/* The limited-availability feature column this product maps to on this cloud, or
-   null when it is available everywhere. Substring match so "Lakehouse Real-Time"
-   resolves the "(Beta)" column and survives doc-side relabels. */
-function regionFeatureLabel(t){
-  const cr = cloudRegions();
-  if(!cr || !REGIONS.alias || !t || !t.n) return null;
-  const want = REGIONS.alias[t.n];
-  if(!want) return null;
-  const w = want.toLowerCase();
-  const keys = Object.keys(cr.features || {});
-  /* Prefer a column that STARTS WITH the alias, then fall back to a substring.
-     Every alias names the head of its column, and the prefix match keeps
-     "Serverless compute" off AWS's "Firewall enablement for serverless compute"
-     (a different feature that a plain substring would catch on key order). */
-  return keys.find(l => l.toLowerCase().startsWith(w)) ||
-         keys.find(l => l.toLowerCase().indexOf(w) >= 0) || null;
-}
-/* {codes:Set, all:bool, total:int, label} of regions where the product runs on
-   the active cloud, or null when there is no region data for the cloud. */
-function regionsFor(t){
-  const cr = cloudRegions();
-  if(!cr) return null;
-  const all = cr.regions.map(r=>r.code);
-  const lab = regionFeatureLabel(t);
-  if(!lab) return { codes:new Set(all), all:true, total:all.length, label:null };
-  const col = cr.features[lab] || {};
-  const codes = new Set(all.filter(c=>col[c]));
-  return { codes, all:codes.size === all.length, total:all.length, label:lab };
-}
-function regionAvail(t, code){ const r = regionsFor(t); return !r || r.codes.has(code); }
-
-function applyRegionFilter(){
-  const cr = cloudRegions();
-  /* A region saved under another cloud is not valid here: fall back to All so a
-     cloud switch never dims every product against a code that cannot exist. */
-  if(regionSel && !(cr && cr.regions.some(r=>r.code === regionSel))) regionSel = "";
-  document.querySelectorAll(".atom.rg-off").forEach(el=>el.classList.remove("rg-off"));
-  if(regionSel && cr){
-    /* The Serverless Compute box is a Databricks product too (LINKS doc +
-       REGIONS.alias "Serverless compute"), so the same regionAvail test dims it
-       wherever serverless is absent — e.g. Azure Qatar Central — with no
-       tile-specific branch. */
-    document.querySelectorAll(".atom").forEach(el=>{
-      const rec = byId[el.dataset.id]; const t = rec && rec.tile;
-      if(!t) return;
-      if(isDbxProduct(t) && !regionAvail(t, regionSel)) el.classList.add("rg-off");
-    });
-  }
-  paintRegionMenu();
-}
-function setRegion(code){
-  regionSel = code;
-  store.set(REGION_STORE, code);
-  applyRegionFilter();
-  if(openId && byId[openId]) openDetail(openId, "keep");  /* refresh the drawer line */
-}
-function paintRegionMenu(){
-  const cr = cloudRegions();
-  const upd = dataUpdated();
-  const rows = ['<div class="men-hd">' + esc(cloudLabelNow()) + ' ' + esc(T("Region availability")) + '</div>'];
-  if(upd) rows.push('<div class="dl-note">' + esc(T("Up to the last updated date")) + ': ' + esc(upd) + '</div>');
-  if(!cr){
-    regionMenu.innerHTML = rows.join("") + '<div class="dl-note">No region data loaded.</div>';
-    return;
-  }
-  rows.push('<div class="men-search"><input type="text" id="region-q" placeholder="Search ' +
-    cr.regions.length + ' regions" value="' + esc(regionQuery) + '"></div>');
-  rows.push('<button data-region-all="1" class="' + (regionSel ? "" : "on") +
-    '"><span>All regions</span><i>' + cr.regions.length + '</i></button>');
-  const q = regionQuery.trim().toLowerCase();
-  cr.regions
-    .filter(r => !q || r.code.toLowerCase().indexOf(q) >= 0 || r.loc.toLowerCase().indexOf(q) >= 0)
-    /* Pin the selected region to the top, right below "All regions" (stable sort
-       leaves every other region in place). */
-    .slice()
-    .sort((a, b) => (b.code === regionSel ? 1 : 0) - (a.code === regionSel ? 1 : 0))
-    .forEach(r=> rows.push('<button class="cnt' + (regionSel === r.code ? " on" : "") +
-      '" data-region="' + esc(r.code) + '"><span>' + esc(r.code) +
-      ' <em>' + esc(r.loc) + '</em></span></button>'));
-  rows.push('<div class="dl-note">Products a region cannot run are dimmed on the board. ' +
-    'Most products run in every region; only the region-limited ones dim.</div>');
-  regionMenu.innerHTML = rows.join("");
-  const qi = document.getElementById("region-q");
-  if(qi){
-    qi.onclick = e=> e.stopPropagation();
-    qi.oninput = e=>{
-      e.stopPropagation(); regionQuery = e.target.value; paintRegionMenu();
-      const n = document.getElementById("region-q");
-      if(n){ n.focus(); n.setSelectionRange(n.value.length, n.value.length); }
-    };
-  }
-  regionMenu.querySelectorAll("button").forEach(b=> b.onclick = e=>{
-    e.stopPropagation();
-    setRegion(b.dataset.regionAll ? "" : b.dataset.region);
-  });
-  document.getElementById("region-lbl").textContent = regionSel || "Region";
-  regionBtn.classList.toggle("on", !!regionSel);
-}
-document.getElementById("region-btn").onclick = e=>{
-  e.stopPropagation();
-  regionWrap.classList.toggle("open");
-  if(regionWrap.classList.contains("open")){
-    paintRegionMenu();
-    /* Focus the search box the moment the menu opens so the user can type a
-       region immediately without a second click. */
-    const qi = document.getElementById("region-q"); if(qi) qi.focus();
-  }
-};
-
-/* ==================================================================
-   7a-2c. HIGHLIGHTS (corner dots + which kinds to show)
-   ==================================================================
-   Five kinds, each a colour: customer stories, Lakeflow connectors, product
-   tours, product demos and solution accelerators. A tile can carry several, so
-   paintHighlights packs the ones currently switched on into the corners (a lone
-   dot stays top-right). The body carries one hl-off-<kind> class per kind that is
-   hidden, mirroring the stage filter, so the choice travels into an HTML export
-   exactly as the stage and shape do. */
-const HL_STORE = "dbx-arch-highlights";
-const hlWrap = document.getElementById("hl-wrap");
-const hlMenu = document.getElementById("hl-menu");
-const hlBtn = document.getElementById("hl-btn");
-function hlsOff(){ return new Set(HL_ORDER.filter(k=>document.body.classList.contains("hl-off-" + k))); }
-function hlCounts(){
-  const c = {}; HL_ORDER.forEach(k=> c[k] = 0);
-  document.querySelectorAll(".badge-dot[data-hl]").forEach(d=>{
-    const k = d.dataset.hl; if(k in c) c[k]++; });
-  return c;
-}
-function paintHighlights(){
-  const off = hlsOff();
-  document.querySelectorAll(".atom").forEach(el=>{
-    const dots = [...el.querySelectorAll(":scope > .badge-dot[data-hl]")];
-    if(!dots.length) return;
-    const vis = HL_ORDER.filter(k => !off.has(k) && dots.some(d=>d.dataset.hl === k));
-    dots.forEach(d=>{
-      d.classList.remove("hl-p1","hl-p2","hl-p3","hl-p4","hl-p5","hl-p6","hl-p7");
-      const i = vis.indexOf(d.dataset.hl);
-      if(i >= 0) d.classList.add("hl-p" + (i + 1));
-    });
-  });
-  paintHlMenu();
-}
-function paintHlMenu(){
-  const off = hlsOff(), c = hlCounts();
-  const rows = ['<div class="men-hd">' + esc(T("Highlights")) + '</div>',
-    '<button data-hl-all="1" class="' + (off.size ? "" : "on") + '"><span>' + esc(T("All highlights")) + '</span></button>'];
-  HL_ORDER.forEach(k=> rows.push('<button class="cnt' + (off.has(k) ? "" : " on") +
-    '" data-hl="' + k + '"><span class="hl-swatch hl-' + k + '"></span><span>' +
-    esc(T(HL_TITLE[k])) + '</span><i>' + (c[k] || 0) + '</i></button>'));
-  rows.push('<div class="dl-note">' + esc(T("Each colour marks one kind. A box with several lines them up in a row.")) + '</div>');
-  hlMenu.innerHTML = rows.join("");
-  hlMenu.querySelectorAll("button").forEach(b=> b.onclick = e=>{
-    e.stopPropagation();
-    if(b.dataset.hlAll){ setHighlights([]); return; }
-    const next = new Set(off), k = b.dataset.hl;
-    next.has(k) ? next.delete(k) : next.add(k);
-    setHighlights([...next]);
-  });
-  const on = HL_ORDER.filter(k=>!off.has(k));
-  document.getElementById("hl-lbl").textContent =
-    !off.size ? T("Highlights") : on.length ? on.length + " " + T("on") : T("None");
-  hlBtn.classList.toggle("on", off.size > 0);
-}
-function setHighlights(off){
-  HL_ORDER.forEach(k=> document.body.classList.toggle("hl-off-" + k, off.indexOf(k) >= 0));
-  store.set(HL_STORE, off.join(","));
-  paintHighlights();
-}
-document.getElementById("hl-btn").onclick = e=>{
-  e.stopPropagation(); hlWrap.classList.toggle("open");
 };
 
 /* ==================================================================
@@ -7037,18 +6671,6 @@ document.getElementById("shape-btn").onclick = e=>{
       .forEach(k=> b.classList.add("st-off-" + k));
   }
   b.classList.add("st-set");
-  /* Highlights default to Accelerators + Customer Stories + Lakeflow Connectors
-     ON, and Product Tours + Product Demos + Free Academy Courses OFF, so the
-     canvas opens on the three highest-signal marks. A saved choice (or an
-     exported body already carrying hl-off-* classes) is honoured; only a reader
-     who never touched the menu (store returns null, not "") gets the default. */
-  if(!b.classList.contains("hl-set")){
-    const saved = store.get(HL_STORE);
-    const off = (saved == null) ? DEFAULT_HL_OFF
-      : String(saved).split(",").filter(k=>HL_ORDER.indexOf(k) >= 0);
-    off.forEach(k=> b.classList.add("hl-off-" + k));
-  }
-  b.classList.add("hl-set");
 })();
 /* The stage menu is painted by the filter, which build() runs anyway. The shape
    menu has no such pass, and seedView writes the body classes directly rather
@@ -7095,14 +6717,6 @@ function liveUrl(){
   q.set("theme", document.body.classList.contains("theme-dark") ? "dark" : "light");
   if(document.body.classList.contains("plat-only")) q.set("platform", "1");
   return base + "?" + q.toString();
-}
-/* The freshest date across the availability data the board shows (the region
-   matrix and the Academy catalogue), shown in the corner credit and the region
-   and stage menus so the reader knows how current the availability is. */
-function dataUpdated(){
-  const ds = [ (typeof REGIONS !== "undefined" && REGIONS && REGIONS.generated),
-               (typeof ACADEMY !== "undefined" && ACADEMY && ACADEMY.generated) ].filter(Boolean).sort();
-  return ds.length ? ds[ds.length - 1] : "";
 }
 /* One source of truth for the credit: the corner mark on the canvas itself. The
    PDF cover and the deck's cover slide read it back rather than restating it,
@@ -7228,11 +6842,7 @@ function exportCss(){
   css = css.replace(/html\[data-lang="([a-z-]+)"\]\s+body\b/g, '.exp-body[data-lang="$1"]')
            .replace(/html\[data-lang="([a-z-]+)"\]/g, '.exp-body[data-lang="$1"]')
            .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body");
-  /* Highlight dots are an interactive overlay, not part of the architecture, so
-     every raster/vector export (PNG, PDF, PPTX, GIF share this frozen CSS) drops
-     them along with the drawer's inline section dots. */
-  return css + "\n*,*::before,*::after{animation:none!important;transition:none!important;}" +
-    "\n.badge-dot,.d-secdot,.d-badge .db-dot{display:none!important;}\n";
+  return css + "\n*,*::before,*::after{animation:none!important;transition:none!important;}\n";
 }
 /* `phase` is the 0..1 dash position the frame should be drawn at. It is set on
    the wrapper rather than on the live page because the foreignObject is its own
@@ -9382,7 +8992,7 @@ function exportHtmlDoc(){
     .map(row => ({ id: row[0], built: INDUSTRY_BUILT ? INDUSTRY_BUILT.has(row[0]) : true }));
   const resSnap = document.createElement("script");
   resSnap.type = "application/json"; resSnap.id = "frozen-resources";
-  resSnap.textContent = JSON.stringify({ links:LINKS, references:REFERENCES, accelerators:ACCEL_BY_NAME, connectors:frozenConn, regions:REGIONS, academy:ACADEMY, manifest });
+  resSnap.textContent = JSON.stringify({ links:LINKS, references:REFERENCES, accelerators:ACCEL_BY_NAME, connectors:frozenConn, manifest });
   html.querySelector("head").appendChild(resSnap);
   if(ARCH.industry && ARCH.industry !== "generic" && INDUSTRIES[ARCH.industry]){
     const archSnap = document.createElement("script");
@@ -10869,6 +10479,489 @@ function bootLang(){
   if(meta && meta.code !== "en"){ applyLang(meta.code, false); }
   else { syncLangMenu(); translateContent(); }
 }
+
+/* ==================================================================
+   10. AI ARCHITECTURE ASSISTANT
+   Describe a customer / use case and the model builds a tailored
+   architecture as a new tab. Two-phase: phase-1 detects the industry
+   on the generic catalog; if an industry is detected, phase-2
+   re-grounds selection on that industry's own board.
+   Connection order: local bridge (/health) -> direct Anthropic API
+   with an in-memory key -> error.
+   ================================================================== */
+const AI_MODEL = "claude-sonnet-5";
+let aiApiKey = "";                       // in memory only; never persisted
+const aiState = { busy:false, bridge:false, history:[] };
+
+/* ------------------------------------------------------------------
+   Board-transform helpers (Task 5)
+   ------------------------------------------------------------------ */
+
+/* Pure, synchronous industry overlay. Assumes INDUSTRIES[id] already
+   loaded by caller (via await loadIndustry). Mutates `fields` in place;
+   no build/persist/side-effects. Mirrors the field-mutation body of the
+   base's async applyIndustry (lines ~3946-3987 of app/index.html). */
+function applyIndustryTo(fields, id){
+  const ind = INDUSTRIES[id];
+  const fresh = JSON.parse(JSON.stringify(BASE));
+  fields.rails = fresh.rails;
+  fields.top   = fresh.top;
+  /* Reset only medallion stages from BASE, not whole bands. */
+  const baseStages = (function(){
+    for(const band of fresh.bands){
+      for(const row of (band.rows || [])){
+        if(row.kind === "medallion" && Array.isArray(row.stages)) return row.stages;
+      }
+    }
+    return null;
+  })();
+  const stages = (function(){
+    for(const band of fields.bands){
+      for(const row of (band.rows || [])){
+        if(row.kind === "medallion" && Array.isArray(row.stages)) return row.stages;
+      }
+    }
+    return null;
+  })();
+  if(stages && baseStages){
+    stages.forEach((st, i)=>{
+      const b = baseStages[i];
+      if(b){ st.s = b.s; st.long = b.long; }
+    });
+  }
+  fields.industry = ind ? id : "generic";
+  if(ind){
+    if(ind.rails){
+      RAIL_IDS.forEach(rid=>{
+        if(Array.isArray(ind.rails[rid])) fields.rails[rid].groups = JSON.parse(JSON.stringify(ind.rails[rid]));
+      });
+    }
+    if(Array.isArray(ind.top)){
+      fields.top.secs = JSON.parse(JSON.stringify(ind.top));
+      if(typeof prioritiseUseCases === "function") prioritiseUseCases(fields.top.secs);
+    }
+    if(ind.blurb) fields.top.sub = ind.blurb;
+    if(ind.medallion && stages){
+      stages.forEach(st=>{
+        const o = ind.medallion[st.n];
+        if(o){ if(o.s) st.s = o.s; if(o.long) st.long = o.long; }
+      });
+    }
+  }
+}
+
+/* Async: load the industry if needed, then return a deep-cloned arch
+   snapshot with that industry's overlay applied. Never mutates the live
+   board or refSnap. Returns null if the industry cannot be loaded. */
+async function industryArch(id){
+  if(!(await loadIndustry(id))) return null;
+  const src = refSnap || boardSnapshot();
+  const clone = JSON.parse(JSON.stringify({ bands:src.bands, rails:src.rails, top:src.top, cloud:src.cloud }));
+  applyIndustryTo(clone, id);
+  clone.industry = id;
+  return { schema:SCHEMA, industry:id, bands:clone.bands, rails:clone.rails, top:clone.top, cloud:clone.cloud };
+}
+
+/* Keep only selected atoms. `selected` is a Set of name/cloud:role strings.
+   `base` is an optional arch snapshot (e.g. from industryArch); falls back
+   to refSnap then boardSnapshot — never a CANON global. */
+function filterArch(selected, base){
+  const src = base || refSnap || boardSnapshot();
+  const clone = JSON.parse(JSON.stringify({ bands:src.bands, rails:src.rails, top:src.top, cloud:src.cloud }));
+  const keepTile = t => t && typeof t.n === "string" &&
+    (selected.has(t.n) || (t.role && selected.has("cloud:" + t.role)));
+  const isAtomArray = arr => Array.isArray(arr) && arr.some(x => x && typeof x === "object" && typeof x.n === "string");
+  const walk = node => {
+    let kept = false;
+    if(Array.isArray(node)){
+      if(isAtomArray(node)){
+        for(let i = node.length - 1; i >= 0; i--){
+          if(node[i] && typeof node[i].n === "string"){
+            if(keepTile(node[i])) kept = true; else node.splice(i, 1);
+          } else if(walk(node[i])) kept = true;
+        }
+      } else {
+        for(let i = node.length - 1; i >= 0; i--){ if(walk(node[i])) kept = true; }
+      }
+    } else if(node && typeof node === "object"){
+      for(const k of Object.keys(node)){ if(walk(node[k])) kept = true; }
+    }
+    return kept;
+  };
+  walk(clone.bands);
+  clone.bands = clone.bands.filter(b => walk(b.rows));
+  ["src","ing","ppl","cons"].forEach(rid => {
+    const rail = clone.rails[rid]; if(!rail) return;
+    rail.groups = (rail.groups || []).filter(g => walk(g));
+  });
+  if(clone.top && Array.isArray(clone.top.secs)) clone.top.secs = clone.top.secs.filter(s => walk(s));
+  return { schema:SCHEMA, industry:(src.industry || "generic"), bands:clone.bands, rails:clone.rails, top:clone.top, cloud:clone.cloud };
+}
+
+/* Real, highlightable component names grouped by section. Built from byId
+   (post-build) so it always matches the live board + current cloud provider. */
+function componentCatalog(){
+  const bySection = new Map();
+  const seen = new Set();
+  Object.values(byId).forEach(rec=>{
+    const name = rec.tile && rec.tile.n; if(!name) return;
+    const key = rec.section || "Platform";
+    if(!bySection.has(key)) bySection.set(key, []);
+    const tag = key + " " + name;
+    if(seen.has(tag)) return; seen.add(tag);
+    bySection.get(key).push(name);
+  });
+  return [...bySection.entries()].map(([sec, names])=> `  ${sec}: ${names.join(" | ")}`).join("\n");
+}
+
+/* Component catalog built from an arbitrary arch object (e.g. an industry board),
+   not the live byId. */
+function catalogFromArch(arch){
+  const lines = [];
+  const names = node => { const out = []; (function walk(n){
+    if(Array.isArray(n)) n.forEach(walk);
+    else if(n && typeof n === "object"){
+      if(typeof n.n === "string") out.push(n.n);
+      Object.keys(n).forEach(k=>{ if(k!=="n") walk(n[k]); });
+    }
+  })(node); return [...new Set(out)]; };
+  (arch.bands||[]).forEach(b=>{ const ns = names(b.rows); if(ns.length) lines.push(`  ${b.name||b.id}: ${ns.join(" | ")}`); });
+  ["src","ing","ppl","cons"].forEach(rid=>{ const rail = arch.rails && arch.rails[rid]; if(!rail) return;
+    const ns = names(rail.groups); if(ns.length) lines.push(`  ${rail.name||rid}: ${ns.join(" | ")}`); });
+  if(arch.top && Array.isArray(arch.top.secs)){ const ns = names(arch.top.secs); if(ns.length) lines.push(`  Apps & Use Cases: ${ns.join(" | ")}`); }
+  if(arch.cloud){ const ns = names([arch.cloud.extras, arch.cloud.providers]); if(ns.length) lines.push(`  Cloud Services & Integrations: ${ns.join(" | ")}`); }
+  return lines.join("\n");
+}
+
+/* The set of names (and cloud:<role> handles) an arch actually contains. */
+function archAtomSet(arch){
+  const set = new Set();
+  (function walk(n){
+    if(Array.isArray(n)) n.forEach(walk);
+    else if(n && typeof n === "object"){
+      if(typeof n.n === "string") set.add(n.n);
+      if(typeof n.role === "string") set.add("cloud:" + n.role);
+      Object.keys(n).forEach(k=> walk(n[k]));
+    }
+  })({ bands:arch.bands, rails:arch.rails, top:arch.top, cloud:arch.cloud });
+  return set;
+}
+
+/* Industry ids the model may pick from — only those actually built.
+   INDUSTRY_BUILT is a Set loaded from architectures/manifest.json, or null if
+   the manifest is missing (treat all catalog entries as candidates). */
+function industryPromptList(){
+  return INDUSTRY_CATALOG
+    .filter(([id]) => INDUSTRY_BUILT === null || INDUSTRY_BUILT.has(id))
+    .map(([id, label]) => `  ${id} — ${label}`)
+    .join("\n");
+}
+
+function aiSystemPrompt(catalogText){
+  const cat = catalogText || componentCatalog();
+  return `You are a Databricks solutions architect helping a colleague tailor a Databricks Data Intelligence Platform reference architecture to a customer's needs.
+
+You are given a fixed catalog of architecture COMPONENTS (below), organized by section. The sections span the whole board: the platform bands, the Apps & Use Cases band, the Sources / Cloud & 3rd-Party Ingestion / People / Consumers boxes, and the Cloud Services & Integrations band. Your job: from the user's description of a customer / use case / data, decide which components across ALL sections are relevant, and explain briefly how each is used for THIS solution. You do not invent products or rename anything — you may only reference the exact names given.
+
+COMPONENTS (grouped by section):
+${cat}
+
+INDUSTRIES (pick the single best-matching id for the customer, or "" if none clearly applies):
+${industryPromptList()}
+
+Respond with ONLY a single JSON object (no prose, no markdown fences), shaped exactly:
+{
+  "reply": "1-3 sentence conversational message to the user about what you highlighted or answering their question",
+  "title": "<Customer or use-case> — <short solution name>",
+  "blurb": "one sentence describing the solution flow",
+  "industry": "<one industry id from the list above, or empty string if none clearly fits>",
+  "components": [
+    { "name": "<EXACT component name from the catalog>", "notes": ["short phrase on how it is used here", "optional 2nd phrase"] }
+  ]
+}
+
+RULES:
+- Use ONLY exact names from the catalog. Drop anything that doesn't match a listed name.
+- Include the relevant Sources / ingestion / People / Consumers / Cloud Services components that surround this use case — not just the platform bands.
+- Pick the components that genuinely matter (typically 8-18 across all sections) — do not select everything.
+- Each component gets 1-2 concise usage notes specific to this customer/use case.
+- For a follow-up that refines the current solution, return the FULL updated component set (not just the delta).
+- If the user only asks a question and no change is needed, return "components": [] and keep "reply" helpful.
+- Set "industry" to the ONE id that best fits the customer's sector; use "" (empty) if the description is generic or spans many. Never invent an id.
+- Return ONLY the JSON object.`;
+}
+
+function aiExtractJson(text){
+  let t = String(text).trim();
+  const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if(fence) t = fence[1].trim();
+  if(t[0] !== "{"){ const a=t.indexOf("{"), b=t.lastIndexOf("}"); if(a>=0&&b>a) t=t.slice(a,b+1); }
+  return JSON.parse(t);
+}
+
+async function aiBridgeHealthy(){
+  try{ const r = await fetch("/health"); if(!r.ok) return false; const d = await r.json(); return !!d.ok; }
+  catch(_){ return false; }
+}
+async function aiCallBridge(system, user){
+  const r = await fetch("/generate", { method:"POST", headers:{"content-type":"application/json"},
+    body: JSON.stringify({ model:AI_MODEL, system, user }) });
+  if(!r.ok){ let m=r.status+" "+r.statusText; try{const e=await r.json(); if(e.error)m=e.error;}catch(_){} throw new Error(m); }
+  return (await r.json()).text || "";
+}
+async function aiCallApi(key, system, user){
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{ "content-type":"application/json", "x-api-key":key, "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true" },
+    body: JSON.stringify({ model:AI_MODEL, max_tokens:16000, system, messages:user })
+  });
+  if(!r.ok){ let m=r.status+" "+r.statusText; try{const e=await r.json(); if(e.error?.message)m=e.error.message;}catch(_){} throw new Error(m); }
+  const d = await r.json();
+  if(d.stop_reason==="refusal") throw new Error("Request declined by the safety system.");
+  if(d.stop_reason==="max_tokens") throw new Error("The model response was cut off (token limit). Try a shorter description or fewer data sources, then retry.");
+  return (d.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+}
+
+/* ----- chat UI ----- */
+const aiEls = {
+  fab: document.getElementById("ai-fab"), panel: document.getElementById("ai-panel"),
+  msgs: document.getElementById("ai-msgs"), text: document.getElementById("ai-text"),
+  send: document.getElementById("ai-send"), dot: document.getElementById("ai-dot"),
+  conn: document.getElementById("ai-conn-txt"), sugg: document.getElementById("ai-sugg"),
+};
+function aiAddMsg(role, text, applied){
+  const d = document.createElement("div");
+  d.className = "ai-msg " + role;
+  d.textContent = text;
+  if(applied && applied.count){ const a=document.createElement("div"); a.className="applied";
+    a.textContent = `✦ Created tab "${applied.title}" with ${applied.count} component${applied.count>1?"s":""}${applied.industry ? " (" + industryLabel(applied.industry) + ")" : ""}.`; d.appendChild(a); }
+  else if(applied){ const a=document.createElement("div"); a.className="applied";
+    a.textContent = `✦ Applied ${applied} components.`; d.appendChild(a); }
+  aiEls.msgs.appendChild(d);
+  aiEls.msgs.scrollTop = aiEls.msgs.scrollHeight;
+  return d;
+}
+function aiSetBusy(b){
+  aiState.busy = b;
+  aiEls.send.disabled = b;
+  aiEls.dot.className = "ai-dot " + (b ? "busy" : (aiState.bridge ? "on" : ""));
+}
+async function aiRefreshConn(){
+  aiState.bridge = await aiBridgeHealthy();
+  aiEls.dot.className = "ai-dot " + (aiState.bridge ? "on" : "");
+  aiEls.conn.textContent = aiState.bridge ? "model connected" :
+    (aiApiKey ? "using API key (this session)" : "offline — add API key or start the backend");
+}
+
+function aiCreateTab(r, baseArch){
+  const validSet = baseArch ? archAtomSet(baseArch) : null;
+  const ok = name => validSet ? validSet.has(name) : !!resolveAtom(name);
+  const selected = new Set();
+  const notes = {};
+  (r.components || []).forEach(c => {
+    if(c && c.name && ok(c.name)){
+      selected.add(c.name);
+      const ns = Array.isArray(c.notes) ? c.notes.filter(Boolean) : (c.notes ? [String(c.notes)] : []);
+      notes[c.name] = ns.length ? ns : ["Used in this solution."];
+    }
+  });
+  const count = selected.size;
+  if(!count) return { count:0, title:"" };
+  const snap = filterArch(selected, baseArch || null);
+  const title = r.title || "AI Architecture";
+  const blurb = r.blurb || "";
+  const industry = baseArch ? baseArch.industry : null;
+  const id = "custom" + (++tabSeq);
+  if(activeRef){ clearReference(); refBanner.classList.remove("show"); }
+  const tab = makeTab(id, title, "", snap);
+  const rec = customTabs.get(id); if(rec){ rec.edit = true; rec.blurb = blurb; rec.notes = notes; }
+  selectTab(tab);
+  persistTabs();
+  if(Object.keys(notes).length){
+    activeRef = { id:"__tab__", name:title, blurb, map:notes };
+    document.getElementById("ref-name").textContent = title;
+    document.getElementById("ref-blurb").textContent = blurb;
+    refBanner.classList.add("show");
+  }
+  return { count, title, industry };
+}
+
+async function aiSend(promptText){
+  const input = (promptText || aiEls.text.value).trim();
+  if(!input || aiState.busy) return;
+  aiEls.text.value = ""; aiEls.text.style.height = "auto";
+  aiEls.sugg.style.display = "none";
+  aiIndHint("");
+  aiAddMsg("user", input);
+  aiState.history.push({ role:"user", content:input });
+  aiSetBusy(true);
+  const thinking = aiAddMsg("bot", "Thinking…");
+  const convo = aiState.history.map(m=>`${m.role==="user"?"USER":"ASSISTANT"}: ${m.content}`).join("\n\n");
+  try{
+    const system = aiSystemPrompt(componentCatalog());
+    let raw;
+    if(aiState.bridge){
+      raw = await aiCallBridge(system, convo);
+    } else {
+      const key = aiApiKey.trim();
+      if(!key) throw new Error("No connection. Run the backend (uvicorn app:app) or add an Anthropic API key below.");
+      raw = await aiCallApi(key, system, aiState.history.map(m=>({role:m.role, content:m.content})));
+    }
+    const result = aiExtractJson(raw);
+    let baseArch = null;
+    const indId = result.industry && result.industry !== "generic" &&
+      (INDUSTRY_BUILT ? INDUSTRY_BUILT.has(result.industry) : false) ? result.industry : null;
+    if(indId){
+      baseArch = await industryArch(indId);
+      if(baseArch){
+        const sys2 = aiSystemPrompt(catalogFromArch(baseArch));
+        let raw2;
+        try{
+          if(aiState.bridge) raw2 = await aiCallBridge(sys2, convo);
+          else raw2 = await aiCallApi(aiApiKey.trim(), sys2, aiState.history.map(m=>({role:m.role, content:m.content})));
+          const r2 = aiExtractJson(raw2);
+          if(Array.isArray(r2.components) && r2.components.length) result.components = r2.components;
+        }catch(_){ /* keep phase-1 components on phase-2 failure */ }
+      }
+    }
+    const made = aiCreateTab(result, baseArch);
+    thinking.remove();
+    aiAddMsg("bot", result.reply || (made.count ? `Built ${made.count} components.` : "Done."),
+      made.count ? { count:made.count, title:made.title, industry:made.industry } : null);
+    aiState.history.push({ role:"assistant", content: result.reply || "(applied)" });
+    if(!made.count) aiAddMsg("bot", "Couldn't map any components — try a more specific description.");
+  }catch(err){
+    thinking.remove();
+    const m = aiAddMsg("bot", "⚠ "+err.message); m.className="ai-msg err";
+  }finally{ aiSetBusy(false); }
+}
+
+aiEls.fab.onclick = ()=>{ aiEls.panel.classList.add("show"); aiEls.fab.classList.add("hide");
+  aiRefreshConn(); aiEls.text.focus();
+  if(!aiEls.msgs.children.length) aiAddMsg("bot", "Describe a customer and use case, and I'll build a tailored architecture as a new tab. e.g. \"Real-time fraud detection for a retail bank streaming card transactions.\""); };
+document.getElementById("ai-x").onclick = ()=>{ aiEls.panel.classList.remove("show"); aiEls.fab.classList.remove("hide"); };
+aiEls.send.onclick = ()=> aiSend();
+aiEls.text.addEventListener("keydown", e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); aiSend(); } });
+aiEls.text.addEventListener("input", ()=>{ aiEls.text.style.height="auto"; aiEls.text.style.height=Math.min(aiEls.text.scrollHeight,120)+"px"; aiIndHint(aiEls.text.value); });
+aiEls.sugg.querySelectorAll("button").forEach(b=> b.onclick = ()=> aiSend(b.dataset.q));
+
+/* Type-ahead: surface built industries whose name matches the text. */
+const aiIndHintEl = document.getElementById("ai-indhint");
+const IND_SYNONYMS = {
+  banking:["bank","banks","fintech finance","financial"], payments_fintech:["fintech","payments","payment"],
+  healthcare:["hospital","health system","provider","clinic","patient"], health_insurance:["payer","health plan"],
+  life_insurance:["insurer","insurance"], telecommunication:["telecom","telco","carrier","mobile operator"],
+  retail:["retailer","store","shop"], ecommerce:["e-commerce","online store","webshop"],
+  manufacturing:["factory","plant","industrial"], oil_gas:["oil","gas","petroleum","upstream"],
+  energy_utilities:["utility","utilities","power","grid"], media_broadcasting:["media","broadcaster","streaming"],
+  travel_hospitality:["hotel","hospitality","travel"], transport_shipping:["logistics","freight","transport"],
+  automotive:["auto","car","vehicle","oem"], pharmaceuticals:["pharma","drug"],
+  gaming:["games","game studio","igaming"], grocery:["supermarket","grocer"], restaurants:["restaurant","qsr","food service"],
+};
+const IND_STOP = new Set(["real","life","media","gas","oil","food","water","waste","health","goods","apparel","sports","chemical"]);
+function aiIndustryMatches(text){
+  const q = String(text||"").toLowerCase().trim();
+  if(q.length < 3) return [];
+  const scored = [];
+  INDUSTRY_CATALOG.forEach(([id,label])=>{
+    if(INDUSTRY_BUILT !== null && !INDUSTRY_BUILT.has(id)) return;
+    const lc = label.toLowerCase();
+    const words = lc.split(/[^a-z]+/).filter(Boolean);
+    const strong = [lc, ...(IND_SYNONYMS[id]||[])];
+    const weak = words.filter(w=> w.length >= 4 && !IND_STOP.has(w));
+    let best = 0;
+    const wb = t => new RegExp("\\b"+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b").test(q);
+    strong.forEach(t=>{
+      if(!t) return;
+      if(q === t) best = Math.max(best, 100);
+      else if(wb(t)) best = Math.max(best, 85);
+      else if(t.length >= 5 && q.includes(t)) best = Math.max(best, 60);
+    });
+    weak.forEach(t=>{ if(wb(t)) best = Math.max(best, 70); });
+    if(best) scored.push({ id, label, score:best });
+  });
+  return scored.sort((a,b)=> b.score - a.score).slice(0,3);
+}
+function aiIndHint(text){
+  const matches = aiIndustryMatches(text);
+  aiIndHintEl.innerHTML = "";
+  if(!matches.length){ aiIndHintEl.hidden = true; return; }
+  const lbl = document.createElement("span"); lbl.className = "lbl"; lbl.textContent = "Use standard industry:";
+  aiIndHintEl.appendChild(lbl);
+  matches.forEach(m=>{
+    const b = document.createElement("button");
+    b.type = "button";
+    b.innerHTML = `${esc(m.label)} <span class="arr">→</span>`;
+    b.title = `Switch the Reference board to the ${m.label} architecture`;
+    b.onclick = ()=>{
+      const refTab = tabsEl.querySelector('.tab[data-tab="reference"]');
+      const active = tabsEl.querySelector(".tab.active");
+      if(refTab && active !== refTab) selectTab(refTab);
+      applyIndustry(m.id, true);
+      aiIndHintEl.hidden = true; aiIndHintEl.innerHTML = "";
+      aiAddMsg("bot", `Switched the Reference board to the ${m.label} standard architecture.`);
+    };
+    aiIndHintEl.appendChild(b);
+  });
+  aiIndHintEl.hidden = false;
+}
+document.getElementById("ai-clear").onclick = ()=>{
+  const activeTab = tabsEl.querySelector(".tab.active");
+  const activeId = activeTab && activeTab.dataset.tab;
+  const activeCustom = activeId && customTabs.get(activeId);
+  if(activeCustom && activeCustom.snap){
+    closeTab(activeTab);
+    aiAddMsg("bot","Closed the generated tab — back to the full platform.");
+  } else {
+    clearReference(); refBanner.classList.remove("show");
+    aiAddMsg("bot","Cleared the highlight — the full platform is shown again.");
+  }
+};
+document.getElementById("ai-key-toggle").onclick = ()=> document.getElementById("ai-key-row").classList.toggle("show");
+(function(){ const k=document.getElementById("ai-key");
+  k.addEventListener("input", e=>{ aiApiKey = e.target.value.trim(); aiRefreshConn(); }); })();
+
+/* Edit toggle: visible only on a generated (editable) tab. */
+const aiEditToggleEl = document.getElementById("ai-edit-toggle");
+function activeGeneratedRec(){
+  const act = activeTabEl();
+  const rec = act && customTabs.get(act.dataset.tab);
+  return (rec && rec.snap) ? rec : null;
+}
+function syncEditToggle(){
+  const rec = activeGeneratedRec();
+  if(!rec){ aiEditToggleEl.hidden = true; return; }
+  aiEditToggleEl.hidden = false;
+  aiEditToggleEl.textContent = "✎ Editing: " + (rec.edit ? "on" : "off");
+}
+aiEditToggleEl.onclick = ()=>{
+  const rec = activeGeneratedRec(); if(!rec) return;
+  rec.edit = !rec.edit;
+  setEditMode(rec.edit);
+  persistTabs();
+  syncEditToggle();
+};
+(function(){ const _sel = selectTab; selectTab = function(tab){
+  _sel(tab);
+  /* Re-establish notes overlay and scope edit-mode to the active tab. */
+  const act = activeTabEl && activeTabEl();
+  const rec = act && customTabs && customTabs.get(act.dataset.tab);
+  if(rec && rec.notes && typeof rec.notes === "object" && Object.keys(rec.notes).length){
+    activeRef = { id:"__tab__", name:rec.name||"", blurb:rec.blurb||"", map:rec.notes };
+    document.getElementById("ref-name").textContent = rec.name||"";
+    document.getElementById("ref-blurb").textContent = rec.blurb||"";
+    refBanner.classList.add("show");
+  } else {
+    if(activeRef && activeRef.id==="__tab__"){ clearReference(); refBanner.classList.remove("show"); }
+  }
+  const arec = activeGeneratedRec();
+  setEditMode(arec ? !!arec.edit : false);
+  syncEditToggle();
+}; })();
+syncEditToggle();
+
+aiRefreshConn();
 </script>
 
 
@@ -11087,11 +11180,7 @@ function bootLang(){
 
   function maybeAuto(){
     if(lsGet(KEY)) return;
-    /* One shot, after the board has fitted and settled. Mark it seen the moment it
-       auto-fires (not only on dismiss): otherwise a reload while the tour is still
-       up re-triggers it every load, and its .tour-catch overlay silently blocks
-       the toolbar, which reads as "Pick an Industry is broken". */
-    lsSet(KEY, "1");
+    /* One shot, after the board has fitted and settled. */
     setTimeout(start, 900);
   }
   if(document.readyState === "complete") maybeAuto();

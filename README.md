@@ -1,13 +1,15 @@
-# IDEA: Interactive Databricks Enterprise Architecture
+# Databricks Reference Architecture
 
 An interactive, exportable reference architecture for the Databricks Data
-Intelligence Platform. One HTML file, no build step, no dependencies, no
-backend. Open it locally, or deploy it into your own Databricks workspace as an
-app your teams reach from the workspace navigation.
+Intelligence Platform. No build step and no backend: a static folder that
+lazy-loads its industry boards, translations and reference data as plain files,
+translates into sixteen languages, and exports to PDF, PowerPoint, PNG, GIF and
+a standalone HTML copy. Serve it locally, or deploy it into your own Databricks
+workspace as an app your teams reach from the workspace navigation.
 
-**[Open the live board](https://amralieg.github.io/interactive-databricks-enterprise-architecture/)**
+**[Open the live board](https://databricks-industry-solutions.github.io/databricks-reference-architecture/)**
 
-![IDEA in light theme](docs/screenshot-light.png)
+![Databricks Reference Architecture in light theme](docs/screenshot-light.png)
 
 ---
 
@@ -18,7 +20,7 @@ tool, exported a PNG, and pasted it into a deck. It is accurate on the day it is
 made, it cannot be interrogated, and adapting it to a specific customer means
 starting again in the source tool, which nobody has.
 
-IDEA is the same architecture as a live document:
+Databricks Reference Architecture is the same architecture as a live document:
 
 - **Every box is a real product**, and clicking it opens what it is, what a
   customer would not learn from the name, its release stage, the documentation
@@ -45,6 +47,14 @@ IDEA is the same architecture as a live document:
   zone, and opens the detail panel on a real box so they see what a click gives
   them. It runs itself once on a first visit and replays any time from the ◎
   button in the toolbar.
+- **It speaks sixteen languages.** A language switch translates the board content
+  into any of sixteen languages, right-to-left for Arabic and Hebrew, while the
+  toolbar stays in English and product and brand names are never translated. Each
+  language is fetched only when it is picked.
+- **Every board has a share card.** A share button posts the board straight to
+  LinkedIn, X, Reddit and more, and every industry has its own Open Graph preview
+  image, so a pasted link unfurls in Slack, Teams or a social feed with a picture
+  and title tailored to that industry rather than a bare URL.
 - **It exports, and the export points back.** PDF and PowerPoint open on a cover
   carrying the title and a link to the exact live board the file was made from,
   then an index of the sections, the architecture, and one detailed page or slide
@@ -55,7 +65,55 @@ IDEA is the same architecture as a live document:
   dark board exports a categorized dark deck. Plus PNG, an animated GIF that keeps
   the flow moving, and a standalone HTML copy.
 
-![IDEA in dark theme](docs/screenshot-dark.png)
+![Databricks Reference Architecture in dark theme](docs/screenshot-dark.png)
+
+---
+
+## Why it is useful
+
+### 1. See the whole of Databricks, and where it fits your architecture
+
+Most people meet Databricks one feature at a time: a notebook here, a job there,
+Unity Catalog in a governance review. This board puts the entire Data
+Intelligence Platform in one frame: the sources on the left; ingestion, the
+medallion layers, unified governance and the agentic layers through the middle;
+and the consumers, the teams and the cloud services around the outside, with the
+data flows drawn as live arrows so you can see how one part feeds the next. Every
+box is a real product, not a label, so clicking one tells you what it is, the
+thing the name does not give away, what it actually does, and the boxes it
+connects to. In one screen a newcomer gets the shape of the whole platform, and
+an architect gets the connections between its parts.
+
+It is not a generic diagram either, and that is the point. The cloud switch
+redraws the storage, compute, identity and ingestion services as Azure, AWS or
+GCP and re-points every documentation link at that cloud, so you are looking at
+the platform on the cloud you actually run. The industry switch respecialises the
+sources, teams, use cases and consumers for your sector and points the medallion
+layers at that industry's own data model. And when you need it tied to one
+specific estate, edit mode, the YAML export and import, and the AI assistant let
+you retarget the board to a particular customer or use case and export it, as a
+PDF, a PowerPoint or a standalone page, that shows exactly how Databricks fits
+into that architecture. It is the difference between a picture of the platform
+and a picture of *your* platform.
+
+### 2. Learn the whole platform, not just present it
+
+Because every box carries its own facts and links, the board doubles as a way to
+learn Databricks rather than only to show it. Open any product and the **Learn
+more** section takes you to the cloud-specific documentation for the cloud you are
+on (the Azure Databricks docs on Azure, `docs.databricks.com` on AWS and GCP),
+the product page, and a blog or deep dive, so each box is a launch point into the
+official material rather than a dead end. The release-stage filter teaches what is
+generally available today against what is still in preview or beta. The use cases
+spell out the problem each one solves, who benefits, how it is built and which
+components it touches, with links to real customer stories, so you see how the
+features are used and not only what they are named. The Genie Agents and AI/BI
+dashboards show the question-and-answer layer that sits on top. There is a
+**Databricks YouTube channel** section with curated videos verified against the
+official channel for when you would rather watch than read, and the whole board
+translates into sixteen languages, so a team can learn in its own. A new joiner, a
+partner or a customer can explore the platform at their own pace, from the first
+box to the deepest link, without a slide deck in between.
 
 ---
 
@@ -87,11 +145,13 @@ with the teams who use it and the cloud it runs on wrapped around the outside.
 
 ## The controls
 
-Nine controls, left to right, sitting in the header above the diagram, plus one
-on the diagram itself.
+Fourteen controls, left to right, sitting in the header above the diagram, plus
+platform zoom on the diagram itself.
 
 | Control | What it does |
 |---|---|
+| **Share feedback** | Opens a feedback form in a new tab, for a comment on the reference architecture itself |
+| **Share** | Posts the board on screen to LinkedIn, X, Reddit and more; the link points straight to the industry showing, and unfurls with that industry's own preview card |
 | **Industry** | Sixty-three industries plus *Standard Reference Architecture*, searchable, every entry on one line. Specialises everything outside the platform: sources, ingestion, teams, apps, use cases and consumers. The platform itself and the cloud services band do not change |
 | **Display: Branded / Categorized** | Shows every product by its commercial brand name (*Branded*), or rooted back to its generic category (*Categorized*, the default) for a room that knows the category but not the product, so SABRE reads as *Airline Reservation System*. The choice applies everywhere at once, the tiles, the detail drawers and every download, and it is remembered between visits |
 | **Cloud** | Azure, AWS, GCP. Swaps the cloud services band, the cloud ETL tiles and the federation sources, and re-points every documentation link at that cloud's own docs, including the Microsoft Learn pages on Azure |
@@ -100,6 +160,9 @@ on the diagram itself.
 | **Style** | Five platform shapes |
 | **Stage** | Filters the platform box by release stage |
 | **Download** | PDF, PowerPoint, PNG, GIF, HTML |
+| **Architecture descriptor** | Export the board on screen, the reference or any industry, as an editable YAML file, then import one back to open your own version in a new tab |
+| **Details panel dock** | Pins the detail drawer to the side so it stays open while you click from box to box, instead of overlaying the board each time |
+| **Language** | Translates the board content into any of sixteen languages, right-to-left for Arabic and Hebrew. The toolbar and menus stay in English, and product and brand names are never translated |
 | **Tour** (the ◎ at the end of the toolbar) | A guided walk-through that spotlights each control and each zone in turn, opens the detail panel on a real box so you see what a click gives you, and runs itself once on a first visit. Replayable any time |
 | **Zoom** (on the platform heading, not the toolbar) | Zooms into the platform on its own: hides sources, consumers, the apps band and the cloud services. Click again to restore. Exports respect it, and the button itself never appears in one |
 
@@ -152,20 +215,20 @@ is Azure.
 
 | Sector | Industries |
 |---|---|
-| **Financial services** | [Banking](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=banking) · [Capital Markets](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=capital_markets) · [Payments & Fintech](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=payments_fintech) · [Wealth Management](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=wealth_management) · [Mortgage & Lending](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=mortgage_lending) · [Market Data & Exchanges](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=market_data_exchanges) · [Crypto & Digital Assets](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=crypto_digital_assets) |
-| **Insurance** | [Insurance (P&C)](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=insurance_pandc) · [Life Insurance](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=life_insurance) · [Health Insurance](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=health_insurance) |
-| **Healthcare & life sciences** | [Healthcare](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=healthcare) · [Digital Health](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=digital_health) · [Pharmaceuticals](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=pharmaceuticals) · [Pharmacy & PBM](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=pharmacy_pbm) · [Clinical Trials](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=clinical_trials) · [Genomics & Biotech](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=genomics_biotech) · [Diagnostics & Labs](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=diagnostics_labs) · [Medical Devices](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=medical_devices) |
-| **Public sector & education** | [Public Sector](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=public_sector) · [Public Safety](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=public_safety) · [Education](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=education) · [EdTech](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=edtech) · [NGO & Non-Profit](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=ngo) |
-| **Manufacturing & industrial** | [Manufacturing](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=manufacturing) · [Automotive](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=automotive) · [Aerospace & Space](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=aerospace_space) · [Semiconductors](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=semiconductors) · [Chemical Manufacturing](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=chemical_mfg) · [Paper & Packaging](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=paper_packaging) · [Construction](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=construction) |
-| **Energy & resources** | [Energy & Utilities](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=energy_utilities) · [Oil & Gas](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=oil_gas) · [Renewables & Cleantech](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=renewables) · [Mining](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=mining) · [Water Utilities](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=water_utilities) · [Waste Management](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=waste_management) |
-| **Retail & consumer** | [Retail](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=retail) · [E-Commerce](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=ecommerce) · [Grocery](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=grocery) · [Consumer Goods](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=consumer_goods) · [Apparel & Fashion](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=apparel_fashion) · [Food & Beverage](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=food_beverage) · [Restaurants](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=restaurants) · [Wholesale & Distribution](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=wholesale_distribution) |
-| **Travel, transport & logistics** | [Airlines](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=airlines) · [Travel & Hospitality](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=travel_hospitality) · [Transport & Logistics](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=transport_shipping) · [Shipping & Ports](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=shipping_ports) · [Rail & Transit](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=rail_transit) |
-| **Technology, media & telecom** | [Software & Technology](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=software_technology) · [Cybersecurity](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=cybersecurity) · [Data Centers & Cloud](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=data_centers) · [Telecommunications](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=telecommunication) · [Media & Broadcasting](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=media_broadcasting) · [Advertising](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=advertising) · [Gaming](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=gaming) · [Sports & Entertainment](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=sports_entertainment) |
-| **Professional & business services** | [Professional Services](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=professional_services) · [Legal](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=legal) · [Staffing & HR](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=staffing_hr) · [Real Estate](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=real_estate) |
-| **Agriculture** | [Agriculture](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=agriculture) · [AgTech](https://amralieg.github.io/interactive-databricks-enterprise-architecture/?industry=agtech) |
+| **Financial services** | [Banking](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=banking) · [Capital Markets](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=capital_markets) · [Payments & Fintech](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=payments_fintech) · [Wealth Management](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=wealth_management) · [Mortgage & Lending](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=mortgage_lending) · [Market Data & Exchanges](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=market_data_exchanges) · [Crypto & Digital Assets](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=crypto_digital_assets) |
+| **Insurance** | [Insurance (P&C)](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=insurance_pandc) · [Life Insurance](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=life_insurance) · [Health Insurance](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=health_insurance) |
+| **Healthcare & life sciences** | [Healthcare](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=healthcare) · [Digital Health](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=digital_health) · [Pharmaceuticals](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=pharmaceuticals) · [Pharmacy & PBM](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=pharmacy_pbm) · [Clinical Trials](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=clinical_trials) · [Genomics & Biotech](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=genomics_biotech) · [Diagnostics & Labs](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=diagnostics_labs) · [Medical Devices](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=medical_devices) |
+| **Public sector & education** | [Public Sector](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=public_sector) · [Public Safety](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=public_safety) · [Education](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=education) · [EdTech](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=edtech) · [NGO & Non-Profit](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=ngo) |
+| **Manufacturing & industrial** | [Manufacturing](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=manufacturing) · [Automotive](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=automotive) · [Aerospace & Space](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=aerospace_space) · [Semiconductors](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=semiconductors) · [Chemical Manufacturing](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=chemical_mfg) · [Paper & Packaging](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=paper_packaging) · [Construction](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=construction) |
+| **Energy & resources** | [Energy & Utilities](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=energy_utilities) · [Oil & Gas](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=oil_gas) · [Renewables & Cleantech](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=renewables) · [Mining](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=mining) · [Water Utilities](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=water_utilities) · [Waste Management](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=waste_management) |
+| **Retail & consumer** | [Retail](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=retail) · [E-Commerce](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=ecommerce) · [Grocery](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=grocery) · [Consumer Goods](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=consumer_goods) · [Apparel & Fashion](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=apparel_fashion) · [Food & Beverage](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=food_beverage) · [Restaurants](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=restaurants) · [Wholesale & Distribution](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=wholesale_distribution) |
+| **Travel, transport & logistics** | [Airlines](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=airlines) · [Travel & Hospitality](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=travel_hospitality) · [Transport & Logistics](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=transport_shipping) · [Shipping & Ports](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=shipping_ports) · [Rail & Transit](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=rail_transit) |
+| **Technology, media & telecom** | [Software & Technology](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=software_technology) · [Cybersecurity](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=cybersecurity) · [Data Centers & Cloud](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=data_centers) · [Telecommunications](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=telecommunication) · [Media & Broadcasting](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=media_broadcasting) · [Advertising](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=advertising) · [Gaming](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=gaming) · [Sports & Entertainment](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=sports_entertainment) |
+| **Professional & business services** | [Professional Services](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=professional_services) · [Legal](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=legal) · [Staffing & HR](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=staffing_hr) · [Real Estate](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=real_estate) |
+| **Agriculture** | [Agriculture](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=agriculture) · [AgTech](https://databricks-industry-solutions.github.io/databricks-reference-architecture/?industry=agtech) |
 
 Sixty-three industries in all, plus the industry-neutral
-[Standard Reference Architecture](https://amralieg.github.io/interactive-databricks-enterprise-architecture/)
+[Standard Reference Architecture](https://databricks-industry-solutions.github.io/databricks-reference-architecture/)
 that every board starts from.
 
 ### Style: five platform shapes
@@ -249,6 +312,34 @@ every export.
 
 ![The animated GIF export](docs/idea-animated.gif)
 
+### Language: sixteen translations
+
+The board content translates into sixteen languages: English, French, Spanish,
+Chinese, Arabic, Hindi, German, Portuguese, Dutch, Japanese, Italian, Swedish,
+Korean, Danish, Finnish and Hebrew. Arabic and Hebrew turn the whole layout
+right-to-left. What translates is the content a reader is there to understand,
+the zone labels, the captions, the use cases, the team and Genie Agent
+descriptions; what does not is the toolbar and menus, which stay in English, and
+product and brand names, which are the same word in every language. Each language
+is a folder of JSON under `translations/`, fetched only when it is picked, so the
+first load stays small and a language a reader never opens is never downloaded.
+The choice carries into the PDF and PowerPoint exports too, so a board read in
+Japanese exports a Japanese deck.
+
+![The language menu: sixteen languages, each in its own script](docs/screenshot-language.png)
+
+### Share: a preview card per industry
+
+The **Share** control posts the board to LinkedIn, X, Reddit, Facebook, Hacker
+News or WhatsApp, with a link straight to the industry and cloud on screen. Every
+industry carries its own Open Graph preview image and a small share stub per
+cloud, so when one of those links is pasted into Slack, Teams, an email or a
+social feed it unfurls with a picture and a title tailored to that industry,
+rather than a bare URL. The images and stubs are generated, one per industry and
+one per industry-and-cloud, and live under `assets/og/` and `share/`.
+
+![The share menu: a link straight to the industry and cloud on screen](docs/screenshot-share.png)
+
 ---
 
 ## The detail drawer
@@ -328,6 +419,57 @@ rather than a preference.
 
 ---
 
+## AI Architecture Assistant (`app/ai/`)
+
+A chat-driven sub-app that lets you describe a customer or use case and receive a new,
+editable, persisted tab containing a tailored architecture, without touching the
+reference board. The reference board stays live and unmodified; the generated tab is its
+own independent copy.
+
+![The AI Architecture Assistant, docked over the reference board](docs/screenshot-ai.png)
+
+**What it does.** Type a description in the chat input. The assistant detects the
+best-fit industry from what you wrote, generates a tab filtered to the components most
+relevant to that use case, and opens it with edit mode pre-enabled. The tab persists
+between reloads. The reference board is never switched or mutated by industry detection.
+
+**Two-phase, industry-grounded selection.** Phase 1 grounds the model on the live
+generic board catalog and identifies the best-fit industry. Phase 2, only when a known
+built industry matches, loads that industry's YAML template and re-runs component
+selection against that industry's own catalog, so industry-specific atoms (for example,
+banking's core-banking systems or healthcare's EHR vendors) are included in the output.
+Generic descriptions skip Phase 2.
+
+**Industry type-ahead chip.** As you type in the chat input, matching industries surface
+as chips. Picking one switches the Reference board to that industry immediately; it does
+not generate a tab, it is a separate shortcut to the board's existing industry switch.
+
+**Editing a generated architecture.** Every generated tab opens with edit mode on (the
+`✎ Editing: on` toggle in the chat header), so it is a working draft you can shape by
+hand, not a fixed output. Click any component on the board to edit it in the drawer:
+change its **title**, its **caption / description line**, the **detail text** that
+explains what it does in this architecture, and its **capabilities** (comma-separated
+tags), or **delete** it outright. Double-click a tab's name to **rename** it. Edits are
+scoped to that tab and persist between reloads; the toggle is per-tab, so switching to the
+Reference board turns editing off and the reference stays read-only. The AI's per-component
+usage notes ride along too: hover any component on a generated tab to see why the assistant
+included it.
+
+**Shared templates, zero extra maintenance.** `app/ai/index.html` sets `<base href="../">`
+so all relative fetches resolve against `app/`. The assistant reuses the shared
+`app/architectures/*.yaml` templates, `app/resources/*.json`, `app/translations/*`, and
+supporting JS files from the parent directory. Any new industry template added to
+`app/architectures/` is automatically available to the AI assistant with no code changes.
+
+**Backend.** `app/ai/app.py` is a FastAPI server (not the upstream stdlib `main.py`). It
+serves `index.html`, exposes `/health` and `POST /generate {system,user,model}->{text}`,
+and mounts the parent `app/` subdirectories as static paths so the `<base href="../">`
+fetches resolve. `/generate` calls a Databricks-hosted Claude Foundation Model serving
+endpoint (default `databricks-claude-sonnet-5`, override via `SERVING_ENDPOINT` env)
+using the injected WorkspaceClient OAuth identity, and no API key is required or stored.
+
+---
+
 ## How to deploy
 
 ### Option 1: the installer notebook (recommended)
@@ -368,9 +510,9 @@ Choose **Download from GitHub** if you imported only the notebook rather than
 cloning the repository. It pulls the archive over HTTPS and writes the `app/`
 folder into your workspace home. Two things have to be true for it to work: the
 workspace needs outbound internet access, and the repository has to be readable
-without a token. This repository is public, so only the first is left, and some
-locked-down workspaces do not have it. A fork you keep private returns 404 to the
-anonymous archive request, so use the Git folder path for one of those.
+without a token, which a public repository is. A private repository returns 404
+to the anonymous archive request, and some locked-down workspaces have no
+outbound internet either, so use the Git folder path in both of those cases.
 
 To upgrade later: **Pull** on the Git folder, then Run All again. The installer
 reuses the existing app and redeploys it.
@@ -388,12 +530,9 @@ reuses the existing app and redeploys it.
 If you would rather not run a notebook:
 
 ```bash
-# 1. put the app files in the workspace
-databricks workspace mkdirs "/Users/$USER/idea/app"
-for f in index.html main.py app.yaml; do
-  databricks workspace import "/Users/$USER/idea/app/$f" --file "app/$f" \
-    --format AUTO --overwrite
-done
+# 1. put the whole app folder in the workspace (boards, translations,
+#    resources, assets and vendor all have to come along, not just index.html)
+databricks sync app "/Workspace/Users/$USER/idea/app"
 
 # 2. create the app and deploy into it
 databricks apps create idea
@@ -404,11 +543,16 @@ Redeploying after a change is the same two steps without `apps create`.
 
 ### Option 3: no Databricks at all
 
-`app/index.html` is self-contained. Double-click it, or serve the folder:
+Serve the folder with the bundled static server and open the printed URL:
 
 ```bash
 cd app && python3 main.py     # http://localhost:8000
 ```
+
+The boards and translations are fetched at runtime, so serve the folder rather
+than opening `index.html` straight off the filesystem, which browsers block
+`fetch()` on. To hand someone a single file that opens with no server at all, use
+the **HTML** download from the toolbar: it bakes the current board in.
 
 ---
 
@@ -417,42 +561,48 @@ cd app && python3 main.py     # http://localhost:8000
 ```
 app-installer.ipynb        Databricks App installer, Run All
 app/
-  index.html               the whole diagram: markup, styles, logic, model, logos
+  index.html               the board: markup, styles, logic, logos; lazy-loads the rest
+  arch_schema.js           the YAML board-descriptor schema, shared by the app and the tools
+  industry_icons.js        the line-art industry glyphs
   main.py                  static server for Databricks Apps, standard library only
   app.yaml                 Databricks App entry point
+  architectures/           one YAML board per industry (63) plus manifest.json, fetched on demand
+  resources/               reference tables as JSON: accelerators, connectors, links, references
+  translations/            one folder per language (English source plus fifteen), fetched on demand
+  assets/                  the Databricks mark, the default share cover, and per-industry cards (assets/og/)
+  share/                   per-industry, per-cloud share stubs (252) that unfurl a preview card
+  vendor/                  js-yaml, the one bundled dependency
+  ai/                      the AI Architecture Assistant sub-app (see app/ai/README.md)
 docs/                      the screenshots and the animated export used above
-tools/
-  palgen.py                generates the colour palettes with solved contrast
-  markgen.py               fetches the official product marks and inlines them
-  build_installer.py       generates app-installer.ipynb from readable sources
-  heightgate.py            fails a board that is taller than the reference, clipped, or wrapped
-  probe.py                 runs a JS probe against the board and prints what it measured
-  shot.py                  regenerates the screenshots and montages in docs/
-  validate_industries.py   checks every industry's structure, citations and live URLs
-  verify_click.py          checks every use-case and team reference resolves to a real box
-  inject_industries.py     injects the per-industry definitions into index.html
-  common.py                shared helpers the industry definitions are written with
-  industries/              one file per industry (batch_<id>.py), authored to the reference schema
-  verify_exports.js        Playwright check that every export carries the index and all four sections
-  verify_all_sections.js   Playwright check that deckSections() is complete for every industry
-  verify_display_consistency.js  Playwright check that Categorized never leaks a branded name
-  verify_source_enrichment.js    Playwright check that every source tile is enriched
+tools/                     generators and gates: palettes (palgen.py), product marks (markgen.py),
+                           the installer (build_installer.py), and the height, layout, link, i18n,
+                           export and display checks run before a board ships
 ```
 
 ---
 
 ## How it is built
 
-**One file.** `app/index.html` carries the markup, the styles, the logic, the
-architecture model and the logos. There is no bundler, no package manager and
-nothing to install. Opening it from a file path works, which matters because
-that is how most people will first see it.
+**A static folder, no build.** `app/index.html` carries the markup, the styles,
+the logic and the logos, and loads everything else as data: the sixty-three
+industry boards are YAML descriptors under `architectures/`, indexed by
+`architectures/manifest.json` and fetched on demand; the reference tables
+(accelerators, connectors, links, customer stories) are JSON under `resources/`;
+and each language is a folder of JSON under `translations/`, fetched only when it
+is picked. The one bundled dependency is `vendor/js-yaml.min.js`, which parses the
+board descriptors. There is still no bundler and no package manager, but because
+the boards and translations are fetched at runtime the folder is *served* rather
+than opened from a `file://` path, which browsers block `fetch()` on. The **HTML**
+download bakes the current board in, so that single file does open anywhere with
+no server.
 
-**The model is data.** The architecture lives in a single `ARCH` object, and the
-zones render from it. The reference material behind each box is a separate table
-on purpose: `ARCH` is what a user edits and what gets saved and exported, while
-the product descriptions, stages and links are fixed facts that have no business
-being editable.
+**The model is data.** Each board is a plain `ARCH` object the zones render from,
+authored as a readable YAML descriptor and loaded on demand. The reference
+material behind each box is a separate table on purpose: the board is what a user
+edits, saves and exports, while the product descriptions, stages and links are
+fixed facts that have no business being editable. You can export any board as
+YAML from the toolbar, edit it offline, and import it back to open your version
+in a new tab.
 
 **Exports are written by hand.** The PDF, PowerPoint and GIF writers are in the
 file: object tables and cross-reference offsets for the PDF, the parts and

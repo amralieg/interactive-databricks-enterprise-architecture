@@ -18,4 +18,8 @@ app/translations/overrides/
 # scratch probe diagnostics (never ship to the public repo)
 tools/*_probe.js
 
+# transient screenshot capture pages written by tools/shot.py
+app/_shot_*.html
+app/ai/_shot_*.html
+
 .DS_Store

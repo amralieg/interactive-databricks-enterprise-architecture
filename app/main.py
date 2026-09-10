@@ -1,4 +1,4 @@
-"""Static server for IDEA on Databricks Apps.
+"""Static server for Databricks Reference Architecture on Databricks Apps.
 
 The diagram is one self-contained HTML file with no build step and no backend,
 so the whole server is the standard library. Adding FastAPI or Flask here would
@@ -64,7 +64,7 @@ class Handler(SimpleHTTPRequestHandler):
 def main():
     handler = partial(Handler, directory=HERE)
     server = ThreadingHTTPServer(("0.0.0.0", PORT), handler)
-    print("IDEA serving %s on port %d" % (HERE, PORT), flush=True)
+    print("Databricks Reference Architecture serving %s on port %d" % (HERE, PORT), flush=True)
     server.serve_forever()
 
 
