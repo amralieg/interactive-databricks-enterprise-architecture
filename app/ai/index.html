@@ -564,9 +564,12 @@
      theme, palette and download simply vanished. The toolbar is now a single
      unshrinkable group and the tab strip is the only thing allowed to give way,
      by scrolling. */
+  /* The toolbar and the tab strip live on two rows inside one sticky stack, so
+     the tabs get the full width of their own row and never fight the toolbar. */
+  .topbar-stack { position:sticky; top:0; z-index:30; }
   header.top { --hpadv:6px; --hgap:9px;
     display:flex; align-items:center; gap:var(--hgap); padding:var(--hpadv) 12px; background:var(--card);
-    border-bottom:1px solid var(--line); position:sticky; top:0; z-index:30; flex-wrap:nowrap; }
+    flex-wrap:nowrap; }
   /* The official Databricks lockup (brick mark + wordmark). Bricks carry the
      brand red from the artwork; the wordmark is currentColor so it follows the
      theme via --logo-ink, the same token the old wordmark text used. */
@@ -636,8 +639,14 @@
   /* The dock owns the place in the header row; the strip inside it owns the
      scrolling. Kept separate so the arrows sit OUTSIDE the scroller and stay
      put while the tabs move under them. */
+  /* The tab strip's own row, directly under the toolbar. Same white as the
+     header with a hairline base; the active tab's page-grey fill breaks through
+     that base into the board sheet below, the way a browser tab meets its page.
+     --hpadv is redefined here (the tabs used to inherit it from the header). */
+  .tabbar { --hpadv:6px; display:flex; align-items:stretch; padding:var(--hpadv) 12px;
+    background:var(--card); border-bottom:1px solid var(--line); }
   .tabdock { display:flex; align-items:stretch; align-self:stretch;
-    flex:0 1 auto; min-width:0; margin-left:10px; }
+    flex:1 1 auto; min-width:0; margin-left:0; }
   .tabs { --tabr:10px; --tabfoot:13px;
     display:flex; align-items:flex-end; gap:2px;
     align-self:stretch; flex:0 1 auto; min-width:0;
@@ -2591,20 +2600,9 @@
   if(d) document.body.classList.add("theme-dark");
   var p=(qp && /^[a-z]+$/.test(qp)) ? qp : localStorage.getItem("dbx-arch-pal");
   if(p && /^[a-z]+$/.test(p)) document.body.classList.add("pal-"+p);}catch(e){}})();</script>
+<div class="topbar-stack">
 <header class="top">
   <div class="logo" id="brand-logo" aria-label="Databricks"></div>
-  <!-- Reference is pinned and cannot be closed; every other tab is one the user
-       made with +, renames by double-click and closes with its own x. The + is
-       always the last item, so it follows whatever the last tab happens to be. -->
-  <!-- The strip scrolls rather than shrinking the toolbar, so the two arrows are
-       the only thing that says there is more to the left or right. They appear
-       only on the side that actually has somewhere to go. -->
-  <div class="tabdock" id="tabdock">
-    <nav class="tabs" id="tabs">
-      <button class="tab active" data-tab="reference">Reference<span class="tab-long"> Architecture</span></button>
-      <button class="tab-add" id="tab-add" title="Clone the current architecture into its own editable tab"><span class="plus">✎</span><span class="plus-lbl">Edit</span></button>
-    </nav>
-  </div>
 
   <div class="htools">
   <!-- Industry leads the toolbar, ahead of the cloud switch: it decides what the
@@ -2667,6 +2665,19 @@
   <button class="hbtn ico-only" id="tour-btn" type="button" aria-label="Take a guided tour of the board" title="Take a guided tour of the board"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1 5.1-2.1Z"/></svg></button>
   </div>
 </header>
+<!-- The tabs live on their own row directly beneath the toolbar, so they never
+     compete with it for width. Reference is pinned; every other tab is one the
+     user made, renamed by double-click and closed with its own x. The strip
+     scrolls sideways when the tabs outgrow the row. -->
+<div class="tabbar">
+  <div class="tabdock" id="tabdock">
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="reference">Reference<span class="tab-long"> Architecture</span></button>
+      <button class="tab-add" id="tab-add" title="Clone the current architecture into its own editable tab"><span class="plus">✎</span><span class="plus-lbl">Edit</span></button>
+    </nav>
+  </div>
+</div>
+</div><!-- /topbar-stack -->
 
 <div class="fit" id="fit"><div class="fit-in" id="fit-in">
 <div class="ref-banner" id="ref-banner">
@@ -10366,7 +10377,9 @@ function fitLayout(){
     document.body.classList.remove("docked");
     if(!document.body.classList.contains("detail-open")) drawer.classList.remove("show");
   }
-  const hdr = document.querySelector("header.top");
+  // The sticky region is now the toolbar + tab row together; measure the whole
+  // stack so the dock and drawer sit below both.
+  const hdr = document.querySelector(".topbar-stack") || document.querySelector("header.top");
   if(hdr) document.body.style.setProperty("--headerh", hdr.offsetHeight + "px");
   /* a user-made tab has no board to fit: the builder is a normal-sized form, so
      it must not be scaled, and it takes the height the board would have had so
