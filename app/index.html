@@ -3932,8 +3932,8 @@ const ARCH = {
         ],
         services:[
           { n:"ADLS Gen2", role:"storage", s:"Object storage", ic:"storage", long:"Azure Data Lake Storage Gen2 holds the open-format lake. Databricks reads and writes in place; you keep the data." },
-          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Runs in your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Compute Plane Managed by Databricks", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Compute Plane in your Account", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
           { n:"Azure Monitor", role:"observability", s:"Observability", ic:"observ", long:"Platform logs, metrics and diagnostics forwarded to Azure Monitor and Log Analytics." },
           { n:"SQL DB / Cosmos DB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3969,8 +3969,8 @@ const ARCH = {
         ],
         services:[
           { n:"Amazon S3", role:"storage", s:"Object storage", ic:"storage", long:"S3 buckets in your account hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Compute Plane Managed by Databricks", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Compute Plane in your Account", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
           { n:"CloudWatch", role:"observability", s:"Observability", ic:"observ", long:"Audit logs, metrics and diagnostics delivery." },
           { n:"RDS / DynamoDB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -4004,8 +4004,8 @@ const ARCH = {
         ],
         services:[
           { n:"Cloud Storage", role:"storage", s:"Object storage", ic:"storage", long:"GCS buckets hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Service Connect", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Compute Plane Managed by Databricks", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Compute Plane in your Account", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
           { n:"Cloud Logging", role:"observability", s:"Observability", ic:"observ", long:"Audit logs and metrics into Cloud Logging and Monitoring." },
           { n:"Cloud SQL / Bigtable", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -11050,7 +11050,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.0";
+const BUILD = "0.3.1";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
