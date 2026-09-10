@@ -592,6 +592,10 @@
      unicode glyphs and the text controls in a 28px-tall bar. */
   .ico-svg { width:15px; height:15px; display:block; fill:none; stroke:currentColor;
     stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  /* Highlights glyph is the corner-dot motif, filled and deliberately muted so it
+     reads as a quiet legend, not a glowing call to action. */
+  .ico-svg.hl-ico { opacity:.6; }
+  .ico-svg.hl-ico circle { fill:currentColor; stroke:none; }
   /* Industry decides what the whole board is about, so it leads the bar as a
      wider, emphasised control rather than one chip among equals. */
   #ind-btn { font-weight:750; color:var(--ink); border-color:var(--line-strong); }
@@ -2659,7 +2663,7 @@
     <div class="pal-menu" id="stage-menu"></div>
   </div>
   <div class="pal-wrap" id="hl-wrap">
-    <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 14.9 8.6 21.5 9.5 16.8 14.2 17.9 20.8 12 17.7 6.1 20.8 7.2 14.2 2.5 9.5 9.1 8.6Z"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
+    <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg hl-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.1"/><circle cx="16" cy="8" r="2.1"/><circle cx="8" cy="16" r="2.1"/><circle cx="16" cy="16" r="2.1"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
     <div class="pal-menu" id="hl-menu"></div>
   </div>
   <div class="dl-wrap" id="dl-wrap">
@@ -3127,7 +3131,7 @@ function markBadge(t){
    paintHighlights so the survivors re-pack when a kind is toggled off. Order here
    is the corner fill order: a lone dot lands top-right, extras spread from there. */
 const HL_ORDER = ["story", "conn", "tour", "demo", "course", "video", "accel"];
-const DEFAULT_HL_OFF = ["tour", "demo", "course", "video"];
+const DEFAULT_HL_OFF = [];   /* all highlight kinds on by default */
 const HL_TITLE = { story:"Customer Stories", conn:"Lakeflow Connectors",
   tour:"Product Tours", demo:"Product Demos", course:"Free Academy Courses",
   video:"Videos", accel:"Solution Accelerators" };
@@ -3903,7 +3907,7 @@ const ARCH = {
         services:[
           { n:"ADLS Gen2", role:"storage", s:"Object storage", ic:"storage", long:"Azure Data Lake Storage Gen2 holds the open-format lake. Databricks reads and writes in place; you keep the data." },
           { n:"Serverless Compute", role:"network", s:"Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"VNet injection", ic:"network", long:"Classic compute runs in your own subscription through VNet injection, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
           { n:"Azure Monitor", role:"observability", s:"Observability", ic:"observ", long:"Platform logs, metrics and diagnostics forwarded to Azure Monitor and Log Analytics." },
           { n:"SQL DB / Cosmos DB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3940,7 +3944,7 @@ const ARCH = {
         services:[
           { n:"Amazon S3", role:"storage", s:"Object storage", ic:"storage", long:"S3 buckets in your account hold the open-format lake." },
           { n:"Serverless Compute", role:"network", s:"PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Customer VPC", ic:"network", long:"Classic compute runs in your customer-managed VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
           { n:"CloudWatch", role:"observability", s:"Observability", ic:"observ", long:"Audit logs, metrics and diagnostics delivery." },
           { n:"RDS / DynamoDB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
