@@ -4443,9 +4443,8 @@ function applyContentDir(){
    captured once so switching back to English restores it verbatim (the legend
    keeps its bold section markers; translated languages show a clean sentence). */
 const STATIC_BLOCKS = [
-  { sel:".ref-legend", key:"Highlighted components are used by this solution, across the platform, the Genie Agents & Business Use Cases band, the Sources, External Ingestion, Teams and Consumers boxes and the Cloud Services & Integrations band. Hover a highlight for how it is used; click for full detail." },
-  { sel:".bld-soon", key:"Coming Soon" },
-  { sel:".bld-sub", key:"Describing a customer in words and having this architecture drawn for them is not implemented yet. The Reference Architecture tab is live: pick an industry, a cloud, a shape and a palette there, and download it." },
+  /* Side panel (drawer) empty-state stays translated; app-chrome blocks (the
+     reference legend and the Build-tab placeholder) are English by directive. */
   { sel:"#d-empty span", key:"Click any box to see its details here." }
 ];
 let _staticOrigHTML = null;
@@ -4479,7 +4478,7 @@ function translateContent(){
   ["credit", "d-credit"].forEach(id=>{
     const el = document.getElementById(id);
     if(el) el.textContent = "\u00a9 Databricks Industry Solutions" +
-      (upd ? " - " + T("Last Updated") + ": " + upd : "");
+      (upd ? " - Last Updated: " + upd : "");
   });
 }
 
@@ -6105,15 +6104,15 @@ function paintDisplaySeg(){
   const live = boardHasBrands();
   seg.classList.toggle("seg-off", !live);
   seg.title = live
-    ? T("Show products by commercial brand name, or rooted back to their generic category")
-    : T("Pick an industry to switch between brand and category names");
+    ? "Show products by commercial brand name, or rooted back to their generic category"
+    : "Pick an industry to switch between brand and category names";
   seg.innerHTML = "";
   DISPLAY_MODES.forEach(([k,label])=>{
     const b = document.createElement("button");
     b.textContent = label;
     b.className = (displayMode === k) ? "on" : "";
     b.setAttribute("aria-disabled", String(!live));
-    if(!live) b.title = T("Pick an industry to enable the branded view");
+    if(!live) b.title = "Pick an industry to enable the branded view";
     b.onclick = ()=>{
       if(!live){ pulseIndustry(); return; }
       if(displayMode === k) return;
@@ -6341,10 +6340,11 @@ function pageTitleText(){
   const id = ARCH.industry;
   const named = id && id !== "generic" && id.indexOf("__import__") !== 0;
   const cloud = cloudLabelNow();
-  const on = cloud ? " " + T("on") + " " + cloud : "";
+  const on = cloud ? " on " + cloud : "";
+  /* Chrome stays English; only the industry name localises (the one UI exception). */
   const core = named
-    ? T("Databricks Reference Architecture for") + " " + T(industryLabel(id)) + on
-    : T("Databricks Reference Architecture") + on;
+    ? "Databricks Reference Architecture for " + T(industryLabel(id)) + on
+    : "Databricks Reference Architecture" + on;
   return core;
 }
 function updatePageTitle(){ try { document.title = pageTitleText(); } catch(e){} updateFavicon(); }
@@ -6705,7 +6705,7 @@ function paintStageMenu(){
   const off = stagesOff(), c = stageCounts();
   const upd = dataUpdated();
   const rows = ['<div class="men-hd">Release stage</div>'];
-  if(upd) rows.push('<div class="dl-note">' + esc(T("Up to the last updated date")) + ': ' + esc(upd) + '</div>');
+  if(upd) rows.push('<div class="dl-note">Up to the last updated date: ' + esc(upd) + '</div>');
   rows.push('<button data-stage-all="1" class="' + (off.size ? "" : "on") + '">' +
     '<span>All stages</span></button>');
   STAGES.forEach(s=>{
@@ -6833,8 +6833,8 @@ function setRegion(code){
 function paintRegionMenu(){
   const cr = cloudRegions();
   const upd = dataUpdated();
-  const rows = ['<div class="men-hd">' + esc(cloudLabelNow()) + ' ' + esc(T("Region availability")) + '</div>'];
-  if(upd) rows.push('<div class="dl-note">' + esc(T("Up to the last updated date")) + ': ' + esc(upd) + '</div>');
+  const rows = ['<div class="men-hd">' + esc(cloudLabelNow()) + ' Region availability</div>'];
+  if(upd) rows.push('<div class="dl-note">Up to the last updated date: ' + esc(upd) + '</div>');
   if(!cr){
     regionMenu.innerHTML = rows.join("") + '<div class="dl-note">No region data loaded.</div>';
     return;
@@ -6919,12 +6919,12 @@ function paintHighlights(){
 }
 function paintHlMenu(){
   const off = hlsOff(), c = hlCounts();
-  const rows = ['<div class="men-hd">' + esc(T("Highlights")) + '</div>',
-    '<button data-hl-all="1" class="' + (off.size ? "" : "on") + '"><span>' + esc(T("All highlights")) + '</span></button>'];
+  const rows = ['<div class="men-hd">Highlights</div>',
+    '<button data-hl-all="1" class="' + (off.size ? "" : "on") + '"><span>All highlights</span></button>'];
   HL_ORDER.forEach(k=> rows.push('<button class="cnt' + (off.has(k) ? "" : " on") +
     '" data-hl="' + k + '"><span class="hl-swatch hl-' + k + '"></span><span>' +
-    esc(T(HL_TITLE[k])) + '</span><i>' + (c[k] || 0) + '</i></button>'));
-  rows.push('<div class="dl-note">' + esc(T("Each colour marks one kind. A box with several lines them up in a row.")) + '</div>');
+    esc(HL_TITLE[k]) + '</span><i>' + (c[k] || 0) + '</i></button>'));
+  rows.push('<div class="dl-note">Each colour marks one kind. A box with several lines them up in a row.</div>');
   hlMenu.innerHTML = rows.join("");
   hlMenu.querySelectorAll("button").forEach(b=> b.onclick = e=>{
     e.stopPropagation();
@@ -6935,7 +6935,7 @@ function paintHlMenu(){
   });
   const on = HL_ORDER.filter(k=>!off.has(k));
   document.getElementById("hl-lbl").textContent =
-    !off.size ? T("Highlights") : on.length ? on.length + " " + T("on") : T("None");
+    !off.size ? "Highlights" : on.length ? on.length + " on" : "None";
   hlBtn.classList.toggle("on", off.size > 0);
 }
 function setHighlights(off){
@@ -7072,7 +7072,7 @@ paintShapeMenu();
 function docTitle(){
   const p = ARCH.cloud.providers[ARCH.cloud.provider];
   const ind = ARCH.industry !== "generic" ? T(industryLabel(ARCH.industry)) + " " : "";
-  return "Databricks " + ind + T("Reference Architecture") + " - " + ((p && p.label) || ARCH.cloud.provider);
+  return "Databricks " + ind + "Reference Architecture" + " - " + ((p && p.label) || ARCH.cloud.provider);
 }
 /* The published copy of this page. Only a fallback: an export made from the live
    site links back to the live site, so a fork or a Databricks App deployment
@@ -10468,7 +10468,7 @@ function setEditMode(on){
     clearTimeout(hideT);
     tip.innerHTML = `<div class="tip-name">${svg(rec.tile.ic||"dot","")}${esc(rec.tile.n)}</div>` +
       `<ul>${notes.map(x=>`<li>${esc(T(x))}</li>`).join("")}</ul>` +
-      `<div class="tip-hint">${esc(T("Click for full detail"))}</div>`;
+      `<div class="tip-hint">Click for full detail</div>`;
     tip.setAttribute("dir", I18N.dir);
     tip.classList.add("show");
     const r = el.getBoundingClientRect();
