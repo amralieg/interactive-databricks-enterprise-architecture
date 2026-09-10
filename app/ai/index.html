@@ -2549,6 +2549,20 @@
   .ai-foot input { flex:1 1 auto; min-width:0; font:inherit; font-size:11px; border:1px solid var(--line);
     border-radius:7px; padding:4px 7px; background:var(--bg); color:var(--ink); }
   .ai-key-row { display:none; gap:8px; padding:0 14px 10px; } .ai-key-row.show { display:flex; }
+  .ai-model-sel { font:inherit; font-size:11px; color:var(--muted); background:transparent;
+    border:1px solid var(--line); border-radius:7px; padding:3px 6px; cursor:pointer; max-width:150px; }
+  .ai-model-sel:hover { color:var(--ink); }
+  .ai-attach { display:flex; flex-wrap:wrap; gap:6px; padding:8px 12px 0; }
+  .ai-attach[hidden] { display:none; }
+  .ai-chip { display:inline-flex; align-items:center; gap:6px; max-width:180px; font-size:11px; color:var(--ink);
+    background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:3px 5px 3px 6px; }
+  .ai-chip img { width:24px; height:24px; object-fit:cover; border-radius:5px; flex:0 0 auto; }
+  .ai-chip .nm { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ai-chip .rm { border:none; background:transparent; color:var(--muted); cursor:pointer; font-size:13px; line-height:1; padding:0 2px; }
+  .ai-chip .rm:hover { color:var(--brand); }
+  .ai-attach-btn { border:1px solid var(--line); background:var(--bg); color:var(--muted); border-radius:10px;
+    width:38px; height:38px; flex:0 0 auto; cursor:pointer; font-size:16px; display:grid; place-items:center; }
+  .ai-attach-btn:hover { border-color:var(--brand); color:var(--brand); }
 </style>
 </head>
 <body>
@@ -2792,14 +2806,21 @@
     <input type="password" id="ai-key" placeholder="Anthropic API key (sk-ant-…) — kept in memory this session only; used if the bridge is offline" autocomplete="off">
   </div>
   <div class="ai-foot">
-    <span id="ai-model-lbl">Claude Sonnet 5</span>
+    <select id="ai-model" class="ai-model-sel" title="Model — Fast is quickest, Thinking is most capable">
+      <option value="fast">Fast · Haiku 4.5</option>
+      <option value="balanced">Balanced · Sonnet 5</option>
+      <option value="thinking">Thinking · Opus 5</option>
+    </select>
     <a id="ai-key-toggle">API key</a>
     <a id="ai-edit-toggle" hidden style="margin-left:auto">✎ Editing: on</a>
     <a id="ai-clear">Clear highlight</a>
   </div>
   <div class="ai-indhint" id="ai-indhint" hidden></div>
+  <div class="ai-attach" id="ai-attach" hidden></div>
   <div class="ai-input">
-    <textarea id="ai-text" rows="1" placeholder="Describe your customer, use case, and data sources…"></textarea>
+    <button class="ai-attach-btn" id="ai-attach-btn" title="Attach image, PDF, or text — or paste a screenshot">📎</button>
+    <input type="file" id="ai-file" accept="image/*,.pdf,.txt,.md,.markdown,.csv,text/*" multiple hidden>
+    <textarea id="ai-text" rows="1" placeholder="Describe your use case — or attach/paste a diagram or doc…"></textarea>
     <button class="ai-send" id="ai-send" title="Send">➤</button>
   </div>
 </section>
@@ -10489,7 +10510,20 @@ function bootLang(){
    Connection order: local bridge (/health) -> direct Anthropic API
    with an in-memory key -> error.
    ================================================================== */
-const AI_MODEL = "claude-sonnet-5";
+/* Selectable model tiers. `id` is the tier the backend maps to a Databricks
+   serving endpoint (server-side allowlist in app.py); `anthropic` is the model
+   name used on the direct-API fallback path. */
+const AI_MODELS = [
+  { id:"fast",     anthropic:"claude-haiku-4-5"  },
+  { id:"balanced", anthropic:"claude-sonnet-5"   },
+  { id:"thinking", anthropic:"claude-opus-5"     },
+];
+const AI_MODEL_KEY = "dbxarch.dais2026.aimodel";
+let aiModelId = (function(){
+  const s = store.get(AI_MODEL_KEY);
+  return AI_MODELS.some(m=>m.id===s) ? s : "balanced";
+})();
+function aiAnthropicName(){ const m = AI_MODELS.find(x=>x.id===aiModelId); return m ? m.anthropic : "claude-sonnet-5"; }
 let aiApiKey = "";                       // in memory only; never persisted
 const aiState = { busy:false, bridge:false, history:[] };
 
@@ -10681,6 +10715,7 @@ Respond with ONLY a single JSON object (no prose, no markdown fences), shaped ex
 }
 
 RULES:
+- If the user attaches an image (e.g. an architecture diagram, whiteboard photo, or screenshot) or a document, read it and treat its content as the use case / architecture to map onto the catalog.
 - Use ONLY exact names from the catalog. Drop anything that doesn't match a listed name.
 - Include the relevant Sources / ingestion / People / Consumers / Cloud Services components that surround this use case — not just the platform bands.
 - Pick the components that genuinely matter (typically 8-18 across all sections) — do not select everything.
@@ -10705,7 +10740,7 @@ async function aiBridgeHealthy(){
 }
 async function aiCallBridge(system, user){
   const r = await fetch("/generate", { method:"POST", headers:{"content-type":"application/json"},
-    body: JSON.stringify({ model:AI_MODEL, system, user }) });
+    body: JSON.stringify({ model:aiModelId, system, user }) });
   if(!r.ok){ let m=r.status+" "+r.statusText; try{const e=await r.json(); if(e.error)m=e.error;}catch(_){} throw new Error(m); }
   return (await r.json()).text || "";
 }
@@ -10714,7 +10749,7 @@ async function aiCallApi(key, system, user){
     method:"POST",
     headers:{ "content-type":"application/json", "x-api-key":key, "anthropic-version":"2023-06-01",
       "anthropic-dangerous-direct-browser-access":"true" },
-    body: JSON.stringify({ model:AI_MODEL, max_tokens:16000, system, messages:user })
+    body: JSON.stringify({ model:aiAnthropicName(), max_tokens:16000, system, messages:user })
   });
   if(!r.ok){ let m=r.status+" "+r.statusText; try{const e=await r.json(); if(e.error?.message)m=e.error.message;}catch(_){} throw new Error(m); }
   const d = await r.json();
@@ -10729,7 +10764,140 @@ const aiEls = {
   msgs: document.getElementById("ai-msgs"), text: document.getElementById("ai-text"),
   send: document.getElementById("ai-send"), dot: document.getElementById("ai-dot"),
   conn: document.getElementById("ai-conn-txt"), sugg: document.getElementById("ai-sugg"),
+  model: document.getElementById("ai-model"),
+  attach: document.getElementById("ai-attach"), attachBtn: document.getElementById("ai-attach-btn"),
+  file: document.getElementById("ai-file"),
 };
+if(aiEls.model){
+  aiEls.model.value = aiModelId;
+  aiEls.model.addEventListener("change", ()=>{
+    aiModelId = aiEls.model.value;
+    store.set(AI_MODEL_KEY, aiModelId);
+  });
+}
+
+/* ------------------------------------------------------------------
+   Attachments — images (PNG/JPG, incl. pasted screenshots), PDFs, and
+   text/markdown/csv. Images ride along as vision content blocks; text
+   and extracted-PDF text fold into the prompt. Pending items live in
+   aiAttach until the next send, then clear.
+   ------------------------------------------------------------------ */
+let aiAttach = [];
+const AI_MAX_ATTACH = 5, AI_IMG_MAXDIM = 1568, AI_DOC_MAXCHARS = 20000;
+
+/* Downscale + re-encode an image blob to a JPEG data URL (caps token cost). */
+function aiDownscaleImage(blob){
+  return new Promise(res=>{
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+      const scale = Math.min(1, AI_IMG_MAXDIM / Math.max(w, h));
+      w = Math.max(1, Math.round(w*scale)); h = Math.max(1, Math.round(h*scale));
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      try{ res(c.toDataURL("image/jpeg", 0.85)); }catch(_){ res(null); }
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); res(null); };
+    img.src = url;
+  });
+}
+
+/* Lazy-load pdf.js (UMD build) from the CDN only when a PDF is attached. */
+let _aiPdfjsP = null;
+function aiLoadPdfjs(){
+  if(_aiPdfjsP) return _aiPdfjsP;
+  _aiPdfjsP = new Promise((res, rej)=>{
+    if(window.pdfjsLib) return res(window.pdfjsLib);
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    s.onload = ()=>{ try{
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      res(window.pdfjsLib);
+    }catch(e){ rej(e); } };
+    s.onerror = ()=> rej(new Error("Couldn't load the PDF reader (offline?). Paste the text instead."));
+    document.head.appendChild(s);
+  });
+  return _aiPdfjsP;
+}
+async function aiPdfText(file){
+  const lib = await aiLoadPdfjs();
+  const buf = await file.arrayBuffer();
+  const pdf = await lib.getDocument({ data: buf }).promise;
+  let out = ""; const N = Math.min(pdf.numPages, 30);
+  for(let i=1; i<=N; i++){
+    const page = await pdf.getPage(i);
+    const tc = await page.getTextContent();
+    out += tc.items.map(it=>it.str).join(" ") + "\n";
+    if(out.length > AI_DOC_MAXCHARS) break;
+  }
+  const t = out.trim().slice(0, AI_DOC_MAXCHARS);
+  if(!t) throw new Error("No selectable text found in that PDF (it may be scanned). Try an image instead.");
+  return t;
+}
+
+async function aiAddFiles(files){
+  for(const f of files){
+    if(aiAttach.length >= AI_MAX_ATTACH){ aiAddMsg("bot", `⚠ Up to ${AI_MAX_ATTACH} attachments at a time.`); break; }
+    try{
+      if((f.type||"").startsWith("image/")){
+        const du = await aiDownscaleImage(f);
+        if(du) aiAttach.push({ kind:"image", name:f.name||"image.png", thumb:du,
+          mime:"image/jpeg", b64:du.split(",")[1], dataUrl:du });
+      } else if((f.type==="application/pdf") || /\.pdf$/i.test(f.name||"")){
+        const t = await aiPdfText(f);
+        aiAttach.push({ kind:"text", name:f.name||"document.pdf", text:t });
+      } else {
+        const t = (await f.text()).slice(0, AI_DOC_MAXCHARS);
+        aiAttach.push({ kind:"text", name:f.name||"file.txt", text:t });
+      }
+    }catch(err){ const m = aiAddMsg("bot", "⚠ "+err.message); m.className = "ai-msg err"; }
+  }
+  aiRenderAttach();
+}
+
+function aiRenderAttach(){
+  const box = aiEls.attach; if(!box) return;
+  box.innerHTML = ""; box.hidden = !aiAttach.length;
+  aiAttach.forEach((a, i)=>{
+    const chip = document.createElement("div"); chip.className = "ai-chip";
+    if(a.kind === "image"){ const im = document.createElement("img"); im.src = a.thumb; im.alt = ""; chip.appendChild(im); }
+    const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = a.name; chip.appendChild(nm);
+    const rm = document.createElement("button"); rm.className = "rm"; rm.textContent = "✕"; rm.title = "Remove";
+    rm.onclick = ()=>{ aiAttach.splice(i, 1); aiRenderAttach(); };
+    chip.appendChild(rm); box.appendChild(chip);
+  });
+}
+
+/* Build the model-facing content for a turn: text alone (string, as before)
+   or an array of content blocks when images are attached. `imgs` is the
+   snapshot of image attachments for this send. */
+function aiBridgeContent(text, imgs){
+  if(!imgs.length) return text;
+  return [{ type:"text", text }, ...imgs.map(im=>({ type:"image_url", image_url:{ url: im.dataUrl } }))];
+}
+function aiApiMessages(imgs){
+  const msgs = aiState.history.map(m=>({ role:m.role, content:m.content }));
+  if(imgs.length && msgs.length){
+    const last = msgs[msgs.length-1];
+    last.content = [{ type:"text", text: last.content },
+      ...imgs.map(im=>({ type:"image", source:{ type:"base64", media_type:im.mime, data:im.b64 } }))];
+  }
+  return msgs;
+}
+
+if(aiEls.attachBtn){
+  aiEls.attachBtn.onclick = ()=> aiEls.file.click();
+  aiEls.file.onchange = ()=>{ if(aiEls.file.files.length) aiAddFiles(Array.from(aiEls.file.files)); aiEls.file.value = ""; };
+  aiEls.text.addEventListener("paste", e=>{
+    const items = e.clipboardData && e.clipboardData.items; if(!items) return;
+    const imgs = [];
+    for(const it of items){ if((it.type||"").startsWith("image/")){ const f = it.getAsFile(); if(f) imgs.push(f); } }
+    if(imgs.length){ e.preventDefault(); aiAddFiles(imgs); }
+  });
+}
 function aiAddMsg(role, text, applied){
   const d = document.createElement("div");
   d.className = "ai-msg " + role;
@@ -10789,12 +10957,20 @@ function aiCreateTab(r, baseArch){
 
 async function aiSend(promptText){
   const input = (promptText || aiEls.text.value).trim();
-  if(!input || aiState.busy) return;
+  const atts = aiAttach.slice();
+  if((!input && !atts.length) || aiState.busy) return;
+  aiAttach = []; aiRenderAttach();
   aiEls.text.value = ""; aiEls.text.style.height = "auto";
   aiEls.sugg.style.display = "none";
   aiIndHint("");
-  aiAddMsg("user", input);
-  aiState.history.push({ role:"user", content:input });
+  // Text/PDF attachments fold into the prompt; images ride along as vision blocks.
+  const docText = atts.filter(a=>a.kind==="text")
+    .map(a=>`\n\n--- Attached: ${a.name} ---\n${a.text}`).join("");
+  const imgs = atts.filter(a=>a.kind==="image");
+  const fullInput = (input + docText).trim() || "(see attached)";
+  const names = atts.map(a=>a.name);
+  aiAddMsg("user", input + (names.length ? (input ? "\n" : "") + "📎 " + names.join(", ") : ""));
+  aiState.history.push({ role:"user", content:fullInput });
   aiSetBusy(true);
   const thinking = aiAddMsg("bot", "Thinking…");
   const convo = aiState.history.map(m=>`${m.role==="user"?"USER":"ASSISTANT"}: ${m.content}`).join("\n\n");
@@ -10802,11 +10978,11 @@ async function aiSend(promptText){
     const system = aiSystemPrompt(componentCatalog());
     let raw;
     if(aiState.bridge){
-      raw = await aiCallBridge(system, convo);
+      raw = await aiCallBridge(system, aiBridgeContent(convo, imgs));
     } else {
       const key = aiApiKey.trim();
       if(!key) throw new Error("No connection. Run the backend (uvicorn app:app) or add an Anthropic API key below.");
-      raw = await aiCallApi(key, system, aiState.history.map(m=>({role:m.role, content:m.content})));
+      raw = await aiCallApi(key, system, aiApiMessages(imgs));
     }
     const result = aiExtractJson(raw);
     let baseArch = null;
@@ -10818,8 +10994,8 @@ async function aiSend(promptText){
         const sys2 = aiSystemPrompt(catalogFromArch(baseArch));
         let raw2;
         try{
-          if(aiState.bridge) raw2 = await aiCallBridge(sys2, convo);
-          else raw2 = await aiCallApi(aiApiKey.trim(), sys2, aiState.history.map(m=>({role:m.role, content:m.content})));
+          if(aiState.bridge) raw2 = await aiCallBridge(sys2, aiBridgeContent(convo, imgs));
+          else raw2 = await aiCallApi(aiApiKey.trim(), sys2, aiApiMessages(imgs));
           const r2 = aiExtractJson(raw2);
           if(Array.isArray(r2.components) && r2.components.length) result.components = r2.components;
         }catch(_){ /* keep phase-1 components on phase-2 failure */ }

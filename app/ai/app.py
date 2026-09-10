@@ -20,7 +20,24 @@ HERE = os.path.dirname(__file__)
 HTML_PATH = os.path.join(HERE, "index.html")
 
 # Databricks-hosted model the assistant calls (Foundation Model API, pay-per-token).
+# SERVING_ENDPOINT is the default/balanced endpoint (kept for backward compat).
 SERVING_ENDPOINT = os.environ.get("SERVING_ENDPOINT", "databricks-claude-sonnet-5")
+
+# Selectable model tiers -> serving endpoints. The frontend sends a tier id
+# ("fast" | "balanced" | "thinking"); we map it here and reject anything not on
+# this allowlist so the browser can't point the app at an arbitrary endpoint.
+# Each is env-overridable in case a workspace hosts different endpoint names.
+MODEL_ENDPOINTS = {
+    "fast":     os.environ.get("FAST_ENDPOINT", "databricks-claude-haiku-4-5"),
+    "balanced": SERVING_ENDPOINT,
+    "thinking": os.environ.get("THINKING_ENDPOINT", "databricks-claude-opus-5"),
+}
+DEFAULT_TIER = "balanced"
+
+
+def _resolve_endpoint(model) -> str:
+    """Map a frontend tier id to a serving endpoint; fall back to the default."""
+    return MODEL_ENDPOINTS.get(model, MODEL_ENDPOINTS[DEFAULT_TIER])
 # Optional AI Gateway URL — when set, calls route through the Gateway so usage
 # counters / inference tables register. Falls back to the serving-endpoints path.
 AI_GATEWAY_URL = os.environ.get("AI_GATEWAY_URL", "")
@@ -85,7 +102,7 @@ def _llm_client() -> OpenAI:
 
 @app.get("/health")
 def health():
-    return {"ok": True, "endpoint": SERVING_ENDPOINT}
+    return {"ok": True, "endpoint": SERVING_ENDPOINT, "models": MODEL_ENDPOINTS}
 
 
 @app.post("/generate")
@@ -95,13 +112,23 @@ async def generate(req: Request):
     except Exception:
         return JSONResponse({"error": "Invalid JSON body"}, status_code=400)
 
-    user = (payload.get("user") or "").strip()
-    if not user:
+    # `user` is either a plain string (text-only) or a list of OpenAI content
+    # blocks (text + image_url) when the frontend attaches images. Pass either
+    # straight through as the user message content.
+    user = payload.get("user")
+    if isinstance(user, str):
+        user = user.strip()
+        if not user:
+            return JSONResponse({"error": "Missing 'user' prompt"}, status_code=400)
+    elif isinstance(user, list):
+        if not user:
+            return JSONResponse({"error": "Missing 'user' prompt"}, status_code=400)
+    else:
         return JSONResponse({"error": "Missing 'user' prompt"}, status_code=400)
     system = payload.get("system") or ""
-    # The endpoint name is a server-side/deployment concern; ignore whatever the
-    # frontend sends (it carries an Anthropic-API model name, not a DBX endpoint).
-    model = SERVING_ENDPOINT
+    # The frontend sends a tier id ("fast"/"balanced"/"thinking"); map it to a
+    # serving endpoint via the allowlist. Unknown values fall back to the default.
+    model = _resolve_endpoint(payload.get("model"))
 
     messages = []
     if system:
