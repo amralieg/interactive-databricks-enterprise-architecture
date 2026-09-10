@@ -2338,6 +2338,8 @@
     margin:0 5px 5px 0; cursor:pointer; background:var(--well); }
   .chip:hover { border-color:var(--brand); color:var(--brand); }
   .chip.static { cursor:default; } .chip.static:hover { border-color:var(--line); color:var(--ink); }
+  a.chip, a.chip.ext { text-decoration:none; color:inherit; }
+  a.chip.ext:hover { border-color:var(--brand); color:var(--brand); }
   .d-close { position:absolute; top:14px; right:16px; border:none; background:var(--well); width:29px; height:29px;
     border-radius:8px; cursor:pointer; font-size:15px; color:var(--muted); }
   /* Pin the overlay panel open as a side dock. Sits left of the close button in
@@ -3814,8 +3816,8 @@ const ARCH = {
         ],
         services:[
           { n:"ADLS Gen2", role:"storage", s:"Object storage", ic:"storage", long:"Azure Data Lake Storage Gen2 holds the open-format lake. Databricks reads and writes in place; you keep the data." },
-          { n:"Serverless Compute", role:"network", s:"Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Link", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Link with no public egress, while your tables stay in your own subscription under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VNet", ic:"network", long:"Classic compute runs in your own VNet, so clusters sit inside your network while your data stays in your storage under Unity Catalog." },
           { n:"Azure Monitor", role:"observability", s:"Observability", ic:"observ", long:"Platform logs, metrics and diagnostics forwarded to Azure Monitor and Log Analytics." },
           { n:"SQL DB / Cosmos DB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3851,8 +3853,8 @@ const ARCH = {
         ],
         services:[
           { n:"Amazon S3", role:"storage", s:"Object storage", ic:"storage", long:"S3 buckets in your account hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with PrivateLink", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over PrivateLink with no public egress, while your tables stay in your own account under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your account under Unity Catalog." },
           { n:"CloudWatch", role:"observability", s:"Observability", ic:"observ", long:"Audit logs, metrics and diagnostics delivery." },
           { n:"RDS / DynamoDB", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -3886,8 +3888,8 @@ const ARCH = {
         ],
         services:[
           { n:"Cloud Storage", role:"storage", s:"Object storage", ic:"storage", long:"GCS buckets hold the open-format lake." },
-          { n:"Serverless Compute", role:"network", s:"Private Service Connect", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
-          { n:"Classic Compute", role:"network", s:"Your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
+          { n:"Serverless Compute", role:"network", s:"Runs in Databricks VPC with Private Service Connect", ic:"network", long:"Serverless compute runs in the Databricks account and reaches your data over Private Service Connect with no public egress, while your tables stay in your own project under Unity Catalog." },
+          { n:"Classic Compute", role:"network", s:"Runs in your VPC", ic:"network", long:"Classic compute runs in your own VPC, so clusters sit inside your network while your data stays in your project under Unity Catalog." },
           { n:"Cloud Logging", role:"observability", s:"Observability", ic:"observ", long:"Audit logs and metrics into Cloud Logging and Monitoring." },
           { n:"Cloud SQL / Bigtable", role:"opdb", s:"Operational stores", ic:"opdb", long:"Existing operational databases that Databricks serves scores and features into, alongside Lakebase." },
         ],
@@ -5309,54 +5311,36 @@ function docUrl(path){
 let openId = null;
 
 function linkRow(href, label, sub){
+  if(!isDatabricksUrl(href)) return "";   /* never link off-Databricks */
   return `<a class="d-link" href="${esc(href)}" target="_blank" rel="noopener">` +
     `<span class="dl-t">${esc(label)}</span>` +
     (sub ? `<span class="dl-s">${esc(sub)}</span>` : "") +
     `<span class="dl-go" aria-hidden="true">&#8599;</span></a>`;
 }
-/* Where each cloud's own Databricks page lives. Azure Databricks is a
-   first-party Microsoft service and Microsoft hosts its product page, so on
-   Azure that page is the one a reader wants; AWS and Google have marketplace
-   listings rather than product pages, so there Databricks hosts its own. */
-const PLATFORM_PAGE = {
-  azure: "https://azure.microsoft.com/en-us/products/databricks",
-  aws:   "https://www.databricks.com/product/aws",
-  gcp:   "https://www.databricks.com/product/google-cloud",
-};
 function detailLinks(name){
   const L = LINKS[name]; if(!L) return "";
   const cloud = (ARCH.cloud.providers[ARCH.cloud.provider] || {}).label || ARCH.cloud.provider;
-  const rows = [];
+  let rows = [];
   /* Every sublabel is derived from the URL it sits on. It used to be written out
      as "docs.databricks.com" for the two Databricks rows, which was a plain lie
      on Azure: the link goes to Microsoft Learn, and the row said otherwise. */
   const dcloud = h => h + ", " + cloud;
-  /* Databricks docs first for a Databricks box, vendor docs first for a cloud
-     service: whichever one the reader actually needs is the one at the top. */
   if(L.doc) rows.push(linkRow(docUrl(L.doc), T("Documentation"), dcloud(host(docUrl(L.doc)))));
-  if(L.url) rows.push(linkRow(L.url, T("Vendor documentation"), host(L.url)));
+  /* L.url is the third-party VENDOR doc (AWS/Azure/GCP/OSS project); never linked.
+     The cloud "Databricks on <cloud>" marketing pages and each product's
+     databricks.com/product page are dropped too: they add no detail over the docs. */
   if(L.dbx) rows.push(linkRow(docUrl(L.dbx), T("Connecting it to Databricks"), dcloud(host(docUrl(L.dbx)))));
-  /* A `doc` path is what marks a box as a Databricks product, and for those the
-     cloud's own page belongs above the generic one: a reader on Azure is buying
-     Azure Databricks, not Databricks. */
-  if(L.doc && PLATFORM_PAGE[ARCH.cloud.provider]){
-    const p = PLATFORM_PAGE[ARCH.cloud.provider];
-    rows.push(linkRow(p, "Databricks on " + cloud, host(p)));
-  }
-  if(L.site) rows.push(linkRow(L.site, T("Product page"), host(L.site)));
   if(L.blog) rows.push(linkRow(L.blog, T("Blog and deep dive"), host(L.blog)));
   (L.also || []).forEach(([label, url])=> rows.push(linkRow(url, T(label), host(url))));
-  /* `seealso` is the docs' own "directly-linked related features": a list of the
-     names of OTHER features whose Databricks doc page is linked from this
-     feature's doc page. Each resolves to that target feature's own doc (or dbx /
-     site / url) so the URL is never invented, and doc paths render cloud-correct
-     through docUrl(). They fold into this same "Learn more" list, no separate
-     heading. Names are real product names, so they are not run through T(). */
+  /* `seealso` folds a target feature's own Databricks page into this list. Only a
+     Databricks target is linkable: its docs page, else its databricks.com product
+     page. A seealso whose only URL is an OSS/vendor site is skipped. */
   (L.seealso || []).forEach(name=>{
     const tl = LINKS[name]; if(!tl) return;
-    const href = tl.doc ? docUrl(tl.doc) : tl.dbx ? docUrl(tl.dbx) : tl.site || tl.url;
+    const href = tl.doc ? docUrl(tl.doc) : tl.dbx ? docUrl(tl.dbx) : (isDatabricksUrl(tl.site) ? tl.site : "");
     if(href) rows.push(linkRow(href, name, host(href)));
   });
+  rows = rows.filter(Boolean);
   if(!rows.length) return "";
   return `<h4>${esc(T("Learn more"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
@@ -5382,6 +5366,23 @@ function videoLinks(name){
   return `<h4>${esc(T("Databricks YouTube channel"))}</h4><div class="d-vids">${rows}</div>`;
 }
 function host(u){ try { return new URL(u).hostname.replace(/^www\./, ""); } catch(e){ return ""; } }
+/* A link is allowed in the side panel ONLY if Databricks runs it: databricks.com
+   and its subdomains (docs, customer-academy, marketplace), the Databricks docs
+   on Azure (learn.microsoft.com/azure/databricks, never other Microsoft docs),
+   the Databricks YouTube channel, and the Databricks GitHub orgs (solution
+   accelerators + industry data models). Vendor docs, OSS project sites (delta.io,
+   mlflow.org, spark.apache.org, iceberg.apache.org, opensharing.io, ...) and any
+   third-party source citation are refused, so nothing off-Databricks is linked. */
+function isDatabricksUrl(u){
+  if(!u) return false;
+  let url; try { url = new URL(u, location.href); } catch(e){ return false; }
+  const h = url.hostname.toLowerCase(), p = url.pathname.toLowerCase();
+  if(h === "databricks.com" || h.endsWith(".databricks.com")) return true;
+  if(h === "youtube.com" || h.endsWith(".youtube.com") || h === "youtu.be") return true;
+  if(h === "learn.microsoft.com") return p.startsWith("/azure/databricks");
+  if(h === "github.com") return /^\/databricks(-|\/|$)/.test(p);
+  return false;
+}
 
 /* Every id in INDUSTRY_CATALOG is also the folder name under data-models in the
    published repo, which is why the menu was built from those names in the first
@@ -5423,8 +5424,10 @@ function citeLinks(t){
   if(!t.cite || !t.cite.length) return "";
   const ind = INDUSTRIES[ARCH.industry];
   const tbl = (ind && ind.sources) || {};
+  /* Source citations point at the vendor/provider's own site, which is not
+     Databricks, so linkRow drops them; the section only shows if any survive. */
   const rows = t.cite.map(k=> tbl[k]).filter(Boolean)
-    .map(r=> linkRow(r.u, r.t, host(r.u)));
+    .map(r=> linkRow(r.u, r.t, host(r.u))).filter(Boolean);
   if(!rows.length) return "";
   return `<h4>${esc(T("Sources"))}</h4><div class="d-links">${rows.join("")}</div>`;
 }
@@ -5434,13 +5437,84 @@ function citeLinks(t){
    the use cases it drives, both walking to the same drawer the chip wiring below
    already opens. A name with no atom stays a static label rather than a dead
    link. */
-function detailChips(names){
-  return (names || []).map(n=>{
-    const to = resolveAtom(n);
-    return to ? `<span class="chip" data-go="${to}">${esc(dispName(n))}</span>`
-              : `<span class="chip static">${esc(dispName(n))}</span>`;
-  }).join("");
+/* Capability pills and cross-reference chips name features that are not always
+   their own box on the board. Rather than leave those dead, every chip resolves
+   to SOMETHING: the board box if one owns the name, else the product's own
+   product/doc page (reusing the verified LINKS entries, directly or via the alias
+   below so a sub-feature pill points at its parent product), else a cloud-correct
+   documentation search for the term. So a chip is never a dead label. */
+const CHIP_ALIAS = {
+  "AI/BI Dashboards":"AI/BI", "AI/BI Genie":"Genie",
+  "ai_parse_document":"AI Functions", "ai_classify":"AI Functions", "In-SQL":"AI Functions",
+  "Governed output":"AI Functions", "Information Extraction":"Document Parsing",
+  "Zero-shot labels":"Text Classification",
+  "Declarative Pipelines":"Lakeflow", "Spark Declarative Pipelines":"Lakeflow",
+  "Jobs":"Lakeflow", "Data engineering":"Lakeflow", "Ingest • Transform • Orchestrate":"Lakeflow",
+  "Spark Connect":"Apache Spark",
+  "100+ connectors":"Lakeflow Connect", "CDC":"Lakeflow Connect",
+  "Schema evolution":"Delta Lake", "Managed tables":"Delta Lake",
+  "Iceberg v3":"Apache Iceberg", "Reyden engine":"Lakehouse//RT",
+  "Kafka / Kinesis / Event Hubs":"Streaming", "Real-Time Mode":"Streaming", "Exactly-once":"Streaming",
+  "Serverless Postgres":"Lakebase", "SQL Data Warehousing":"SQL Warehouses",
+  "Model registry":"MLflow", "Tracking":"MLflow", "Evaluation":"MLflow", "Tracing":"MLflow",
+  "AI Runtime (serverless GPU)":"Model Serving", "Models":"Model Serving",
+  "Business Glossary":"Unity Catalog", "Domains":"Unity Catalog", "Access":"Unity Catalog",
+  "Semantics":"Unity Catalog", "Lineage":"Unity Catalog", "Observability":"Unity Catalog",
+  "Security":"Unity Catalog", "Metrics":"Unity Catalog", "Unity Catalog Semantics upload":"Unity Catalog",
+  "Medallion: bronze / silver / gold":"Medallion Architecture",
+  "Serverless Micro Apps (Private Preview)":"Apps", "App Spaces (Private Preview)":"Apps",
+  "50+ app connections":"Apps", "50+ connected apps":"Apps", "Slack & Teams":"Apps", "Mobile":"Apps",
+  "Marketplace":"Marketplace Listings", "AI assets":"Marketplace Listings",
+  "Open protocol":"OpenSharing", "No copy":"OpenSharing", "Cross-cloud":"OpenSharing",
+  "Document Intelligence":"Document Parsing", "IDE + notebooks":"Notebooks & IDEs",
+  "Genie Code for ML":"Genie Code", "From Genie Spaces":"Genie", "Shareable":"Genie",
+  "Takes action":"Genie", "Managed memory":"Genie",
+  "MCP assistants":"Any MCP Harness",
+  "Grounded answers":"Knowledge Assistant", "Citations":"Knowledge Assistant", "No RAG plumbing":"Knowledge Assistant",
+  "OntoRank":"Genie Ontology", "Living knowledge graph":"Genie Ontology",
+  "Unified profiles":"CustomerLake", "Segmentation":"CustomerLake", "Campaign activation":"CustomerLake",
+};
+/* Real features with a stable databricks.com product page but no LINKS entry. */
+const CHIP_URL = { "Photon":"https://www.databricks.com/product/photon" };
+/* Cloud-correct documentation search for any term with no product/doc of its own:
+   AWS/GCP on docs.databricks.com, Azure on Microsoft Learn scoped to Databricks. */
+function docsSearchUrl(term){
+  const q = encodeURIComponent(String(term));
+  const cl = (ARCH.cloud && ARCH.cloud.provider) || "aws";
+  if(cl === "azure") return "https://learn.microsoft.com/en-us/search/?terms=" + q + "&scope=Azure%20Databricks";
+  return "https://docs.databricks.com/" + cl + "/en/search.html?q=" + q;
 }
+/* Databricks-only resolution for a chip: its databricks.com product page if it
+   has one, else its Databricks docs page (cloud-correct). Never the OSS/vendor
+   site (L.url / a non-databricks L.site), so a chip never links off-Databricks. */
+function linksHref(L){
+  if(!L) return "";
+  if(L.site && isDatabricksUrl(L.site)) return L.site;
+  if(L.doc) return docUrl(L.doc);
+  if(L.dbx) return docUrl(L.dbx);
+  return "";
+}
+/* {go:id} to walk to a board box, or {href:url} to open a product/doc/search. */
+function chipHref(name){
+  const id = resolveAtom(name);
+  if(id) return { go:id };
+  const direct = linksHref(LINKS[name]); if(direct) return { href:direct };
+  const alias = CHIP_ALIAS[name]; const aliased = alias && linksHref(LINKS[alias]);
+  if(aliased) return { href:aliased };
+  if(CHIP_URL[name]) return { href:CHIP_URL[name] };
+  return { href:docsSearchUrl(name) };
+}
+/* One chip renderer for every cross-reference: an internal nav span (walks the
+   board) or an external anchor. Labels always go through dispName -> T so
+   translation is never dropped; the href keeps the English term so search resolves. */
+function chipHtml(name, extraCls){
+  const r = chipHref(name);
+  const label = esc(dispName(name));
+  const cls = "chip" + (extraCls ? " " + extraCls : "");
+  if(r.go) return `<span class="${cls}" data-go="${r.go}">${label}</span>`;
+  return `<a class="${cls} ext" href="${esc(r.href)}" target="_blank" rel="noopener">${label}</a>`;
+}
+function detailChips(names){ return (names || []).map(n=> chipHtml(n)).join(""); }
 function openDetail(id, via){
   const rec = byId[id]; if(!rec) return;
   openId = id;
@@ -5476,7 +5550,7 @@ function openDetail(id, via){
   if(t.users) html += `<h4>${esc(T("Who uses it"))}</h4><p>${esc(dispProse(t.users))}</p>`;
   if(t.dataOut){
     const seg = (label, d)=> d ? `<div class="d-dataseg"><span class="d-datalbl">${label}</span>` +
-      `<div class="d-datatypes">${(d.types||[]).map(x=>`<span class="chip static">${esc(T(x))}</span>`).join("")}</div>` +
+      `<div class="d-datatypes">${(d.types||[]).map(x=> chipHtml(x)).join("")}</div>` +
       `<div class="d-datmeta">${[d.vol, d.interval].filter(Boolean).map(x=>esc(T(x))).join(" &middot; ")}</div></div>` : "";
     const body = seg(T("Batch"), t.dataOut.batch) + seg(T("Streaming"), t.dataOut.stream);
     if(body) html += `<h4>${esc(T("Data it produces"))}</h4><div class="d-data">${body}</div>`;
@@ -5496,10 +5570,7 @@ function openDetail(id, via){
      so this stays backward-compatible with tiles that only have a `long`. */
   if(t.problem) html += `<h4>${esc(T("The problem it solves"))}</h4><p>${esc(dispProse(t.problem))}</p>`;
   if(t.who){
-    const to = resolveAtom(t.who);
-    const chip = to ? `<span class="chip" data-go="${to}">${esc(T(t.who))}</span>`
-                    : `<b>${esc(T(t.who))}</b>`;
-    html += `<h4>${esc(T("Who benefits"))}</h4><div>${chip}</div>`;
+    html += `<h4>${esc(T("Who benefits"))}</h4><div>${chipHtml(t.who)}</div>`;
   }
   if(t.how) html += `<h4>${esc(T("How it is built"))}</h4><p>${esc(dispProse(t.how))}</p>`;
   if(t.comps && t.comps.length)
@@ -5526,17 +5597,14 @@ function openDetail(id, via){
   if(t.uses && t.uses.length){
     html += `<h4>${esc(T("Databricks capabilities used"))}</h4><ul class="d-uses">` + t.uses.map(u=>{
       const s = Array.isArray(u) ? u[0] : u, txt = Array.isArray(u) ? (u[1] || "") : "";
-      const to = nameIndex[s];
-      const head = to ? `<span class="chip" data-go="${to}">${esc(s)}</span>`
-                      : `<b>${esc(s)}</b>`;
-      return `<li>${head} ${esc(T(txt))}</li>`;
+      return `<li>${chipHtml(s)} ${esc(T(txt))}</li>`;
     }).join("") + `</ul>`;
   }
   const L = LINKS[t.n];
   if(L && L.note) html += `<h4>${esc(T("Worth knowing"))}</h4><p class="d-note">${esc(T(L.note))}</p>`;
   const caps = [].concat(t.caps||[], t.caps2||[]);
   if(caps.length){
-    html += `<h4>${esc(T("Capabilities"))}</h4><div>` + caps.map(c=>`<span class="chip static">${esc(T(c))}</span>`).join("") + `</div>`;
+    html += `<h4>${esc(T("Capabilities"))}</h4><div>` + caps.map(c=> chipHtml(c)).join("") + `</div>`;
   }
   /* `arr` is the live array the atom was registered from, so identity against the
      stages array is what identifies a medallion stage. Cheaper and harder to get
@@ -5546,7 +5614,7 @@ function openDetail(id, via){
   html += videoLinks(t.n);
   if(!catMode) html += citeLinks(t);
   if(t.rel && t.rel.length){
-    const chips = t.rel.filter(r=>nameIndex[r]).map(r=>`<span class="chip" data-go="${nameIndex[r]}">${esc(dispName(r))}</span>`).join("");
+    const chips = t.rel.map(r=> chipHtml(r)).join("");
     if(chips) html += `<h4>${esc(T("Related"))}</h4><div>${chips}</div>`;
   }
   document.getElementById("d-body").innerHTML = html;
