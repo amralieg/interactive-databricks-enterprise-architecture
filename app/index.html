@@ -11041,7 +11041,33 @@ function paintBrandLogo(){
   if(el && typeof IndustryIcons !== "undefined" && IndustryIcons.dbxLogoSvg)
     el.innerHTML = IndustryIcons.dbxLogoSvg({});
 }
+/* GitHub Pages serves the HTML document with max-age=600 and honours its own
+   HTTP header, not the <meta http-equiv> tags, so a normal browser keeps the
+   previous build's INLINE data (tile names, subtexts) for up to ten minutes even
+   though every data fetch is already no-store. That stale HTML paired with the
+   fresh translation JSON is exactly what makes the bottom layer look untranslated
+   and DBSQL read the old subtext. version.json is fetched no-store (plus a unique
+   query so no CDN edge can answer it): when its build differs from this build,
+   reload once onto a cache-busting URL so the browser must pull the new HTML.
+   BUILD here and app/version.json MUST be bumped together on every deploy. */
+const BUILD = "0.2.7";
+async function staleReload(){
+  try {
+    const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
+    if(!r.ok) return false;
+    const latest = (await r.json()).build;
+    if(latest && latest !== BUILD){
+      const u = new URL(location.href);
+      if(u.searchParams.get("b") === latest) return false;   /* already reloaded; never loop */
+      u.searchParams.set("b", latest);
+      location.replace(u.toString());
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
 (async function boot(){
+  if(await staleReload()) return;
   paintBrandLogo();
   await loadResources();
   if(!(await seedFromUrl())){
