@@ -7130,7 +7130,7 @@ function paintHlMenu(){
   hlMenu.innerHTML = rows.join("");
   hlMenu.querySelectorAll("button").forEach(b=> b.onclick = e=>{
     e.stopPropagation();
-    if(b.dataset.hlAll){ setHighlights([]); return; }
+    if(b.dataset.hlAll){ setHighlights(off.size ? [] : HL_ORDER.slice()); return; }
     const next = new Set(off), k = b.dataset.hl;
     next.has(k) ? next.delete(k) : next.add(k);
     setHighlights([...next]);
@@ -11050,7 +11050,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.2.9";
+const BUILD = "0.3.0";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
