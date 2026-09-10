@@ -89,7 +89,7 @@ function card(label, glyph){
 
 // The site-wide reference card: same system, generic silhouette, whole-portfolio wording.
 function refCard(){
-  const label = 'Enterprise Reference Architecture';
+  const label = 'Databricks Reference Architecture';
   return `<!DOCTYPE html><html><head>${head(fontFor(label))}</head><body>
   <div class="accent"></div>
   ${watermark(ICONS.svgFor('generic'))}

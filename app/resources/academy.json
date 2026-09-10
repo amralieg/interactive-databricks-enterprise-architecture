@@ -1,0 +1,862 @@
+{
+ "byPersona": {
+  "Analytics Engineers": [
+   "1513",
+   "3707",
+   "3742",
+   "3928"
+  ],
+  "App Developers": [
+   "1765",
+   "1811",
+   "4459",
+   "6200",
+   "2724",
+   "5082",
+   "5856",
+   "5855"
+  ],
+  "Business Teams": [
+   "2206",
+   "2308",
+   "5361",
+   "3347",
+   "3707"
+  ],
+  "Data Analysts": [
+   "3553",
+   "5082",
+   "1513",
+   "3707",
+   "3928"
+  ],
+  "Data Engineers": [
+   "2308",
+   "2026",
+   "4677",
+   "6200",
+   "1511",
+   "2971",
+   "2963",
+   "1365"
+  ],
+  "Data Scientists": [
+   "1765",
+   "1811",
+   "4459",
+   "2724",
+   "1512",
+   "2343",
+   "5855",
+   "2395"
+  ],
+  "Executives": [
+   "2206",
+   "2308",
+   "1765",
+   "1811",
+   "5361",
+   "3707"
+  ],
+  "Risk & Compliance": [
+   "1515",
+   "1514",
+   "1521",
+   "1520",
+   "1235",
+   "3406",
+   "1231",
+   "1230"
+  ]
+ },
+ "byProduct": {
+  "AI Functions": [
+   "1765",
+   "1811",
+   "3514"
+  ],
+  "AI/BI": [
+   "3707",
+   "3928"
+  ],
+  "AI/BI Genie": [
+   "5361"
+  ],
+  "Agent Bricks": [
+   "4464",
+   "5856",
+   "5857"
+  ],
+  "Agentic Dev": [
+   "4464",
+   "5856",
+   "5855"
+  ],
+  "Apache Spark": [
+   "3962",
+   "3901",
+   "3959"
+  ],
+  "Apps": [
+   "6200"
+  ],
+  "Databricks Data Intelligence Platform": [
+   "3697",
+   "2206",
+   "2308"
+  ],
+  "Delta Lake": [
+   "2971"
+  ],
+  "Feature Store": [
+   "2343"
+  ],
+  "Genie": [
+   "5361"
+  ],
+  "Genie Agents": [
+   "5361"
+  ],
+  "Genie Agents & Business Use Cases": [
+   "5361"
+  ],
+  "Genie One": [
+   "5361"
+  ],
+  "Ingest": [
+   "2963"
+  ],
+  "Lakebase": [
+   "5082"
+  ],
+  "Lakeflow": [
+   "2971",
+   "1365"
+  ],
+  "Lakeflow Connect": [
+   "2963"
+  ],
+  "MLflow": [
+   "2395",
+   "2390",
+   "2400"
+  ],
+  "Model Serving": [
+   "2395",
+   "3417"
+  ],
+  "Notebooks & IDEs": [
+   "1211"
+  ],
+  "Open Infrastructure": [
+   "1233",
+   "2967"
+  ],
+  "SQL Warehouses": [
+   "3603",
+   "3928"
+  ],
+  "Unified Governance": [
+   "3406",
+   "4677",
+   "3767"
+  ],
+  "Unity Catalog": [
+   "4677",
+   "3742",
+   "3767"
+  ]
+ },
+ "catalog_ids": [
+  39,
+  68,
+  141,
+  85,
+  79
+ ],
+ "courses": {
+  "1211": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1211/introduction-to-python-for-data-science-and-data-engineering"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [],
+   "slug": "introduction-to-python-for-data-science-and-data-engineering",
+   "t": "Introduction to Python for Data Science and Data Engineering"
+  },
+  "1230": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1230/databricks-platform-administration-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "databricks-platform-administration-fundamentals",
+   "t": "Databricks Platform Administration Fundamentals"
+  },
+  "1231": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1231/databricks-identity-administration"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "databricks-identity-administration",
+   "t": "Databricks Identity Administration"
+  },
+  "1233": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1233/databricks-compute-resource-administration"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "databricks-compute-resource-administration",
+   "t": "Databricks Compute Resource Administration"
+  },
+  "1235": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1235/cicd-administration-in-databricks"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "cicd-administration-in-databricks",
+   "t": "CI/CD Administration in Databricks"
+  },
+  "1365": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1365/deploy-workloads-with-lakeflow-jobs",
+    "ja": "https://customer-academy.databricks.com/learn/course/3277/deploy-workloads-with-lakeflow-jobs-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3283/deploy-workloads-with-lakeflow-jobs-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3278/deploy-workloads-with-lakeflow-jobs-portuguese-br"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "deploy-workloads-with-lakeflow-jobs",
+   "t": "Deploy Workloads with Lakeflow Jobs"
+  },
+  "1511": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1511/get-started-with-databricks-for-data-engineering",
+    "es": "https://customer-academy.databricks.com/learn/course/4631/get-started-with-databricks-for-data-engineering-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/5769/get-started-with-databricks-for-data-engineering-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3495/get-started-with-databricks-for-data-engineering-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3464/get-started-with-databricks-for-data-engineering-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3472/get-started-with-databricks-for-data-engineering-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "get-started-with-databricks-for-data-engineering",
+   "t": "Get Started with Databricks for Data Engineering"
+  },
+  "1512": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1512/get-started-with-databricks-for-machine-learning",
+    "es": "https://customer-academy.databricks.com/learn/course/6097/get-started-with-databricks-for-machine-learning-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6098/get-started-with-databricks-for-machine-learning-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3569/get-started-with-databricks-for-machine-learning-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3573/get-started-with-databricks-for-machine-learning-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3578/get-started-with-databricks-for-machine-learning-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "get-started-with-databricks-for-machine-learning",
+   "t": "Get Started with Databricks for Machine Learning"
+  },
+  "1513": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1513/get-started-with-sql-analytics-and-bi-on-databricks",
+    "es": "https://customer-academy.databricks.com/learn/course/6371/get-started-with-sql-analytics-and-bi-on-databricks-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6374/get-started-with-sql-analytics-and-bi-on-databricks-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3424/get-started-with-sql-analytics-and-bi-on-databricks-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3430/get-started-with-sql-analytics-and-bi-on-databricks-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3425/get-started-with-sql-analytics-and-bi-on-databricks-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Analyst"
+   ],
+   "slug": "get-started-with-sql-analytics-and-bi-on-databricks",
+   "t": "Get Started with SQL Analytics and BI on Databricks"
+  },
+  "1514": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1514/aws-databricks-platform-administration-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "aws-databricks-platform-administration-fundamentals",
+   "t": "AWS Databricks Platform Administration Fundamentals"
+  },
+  "1515": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1515/aws-databricks-networking-and-security-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "aws-databricks-networking-and-security-fundamentals",
+   "t": "AWS Databricks Networking and Security Fundamentals"
+  },
+  "1520": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1520/azure-databricks-workspace-administration-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "azure-databricks-workspace-administration-fundamentals",
+   "t": "Azure Databricks Workspace Administration Fundamentals"
+  },
+  "1521": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1521/azure-databricks-networking-and-security-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Platform Administrator"
+   ],
+   "slug": "azure-databricks-networking-and-security-fundamentals",
+   "t": "Azure Databricks Networking and Security Fundamentals"
+  },
+  "1765": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1765/generative-ai-fundamentals",
+    "es": "https://customer-academy.databricks.com/learn/course/4282/generative-ai-fundamentals-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/4283/generative-ai-fundamentals-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/2251/generative-ai-fundamentals-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/2780/generative-ai-fundamentals-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/2252/generative-ai-fundamentals-portuguese-br"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "generative-ai-fundamentals",
+   "t": "Generative AI Fundamentals"
+  },
+  "1811": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/1811/generative-ai-fundamentals-accreditation",
+    "ja": "https://customer-academy.databricks.com/learn/course/2311/generative-ai-fundamentals-accreditation-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/2784/generative-ai-fundamentals-accreditation-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/2310/generative-ai-fundamentals-accreditation-portuguese-br"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "generative-ai-fundamentals-accreditation",
+   "t": "Generative AI Fundamentals Accreditation"
+  },
+  "2026": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2026/knowledge-check-get-started-with-databricks-for-data-engineering"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "knowledge-check-get-started-with-databricks-for-data-engineering",
+   "t": "Knowledge Check: Get Started with Databricks for Data Engineering"
+  },
+  "2206": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2206/databricks-fundamentals",
+    "es": "https://customer-academy.databricks.com/learn/course/3644/databricks-fundamentals-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/3715/databricks-fundamentals-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/2298/databricks-fundamentals-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/2752/databricks-fundamentals-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/2299/databricks-fundamentals-portuguese-br"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [],
+   "slug": "databricks-fundamentals",
+   "t": "Databricks Fundamentals"
+  },
+  "2308": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2308/databricks-fundamentals-accreditation",
+    "es": "https://customer-academy.databricks.com/learn/course/3664/databricks-fundamentals-accreditation-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/3716/databricks-fundamentals-accreditation-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/2337/databricks-fundamentals-accreditation-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/2765/databricks-fundamentals-accreditation-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/2338/databricks-fundamentals-accreditation-portuguese-br"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "databricks-fundamentals-accreditation",
+   "t": "Databricks Fundamentals Accreditation"
+  },
+  "2343": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2343/data-preparation-for-machine-learning"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "data-preparation-for-machine-learning",
+   "t": "Data Preparation for Machine Learning"
+  },
+  "2390": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2390/machine-learning-model-development"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "machine-learning-model-development",
+   "t": "Machine Learning Model Development"
+  },
+  "2395": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2395/machine-learning-model-deployment"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "machine-learning-model-deployment",
+   "t": "Machine Learning Model Deployment"
+  },
+  "2400": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2400/machine-learning-operations"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "machine-learning-operations",
+   "t": "Machine Learning Operations"
+  },
+  "2724": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2724/get-started-with-databricks-for-generative-ai",
+    "es": "https://customer-academy.databricks.com/learn/course/6085/get-started-with-databricks-for-generative-ai-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/3751/get-started-with-databricks-for-generative-ai-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3771/get-started-with-databricks-for-generative-ai-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3779/get-started-with-databricks-for-generative-ai-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3782/get-started-with-databricks-for-generative-ai-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "get-started-with-databricks-for-generative-ai",
+   "t": "Get Started with Databricks for Generative AI"
+  },
+  "2963": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2963/data-ingestion-with-lakeflow-connect",
+    "ko": "https://customer-academy.databricks.com/learn/course/3306/data-ingestion-with-lakeflow-connect-korean"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "data-ingestion-with-lakeflow-connect",
+   "t": "Data Ingestion with Lakeflow Connect"
+  },
+  "2967": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2967/databricks-performance-optimization",
+    "ja": "https://customer-academy.databricks.com/learn/course/3079/databricks-performance-optimization-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3081/databricks-performance-optimization-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3080/databricks-performance-optimization-portuguese-br"
+   },
+   "level": "Professional",
+   "rank": 3,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "databricks-performance-optimization",
+   "t": "Databricks Performance Optimization"
+  },
+  "2971": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/2971/build-data-pipelines-with-apache-spark-declarative-pipelines"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "build-data-pipelines-with-apache-spark-declarative-pipelines",
+   "t": "Build Data Pipelines with Apache Spark Declarative Pipelines"
+  },
+  "3347": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3347/get-started-with-sql-analytics-and-bi-on-databricks",
+    "es": "https://customer-academy.databricks.com/learn/course/6371/get-started-with-sql-analytics-and-bi-on-databricks-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6374/get-started-with-sql-analytics-and-bi-on-databricks-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3424/get-started-with-sql-analytics-and-bi-on-databricks-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3430/get-started-with-sql-analytics-and-bi-on-databricks-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3425/get-started-with-sql-analytics-and-bi-on-databricks-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Analyst"
+   ],
+   "slug": "get-started-with-sql-analytics-and-bi-on-databricks",
+   "t": "Get Started with SQL Analytics and BI on Databricks"
+  },
+  "3406": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3406/databricks-ai-security-fundamentals"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [],
+   "slug": "databricks-ai-security-fundamentals",
+   "t": "Databricks AI Security Fundamentals"
+  },
+  "3417": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3417/machine-learning-at-scale"
+   },
+   "level": "Professional",
+   "rank": 3,
+   "roles": [
+    "Machine Learning Practitioner"
+   ],
+   "slug": "machine-learning-at-scale",
+   "t": "Machine Learning at Scale"
+  },
+  "3514": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3514/get-started-with-databricks-for-generative-ai",
+    "es": "https://customer-academy.databricks.com/learn/course/6085/get-started-with-databricks-for-generative-ai-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/3751/get-started-with-databricks-for-generative-ai-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/3771/get-started-with-databricks-for-generative-ai-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/3779/get-started-with-databricks-for-generative-ai-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/3782/get-started-with-databricks-for-generative-ai-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "get-started-with-databricks-for-generative-ai",
+   "t": "Get Started with Databricks for Generative AI"
+  },
+  "3553": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3553/get-started-with-databricks-for-data-warehousing",
+    "es": "https://customer-academy.databricks.com/learn/course/6451/get-started-with-databricks-for-data-warehousing-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6445/get-started-with-databricks-for-data-warehousing-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/6441/get-started-with-databricks-for-data-warehousing-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/6443/get-started-with-databricks-for-data-warehousing-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6447/get-started-with-databricks-for-data-warehousing-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Warehousing Practitioner"
+   ],
+   "slug": "get-started-with-databricks-for-data-warehousing",
+   "t": "Get Started with Databricks for Data Warehousing"
+  },
+  "3603": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3603/get-started-with-databricks-for-data-warehousing",
+    "es": "https://customer-academy.databricks.com/learn/course/6451/get-started-with-databricks-for-data-warehousing-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6445/get-started-with-databricks-for-data-warehousing-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/6441/get-started-with-databricks-for-data-warehousing-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/6443/get-started-with-databricks-for-data-warehousing-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6447/get-started-with-databricks-for-data-warehousing-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Warehousing Practitioner"
+   ],
+   "slug": "get-started-with-databricks-for-data-warehousing",
+   "t": "Get Started with Databricks for Data Warehousing"
+  },
+  "3697": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3697/create-your-first-workspace-using-databricks-express"
+   },
+   "level": "Introductory",
+   "rank": 0,
+   "roles": [],
+   "slug": "create-your-first-workspace-using-databricks-express",
+   "t": "Create Your First Workspace Using Databricks Express"
+  },
+  "3707": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3707/aibi-for-data-analysts",
+    "ja": "https://customer-academy.databricks.com/learn/course/4187/aibi-for-data-analysts-japanese",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/4195/aibi-for-data-analysts-portuguese-br"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Analyst"
+   ],
+   "slug": "aibi-for-data-analysts",
+   "t": "AI/BI for Data Analysts"
+  },
+  "3742": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3742/data-modeling-strategies"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Architect"
+   ],
+   "slug": "data-modeling-strategies",
+   "t": "Data Modeling Strategies"
+  },
+  "3767": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3767/databricks-data-privacy",
+    "ja": "https://customer-academy.databricks.com/learn/course/4029/databricks-data-privacy-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/4032/databricks-data-privacy-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/4012/databricks-data-privacy-portuguese-br"
+   },
+   "level": "Professional",
+   "rank": 3,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "databricks-data-privacy",
+   "t": "Databricks Data Privacy"
+  },
+  "3901": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3901/introduction-to-apache-spark"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Apache Spark Developer"
+   ],
+   "slug": "introduction-to-apache-spark",
+   "t": "Introduction to Apache Spark™"
+  },
+  "3928": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3928/sql-analytics-on-databricks",
+    "ko": "https://customer-academy.databricks.com/learn/course/4191/sql-analytics-on-databricks-korean"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Data Analyst"
+   ],
+   "slug": "sql-analytics-on-databricks",
+   "t": "SQL Analytics on Databricks"
+  },
+  "3959": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3959/stream-processing-and-analysis-with-apache-spark"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Apache Spark Developer"
+   ],
+   "slug": "stream-processing-and-analysis-with-apache-spark",
+   "t": "Stream Processing and Analysis with Apache Spark™"
+  },
+  "3962": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/3962/developing-applications-with-apache-spark"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Apache Spark Developer"
+   ],
+   "slug": "developing-applications-with-apache-spark",
+   "t": "Developing Applications with Apache Spark™"
+  },
+  "4459": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/4459/get-started-with-ai-agents-on-databricks",
+    "es": "https://customer-academy.databricks.com/learn/course/6127/get-started-with-ai-agents-on-databricks-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6125/get-started-with-ai-agents-on-databricks-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/6124/get-started-with-ai-agents-on-databricks-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/6123/get-started-with-ai-agents-on-databricks-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6128/get-started-with-ai-agents-on-databricks-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "get-started-with-ai-agents-on-databricks",
+   "t": "Get Started with AI Agents on Databricks"
+  },
+  "4464": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/4464/get-started-with-ai-agents-on-databricks",
+    "es": "https://customer-academy.databricks.com/learn/course/6127/get-started-with-ai-agents-on-databricks-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6125/get-started-with-ai-agents-on-databricks-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/6124/get-started-with-ai-agents-on-databricks-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/6123/get-started-with-ai-agents-on-databricks-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6128/get-started-with-ai-agents-on-databricks-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "get-started-with-ai-agents-on-databricks",
+   "t": "Get Started with AI Agents on Databricks"
+  },
+  "4677": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/4677/get-started-with-data-governance-on-databricks",
+    "es": "https://customer-academy.databricks.com/learn/course/6138/get-started-with-data-governance-on-databricks-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6139/get-started-with-data-governance-on-databricks-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/4835/get-started-with-data-governance-on-databricks-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/4848/get-started-with-data-governance-on-databricks-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6137/get-started-with-data-governance-on-databricks-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "get-started-with-data-governance-on-databricks",
+   "t": "Get Started with Data Governance on Databricks"
+  },
+  "5082": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/5082/get-started-with-lakebase",
+    "es": "https://customer-academy.databricks.com/learn/course/5884/get-started-with-lakebase-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/5882/get-started-with-lakebase-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/5451/get-started-with-lakebase-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/5455/get-started-with-lakebase-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/5552/get-started-with-lakebase-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Warehousing Practitioner"
+   ],
+   "slug": "get-started-with-lakebase",
+   "t": "Get Started with Lakebase"
+  },
+  "5361": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/5361/business-impact-accelerator-answering-business-questions-with-genie",
+    "es": "https://customer-academy.databricks.com/learn/course/5904/business-impact-accelerator-answering-business-questions-with-genie-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/5906/business-impact-accelerator-answering-business-questions-with-genie-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/5907/business-impact-accelerator-answering-business-questions-with-genie-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/5908/business-impact-accelerator-answering-business-questions-with-genie-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/5905/business-impact-accelerator-answering-business-questions-with-genie-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [],
+   "slug": "business-impact-accelerator-answering-business-questions-with-genie",
+   "t": "Business Impact Accelerator: Answering Business Questions with Genie"
+  },
+  "5855": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/5855/deploying-and-monitoring-agent-applications-on-databricks"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [
+    "Generative AI Engineer"
+   ],
+   "slug": "deploying-and-monitoring-agent-applications-on-databricks",
+   "t": "Deploying and Monitoring Agent Applications on Databricks"
+  },
+  "5856": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/5856/building-agentic-applications-on-databricks"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [],
+   "slug": "building-agentic-applications-on-databricks",
+   "t": "Building Agentic Applications on Databricks"
+  },
+  "5857": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/5857/building-rag-agents-with-agent-bricks"
+   },
+   "level": "Associate",
+   "rank": 2,
+   "roles": [],
+   "slug": "building-rag-agents-with-agent-bricks",
+   "t": "Building RAG Agents with Agent Bricks"
+  },
+  "6200": {
+   "langs": {
+    "en": "https://customer-academy.databricks.com/learn/course/6200/get-started-with-databricks-apps",
+    "es": "https://customer-academy.databricks.com/learn/course/6205/get-started-with-databricks-apps-spanish",
+    "fr": "https://customer-academy.databricks.com/learn/course/6204/get-started-with-databricks-apps-french",
+    "ja": "https://customer-academy.databricks.com/learn/course/6201/get-started-with-databricks-apps-japanese",
+    "ko": "https://customer-academy.databricks.com/learn/course/6202/get-started-with-databricks-apps-korean",
+    "pt-br": "https://customer-academy.databricks.com/learn/course/6203/get-started-with-databricks-apps-portuguese-br"
+   },
+   "level": "Onboarding",
+   "rank": 1,
+   "roles": [
+    "Data Engineer"
+   ],
+   "slug": "get-started-with-databricks-apps",
+   "t": "Get Started with Databricks Apps"
+  }
+ },
+ "generated": "2026-09-10",
+ "levels": [
+  "Introductory",
+  "Onboarding",
+  "Associate",
+  "Professional"
+ ],
+ "source": "https://customer-academy.databricks.com/learn/v1/catalog_content/public"
+}

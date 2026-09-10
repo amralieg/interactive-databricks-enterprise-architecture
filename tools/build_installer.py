@@ -10,9 +10,9 @@ file; run it after any change to the installer.
 import json
 import os
 
-MD_INTRO = """# IDEA: workspace installer
+MD_INTRO = """# Databricks Reference Architecture: workspace installer
 
-**Interactive Databricks Enterprise Architecture.** Run All. Two widgets, one
+**Databricks Reference Architecture.** Run All. Two widgets, one
 deployed app.
 
 This notebook creates a Databricks App in this workspace and deploys the diagram
@@ -238,7 +238,7 @@ CODE_LAUNCHER = '''# === JobLauncher: run the deploy as a tagged Databricks job 
 # The vibe-modelling-agent installer never installs in the notebook cell: it creates
 # a tagged Databricks job, runs it, and waits. That is what puts dbx_* tags on the
 # work in system.billing.usage. This is the same launcher, trimmed to one notebook
-# task, so IDEA's install job is tagged and attributable the same way.
+# task, so the Databricks Reference Architecture install job is tagged and attributable the same way.
 import re as _jl_re
 
 
@@ -483,7 +483,7 @@ CODE_MAIN = '''def deploy():
     # serverless spend through a usage policy, whose tags land in system.billing.usage.
     # So the policy id, when given, is what "tags" the app.
     create_body = {"name": app_name,
-                   "description": "IDEA - Interactive Databricks Enterprise Architecture"}
+                   "description": "Databricks Reference Architecture"}
     if usage_policy:
         create_body["usage_policy_id"] = usage_policy
     resp = api("POST", "/api/2.0/apps", create_body)
@@ -553,12 +553,12 @@ def _running_as_job():
 
 
 def _finish(url, app_name):
-    banner("ok", "IDEA is live", "Open %s\\n\\nOr find it under Compute -> Apps -> %s." % (url, app_name))
+    banner("ok", "Databricks Reference Architecture is live", "Open %s\\n\\nOr find it under Compute -> Apps -> %s." % (url, app_name))
     displayHTML(
         '<p style="font-family:system-ui,sans-serif;font-size:15px">'
         '<a href="%s" target="_blank" style="display:inline-block;padding:10px 18px;'
         'border-radius:9px;background:#FF3621;color:#fff;text-decoration:none;'
-        'font-weight:650">Open IDEA</a></p>' % url
+        'font-weight:650">Open Databricks Reference Architecture</a></p>' % url
     )
 
 

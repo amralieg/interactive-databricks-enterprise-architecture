@@ -87,6 +87,20 @@ function main() {
     ' | ACCEL ' + Object.keys(ACCEL).length +
     ' | CONNECTORS ' + Object.keys(CONNECTORS).length);
 
+  // Idempotency guard (root-cause fix): when the HTML literals are already empty
+  // the HTML is ALREADY split and the on-disk JSON/YAML modules are the source of
+  // truth. Emitting here would overwrite them with the empty literals AND the
+  // fs.rmSync below would delete every architectures/*.yaml, wiping the data.
+  // Detect the split state and no-op (this is the "idempotent re-run" the header
+  // promises, for both normal and --check mode).
+  if (industryIds.length === 0 && Object.keys(LINKS).length === 0 &&
+      REFERENCES.length === 0 && Object.keys(ACCEL).length === 0 &&
+      Object.keys(CONNECTORS).length === 0) {
+    console.log('index.html is already split (all literals empty). Modules on disk ' +
+      'are the source of truth; nothing to emit or strip. No-op.');
+    return;
+  }
+
   // ---- emit architecture modules + manifest ----
   fs.rmSync(ARCH_DIR, { recursive: true, force: true });
   for (const id of industryIds) writeJson(path.join(ARCH_DIR, id + '.json'), INDUSTRIES[id]);

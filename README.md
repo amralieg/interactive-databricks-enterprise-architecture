@@ -1,4 +1,4 @@
-# IDEA: Interactive Databricks Enterprise Architecture
+# Databricks Reference Architecture
 
 An interactive, exportable reference architecture for the Databricks Data
 Intelligence Platform. No build step and no backend: a static folder that
@@ -9,7 +9,7 @@ workspace as an app your teams reach from the workspace navigation.
 
 **[Open the live board](https://databricks-industry-solutions.github.io/databricks-reference-architecture/)**
 
-![IDEA in light theme](docs/screenshot-light.png)
+![Databricks Reference Architecture in light theme](docs/screenshot-light.png)
 
 ---
 
@@ -20,7 +20,7 @@ tool, exported a PNG, and pasted it into a deck. It is accurate on the day it is
 made, it cannot be interrogated, and adapting it to a specific customer means
 starting again in the source tool, which nobody has.
 
-IDEA is the same architecture as a live document:
+Databricks Reference Architecture is the same architecture as a live document:
 
 - **Every box is a real product**, and clicking it opens what it is, what a
   customer would not learn from the name, its release stage, the documentation
@@ -65,7 +65,7 @@ IDEA is the same architecture as a live document:
   dark board exports a categorized dark deck. Plus PNG, an animated GIF that keeps
   the flow moving, and a standalone HTML copy.
 
-![IDEA in dark theme](docs/screenshot-dark.png)
+![Databricks Reference Architecture in dark theme](docs/screenshot-dark.png)
 
 ---
 

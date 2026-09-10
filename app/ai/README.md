@@ -1,6 +1,6 @@
 # AI Architecture Assistant (`app/ai/`)
 
-A chat-driven sub-app built on top of the IDEA modular reference explorer. Describe a
+A chat-driven sub-app built on top of the Databricks Reference Architecture modular reference explorer. Describe a
 customer or use case in the chat input; the assistant detects the best-fit industry,
 runs two-phase industry-grounded component selection, and generates a new editable,
 persisted tab containing a tailored architecture — without touching the reference board.
