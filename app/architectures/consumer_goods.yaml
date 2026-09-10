@@ -465,7 +465,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Category and finance dashboards on serverless SQL.
+        summary: Category and finance dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for share and promo questions.

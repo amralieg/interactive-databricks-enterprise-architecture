@@ -3168,7 +3168,7 @@ const ARCH = {
     { id:"serve", name:"Serve", ic:"export", sub:"Governed paths out", tone:"rose", inline:true, arm:"right",
       rows:[ { kind:"cards", items:[
         { n:"SQL Warehouses", s:"Data Warehousing", ic:"lakehouse", st:"GA",
-          long:"Serverless SQL compute behind every dashboard, BI tool and SQL client, with Unity Catalog permissions enforced on the same tables the pipelines write.",
+          long:"Data warehousing compute behind every dashboard, BI tool and SQL client, with Unity Catalog permissions enforced on the same tables the pipelines write.",
           rel:["Lakehouse","Lakehouse//RT","Unity Catalog"] },
         { n:"Lakehouse//RT", s:"Millisecond reads", ic:"gauge", st:"Beta",
           long:"A read-only serverless warehouse type for low-latency, high-concurrency serving, powered by the Reyden engine. It answers SELECT queries in about 10 ms on smaller datasets and under 100 ms on larger ones, holding sub-100 ms at 12,000 queries per second and tens of thousands of concurrent users and agents. It reads governed Delta and Iceberg managed tables, materialized views, streaming tables and metric views directly in Unity Catalog, so operational analytics, customer-facing apps and agent serving no longer need a separate real-time database with its own CDC pipelines and permissions.",
@@ -3300,7 +3300,7 @@ const ARCH = {
     { id:"data", name:"Agentic Data", ic:"lakehouse", sub:"Unified, real-time data foundation", tone:"blue", inline:true, blk:"bot",
       rows:[ { kind:"cards", grid:3, items:[
         { n:"Lakehouse", col:1, row:1, ic:"lakehouse", st:"GA", caps:["SQL Data Warehousing"],
-          long:"Serverless SQL warehousing on open formats with the medallion architecture. DAIS 2026 added Lakehouse//RT, a new warehouse type for millisecond-latency analytics directly on Delta and Iceberg, powered by the new Reyden engine (Beta).",
+          long:"Data warehousing on open formats with the medallion architecture. DAIS 2026 added Lakehouse//RT, a new warehouse type for millisecond-latency analytics directly on Delta and Iceberg, powered by the new Reyden engine (Beta).",
           caps2:["Medallion: bronze / silver / gold"],
           rel:["Unity Catalog","Lakehouse//RT","AI/BI","Delta Lake","Apache Iceberg"] },
         { n:"Lakebase", col:2, row:1, ic:"lakebase", st:"GA", stByCloud:{gcp:"Beta"}, caps:["Serverless Postgres"],
@@ -3508,7 +3508,7 @@ const ARCH = {
         { n:"Data Analysts", mark:"AI/BI",
           long:"The team that answers what the business cannot answer for itself, and usually the first to notice that a definition has drifted.",
           uses:[
-            ["SQL Warehouses", "Serverless SQL over Silver and Gold, under the same permissions the dashboards run on."],
+            ["SQL Warehouses", "Data warehousing over Silver and Gold, under the same permissions the dashboards run on."],
             ["AI/BI", "Dashboards published for the business teams, built on Metric Views rather than on a private query."],
             ["Genie", "A starting point for an unfamiliar question, then the generated SQL taken over by hand."],
           ],
@@ -3552,7 +3552,7 @@ const ARCH = {
       note:"Every path out enforces the same Unity Catalog permissions, lineage and audit.",
       groups:[
       { box:"BI & Productivity", ic:"chart", from:"bi", tiles:[
-        { n:"Tableau / Qlik / ThoughtSpot", ic:"chart", long:"External BI tools connected to serverless SQL warehouses with Unity Catalog permissions enforced end to end." },
+        { n:"Tableau / Qlik / ThoughtSpot", ic:"chart", long:"External BI tools connected to SQL warehouses with Unity Catalog permissions enforced end to end." },
         { n:"Excel Add-in", ic:"sheet", long:"Driverless analytics directly inside Excel with write-back support (Public preview)." },
         { n:"Teams & M365 Copilot", ic:"chat", long:"Tag Genie in a Teams thread for Unity Catalog-governed answers from the lakehouse (Beta)." },
         { n:"Notebooks & IDEs", ic:"notebook", long:"Notebooks, VS Code and JetBrains against governed data and Genie Code." },
@@ -10522,7 +10522,7 @@ function paintBrandLogo(){
    new HTML. This AI variant sets <base href="../">, so "version.json" already
    resolves to app/version.json, the one file both apps share.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.2.7";
+const BUILD = "0.2.8";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });

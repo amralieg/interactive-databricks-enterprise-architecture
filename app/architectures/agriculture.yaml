@@ -475,7 +475,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Grower and elevator dashboards on serverless SQL.
+        summary: Grower and elevator dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for basis and yield questions in the merchandising channel.

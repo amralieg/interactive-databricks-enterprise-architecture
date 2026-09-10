@@ -467,7 +467,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Portfolio and property dashboards on serverless SQL.
+        summary: Portfolio and property dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for RevPAR and occupancy in the revenue meeting channel.

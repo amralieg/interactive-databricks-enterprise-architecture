@@ -491,7 +491,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Operations, commercial and finance dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Operations, commercial and finance dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers on availability, curtailment and settlement in the channel the fleet already works in (Beta).

@@ -476,7 +476,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Client and recruiter dashboards on serverless SQL.
+        summary: Client and recruiter dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for fill rate and margin questions in the sales channel.

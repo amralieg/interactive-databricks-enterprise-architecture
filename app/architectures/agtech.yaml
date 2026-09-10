@@ -537,7 +537,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Product, agronomy and commercial dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Product, agronomy and commercial dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for Unity Catalog-governed answers in the channel product and agronomy teams already work in (Beta).

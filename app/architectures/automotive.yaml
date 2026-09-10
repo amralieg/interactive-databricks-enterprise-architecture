@@ -493,7 +493,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Plant and regional sales dashboards on serverless SQL.
+        summary: Plant and regional sales dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for quality and inventory in plant channels.

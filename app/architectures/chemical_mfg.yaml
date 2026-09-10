@@ -447,7 +447,7 @@ consumers:
     tiles:
       - name: Tableau / Spotfire
         icon: chart
-        summary: Operations and quality dashboards on serverless SQL.
+        summary: Operations and quality dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for batch status in plant channels.

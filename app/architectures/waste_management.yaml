@@ -468,7 +468,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Operations and ESG dashboards on serverless SQL.
+        summary: Operations and ESG dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for route and diversion questions in the dispatch channel.

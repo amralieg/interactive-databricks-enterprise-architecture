@@ -516,7 +516,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Executive and quality dashboards against serverless SQL with Unity Catalog permissions.
+        summary: Executive and quality dashboards against SQL warehouses with Unity Catalog permissions.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for complaint and yield answers in the channel quality already works in.

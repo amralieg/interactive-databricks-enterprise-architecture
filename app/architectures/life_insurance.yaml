@@ -445,7 +445,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Actuarial and distribution dashboards on serverless SQL with Unity Catalog permissions.
+        summary: Actuarial and distribution dashboards on SQL warehouses with Unity Catalog permissions.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers and claims alerts in the channel teams already work in (Beta).

@@ -512,7 +512,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Executive and client dashboards against serverless SQL with Unity Catalog permissions.
+        summary: Executive and client dashboards against SQL warehouses with Unity Catalog permissions.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for campaign performance answers in the channel planners already work in.

@@ -527,7 +527,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Clinical, engagement and outcomes dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Clinical, engagement and outcomes dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers on access, adherence and outcomes in the channel the business already works in (Beta).

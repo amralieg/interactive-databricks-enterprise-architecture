@@ -505,7 +505,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Program, engineering and mission dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Program, engineering and mission dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers from the lakehouse, and program and anomaly updates in the channel the team already works in (Beta).

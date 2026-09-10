@@ -557,7 +557,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Executive and board dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+        summary: Executive and board dashboards against SQL warehouses, with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, in the channel product and revenue teams already work in (Beta).

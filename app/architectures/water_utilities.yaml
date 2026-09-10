@@ -482,7 +482,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Operations and regulatory dashboards on serverless SQL.
+        summary: Operations and regulatory dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for pressure and outage questions in the control room channel.

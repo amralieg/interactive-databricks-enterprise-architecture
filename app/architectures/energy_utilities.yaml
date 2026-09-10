@@ -489,7 +489,7 @@ consumers:
     tiles:
       - name: Tableau / Qlik / ThoughtSpot
         icon: chart
-        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and storm updates in the channel operations already works in (Beta).

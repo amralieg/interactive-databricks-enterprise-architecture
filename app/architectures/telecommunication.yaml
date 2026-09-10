@@ -517,7 +517,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Network and commercial dashboards on serverless SQL.
+        summary: Network and commercial dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for outage impact and churn questions in the NOC channel.

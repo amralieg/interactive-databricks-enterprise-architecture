@@ -419,7 +419,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: League and team dashboards on serverless SQL.
+        summary: League and team dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for attendance and sponsorship questions on game day.

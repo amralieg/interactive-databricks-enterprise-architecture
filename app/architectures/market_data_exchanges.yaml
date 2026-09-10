@@ -535,7 +535,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: External BI against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers, and feed-outage and surveillance alerts in the channel operations already work in (Beta).

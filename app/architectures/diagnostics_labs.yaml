@@ -531,7 +531,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Leadership and QC dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Leadership and QC dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for turnaround and denial answers in the channel the lab already works in (Beta).

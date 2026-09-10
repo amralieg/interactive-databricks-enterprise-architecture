@@ -530,7 +530,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Executive risk and SOC-performance dashboards against serverless SQL warehouses, with Unity Catalog permissions enforced end to end.
+        summary: Executive risk and SOC-performance dashboards against SQL warehouses, with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for Unity Catalog-governed answers from the security lakehouse, and incident updates in the channel the SOC already works in (Beta).

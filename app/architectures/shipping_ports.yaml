@@ -472,7 +472,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Terminal KPI dashboards on serverless SQL with Unity Catalog permissions.
+        summary: Terminal KPI dashboards on SQL warehouses with Unity Catalog permissions.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for berth and dwell questions in the operations channel.

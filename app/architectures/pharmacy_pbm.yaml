@@ -534,7 +534,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Executive and clinical dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Executive and clinical dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for net-cost and adherence answers in the channel clinical and finance already work in.

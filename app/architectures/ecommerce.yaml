@@ -478,7 +478,7 @@ consumers:
     tiles:
       - name: Tableau / Looker
         icon: chart
-        summary: Growth and ops dashboards on serverless SQL.
+        summary: Growth and ops dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for daily revenue in growth standups.

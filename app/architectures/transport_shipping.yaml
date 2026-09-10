@@ -480,7 +480,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Operations and finance dashboards on serverless SQL.
+        summary: Operations and finance dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for OTIF and detention questions in the control tower channel.

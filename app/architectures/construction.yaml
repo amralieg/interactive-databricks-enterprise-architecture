@@ -474,7 +474,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Portfolio dashboards on serverless SQL.
+        summary: Portfolio dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for job status in project channels.

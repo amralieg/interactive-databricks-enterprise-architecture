@@ -479,7 +479,7 @@ consumers:
     tiles:
       - name: Tableau / Spotfire
         icon: chart
-        summary: Enrollment and safety dashboards on serverless SQL.
+        summary: Enrollment and safety dashboards on SQL warehouses.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for enrollment status in study teams.

@@ -474,7 +474,7 @@ consumers:
     tiles:
       - name: Tableau / Power BI
         icon: chart
-        summary: Partner and practice dashboards against serverless SQL with Unity Catalog permissions enforced end to end.
+        summary: Partner and practice dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
       - name: Microsoft Teams
         icon: chat
         summary: Genie in Teams for governed answers on utilization and margin in the channel the firm already works in (Beta).
