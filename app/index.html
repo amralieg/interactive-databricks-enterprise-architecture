@@ -524,23 +524,26 @@
      icon beside them keeps its place. */
   html[data-dir="rtl"] .plat-head,
   html[data-dir="rtl"] .colhead,
-  html[data-dir="rtl"] .pockhead { direction:rtl; }
+  html[data-dir="rtl"] .pockhead,
+  html[data-dir="rtl"] .ms-s { direction:rtl; }
+  html[data-dir="rtl"] .rtile,
+  html[data-dir="rtl"] .ctile,
+  html[data-dir="rtl"] .rgroup-t,
+  html[data-dir="rtl"] .band-lbl,
+  html[data-dir="rtl"] .band-lbl .bl-name,
+  html[data-dir="rtl"] .cloud-lbl,
+  html[data-dir="rtl"] .cloud-lbl .cl-name,
+  html[data-dir="rtl"] .rail-note,
+  html[data-dir="rtl"] .oi-lbl,
   html[data-dir="rtl"] .t-name,
   html[data-dir="rtl"] .ct-name,
   html[data-dir="rtl"] .ct-sub,
   html[data-dir="rtl"] .rg-label,
-  html[data-dir="rtl"] .rail-note,
   html[data-dir="rtl"] .p-sub,
   html[data-dir="rtl"] .pc-desc,
   html[data-dir="rtl"] .tagpill,
   html[data-dir="rtl"] .fc-stage,
-  html[data-dir="rtl"] .p-caps,
-  html[data-dir="rtl"] .oi-lbl,
-  html[data-dir="rtl"] .band-lbl .bl-name > span,
-  html[data-dir="rtl"] .band-lbl .bl-sub,
-  html[data-dir="rtl"] .cloud-lbl .cl-name > span,
-  html[data-dir="rtl"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
-  html[data-dir="rtl"] .ms-s { direction:rtl; }
+  html[data-dir="rtl"] .p-caps { direction:rtl; text-align:right; }
   /* Detail panel is a self-contained column, so it flips wholesale in Arabic:
      the head + body read right-to-left (dir is stamped on #d-head/#d-body), and
      the close/dock controls move to the natural RTL side (top-left) so the
@@ -11078,7 +11081,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.3";
+const BUILD = "0.3.4";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
