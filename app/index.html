@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -522,24 +522,33 @@
      paragraph. Centred headers take container-level rtl (the lead mark moves to
      the natural reading side); tile and band labels take leaf-level rtl so the
      icon beside them keeps its place. */
-  html[data-lang="ar"] .plat-head,
-  html[data-lang="ar"] .colhead,
-  html[data-lang="ar"] .pockhead { direction:rtl; }
-  html[data-lang="ar"] .t-name,
-  html[data-lang="ar"] .ct-name,
-  html[data-lang="ar"] .ct-sub,
-  html[data-lang="ar"] .band-lbl .bl-name > span,
-  html[data-lang="ar"] .band-lbl .bl-sub,
-  html[data-lang="ar"] .cloud-lbl .cl-name > span,
-  html[data-lang="ar"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
+  html[data-dir="rtl"] .plat-head,
+  html[data-dir="rtl"] .colhead,
+  html[data-dir="rtl"] .pockhead { direction:rtl; }
+  html[data-dir="rtl"] .t-name,
+  html[data-dir="rtl"] .ct-name,
+  html[data-dir="rtl"] .ct-sub,
+  html[data-dir="rtl"] .rg-label,
+  html[data-dir="rtl"] .rail-note,
+  html[data-dir="rtl"] .p-sub,
+  html[data-dir="rtl"] .pc-desc,
+  html[data-dir="rtl"] .tagpill,
+  html[data-dir="rtl"] .fc-stage,
+  html[data-dir="rtl"] .p-caps,
+  html[data-dir="rtl"] .oi-lbl,
+  html[data-dir="rtl"] .band-lbl .bl-name > span,
+  html[data-dir="rtl"] .band-lbl .bl-sub,
+  html[data-dir="rtl"] .cloud-lbl .cl-name > span,
+  html[data-dir="rtl"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
+  html[data-dir="rtl"] .ms-s { direction:rtl; }
   /* Detail panel is a self-contained column, so it flips wholesale in Arabic:
      the head + body read right-to-left (dir is stamped on #d-head/#d-body), and
      the close/dock controls move to the natural RTL side (top-left) so the
      right-aligned title no longer collides with them. The panel keeps its
      right-edge anchor; only its internal reading order flips. */
-  html[data-lang="ar"] .d-close { right:auto; left:16px; }
-  html[data-lang="ar"] .d-dock { right:auto; left:52px; }
-  html[data-lang="ar"] body.docked .d-dock { left:16px; }
+  html[data-dir="rtl"] .d-close { right:auto; left:16px; }
+  html[data-dir="rtl"] .d-dock { right:auto; left:52px; }
+  html[data-dir="rtl"] body.docked .d-dock { left:16px; }
   /* Toolbar stays English chrome: force the Latin stack regardless of content
      language. Native language names in the picker still fall back per-glyph. */
   header.top { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
@@ -1907,9 +1916,10 @@
      shape intact. A steady coloured halo plus an expanding pulse ring keeps it
      visible in both light and dark themes. Colour is driven by --bd so accel and
      conn share one animation. */
-  .badge-dot { position:absolute; top:2.5px; right:2.5px; width:8px; height:8px; border-radius:50%;
+  :root{ --dot-sz:6.4px; --dot-top:-3.2px; --dot-glow:5.6px; --dot-spread:1.6px; --dot-pitch:8.8px; --dot-edge:5.6px; }
+  .badge-dot { position:absolute; top:2.5px; right:2.5px; width:var(--dot-sz); height:var(--dot-sz); border-radius:50%;
     background:var(--bd); pointer-events:none; z-index:3;
-    box-shadow:0 0 7px 2px var(--bd), 0 0 0 1px rgba(255,255,255,.55);
+    box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 1px rgba(255,255,255,.55);
     animation:badgePulse 1.6s ease-out infinite; }
   /* One dot per highlight kind, each its own colour. A tile can carry several,
      so the position comes from an hl-p* anchor assigned by paintHighlights: a
@@ -1922,24 +1932,38 @@
   .hl-course { --bd:#e6398a; }
   .hl-video  { --bd:#ef4444; }
   /* Swatch beside each row in the Highlights menu, same colour as the dot. */
-  .hl-swatch { display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--bd);
-    box-shadow:0 0 5px 1px var(--bd); flex:0 0 auto; margin-right:2px; }
+  .hl-swatch { display:inline-block; width:7.2px; height:7.2px; border-radius:50%; background:var(--bd);
+    box-shadow:0 0 4px .8px var(--bd); flex:0 0 auto; margin-right:2px; }
   /* Search box at the top of the Region menu, and the location gloss per row. */
   .pal-menu .men-search { padding:6px 8px 4px; }
   .pal-menu .men-search input { width:100%; box-sizing:border-box; font-size:12px; padding:6px 9px;
     border:1px solid var(--line); border-radius:7px; background:var(--card); color:inherit; }
   .pal-menu button em { font-style:normal; color:var(--faint); font-size:11px; }
   #region-menu { max-height:62vh; overflow-y:auto; }
-  /* Dots straddle the TOP BORDER LINE of the box (top:-4px centres the 8px dot on
-     the 1px edge) in a left-to-right row starting just past the rounded corner
-     (11px pitch = 8px dot + 3px gap). */
-  .badge-dot.hl-p1 { top:-4px; left:7px;  bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p2 { top:-4px; left:18px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p3 { top:-4px; left:29px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p4 { top:-4px; left:40px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p5 { top:-4px; left:51px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p6 { top:-4px; left:62px; bottom:auto; right:auto; transform:none; }
-  .badge-dot.hl-p7 { top:-4px; left:73px; bottom:auto; right:auto; transform:none; }
+  /* Dots straddle the TOP BORDER LINE of the box (--dot-top centres the dot on
+     the 1px edge) in a row starting just past the rounded corner (--dot-pitch =
+     dot size + gap). */
+  .badge-dot.hl-p1 { top:var(--dot-top); left:var(--dot-edge); bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p2 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch));   bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p3 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch)*2); bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p4 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch)*3); bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p5 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch)*4); bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p6 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch)*5); bottom:auto; right:auto; transform:none; }
+  .badge-dot.hl-p7 { top:var(--dot-top); left:calc(var(--dot-edge) + var(--dot-pitch)*6); bottom:auto; right:auto; transform:none; }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p1,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p1 { left:auto; right:var(--dot-edge); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p2,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p2 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p3,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p3 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)*2); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p4,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p4 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)*3); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p5,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p5 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)*4); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p6,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p6 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)*5); }
+  html:not([data-dir="rtl"]) .pocket.ppl .badge-dot.hl-p7,
+  html:not([data-dir="rtl"]) .rail.ppl   .badge-dot.hl-p7 { left:auto; right:calc(var(--dot-edge) + var(--dot-pitch)*6); }
   /* A highlight switched off in the Highlights menu hides that colour everywhere;
      paintHighlights re-packs the survivors into the corners after each toggle. */
   body.hl-off-accel  .badge-dot.hl-accel,
@@ -1953,9 +1977,9 @@
      rather than removing them: the shape stays whole and the gap is legible. */
   .atom.rg-off { opacity:.16; filter:grayscale(1); }
   @keyframes badgePulse {
-    0%   { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 var(--bd); }
-    70%  { box-shadow:0 0 7px 2px var(--bd), 0 0 0 7px transparent; }
-    100% { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 transparent; }
+    0%   { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 0 var(--bd); }
+    70%  { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 var(--dot-glow) transparent; }
+    100% { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 0 transparent; }
   }
   .d-badge { margin:4px 0 2px; padding:9px 11px; border:1px solid var(--bd); border-radius:8px;
     background:var(--bdbg); }
@@ -1963,8 +1987,8 @@
   .d-badge.conn  { --bd:#12b6ef; --bdbg:rgba(18,182,239,.09); }
   .d-badge .db-h { display:flex; align-items:center; gap:7px; font-weight:800; font-size:12.5px;
     letter-spacing:.01em; }
-  .d-badge .db-dot { width:9px; height:9px; border-radius:50%; background:var(--bd); flex:0 0 auto;
-    box-shadow:0 0 7px 1px var(--bd); animation:badgePulse 1.6s ease-out infinite; }
+  .d-badge .db-dot { width:7.2px; height:7.2px; border-radius:50%; background:var(--bd); flex:0 0 auto;
+    box-shadow:0 0 5.6px .8px var(--bd); animation:badgePulse 1.6s ease-out infinite; }
   .d-badge p { margin:6px 0 8px; font-size:12.5px; }
   .d-badge .d-links { gap:0; }
   @media (prefers-reduced-motion: reduce){ .badge-dot, .d-badge .db-dot { animation:none; } }
@@ -2451,8 +2475,8 @@
   .d-back:hover { color:var(--ink); }
   .drawer.hasback .d-back { display:inline-flex; }
   .drawer.hasback .d-head { padding-left:56px; }
-  html[data-lang="ar"] .d-back { left:auto; right:16px; }
-  html[data-lang="ar"] .drawer.hasback .d-head { padding-left:24px; padding-right:56px; }
+  html[data-dir="rtl"] .d-back { left:auto; right:16px; }
+  html[data-dir="rtl"] .drawer.hasback .d-head { padding-left:24px; padding-right:56px; }
   @media print { .d-back { display:none!important; } }
   .d-refbox { background:var(--brand-wash); border:1px solid var(--brand-soft); border-radius:9px; padding:9px 12px; }
   /* No bullet glyph: the leading chip already marks where each row starts, and a
@@ -4432,6 +4456,7 @@ async function applyLang(code, persist){
   I18N.lang = meta.code; I18N.dir = meta.dir;
   if(persist) store.set(LANG_LS, meta.code);
   document.documentElement.setAttribute("data-lang", meta.code);
+  document.documentElement.setAttribute("data-dir", meta.dir || "ltr");
   /* The real lang attribute (not just data-lang) is what CSS hyphens:auto keys
      off for language-correct word breaks, and it improves a11y/screen-reader
      pronunciation. data-lang stays as the styling hook the rest of the CSS uses. */
@@ -7433,6 +7458,8 @@ function exportCss(){
      the already-rescoped selectors are left alone. */
   css = css.replace(/html\[data-lang="([a-z-]+)"\]\s+body\b/g, '.exp-body[data-lang="$1"]')
            .replace(/html\[data-lang="([a-z-]+)"\]/g, '.exp-body[data-lang="$1"]')
+           .replace(/html\[data-dir="(rtl|ltr)"\]/g, '.exp-body[data-dir="$1"]')
+           .replace(/html:not\(\[data-dir="rtl"\]\)/g, '.exp-body:not([data-dir="rtl"])')
            .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body");
   /* Highlight dots are an interactive overlay, not part of the architecture, so
      every raster/vector export (PNG, PDF, PPTX, GIF share this frozen CSS) drops
@@ -7452,13 +7479,14 @@ function boardSvgMarkup(phase){
   /* data-lang travels so the re-scoped html[data-lang] rules fire on the wrapper.
      Direction, however, must match the LIVE board root, which is always ltr: the
      app applies RTL only to leaf text (.plat-head/.t-name/.band-lbl/... via the
-     html[data-lang="ar"] rules), never to the board itself. Stamping dir="rtl"
+     html[data-dir="rtl"] rules), never to the board itself. Stamping dir="rtl"
      on the wrapper turned the .mid grid RTL, so grid-column-start:3/4 placed the
      platform blocks mirrored (upper block overhanging the wrong side) while the
      zring path — measured against the live ltr placement — stayed put, leaving
      the dashed ring drifted ~235px off the boxes. Matching the live ltr root
      keeps the grid identical to screen; the leaf RTL text rules still apply. */
   wrap.setAttribute("data-lang", (typeof I18N !== "undefined" && I18N.lang) || "en");
+  wrap.setAttribute("data-dir", document.documentElement.getAttribute("data-dir") || "ltr");
   wrap.setAttribute("dir", document.documentElement.getAttribute("dir") || "ltr");
   wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";" +
     (phase == null ? "" : "--dash-t:" + phase + ";"));
@@ -11050,7 +11078,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.2";
+const BUILD = "0.3.3";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });

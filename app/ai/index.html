@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-dir="ltr">
 <head>
 <base href="../">
 <meta charset="UTF-8">
@@ -523,24 +523,33 @@
      paragraph. Centred headers take container-level rtl (the lead mark moves to
      the natural reading side); tile and band labels take leaf-level rtl so the
      icon beside them keeps its place. */
-  html[data-lang="ar"] .plat-head,
-  html[data-lang="ar"] .colhead,
-  html[data-lang="ar"] .pockhead { direction:rtl; }
-  html[data-lang="ar"] .t-name,
-  html[data-lang="ar"] .ct-name,
-  html[data-lang="ar"] .ct-sub,
-  html[data-lang="ar"] .band-lbl .bl-name > span,
-  html[data-lang="ar"] .band-lbl .bl-sub,
-  html[data-lang="ar"] .cloud-lbl .cl-name > span,
-  html[data-lang="ar"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
+  html[data-dir="rtl"] .plat-head,
+  html[data-dir="rtl"] .colhead,
+  html[data-dir="rtl"] .pockhead { direction:rtl; }
+  html[data-dir="rtl"] .t-name,
+  html[data-dir="rtl"] .ct-name,
+  html[data-dir="rtl"] .ct-sub,
+  html[data-dir="rtl"] .rg-label,
+  html[data-dir="rtl"] .rail-note,
+  html[data-dir="rtl"] .p-sub,
+  html[data-dir="rtl"] .pc-desc,
+  html[data-dir="rtl"] .tagpill,
+  html[data-dir="rtl"] .fc-stage,
+  html[data-dir="rtl"] .p-caps,
+  html[data-dir="rtl"] .oi-lbl,
+  html[data-dir="rtl"] .band-lbl .bl-name > span,
+  html[data-dir="rtl"] .band-lbl .bl-sub,
+  html[data-dir="rtl"] .cloud-lbl .cl-name > span,
+  html[data-dir="rtl"] .cloud-lbl .cl-sub { direction:rtl; text-align:right; }
+  html[data-dir="rtl"] .ms-s { direction:rtl; }
   /* Detail panel is a self-contained column, so it flips wholesale in Arabic:
      the head + body read right-to-left (dir is stamped on #d-head/#d-body), and
      the close/dock controls move to the natural RTL side (top-left) so the
      right-aligned title no longer collides with them. The panel keeps its
      right-edge anchor; only its internal reading order flips. */
-  html[data-lang="ar"] .d-close { right:auto; left:16px; }
-  html[data-lang="ar"] .d-dock { right:auto; left:52px; }
-  html[data-lang="ar"] body.docked .d-dock { left:16px; }
+  html[data-dir="rtl"] .d-close { right:auto; left:16px; }
+  html[data-dir="rtl"] .d-dock { right:auto; left:52px; }
+  html[data-dir="rtl"] body.docked .d-dock { left:16px; }
   /* Toolbar stays English chrome: force the Latin stack regardless of content
      language. Native language names in the picker still fall back per-glyph. */
   header.top { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
@@ -1913,16 +1922,17 @@
      shape intact. A steady coloured halo plus an expanding pulse ring keeps it
      visible in both light and dark themes. Colour is driven by --bd so accel and
      conn share one animation. */
-  .badge-dot { position:absolute; top:2.5px; right:2.5px; width:8px; height:8px; border-radius:50%;
+  :root{ --dot-sz:6.4px; --dot-glow:5.6px; --dot-spread:1.6px; }
+  .badge-dot { position:absolute; top:2.5px; right:2.5px; width:var(--dot-sz); height:var(--dot-sz); border-radius:50%;
     background:var(--bd); pointer-events:none; z-index:3;
-    box-shadow:0 0 7px 2px var(--bd), 0 0 0 1px rgba(255,255,255,.55);
+    box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 1px rgba(255,255,255,.55);
     animation:badgePulse 1.6s ease-out infinite; }
   .badge-dot.accel { --bd:#ff5f2e; }
   .badge-dot.conn  { --bd:#12b6ef; }
   @keyframes badgePulse {
-    0%   { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 var(--bd); }
-    70%  { box-shadow:0 0 7px 2px var(--bd), 0 0 0 7px transparent; }
-    100% { box-shadow:0 0 7px 2px var(--bd), 0 0 0 0 transparent; }
+    0%   { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 0 var(--bd); }
+    70%  { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 var(--dot-glow) transparent; }
+    100% { box-shadow:0 0 var(--dot-glow) var(--dot-spread) var(--bd), 0 0 0 0 transparent; }
   }
   .d-badge { margin:4px 0 2px; padding:9px 11px; border:1px solid var(--bd); border-radius:8px;
     background:var(--bdbg); }
@@ -1930,8 +1940,8 @@
   .d-badge.conn  { --bd:#12b6ef; --bdbg:rgba(18,182,239,.09); }
   .d-badge .db-h { display:flex; align-items:center; gap:7px; font-weight:800; font-size:12.5px;
     letter-spacing:.01em; }
-  .d-badge .db-dot { width:9px; height:9px; border-radius:50%; background:var(--bd); flex:0 0 auto;
-    box-shadow:0 0 7px 1px var(--bd); animation:badgePulse 1.6s ease-out infinite; }
+  .d-badge .db-dot { width:7.2px; height:7.2px; border-radius:50%; background:var(--bd); flex:0 0 auto;
+    box-shadow:0 0 5.6px .8px var(--bd); animation:badgePulse 1.6s ease-out infinite; }
   .d-badge p { margin:6px 0 8px; font-size:12.5px; }
   .d-badge .d-links { gap:0; }
   @media (prefers-reduced-motion: reduce){ .badge-dot, .d-badge .db-dot { animation:none; } }
@@ -4344,6 +4354,7 @@ async function applyLang(code, persist){
   I18N.lang = meta.code; I18N.dir = meta.dir;
   if(persist) store.set(LANG_LS, meta.code);
   document.documentElement.setAttribute("data-lang", meta.code);
+  document.documentElement.setAttribute("data-dir", meta.dir || "ltr");
   /* The real lang attribute (not just data-lang) is what CSS hyphens:auto keys
      off for language-correct word breaks, and it improves a11y/screen-reader
      pronunciation. data-lang stays as the styling hook the rest of the CSS uses. */
@@ -6941,6 +6952,8 @@ function exportCss(){
      the already-rescoped selectors are left alone. */
   css = css.replace(/html\[data-lang="([a-z-]+)"\]\s+body\b/g, '.exp-body[data-lang="$1"]')
            .replace(/html\[data-lang="([a-z-]+)"\]/g, '.exp-body[data-lang="$1"]')
+           .replace(/html\[data-dir="(rtl|ltr)"\]/g, '.exp-body[data-dir="$1"]')
+           .replace(/html:not\(\[data-dir="rtl"\]\)/g, '.exp-body:not([data-dir="rtl"])')
            .replace(/(^|[\s,{}])body(?=[\s.,:{])/g, "$1.exp-body");
   return css + "\n*,*::before,*::after{animation:none!important;transition:none!important;}\n";
 }
@@ -6956,13 +6969,14 @@ function boardSvgMarkup(phase){
   /* data-lang travels so the re-scoped html[data-lang] rules fire on the wrapper.
      Direction, however, must match the LIVE board root, which is always ltr: the
      app applies RTL only to leaf text (.plat-head/.t-name/.band-lbl/... via the
-     html[data-lang="ar"] rules), never to the board itself. Stamping dir="rtl"
+     html[data-dir="rtl"] rules), never to the board itself. Stamping dir="rtl"
      on the wrapper turned the .mid grid RTL, so grid-column-start:3/4 placed the
      platform blocks mirrored (upper block overhanging the wrong side) while the
      zring path — measured against the live ltr placement — stayed put, leaving
      the dashed ring drifted ~235px off the boxes. Matching the live ltr root
      keeps the grid identical to screen; the leaf RTL text rules still apply. */
   wrap.setAttribute("data-lang", (typeof I18N !== "undefined" && I18N.lang) || "en");
+  wrap.setAttribute("data-dir", document.documentElement.getAttribute("data-dir") || "ltr");
   wrap.setAttribute("dir", document.documentElement.getAttribute("dir") || "ltr");
   wrap.setAttribute("style", "width:" + w + "px;background:" + expBg() + ";" +
     (phase == null ? "" : "--dash-t:" + phase + ";"));
@@ -10556,7 +10570,7 @@ function paintBrandLogo(){
    new HTML. This AI variant sets <base href="../">, so "version.json" already
    resolves to app/version.json, the one file both apps share.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.2";
+const BUILD = "0.3.3";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
