@@ -121,6 +121,20 @@ sources:
               - semi-structured
             volume: 100s-1000s of telemetry msgs/sec
             interval: Continuous
+      - name: NETSCOUT nGeniusONE
+        icon: observ
+        summary: Packet-level service assurance and probe telemetry for voice, data and VoLTE across the network.
+        citations:
+          - netscout
+        category: Service Assurance / Network Probes
+        what_it_is: Deep-packet InfiniStreamNG probes feed the nGeniusONE service-assurance platform with subscriber-level QoE, VoLTE and session records across RAN, core and transport.
+        who_uses_it: Service assurance, NOC and RAN engineering teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k session and QoE records/sec
+            interval: Continuous
   - name: Customer & Care
     icon: custlake
     tiles:
@@ -713,7 +727,6 @@ agent_usecases:
           - What are the top complaint drivers behind low NPS?
           - Which segments have the best next-best-offer uptake?
           - How does ARPU trend by segment this quarter?
-          - How is the base distributed across plans and which packages are subscribers migrating to?
           - Which subscribers had a dropped call and then contacted care?
       - name: Fraud & Revenue Assurance Agent
         icon: genie
@@ -937,6 +950,9 @@ citation_index:
   cisco-crosswork:
     title: Cisco Crosswork
     url: https://www.cisco.com/c/en/us/products/cloud-systems-management/crosswork-network-automation/index.html
+  netscout:
+    title: NETSCOUT nGeniusONE
+    url: https://www.netscout.com/product/ngeniusone
   sf-service:
     title: Salesforce Service Cloud
     url: https://www.salesforce.com/service/

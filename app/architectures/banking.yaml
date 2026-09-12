@@ -41,7 +41,7 @@ sources:
         icon: erp
         summary: 'US core account processing: deposits, loans and GL on Fiserv DNA and Premier.'
         citations:
-          - finastra
+          - fiserv
         category: Core Banking System
         what_it_is: US community and regional bank core platform covering deposits, loans and the GL, with real-time posting on the DNA architecture.
         who_uses_it: Core operations and branch systems teams at US community and regional banks.
@@ -901,7 +901,7 @@ citation_index:
   fis-profile:
     title: FIS Profile
     url: https://www.fisglobal.com/products/core-banking
-  finastra:
+  fiserv:
     title: Fiserv DNA
     url: https://www.fiserv.com/
   visa:

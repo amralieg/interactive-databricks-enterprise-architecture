@@ -227,6 +227,20 @@ sources:
               - semi-structured
             volume: gridded forecast updates
             interval: Multiple forecast cycles daily
+      - name: Verizon Connect Fleet
+        icon: iot
+        summary: Crew vehicle location, driver safety and mobile-workforce telematics across the field fleet.
+        citations:
+          - verizon-connect
+        category: Fleet Telematics & Mobile Workforce
+        what_it_is: Streams crew vehicle location, driver safety and mobile-workforce telematics across the field fleet, feeding crew routing, storm restoration and field-work management.
+        who_uses_it: Storm coordinators, field engineering and fleet operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of GPS + event reads/sec
+            interval: Continuous (vehicle + crew telemetry)
   - name: Federation Sources
     icon: fed
     from: fed
@@ -796,12 +810,13 @@ agent_usecases:
         summary: Restoring feeders and customers after weather and grid anomalies, optimising crew routing and switching against critical premises.
         problem: When a storm hits, outages, crews and switching orders live in separate systems, so the control centre restores feeders blind to which fix strands another circuit or a critical customer.
         who_benefits: Grid Operations
-        how_built: AMI, SCADA and OMS feeds land in Lakehouse//RT; restoration and crew-routing options are scored in Model Serving and run from the OMS Control Tower on Lakebase, writing switching back to ADMS.
+        how_built: AMI, SCADA, OMS and crew-vehicle telematics feeds land in Lakehouse//RT; restoration and crew-routing options are scored in Model Serving and run from the OMS Control Tower on Lakebase, writing switching back to ADMS.
         components:
           - OMS Control Tower
           - Lakehouse//RT
           - Model Serving
           - Milsoft OMS
+          - Verizon Connect Fleet
           - Lakebase
         stories:
           - title: Alabama Power leverages Databricks for outage and storm modeling
@@ -942,3 +957,6 @@ citation_index:
   ieee-2030:
     title: IEEE 2030.5 Smart Energy Profile
     url: https://standards.ieee.org/standard/2030_5-2018.html
+  verizon-connect:
+    title: Verizon Connect
+    url: https://www.verizonconnect.com/

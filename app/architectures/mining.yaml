@@ -93,6 +93,20 @@ sources:
               - semi-structured
             volume: hundreds of readings/sec
             interval: Continuous equipment telemetry
+      - name: IBM Maximo
+        icon: gauge
+        summary: Work orders, component lifing and preventive-maintenance schedules for the mobile fleet and fixed plant.
+        citations:
+          - maximo
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages work orders, component lifing, spares and preventive-maintenance schedules for haul trucks, shovels and fixed plant as the maintenance system of record.
+        who_uses_it: Maintenance planning, reliability engineers and storeroom teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day work orders
+            interval: Nightly + event-driven
       - name: LIMS Assay Lab
         icon: gavel
         summary: Sample preparation, assay results and QA/QC duplicates for grade control.
@@ -470,7 +484,7 @@ consumers:
         icon: erp
         summary: Predicted component failures raised in CMMS before the truck leaves service.
         citations:
-          - metso
+          - maximo
   - name: Customers & Port
     icon: partner
     tiles:
@@ -755,6 +769,7 @@ agent_usecases:
         how_built: Fleet and concentrator telemetry streams into Lakehouse//RT and feeds remaining-life models tracked in MLflow and scored in Model Serving, raising a CMMS work order before the truck or mill leaves service.
         components:
           - Metso Metrics
+          - IBM Maximo
           - AVEVA PI System
           - Lakehouse//RT
           - Model Serving
@@ -886,6 +901,9 @@ citation_index:
   metso:
     title: Metso Metrics
     url: https://www.metso.com/portfolio/metso-metrics/
+  maximo:
+    title: IBM Maximo
+    url: https://www.ibm.com/products/maximo
   lims:
     title: Laboratory information management
     url: https://www.thermofisher.com/us/en/home/digital-solutions/lab-informatics.html

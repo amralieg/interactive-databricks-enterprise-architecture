@@ -109,7 +109,7 @@ sources:
         icon: stream
         summary: Electronic batch records, weighing and dispensing, and review by exception across GMP suites.
         citations:
-          - opcenter-pharma
+          - werum-pasx
         category: Manufacturing Execution System (MES)
         what_it_is: Runs electronic batch records, weighing and dispensing and review-by-exception across GMP suites, the system of record for how a batch was made.
         who_uses_it: Manufacturing Operations, Quality Assurance and GxP Validation Engineering.
@@ -553,7 +553,7 @@ consumers:
         icon: stream
         summary: Quality release decisions written back into MES before pallets ship.
         citations:
-          - opcenter-pharma
+          - werum-pasx
       - name: EDC Query Resolution
         icon: people
         summary: Data queries closed in EDC from governed discrepancy reports.
@@ -971,7 +971,7 @@ citation_index:
   oracle-clinical:
     title: Oracle Clinical One
     url: https://www.oracle.com/life-sciences/clinical-trials/
-  opcenter-pharma:
+  werum-pasx:
     title: Körber Werum PAS-X MES
     url: https://www.koerber-pharma.com/en/solutions/software/werum-pas-x-mes-suite
   pharmasuite:

@@ -297,7 +297,7 @@ pipelines:
         ucs:
           - Shop-Floor Production Monitoring
           - Factory Asset Reliability
-          - Financial Analytics & Close
+          - Working Capital & Cash Flow
       - name: Production & Scheduling
         mark: AI/BI
         summary: Finite scheduling, machining sequencing and labour loading against configured orders sales already promised, watched on schedule adherence and WIP ageing.
@@ -380,6 +380,7 @@ pipelines:
             cares: change orders and how field reliability feeds the next revision.
         ucs:
           - Program & Proposal Management
+          - Design Space Simulation
           - In-Process Machining Defect Detection
           - Connected-Asset Health
       - name: Finance & Supply Chain
@@ -402,7 +403,7 @@ pipelines:
         ucs:
           - Supply & Materials Planning
           - Working Capital & Cash Flow
-          - Financial Analytics & Close
+          - Program & Proposal Management
   - name: Technical
     icon: code
     tiles:
@@ -844,19 +845,19 @@ agent_usecases:
         stories:
           - title: Mondelez facilitates model experimentation at enterprise scale
             url: https://www.databricks.com/customers/mondelez
-      - name: Financial Analytics & Close
-        short: Finance
-        icon: chart
-        summary: Program margin, cost and the financial close read from governed data instead of reconciled spreadsheets.
-        problem: Margin by program, cost allocations and the close are stitched from ERP exports and federated finance marts by hand, so the numbers the board reads arrive late and are hard to trust.
-        who_benefits: Finance & Supply Chain
-        how_built: SAP postings and federated finance marts are queried in place and conformed under Unity Catalog on Delta Lake, so program margin and the close are read on certified AI/BI Metric Views with lineage.
+      - name: Design Space Simulation
+        short: Engineering
+        icon: network
+        summary: Structural, hydraulic and thermal design-space explored with simulation and surrogate models before metal is cut and a prototype is built.
+        problem: Each design iteration waits on a full CAE run and a physical prototype, so structural, hydraulic and thermal trade-offs are explored slowly and late, and the design that would cut weight, cost and warranty is never fully searched.
+        who_benefits: Engineering & Programs
+        how_built: Teamcenter and Windchill design data and connected-asset field telemetry conform on Delta Lake; surrogate models tracked in MLflow and served through Model Serving explore the design-space so trade-offs are proven virtually before build.
         components:
-          - Corporate Data Warehouse
-          - SAP S/4HANA
-          - Unity Catalog
-          - Delta Lake
-          - AI/BI
+          - Siemens Teamcenter
+          - PTC Windchill
+          - Model Serving
+          - MLflow
+          - Feature Store
       - name: Warranty Cost Optimisation
         short: Warranty
         icon: product

@@ -143,6 +143,21 @@ sources:
               - unstructured
             volume: 100s of MB/day
             interval: Daily + on change
+      - name: Enablon EHS
+        icon: observ
+        summary: Process-safety incidents, near-misses and permit-to-work compliance.
+        citations:
+          - enablon
+        category: EHS & Process Safety Management
+        what_it_is: Records process-safety incidents, near-misses, loss-of-primary-containment events and permit-to-work compliance tied to plant, unit and crew.
+        who_uses_it: EHS, process safety and Plant operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day events
+            interval: Hourly / daily
   - name: Maintenance
     icon: zplug
     tiles:
@@ -296,6 +311,7 @@ pipelines:
             cares: Scope 1 and 2 intensity and the credibility of what the company reports.
         ucs:
           - Carbon Intensity & Circularity
+          - Workforce Safety
           - Steam & Power per Ton
           - Rotating-Equipment Reliability
       - name: Plant Operations
@@ -371,7 +387,6 @@ pipelines:
           - name: Customer Service
             cares: on-time-in-full and contract-fill promises to key accounts.
         ucs:
-          - Grade & Tonnage Forecasting
           - Feedstock & Bulk Planning
           - Batch Genealogy
   - name: Technical
@@ -439,7 +454,7 @@ pipelines:
         ucs:
           - Off-Spec Root-Cause
           - Batch Genealogy
-          - Grade & Tonnage Forecasting
+          - Autonomous Formulation Lab
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -791,22 +806,20 @@ agent_usecases:
         stories:
           - title: How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale
             url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-      - name: Grade & Tonnage Forecasting
-        short: Demand
-        icon: sheet
-        summary: Demand for each product grade and tonnage forecast across regions and contracts.
-        problem: Demand for each grade swings with commodity cycles and customer contracts, but forecasts are built in spreadsheets per region, so plants plan to numbers that miss the actual pull and either strand tonnes or stock out of the high-margin grade.
-        who_benefits: Supply Chain
-        how_built: Orders, contracts and ICIS price signals conform from ERP and planning, and demand models in the Allocation Optimizer forecast grade-level tonnage by region for the S&OP plan to commit against.
+      - name: Workforce Safety
+        short: HSE
+        icon: gavel
+        summary: Process-safety and permit signals surfaced so unsafe conditions are caught before an incident.
+        problem: Process-safety incidents, near-misses and permit-to-work records sit across EHS, historian and shift systems, so leading indicators of an unsafe condition are only joined up after a loss-of-containment event when the investigation reconstructs them.
+        who_benefits: CEO & EHS Council
+        how_built: Incident, permit and process-alarm data conform under Unity Catalog on Delta Lake, and leading-indicator models scored in Model Serving surface unsafe trends on the Batch Cockpit before an incident.
         components:
-          - Allocation Optimizer
-          - SAP S/4HANA PP-PI
-          - AspenTech Supply
+          - Batch Cockpit
+          - Enablon EHS
+          - AVEVA PI System
           - Model Serving
-          - AI/BI
-        stories:
-          - title: Corning streamlines data with Databricks Lakeflow Jobs
-            url: https://www.databricks.com/customers/corning
+          - Unity Catalog
+          - Delta Lake
       - name: Feedstock & Bulk Planning
         short: Supply
         icon: stream
@@ -889,7 +902,7 @@ citation_index:
     url: https://www.ibm.com/products/maximo
   sap-pm:
     title: SAP Plant Maintenance
-    url: https://www.sap.com/products/scm/asset-management.html
+    url: https://www.sap.com/products/scm.html
   sap-tm:
     title: SAP Transportation Management
     url: https://www.sap.com/products/scm/transportation-logistics.html
@@ -905,3 +918,6 @@ citation_index:
   icis:
     title: ICIS
     url: https://www.icis.com/
+  enablon:
+    title: Wolters Kluwer Enablon
+    url: https://www.wolterskluwer.com/en/solutions/enablon

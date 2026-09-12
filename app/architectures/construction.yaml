@@ -381,7 +381,7 @@ pipelines:
         ucs:
           - Site Progress & Reality Capture
           - Equipment Predictive Maintenance
-          - Prescriptive Equipment Maintenance
+          - Workforce Management & Training
       - name: Safety & Quality
         mark: Apps
         summary: Incident prevention, inspections and closeout documentation, measured on TRIR, leading-indicator closure and punch-list burndown.
@@ -464,7 +464,7 @@ pipelines:
           - name: Agent Developer
             cares: agents drafting change orders and recovery plans on governed data.
         ucs:
-          - Prescriptive Equipment Maintenance
+          - Workforce Management & Training
           - Workforce Safety Analytics
           - Materials & Procurement Planning
 consumers:
@@ -801,20 +801,20 @@ agent_usecases:
             url: https://www.databricks.com/customers/trackunit
           - title: Maximizing equipment utilization through geospatial analytics
             url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
-      - name: Prescriptive Equipment Maintenance
-        short: Reliability
-        icon: gauge
-        summary: The right repair, parts and lowest-impact window recommended once a fault is predicted.
-        problem: Even when a fault is predicted, the crew still guesses the fix, the parts and the window, so machines wait on the wrong spares and maintenance competes with the production schedule.
+      - name: Workforce Management & Training
+        short: Workforce
+        icon: people
+        summary: Craft labor productivity, crew deployment and certification currency tracked so a trained crew is on the critical path.
+        problem: Craft labor is the largest controllable cost on a job, yet productivity, crew deployment and who holds which certification sit across daily logs, payroll and safety systems, so undermanned trades and lapsed certifications surface only after the schedule has already slipped.
         who_benefits: Field Superintendents
-        how_built: Predicted failures, parts and utilization conform on Delta Lake, AI Functions and Model Serving recommend the repair, parts and lowest-impact window, and the work order and its state are managed in the Field Daily Log on Lakebase.
+        how_built: Procore daily logs, Viewpoint labor hours and HammerTech induction and training records conform on Delta Lake, so units per labor hour, crew deployment and certification currency read in the Field Daily Log and AI/BI against the P6 plan.
         components:
           - Field Daily Log
-          - Samsara Fleet
-          - AI Functions
-          - Model Serving
-          - Lakebase
+          - Procore
+          - Trimble Viewpoint Vista
+          - HammerTech
           - Delta Lake
+          - AI/BI
       - name: Materials & Procurement Planning
         short: Supply
         icon: zplug
@@ -916,7 +916,7 @@ citation_index:
     url: https://www.autodesk.com/products/navisworks/
   itwin:
     title: Bentley iTwin
-    url: https://www.bentley.com/software/itwin/
+    url: https://www.bentley.com/software/itwin-platform/
   samsara:
     title: Samsara
     url: https://www.samsara.com/

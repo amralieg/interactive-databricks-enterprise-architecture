@@ -61,7 +61,7 @@ sources:
         icon: stream
         summary: 'Motorola PremierOne computer-aided dispatch: call intake, unit recommendation and incident timestamps, a widely deployed CAD system of record feeding the same incident and unit entities.'
         citations:
-          - centralsquare
+          - motorola-cad
         category: Computer-Aided Dispatch (CAD)
         what_it_is: Widely deployed CAD covering call intake, unit recommendation and incident timestamps, feeding the same incident and unit entities.
         who_uses_it: Dispatchers, watch commanders and patrol operations.
@@ -940,7 +940,7 @@ citation_index:
   carbyne:
     title: Carbyne NG911 call handling
     url: https://carbyne.com/
-  centralsquare:
+  motorola-cad:
     title: Motorola PremierOne CAD
     url: https://www.motorolasolutions.com/en_us/products/command-center-software/public-safety-software/premierone/premierone-cad.html
   mark43:

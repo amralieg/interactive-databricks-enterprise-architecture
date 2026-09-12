@@ -52,6 +52,20 @@ sources:
               - semi-structured
             volume: 5-30 GB/day contextualised
             interval: Continuous + periodic model updates
+      - name: Dragos Platform
+        icon: observ
+        summary: OT and ICS threat detection across pipeline SCADA, controllers and station networks.
+        citations:
+          - dragos
+        category: OT/ICS Cybersecurity Platform
+        what_it_is: Monitors pipeline SCADA, controllers and station networks for OT and ICS threats, emitting asset inventory, vulnerability and threat-detection telemetry for the security operations team.
+        who_uses_it: OT security, SOC analysts and controls engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous threat telemetry
   - name: Commercial & Scheduling
     icon: market
     tiles:
@@ -310,7 +324,7 @@ pipelines:
         ucs:
           - Throughput & Linepack Monitoring
           - Capacity Marketing & Trading
-          - Working Capital & Cash Flow
+          - Cyber Threat Monitoring & Detection
       - name: Pipeline Control & Operations
         mark: Lakehouse//RT
         summary: Controllers on linepack, nominations and station load when schedules slip, protecting throughput and hydrocarbon loss rate.
@@ -848,19 +862,20 @@ agent_usecases:
           - Model Serving
           - Unity Catalog
           - Delta Lake
-      - name: Working Capital & Cash Flow
-        short: Finance
-        icon: erp
-        summary: Capacity revenue, imbalance cash-out and cost reconciled so cash position is current not month-end.
-        problem: Capacity revenue, imbalance cash-out and operating cost are reconciled at month-end across accounting and treasury tools, so the cash position lags the network and financing decisions are made on stale numbers.
+      - name: Cyber Threat Monitoring & Detection
+        short: OT security
+        icon: observ
+        summary: OT and IT telemetry correlated across the pipeline network so threats to SCADA and control systems are detected and contained early.
+        problem: OT threat detection, asset inventory and IT security logs sit in separate tools, so an intrusion into pipeline SCADA or a control-system anomaly is seen late and the blast radius across stations is hard to scope when it matters.
         who_benefits: Corporate & Network Leaders
-        how_built: Accounting and treasury data conform on Delta Lake under Unity Catalog, and reconciled cash and revenue surface on certified AI/BI views and the Trading Workbench so the position stays current.
+        how_built: Dragos OT telemetry, historian signals and IT security logs conform under Unity Catalog on Delta Lake, and detection models scored in Model Serving correlate threats across the network on the Control Room before they spread.
         components:
-          - Trading Workbench
-          - SAP S/4HANA
-          - Corporate Treasury Mart
+          - Control Room
+          - Dragos Platform
+          - AVEVA PI System
+          - Model Serving
           - Unity Catalog
-          - AI/BI
+          - Delta Lake
 medallion:
   Bronze:
     short: Raw field and market
@@ -881,6 +896,9 @@ citation_index:
   cognite:
     title: Cognite Data Fusion
     url: https://www.cognite.com/
+  dragos:
+    title: Dragos Platform
+    url: https://www.dragos.com/
   quorum-pgas:
     title: Quorum PGAS
     url: https://www.quorumsoftware.com/solutions/midstream/

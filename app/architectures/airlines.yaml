@@ -344,7 +344,7 @@ cloud_integrations:
             interval: Continuous (near real-time)
       - name: IATA NDC / ONE Order APIs
         icon: api
-        summary: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic. Managed ELT connectors and existing Kafka or MSK topics carrying movement, baggage and sensor events land here too, and are drawn generically on the reference board.
+        summary: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic. Managed ELT connectors and existing Kafka or managed event-bus topics carrying movement, baggage and sensor events land here too, and are drawn generically on the reference board.
         citations:
           - ndc
         category: Airline Retailing APIs (NDC / ONE Order)
@@ -953,19 +953,19 @@ citation_index:
     url: https://www.sabre.com/products/suites/network-planning-and-optimization/
   pros-rm:
     title: PROS revenue management for airlines
-    url: https://pros.com/products/travel/revenue-management/
+    url: https://www.pros.com/
   atpco:
     title: ATPCO fare and rule filing
     url: https://www.atpco.net/
   netline:
     title: Lufthansa Systems NetLine/Sched
-    url: https://www.lhsystems.com/product/netline-sched
+    url: https://www.lhsystems.com/
   aims:
     title: AIMS crew management
     url: https://aims.aero/
   jeppesen:
     title: Jeppesen crew and operations
-    url: https://www.jeppesen.com/crew-solutions
+    url: https://www.jeppesen.com/
   aodb:
     title: Airport Operational Database, A-CDM
     url: https://www.eurocontrol.int/concept/airport-collaborative-decision-making
@@ -977,13 +977,13 @@ citation_index:
     url: https://www.faa.gov/air_traffic/technology/adsb
   worldtracer:
     title: SITA WorldTracer baggage tracing
-    url: https://www.sita.aero/solutions/sita-at-airports/baggage-solutions/worldtracer/
+    url: https://www.sita.aero/
   amos:
     title: Swiss-AS AMOS MRO
-    url: https://www.swiss-as.com/amos
+    url: https://www.swiss-as.com/
   cargospot:
     title: CHAMP Cargospot
-    url: https://www.champ.aero/solutions/cargospot
+    url: https://www.champ.aero/
   iata-bsp:
     title: IATA Billing and Settlement Plan
     url: https://www.iata.org/en/services/finance/bsp/

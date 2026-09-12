@@ -634,7 +634,6 @@ agent_usecases:
           - What is scrap cost by line and product this month versus last?
           - Which lines are behind the production plan right now?
           - What would a line-rate or changeover change do to throughput before we run it?
-          - What is the biggest loss bucket dragging throughput this quarter?
       - name: Quality & Traceability Agent
         icon: genie
         summary: Explore first-pass yield, non-conformance and lot genealogy across MES and QMS.

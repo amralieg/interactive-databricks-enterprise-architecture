@@ -812,7 +812,7 @@ agent_usecases:
         summary: Publishing certified open data and answering the public from the governed source, so the portal never drifts from the numbers the agency runs on.
         problem: Publishing open data means hand-built extracts that go stale, and the public portal drifts from the governed source it was copied from.
         who_benefits: Chief Data Officer
-        how_built: Curated Gold tables are published as data products and served to the portal and to residents through Genie and Public & Open Data, governed by Unity Catalog.
+        how_built: Curated Gold tables are published as data products and served to the portal and to residents through Genie and OpenSharing, governed by Unity Catalog.
         components:
           - Socrata Open Data
           - Data Products

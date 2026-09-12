@@ -366,7 +366,7 @@ pipelines:
           - name: Yard & Dock
             cares: trailer moves, dock-door assignment and yard turns.
         ucs:
-          - Load Consolidation
+          - Detention & Freight Audit
           - Driver & Workforce Safety
           - Incident & Roadside Assistant
       - name: Commercial & Pricing
@@ -386,7 +386,7 @@ pipelines:
             cares: shipper RFPs and the contract book behind tendered volume.
         ucs:
           - Freight Demand Forecasting
-          - Load Consolidation
+          - Dynamic Freight Pricing
           - Shipper Customer 360
       - name: Finance & Claims
         mark: AI/BI
@@ -472,7 +472,7 @@ pipelines:
         ucs:
           - Fleet Planning & Optimization
           - Incident & Roadside Assistant
-          - Load Consolidation
+          - Dynamic Freight Pricing
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -774,18 +774,19 @@ agent_usecases:
         stories:
           - title: 'J.B. Hunt: dynamic freight matching at scale'
             url: https://www.databricks.com/customers/jbhunt
-      - name: Load Consolidation
-        short: TMS
-        icon: erp
-        summary: LTL and partial loads combined to improve utilisation and margin.
-        problem: Partial and LTL loads are booked lane by lane with no view of what else moves nearby, so trucks run half full, empty miles pile up and margin leaks on every under-utilised move.
+      - name: Dynamic Freight Pricing
+        short: Pricing
+        icon: market
+        summary: Lane rates, accessorials and fuel surcharges priced against live demand, capacity and cost so bids win on margin, not just volume.
+        problem: Lane rates are quoted from static contract sheets and last quarter's spot averages, so bids are won at prices that no longer reflect live demand, capacity or fuel, and margin leaks on every mispriced load.
         who_benefits: Commercial & Pricing
-        how_built: Order and tender data land on Delta Lake, candidate consolidations are scored with Apache Spark and Model Serving, and recommended load builds surface in the Control Tower before tender.
+        how_built: MercuryGate rating, tender history and fuel indices conform on Delta Lake, and demand- and cost-aware pricing models tracked in MLflow score each lane through Model Serving, surfaced in the Rate Engine Workbench before a quote or tender.
         components:
-          - Control Tower
-          - Blue Yonder TMS
-          - Apache Spark
+          - Rate Engine Workbench
+          - MercuryGate TMS
           - Model Serving
+          - MLflow
+          - Fuel Index APIs
           - Delta Lake
       - name: Vehicle Predictive Maintenance
         short: Asset health

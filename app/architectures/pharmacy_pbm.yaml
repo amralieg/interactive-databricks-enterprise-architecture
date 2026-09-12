@@ -97,7 +97,7 @@ sources:
         icon: market
         summary: State Medicaid pharmacy benefit administration and point-of-sale claim processing for fee-for-service and single-PBM programs.
         citations:
-          - argus
+          - gainwell
         category: Medicaid Pharmacy Benefit System
         what_it_is: Administers state Medicaid pharmacy benefits and point-of-sale claim processing for fee-for-service and single-PBM programs, emitting POS claim records.
         who_uses_it: PBM Leadership, Trust & Comply and regulatory-affairs teams.
@@ -974,7 +974,7 @@ citation_index:
   rxclaim:
     title: SS&C Health (RxClaim)
     url: https://www.ssctech.com/
-  argus:
+  gainwell:
     title: Gainwell Rx Medicaid pharmacy
     url: https://www.gainwelltechnologies.com/solutions/pharmacy-solutions/
   ncpdp:

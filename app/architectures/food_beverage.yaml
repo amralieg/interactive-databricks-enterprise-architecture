@@ -304,7 +304,7 @@ pipelines:
             cares: planned downtime and the failures that stop a line mid-run.
         ucs:
           - Line Yield & Giveaway
-          - Packaging Vision Inspection
+          - Recipe & Formulation Control
           - Allergen & Contamination Root-Cause
       - name: Quality & Food Safety
         mark: AI/BI
@@ -797,22 +797,19 @@ agent_usecases:
             url: https://www.databricks.com/customers/albert-heijn
           - title: Scaling supply chain AI with Databricks Apps
             url: https://www.databricks.com/customers/a2go/databricks-apps
-      - name: Packaging Vision Inspection
-        short: Manufacturing
-        icon: chart
-        summary: Fill level, seal, label and date-code defects caught inline by camera before the case ships.
-        problem: Packaging defects like short fills, bad seals, crooked labels and missing date codes are caught by spot manual checks, so defective cases reach the pallet and a whole shift can be quarantined on one escape.
+      - name: Recipe & Formulation Control
+        short: Formulation
+        icon: sheet
+        summary: Batch recipes and process setpoints tuned for cost, yield and consistency as ingredient quality varies lot to lot.
+        problem: Ingredient cost and quality swing from lot to lot, but recipes and setpoints are fixed in the MES and nudged by tribal knowledge, so formulators overuse expensive ingredients to hold spec and product consistency drifts run to run.
         who_benefits: Plant Operations
-        how_built: Inline packaging-camera images triggered off FactoryTalk line signals land through Lakeflow and are scored by Mosaic AI vision models in Model Serving, with each defect tied to lot under Unity Catalog for the line to act in real time.
+        how_built: MES batch records, LIMS assay results and ERP ingredient costs are conformed on Delta Lake, and formulation models tracked in MLflow and scored through Model Serving recommend recipe and setpoint moves that hold spec at lowest cost for the line to confirm.
         components:
-          - Rockwell FactoryTalk
-          - Lakeflow
+          - Siemens Opcenter MES
+          - LabWare LIMS
           - Model Serving
-          - Mosaic AI
-          - Unity Catalog
-        stories:
-          - title: 'Agents for production lines: trusted decisions in real time'
-            url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
+          - MLflow
+          - Delta Lake
       - name: Sustainable Sourcing & Circularity
         short: ESG
         icon: globe

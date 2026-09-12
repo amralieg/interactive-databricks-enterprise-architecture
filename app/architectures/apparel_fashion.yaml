@@ -875,7 +875,7 @@ agent_usecases:
 medallion:
   Bronze:
     short: Raw style and sales feeds
-    summary: POS, e-commerce, PLM and factory WIP events landed exactly as received so a markdown or a allocation can be replayed.
+    summary: POS, e-commerce, PLM and factory WIP events landed exactly as received so a markdown or an allocation can be replayed.
   Silver:
     short: Conformed styles and channels
     summary: Styles, SKUs, stores and digital channels resolved into single entities across ERP, PLM and commerce platforms.

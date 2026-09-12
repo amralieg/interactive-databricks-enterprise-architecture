@@ -809,8 +809,8 @@ medallion:
     summary: 'Contracted products actuarial and quality teams run on: medical loss ratio, risk-adjusted revenue, HEDIS measure rates, and fraud waste and abuse savings.'
 citation_index:
   facets:
-    title: Oracle Health Facets
-    url: https://www.oracle.com/health/
+    title: Cognizant TriZetto Facets
+    url: https://www.cognizant.com/us/en/industries/healthcare-technology-solutions/trizetto/core-administration/facets
   healthedge:
     title: HealthEdge Source
     url: https://healthedge.com/solutions/source
@@ -839,7 +839,7 @@ citation_index:
     title: Symplr provider management
     url: https://www.symplr.com/
   avality:
-    title: Avality multi-payer network
+    title: Availity multi-payer network
     url: https://www.availity.com/
   cms-encounter:
     title: CMS encounter data submission

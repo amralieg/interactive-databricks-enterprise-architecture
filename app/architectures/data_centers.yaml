@@ -489,6 +489,17 @@ pipelines:
             - Incremental ingestion of high-frequency sensor and meter files into conformed tables.
           - - Lakeflow
             - Declarative pipelines with expectations on every power, cooling and network feed.
+        sub:
+          - name: Ingestion Engineers
+            cares: DCIM, BMS, PDU and SNMP feeds landed exactly as received.
+          - name: Streaming Platform
+            cares: high-frequency sensor and meter telemetry at floor latency.
+          - name: Data Quality & SRE
+            cares: Bronze-to-Silver expectations and the pager when a facility feed stalls.
+        ucs:
+          - Cooling Optimization
+          - Predictive Maintenance
+          - Capacity Planning
       - name: Optimization Eng
         mark: Model Serving
         summary: Build cooling-setpoint and PUE-optimisation models against BMS and chiller telemetry, and remaining-useful-life models on UPS, battery and CRAH condition data, and keep them honest six months after deployment.
@@ -499,6 +510,17 @@ pipelines:
             - Every optimisation and RUL run tracked for audit and reproduction.
           - - Model Serving
             - Setpoint and failure-risk models scored in the operational control path.
+        sub:
+          - name: Cooling & PUE Science
+            cares: cooling-setpoint and PUE-optimisation models against BMS and chiller telemetry.
+          - name: Reliability Science
+            cares: remaining-useful-life models on UPS, battery and CRAH condition data.
+          - name: MLOps
+            cares: every optimisation and RUL model tracked, evaluated and monitored for audit.
+        ucs:
+          - Cooling Optimization
+          - Predictive Maintenance
+          - Uptime & Availability
       - name: Ops App Devs
         mark: Apps
         summary: Ship the NOC, capacity and tenant applications the operator works in, hosted next to governed facility data with governed writes back to ITSM and DCIM.
@@ -509,6 +531,17 @@ pipelines:
             - Serverless Postgres for ticket, work-order and acknowledgement state.
           - - Agent Bricks
             - Agents that draft a change record or a tenant answer against governed tools.
+        sub:
+          - name: NOC & Capacity Apps
+            cares: the Critical Ops Cockpit and Capacity Planner operations run the floor from.
+          - name: Tenant Apps
+            cares: the Tenant Portal for metered power, billing and SLA self-service.
+          - name: Agents & Writeback
+            cares: agents drafting change records and tenant answers with governed writeback to ITSM and DCIM.
+        ucs:
+          - Field Ops Assistant
+          - Incident & Change
+          - Capacity Planning
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -940,7 +973,7 @@ citation_index:
     url: https://www.vertiv.com/en-us/products-catalog/monitoring-control-and-management/
   jci:
     title: Johnson Controls Metasys
-    url: https://www.johnsoncontrols.com/building-automation-and-controls/building-management/building-automation-systems/metasys-building-automation-system
+    url: https://www.johnsoncontrols.com/
   siemens:
     title: Siemens Desigo CC
     url: https://www.siemens.com/global/en/products/buildings/automation/desigo/building-management.html

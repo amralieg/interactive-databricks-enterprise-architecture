@@ -258,7 +258,7 @@ cloud_integrations:
         icon: globe
         summary: Aid-flow (IATI) and 3W activity data on HDX parsed on arrival for coordination and targeting.
         citations:
-          - openweather
+          - iati
         category: Aid-Flow & Coordination Data
         what_it_is: Carries aid-flow (IATI) and 3W (who-does-what-where) activity data on HDX parsed on arrival for coordination and targeting.
         who_uses_it: Program coordination, M&E and targeting teams.
@@ -886,7 +886,7 @@ citation_index:
     url: https://www.fluxx.io/grantmaker
   sap-public:
     title: SAP for public sector
-    url: https://www.sap.com/industries/public-sector.html
+    url: https://www.sap.com/
   commcare:
     title: CommCare
     url: https://www.commcare.org/
@@ -908,6 +908,6 @@ citation_index:
   ofac:
     title: US Treasury OFAC sanctions
     url: https://ofac.treasury.gov/
-  openweather:
+  iati:
     title: IATI Standard / HDX (HXL)
     url: https://iatistandard.org

@@ -321,9 +321,9 @@ sources:
             interval: Continuous (in-session)
       - name: Modulate / Quago Integrity
         icon: gauge
-        summary: Voice-chat moderation and anti-cheat signals flagging toxicity, harm and manipulation.
+        summary: Modulate moderates voice chat for toxicity while Quago flags cheating from behavioural and device-sensor signals.
         category: Trust & Safety / Anti-Cheat
-        what_it_is: Score voice chat for toxicity and harm and detect cheating and manipulation in play, returning integrity signals that protect players and fair matches.
+        what_it_is: Modulate scores in-game voice chat for toxicity and harm and Quago detects cheating and manipulation from behavioural and device-sensor signals, returning the integrity signals that protect players and fair matches.
         who_uses_it: Trust & Safety, Community and Anti-cheat teams.
         data_out:
           stream:

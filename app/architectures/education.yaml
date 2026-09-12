@@ -41,7 +41,7 @@ sources:
         icon: erp
         summary: 'Dominant K-12 student information system: enrollments, attendance, grades and state reporting across districts.'
         citations:
-          - peoplesoft-campus
+          - powerschool
         category: Student Information System (SIS)
         what_it_is: K-12 SIS covering enrollments, attendance, grades and mandated state reporting across districts.
         who_uses_it: District administration, State reporting and Attendance teams.
@@ -864,7 +864,7 @@ citation_index:
   workday-student:
     title: Workday Student
     url: https://www.workday.com/en-us/products/student.html
-  peoplesoft-campus:
+  powerschool:
     title: PowerSchool SIS
     url: https://www.powerschool.com/
   canvas-lms:
@@ -890,7 +890,7 @@ citation_index:
     url: https://www.powerfaids.org/
   nelnet:
     title: Nelnet Campus Commerce
-    url: https://en.wikipedia.org/wiki/Nelnet
+    url: https://www.nelnet.com/
   ed-fi:
     title: Ed-Fi data standard
     url: https://www.ed-fi.org/
