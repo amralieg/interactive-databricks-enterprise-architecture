@@ -54,6 +54,21 @@ sources:
               - unstructured
             volume: 10-200 GB/run (matrices)
             interval: Per-run
+      - name: Leica Aperio WSI
+        icon: media
+        summary: Whole-slide tissue scanning and image management for translational histopathology linked to molecular data.
+        citations:
+          - leica-aperio
+        category: Digital Pathology / Whole-Slide Imaging
+        what_it_is: Scans research tissue slides into whole-slide images and manages them so morphology can be analysed at scale and linked to genomic and expression results.
+        who_uses_it: Computational Biologists, Bioinformatics and Translational Research teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+              - structured
+            volume: 50-300 GB/day (whole-slide images)
+            interval: Per-scan on acquisition
   - name: Lab & Sample Mgmt
     icon: erp
     tiles:
@@ -279,7 +294,7 @@ pipelines:
             cares: which discovery programmes are ready to move into the clinic.
         ucs:
           - Biomarker Discovery
-          - Real-World Evidence
+          - R&D Knowledge Graph
           - Trial Enrolment
       - name: Bioinformatics
         mark: Model Serving
@@ -301,8 +316,8 @@ pipelines:
         ucs:
           - Variant Interpretation
           - Single-Cell Analytics
-          - Reference Data Harmonisation
-          - Pharmacogenomics
+          - Multi-Omics Integration
+          - Polygenic Risk Scoring
       - name: Clinical Operations
         mark: AI/BI
         summary: Trial managers on site enrolment against target, sample-collection SLAs and protocol deviations before a site is at risk of closing.
@@ -322,7 +337,7 @@ pipelines:
             cares: matching biomarker-positive candidates to open protocols.
         ucs:
           - Trial Enrolment
-          - Real-World Evidence
+          - Polygenic Risk Scoring
           - Biomarker Discovery
       - name: Lab Operations
         mark: Lakeflow
@@ -343,7 +358,7 @@ pipelines:
             cares: aliquot location, storage conditions and sample chain of custody.
         ucs:
           - Lab Turnaround Optimisation
-          - Sample Chain of Custody
+          - Pathology Image Analytics
       - name: Regulatory & Quality
         mark: AI/BI
         summary: Quality and regulatory affairs on CAP and CLIA audits, QC failure rates and the validation documentation a submission stands or falls on.
@@ -363,8 +378,7 @@ pipelines:
             cares: CAP and CLIA audit readiness and lineage from FASTQ to signed report.
         ucs:
           - Pipeline Reproducibility
-          - Sample Chain of Custody
-          - Reference Data Harmonisation
+          - Pathology Image Analytics
   - name: Technical
     icon: code
     tiles:
@@ -387,8 +401,8 @@ pipelines:
             cares: versioned ClinVar, gnomAD and COSMIC tables downstream teams depend on.
         ucs:
           - Lab Turnaround Optimisation
-          - Reference Data Harmonisation
-          - Sample Chain of Custody
+          - Multi-Omics Integration
+          - Pathology Image Analytics
       - name: Data Scientists
         mark: MLflow
         summary: Variant-classification, biomarker-discovery and turnaround-time models, and whether they still hold under CAP and CLIA validation.
@@ -410,7 +424,7 @@ pipelines:
           - Variant Interpretation
           - Biomarker Discovery
           - Single-Cell Analytics
-          - Pharmacogenomics
+          - Polygenic Risk Scoring
       - name: App Developers
         mark: Apps
         summary: Ship the variant review, enrolment-tracking and lab-ops applications the labs work in, hosted next to governed data.
@@ -619,7 +633,7 @@ agent_usecases:
           - What evidence supports the pathogenic calls signed out this week?
           - Which genes carry the most variants of uncertain significance?
           - How does our classification agree with ClinVar for this variant?
-      - name: Lab Operations & Turnaround Agent
+      - name: Lab Operations Agent
         icon: genie
         summary: Explore assay turnaround, sample custody and instrument QC across the lab.
         feeds:
@@ -637,7 +651,7 @@ agent_usecases:
           - Which reagent lots are near expiry or running low?
           - How many samples cleared QC this week without rework?
           - Which instruments are drifting toward a QC failure?
-      - name: Trial Enrolment & Biomarkers Agent
+      - name: Biomarker Matching Agent
         icon: genie
         summary: Answer enrolment, screen-failure and biomarker-matching questions across trials.
         feeds:
@@ -738,19 +752,19 @@ agent_usecases:
           - Lakeflow
           - Lakewatch
           - AI/BI
-      - name: Real-World Evidence
-        short: Outcomes
-        icon: custlake
-        summary: Treatment response cohorts built from linked genomic and oncology EHR records under governance.
-        problem: Treatment-response cohorts need genomic results linked to oncology EHR records held in different systems under different consent, so building a governed, defensible cohort is slow.
+      - name: R&D Knowledge Graph
+        short: Discovery
+        icon: share
+        summary: Genes, variants, targets and evidence linked into one graph for hypothesis generation.
+        problem: Target and pathway evidence is scattered across variant databases, internal assays and literature, so generating a defensible target hypothesis means a scientist manually stitching sources that never connect.
         who_benefits: CSO & CFO
-        how_built: De-identified EHR and genomic data are conformed on Delta Lake under Unity Catalog governance and explored in AI/BI, so outcome cohorts are built with lineage instead of ad hoc extracts.
+        how_built: ClinVar, COSMIC and Benchling assay data are conformed on Delta Lake under Unity Catalog and linked into a knowledge graph queried with AI Functions, so gene-variant-target relationships surface as traceable evidence rather than folklore.
         components:
-          - Flatiron Oncology EHR
+          - ClinVar & gnomAD
+          - COSMIC Cancer DB
+          - Benchling R&D Cloud
           - Unity Catalog
-          - Delta Lake
-          - AI/BI
-          - Genie One
+          - AI Functions
       - name: Single-Cell Analytics
         short: Discovery
         icon: notebook
@@ -785,51 +799,48 @@ agent_usecases:
         stories:
           - title: Amgen modernizes analytics with a unified lakehouse to speed drug development
             url: https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html
-      - name: Reference Data Harmonisation
-        short: Annotation
-        icon: globe
-        summary: ClinVar, gnomAD and COSMIC updates propagated without breaking historical calls.
-        problem: ClinVar, gnomAD and COSMIC release on their own cadence, so an annotation refresh can silently change historical calls and no one can tell which reports would move if a reference updated.
+      - name: Multi-Omics Integration
+        short: Research
+        icon: network
+        summary: Genomic, single-cell and spatial layers integrated on one sample identity for signature and target discovery.
+        problem: Genomic, single-cell, spatial and expression layers are analysed in separate tools, so the cross-omic signal that defines a signature or target is lost between pipelines that never join on the same sample.
         who_benefits: Bioinformatics
-        how_built: Reference releases land through Lakeflow as versioned Delta tables under Unity Catalog, so annotation is reproducible and the impact of an update on prior calls is traceable.
+        how_built: BaseSpace, Nanopore and 10x outputs are conformed to one sample identity on Delta Lake under Unity Catalog and integrated at scale in Notebooks & IDEs with runs tracked in MLflow, so multi-omic signatures surface across layers.
+        components:
+          - Illumina BaseSpace
+          - 10x Genomics Cloud
+          - Notebooks & IDEs
+          - MLflow
+          - Unity Catalog
+      - name: Pathology Image Analytics
+        short: Translational
+        icon: media
+        summary: Whole-slide tissue images analysed with deep learning and linked to molecular results for translational biomarker work.
+        problem: Tissue morphology and molecular results live in separate systems, so the link between what a tumour looks like and its variant profile is made by eye, slide by slide, and rarely at cohort scale.
+        who_benefits: Bioinformatics
+        how_built: Whole-slide images from the pathology scanner land on Delta Lake and deep-learning models score tiles in Model Serving tracked in MLflow, so morphology features join variant and expression data under Unity Catalog for biomarker discovery.
+        components:
+          - Leica Aperio WSI
+          - Model Serving
+          - MLflow
+          - Unity Catalog
+          - Delta Lake
+        stories:
+          - title: Digital Pathology Image Analysis solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/digital-pathology
+      - name: Polygenic Risk Scoring
+        short: Prediction
+        icon: gauge
+        summary: Genome-wide risk scores computed and validated for disease-predisposition programmes.
+        problem: Polygenic scores depend on many variants, ancestry-matched references and versioned weights, so a score computed in a notebook cannot be reproduced or defended when a programme wants to act on it.
+        who_benefits: Bioinformatics
+        how_built: Variant calls are scored against reference panels from gnomAD and dbGaP in Model Serving with weights and runs versioned in MLflow on Delta Lake under Unity Catalog, so polygenic risk scores are reproducible and ancestry-aware.
         components:
           - ClinVar & gnomAD
-          - COSMIC Cancer DB
-          - Lakeflow
-          - Delta Lake
-          - Unity Catalog
-        stories:
-          - title: 'Genesis Workbench: GPU-accelerated variant calling and ClinVar annotation'
-            url: https://www.databricks.com/blog/genesis-workbench-blueprint-industry-ai-life-sciences-powered-databricks-and-nvidia
-      - name: Sample Chain of Custody
-        short: Compliance
-        icon: product
-        summary: Aliquot location and handling events reconciled from collection through destruction.
-        problem: A sample moves through collection, aliquoting, storage and analysis logged in different systems, so reconstructing its handling for an audit means chasing records across LIMS and freezers.
-        who_benefits: Lab Operations
-        how_built: Registration and custody events from Benchling and LIMS conform on Delta Lake under Unity Catalog, so each aliquot's location and handling is reconciled from collection through destruction.
-        components:
-          - Benchling R&D Cloud
-          - LabVantage LIMS
-          - Unity Catalog
-          - Delta Lake
-          - Lakeflow
-      - name: Pharmacogenomics
-        short: Therapeutics
-        icon: market
-        summary: Drug-gene interactions surfaced at ordering for precision prescribing programmes.
-        problem: Drug-gene interactions live in guidelines and prior sequencing that never reach the clinician at ordering, so a prescription is written without the genotype that should shape the dose.
-        who_benefits: Bioinformatics
-        how_built: Prior variant results are conformed under Unity Catalog and matched to drug-gene rules with AI Functions and Model Serving, surfacing interactions in the Variant Review Workbench at ordering.
-        components:
-          - Variant Review Workbench
-          - HL7 FHIR Genomics
+          - dbGaP Authorised Access
           - Model Serving
-          - AI Functions
+          - MLflow
           - Unity Catalog
-        stories:
-          - title: How Regeneron pairs genomic and EHR data to find drug targets
-            url: https://www.databricks.com/customers/regeneron
 medallion:
   Bronze:
     short: Raw sequence and LIMS
@@ -880,3 +891,6 @@ citation_index:
   fhir-genomics:
     title: HL7 FHIR genomics implementation guide
     url: https://hl7.org/fhir/uv/genomics-reporting/
+  leica-aperio:
+    title: Leica Aperio digital pathology
+    url: https://www.leicabiosystems.com/us/digital-pathology/

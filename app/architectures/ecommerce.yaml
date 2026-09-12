@@ -1,5 +1,5 @@
 name: E-Commerce
-description: 'Digital commerce: catalog, orders, fulfillment, personalization, and marketplace operations across DTC and marketplace channels.'
+description: 'For a digital-first retailer: catalog, discovery, orders, fulfillment, personalization and marketplace operations across DTC and marketplace channels.'
 sources:
   - name: Commerce Platform
     icon: apps
@@ -324,9 +324,9 @@ pipelines:
           - name: Chief Marketing Officer
             cares: blended CAC, LTV-to-CAC and return on ad spend across paid and owned.
         ucs:
-          - Personalization
+          - Agent-to-Agent Transactions
           - Dynamic Pricing
-          - LTV Segmentation
+          - Customer 360 & LTV
           - Fraud Prevention
       - name: Growth Marketing
         mark: Model Serving
@@ -345,8 +345,8 @@ pipelines:
             cares: organic traffic, landing-page conversion and content-driven discovery.
         ucs:
           - Personalization
-          - Cart Abandonment
-          - LTV Segmentation
+          - Customer 360 & LTV
+          - Identity Resolution & CDP
       - name: Merchandising
         mark: AI/BI
         summary: Assortment, pricing, bundles and on-site search relevance, tracked on attach rate, gross margin and competitive price gap.
@@ -364,8 +364,8 @@ pipelines:
             cares: on-site search relevance and conversion from query to cart.
         ucs:
           - Dynamic Pricing
-          - Search Relevance
-          - Marketplace Sync
+          - Product Discovery & Search
+          - Conversational Shopping
       - name: Operations
         mark: Lakehouse//RT
         summary: Fulfillment SLA, inventory and returns processing, run on on-time delivery, fill rate and cost to serve per order.
@@ -383,8 +383,8 @@ pipelines:
             cares: return rate, processing cost and restock speed.
         ucs:
           - Inventory ATP
-          - Fulfillment Network
-          - Returns Optimization
+          - Demand Forecasting
+          - Agent-to-Agent Transactions
       - name: Customer Experience
         mark: Apps
         summary: Support, reviews and loyalty program health, measured on CSAT, NPS and repeat purchase against return rate and contact rate by cohort.
@@ -401,9 +401,9 @@ pipelines:
           - name: Reviews & Community
             cares: review volume, sentiment and their lift on conversion.
         ucs:
-          - Returns Optimization
-          - Cart Abandonment
-          - LTV Segmentation
+          - Conversational Shopping
+          - Customer 360 & LTV
+          - Identity Resolution & CDP
   - name: Technical
     icon: code
     tiles:
@@ -427,7 +427,7 @@ pipelines:
         ucs:
           - Inventory ATP
           - Fraud Prevention
-          - Marketplace Sync
+          - Identity Resolution & CDP
       - name: Data Scientists
         mark: MLflow
         summary: Recommendation, propensity, dynamic-pricing and checkout-fraud models, and whether they still hold across a peak season and channel mix shift.
@@ -449,7 +449,7 @@ pipelines:
           - Personalization
           - Dynamic Pricing
           - Fraud Prevention
-          - Search Relevance
+          - Product Discovery & Search
       - name: App Developers
         mark: Apps
         summary: Ship the attribution hub, pricing workbench, fulfillment command and CX console apps growth and operations work in, next to governed order data.
@@ -468,9 +468,9 @@ pipelines:
           - name: Agent Builders
             cares: agents that draft pricing and recovery moves against governed tools.
         ucs:
-          - Cart Abandonment
+          - Conversational Shopping
           - Dynamic Pricing
-          - Fulfillment Network
+          - Agent-to-Agent Transactions
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -646,7 +646,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Growth & Revenue Agent
+      - name: Growth & Conversion Agent
         icon: genie
         summary: Ask about conversion, revenue, CAC and channel performance in plain language.
         feeds:
@@ -664,7 +664,7 @@ agent_usecases:
           - Which campaigns drove the most incremental revenue this week?
           - How is AOV trending across paid, owned and marketplace?
           - What is return on ad spend by channel and campaign?
-      - name: Fulfillment & Inventory Agent
+      - name: Fulfillment & Delivery Agent
         icon: genie
         summary: Explore delivery SLA, available-to-promise and cost to serve across nodes.
         feeds:
@@ -699,7 +699,7 @@ agent_usecases:
           - Which fraud patterns are driving the most declines?
           - What is dispute volume by reason code and market?
           - Where are false-positive declines costing us good orders?
-      - name: Customer & Lifecycle Agent
+      - name: Retention & Loyalty Agent
         icon: genie
         summary: Ask about retention, LTV segments and CX health across cohorts.
         feeds:
@@ -739,22 +739,21 @@ agent_usecases:
             url: https://www.databricks.com/customers/flaconi
           - title: Myntra powers personalized shopping for 70M monthly users
             url: https://www.databricks.com/customers/myntra
-      - name: Cart Abandonment
-        short: Lifecycle
-        icon: apps
-        summary: Recovery sequences timed to session behavior.
-        problem: Most carts are abandoned and recovery fires on a fixed timer that ignores intent, so shoppers are nagged or missed and the session context that would time the nudge is already gone.
-        who_benefits: Growth Marketing
-        how_built: Live session and cart state land in Lakebase and Lakehouse//RT, and propensity scores from Model Serving trigger recovery journeys in Klaviyo and Braze at the right moment.
-        components:
-          - Lakebase
-          - Lakehouse//RT
-          - Model Serving
-          - Klaviyo
-          - Braze
-        stories:
           - title: Pandora scales personalized email recommendations across markets
             url: https://www.databricks.com/customers/pandora
+      - name: Conversational Shopping
+        short: Discovery
+        icon: genie
+        summary: A shopping assistant that answers, compares and builds the cart in natural language.
+        problem: Shoppers describe what they want in their own words, but faceted filters and keyword search cannot answer intent, so they bounce before finding the product that fits.
+        who_benefits: Customer Experience
+        how_built: Shopify Plus catalogue and order history are grounded in Genie and Mosaic AI agents served through Databricks Apps, so shoppers ask, compare and build a cart against one governed product model.
+        components:
+          - Mosaic AI
+          - Genie
+          - Databricks Apps
+          - Shopify Plus
+          - Unity Catalog
       - name: Dynamic Pricing
         short: Merchandising
         icon: market
@@ -803,52 +802,52 @@ agent_usecases:
         stories:
           - title: Real-time fraud detection with Spark Real-Time Mode and Lakebase
             url: https://www.databricks.com/blog/how-build-real-time-fraud-detection-using-spark-real-time-mode-and-lakebase
-      - name: Search Relevance
+      - name: Product Discovery & Search
         short: Discovery
         icon: observ
-        summary: Query understanding and ranking tuned to conversion.
+        summary: Query understanding, ranking and recommendations tuned to conversion.
         problem: On-site search misreads intent and synonyms, so shoppers land on empty or irrelevant results and bounce, and merchandisers cannot see which queries quietly lose the sale.
         who_benefits: Merchandising
-        how_built: Query and catalog embeddings in AI Search rank results with Model Serving, and AI/BI surfaces zero-result and low-conversion queries merchandisers tune against.
+        how_built: Query and catalog embeddings in AI Search rank and recommend with Model Serving, and AI/BI surfaces zero-result and low-conversion queries merchandisers tune against.
         components:
           - AI Search
           - Model Serving
           - AI Functions
           - Feature Store
           - AI/BI
-      - name: Returns Optimization
-        short: CX
-        icon: partner
-        summary: Return reasons analyzed to reduce preventable volume.
-        problem: Returns are processed blind to why they happen, so preventable returns from sizing, defects or misleading detail keep recurring and reverse-logistics cost climbs every season.
-        who_benefits: Customer Experience
-        how_built: Return reasons, reviews and order history are conformed on Delta Lake and analysed with AI Functions in the CX Console, feeding fixes back to detail pages and sizing.
+      - name: Identity Resolution & CDP
+        short: Customer data
+        icon: custlake
+        summary: Anonymous, guest and account identities stitched into one governed profile.
+        problem: The same shopper appears as separate identities across storefront, marketplace and CRM, so audiences double-count, journeys break across devices and consent is impossible to enforce.
+        who_benefits: Growth Marketing
+        how_built: Google Analytics 4 web behaviour, Shopify Plus orders and Klaviyo engagement are conformed on Delta Lake under Unity Catalog, resolving one consented customer profile without copying data off-platform.
         components:
-          - CX Console
+          - Delta Lake
+          - Unity Catalog
+          - Google Analytics 4
+          - Klaviyo
           - AI Functions
-          - Narvar Post-Purchase
-          - Delta Lake
-          - AI/BI
-      - name: Marketplace Sync
-        short: Channels
-        icon: globe
-        summary: Listings, fees and ads optimized across marketplaces.
-        problem: Listings, fees, inventory and ad spend live in each marketplace console, so price and stock drift out of sync, buy-box is lost and true per-channel profit is never clear.
-        who_benefits: Merchandising
-        how_built: Amazon and eBay order, fee and ad feeds land through Lakeflow onto Delta Lake, and AI/BI reconciles price, stock and margin per channel into a single sync view.
+      - name: Demand Forecasting
+        short: Planning
+        icon: chart
+        summary: SKU-level demand forecast from clickstream, orders and channel signals.
+        problem: Buys and safety stock lean on last year's totals, so hero SKUs sell out mid-campaign while slow movers tie up cash, and no one sees demand shift until the stockout lands.
+        who_benefits: Operations
+        how_built: Shopify Plus orders and Google Analytics 4 demand signals land through Lakeflow, features are engineered in Feature Store, and SKU models scored in Model Serving drive buy and replenishment plans.
         components:
-          - Amazon Seller Central
-          - eBay Managed Payments
           - Lakeflow
+          - Feature Store
+          - Model Serving
+          - Shopify Plus
           - Delta Lake
-          - AI/BI
-      - name: LTV Segmentation
+      - name: Customer 360 & LTV
         short: CRM
         icon: custlake
-        summary: Cohorts scored for retention and upsell campaigns.
-        problem: Campaigns target broad lists because lifetime value is guessed from last purchase, so budget chases one-time buyers while high-value cohorts get the same generic offer.
+        summary: A unified customer view scoring lifetime value, cohorts and churn.
+        problem: Campaigns target broad lists because there is no single customer view and lifetime value is guessed from last purchase, so budget chases one-time buyers while high-value cohorts get the same generic offer.
         who_benefits: Growth Marketing
-        how_built: Purchase, engagement and margin features in Feature Store drive LTV and churn models in Model Serving, and Klaviyo activates the scored cohorts for retention and upsell.
+        how_built: Purchase, engagement and margin features in Feature Store drive lifetime-value, cohort and churn models in Model Serving on one governed profile, and Klaviyo activates the scored cohorts for retention and upsell.
         components:
           - Model Serving
           - Feature Store
@@ -858,19 +857,19 @@ agent_usecases:
         stories:
           - title: Skechers lifts CTR 324% and cuts acquisition cost with segmentation
             url: https://www.databricks.com/customers/skechers
-      - name: Fulfillment Network
-        short: Logistics
-        icon: stream
-        summary: Orders routed to the lowest-cost node meeting SLA.
-        problem: Orders route on static warehouse rules, so shipments travel farther than needed, split across nodes and miss the promise date while carrier and labor cost creep up.
-        who_benefits: Operations
-        how_built: Inventory, carrier-rate and demand signals are scored in Model Serving and served through Fulfillment Command, routing each order to the lowest-cost node that still meets SLA.
+      - name: Agent-to-Agent Transactions
+        short: Agentic
+        icon: network
+        summary: Machine shoppers and AI agents transacting against governed catalogue and checkout.
+        problem: Third-party AI agents are starting to browse, negotiate and buy on a shopper's behalf, but the storefront exposes no governed, real-time interface for them, so the brand loses control of price, stock and the relationship.
+        who_benefits: CEO & Growth CFO
+        how_built: Mosaic AI agents expose catalogue, price and available-to-promise from Manhattan Active Omni through governed tools on Databricks Apps and Lakebase, so external agents transact against one governed model with Stripe Payments settling the order.
         components:
-          - Fulfillment Command
-          - Model Serving
+          - Mosaic AI
+          - Databricks Apps
+          - Lakebase
           - Manhattan Active Omni
-          - ShipBob WMS
-          - Delta Lake
+          - Stripe Payments
 medallion:
   Bronze:
     short: Raw clickstream and orders

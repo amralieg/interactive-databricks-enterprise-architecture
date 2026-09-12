@@ -1,5 +1,5 @@
 name: AgTech
-description: 'Agriculture technology vendors: precision-ag platforms, farm-management software, equipment telematics, satellite and sensor networks, crop-science R&D, and sustainability programs.'
+description: 'An agriculture technology provider: precision-ag analytics and variable-rate prescriptions, connected-equipment telematics, satellite and sensor networks, crop and genetics R&D simulation, grower and customer 360, and a governed ag-data marketplace.'
 sources:
   - name: Farm Mgmt Platforms
     icon: appbuilder
@@ -398,9 +398,9 @@ pipelines:
           - name: Platform GM
             cares: reliability, partner integrations and the data-sharing ecosystem.
         ucs:
-          - FMS Platform
+          - Grower & Customer 360
           - VRA Prescriptions
-          - Imagery at Scale
+          - Ag Data Marketplace
       - name: Agronomy & R&D
         mark: AI/BI
         summary: 'The crop scientists and agronomists: seed and crop-protection R&D running multi-year trials, field research turning plots into product claims, and the agronomy advisory team standing behind the recommendations growers act on.'
@@ -419,9 +419,9 @@ pipelines:
           - name: Agronomy Advisory
             cares: the recommendations and prescriptions growers act on in season.
         ucs:
-          - Yield Prediction
-          - Crop R&D Analytics
-          - Pest & Disease
+          - Field Yield Modeling
+          - Crop & Genetics Simulation
+          - VRA Prescriptions
       - name: Equipment Eng
         mark: Lakehouse//RT
         summary: 'The OEM engineering side: telematics engineers landing machine telemetry at fleet scale, reliability engineers on component life and in-season uptime, and the autonomy and guidance teams building the systems that steer and spray the machine.'
@@ -441,7 +441,7 @@ pipelines:
             cares: steering, See & Spray and the perception data behind them.
         ucs:
           - Fleet Telematics
-          - Predictive Uptime
+          - Parts & Input Supply Planning
           - VRA Prescriptions
       - name: Sustainability
         mark: Model Serving
@@ -462,8 +462,8 @@ pipelines:
             cares: cover crops, tillage and the practice-change evidence base.
         ucs:
           - Carbon MRV
-          - Traceability
-          - Imagery at Scale
+          - Crop-to-Processor Traceability
+          - Ag Data Marketplace
       - name: Commercial
         mark: AI/BI
         summary: 'The go-to-market side: the dealer and channel network selling and servicing equipment and inputs, grower-success teams on retention and expansion, and input supply and pricing balancing demand against the season.'
@@ -482,9 +482,9 @@ pipelines:
           - name: Input Supply & Pricing
             cares: seed and crop-protection demand against the season.
         ucs:
-          - Traceability
-          - Fleet Telematics
-          - FMS Platform
+          - Crop-to-Processor Traceability
+          - Input Demand Forecasting
+          - Grower & Customer 360
   - name: Technical
     icon: code
     tiles:
@@ -499,8 +499,8 @@ pipelines:
           - - Lakewatch
             - Freshness on the field and fleet tables agronomists read every morning.
         ucs:
-          - Imagery at Scale
-          - Yield Prediction
+          - VRA Prescriptions
+          - Field Yield Modeling
           - Fleet Telematics
       - name: Ag Data Science
         mark: MLflow
@@ -513,9 +513,9 @@ pipelines:
           - - Model Serving
             - Yield, pest and uptime models scored in the product and operational path.
         ucs:
-          - Yield Prediction
-          - Pest & Disease
-          - Predictive Uptime
+          - Field Yield Modeling
+          - Crop & Genetics Simulation
+          - Fleet Telematics
       - name: App & IoT Eng
         mark: Apps
         summary: Ship the grower, agronomist and dealer applications and the ingestion behind millions of connected machines, hosted next to governed data.
@@ -528,7 +528,7 @@ pipelines:
             - High-volume machine and sensor events ingested directly to the lakehouse.
         ucs:
           - Fleet Telematics
-          - FMS Platform
+          - Grower & Customer 360
           - VRA Prescriptions
 consumers:
   - name: BI & Productivity
@@ -723,7 +723,7 @@ agent_usecases:
           - How did variable-rate prescriptions perform against flat-rate blocks?
           - Where is disease or pest pressure emerging from the latest imagery?
           - Which hybrids are ready to read out of this season's trials?
-      - name: Fleet & Uptime Agent
+      - name: Fleet Telematics Agent
         icon: genie
         summary: Explore connected-machine health, utilisation and predicted service needs across the fleet.
         feeds:
@@ -741,7 +741,7 @@ agent_usecases:
           - Where are anomaly signals concentrated across the connected fleet?
           - Which components are trending toward end of life this season?
           - How does uptime compare across dealer service territories?
-      - name: Sustainability & Carbon Agent
+      - name: Carbon MRV Agent
         icon: genie
         summary: Answer questions on enrolled acres, practice change and verified carbon outcomes.
         feeds:
@@ -759,7 +759,7 @@ agent_usecases:
           - Where is cover-crop adoption growing fastest this season?
           - Which enrolled acres are missing evidence for verification?
           - What is the trend in verified credits versus enrolment?
-      - name: Commercial & Dealers Agent
+      - name: Channel & Dealer Agent
         icon: genie
         summary: Ask about dealer performance, grower retention and input demand.
         feeds:
@@ -782,13 +782,13 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: FMS Platform
+      - name: Grower & Customer 360
         short: Digital ag
         icon: appbuilder
-        summary: Unifying connected field, machine and agronomy data into the farm-management platform at scale, so growers and advisors see one governed view of the operation.
-        problem: Field, machine and agronomy data arrive from dozens of brands and formats, so the platform stitches them by hand and every new source is a bespoke integration project.
+        summary: One governed view of every grower and their fields, machines and agronomy across the farm-management platform, so product and advisory teams see the whole operation.
+        problem: Grower, field, machine and agronomy data arrive from dozens of brands and formats, so the platform stitches a customer view by hand and every new source is a bespoke integration project.
         who_benefits: Digital Product
-        how_built: FMS, telematics and imagery feeds land through Lakeflow and are conformed on Delta Lake under Unity Catalog, giving the platform one governed field-and-grower model to build features on.
+        how_built: FMS, telematics and imagery feeds land through Lakeflow and are conformed on Delta Lake under Unity Catalog, giving the platform one governed grower-and-field 360 to build features on.
         components:
           - Field Insights Hub
           - Climate FieldView
@@ -800,10 +800,10 @@ agent_usecases:
             url: https://www.databricks.com/customers/bayer
           - title: Accelerating Corteva's data source onboarding with Lakeflow
             url: https://www.databricks.com/dataaisummit/session/accelerating-cortevas-data-source-onboarding-lakeflow
-      - name: Yield Prediction
+      - name: Field Yield Modeling
         short: Agronomy
         icon: chart
-        summary: Predicting field and hybrid yield from imagery, weather, soil and management history, so agronomists and growers act on a forecast rather than last year's average.
+        summary: Field and hybrid yield modeled from imagery, weather, soil and management history, so agronomists and growers act on a forecast rather than last year's average.
         problem: Yield is estimated from spotty history and gut feel, so agronomic and commercial decisions are made without a defensible forecast per field and hybrid.
         who_benefits: Agronomy & R&D
         how_built: Imagery, weather and soil features are engineered in Feature Store and scored through Model Serving, with runs tracked in MLflow for audit across seasons and geographies.
@@ -816,19 +816,19 @@ agent_usecases:
         stories:
           - title: Agerpoint partners with Databricks for agriculture data intelligence
             url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
-      - name: Crop R&D Analytics
+      - name: Crop & Genetics Simulation
         short: Product dev
         icon: notebook
-        summary: Unifying lab, trial, imagery and field data so crop-science R&D reads results in minutes and shortens the multi-year path from discovery to a product claim.
-        problem: R&D data is siloed across countries, labs and legacy systems, so scientists wait months for insights and the eight-to-twelve-year development cycle stretches further.
+        summary: Seed, trait and crop-protection candidates simulated across weather, soil and genetics scenarios so R&D screens the design space before multi-year field trials.
+        problem: Seed and trait candidates are proven one physical trial at a time across countries and labs, so the genetics-by-environment design space is never simulated and the eight-to-twelve-year development cycle stretches further.
         who_benefits: Agronomy & R&D
-        how_built: Lab, trial and imagery data are conformed into governed data products under Unity Catalog and explored in AI/BI and Genie, cutting access time from months to minutes.
+        how_built: Lab, trial and DSSAT and APSIM crop-simulation data are conformed under Unity Catalog, and Mosaic AI models tracked in MLflow simulate genetics-by-environment response so R&D ranks candidates before the next trial season.
         components:
           - LabWare LIMS
+          - DSSAT & APSIM Models
+          - Mosaic AI
+          - MLflow
           - Unity Catalog
-          - AI/BI
-          - Delta Lake
-          - Genie One
         stories:
           - title: Syngenta accelerates crop protection research with Gaia
             url: https://www.databricks.com/customers/syngenta
@@ -852,24 +852,19 @@ agent_usecases:
             url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
           - title: CNH analyzes geospatial data to improve crop outputs
             url: https://www.databricks.com/customers/cnh
-      - name: Predictive Uptime
-        short: Machine health
+      - name: Parts & Input Supply Planning
+        short: Supply
         icon: gauge
-        summary: Predicting component failure on connected machines so a service is planned at the dealer instead of discovered mid-harvest.
-        problem: A breakdown in a planting or harvest window costs the grower the season, yet failures are found after the machine stops rather than predicted from its own telemetry.
-        who_benefits: Equipment Eng
-        how_built: Streaming telemetry feeds remaining-life and anomaly models tracked in MLflow and scored in Model Serving, so predicted faults raise service alerts from the Fleet Watchtower.
+        summary: Dealer parts and seed and crop-protection input supply planned against demand, including parts demand from predicted machine service.
+        problem: Parts stock out at the dealer and inputs arrive late because service demand, machine health and input orders live in separate systems, so the supply chain reacts to shortages instead of planning for them.
+        who_benefits: Commercial
+        how_built: ERP orders, dealer inventory and predicted-service signals from telemetry are conformed on Delta Lake, and demand and reorder models scored in Model Serving plan parts and input supply against the season in the Fleet Watchtower.
         components:
           - Fleet Watchtower
-          - Model Serving
-          - MLflow
+          - SAP S/4HANA
           - CNH AFS Connect
-          - Lakehouse//RT
-        stories:
-          - title: How John Deere uses industrial AI for precision agriculture
-            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
-          - title: What is predictive maintenance on the Databricks platform
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - Model Serving
+          - Delta Lake
       - name: VRA Prescriptions
         short: Precision ag
         icon: sheet
@@ -886,40 +881,32 @@ agent_usecases:
         stories:
           - title: How John Deere uses industrial AI for precision agriculture
             url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
-      - name: Pest & Disease
-        short: Scouting
+      - name: Input Demand Forecasting
+        short: Commercial
         icon: globe
-        summary: Detecting pest and disease pressure from imagery, traps and weather so growers intervene on the acres at risk before an infestation spreads.
-        problem: Infestations are found on foot after they establish, and the geospatial and weather signals that would flag them early sit in disconnected systems.
-        who_benefits: Agronomy & R&D
-        how_built: Vision models on trap and imagery data are enriched with weather and location features in Feature Store and scored in Model Serving to anticipate where pressure will emerge.
+        summary: Seed and crop-protection demand forecast by geography and season so supply and pricing plan against real pull, not last year.
+        problem: Input demand is forecast from last year's shipments in spreadsheets, so seed and crop-protection stock is built for the wrong geographies and the dealer channel is short of what growers actually order.
+        who_benefits: Commercial
+        how_built: Order, dealer, agronomy and weather data are conformed on Delta Lake, and demand models scored in Model Serving forecast seed and crop-protection demand by geography and season for supply and pricing to plan against.
         components:
+          - SAP S/4HANA
+          - Cropwise Agronomy
           - Model Serving
-          - Planet Imagery
-          - DTN Weather
-          - Feature Store
-          - AI Functions
-        stories:
-          - title: FMC optimizes harvests with data and AI (Arc farm intelligence)
-            url: https://www.databricks.com/customers/fmc-corporation
-      - name: Imagery at Scale
-        short: Remote sensing
-        icon: globe
-        summary: Turning daily satellite and drone rasters into governed, query-ready analytics with H3 indexing, without an expensive legacy GIS in the middle.
-        problem: Raster imagery is slow and costly to process, so vegetation-index and change layers arrive too late and only a GIS specialist can touch them.
-        who_benefits: Digital Product
-        how_built: Rasters are H3-indexed into tabular Delta with Apache Spark and Spatial SQL, so imagery joins field and weather data and anyone can query it in AI/BI.
-        components:
-          - Planet Imagery
-          - Sentinel Hub
-          - Apache Spark
           - Delta Lake
           - AI/BI
-        stories:
-          - title: CNH analyzes geospatial data to improve crop outputs
-            url: https://www.databricks.com/customers/cnh
-          - title: Built-in H3 for geospatial analytics
-            url: https://www.databricks.com/blog/announcing-built-h3-expressions-geospatial-processing-and-analytics
+      - name: Ag Data Marketplace
+        short: Data sharing
+        icon: globe
+        summary: Governed field, yield and sustainability data products published and shared live to growers, CPG partners and regulators with no copy.
+        problem: Partners, food companies and regulators each get bespoke extracts by email and SFTP, so data leaves governance the moment it ships and every new consumer is another one-off pipeline to maintain.
+        who_benefits: Digital Product
+        how_built: Conformed field, yield and sustainability tables are packaged as contracted data products in Unity Catalog and shared live over Delta Sharing and OpenSharing, so consumers read governed tables with no copy and no egress duplication.
+        components:
+          - Data Products
+          - Unity Catalog
+          - Delta Sharing
+          - OpenSharing
+          - AI/BI
       - name: Carbon MRV
         short: Sustainability
         icon: gavel
@@ -938,10 +925,10 @@ agent_usecases:
             url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
           - title: Geospatial AI Accelerator by Lovelytics
             url: https://www.databricks.com/company/partners/consulting-and-si/partner-solutions/lovelytics-geospatial-accelerator
-      - name: Traceability
+      - name: Crop-to-Processor Traceability
         short: Supply chain
         icon: share
-        summary: Following crop and input provenance from field to processor so deforestation-free and scope-3 claims are backed by governed evidence, not attestation.
+        summary: Crop and input provenance followed from field and grower to processor so deforestation-free and scope-3 claims are backed by governed evidence, not attestation.
         problem: Provenance evidence for regulations like EUDR and for scope-3 sourcing is scattered across ERP, field and partner systems, so due diligence is manual and hard to defend.
         who_benefits: Commercial
         how_built: Field, ERP and partner data are conformed under Unity Catalog and published as governed data products shared to partners and regulators over OpenSharing.

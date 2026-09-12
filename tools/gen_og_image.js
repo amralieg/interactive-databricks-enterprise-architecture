@@ -6,7 +6,7 @@
    watermark in Databricks red) — not AI-generated art.
 
      app/assets/og-cover.png        the reference / whole-site card
-     app/assets/og/<industry>.png   one branded cover per industry (63)
+     app/assets/og/<industry>.png   one branded cover per industry (70)
 
    The per-industry cards are branded placeholders (silhouette + name) meant to
    be swapped for a real board render later; the filename is stable so a drop-in
@@ -96,7 +96,7 @@ function refCard(){
   <div class="wrap">
     <div class="brand">${LOGO}</div>
     <div class="mid">
-      <div class="kick">63 Industries · 15 Languages</div>
+      <div class="kick">70 Industries · 15 Languages</div>
       <h1>${esc(label)}</h1>
       <p class="sub">${SUB}</p>
     </div>

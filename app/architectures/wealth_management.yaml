@@ -414,8 +414,8 @@ pipelines:
             cares: platform consolidation and the operating model across custodians.
         ucs:
           - Client Household 360
-          - Client Attrition Risk
           - Performance Reporting
+          - Practice FP&A
       - name: Advisory Field
         mark: Genie One
         summary: Financial advisors preparing for and running client reviews; relationship managers on HNW and private-banking relationships; client associates on meeting prep, service requests and follow-up.
@@ -434,9 +434,9 @@ pipelines:
           - name: Client associates
             cares: meeting prep, service requests and follow-up.
         ucs:
-          - Advisor Meeting Prep
           - Next Best Action
           - Client Attrition Risk
+          - Client Service AI
       - name: Investments
         mark: AI/BI
         summary: The chief investment office on model portfolios and asset allocation; portfolio construction on rebalancing and tax-aware trading; investment research on fund selection and manager due diligence.
@@ -477,7 +477,7 @@ pipelines:
             cares: account opening and funding.
         ucs:
           - Digital & Robo Advice
-          - Client Onboarding
+          - Client Service AI
           - Next Best Action
       - name: Risk & Compliance
         mark: AI Functions
@@ -498,7 +498,6 @@ pipelines:
             cares: advisor conduct and communications surveillance.
         ucs:
           - KYC AML & Suitability
-          - Client Onboarding
           - Client Household 360
   - name: Technical
     icon: code
@@ -695,7 +694,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Household & Relationship Agent
+      - name: Household Growth Agent
         icon: genie
         summary: Ask about a household's value, held-away assets and relationship context in plain language.
         feeds:
@@ -769,18 +768,18 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: Advisor Meeting Prep
-        short: Productivity
-        icon: docs
-        summary: Assembling a traceable client review pack and meeting brief from portfolio, planning and CRM data, so advisors spend the time on the conversation, not the preparation.
-        problem: Client data is scattered across custody, portfolio, planning and CRM systems, so advisors burn hours hand-building each review pack and the least-served clients get the thinnest preparation.
-        who_benefits: Advisory Field
-        how_built: Household, portfolio and planning data are unified in the lakehouse; the Client Review Builder drafts traceable packs with Agent Bricks and advisors query specifics in Genie before the meeting.
+      - name: Client Service AI
+        short: Service
+        icon: aisvc
+        summary: Call summarization, agent assist and self-service answers across the client service desk, drafted from governed household data.
+        problem: Client service teams jump between custody, planning and CRM systems to answer a call, so wait times grow, wrap-up is manual and the same question is answered differently each time.
+        who_benefits: Client Experience
+        how_built: Call and case data are unified in the lakehouse under Unity Catalog; Mosaic AI agents built with Agent Bricks summarize interactions and draft answers against governed household data, surfaced in the service workflow.
         components:
-          - Client Review Builder
-          - Genie
           - Salesforce FSC
+          - Mosaic AI
           - Agent Bricks
+          - Genie
           - Unity Catalog
         stories:
           - title: Wealth advisor productivity starts with the client conversation
@@ -901,22 +900,19 @@ agent_usecases:
         stories:
           - title: 'Customer Story: HSBC'
             url: https://www.databricks.com/customers/hsbc
-      - name: Client Onboarding
-        short: Account opening
+      - name: Practice FP&A
+        short: Finance
         icon: identity
-        summary: Opening, verifying and funding a new household across signature, KYC and custodial account creation in one governed flow rather than a multi-week paper chase.
-        problem: Account opening spans signature, screening and custodial systems with manual re-keying, so onboarding takes weeks, funding stalls and status is invisible to the advisor.
-        who_benefits: Client Experience
-        how_built: Onboarding state is orchestrated in the Onboarding Studio on Lakebase; Fenergo screening and DocuSign signature events are governed in Unity Catalog and custodial accounts created over managed writes.
+        summary: Fee revenue, margin and cost-to-serve planned and closed on governed data instead of reconciled billing extracts.
+        problem: Fee revenue, advisor compensation and cost-to-serve are stitched from billing and portfolio extracts each month, so the practice closes late and has no reliable forward view of margin by office or segment.
+        who_benefits: Wealth Leadership
+        how_built: Billing, portfolio and cost feeds conform on the lakehouse under Unity Catalog, AI Functions draft variance commentary, and fee revenue, margin and cost-to-serve are planned and reported through AI/BI and Genie.
         components:
-          - Onboarding Studio
-          - Fenergo Onboarding
-          - DocuSign eSignature
+          - SS&C Black Diamond
+          - AI Functions
+          - AI/BI
+          - Genie
           - Unity Catalog
-          - Lakebase
-        stories:
-          - title: Addepar accelerates client onboarding with Databricks
-            url: https://www.databricks.com/customers/addepar
       - name: KYC AML & Suitability
         short: Compliance
         icon: gavel

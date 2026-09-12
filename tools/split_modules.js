@@ -6,7 +6,7 @@
   board ships without them.
 
   Emits (all under app/, the served root):
-    architectures/<id>.json   one per industry (all 63), loaded lazily on pick
+    architectures/<id>.json   one per industry (all 70), loaded lazily on pick
     architectures/manifest.json  [{id,label,built}] for the picker
     resources/links.json         LINKS (incl. inline videos/seealso)
     resources/references.json    REFERENCES

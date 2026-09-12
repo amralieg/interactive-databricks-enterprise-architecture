@@ -46,7 +46,7 @@ function check(name, cond, detail) { results.push({ name, ok: !!cond, detail });
   check('accelerators loaded', res.accel > 0, 'accel=' + res.accel);
   check('connectors loaded + regex rehydrated', res.conn > 0 && res.connRe, 'conn=' + res.conn + ' reOk=' + res.connRe);
   check('INDUSTRIES empty at boot (lazy)', res.inds === 0, 'inds=' + res.inds);
-  check('manifest built-set loaded (63)', res.built === 63, 'built=' + res.built);
+  check('manifest built-set loaded (70)', res.built === 70, 'built=' + res.built);
 
   // ---- lazy industry switch ----
   const healthcareLoad = await page.evaluate(async () => {

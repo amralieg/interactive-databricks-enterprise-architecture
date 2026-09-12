@@ -1,5 +1,5 @@
 name: Food & Beverage
-description: 'CPG food and beverage manufacturers: recipe and batch production, quality and traceability, demand planning, and cold-chain logistics.'
+description: 'A food and beverage manufacturer: recipe and batch production on filling and packaging lines, food-safety and lot traceability, demand sensing and S&OP scenario planning, cold-chain distribution, and co-pack supply networks.'
 sources:
   - name: Manufacturing & MES
     icon: erp
@@ -283,8 +283,8 @@ pipelines:
             cares: scope-3 emissions and the provenance behind every pack claim.
         ucs:
           - Recall Readiness
-          - OEE & Downtime
-          - Sustainable Sourcing
+          - Line Yield & Giveaway
+          - Sustainable Sourcing & Circularity
       - name: Plant Operations
         mark: Lakehouse//RT
         summary: Plant managers and line leads on changeover time, downtime reason codes and batch release, chasing line yield and scrap before the shift ends.
@@ -303,9 +303,9 @@ pipelines:
           - name: Maintenance Lead
             cares: planned downtime and the failures that stop a line mid-run.
         ucs:
-          - Line Yield Optimisation
-          - OEE & Downtime
-          - Allergen Control
+          - Line Yield & Giveaway
+          - Packaging Vision Inspection
+          - Allergen & Contamination Root-Cause
       - name: Quality & Food Safety
         mark: AI/BI
         summary: Quality managers on hold rate, open deviations, CAPA aging and sanitation compliance across sites when a supplier alert lands.
@@ -325,8 +325,8 @@ pipelines:
             cares: FSMA traceability and the recall record that proves control.
         ucs:
           - Recall Readiness
-          - Allergen Control
-          - Shelf-Life Optimisation
+          - Allergen & Contamination Root-Cause
+          - Shelf-Life & FEFO Optimisation
       - name: Supply Chain
         mark: Model Serving
         summary: Planners on forecast accuracy and bias, inventory days of supply and which customer orders are at risk before the S&OP cycle locks.
@@ -345,10 +345,10 @@ pipelines:
           - name: Inventory Manager
             cares: days of supply, FEFO allocation and short-dated write-offs.
         ucs:
-          - Demand Forecasting
+          - Retail Demand Sensing
           - Cold Chain Integrity
-          - Shelf-Life Optimisation
-          - Co-pack Visibility
+          - Shelf-Life & FEFO Optimisation
+          - Co-pack Supply Planning
       - name: Sales & Marketing
         mark: CustomerLake
         summary: Category managers on promotion lift versus cannibalised base, distribution voids and the retailer scorecards that decide the next line review.
@@ -367,8 +367,8 @@ pipelines:
           - name: Brand Manager
             cares: distribution voids and share against the category.
         ucs:
-          - Trade Promotion ROI
-          - Demand Forecasting
+          - S&OP Scenario Simulation
+          - Retail Demand Sensing
   - name: Technical
     icon: code
     tiles:
@@ -391,8 +391,8 @@ pipelines:
             cares: the pager when a plant or trace feed breaks before the morning read.
         ucs:
           - Recall Readiness
-          - OEE & Downtime
-          - Co-pack Visibility
+          - Line Yield & Giveaway
+          - Co-pack Supply Planning
       - name: Data Scientists
         mark: MLflow
         summary: Demand, shelf-life and line-yield models, and whether they still hold six months after deployment.
@@ -411,9 +411,9 @@ pipelines:
           - name: MLOps
             cares: whether every model still holds six months after deployment.
         ucs:
-          - Demand Forecasting
-          - Line Yield Optimisation
-          - Shelf-Life Optimisation
+          - Retail Demand Sensing
+          - Line Yield & Giveaway
+          - Shelf-Life & FEFO Optimisation
       - name: App Developers
         mark: Apps
         summary: Ship the genealogy, demand-planning and quality-hold applications operations works in, hosted next to governed data.
@@ -433,8 +433,8 @@ pipelines:
             cares: agents that draft a recall trace or hold decision against governed tools.
         ucs:
           - Recall Readiness
-          - Demand Forecasting
-          - Allergen Control
+          - Retail Demand Sensing
+          - Allergen & Contamination Root-Cause
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -606,7 +606,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Plant & OEE Agent
+      - name: Line Performance Agent
         icon: genie
         summary: Ask about line yield, OEE and downtime by line and shift in plain language.
         feeds:
@@ -623,7 +623,7 @@ agent_usecases:
           - Where is filler giveaway highest across the plants?
           - What is line yield and scrap by SKU today?
           - Which lines have the longest changeover times?
-      - name: Quality & Traceability Agent
+      - name: Food Safety Agent
         icon: genie
         summary: Explore hold rate, deviations and recall readiness across sites.
         feeds:
@@ -641,7 +641,7 @@ agent_usecases:
           - How many deviations are open past their CAPA SLA?
           - Where are allergen cross-contact risks by changeover?
           - How fast can we build a recall list for a given lot?
-      - name: Demand & Cold Chain Agent
+      - name: Service & Cold Chain Agent
         icon: genie
         summary: Answer forecast, OTIF and cold-chain questions across the network.
         feeds:
@@ -658,7 +658,7 @@ agent_usecases:
           - Which loads had cold-chain excursions in transit?
           - What is days of supply and short-dated risk by SKU?
           - Which shipments are at risk of missing the delivery window?
-      - name: Commercial & Trade Agent
+      - name: Retail Execution Agent
         icon: genie
         summary: Ask about promotion ROI, share and distribution across retailers.
         feeds:
@@ -698,10 +698,10 @@ agent_usecases:
             url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
           - title: 'The EU Digital Product Passport: a traceability deadline'
             url: https://www.databricks.com/blog/eu-digital-product-passport-traceability-deadline
-      - name: Demand Forecasting
+      - name: Retail Demand Sensing
         short: Planning
         icon: sheet
-        summary: SKU-location forecasts that blend syndicated POS, promotions and plant capacity constraints.
+        summary: SKU-location demand sensed from syndicated POS, promotions and plant capacity constraints.
         problem: SKU-location demand is forecast from aggregate history in legacy tools, so promotions, seasonality and plant capacity are missed and the plan is stale before S&OP even locks.
         who_benefits: Supply Chain
         how_built: Syndicated POS, promotion and capacity features are engineered in Feature Store and scored through Model Serving into the Demand Planning Workbench for the S&OP consensus.
@@ -716,10 +716,10 @@ agent_usecases:
             url: https://www.databricks.com/solutions/accelerators/demand-forecasting
           - title: Suntory Beverage and Food accelerates decisions with Databricks
             url: https://www.databricks.com/customers/suntorybeveragefood
-      - name: Line Yield Optimisation
+      - name: Line Yield & Giveaway
         short: Manufacturing
         icon: iot
-        summary: Scrap and giveaway reduced by correlating filler drift, changeover time and operator crew.
+        summary: Scrap and filler giveaway reduced by correlating filler drift, changeover time and operator crew.
         problem: Scrap and giveaway are reviewed after the shift from disconnected filler, changeover and crew logs, so drift is corrected too late and margin is lost on every over-filled case.
         who_benefits: Plant Operations
         how_built: Filler, downtime and MES feeds stream into Lakehouse//RT and are scored with Model Serving, so yield-loss drivers surface on the line before the run ends.
@@ -750,29 +750,26 @@ agent_usecases:
         stories:
           - title: 'IoT in manufacturing: strategy, components, use cases and challenges'
             url: https://www.databricks.com/blog/iot-in-manufacturing
-      - name: Trade Promotion ROI
-        short: Commercial
+      - name: S&OP Scenario Simulation
+        short: Planning
         icon: market
-        summary: Which promotions paid for themselves in incremental volume versus cannibalised base.
-        problem: Promotions are settled months later against scan data in spreadsheets, so nobody can tell which events drove incremental volume versus cannibalised base until the money is already spent.
-        who_benefits: Sales & Marketing
-        how_built: Scan, POS and accrual feeds are conformed on Delta Lake and reconciled to incremental volume in the Trade ROI Analytics app on certified AI/BI Metric Views.
+        summary: What-if S&OP scenarios run across demand, capacity and co-pack before the plan locks.
+        problem: When a line goes down, a promotion overshoots or a commodity spikes, planners rebuild the S&OP plan in spreadsheets, so the trade-offs between service, cost and inventory are never simulated before the cycle locks.
+        who_benefits: Supply Chain
+        how_built: Demand, capacity and co-pack data are conformed on Delta Lake, and scenario models in Model Serving let the Demand Planning Workbench simulate service, cost and inventory outcomes before the S&OP consensus.
         components:
-          - Trade ROI Analytics
+          - Demand Planning Workbench
+          - SAP S/4HANA PP
           - NielsenIQ POS
-          - Trade Promotion Mgmt
+          - Model Serving
           - AI/BI
-          - Delta Lake
-        stories:
-          - title: Reckitt empowers marketing teams to drive greater impact
-            url: https://www.databricks.com/customers/reckitt
-      - name: Allergen Control
+      - name: Allergen & Contamination Root-Cause
         short: Food safety
         icon: gavel
-        summary: Cross-contact risk flagged from scheduling, cleaning records and shared equipment genealogy.
-        problem: Cross-contact risk hides in the gap between production scheduling, cleaning records and shared-equipment genealogy, so an allergen exposure is often caught only after a line has already run.
+        summary: Allergen and contamination events traced to the changeover, clean or shared line that caused them.
+        problem: When a quality hold or contamination event hits, the cause is buried across production scheduling, cleaning records and shared-equipment genealogy, so root-cause takes days and the same cross-contact failure recurs on the next run.
         who_benefits: Quality & Food Safety
-        how_built: MES scheduling, sanitation and lot-genealogy data are conformed under Unity Catalog and scored with AI Functions in the Quality Hold Dashboard to flag cross-contact before a changeover.
+        how_built: MES scheduling, sanitation and lot-genealogy data are conformed under Unity Catalog and scored with AI Functions in the Quality Hold Dashboard to trace each event to its root cause and flag cross-contact before the next changeover.
         components:
           - Quality Hold Dashboard
           - Siemens Opcenter MES
@@ -782,10 +779,10 @@ agent_usecases:
         stories:
           - title: Building an agentic food label reader for greater transparency
             url: https://www.databricks.com/blog/building-agentic-food-label-reader-greater-transparency
-      - name: Shelf-Life Optimisation
-        short: Quality
+      - name: Shelf-Life & FEFO Optimisation
+        short: Inventory
         icon: product
-        summary: FEFO allocation scored against remaining shelf life and customer distance.
+        summary: FEFO allocation scored against remaining shelf life and customer distance to cut write-offs.
         problem: Stock is allocated first-in-first-out with no view of remaining shelf life or customer distance, so short-dated product ships to the wrong lane and returns and write-offs pile up.
         who_benefits: Supply Chain
         how_built: Batch age, inventory and order data are joined on Delta Lake and scored in Model Serving to drive FEFO allocation surfaced in the Demand Planning Workbench.
@@ -800,28 +797,26 @@ agent_usecases:
             url: https://www.databricks.com/customers/albert-heijn
           - title: Scaling supply chain AI with Databricks Apps
             url: https://www.databricks.com/customers/a2go/databricks-apps
-      - name: OEE & Downtime
-        short: Operations
+      - name: Packaging Vision Inspection
+        short: Manufacturing
         icon: chart
-        summary: Top loss categories by line and shift with root cause tied to MES reason codes.
-        problem: OEE is stitched together from spreadsheets and unlogged stoppages, so the dashboard number hides the real losses and the top downtime causes stay invisible by line and shift.
+        summary: Fill level, seal, label and date-code defects caught inline by camera before the case ships.
+        problem: Packaging defects like short fills, bad seals, crooked labels and missing date codes are caught by spot manual checks, so defective cases reach the pallet and a whole shift can be quarantined on one escape.
         who_benefits: Plant Operations
-        how_built: Filler, MES and downtime feeds land in Lakehouse//RT and roll up into governed OEE Metric Views in AI/BI, with Genie answering loss questions by line and shift.
+        how_built: Inline packaging-camera images triggered off FactoryTalk line signals land through Lakeflow and are scored by Mosaic AI vision models in Model Serving, with each defect tied to lot under Unity Catalog for the line to act in real time.
         components:
           - Rockwell FactoryTalk
-          - Siemens Opcenter MES
-          - Lakehouse//RT
-          - AI/BI
-          - Genie
+          - Lakeflow
+          - Model Serving
+          - Mosaic AI
+          - Unity Catalog
         stories:
-          - title: Why your OEE dashboard is lying to you
-            url: https://www.databricks.com/blog/why-your-oee-dashboard-lying-you
           - title: 'Agents for production lines: trusted decisions in real time'
             url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
-      - name: Sustainable Sourcing
+      - name: Sustainable Sourcing & Circularity
         short: ESG
         icon: globe
-        summary: Ingredient provenance and carbon intensity traced from farm through finished goods.
+        summary: Ingredient provenance, carbon intensity and packaging circularity traced from farm through finished goods.
         problem: Ingredient provenance and carbon intensity sit in disconnected spreadsheets, so scope-3 and sourcing claims cannot be traced from farm to finished goods when a buyer or regulator asks.
         who_benefits: CEO & COO
         how_built: Supplier, ERP and commodity data are conformed into governed data products under Unity Catalog and shared to partners and auditors over OpenSharing with lineage intact.
@@ -836,13 +831,13 @@ agent_usecases:
             url: https://www.databricks.com/customers/mondelez
           - title: How Dow built a carbon footprint ledger to accelerate sustainability at scale
             url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-      - name: Co-pack Visibility
+      - name: Co-pack Supply Planning
         short: Network
         icon: partner
-        summary: Third-party production status and inventory reconciled without manual spreadsheet chases.
-        problem: Third-party production status and inventory at co-packers arrive by email and spreadsheet, so planners chase batch and stock positions by hand and the network view is always stale.
+        summary: Co-packer capacity, material supply and inventory planned across the network without spreadsheet chases.
+        problem: Co-packer production status, material supply and inventory arrive by email and spreadsheet, so planners balance the internal-versus-co-pack network by hand and the supply plan is always stale.
         who_benefits: Supply Chain
-        how_built: Co-manufacturer inventory is queried in place through Unity Catalog federation and reconciled with WMS and production orders in the Demand Planning Workbench.
+        how_built: Co-manufacturer inventory is queried in place through Unity Catalog federation and reconciled with WMS and production orders in the Demand Planning Workbench to plan material supply across internal and co-pack sites.
         components:
           - Co-manufacturer Inventory
           - Manhattan WMS

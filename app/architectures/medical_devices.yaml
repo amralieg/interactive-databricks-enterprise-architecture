@@ -1,5 +1,5 @@
 name: Medical Devices
-description: 'Design, manufacture and post-market support of regulated medical devices: PLM and requirements, MES and quality, complaint and CAPA, connected-device telemetry, and regulatory submissions.'
+description: 'A MedTech manufacturer designing, manufacturing and supporting regulated medical devices: PLM and requirements, MES and quality, complaint and post-market surveillance, connected-device and CGM telemetry, manufacturing reliability, clinical evidence, and supply and demand across the device fleet.'
 sources:
   - name: PLM & Engineering
     icon: dev
@@ -388,9 +388,9 @@ pipelines:
           - name: Reliability engineering
             cares: failure modes and field returns feeding design changes.
         ucs:
-          - Design & Reliability
-          - Predictive Servicing
-          - Complaint & CAPA
+          - Device Digital Twin & Simulation
+          - Connected-Device Product Analytics
+          - Complaint & Post-Market Surveillance
       - name: Quality & Reg
         mark: Genie One
         summary: The head of quality on complaint and CAPA backlog and audit readiness; regulatory affairs on submissions, UDI registration and MDR timeliness; compliance and audit on QSR, ISO 13485 and recall exposure.
@@ -409,10 +409,9 @@ pipelines:
           - name: Compliance & audit
             cares: QSR, ISO 13485 and recall exposure.
         ucs:
-          - Complaint & CAPA
-          - Post-Market Vigilance
-          - Regulatory Submissions
-          - Traceability & Recall
+          - Complaint & Post-Market Surveillance
+          - Manufacturing Yield & OEE
+          - Supply Risk Visibility
       - name: Manufacturing Ops
         mark: Lakehouse//RT
         summary: Process and plant engineering on first-pass yield, OEE and process capability, line quality on nonconformance and disposition, and supply chain on component availability and supplier quality.
@@ -431,9 +430,9 @@ pipelines:
           - name: Supply chain
             cares: component availability and supplier quality.
         ucs:
-          - MES Yield & Quality
-          - Supply Chain Risk
-          - Traceability & Recall
+          - Manufacturing Yield & OEE
+          - Supply Risk Visibility
+          - Production Predictive Maintenance
       - name: Commercial & Svc
         mark: AI/BI
         summary: Sales and marketing on territory attainment and device utilisation, the field service organisation on installed-base uptime and service contracts, and customer success on onboarding and consumable replenishment.
@@ -452,9 +451,9 @@ pipelines:
           - name: Customer success
             cares: onboarding and consumable replenishment.
         ucs:
-          - Sales & Territory
-          - Predictive Servicing
-          - Supply Chain Risk
+          - Device & Consumable Demand Forecasting
+          - Connected-Device Product Analytics
+          - Supply Risk Visibility
       - name: Clinical Affairs
         mark: Model Serving
         summary: Medical affairs on real-world evidence and clinical value, post-market surveillance on complaint and adverse-event signal, and health economics on outcomes and value evidence.
@@ -473,9 +472,10 @@ pipelines:
           - name: Health economics
             cares: outcomes and value evidence.
         ucs:
-          - Post-Market Vigilance
-          - Real-World Evidence
-          - Complaint & CAPA
+          - Clinical-Trial Site Selection
+          - Surgical Video & Image Analytics
+          - Connected CGM & Pump Analytics
+          - Complaint & Post-Market Surveillance
   - name: Technical
     icon: code
     tiles:
@@ -684,7 +684,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Complaints & CAPA Agent
+      - name: Quality & Safety Agent
         icon: genie
         summary: Ask which products and lots drive complaints and where CAPA is aging, in plain language.
         feeds:
@@ -702,7 +702,7 @@ agent_usecases:
           - Which CAPAs are open past their target closure date?
           - Where are complaints repeating across sites and products?
           - How does our complaint rate compare to MAUDE peers?
-      - name: Manufacturing Yield & Quality Agent
+      - name: Device Manufacturing Agent
         icon: genie
         summary: Explore first-pass yield, OEE and nonconformance across the lines.
         feeds:
@@ -720,7 +720,7 @@ agent_usecases:
           - Where is process capability drifting toward a limit?
           - Which lots are held by out-of-spec LIMS results?
           - What is the nonconformance rate by station?
-      - name: Connected Device Fleet Agent
+      - name: Installed Base Service Agent
         icon: genie
         summary: Answer uptime, utilisation and service questions across the installed base.
         feeds:
@@ -738,7 +738,7 @@ agent_usecases:
           - Which accounts are below device-utilisation target?
           - How many service calls were unplanned this month?
           - Which consumables need replenishment across the fleet?
-      - name: Post-Market & RWE Agent
+      - name: Clinical Evidence Agent
         icon: genie
         summary: Ask about emerging safety signals and real-world outcomes across complaints and telemetry.
         feeds:
@@ -761,65 +761,60 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: Complaint & CAPA
-        short: Quality
+      - name: Complaint & Post-Market Surveillance
+        short: Safety
         icon: gavel
-        summary: Complaints, nonconformances and MDR events triaged by severity and probable cause, with CAPA opened and tracked to closure.
-        problem: Complaints, nonconformances and MDR events sit in separate systems, so severity is judged inconsistently, root cause is reconstructed by hand and CAPA backlog ages toward the next audit.
+        summary: Complaints, adverse events and device telemetry triaged by severity and probable cause, with CAPA opened and emerging safety signal caught before field exposure grows.
+        problem: Complaints, MDR events, registries and device telemetry sit in separate systems, so severity is judged inconsistently, an emerging signal clears a manual review only after exposure has grown, and CAPA backlog ages toward the next audit.
         who_benefits: Quality & Reg
-        how_built: Complaint intake, MES nonconformances and adverse-event feeds land in the lakehouse; text models triage severity and probable cause in Model Serving and open CAPAs from the CAPA Command Center on Lakebase.
+        how_built: Complaint intake, MES nonconformances, adverse-event and telemetry feeds conform to Gold; text and signal models triage severity and detect emerging trends in Model Serving and open CAPAs from the CAPA Command Center on Lakebase.
         components:
           - CAPA Command Center
           - TrackWise Digital
-          - MasterControl QMS
+          - FDA MAUDE Events
           - Model Serving
           - AI Functions
-          - Lakebase
         stories:
           - title: Databricks for Healthcare and Life Sciences
             url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
-      - name: Post-Market Vigilance
-        short: Safety
-        icon: ztarget
-        summary: Emerging safety signal detected across complaints, adverse events and device telemetry before field exposure grows.
-        problem: Safety signal hides across complaints, adverse events, registries and device telemetry; by the time a trend clears a manual review the field exposure has already grown.
-        who_benefits: Clinical Affairs
-        how_built: Complaint, adverse-event and telemetry feeds are conformed to Gold; signal-detection models score emerging trends in Model Serving and surface them to surveillance before they become recalls.
-        components:
-          - FDA MAUDE Events
-          - Device Telemetry
-          - Model Serving
-          - AI/BI
-          - Complaint & RWE Marts
-        stories:
           - title: Real-World Evidence Solution Accelerator
             url: https://www.databricks.com/solutions/accelerators/real-world-evidence
-          - title: Databricks for Healthcare and Life Sciences
-            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
-      - name: Predictive Servicing
-        short: Field service
+      - name: Surgical Video & Image Analytics
+        short: Imaging
+        icon: observ
+        summary: Surgical video and device imaging scored with vision models to surface events, quality and outcomes clinicians cannot review by hand.
+        problem: Surgical video and device imaging pile up faster than clinical and engineering teams can review them, so procedural events, image quality and outcome signals stay locked in unstructured video no one queries.
+        who_benefits: Clinical Affairs
+        how_built: Device imaging and video conform on the lakehouse under Unity Catalog; vision models score events and quality in Model Serving with AI Functions, surfacing outcomes for clinical and design teams.
+        components:
+          - Device Telemetry
+          - HL7 FHIR Feeds
+          - Model Serving
+          - AI Functions
+          - MLflow
+      - name: Connected-Device Product Analytics
+        short: Product
         icon: iot
-        summary: Connected devices scored on telemetry so service is dispatched before an unplanned failure in the field.
-        problem: Connected devices in the field fail between planned visits, and without telemetry the first signal is an unplanned service call or a complaint, not a prediction.
+        summary: Real-time analytics on how the connected installed base performs and is used, so product and service act on live signal not quarterly reports.
+        problem: Connected devices stream usage, health and alarms, but the signal sits unused, so product sees adoption late, service reacts to failures instead of predicting them, and no one sees how the fleet is really used.
         who_benefits: Commercial & Svc
-        how_built: IoMT telemetry streams into Lakehouse//RT; remaining-useful-life models score each unit in Model Serving and dispatch is raised in ServiceMax from the Device Fleet Monitor.
+        how_built: IoMT telemetry streams into Lakehouse//RT and conforms under Unity Catalog, so device usage, health and utilisation are read live in the Device Fleet Monitor and certified AI/BI Metric Views across the installed base.
         components:
           - Device Fleet Monitor
           - Device Telemetry
           - Lakehouse//RT
-          - Model Serving
-          - ServiceMax
-          - MLflow
+          - AI/BI
+          - Unity Catalog
         stories:
           - title: 'Insulet: connected Omnipod device analytics on Databricks'
             url: https://www.databricks.com/customers/insulet/lakeflow-connect
           - title: GE Healthcare builds device and patient views on Databricks
             url: https://www.databricks.com/company/newsroom/press-releases/databricks-introduces-lakehouse-for-the-healthcare-and-life-sciences-industries-to-drive-transformation-across-healthcare-ecosystem
-      - name: MES Yield & Quality
+      - name: Manufacturing Yield & OEE
         short: Manufacturing
         icon: gauge
-        summary: First-pass yield and scrap attacked at the line with in-line defect scoring rather than at final inspection.
-        problem: First-pass yield and scrap are reviewed after the lot, so a drifting process is caught at final inspection or in the field instead of at the line.
+        summary: First-pass yield, OEE and scrap attacked at the line with in-line defect scoring rather than at final inspection.
+        problem: First-pass yield, OEE and scrap are reviewed after the lot, so a drifting process is caught at final inspection or in the field instead of at the line.
         who_benefits: Manufacturing Ops
         how_built: MES, historian and inspection data are conformed to certified Metric Views; defect and yield models score in-line in Model Serving and the Yield & OEE Cockpit flags lots at risk before disposition.
         components:
@@ -831,9 +826,9 @@ agent_usecases:
         stories:
           - title: Insulet cuts manufacturing data latency on Databricks
             url: https://www.databricks.com/customers/insulet/lakeflow-connect
-      - name: Supply Chain Risk
+      - name: Supply Risk Visibility
         short: Supply chain
-        icon: network
+        icon: partner
         summary: Supplier and component exposure scored so shortages and bad lots are moved before they stop a build or reach a device.
         problem: Single-source components and opaque supplier quality mean a shortage or a bad lot is discovered at the line, after it has already stopped a build or reached a device.
         who_benefits: Manufacturing Ops
@@ -847,87 +842,83 @@ agent_usecases:
         stories:
           - title: Integra Life Sciences gains a global supply and demand view
             url: https://www.databricks.com/customers/integra-life-sciences
-      - name: Regulatory Submissions
-        short: Regulatory
-        icon: docs
-        summary: UDI, 510(k) and MDR submissions assembled from governed device, design-history and complaint tables with lineage.
-        problem: UDI, 510(k) and MDR submissions are assembled by hand from PLM, QMS and complaint systems, so filing is slow and every regulator's format is a fresh manual export.
-        who_benefits: Quality & Reg
-        how_built: Device, design-history and complaint tables are governed under Unity Catalog; the Submission Workbench assembles UDI/GUDID and MDR packages with lineage from the same certified data.
+      - name: Production Predictive Maintenance
+        short: Manufacturing
+        icon: stream
+        summary: Production line and equipment failures predicted from historian signals before they stop a lot or a line.
+        problem: Production equipment fails between planned maintenance, and the historian signals that would have warned days earlier sit unused, so a line stops mid-lot on a regulated build instead of being serviced on plan.
+        who_benefits: Manufacturing Ops
+        how_built: Opcenter MES and PI Historian signals stream into Lakehouse//RT and feed remaining-life models tracked in MLflow and scored in Model Serving, raising maintenance before the line stops.
         components:
-          - Submission Workbench
-          - FDA GUDID / UDI
-          - EU EUDAMED
-          - Unity Catalog
-          - AI Functions
+          - AVEVA PI Historian
+          - Siemens Opcenter MES
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
         stories:
-          - title: Databricks for Healthcare and Life Sciences
-            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
-      - name: Sales & Territory
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Device & Consumable Demand Forecasting
         short: Commercial
         icon: market
-        summary: Territory attainment and consumable forecasting grounded in how the installed base is actually used, not just orders.
-        problem: Sales sees orders but not device utilisation, so territory calls and consumable forecasts are made blind to how the installed base is actually used.
+        summary: Device and consumable demand forecast from utilisation, orders and installed-base signal so supply is planned to real demand.
+        problem: Demand is forecast from orders and history blind to how the installed base is actually used, so consumables and devices are over- or under-built and either stock out or age in inventory.
         who_benefits: Commercial & Svc
-        how_built: CRM, order and device-utilisation data are conformed to Gold; attainment and utilisation are read in AI/BI and Genie on the definitions the commercial team already reports.
+        how_built: CRM, order and device-utilisation data conform to Gold and are scored in Model Serving, so device and consumable demand is forecast in AI/BI on the definitions the commercial team already reports.
         components:
           - Salesforce
+          - SAP S/4HANA
+          - Model Serving
           - AI/BI
-          - Genie One
           - Unity Catalog
-      - name: Real-World Evidence
+      - name: Clinical-Trial Site Selection
         short: Clinical
         icon: chart
-        summary: Real-world device performance assembled from registries, claims and telemetry for indications, value and safety.
-        problem: Device performance in the real world lives in registries, claims and telemetry that never meet, so evidence for indications, value and safety takes months to assemble.
+        summary: Trial protocol feasibility and site and investigator selection grounded in real-world device, registry and outcome data.
+        problem: Trial protocols and site selection are decided from static feasibility surveys and relationships, so enrolment stalls, sites underperform and the real-world evidence that would target the right sites is never brought to bear.
         who_benefits: Clinical Affairs
-        how_built: Real-world data from registries, claims and device telemetry is conformed on the lakehouse using the RWE accelerator; outcome and comparative-effectiveness models run in Model Serving.
+        how_built: Real-world data from registries, claims and device telemetry conforms on the lakehouse using the RWE accelerator; feasibility and site-performance models score candidate sites in Model Serving for protocol and site selection.
         components:
           - HL7 FHIR Feeds
           - Complaint & RWE Marts
           - Model Serving
+          - AI Functions
           - AI/BI
-          - Delta Lake
         stories:
           - title: Real-World Evidence Solution Accelerator
             url: https://www.databricks.com/solutions/accelerators/real-world-evidence
           - title: Integra Life Sciences unifies data for patient care
             url: https://www.databricks.com/customers/integra-life-sciences
-      - name: Traceability & Recall
-        short: Traceability
-        icon: share
-        summary: Device history and lot genealogy stitched so a recall is scoped from component to patient in minutes.
-        problem: When a lot is suspect, tracing every affected device from component to patient and scoping the recall is a manual genealogy hunt across MES, PLM and distribution.
-        who_benefits: Quality & Reg
-        how_built: Device history and lot genealogy are stitched in Silver from MES, PLM and distribution; a recall query scopes affected units in minutes and writes disposition back to the QMS.
+      - name: Connected CGM & Pump Analytics
+        short: Connected therapy
+        icon: product
+        summary: Continuous glucose monitor and insulin-pump data turned into real-world therapy and device insight for patients, clinicians and product teams.
+        problem: CGM and pump data streams from every patient, but it lands in device silos, so therapy adherence, real-world performance and the signals that guide the next product update are never assembled.
+        who_benefits: Clinical Affairs
+        how_built: Connected CGM and pump telemetry streams into Lakehouse//RT and conforms under Unity Catalog, so real-world therapy, adherence and device-performance insight is read in AI/BI and served to clinical and product teams.
         components:
-          - Siemens Opcenter MES
-          - PTC Windchill
-          - MasterControl QMS
-          - Unity Catalog
+          - Device Telemetry
+          - HL7 FHIR Feeds
+          - Lakehouse//RT
           - AI/BI
+          - Unity Catalog
         stories:
-          - title: Databricks for Healthcare and Life Sciences
-            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
-      - name: Design & Reliability
+          - title: Insulet guides product updates with live device data
+            url: https://www.databricks.com/customers/insulet/lakeflow-connect
+      - name: Device Digital Twin & Simulation
         short: Engineering
-        icon: dev
-        summary: Field returns, complaints and telemetry joined to requirements so reliability lessons reach design reviews directly.
-        problem: Field returns and complaints carry the design lessons, but they reach engineering as quarterly summaries, long after the next design freeze has passed.
+        icon: network
+        summary: A live virtual model of the device built from design, test and field telemetry, so a design or reliability change is simulated before it ships.
+        problem: Design and reliability changes are trialled on physical prototypes and field returns reach engineering as quarterly summaries, so there is no governed live model of the device to simulate a change against before the next design freeze.
         who_benefits: R&D & Engineering
-        how_built: Complaint, return and telemetry signal is joined to requirements and design history in the lakehouse; failure-mode and reliability models in MLflow feed design reviews directly.
+        how_built: Requirements, design history and field telemetry conform on the lakehouse and are mirrored in a digital twin, and physics-plus-ML models in Model Serving tracked in MLflow simulate reliability and performance before a change ships.
         components:
           - PTC Windchill
           - Jama Connect
           - Device Telemetry
-          - MLflow
           - Model Serving
+          - MLflow
           - Feature Store
-        stories:
-          - title: Predictive maintenance on the Databricks Lakehouse
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
-          - title: Insulet guides product updates with live device data
-            url: https://www.databricks.com/customers/insulet/lakeflow-connect
 medallion:
   Bronze:
     short: Raw device and quality feeds

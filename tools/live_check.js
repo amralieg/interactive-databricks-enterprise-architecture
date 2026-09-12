@@ -34,7 +34,7 @@ const ok = (n, c, d) => { R.push({ n, c: !!c, d }); console.log((c ? 'PASS ' : '
   ok('reference board renders', boot.atoms > 0, 'atoms=' + boot.atoms);
   ok('INDUSTRIES empty at boot (lazy)', boot.inds === 0);
   ok('resources loaded (links+connectors, regex rehydrated)', boot.links > 0 && boot.conn > 0 && boot.connRe);
-  ok('manifest built set (63)', boot.built === 63, 'built=' + boot.built);
+  ok('manifest built set (70)', boot.built === 70, 'built=' + boot.built);
   ok('language menu lists 16', boot.menu === 16, 'menu=' + boot.menu);
   await page.screenshot({ path: OUT + '/1_reference_en.png' });
 

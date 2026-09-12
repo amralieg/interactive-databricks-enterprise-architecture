@@ -1,5 +1,5 @@
 name: Retail
-description: 'Omnichannel retail: merchandising, inventory and allocation, store operations and loyalty across banners, e-commerce and marketplaces.'
+description: 'For a multi-banner retailer: merchandising and pricing, inventory and allocation, store operations and loyalty across stores, e-commerce and marketplaces.'
 sources:
   - name: ERP & Merchandising
     icon: erp
@@ -295,8 +295,8 @@ pipelines:
             cares: promotion effectiveness, loyalty growth and customer acquisition cost.
         ucs:
           - Promotion ROI
-          - Markdown Optimisation
-          - Demand Forecasting
+          - Price & Markdown Optimisation
+          - Customer Lifetime Value
       - name: Merchandising
         mark: AI/BI
         summary: Buyers on assortment, pricing and markdown cadence by category, tracking sell-through and weeks of supply against the merchandise plan.
@@ -315,8 +315,8 @@ pipelines:
           - name: Category Managers
             cares: space, range and vendor performance within the category.
         ucs:
-          - Markdown Optimisation
-          - Allocation Optimisation
+          - Price & Markdown Optimisation
+          - Assortment & Allocation
           - Promotion ROI
       - name: Planning & Allocation
         mark: Model Serving
@@ -337,8 +337,7 @@ pipelines:
             cares: vendor fill, inbound flow and replenishment at risk.
         ucs:
           - Demand Forecasting
-          - Allocation Optimisation
-          - Supplier OTIF
+          - Assortment & Allocation
           - In-Stock Optimisation
       - name: Store Operations
         mark: Lakehouse//RT
@@ -359,9 +358,8 @@ pipelines:
             cares: shrink, register exceptions and process compliance on the floor.
         ucs:
           - In-Stock Optimisation
-          - Omnichannel Fulfillment
-          - Shrink Analytics
-          - Clienteling
+          - Store Performance & Workforce
+          - Assortment & Allocation
       - name: Digital & CRM
         mark: CustomerLake
         summary: E-commerce and loyalty on traffic, conversion and retention, tracking customer lifetime value and churn across web, app and store.
@@ -380,9 +378,9 @@ pipelines:
           - name: Personalisation
             cares: recommendation lift and the models ranking offers on-site.
         ucs:
-          - Personalisation
-          - Clienteling
-          - Promotion ROI
+          - Shopper Segmentation & Personalisation
+          - Customer Lifetime Value
+          - Agentic Commerce
   - name: Technical
     icon: code
     tiles:
@@ -405,8 +403,8 @@ pipelines:
             cares: freshness and expectations on the comp-sales and in-stock tables.
         ucs:
           - Demand Forecasting
-          - Omnichannel Fulfillment
           - In-Stock Optimisation
+          - Household Identity Resolution
       - name: Data Scientists
         mark: MLflow
         summary: Demand-forecast, markdown, allocation and personalisation models, and whether they still hold six months after deployment across banners and channels.
@@ -426,9 +424,9 @@ pipelines:
             cares: features read the same in training and serving, and every run reproducible.
         ucs:
           - Demand Forecasting
-          - Markdown Optimisation
-          - Personalisation
-          - Allocation Optimisation
+          - Price & Markdown Optimisation
+          - Shopper Segmentation & Personalisation
+          - Assortment & Allocation
       - name: App Developers
         mark: Apps
         summary: Ship the store command, demand planning and personalisation applications merchants and field teams work in, hosted next to governed retail data.
@@ -447,9 +445,9 @@ pipelines:
           - name: Agent Builders
             cares: agents that draft a replenishment order against governed tools.
         ucs:
-          - Omnichannel Fulfillment
-          - Clienteling
-          - Personalisation
+          - Agentic Commerce
+          - Store Performance & Workforce
+          - Shopper Segmentation & Personalisation
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -623,7 +621,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Merchandising & Sell-Through Agent
+      - name: Merchandising & Pricing Agent
         icon: genie
         summary: Ask about comparable sales, sell-through and markdown health by category in plain language.
         feeds:
@@ -641,7 +639,7 @@ agent_usecases:
           - What is gross margin after markdowns by department this month?
           - Which categories are beating and missing the merchandise plan?
           - How is sell-through trending versus last year for the new season?
-      - name: Inventory & Availability Agent
+      - name: Inventory & Fulfillment Agent
         icon: genie
         summary: Explore in-stock rate, inventory turns and fulfillment across stores and the network.
         feeds:
@@ -659,7 +657,7 @@ agent_usecases:
           - What are inventory turns and weeks of supply by category?
           - Which orders are at risk of missing the fulfillment promise?
           - Where is inbound flow behind and threatening replenishment?
-      - name: Customer & Loyalty Agent
+      - name: Shopper Growth Agent
         icon: genie
         summary: Answer loyalty, personalisation and experience questions across web and store.
         feeds:
@@ -676,7 +674,7 @@ agent_usecases:
           - How do experience scores compare across store and digital?
           - Which segments responded best to last week's offers?
           - What is churn risk for our top-decile households?
-      - name: Supply & Vendor Agent
+      - name: Sourcing & Supply Agent
         icon: genie
         summary: Ask about vendor OTIF, market share and wholesale sell-in across the network.
         feeds:
@@ -716,13 +714,13 @@ agent_usecases:
             url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
           - title: Walgreens forecasts inventory across nearly 9,000 pharmacies
             url: https://www.databricks.com/customers/walgreens
-      - name: Markdown Optimisation
+      - name: Price & Markdown Optimisation
         short: Margin
         icon: market
-        summary: Markdown timing and depth maximising margin recovery not calendar rules.
-        problem: Markdowns follow a fixed calendar, so slow sellers are cut too late and healthy ones too deep, and margin leaks out of the season before the buyer sees the whole picture.
+        summary: Base price and markdown timing set to protect margin, not calendar rules.
+        problem: Base prices and markdowns follow fixed rules and a set calendar, so slow sellers are cut too late and healthy ones too deep, and margin leaks out of the season before the buyer sees the whole picture.
         who_benefits: Merchandising
-        how_built: Sell-through and price history conformed on Delta Lake feed markdown-timing models in Model Serving, and recommended cuts are written back to POS and commerce through Price & Markdown.
+        how_built: Sell-through and price history from NCR Voyix POS and SymphonyAI IRIS conformed on Delta Lake feed price and markdown models in Model Serving tracked in MLflow, and recommended moves write back to POS and commerce through Price & Markdown.
         components:
           - Model Serving
           - MLflow
@@ -732,13 +730,13 @@ agent_usecases:
         stories:
           - title: ABFRL automates markdown recommendations with ML
             url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
-      - name: Allocation Optimisation
+      - name: Assortment & Allocation
         short: Inventory
         icon: product
-        summary: Initial and replenishment allocation tuned to size and door profiles.
-        problem: Initial and replenishment allocation lean on flat size curves and one national plan, so the wrong sizes land in the wrong doors and stores trade around the buy instead of to it.
+        summary: Assortment breadth and size-curve allocation tuned to door-level demand.
+        problem: Assortments and replenishment lean on flat size curves and one national plan, so the wrong ranges and sizes land in the wrong doors and stores trade around the buy instead of to it.
         who_benefits: Planning & Allocation
-        how_built: Demand signals and door profiles scored in Model Serving drive size curves in the Allocation Optimizer, and door-level allocations are released to the WMS through Allocation Releases.
+        how_built: Demand signals and door profiles from Oracle Retail Merch scored in Model Serving drive assortment and size curves in the Allocation Optimizer, and door-level allocations release to Blue Yonder WMS through Allocation Releases.
         components:
           - Allocation Optimizer
           - Model Serving
@@ -750,26 +748,26 @@ agent_usecases:
             url: https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd
           - title: Al-Futtaim forecasts seasonal orders for Marks & Spencer
             url: https://www.databricks.com/customers/al-futtaim
-      - name: Omnichannel Fulfillment
-        short: Operations
-        icon: stream
-        summary: Ship-from-store and BOPIS against unified inventory positions.
-        problem: Web, store and warehouse stock live in separate systems, so orders route to the wrong node, ship-from-store picks what is already sold, and BOPIS promises break at the counter.
-        who_benefits: Store Operations
-        how_built: Manhattan and commerce feeds land in Lakehouse//RT to hold one live inventory position, so ship-from-store and BOPIS route against real availability from the Store Command Centre.
+      - name: Household Identity Resolution
+        short: Customer 360
+        icon: custlake
+        summary: Fragmented web, loyalty and POS identities resolved into one household profile.
+        problem: The same shopper appears as separate records in commerce, loyalty and POS, so offers double-count, journeys break across channels and no one can see the household behind the transactions.
+        who_benefits: Digital & CRM
+        how_built: Adobe Experience Platform, Salesforce Loyalty and NCR Voyix POS identities are conformed in CustomerLake on Delta Lake under Unity Catalog, resolving one governed household profile without copying customer data off-platform.
         components:
-          - Store Command Centre
-          - Lakehouse//RT
-          - Manhattan Active Omni
-          - Salesforce Commerce
+          - CustomerLake
+          - Adobe Experience Plat
+          - Salesforce Loyalty
+          - Unity Catalog
           - Delta Lake
-      - name: Personalisation
+      - name: Shopper Segmentation & Personalisation
         short: Digital
         icon: custlake
-        summary: Offers and recommendations ranked without copying profiles off-platform.
+        summary: Behavioural segments and on-site recommendations ranked on governed profiles.
         problem: Offers are batched from stale segments and scattered across web, app and email, so shoppers see irrelevant messages while profiles get copied into yet another marketing tool.
         who_benefits: Digital & CRM
-        how_built: Loyalty and web behaviour conformed in CustomerLake feed ranking models in Model Serving, and offers are served through Personalisation Studio without copying profiles off-platform.
+        how_built: Salesforce Loyalty and Adobe web behaviour conformed in CustomerLake feed segmentation and ranking models in Model Serving with features in Feature Store, and offers are served through Personalisation Studio without copying profiles off-platform.
         components:
           - Personalisation Studio
           - CustomerLake
@@ -815,55 +813,50 @@ agent_usecases:
         stories:
           - title: Currys drives growth and retail media with data intelligence
             url: https://www.databricks.com/customers/currys
-      - name: Shrink Analytics
-        short: Loss prevention
-        icon: observ
-        summary: Inventory shrink correlated to store, category and process gaps.
-        problem: Shrink surfaces once a year at physical count, so theft, process error and phantom inventory blur together and the store or workflow driving the loss stays invisible until margin is gone.
-        who_benefits: Store Operations
-        how_built: POS exceptions, inventory movements and WMS events conformed on Delta Lake are scored for anomalies in Model Serving, so shrink is attributed to store, category and process in AI/BI.
-        components:
-          - Model Serving
-          - Delta Lake
-          - AI/BI
-          - NCR Voyix POS
-          - Unity Catalog
-      - name: Clienteling
+      - name: Store Performance & Workforce
         short: Store
         icon: people
-        summary: High-value customers recognized in every channel with governed profiles.
-        problem: Associates meet a high-value customer with no memory of the last visit, so online history, loyalty tier and preferences that would close the sale sit in systems the shop floor cannot reach.
-        who_benefits: Digital & CRM
-        how_built: Household profiles resolved in CustomerLake are served to associate apps through Databricks Apps on Lakebase, so every channel recognises the customer against one governed profile.
+        summary: Labour, traffic and conversion aligned so the right staff meet peak demand.
+        problem: Labour is scheduled to a fixed template while traffic and conversion swing by daypart, so peak hours are understaffed, slow hours overstaffed and sales per labour hour never recovers.
+        who_benefits: Store Operations
+        how_built: NCR Voyix POS traffic, conversion and labour feeds land in Lakehouse//RT and are conformed on Delta Lake, so the Store Command Centre matches staffing to forecast demand on certified AI/BI Metric Views.
         components:
-          - Personalisation Studio
+          - Store Command Centre
+          - Lakehouse//RT
+          - NCR Voyix POS
+          - AI/BI
+          - Delta Lake
+      - name: Customer Lifetime Value
+        short: Retention
+        icon: people
+        summary: Household lifetime value and churn risk scored to protect the best customers.
+        problem: Marketing spends the same on every shopper because lifetime value and churn risk are never scored, so the highest-value households churn quietly while budget chases one-time buyers.
+        who_benefits: Merchant Leadership
+        how_built: Salesforce Loyalty, POS and web signals conformed in CustomerLake feed lifetime-value and churn models in Model Serving tracked in MLflow, surfaced on certified AI/BI Metric Views the CMO reviews.
+        components:
           - CustomerLake
-          - Apps
-          - Lakebase
+          - Model Serving
+          - MLflow
+          - AI/BI
           - Salesforce Loyalty
         stories:
           - title: PetSmart boosts engagement and loyalty with AI decisioning
             url: https://www.databricks.com/customers/petsmart/ai
           - title: 'From search to sale: AI-driven engagement and loyalty in retail'
             url: https://www.databricks.com/blog/search-sale-how-ai-redefining-customer-engagement-and-loyalty-retail
-      - name: Supplier OTIF
-        short: Supply
-        icon: globe
-        summary: Vendor fill rates and lead-time variability surfaced before stockouts.
-        problem: Vendor fill rates and lead times hide in EDI and email, so late or short deliveries are discovered only when a receipt fails to arrive and the stockout has already hit the shelf.
-        who_benefits: Planning & Allocation
-        how_built: PO, ASN and receipt data from ERP and EDI conformed on Delta Lake track fill rate and lead-time variability in AI/BI, flagging at-risk receipts before they become stockouts.
+      - name: Agentic Commerce
+        short: Digital
+        icon: genie
+        summary: Conversational shopping and agent-assisted checkout on governed catalogue and stock.
+        problem: Shoppers increasingly arrive through chat and third-party AI agents, but the catalogue, price and live stock those agents need sit behind brittle APIs with no governed real-time source of truth.
+        who_benefits: Digital & CRM
+        how_built: Salesforce Commerce catalogue and Manhattan Active Omni availability are served through Databricks Apps on Lakebase, with Mosaic AI agents grounded in Genie answering shoppers and drafting carts against one governed product and stock model.
         components:
-          - AI/BI
-          - Delta Lake
-          - Unity Catalog
-          - E2open Supply Planning
-          - Wholesale EDI
-        stories:
-          - title: Al-Futtaim improves supply chain and cuts inventory holding cost
-            url: https://www.databricks.com/customers/al-futtaim
-          - title: Columbia Sportswear accelerates supply chain analytics on Databricks
-            url: https://www.databricks.com/customers/columbia
+          - Databricks Apps
+          - Lakebase
+          - Mosaic AI
+          - Genie
+          - Salesforce Commerce
 medallion:
   Bronze:
     short: Raw sales and stock

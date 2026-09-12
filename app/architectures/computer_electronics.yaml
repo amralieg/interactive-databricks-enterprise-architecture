@@ -1,0 +1,929 @@
+name: Computer & Electronics
+description: 'An electronics OEM/ODM designing, sourcing, assembling, shipping and supporting connected devices: silicon and board design, SMT and functional test on the line, supply chain and demand planning, connected-device telemetry and security, and aftermarket and warranty support.'
+sources:
+  - name: ERP & Planning
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Procurement, inventory, production orders and finance across the electronics business, the system of record for what was sourced, built and shipped.
+        citations:
+          - sap-s4
+        category: Enterprise ERP
+        what_it_is: System of record for procurement, inventory, production orders and finance across the electronics OEM/ODM business.
+        who_uses_it: Procurement, materials planning and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-100 GB/day
+            interval: Nightly batch + hourly deltas
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of postings/sec
+            interval: Continuous CDC
+      - name: Oracle SCM Cloud
+        icon: erp
+        summary: Supply planning, work definitions and costed transactions for sites on the Oracle manufacturing estate.
+        citations:
+          - oracle-scm
+        category: Supply Chain Management (SCM) Cloud
+        what_it_is: Runs supply planning, work definitions and costed manufacturing transactions for sites standardized on the Oracle cloud estate.
+        who_uses_it: Supply planners, manufacturing engineering and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch
+      - name: Kinaxis Maestro
+        icon: sheet
+        summary: Concurrent S&OP scenarios, constraint-based planning and what-if responses when a chip or component allocation slips.
+        citations:
+          - kinaxis
+        category: Supply Chain Planning (S&OP/IBP)
+        what_it_is: Runs concurrent constraint-based S&OP scenarios and what-if replanning when a component allocation or supplier goes down.
+        who_uses_it: S&OP planners, demand planning and Supply Chain leadership.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day scenarios
+            interval: Planning cycles + on-demand what-if
+  - name: MES & Assembly
+    icon: stream
+    tiles:
+      - name: Siemens Opcenter
+        icon: stream
+        summary: Work orders, SMT placement counts, genealogy and in-line quality from the MES the line operators work in.
+        citations:
+          - opcenter
+        category: Manufacturing Execution System (MES)
+        what_it_is: Executes work orders and captures SMT placement counts, board genealogy, downtime and in-line quality from the assembly floor.
+        who_uses_it: Line operators, process engineering and Manufacturing engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at peak
+            interval: Continuous line events
+      - name: Koh Young AOI
+        icon: observ
+        summary: Automated optical and 3D solder-paste inspection images and measurement vectors joined to board serial.
+        citations:
+          - kohyoung
+        category: Automated Optical Inspection (AOI/SPI)
+        what_it_is: Captures automated optical and 3D solder-paste inspection images and measurement vectors and joins them to board serial for defect classification and root-cause analysis.
+        who_uses_it: Quality engineers, Vision/ML teams and Process engineering.
+        data_out:
+          stream:
+            types:
+              - unstructured
+              - structured
+            volume: 100s of images/sec + vectors
+            interval: Continuous inline capture
+      - name: In-Circuit & Functional Test
+        icon: iot
+        summary: ICT and functional test results, bin codes and parametric measurements per board and unit.
+        citations:
+          - ate
+        category: Automated Test Equipment (ICT/FCT)
+        what_it_is: Runs in-circuit and functional test producing pass/fail bins, parametric measurements and test logs per board and finished unit.
+        who_uses_it: Test engineering, product engineering and Quality.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: GBs/day parametric logs
+            interval: Continuous during test
+  - name: Design & Code
+    icon: dev
+    tiles:
+      - name: Cadence Design Platform
+        icon: sheet
+        summary: 'SoC and package design: schematic, layout, simulation and sign-off for the silicon on each device.'
+        citations:
+          - cadence
+        category: EDA Design & Simulation
+        what_it_is: Takes SoC and package design through schematic, layout, simulation and sign-off feeding the design record for the silicon on each device.
+        who_uses_it: Silicon design, package design and Sign-off teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs-TBs per block
+            interval: Per design run
+      - name: Altium PCB
+        icon: product
+        summary: Board-level schematic capture, layout and design rules for the printed circuit assemblies in each product.
+        citations:
+          - altium
+        category: PCB Design (ECAD)
+        what_it_is: Manages board-level schematic capture, layout, design rules and BOMs for the printed circuit assemblies in each product.
+        who_uses_it: Hardware design, DFM and Manufacturing engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GBs per board revision
+            interval: Per design run
+      - name: GitHub Enterprise
+        icon: code
+        summary: Firmware and embedded source, pull requests, issues and CI logs across the product code base.
+        citations:
+          - github
+        category: Source Control & CI
+        what_it_is: Holds firmware and embedded source, pull requests, issues and CI/build logs across the product code base for engineering analytics and coding assistants.
+        who_uses_it: Firmware engineering, embedded developers and DevOps.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: commits, PRs and CI logs
+            interval: Continuous (webhooks + nightly)
+  - name: Quality, Service & CRM
+    icon: gavel
+    tiles:
+      - name: MasterControl QMS
+        icon: gavel
+        summary: Non-conformance, CAPA and audit findings tied to boards, lots and suppliers.
+        citations:
+          - mastercontrol
+        category: Quality Management System (QMS)
+        what_it_is: Manages non-conformances, CAPA and audit findings tied back to the boards, serials, suppliers and processes that caused them.
+        who_uses_it: Quality managers, Reliability engineering and Supplier quality.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day
+            interval: Hourly / event-driven
+      - name: ServiceMax
+        icon: orch
+        summary: 'Field service and warranty: installed base, service contracts, RMA and warranty claims for the shipped device fleet.'
+        citations:
+          - servicemax
+        category: Field Service & Warranty Management
+        what_it_is: Manages the installed base, service contracts, RMAs, warranty claims and parts for the shipped device fleet in the field.
+        who_uses_it: Aftermarket, Field service and Reliability engineering.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + intraday
+      - name: Salesforce
+        icon: crm
+        summary: Commercial CRM for accounts, orders, channel and device registration across sales and customer success.
+        citations:
+          - salesforce
+        category: CRM
+        what_it_is: Commercial CRM for accounts, orders, channel activity and device registration across sales and customer success.
+        who_uses_it: Sales, Customer success and Aftermarket.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly sync
+          stream:
+            types:
+              - semi-structured
+            volume: engagement events as they occur
+            interval: Continuous CDC
+  - name: Connected Devices
+    icon: iot
+    tiles:
+      - name: Device Telemetry
+        icon: iot
+        summary: 'Product usage telemetry from the shipped fleet: feature events, health, alarms and sensor streams from every unit.'
+        category: Connected-Device Telemetry
+        what_it_is: 'Product usage telemetry from the installed base: feature-usage events, device health, alarms and sensor streams from every shipped unit in the field.'
+        who_uses_it: Telemetry engineering, Product management and Reliability engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10s-100s of GB/day at fleet scale
+            interval: Continuous (MQTT / cellular)
+      - name: Device Security Events
+        icon: observ
+        summary: Endpoint and firmware security events, anomalies and threat signals from deployed devices.
+        category: Device Security / EDR Telemetry
+        what_it_is: Carries endpoint and firmware security events, integrity checks, anomalies and threat signals from deployed devices for connected-device threat monitoring.
+        who_uses_it: Product security, Firmware engineering and Trust & safety.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at fleet scale
+            interval: Continuous security events
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Data Warehouse
+        icon: fed
+        summary: Finance and channel marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited revenue and cost figures.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy finance and channel marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited revenue, margin and cost reporting.
+        who_uses_it: Finance, Channel analytics and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Device Event Stream
+        icon: stream
+        summary: MQTT and cellular topics carrying connected-device telemetry, feature events and fault codes, landed as structured events.
+        category: Connected-Device Event Stream (MQTT)
+        what_it_is: MQTT and cellular topics carrying connected-device telemetry, feature-usage events and fault codes from the installed base, landed as structured events for real-time analytics.
+        who_uses_it: Telemetry engineering, Product management and Line quality.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at fleet scale
+            interval: Continuous (MQTT / cellular)
+      - name: Threat Intelligence Feed
+        icon: gavel
+        summary: External vulnerability and threat-intelligence feeds correlated against device security events.
+        category: Threat Intelligence Feed
+        what_it_is: External vulnerability, CVE and threat-intelligence feeds ingested and correlated against device security events for connected-device threat monitoring.
+        who_uses_it: Product security, Trust & safety and Firmware engineering.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+            volume: 100s of MB/day
+            interval: Continuous + daily updates
+      - name: EDI ASN / DESADV
+        icon: api
+        summary: Supplier advance ship notices and delivery confirmations parsed into structured receipt events.
+        citations:
+          - edi-asn
+        category: Supplier EDI
+        what_it_is: Parses supplier advance ship notices and delivery confirmations (DESADV) into structured inbound receipt events.
+        who_uses_it: Inbound logistics, Procurement and Materials planning.
+        data_out:
+          batch:
+            types:
+              - semi-structured
+              - structured
+            volume: 100s of MB/day
+            interval: Continuous EDI messages
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Product Leadership
+        mark: Genie One
+        summary: The product GM on feature adoption, attach and device utilisation across the shipped fleet, and where the next release should invest.
+        uses:
+          - - Genie One
+            - Ask which features are adopted by segment without waiting on an analyst pull.
+          - - AI/BI
+            - Feature adoption, attach and utilisation on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "active device" means one thing across teams.
+        sub:
+          - name: Product GM
+            cares: feature adoption, retention and the roadmap the next release should invest in.
+          - name: Product Analytics
+            cares: how the installed base actually uses each feature by segment.
+          - name: Pricing & Packaging
+            cares: attach, entitlement and what customers will pay for.
+        ucs:
+          - Product Feature-Usage Analytics
+          - Customer 360
+          - Demand Forecasting
+      - name: Manufacturing Ops
+        mark: Lakehouse//RT
+        summary: Process and line engineering on first-pass yield, SMT defects and throughput, defending build cost and on-time completion at the line.
+        uses:
+          - - Quality Cockpit
+            - SMT defects and yield flagged before a board is at risk.
+          - - Lakehouse//RT
+            - Live MES and inspection state at the latency a line moves at.
+          - - Model Serving
+            - Defect and yield models scored against in-line optical inspection.
+        sub:
+          - name: Process Engineering
+            cares: first-pass yield, SMT defect rate and process capability.
+          - name: Line Quality
+            cares: nonconformance, disposition and SPC at the line.
+          - name: Manufacturing Engineering
+            cares: rework routes and the cost of a defect escape.
+        ucs:
+          - SMT Assembly Defect Detection
+          - Quality Event Root-Cause
+          - Inventory Optimisation
+      - name: Quality & Reliability
+        mark: Model Serving
+        summary: Quality and reliability teams on defect root-cause, field returns and warranty cost tied back to the board, lot and supplier.
+        uses:
+          - - Quality Cockpit
+            - Disposition and root-cause with genealogy back to supplier lot.
+          - - Model Serving
+            - Defect and warranty models scored on inspection and field claims.
+          - - Unity Catalog
+            - One definition of non-conformance across MES, QMS and field service.
+        sub:
+          - name: Quality Engineering
+            cares: defect root-cause, first-pass yield and disposition before shipment.
+          - name: Reliability Engineering
+            cares: field failure modes and the returns feeding design changes.
+          - name: Warranty Analyst
+            cares: warranty cost per unit and the failure modes driving claims.
+        ucs:
+          - Quality Event Root-Cause
+          - Warranty Cost Optimisation
+          - SMT Assembly Defect Detection
+      - name: Engineering & Product Security
+        mark: MLflow
+        summary: Silicon, board and firmware engineering on design-space trade-offs and code velocity, and product security on threats across the deployed fleet.
+        uses:
+          - - MLflow
+            - Design-space and reliability models tracked for design reviews and audit.
+          - - Agent Bricks
+            - Coding assistants and agents grounded in the governed code base and design data.
+          - - Model Serving
+            - Threat and anomaly models scored across device security events.
+        sub:
+          - name: Silicon & Board Engineering
+            cares: design-space trade-offs, timing, power and area against targets.
+          - name: Firmware Engineering
+            cares: code velocity, defect escape and the embedded coding assistants.
+          - name: Product Security
+            cares: threats, integrity and the response across the deployed fleet.
+        ucs:
+          - SoC & Board Design Simulation
+          - Embedded Engineering Copilot
+          - Device Threat Monitoring
+      - name: Commercial & Aftermarket
+        mark: AI/BI
+        summary: Sales and customer success on account health and device registration, and aftermarket on warranty, RMA and service margin across the installed base.
+        uses:
+          - - AI/BI
+            - Account health, device utilisation and service margin on certified views.
+          - - Model Serving
+            - Churn and warranty models scored in the account and service path.
+          - - Genie One
+            - Ask which accounts are below utilisation target this quarter.
+        sub:
+          - name: Sales & Success
+            cares: account health, device registration and utilisation.
+          - name: Aftermarket
+            cares: warranty, RMA and service margin across the installed base.
+          - name: Channel
+            cares: sell-through and partner performance across the network.
+        ucs:
+          - Customer 360
+          - Warranty Cost Optimisation
+          - Product Feature-Usage Analytics
+      - name: Supply Chain
+        mark: AI/BI
+        summary: Demand and materials planners on component lead times, allocation and inventory, trading inventory cost against line-down and stock-out risk.
+        uses:
+          - - Supply Control Tower
+            - Shortages and expedites costed across alternate BOMs and sites.
+          - - AI/BI
+            - Inventory turns, consumption and supplier OTIF on certified Metric Views.
+          - - Genie One
+            - Ask which builds are at risk from a component allocation.
+        sub:
+          - name: Demand Planning
+            cares: the demand signal and the forecast the plan runs on.
+          - name: Materials Planning
+            cares: component lead times and buffer against line-down risk.
+          - name: Supplier Risk
+            cares: single-source exposure and allocation on critical components.
+        ucs:
+          - Demand Forecasting
+          - Inventory Optimisation
+          - Warranty Cost Optimisation
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the ERP order, MES placement, test log, device telemetry and security-event feeds; own the Bronze to Silver path and the pager when a line or fleet pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for SAP, Opcenter MES and quality sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on inspection, telemetry and security feeds.
+          - - Lakewatch
+            - Freshness on the yield, fleet and inventory tables engineering reads each shift.
+        sub:
+          - name: Platform Data Engineer
+            cares: the Bronze-to-Silver path for ERP, MES and test feeds.
+          - name: Streaming Engineer
+            cares: device telemetry and security events landed at fleet latency.
+          - name: Pipeline On-call
+            cares: freshness on the yield and fleet tables the line reads.
+        ucs:
+          - Product Feature-Usage Analytics
+          - SMT Assembly Defect Detection
+          - Device Threat Monitoring
+      - name: Data Scientists
+        mark: MLflow
+        summary: Demand, defect-vision, warranty and threat-anomaly models, and whether they still hold six months after deployment on the line and in the field.
+        uses:
+          - - Feature Store
+            - Board, telemetry and complaint features read identically in training and serving.
+          - - MLflow
+            - Every demand, defect and warranty run tracked for audit and reproduction.
+          - - Model Serving
+            - Defect, demand and threat models scored on inspection and fleet telemetry.
+        sub:
+          - name: Quality Data Scientist
+            cares: defect-vision and root-cause models on inspection signals.
+          - name: Demand Scientist
+            cares: demand and inventory models across products and channels.
+          - name: Security Data Scientist
+            cares: anomaly and threat models on device security events.
+        ucs:
+          - Demand Forecasting
+          - Quality Event Root-Cause
+          - Warranty Cost Optimisation
+      - name: App Developers
+        mark: Apps
+        summary: Ship the product analytics, quality cockpit and threat console applications product, quality and security teams work in, hosted next to governed device data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for disposition and case state and governed writes.
+          - - Agent Bricks
+            - Agents and coding assistants grounded in the governed code base and design data.
+        sub:
+          - name: Apps Developer
+            cares: the product, quality and threat screens over governed data.
+          - name: Lakebase Engineer
+            cares: case and disposition state with governed writes.
+          - name: Agent Developer
+            cares: coding assistants and agents against the governed code base.
+        ucs:
+          - Embedded Engineering Copilot
+          - Customer 360
+          - Product Feature-Usage Analytics
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: Executive and quality dashboards against SQL warehouses with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse in the channel the team already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Plant & ERP
+    icon: opdb
+    tiles:
+      - name: SAP Order Confirmation
+        icon: db
+        summary: Production confirmations and component backflush written back into ERP so finance sees reality.
+        citations:
+          - sap-s4
+      - name: MES Rework Route
+        icon: stream
+        summary: Disposition and rework routes pushed to the line after a defect call.
+        citations:
+          - opcenter
+      - name: Field Service Orders
+        icon: orch
+        summary: Predicted failures and RMAs raised as service work orders the field crew already schedules.
+        citations:
+          - servicemax
+  - name: Customers & Partners
+    icon: partner
+    tiles:
+      - name: Customer Device Portal
+        icon: api
+        summary: Device health, entitlements and firmware status served to customers from governed fleet data rather than emailed spreadsheets.
+      - name: Contract Mfg Sharing
+        icon: share
+        summary: EMS and ODM partners reading live quality and demand tables over Delta Sharing.
+        citations:
+          - edi-asn
+      - name: Channel Partners
+        icon: globe
+        summary: Distributors and resellers reading sell-through and allocation live instead of nightly flat files.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: RoHS / FCC Compliance
+        icon: gavel
+        summary: Material declaration and emissions conformity records produced from the same governed tables production runs on.
+      - name: Carbon & ESG Reporting
+        icon: share
+        summary: Scope 1 and 2 intensity filed from contracted Gold products for buyer sustainability programs.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Customers, EMS partners and auditors reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Product Analytics
+        icon: gauge
+        short: Feature usage
+        summary: Feature adoption, retention and device utilisation by segment on Databricks Apps over Lakebase.
+      - name: Quality Cockpit
+        icon: gavel
+        short: Defect and yield
+        summary: SMT defects, yield and root-cause with genealogy back to supplier lot on one surface before a board ships.
+      - name: Threat Console
+        icon: observ
+        short: Device security
+        summary: Device security events and anomalies across the fleet, triaged by risk before exposure grows.
+      - name: Supply Control Tower
+        icon: sheet
+        short: Shortage response
+        summary: Component shortages, allocation and alternate sourcing costed before a build or customer promise is missed.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Product & Adoption
+        icon: aibi
+        summary: Feature adoption, retention and device utilisation across the installed base.
+        kpis:
+          - Feature adoption
+          - Active devices
+          - Retention
+          - Attach rate
+          - Utilisation
+        teams:
+          - Product Leadership
+          - Commercial & Aftermarket
+          - Product Analytics
+      - name: Manufacturing Yield & Quality
+        icon: aibi
+        summary: First-pass yield, SMT defects, nonconformance and warranty across the lines.
+        kpis:
+          - First-pass yield
+          - SMT defect rate
+          - Nonconformance rate
+          - Warranty cost per unit
+          - Supplier PPM
+        teams:
+          - Manufacturing Ops
+          - Quality & Reliability
+          - Process Engineering
+      - name: Supply & Demand
+        icon: aibi
+        summary: Demand accuracy, inventory turns and supplier OTIF across products.
+        kpis:
+          - Forecast accuracy
+          - Inventory turns
+          - Days of supply
+          - Single-source exposure
+          - Supplier OTIF
+        teams:
+          - Supply Chain
+          - Demand Planning
+          - Materials Planning
+      - name: Fleet Security & Trust
+        icon: aibi
+        summary: Device threat signals, response time and firmware posture across the fleet.
+        kpis:
+          - Threat signals
+          - Devices at risk
+          - Mean time to respond
+          - Firmware currency
+          - Integrity failures
+        teams:
+          - Engineering & Product Security
+          - Product Security
+          - Firmware Engineering
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Product Realization Agent
+        icon: genie
+        summary: Ask about first-pass yield, SMT defects and quality root-cause across the lines in plain language.
+        feeds:
+          - Siemens Opcenter
+          - Koh Young AOI
+          - In-Circuit & Functional Test
+          - Yield, defect, warranty
+        teams:
+          - Manufacturing Ops
+          - Quality & Reliability
+          - Process Engineering
+        questions:
+          - What is first-pass yield by line and product this week?
+          - Which SMT defect types are trending on which lines?
+          - Which lots are held by out-of-spec test results?
+          - Where is process capability drifting toward a limit?
+          - What is the defect escape rate versus final test?
+      - name: Silicon Design & Security Agent
+        icon: genie
+        summary: Explore design-space trade-offs, code velocity and device threats across engineering and security.
+        feeds:
+          - Cadence Design Platform
+          - GitHub Enterprise
+          - Device Security Events
+          - Conformed board, unit, fleet
+        teams:
+          - Engineering & Product Security
+          - Silicon & Board Engineering
+          - Product Security
+        questions:
+          - Which design-space options best trade power, performance and area?
+          - Where is firmware defect escape concentrated by module?
+          - Which devices in the field show anomalous security signals?
+          - Which CVEs affect firmware currently deployed in the fleet?
+          - Where should the coding assistant focus to lift code velocity?
+      - name: Customer & Aftermarket Agent
+        icon: genie
+        summary: Answer feature adoption, account health and warranty questions across the installed base.
+        feeds:
+          - Device Telemetry
+          - Salesforce
+          - ServiceMax
+          - Yield, defect, warranty
+        teams:
+          - Product Leadership
+          - Commercial & Aftermarket
+          - Quality & Reliability
+        questions:
+          - Which features are adopted by segment this quarter?
+          - Which accounts are below device-utilisation target?
+          - Which failure modes drive the most warranty cost?
+          - How many units are trending toward a field failure?
+          - What is retention and attach by product line?
+      - name: Supply & Demand Agent
+        icon: genie
+        summary: Ask about demand accuracy, component allocation and inventory across products and sites.
+        feeds:
+          - SAP S/4HANA
+          - Kinaxis Maestro
+          - EDI ASN / DESADV
+          - Conformed board, unit, fleet
+        teams:
+          - Supply Chain
+          - Demand Planning
+          - Materials Planning
+        questions:
+          - What is forecast accuracy by product and channel this quarter?
+          - Which builds are at risk from a component allocation?
+          - Where do we carry the most excess and obsolete inventory?
+          - Which components are single-source and exposed to disruption?
+          - What is inventory turns by product versus target?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Product Feature-Usage Analytics
+        short: Product
+        icon: gauge
+        summary: How the shipped fleet actually uses each feature by segment, grounding the roadmap in adoption not opinion.
+        problem: Product decisions are made on orders and anecdote, so the team invests in features the installed base rarely uses and misses the ones that drive retention.
+        who_benefits: Product Leadership
+        how_built: Device telemetry conforms on Delta Lake under Unity Catalog, and feature adoption, retention and utilisation are read in the Product Analytics app and certified AI/BI Metric Views by segment.
+        components:
+          - Product Analytics
+          - Device Telemetry
+          - AI/BI
+          - Delta Lake
+          - Unity Catalog
+      - name: Demand Forecasting
+        short: Planning
+        icon: sheet
+        summary: Product and component demand forecast against real signals so the plan holds when allocation tightens.
+        problem: Demand lives in spreadsheets and stale ERP extracts, so forecasts miss, the wrong components are bought and either builds stall or excess inventory piles up.
+        who_benefits: Supply Chain
+        how_built: Kinaxis and SAP demand, order and telemetry signals conform on Delta Lake and are scored in Model Serving, so the Supply Control Tower forecasts demand on certified AI/BI Metric Views.
+        components:
+          - Supply Control Tower
+          - Kinaxis Maestro
+          - SAP S/4HANA
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Mipox accelerates demand forecasting on Databricks
+            url: https://www.databricks.com/customers/mipox
+          - title: Part-level demand forecasting at scale for the chip supply chain
+            url: https://www.databricks.com/blog/part-level-demand-forecasting-scale
+      - name: Customer 360
+        short: Commercial
+        icon: crm
+        summary: Account, order, device and support history joined so sales and success see the whole customer, not fragments.
+        problem: Sales sees orders, success sees tickets and product sees telemetry, and none of them meet, so the customer is served from fragments and churn signals are missed.
+        who_benefits: Commercial & Aftermarket
+        how_built: Salesforce, order and device telemetry are conformed to Gold under Unity Catalog, so a governed Customer 360 is read in AI/BI and Genie on the definitions the commercial team already reports.
+        components:
+          - Salesforce
+          - Device Telemetry
+          - AI/BI
+          - Unity Catalog
+          - Delta Lake
+      - name: Inventory Optimisation
+        short: Working capital
+        icon: market
+        summary: Safety stock and reorder points tuned to actual component lead-time variability not static policy tables.
+        problem: Safety stock and reorder points are set from static policy, so the network carries too much of the wrong components and still stocks out when allocation and lead times vary.
+        who_benefits: Supply Chain
+        how_built: SAP and Oracle SCM demand and lead-time data conform on Delta Lake and are scored in Model Serving, so the Supply Control Tower tunes safety stock to real variability on AI/BI views.
+        components:
+          - Supply Control Tower
+          - SAP S/4HANA
+          - Oracle SCM Cloud
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Smarter supply chains with data and AI
+            url: https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management
+      - name: Device Threat Monitoring
+        short: Product security
+        icon: observ
+        summary: Deployed devices scored on security events so an emerging threat is caught across the fleet before exposure grows.
+        problem: Security events and threat intel sit in separate systems read after the fact, so a firmware exploit or anomaly spreads across the fleet before anyone joins the signals.
+        who_benefits: Engineering & Product Security
+        how_built: Device security events stream into Lakehouse//RT and correlate with the Threat Intelligence Feed on Delta Lake, and anomaly models in Model Serving surface threats to the Threat Console before exposure grows.
+        components:
+          - Threat Console
+          - Device Security Events
+          - Model Serving
+          - Lakehouse//RT
+          - Unity Catalog
+      - name: Warranty Cost Optimisation
+        short: Warranty
+        icon: product
+        summary: Warranty claims joined to build genealogy and field telemetry so failure modes are fixed at the root, not paid repeatedly.
+        problem: Warranty claims are paid and closed without joining them to the lot, supplier and telemetry that caused them, so the same failure mode is paid over and over and never designed out.
+        who_benefits: Quality & Reliability
+        how_built: ServiceMax warranty claims, QMS non-conformances and device telemetry conform under Unity Catalog on Delta Lake, and models in Model Serving surface the failure modes driving cost for design and supplier action.
+        components:
+          - ServiceMax
+          - MasterControl QMS
+          - Device Telemetry
+          - Model Serving
+          - AI/BI
+      - name: SoC & Board Design Simulation
+        short: Engineering
+        icon: sheet
+        summary: Design-space trade-offs across power, performance and area explored on silicon and board data before tape-out and layout freeze.
+        problem: Design-space trade-offs are explored in siloed EDA tools on old assumptions, so power, performance and area targets are missed and re-spins cost weeks and mask money.
+        who_benefits: Engineering & Product Security
+        how_built: Cadence and Altium design and simulation data conform on Delta Lake and feed models tracked in MLflow and scored in Model Serving, so design-space trade-offs are explored on silicon and board data before freeze.
+        components:
+          - Cadence Design Platform
+          - Altium PCB
+          - Model Serving
+          - MLflow
+          - Delta Lake
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
+      - name: Embedded Engineering Copilot
+        short: Coding assistant
+        icon: code
+        summary: A domain-specific coding assistant grounded in the governed firmware code base, design data and standards to lift embedded engineering velocity.
+        problem: Firmware engineers lose time hunting through a sprawling code base, past defects and design docs, and generic assistants do not know the product's own standards and history.
+        who_benefits: Engineering & Product Security
+        how_built: GitHub source, issues and design data are governed under Unity Catalog, and Agent Bricks grounds a domain-specific coding assistant in that governed context, served through Genie and Model Serving.
+        components:
+          - GitHub Enterprise
+          - Genie
+          - Agent Bricks
+          - Unity Catalog
+          - Model Serving
+      - name: Quality Event Root-Cause
+        short: Quality
+        icon: gavel
+        summary: Defect and quality events traced to the board, lot, supplier and process that caused them rather than reconstructed by hand.
+        problem: When a quality event hits, root cause is reconstructed by hand across MES, inspection and QMS, so the same escape recurs and CAPA backlog ages toward the next audit.
+        who_benefits: Quality & Reliability
+        how_built: AOI inspection, MES genealogy and QMS non-conformances conform on Delta Lake, and models in Model Serving with AI Functions surface probable cause in the Quality Cockpit for CAPA.
+        components:
+          - Quality Cockpit
+          - Koh Young AOI
+          - MasterControl QMS
+          - Model Serving
+          - AI Functions
+        stories:
+          - title: Acond advances equipment anomaly detection with Databricks
+            url: https://www.databricks.com/customers/acond/datasentics
+      - name: SMT Assembly Defect Detection
+        short: Line quality
+        icon: observ
+        summary: Solder and placement defects scored inline from optical inspection rather than caught at functional test or in the field.
+        problem: SMT solder and placement defects are reviewed after the board is built, so a drifting stencil or feeder is caught at functional test or in the field instead of at the line.
+        who_benefits: Manufacturing Ops
+        how_built: Koh Young AOI images and test signals become features in Feature Store scored by vision models in Model Serving and tracked in MLflow, so the Quality Cockpit flags defects inline before disposition.
+        components:
+          - Quality Cockpit
+          - Koh Young AOI
+          - In-Circuit & Functional Test
+          - Model Serving
+          - MLflow
+        stories:
+          - title: How Corning built end-to-end ML on Databricks
+            url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
+medallion:
+  Bronze:
+    short: Raw line and fleet feeds
+    summary: ERP orders, MES placement and genealogy events, AOI images, ICT and functional test logs, device telemetry and security events, landed exactly as received so a board or a defect can always be replayed as it stood.
+  Silver:
+    short: Conformed board, unit, fleet
+    summary: Boards, units, components and devices resolved into single conformed entities across ERP, MES, test, QMS and field systems, with serial genealogy reconciled and device history stitched from component to shipped unit.
+  Gold:
+    short: Yield, defect, warranty
+    summary: 'Contracted products operations, product and finance leaders run on: first-pass yield and SMT defect rate by line, feature adoption and device utilisation by segment, warranty cost per unit, and forecast accuracy.'
+citation_index:
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  oracle-scm:
+    title: Oracle SCM Cloud
+    url: https://www.oracle.com/scm/manufacturing/
+  kinaxis:
+    title: Kinaxis Maestro
+    url: https://www.kinaxis.com/
+  opcenter:
+    title: Siemens Opcenter MES
+    url: https://plm.sw.siemens.com/en-US/opcenter/
+  kohyoung:
+    title: Koh Young AOI
+    url: https://www.kohyoung.com/
+  ate:
+    title: Automated test equipment
+    url: https://www.keysight.com/us/en/products/manufacturing-test.html
+  cadence:
+    title: Cadence design platform
+    url: https://www.cadence.com/
+  altium:
+    title: Altium PCB design
+    url: https://www.altium.com/
+  github:
+    title: GitHub Enterprise
+    url: https://github.com/enterprise
+  mastercontrol:
+    title: MasterControl QMS
+    url: https://www.mastercontrol.com/
+  servicemax:
+    title: ServiceMax field service
+    url: https://www.servicemax.com/
+  salesforce:
+    title: Salesforce
+    url: https://www.salesforce.com/
+  edi-asn:
+    title: GS1 EDI DESADV
+    url: https://www.gs1.org/standards/edi

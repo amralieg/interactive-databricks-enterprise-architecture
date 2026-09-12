@@ -1,0 +1,997 @@
+name: Exchanges
+description: 'Exchange and venue operators: matching-engine and gateway monitoring, latency and system-health analytics, real-time manipulation detection, cross-venue and cross-asset surveillance, execution-quality analytics, fee and rebate optimization, member credit monitoring, listing-prospect identification, and corporate-action processing.'
+sources:
+  - name: Trading & Matching
+    icon: market
+    tiles:
+      - name: Nasdaq Matching
+        icon: market
+        summary: 'Nasdaq''s INET matching engine and marketplace technology: the order book, matching and gateway layer that is the source of every order, quote and fill on the venue.'
+        citations:
+          - nasdaq-inet
+        category: Matching Engine / Trading Platform
+        what_it_is: 'Nasdaq''s INET matching engine and marketplace technology: the order book, matching and gateway layer that is the source of every order, quote and fill on the venue.'
+        who_uses_it: Matching-engine operations, market quality and trading systems teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M order/quote/fill messages/sec at peak
+            interval: Continuous (microsecond)
+      - name: Deutsche Börse T7
+        icon: market
+        summary: 'The T7 trading platform behind Xetra and Eurex: order entry, matching and market-data generation for cash equities and derivatives.'
+        citations:
+          - t7
+        category: Matching Engine / Trading Platform
+        what_it_is: 'The T7 trading platform behind Xetra and Eurex: order entry, matching and market-data generation for cash equities and derivatives.'
+        who_uses_it: Matching-engine operations, market quality and derivatives operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M order/quote messages/sec at peak
+            interval: Continuous (microsecond)
+      - name: LSEG Millennium
+        icon: market
+        summary: 'MillenniumIT''s Millennium Exchange matching platform: the low-latency order book and matching engine running the trading venue.'
+        citations:
+          - millennium
+        category: Matching Engine / Trading Platform
+        what_it_is: 'MillenniumIT''s Millennium Exchange matching platform: the low-latency order book and matching engine running the trading venue.'
+        who_uses_it: Matching-engine operations and market-quality teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k order/quote messages/sec at peak
+            interval: Continuous (microsecond)
+      - name: CME Globex
+        icon: market
+        summary: 'The Globex electronic trading platform for futures and options: the source of the order, quote and trade stream for the derivatives venue.'
+        citations:
+          - globex
+        category: Derivatives Trading Platform
+        what_it_is: 'The Globex electronic trading platform for futures and options: the source of the order, quote and trade stream for the derivatives venue.'
+        who_uses_it: Derivatives market operations, matching-engine ops and clearing teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M order/quote/trade messages/sec at peak
+            interval: Continuous (microsecond)
+  - name: Market Data Feeds
+    icon: stream
+    tiles:
+      - name: TotalView-ITCH
+        icon: stream
+        summary: 'Nasdaq''s full order-by-order depth-of-book feed: every add, modify, cancel and execution, the raw ground truth for level 2 and level 3 market data.'
+        citations:
+          - itch
+        category: Direct Market Data Feed (Depth of Book)
+        what_it_is: Nasdaq's full order-by-order depth-of-book feed carrying every add, modify, cancel and execution, the raw ground truth for level 2 and level 3 market data.
+        who_uses_it: Feed engineering, market quality and quant subscribers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5M messages/sec at peak
+            interval: Continuous (sub-millisecond)
+      - name: OPRA Options Feed
+        icon: stream
+        summary: 'The Options Price Reporting Authority consolidated feed: quotes and trades across every US options exchange, the industry''s highest-volume market-data stream.'
+        citations:
+          - opra
+        category: Consolidated Options Data Feed
+        what_it_is: The Options Price Reporting Authority consolidated feed carrying quotes and trades across every US options exchange, the industry's highest-volume market-data stream.
+        who_uses_it: Feed engineering, market-data operations and subscribers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: several million msgs/sec at peak
+            interval: Continuous (sub-millisecond)
+      - name: CTA/UTP SIP
+        icon: stream
+        summary: 'The Securities Information Processors carrying the consolidated tape: best bid and offer and last sale across all US equity venues.'
+        citations:
+          - sip
+        category: Consolidated Tape (SIP)
+        what_it_is: 'The Securities Information Processors carrying the consolidated tape: best bid and offer and last sale across all US equity venues.'
+        who_uses_it: Feed engineering, market-data operations and compliance.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of thousands of msgs/sec at peak
+            interval: Continuous streaming
+      - name: LSEG Real-Time
+        icon: stream
+        summary: LSEG's real-time pricing and market-data platform distributing consolidated ticks, quotes and reference updates to subscribers worldwide.
+        citations:
+          - rtds
+        category: Real-Time Market Data Platform
+        what_it_is: LSEG's real-time pricing and market-data platform distributing consolidated ticks, quotes and reference updates to subscribers worldwide.
+        who_uses_it: Feed engineering, data business and subscribers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10k-100k ticks/sec
+            interval: Continuous streaming
+  - name: Reference & Corp Actions
+    icon: db
+    tiles:
+      - name: SIX Reference Data
+        icon: db
+        summary: SIX Financial Information's instrument, pricing and corporate-actions reference data, a golden source for terms, identifiers and events.
+        citations:
+          - six
+        category: Reference Data Provider
+        what_it_is: SIX Financial Information's instrument, pricing and corporate-actions reference data, a golden source for terms, identifiers and events.
+        who_uses_it: Reference-data engineering, index calculation and operations.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs of reference + corporate actions
+            interval: Daily + intraday corporate actions
+      - name: ANNA DSB ISIN/UPI
+        icon: db
+        summary: 'The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the reference every instrument resolves against.'
+        citations:
+          - dsb
+        category: Instrument Identifier Registry
+        what_it_is: The ANNA Derivatives Service Bureau allocating ISIN, CFI and UPI for OTC derivatives, the reference every instrument resolves against.
+        who_uses_it: Reference-data engineering, regulatory reporting and operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of identifier records
+            interval: Daily + on-demand allocation
+      - name: GLEIF LEI
+        icon: identity
+        summary: 'The Global LEI Foundation register: legal-entity identifiers linking issuers, counterparties and subscribers to one governed identity.'
+        citations:
+          - lei
+        category: Legal Entity Identifier Registry
+        what_it_is: The Global LEI Foundation register of legal-entity identifiers linking issuers, counterparties and subscribers to one governed identity.
+        who_uses_it: Reference-data engineering, compliance and entitlements teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of LEI records
+            interval: Daily refresh
+      - name: Bloomberg FIGI
+        icon: db
+        summary: 'Bloomberg''s open symbology (FIGI): a permanent instrument identifier that stitches vendor, venue and internal symbols to one security.'
+        citations:
+          - figi
+        category: Instrument Symbology Provider
+        what_it_is: 'Bloomberg''s open symbology (FIGI): a permanent instrument identifier that stitches vendor, venue and internal symbols to one security.'
+        who_uses_it: Reference-data engineering, feed engineering and data business.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of symbology mappings
+            interval: Daily refresh + on-demand
+  - name: Venue Telemetry & Ops
+    icon: gauge
+    tiles:
+      - name: Gateway & Matching Logs
+        icon: gauge
+        summary: Order-entry gateway and matching-engine telemetry, per-message timestamps, queue depths and sequence state, the ground truth for latency and fairness.
+        category: Matching-Engine Telemetry
+        what_it_is: Order-entry gateway and matching-engine telemetry carrying per-message timestamps, queue depths and sequence state for latency and fairness analytics.
+        who_uses_it: Matching-engine operations, market quality and reliability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100k-1M telemetry events/sec at peak
+            interval: Continuous (microsecond)
+      - name: Corvil Latency Analytics
+        icon: observ
+        summary: Wire-level network and application latency capture across gateways and feeds, the source of nanosecond latency and jitter measurement.
+        citations:
+          - corvil
+        category: Network Latency Analytics
+        what_it_is: Corvil wire-level network and application latency capture across gateways and feeds for nanosecond latency and jitter measurement.
+        who_uses_it: Network engineering, market quality and reliability teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: high-rate latency metrics
+            interval: Continuous (nanosecond)
+      - name: Member Position Ledger
+        icon: db
+        summary: Member order, position and margin state across the trading day, the basis for member credit and position monitoring.
+        category: Member Position & Margin Ledger
+        what_it_is: Member order, position and margin state across the trading day, the basis for member credit and position monitoring.
+        who_uses_it: Clearing risk, membership and market operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of member positions + margin/day
+            interval: Intraday + end-of-day
+      - name: Colocation & Hardware
+        icon: iot
+        summary: Data-center, server and network hardware telemetry for the trading plant, feeding capacity and predictive-maintenance analytics.
+        category: Data-Center / Hardware Telemetry
+        what_it_is: Data-center, server and network hardware telemetry for the trading plant, feeding capacity and predictive-maintenance analytics.
+        who_uses_it: Site reliability, data-center operations and capacity planning.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k hardware metrics/sec
+            interval: Continuous telemetry
+  - name: Surveillance & Clearing
+    icon: gavel
+    tiles:
+      - name: Nasdaq SMARTS
+        icon: gavel
+        summary: 'Nasdaq''s SMARTS market-surveillance platform: cross-market alerts for manipulation, spoofing and abuse against the venue''s order flow.'
+        citations:
+          - smarts
+        category: Market Surveillance Platform
+        what_it_is: Nasdaq's SMARTS market-surveillance platform generating cross-market alerts for manipulation, spoofing and abuse against the venue's order flow.
+        who_uses_it: Market surveillance, market integrity and compliance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs of alerts + cases/day
+            interval: Intraday + end-of-day
+      - name: OCC Clearing
+        icon: partner
+        summary: 'The Options Clearing Corporation: clearing, margin and settlement for listed options and futures, the source of cleared-position and margin state.'
+        citations:
+          - occ
+        category: Central Counterparty (Clearing House)
+        what_it_is: The Options Clearing Corporation clearing, margin and settlement for listed options and futures, the source of cleared-position and margin state.
+        who_uses_it: Clearing and settlement operations and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of cleared positions + margin
+            interval: Multiple clearing cycles daily
+      - name: LCH / CCP
+        icon: partner
+        summary: 'LCH and central counterparty clearing: novated trades, margin calls and default-fund state across cleared markets.'
+        citations:
+          - lch
+        category: Central Counterparty (Clearing House)
+        what_it_is: LCH and central counterparty clearing carrying novated trades, margin calls and default-fund state across cleared markets.
+        who_uses_it: Clearing and settlement operations and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of novated trades + margin
+            interval: Multiple clearing cycles daily
+      - name: DTCC Settlement
+        icon: partner
+        summary: 'DTCC clearing, netting and settlement: matched trades, affirmations and settlement status for the post-trade lifecycle.'
+        citations:
+          - dtcc
+        category: Clearing & Settlement Utility
+        what_it_is: DTCC clearing, netting and settlement carrying matched trades, affirmations and settlement status for the post-trade lifecycle.
+        who_uses_it: Clearing and settlement operations and post-trade teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of confirms + settlement/day
+            interval: Multiple settlement cycles daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Venue Revenue Mart
+        icon: fed
+        summary: The transaction, listing and fee revenue mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited fee and rebate numbers.
+        category: Revenue / Fee Data Mart
+        what_it_is: The transaction, listing and fee revenue mart kept in the incumbent warehouse and queried in place, giving one audited view of fee and rebate numbers.
+        who_uses_it: Finance, commercial and membership teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale billing + usage history
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Multicast Feed Bus
+        icon: stream
+        summary: Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
+        citations:
+          - itch
+        category: Streaming Market Data Bus
+        what_it_is: Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
+        who_uses_it: Feed engineering and platform reliability.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-5M messages/sec at peak
+            interval: Continuous (sub-millisecond)
+      - name: FIX / FAST Gateways
+        icon: api
+        summary: FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.
+        citations:
+          - fix
+        category: FIX/FAST Messaging Gateway
+        what_it_is: FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.
+        who_uses_it: Feed engineering and market operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10k-100k messages/sec at peak
+            interval: Continuous (sub-second)
+      - name: Vendor Data APIs
+        icon: api
+        summary: Reference, corporate-actions and index-constituent request/response and file APIs consumed inbound through managed ELT connectors.
+        category: Reference Data Vendor API
+        what_it_is: Reference, corporate-actions and index-constituent request/response and file APIs consumed inbound through managed ELT connectors.
+        who_uses_it: Reference-data engineering and index calculation.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Daily + on-demand pulls
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Exchange Exec
+        mark: Genie One
+        summary: The CEO on trading volumes, listings and market share; the CFO on transaction, listing and fee revenue against the cost of running the venue; the Chief Commercial Officer on how fee schedules and rebates are set and how listings are won.
+        uses:
+          - - Genie One
+            - Ask what fee revenue did last quarter, or how a rebate change moved volume, without booking an analyst.
+          - - AI/BI
+            - Trading volume, fee and rebate revenue and listing pipeline on one certified set of Metric Views.
+          - - Unity Catalog
+            - One governed glossary, so "billable volume" and "captured order flow" mean one thing across the group.
+        sub:
+          - name: CEO
+            cares: trading volumes, listings and market share.
+          - name: CFO
+            cares: transaction, listing and fee revenue against the cost of running the venue.
+          - name: Chief Commercial Officer
+            cares: fee schedules, rebates and winning new listings.
+        ucs:
+          - Fee & Rebate Optimization
+          - Listing Prospects
+          - Execution Quality Analytics
+      - name: Market Ops
+        mark: Lakehouse//RT
+        summary: Matching-engine operators watching fill rates, message rates and gateway health; the market-quality team on spreads, depth and fairness; the reliability team on latency, jitter and plant capacity across the trading day.
+        uses:
+          - - Lakehouse//RT
+            - Order-book, gateway and telemetry state at the latency the matching engine actually runs at.
+          - - Model Serving
+            - Fairness, latency-anomaly and failure models scored inside the trading day.
+          - - AI/BI
+            - Latency, spread, depth and message rates on the same definitions the market-quality team defends.
+        sub:
+          - name: Matching-engine ops
+            cares: fill rates, message rates and gateway health.
+          - name: Market quality
+            cares: spreads, depth and execution fairness by symbol.
+          - name: Reliability engineering
+            cares: latency, jitter and plant capacity across the day.
+        ucs:
+          - Matching Engine Monitoring
+          - Latency Anomaly Detection
+          - System Health & Maintenance
+      - name: Clearing & Membership
+        mark: Model Serving
+        summary: The head of clearing risk on member margin and default exposure; the membership team on member health and admissions; market operations on corporate-action processing and settlement across the trading day.
+        uses:
+          - - Model Serving
+            - Member credit, margin and settlement-risk models scored inside the trading day.
+          - - AI/BI
+            - Member exposure, margin usage and fails on one certified set of Metric Views.
+          - - Unity Catalog
+            - Member and instrument records governed with lineage from source to margin call.
+        sub:
+          - name: Clearing risk
+            cares: member margin, default-fund exposure and settlement risk.
+          - name: Membership
+            cares: member health, admissions and concentration.
+          - name: Market operations
+            cares: corporate-action processing and settlement across the day.
+        ucs:
+          - Member Credit Monitoring
+          - System Health & Maintenance
+          - Corporate Actions
+      - name: Listings & Products
+        mark: AI/BI
+        summary: The head of listings on the issuer pipeline and prospect identification; the commercial team on fee schedules and rebate design; product managers on execution-quality analytics packaged for members.
+        uses:
+          - - AI/BI
+            - Listing pipeline, fee and rebate revenue and execution-quality metrics on one certified set of Metric Views.
+          - - Model Serving
+            - Prospect-scoring and fee-elasticity models scored on venue activity.
+          - - Unity Catalog
+            - Issuer, member and instrument records governed with lineage from source to product.
+        sub:
+          - name: Head of listings
+            cares: the issuer pipeline and prospect identification.
+          - name: Commercial
+            cares: fee schedules and rebate design against captured flow.
+          - name: Product managers
+            cares: execution-quality analytics packaged for members.
+        ucs:
+          - Listing Prospects
+          - Corporate Actions
+          - Fee & Rebate Optimization
+      - name: Surveil & Integrity
+        mark: AI Functions
+        summary: Market-surveillance analysts investigating spoofing, layering and manipulation across the venue's order flow; the market-integrity team on cross-venue and cross-asset abuse; the membership team on member conduct and disciplinary referrals.
+        uses:
+          - - AI Functions
+            - Order and trade patterns screened for manipulation across the whole venue at scale.
+          - - Genie One
+            - Investigators ask for a member's activity around a print in plain language.
+          - - Unity Catalog
+            - Complete, auditable order-and-trade trails that satisfy a regulatory examination.
+        sub:
+          - name: Market surveillance
+            cares: spoofing, layering and manipulation across order flow.
+          - name: Market integrity
+            cares: cross-venue and cross-asset abuse and disciplinary referrals.
+          - name: Membership
+            cares: member conduct and position concentration.
+        ucs:
+          - Manipulation Detection
+          - Cross-Venue Surveillance
+          - Member Credit Monitoring
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Feed Engineers
+        mark: Lakeflow
+        summary: Capture ITCH and OUCH multicast, OPRA and consolidated-tape feeds and Exegy-style feed handlers off Kafka, curate the depth and trade tables, and keep every tick feed fresh for calculation and distribution.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for matching-engine, reference and vendor sources.
+          - - Auto Loader
+            - Continuous ingestion of multicast and file feeds into Bronze with schema evolution.
+          - - Lakewatch
+            - Freshness on the tick and reference tables every desk and subscriber depends on.
+        sub:
+          - name: Ingestion Engineers
+            cares: ITCH and OUCH multicast, OPRA and consolidated-tape feeds captured off the wire on time.
+          - name: Pipeline Engineers
+            cares: depth and trade tables conformed with expectations on every tick feed.
+          - name: Platform Reliability
+            cares: freshness of the tick and reference tables every desk and subscriber depends on.
+      - name: Matching & Reliability Eng
+        mark: MLflow
+        summary: Turn matching-engine and network telemetry in Python and kdb+/q into latency, capacity and failure analytics, and own the libraries the market-quality and reliability teams run against.
+        uses:
+          - - Feature Store
+            - Latency and telemetry features defined once and read identically in analysis and monitoring.
+          - - MLflow
+            - Every latency-anomaly and failure model versioned and reproducible for audit.
+          - - Model Serving
+            - Latency-anomaly and predictive-maintenance scores computed in the live monitoring path.
+        sub:
+          - name: Reliability Engineers
+            cares: matching-engine and gateway telemetry turned into latency and capacity analytics.
+          - name: Model Engineers
+            cares: latency-anomaly and failure models versioned and reproducible for audit.
+          - name: Telemetry Engineers
+            cares: gateway, network and hardware telemetry conformed for monitoring.
+      - name: App Developers
+        mark: Apps
+        summary: Ship the market-quality, feed-operations, latency and surveillance applications the venue works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for case, member-limit and fee-schedule state with governed writes.
+          - - Agent Bricks
+            - Agents that draft a surveillance case or a feed-outage summary against governed tools.
+        sub:
+          - name: Full-Stack Engineers
+            cares: the market-quality, feed-operations and latency screens the venue works in.
+          - name: Agent Developers
+            cares: agents that draft a surveillance case or feed-outage summary on governed tools.
+          - name: Integration Engineers
+            cares: case, member-limit and fee-schedule writeback into venue systems.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers, and feed-outage and surveillance alerts in the channel operations already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed tick, reference and index data with Genie Code.
+  - name: Data Distribution
+    icon: partner
+    tiles:
+      - name: Delta Sharing Feeds
+        icon: share
+        summary: Tick, reference, corporate-actions and index feeds delivered to subscribers and vendors over Delta Sharing rather than file drops and FTP.
+      - name: Cloud Marketplaces
+        icon: market
+        summary: Curated data and index products listed and monetised through Databricks Marketplace and cloud data exchanges.
+      - name: Subscriber APIs
+        icon: api
+        summary: Entitled query and snapshot APIs serving reference, index and end-of-day products to licensed subscribers.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: Member Limit Writeback
+        icon: db
+        summary: Member credit and position-limit decisions written back into the clearing and membership systems so the answer reaches the risk-control path.
+      - name: Surveillance Cases
+        icon: gavel
+        summary: Manipulation and abuse alerts pushed to the investigation and disciplinary case queue analysts already work.
+      - name: Fee Schedule Writeback
+        icon: product
+        summary: Fee-tier and rebate decisions published back to the billing and dissemination systems that apply them.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: CAT / MiFID Reports
+        icon: gavel
+        summary: Consolidated Audit Trail and MiFID order-and-trade reporting produced by the venue from the same governed tables it matches on.
+        citations:
+          - cat
+          - mifid
+      - name: Reg Submissions
+        icon: share
+        summary: Market-operator, transparency and benchmark-administration submissions filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted market-data and index products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Subscribers, vendors and index licensees reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Market Quality
+        icon: gauge
+        short: Order book health
+        summary: 'The screen the market-quality team runs the venue from: spread, depth, message rates and matching latency by symbol, flagging fairness and outage risk before members notice, on Databricks Apps over Lakebase.'
+      - name: Feed Ops Monitor
+        icon: stream
+        short: Feed dissemination
+        summary: 'Live health of every disseminated feed: gap detection, sequence integrity and subscriber delivery latency, so a dropped multicast channel is caught before the support calls start.'
+      - name: Latency Cockpit
+        icon: chart
+        short: Latency & health
+        summary: Where the reliability team watches matching latency, jitter and gateway health in real time, and turns a degrading path into scheduled maintenance before members notice.
+      - name: Surveillance Console
+        icon: gavel
+        short: Market abuse
+        summary: Manipulation, spoofing and layering alerts triaged with the member's full order and print context in one investigation view, with a case trail a regulator will accept.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Trading & Volume
+        icon: aibi
+        summary: Matched volume, message rates and order-book health across the venue.
+        kpis:
+          - Matched volume
+          - Message rate
+          - Fill rate
+          - Order-to-trade ratio
+          - Spread
+        teams:
+          - Exchange Exec
+          - Market Ops
+          - Chief Commercial Officer
+      - name: Fees & Listings
+        icon: aibi
+        summary: Fee and rebate revenue, captured order flow and the listing pipeline.
+        kpis:
+          - Fee revenue
+          - Rebate cost
+          - Captured flow
+          - Listing pipeline
+          - Market share
+        teams:
+          - Exchange Exec
+          - Listings & Products
+          - Commercial
+      - name: Clearing & Member Risk
+        icon: aibi
+        summary: Member margin, position concentration and settlement fails.
+        kpis:
+          - Member margin
+          - Position concentration
+          - Settlement fails
+          - Default-fund coverage
+          - Limit breaches
+        teams:
+          - Clearing & Membership
+          - Clearing risk
+          - Membership
+      - name: Surveillance & Integrity
+        icon: aibi
+        summary: Alert quality, case backlog and cross-venue coverage.
+        kpis:
+          - Alert volume
+          - False-positive rate
+          - Case backlog
+          - Cross-venue coverage
+          - Order-trail completeness
+        teams:
+          - Surveil & Integrity
+          - Market surveillance
+          - Market integrity
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Market Quality & Latency Agent
+        icon: genie
+        summary: Ask about matching latency, spreads, depth and fairness by symbol in plain language.
+        feeds:
+          - Gateway & Matching Logs
+          - Corvil Latency Analytics
+          - Latency, quality, member, fees
+        teams:
+          - Market Ops
+          - Matching-engine ops
+          - Market quality
+        questions:
+          - What is our matching latency by symbol right now versus yesterday?
+          - Which symbols show the widest spreads and thinnest depth today?
+          - Where did message rates spike and did any gateway degrade?
+          - Are there fairness concerns in fill sequencing for any symbol?
+          - Which gateways are closest to capacity at peak?
+      - name: Fees & Listings Agent
+        icon: genie
+        summary: Explore fee and rebate revenue, captured order flow and the listing pipeline.
+        feeds:
+          - Venue Revenue Mart
+          - Nasdaq Matching
+          - Latency, quality, member, fees
+        teams:
+          - Exchange Exec
+          - Listings & Products
+          - Commercial
+        questions:
+          - What did fee and rebate revenue do last quarter by tier?
+          - How would a rebate change move captured order flow?
+          - Which members respond most to a fee-tier change?
+          - Which issuers are the strongest listing prospects right now?
+          - Where are we losing flow to competing venues?
+      - name: Member & Clearing Risk Agent
+        icon: genie
+        summary: Ask about member positions, margin usage and concentration across the trading day.
+        feeds:
+          - Member Position Ledger
+          - OCC Clearing
+          - Conformed books, instruments, members
+        teams:
+          - Clearing & Membership
+          - Clearing risk
+          - Membership
+        questions:
+          - Which members carry the largest margin usage right now?
+          - Where is member position concentration building today?
+          - Which members are closest to a credit or margin limit?
+          - How did member exposure move under the latest price shock?
+          - Which members have the most settlement fails this week?
+      - name: Surveillance & Integrity Agent
+        icon: genie
+        summary: Investigate manipulation, cross-venue abuse and order-trail completeness.
+        feeds:
+          - Nasdaq SMARTS
+          - CTA/UTP SIP
+          - Conformed books, instruments, members
+        teams:
+          - Surveil & Integrity
+          - Market surveillance
+          - Market integrity
+        questions:
+          - Which members showed spoofing or layering patterns this week?
+          - What was a member's activity around this print?
+          - Which schemes span more than one market or asset class?
+          - How many surveillance cases are open past their SLA?
+          - Is our order and trade trail complete for the reporting period?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Execution Quality Analytics
+        short: Best execution
+        icon: chart
+        summary: Producing execution-quality and market-quality analytics, spread, depth, fill rates and price improvement, as a product for members and regulators instead of ad-hoc reports.
+        problem: Execution-quality questions are answered days later from partial exports, so members cannot see fill quality on the venue and the operator cannot evidence best execution.
+        who_benefits: Exchange Exec
+        how_built: ITCH, SIP and gateway events land through the Multicast Feed Bus into Lakehouse//RT; execution-quality metrics are computed to Gold and published to members over Delta Sharing Feeds and AI/BI.
+        components:
+          - Feed Ops Monitor
+          - TotalView-ITCH
+          - Lakehouse//RT
+          - Delta Sharing Feeds
+          - AI/BI
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+          - title: 'The boom of SOON: Coinbase streaming ingestion'
+            url: https://www.databricks.com/customers/coinbase/streaming
+      - name: Matching Engine Monitoring
+        short: Market quality
+        icon: gauge
+        summary: Watching matching latency, spread, depth and fill fairness by symbol so market-quality problems and gateway issues are caught in the trading day rather than in a post-mortem.
+        problem: Matching-engine and gateway telemetry sits in operational logs no analytics can reach, so latency drift and fairness questions are answered days later from partial exports.
+        who_benefits: Market Ops
+        how_built: Gateway and matching logs stream into Lakehouse//RT; latency, spread and fairness metrics are computed to Gold and watched in the Market Quality app on the market-quality team's own definitions.
+        components:
+          - Market Quality
+          - Gateway & Matching Logs
+          - Lakehouse//RT
+          - Nasdaq Matching
+          - AI/BI
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+          - title: Modernizing investment data platforms
+            url: https://www.databricks.com/blog/2021/01/29/strategies-for-modernizing-investment-data-platforms.html
+      - name: Fee & Rebate Optimization
+        short: Pricing
+        icon: market
+        summary: Modeling how fee schedules and rebate tiers move captured order flow and revenue so pricing changes are simulated on real volume before they go live.
+        problem: Fee and rebate changes are set from spreadsheets and gut feel, so the venue cannot see how a tier change will move flow and revenue until after members react.
+        who_benefits: Exchange Exec
+        how_built: Transaction, volume and fee data are conformed to Gold against the venue revenue mart; elasticity and what-if models are scored in Model Serving and read in AI/BI before a schedule change.
+        components:
+          - Venue Revenue Mart
+          - Model Serving
+          - AI/BI
+          - Nasdaq Matching
+          - Unity Catalog
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+      - name: Manipulation Detection
+        short: Market abuse
+        icon: gavel
+        summary: Detecting spoofing, layering, wash trades and momentum ignition across the venue's order flow in real time, with an audit trail and completeness a regulator will accept.
+        problem: Surveillance runs in a vendor silo with gappy data and end-of-day batches, so spoofing and layering are seen too late, alerts are noisy, and completeness cannot be proven to an examiner.
+        who_benefits: Surveil & Integrity
+        how_built: Orders, executions and messages are unified in Lakehouse//RT with Unity Catalog completeness checks; detectors and AI Functions score manipulation patterns and cases open in the Surveillance Console.
+        components:
+          - Surveillance Console
+          - Nasdaq SMARTS
+          - AI Functions
+          - Model Serving
+          - Lakehouse//RT
+        stories:
+          - title: 'FINRA: predictive fraud detection at scale'
+            url: https://www.databricks.com/blog/2019/06/05/customer-spotlight-finra.html
+          - title: Real-time fraud detection at Coinbase
+            url: https://www.databricks.com/customers/coinbase/lakeflow
+      - name: Listing Prospects
+        short: Listings
+        icon: product
+        summary: Identifying companies and issuers likely to list or cross-list from market activity, sector momentum and reference data so the listings team reaches prospects before competitors.
+        problem: The listings team works from manual research and relationships, so timely prospects, cross-listing candidates and at-risk issuers are missed and the pipeline stays thin.
+        who_benefits: Listings & Products
+        how_built: Market activity, sector and reference data are conformed in the lakehouse; prospect-scoring models and Agent Bricks rank candidates read in AI/BI and Genie.
+        components:
+          - Agent Bricks
+          - AI/BI
+          - Genie
+          - Bloomberg FIGI
+          - Unity Catalog
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+      - name: Member Credit Monitoring
+        short: Member risk
+        icon: gauge
+        summary: Monitoring member positions, margin and concentration across the trading day so credit and default risk are seen intraday, not after a member fails.
+        problem: Member position and margin state lives across clearing and membership systems reconciled in batch, so credit exposure and concentration surface late when a default is expensive.
+        who_benefits: Clearing & Membership
+        how_built: Member position, margin and clearing feeds are conformed to Gold; credit and concentration models are scored in Model Serving and watched in AI/BI intraday.
+        components:
+          - Member Position Ledger
+          - OCC Clearing
+          - Model Serving
+          - AI/BI
+          - Lakehouse//RT
+      - name: Corporate Actions
+        short: Reference
+        icon: cdc
+        summary: Ingesting and normalising dividends, splits, mergers and re-organisations and applying them to instruments and member positions so downstream feeds and settlement stay correct.
+        problem: Corporate actions arrive from many sources in incompatible formats and must be applied point-in-time; a missed split or wrong ex-date silently corrupts prices, positions and member feeds.
+        who_benefits: Clearing & Membership
+        how_built: SIX and vendor corporate-actions feeds are ingested with Lakeflow and versioned as slowly-changing records in Delta Lake, applied to instruments under Unity Catalog lineage so history is replayable.
+        components:
+          - SIX Reference Data
+          - Bloomberg FIGI
+          - Lakeflow
+          - Delta Lake
+          - Unity Catalog
+        stories:
+          - title: Investment management reference architecture
+            url: https://www.databricks.com/resources/architectures/financial-services-investment-management-reference-architecture
+          - title: Modernizing investment data platforms
+            url: https://www.databricks.com/blog/2021/01/29/strategies-for-modernizing-investment-data-platforms.html
+      - name: Cross-Venue Surveillance
+        short: Cross-venue
+        icon: network
+        summary: Correlating orders and trades across the venue's own markets and external venues and asset classes so manipulation that spans books and products is detected, not just single-symbol abuse.
+        problem: Surveillance runs per market and per asset class, so cross-venue and cross-asset schemes, spoofing in one book to move another, slip through the gaps between siloed systems.
+        who_benefits: Surveil & Integrity
+        how_built: Order and trade trails across markets and external feeds are conformed under one instrument identity in Unity Catalog; cross-market detectors and AI Functions score patterns in the Surveillance Console.
+        components:
+          - Surveillance Console
+          - Nasdaq SMARTS
+          - GLEIF LEI
+          - AI Functions
+          - Unity Catalog
+        stories:
+          - title: 'FINRA: predictive fraud detection at scale'
+            url: https://www.databricks.com/blog/2019/06/05/customer-spotlight-finra.html
+      - name: System Health & Maintenance
+        short: Reliability
+        icon: iot
+        summary: Predicting matching-engine, gateway and data-center failures from telemetry before they degrade the venue, turning outages into scheduled maintenance.
+        problem: Plant failures surface as live outages during the trading day, and the gateway, network and hardware telemetry that would have warned earlier sits unused in operational logs.
+        who_benefits: Market Ops
+        how_built: Gateway, network and hardware telemetry stream into Lakehouse//RT; remaining-life and anomaly models tracked in MLflow score in Model Serving and raise work before the plant degrades.
+        components:
+          - Colocation & Hardware
+          - Corvil Latency Analytics
+          - Model Serving
+          - MLflow
+          - Lakehouse//RT
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+      - name: Latency Anomaly Detection
+        short: Latency
+        icon: observ
+        summary: Detecting latency, jitter and message-rate anomalies across gateways and feeds in real time so a degrading path is caught before members notice and fairness is preserved.
+        problem: Latency drift and gateway degradation are found from member complaints or post-mortems, so members experience unfair or slow execution before the operator sees the problem.
+        who_benefits: Market Ops
+        how_built: Corvil and gateway telemetry stream into Lakehouse//RT; latency-anomaly models score in Model Serving and surface to the Latency Cockpit and AI/BI in real time.
+        components:
+          - Latency Cockpit
+          - Corvil Latency Analytics
+          - Gateway & Matching Logs
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Modernizing investment data platforms
+            url: https://www.databricks.com/blog/2021/01/29/strategies-for-modernizing-investment-data-platforms.html
+medallion:
+  Bronze:
+    short: Raw feeds and messages
+    summary: ITCH and OUCH order-book messages, OPRA and consolidated-tape ticks, matching-engine gateway and latency telemetry, corporate-actions announcements and member position and margin files, landed exactly as received so a print or a quote can always be replayed as it stood.
+  Silver:
+    short: Conformed books, instruments, members
+    summary: Order books, executions, instruments and member positions resolved into single conformed entities across the matching, telemetry and clearing estates, with FIGI, ISIN and LEI identifiers reconciled and every print stitched to one security.
+  Gold:
+    short: Latency, quality, member, fees
+    summary: 'Contracted products the venue and risk teams run on: matching latency and fairness by symbol, quote and trade quality, member margin and concentration, and fee and rebate revenue by tier.'
+citation_index:
+  nasdaq-inet:
+    title: Nasdaq Marketplace Technology
+    url: https://www.nasdaq.com/solutions/marketplace-technology
+  t7:
+    title: Deutsche Börse T7 (Xetra/Eurex)
+    url: https://www.xetra.com/xetra-en/technology/t7
+  millennium:
+    title: LSEG MillenniumIT matching
+    url: https://en.wikipedia.org/wiki/MillenniumIT
+  globex:
+    title: CME Globex
+    url: https://www.cmegroup.com/globex.html
+  itch:
+    title: Nasdaq TotalView-ITCH
+    url: https://en.wikipedia.org/wiki/TotalView
+  opra:
+    title: OPRA options price reporting
+    url: https://www.opraplan.com/
+  sip:
+    title: CTA consolidated tape (SIP)
+    url: https://www.ctaplan.com/
+  rtds:
+    title: LSEG pricing & market data
+    url: https://www.lseg.com/en/data-analytics/financial-data/pricing-and-market-data
+  six:
+    title: SIX financial information
+    url: https://www.six-group.com/en/products-services/financial-information.html
+  dsb:
+    title: ANNA Derivatives Service Bureau
+    url: https://www.anna-dsb.com/
+  lei:
+    title: GLEIF Legal Entity Identifier
+    url: https://www.gleif.org/
+  figi:
+    title: OpenFIGI (Bloomberg symbology)
+    url: https://www.openfigi.com/
+  corvil:
+    title: Pico Corvil analytics
+    url: https://www.pico.net/
+  smarts:
+    title: Nasdaq Trade Surveillance (SMARTS)
+    url: https://www.nasdaq.com/solutions/nasdaq-trade-surveillance
+  occ:
+    title: OCC options clearing
+    url: https://www.theocc.com/
+  lch:
+    title: LCH clearing
+    url: https://www.lch.com/
+  dtcc:
+    title: DTCC clearing and settlement
+    url: https://www.dtcc.com/
+  fix:
+    title: FIX Trading Community
+    url: https://www.fixtrading.org/
+  cat:
+    title: Consolidated Audit Trail (CAT)
+    url: https://www.catnmsplan.com/
+  mifid:
+    title: MiFID II (ESMA)
+    url: https://en.wikipedia.org/wiki/Markets_in_Financial_Instruments_Directive_2014

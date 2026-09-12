@@ -221,6 +221,18 @@ sources:
               - semi-structured
             volume: 100s of MB/day
             interval: Daily + event-driven alerts
+      - name: S&P Global Market Intelligence
+        icon: market
+        summary: Commodity prices for metals, specialty gases and chemicals and market demand indices that inform material cost, wafer allocation and supplier risk.
+        category: Commodities & Market Data
+        what_it_is: External commodity price benchmarks (metals, specialty gases, chemicals) and market demand indices used for material cost, allocation and supplier exposure analysis.
+        who_uses_it: Supply chain risk, procurement and Materials planning.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day price feeds
+            interval: Intraday to daily benchmarks
   - name: Federation Sources
     icon: fed
     from: fed
@@ -624,9 +636,9 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Yield & Excursion Agent
+      - name: Yield & Quality Agent
         icon: genie
-        summary: Ask about yield, bin pareto and excursions by layer, tool and product in plain language.
+        summary: Ask about yield, bin pareto, excursions and customer-quality returns by layer, tool and product in plain language.
         feeds:
           - PDF Solutions Exensio
           - Teradyne UltraFLEX
@@ -634,53 +646,53 @@ agent_usecases:
           - Yield, cycle time, OEE
         teams:
           - Yield Engineering
-          - Yield Engineer
+          - Quality & Reliability
           - Failure Analysis
         questions:
           - What is yield by layer and product this week versus last?
           - Which tools or steps are correlated with the current excursion?
           - What is the bin pareto for this failing lot?
           - Which spatial defect signatures are trending up?
-          - Which lots are at risk of falling below yield target before disposition?
-      - name: Fab Operations & WIP Agent
+          - Which customer returns trace back to which fab lot and test bin?
+      - name: Fab Operations & Equipment Agent
         icon: genie
-        summary: Explore WIP position, cycle time and tool availability across the route.
+        summary: Explore WIP position, cycle time, tool availability, chamber matching and predicted tool failures across the route.
         feeds:
           - Applied E3 MES
-          - Camstar Semiconductor
           - SECS/GEM Tool Interface
-          - Yield, cycle time, OEE
-        teams:
-          - Fab Operations
-          - Fab Shift Manager
-          - Dispatch & Scheduling
-        questions:
-          - Where is WIP piling up and which tools are the bottleneck?
-          - What is cycle time by route and layer versus target?
-          - Which tools have the worst availability this shift?
-          - Are we on track to hit today's wafer starts?
-          - Which hot lots are behind schedule right now?
-      - name: Equipment Health Agent
-        icon: genie
-        summary: Answer chamber-matching, drift and predictive-maintenance questions from tool telemetry.
-        feeds:
           - Lam Equipment Analytics
-          - camLine LineWorks
-          - ASML YieldStar
           - Yield, cycle time, OEE
         teams:
           - Fab Operations
           - Process Engineering
           - Equipment ML
         questions:
+          - Where is WIP piling up and which tools are the bottleneck?
+          - What is cycle time by route and layer versus target?
           - Which chambers are drifting apart on process signatures?
           - Which tools are predicted to fail in the next two weeks?
+          - Are we on track to hit today's wafer starts?
+      - name: Engineering & Design Agent
+        icon: genie
+        summary: Answer run-to-run control, test-optimisation and design-technology feedback questions from process and design data.
+        feeds:
+          - camLine LineWorks
+          - Synopsys Fusion Design
+          - Siemens Calibre
+          - Yield, cycle time, OEE
+        teams:
+          - Process Engineering
+          - Product & Test Engineering
+          - Yield Engineering
+        questions:
           - Which recipes show the most run-to-run variability by tool?
           - Where is overlay or CD drifting toward guard bands?
-          - Which preventive-maintenance actions are overdue on bottleneck tools?
-      - name: Supply & Quality Agent
+          - Which yield signatures should feed back into design rules and IP revisions?
+          - Where can test time be trimmed without losing coverage by product?
+          - Which design-technology changes correlate with the biggest yield gains?
+      - name: Supply & Materials Agent
         icon: genie
-        summary: Ask about material lead times, allocation and customer returns tied to fab lots.
+        summary: Ask about part-level demand, material lead times, wafer allocation and supplier risk across the value chain.
         feeds:
           - Resilinc Supply Risk
           - SAP S/4HANA
@@ -688,14 +700,14 @@ agent_usecases:
           - Conformed lot, wafer, die
         teams:
           - Supply Chain
-          - Quality & Reliability
-          - Customer Quality
+          - Materials Planning
+          - Wafer Allocation
         questions:
           - Which lots are at risk from a supplier or substrate delay?
           - How is scarce wafer capacity allocated against demand and priority?
-          - Which customer returns trace back to which fab lot and test bin?
+          - What is the part-level demand forecast by product and quarter?
           - What is single-source exposure on critical materials?
-          - What is right-first-time CoA release rate by product?
+          - Which substrates and chemicals have the most lead-time risk?
   - name: Business Use Cases
     icon: ztarget
     span: 8
@@ -799,15 +811,15 @@ agent_usecases:
       - name: Supply Risk & Allocation
         short: Materials
         icon: globe
-        summary: Multi-tier supplier risk when lead times stretch or a sub-tier fab goes offline.
-        problem: Substrate and chemical lead times swing and a single sub-tier fab can go dark, yet supplier risk and wafer allocation sit in ERP exports stale the moment they are pulled.
+        summary: Part-level demand forecast and wafer allocation set against multi-tier supplier risk when lead times stretch or a sub-tier fab goes offline.
+        problem: Substrate and chemical lead times swing and a single sub-tier fab can go dark, yet part-level demand, wafer allocation and supplier risk sit in separate ERP exports stale the moment they are pulled, so allocation is set blind to real demand.
         who_benefits: Supply Chain
-        how_built: ERP and multi-tier supplier feeds conform on Delta Lake; allocation and risk are served on certified Metric Views in AI/BI, and Genie One answers which lots a supplier delay puts at risk.
+        how_built: ERP and multi-tier supplier feeds conform on Delta Lake; part-level demand models score in Model Serving, and allocation and risk are served on certified Metric Views in AI/BI where Genie One answers which lots a supplier delay puts at risk.
         components:
           - Resilinc Supply Risk
           - SAP S/4HANA
+          - Model Serving
           - AI/BI
-          - Genie One
           - Delta Lake
         stories:
           - title: Mipox accelerates demand forecasting on Databricks

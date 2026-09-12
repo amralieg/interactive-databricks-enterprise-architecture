@@ -1,0 +1,919 @@
+name: Oil & Gas Midstream
+description: 'Midstream pipeline and storage operators: pipeline integrity and in-line inspection, compressor and pump-station reliability, linepack and throughput control, nominations and scheduling, capacity marketing and regulatory reporting across gathering, transmission and storage.'
+sources:
+  - name: Pipeline SCADA & DataOps
+    icon: iot
+    tiles:
+      - name: AVEVA PI System
+        icon: iot
+        summary: Line pressures, flow rates and compressor-station tags from the pipeline historian.
+        citations:
+          - aveva-pi
+        category: Process/Time-Series Historian
+        what_it_is: Stores high-frequency line pressure, flow and compressor and pump-station tags across the pipeline network as the operational time-series system of record.
+        who_uses_it: Pipeline controllers, reliability engineers and integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day tag history
+            interval: Hourly / daily aggregates
+          stream:
+            types:
+              - semi-structured
+            volume: 50-500k tags/sec at peak
+            interval: Continuous (sub-second sampling)
+      - name: Emerson Ovation
+        icon: gauge
+        summary: Control-room setpoints, station sequences and alarms from the pipeline control system.
+        citations:
+          - emerson-ovation
+        category: SCADA / Pipeline Control System
+        what_it_is: Runs the pipeline and station control system in real time and emits the setpoints, station sequences and alarms that describe how the network is operating.
+        who_uses_it: Pipeline controllers, control-room operators and station engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k signals/sec
+            interval: Continuous (sub-second)
+      - name: Cognite Data Fusion
+        icon: stream
+        summary: Contextualised equipment, sensor and document data unified across stations and assets.
+        citations:
+          - cognite
+        category: Industrial DataOps Platform
+        what_it_is: Contextualises equipment, sensor, maintenance and document data into a unified industrial model across pipeline stations and assets.
+        who_uses_it: Reliability engineers, integrity teams and Industrial DataOps.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB/day contextualised
+            interval: Continuous + periodic model updates
+  - name: Commercial & Scheduling
+    icon: market
+    tiles:
+      - name: Quorum PGAS
+        icon: erp
+        summary: Pipeline nominations, allocations and imbalance statements.
+        citations:
+          - quorum-pgas
+        category: Pipeline Nomination & Allocation System
+        what_it_is: Manages pipeline nominations, scheduling, allocations and imbalance statements across gathering and transmission systems.
+        who_uses_it: Pipeline schedulers, gas controllers and commercial operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day
+            interval: Multiple nomination cycles daily
+      - name: ION Openlink Endur
+        icon: market
+        summary: Transport and capacity deals, hedges and mark-to-market for the commercial desk.
+        citations:
+          - ion-endur
+        category: Energy Trading & Risk Management (ETRM)
+        what_it_is: Captures transport, capacity and storage deals, hedges and mark-to-market for the commercial and risk desks.
+        who_uses_it: Capacity marketers, middle office and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day deals + positions
+            interval: Intraday + end-of-day marks
+      - name: Platts Price Assess
+        icon: chart
+        summary: Benchmark curves, basis and transport differentials the commercial desk marks to.
+        citations:
+          - platts
+        category: Commodity Price Benchmark Provider
+        what_it_is: Supplies benchmark price assessments, basis and transport differentials the commercial and risk desks mark capacity and storage positions to.
+        who_uses_it: Capacity marketing, supply analysts and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs reference data
+            interval: Daily assessment publication
+  - name: Integrity & GIS
+    icon: globe
+    tiles:
+      - name: ROSEN ILI
+        icon: observ
+        summary: In-line inspection runs, metal-loss features and dig verification for the integrity program.
+        citations:
+          - rosen
+        category: In-Line Inspection (ILI) Provider
+        what_it_is: Delivers in-line inspection runs, metal-loss and crack features and dig-verification results the pipeline integrity program manages risk from.
+        who_uses_it: Integrity engineers, corrosion specialists and reliability teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: 10s-100s of GB per run
+            interval: Per-inspection (periodic runs)
+      - name: Esri ArcGIS
+        icon: globe
+        summary: Pipeline centrelines, class locations, HCAs and right-of-way layers on a spatial system of record.
+        citations:
+          - esri-arcgis
+        category: Geographic Information System (GIS)
+        what_it_is: Maintains pipeline centrelines, class locations, high-consequence areas and right-of-way layers as the operator spatial system of record.
+        who_uses_it: Integrity, land and field operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs of spatial layers
+            interval: On change + periodic refresh
+  - name: Enterprise & Assets
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Finance postings, materials master and cost objects for the pipeline organisation.
+        citations:
+          - sap-s4
+        category: Enterprise Resource Planning (ERP)
+        what_it_is: Runs finance postings, the materials master, cost objects and purchasing the back office and operations transact on.
+        who_uses_it: Finance, materials management and cost controllers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: IBM Maximo
+        icon: gauge
+        summary: Asset registers, work orders and maintenance history for stations, valves and rotating equipment.
+        citations:
+          - ibm-maximo
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages asset registers, preventive and corrective work orders and maintenance history for compressor and pump stations, valves and rotating equipment.
+        who_uses_it: Maintenance planners, reliability engineers and station operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day work orders
+            interval: Hourly / event-driven
+      - name: SAP Ariba
+        icon: sheet
+        summary: Requisitions, supplier catalogues and materials sourcing for station and field work.
+        citations:
+          - sap-ariba
+        category: Procurement & Supply Management
+        what_it_is: Handles requisitions, supplier catalogues, sourcing events and materials commitments that keep station and field work supplied.
+        who_uses_it: Procurement, materials planning and supply chain teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Continuous + nightly batch
+  - name: Safety & Environment
+    icon: gavel
+    tiles:
+      - name: Sphera Risk Mgmt
+        icon: gavel
+        summary: Process safety, management-of-change and incident investigations tied to stations and pipelines.
+        citations:
+          - sphera
+        category: Process Safety & Operational Risk Platform
+        what_it_is: Manages process safety, management-of-change and incident investigations tied to stations, pipelines and barriers.
+        who_uses_it: Process safety, HSE and integrity engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day cases + events
+            interval: Hourly / daily
+      - name: Enablon EHS
+        icon: observ
+        summary: Emissions events, blowdown logs and regulatory permit limits.
+        citations:
+          - enablon
+        category: EHS & Emissions Management System
+        what_it_is: Records emissions events, blowdown and vent logs and regulatory permit limits for environmental compliance.
+        who_uses_it: Environmental and emissions teams and Regulatory compliance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day events + logs
+            interval: Hourly / daily
+      - name: FLIR Optical Gas Img
+        icon: iot
+        summary: Leak detection surveys and repair verification imagery along the right-of-way and at stations.
+        category: Optical Gas Imaging / Leak Detection
+        what_it_is: Produces optical-gas imaging surveys and repair-verification imagery used to detect and confirm fugitive hydrocarbon leaks along the right-of-way and at stations.
+        who_uses_it: LDAR survey crews, integrity and environmental teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+            volume: 10s-100s of GB/survey
+            interval: Per-survey (periodic campaigns)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Treasury Mart
+        icon: fed
+        summary: Hedge effectiveness and working-capital marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Corporate treasury hedge-effectiveness and working-capital marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Treasury, Finance and Risk analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: OPC-UA Pipeline Gateway
+        icon: iot
+        summary: Field protocol bridges normalising RTU and PLC station telemetry on ingest before historian landing.
+        citations:
+          - opc-ua
+        category: OT Protocol Gateway
+        what_it_is: Bridges field OPC-UA, RTU and PLC protocols and normalises station and valve telemetry on ingest before historian landing.
+        who_uses_it: Controls engineers, OT/IT integration and Streaming data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k tags/sec
+            interval: Continuous OT telemetry
+      - name: EPA GHGRP Templates
+        icon: gavel
+        summary: Greenhouse gas reporting layouts validated on ingest before filing windows.
+        citations:
+          - epa-ghgrp
+        category: Regulatory Reporting Schema
+        what_it_is: Greenhouse-gas reporting layouts and factors validated on ingest so emissions data conforms before filing windows.
+        who_uses_it: Environmental reporting and Regulatory compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs (templates + factors)
+            interval: Annual + periodic updates
+      - name: Weather & Metocean Data
+        icon: stream
+        summary: Storm, flood and temperature feeds for right-of-way risk and demand forecasting.
+        category: Weather & Metocean Provider
+        what_it_is: Storm, flood and temperature forecasts used to anticipate right-of-way risk, throughput demand and cold-weather station load.
+        who_uses_it: Integrity, control-room and commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day gridded forecasts
+            interval: Multiple forecast cycles daily
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Corporate & Network Leaders
+        mark: Genie One
+        summary: The CEO on throughput and utilisation; the CFO on capacity revenue and working capital when basis and transport differentials move.
+        uses:
+          - - Genie One
+            - Ask what yesterday throughput and utilisation were by system without waiting on operations reporting.
+          - - AI/BI
+            - Throughput, revenue and utilisation on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so throughput means one thing across SCADA and accounting.
+        sub:
+          - name: CEO
+            cares: throughput, network utilisation and the growth and energy-transition case.
+          - name: CFO & Treasury
+            cares: capacity revenue, working capital and cash flow across the network.
+          - name: Chief Operating Officer
+            cares: uptime, integrity risk and the HSE and compliance record across the system.
+        ucs:
+          - Throughput & Linepack Monitoring
+          - Capacity Marketing & Trading
+          - Working Capital & Cash Flow
+      - name: Pipeline Control & Operations
+        mark: Lakehouse//RT
+        summary: Controllers on linepack, nominations and station load when schedules slip, protecting throughput and hydrocarbon loss rate.
+        uses:
+          - - Control Room
+            - Linepack and nomination positions before gate close.
+          - - Lakehouse//RT
+            - Live SCADA state at the latency an upset occurs at.
+          - - AI/BI
+            - Throughput and loss on governed definitions.
+        sub:
+          - name: Pipeline Controller
+            cares: linepack, nominations and imbalance before gate close.
+          - name: Station Operations
+            cares: compressor and pump load and the setpoints that hold the schedule.
+          - name: Gas Control
+            cares: system balance and the response when a delivery point swings.
+        ucs:
+          - Throughput & Linepack Monitoring
+          - Nominations & Scheduling
+          - Compressor & Pump Reliability
+      - name: Integrity & Reliability
+        mark: AI/BI
+        summary: Integrity and reliability engineers on metal loss, corrosion rate and station health, prioritising digs and work before a threat becomes a leak.
+        uses:
+          - - Integrity Console
+            - In-line inspection features and corrosion rate beside historian data.
+          - - AI/BI
+            - Integrity risk and reliability on governed definitions.
+          - - Genie One
+            - Ask which segments are closest to their next assessment interval.
+        sub:
+          - name: Integrity Engineer
+            cares: metal loss, corrosion rate and the assessment intervals on the system.
+          - name: Reliability Engineer
+            cares: compressor and pump health and the failures that curtail throughput.
+          - name: Corrosion Specialist
+            cares: coupon and inspection data reconciled to the actual corrosion picture.
+        ucs:
+          - Pipeline Integrity Management
+          - Compressor & Pump Reliability
+          - Incident & Field Service
+      - name: Commercial & Scheduling
+        mark: Model Serving
+        summary: Capacity marketing and scheduling on transport deals, exposure and network plans, marking positions to basis and transport differentials.
+        uses:
+          - - Trading Workbench
+            - Transport and capacity positions marked consistently.
+          - - Model Serving
+            - Optimisation and scenario models scored on live nominations.
+          - - Unity Catalog
+            - One capacity definition across ops and finance.
+        sub:
+          - name: Capacity Marketing
+            cares: transport and storage deals marked to basis and transport differentials.
+          - name: Scheduler
+            cares: nominations, cuts and confirmations across the scheduling cycle.
+          - name: Risk & Middle Office
+            cares: exposure limits, mark-to-market and hedge effectiveness across the book.
+        ucs:
+          - Capacity Marketing & Trading
+          - Nominations & Scheduling
+          - Network Scenario Planning
+      - name: HSE & Compliance
+        mark: Unity Catalog
+        summary: Process safety and environmental teams on emissions, permits and incident trends, tracked on TRIR and blowdown volumes before regulator inspections.
+        uses:
+          - - HSE Dashboard
+            - Blowdown and leak trends before regulator inspections.
+          - - Unity Catalog
+            - Lineage from sensor to regulatory filing.
+          - - AI/BI
+            - TRIR and emissions on governed definitions.
+        sub:
+          - name: Process Safety
+            cares: management-of-change, incident trends and the barriers behind a safe envelope.
+          - name: Environmental & Emissions
+            cares: blowdown, vent and greenhouse filings from governed sensor lineage.
+          - name: Regulatory Compliance
+            cares: permit limits and the evidence trail before regulator inspections.
+        ucs:
+          - Workforce Safety
+          - Regulatory Compliance
+          - Incident & Field Service
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the SCADA, nomination, in-line inspection and deal-capture feeds; own the Bronze to Silver path and the pager when a network pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for historian, ETRM and accounting sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on SCADA and allocation feeds.
+          - - Lakewatch
+            - Freshness on the throughput and integrity tables operations reads.
+        sub:
+          - name: Historian & SCADA Eng
+            cares: high-volume tag ingestion from PI and pipeline SCADA into governed tables.
+          - name: Pipeline Reliability
+            cares: the Bronze to Silver path and the pager when a network feed breaks.
+          - name: Integrity & Accounting Eng
+            cares: in-line inspection, allocation and imbalance feeds landed for integrity and finance.
+        ucs:
+          - Throughput & Linepack Monitoring
+          - Pipeline Integrity Management
+          - Regulatory Compliance
+      - name: Data Scientists
+        mark: MLflow
+        summary: Corrosion-rate, station-failure, throughput and scenario models, and whether they still hold six months after deployment across the network.
+        uses:
+          - - Feature Store
+            - Historian and inspection features read identically in training and serving.
+          - - MLflow
+            - Every corrosion and failure run tracked for audit and reproduction.
+          - - Model Serving
+            - Optimisation and failure models scored in the operational path.
+        sub:
+          - name: Integrity DS
+            cares: corrosion-rate and remaining-life models against inspection and historian data.
+          - name: Reliability DS
+            cares: compressor and pump-failure models and whether they still hold.
+          - name: Optimisation DS
+            cares: throughput, linepack and scenario models across live nominations.
+        ucs:
+          - Compressor & Pump Reliability
+          - Pipeline Integrity Management
+          - Network Scenario Planning
+      - name: App Developers
+        mark: Apps
+        summary: Ship the control-room, scheduling and integrity applications control and desk teams work in, hosted next to governed network data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for nomination and work-order state and governed writes.
+          - - Agent Bricks
+            - Agents that draft an incident response against governed tools.
+        sub:
+          - name: Operations App Dev
+            cares: control-room and scheduling screens control teams work in.
+          - name: Commercial App Dev
+            cares: the exposure and capacity surfaces the commercial desk marks books on.
+          - name: Writeback & Integration
+            cares: nomination and setpoint writeback into SCADA and pipeline systems.
+        ucs:
+          - Nominations & Scheduling
+          - Incident & Field Service
+          - Capacity Marketing & Trading
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and control-room updates in the channel operations already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Operations Writeback
+    icon: opdb
+    tiles:
+      - name: SCADA Setpoint Push
+        icon: stream
+        summary: Approved station and pressure targets written back within safe envelopes.
+        citations:
+          - emerson-ovation
+      - name: Maximo Work Orders
+        icon: erp
+        summary: Maintenance and dig work orders raised from predicted integrity and equipment risk.
+        citations:
+          - ibm-maximo
+      - name: Nomination Updates
+        icon: erp
+        summary: Revised nominations and confirmations posted before gate close.
+        citations:
+          - quorum-pgas
+  - name: Customers & Partners
+    icon: partner
+    tiles:
+      - name: Shipper Portal
+        icon: api
+        summary: Nominations, confirmations and imbalance statements served to shippers from governed lineage.
+        citations:
+          - quorum-pgas
+      - name: Interconnect Feed
+        icon: globe
+        summary: Delivery and receipt positions exchanged with connecting pipelines without spreadsheet reconciliation.
+        citations:
+          - esri-arcgis
+      - name: Regulator Feed
+        icon: share
+        summary: Emissions and integrity data exchanged with regulators from governed products.
+        citations:
+          - epa-ghgrp
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: GHG & Emissions Filing
+        icon: gavel
+        summary: Regulatory greenhouse submissions produced from governed sensor and blowdown data.
+        citations:
+          - epa-ghgrp
+      - name: Integrity Filing
+        icon: share
+        summary: Integrity assessment and repair records produced from governed inspection lineage.
+        citations:
+          - rosen
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Shippers, regulators and connecting pipelines reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Control Room
+        icon: gauge
+        short: Linepack live
+        summary: Linepack, nominations and station load on Databricks Apps over Lakebase.
+      - name: Integrity Console
+        icon: network
+        short: Metal loss view
+        summary: In-line inspection features, corrosion rate and dig priority on one surface.
+      - name: Trading Workbench
+        icon: market
+        short: Capacity view
+        summary: Transport and capacity positions marked to benchmark on one surface.
+      - name: HSE Dashboard
+        icon: gavel
+        short: Emissions live
+        summary: Blowdown, leak and permit exceedances before inspections and board review.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Throughput & Linepack
+        icon: aibi
+        summary: Throughput, linepack, imbalance and utilisation across the network on certified operations Metric Views.
+        kpis:
+          - Throughput
+          - Linepack
+          - Pipeline imbalance
+          - Network utilisation
+          - Hydrocarbon loss rate
+        teams:
+          - Pipeline Control & Operations
+          - Corporate & Network Leaders
+          - Gas Control
+      - name: Integrity & Reliability
+        icon: aibi
+        summary: Metal loss, corrosion rate, station health and predicted failures across the system.
+        kpis:
+          - Metal-loss features
+          - Corrosion rate
+          - Assessment compliance
+          - Station availability
+          - Predicted failures
+        teams:
+          - Integrity & Reliability
+          - Integrity Engineer
+          - Reliability Engineer
+      - name: Capacity & Margin
+        icon: aibi
+        summary: Capacity revenue, exposure, hedge effectiveness and working capital across the commercial book.
+        kpis:
+          - Capacity revenue
+          - Exposure vs limit
+          - Hedge effectiveness
+          - Working capital
+          - Nomination fill rate
+        teams:
+          - Commercial & Scheduling
+          - Risk & Middle Office
+          - Corporate & Network Leaders
+      - name: HSE & Emissions
+        icon: aibi
+        summary: Blowdown and vent volumes, permit compliance, leaks and safety indicators.
+        kpis:
+          - Blowdown volume
+          - GHG emissions
+          - Permit exceedances
+          - Open leaks
+          - TRIR
+        teams:
+          - HSE & Compliance
+          - Environmental & Emissions
+          - Process Safety
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Pipeline Integrity Agent
+        icon: genie
+        summary: Ask about metal loss, corrosion rate, station health and predicted failures across the network in plain language.
+        feeds:
+          - ROSEN ILI
+          - AVEVA PI System
+          - IBM Maximo
+          - Conformed segment, cargo
+        teams:
+          - Integrity & Reliability
+          - Integrity Engineer
+          - Reliability Engineer
+        questions:
+          - Which segments are closest to their next assessment interval?
+          - Where are metal-loss features growing fastest against last run?
+          - Which compressors and pumps are trending toward failure this month?
+          - How much throughput is at risk from the current integrity threats?
+          - Which digs should we prioritise this quarter, and why?
+      - name: Throughput & Nominations Agent
+        icon: genie
+        summary: Explore linepack, nominations, throughput and network scenarios across the system.
+        feeds:
+          - Quorum PGAS
+          - Emerson Ovation
+          - Cognite Data Fusion
+          - Conformed segment, cargo
+        teams:
+          - Pipeline Control & Operations
+          - Commercial & Scheduling
+          - Gas Control
+        questions:
+          - Which segments are running the largest imbalances today?
+          - How does linepack compare to nominations across the system?
+          - Which delivery points are constraining throughput this week?
+          - What would a station outage do to network throughput before it happens?
+          - Which nominations are at risk of being cut this cycle?
+      - name: Capacity Trading Agent
+        icon: genie
+        summary: Answer questions on capacity positions, exposure, hedge effectiveness and working capital.
+        feeds:
+          - ION Openlink Endur
+          - Platts Price Assess
+          - SAP S/4HANA
+          - Production, margin, loss
+        teams:
+          - Commercial & Scheduling
+          - Risk & Middle Office
+          - Corporate & Network Leaders
+        questions:
+          - What is our capacity revenue by system today?
+          - Which desks are closest to their exposure limits right now?
+          - How effective are our current hedges against basis moves?
+          - What is our working-capital position across the network this month?
+          - Which contracts are up for renewal against current basis?
+      - name: Crew Safety Agent
+        icon: genie
+        summary: Ask about emissions, blowdown volumes, permits, incidents and field-service response across the system.
+        feeds:
+          - Enablon EHS
+          - Sphera Risk Mgmt
+          - FLIR Optical Gas Img
+          - EPA GHGRP Templates
+        teams:
+          - HSE & Compliance
+          - Environmental & Emissions
+          - Process Safety
+        questions:
+          - What are our blowdown and vent volumes by station this month?
+          - Which permits are closest to their limit right now?
+          - How many leaks were detected and how many are still open?
+          - What is our TRIR trend across the network this year?
+          - Which open incidents need a field crew dispatched today?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Pipeline Integrity Management
+        short: Integrity
+        icon: observ
+        summary: Metal loss and corrosion scored against assessment intervals to prioritise digs before a threat becomes a leak.
+        problem: In-line inspection features and corrosion readings arrive on run cycles, so integrity risk is judged against a fixed interval rather than the actual growth the data shows, and digs are prioritised late.
+        who_benefits: Integrity & Reliability
+        how_built: Inspection and historian data feed corrosion and feature-growth models tracked in MLflow and scored in Model Serving, so risk-based intervals and digs are prioritised on the Integrity Console.
+        components:
+          - Integrity Console
+          - ROSEN ILI
+          - AVEVA PI System
+          - Model Serving
+          - MLflow
+        stories:
+          - title: Pipeline Flow Monitoring on the Databricks Platform
+            url: https://www.databricks.com/blog/pipeline-flow-monitoring
+      - name: Compressor & Pump Reliability
+        short: Reliability
+        icon: gauge
+        summary: Compressor and pump-station failures predicted before throughput is curtailed.
+        problem: A compressor or pump-station failure curtails throughput for hours, yet failures are found after the unit stops rather than predicted from the sensor drift that preceded them.
+        who_benefits: Integrity & Reliability
+        how_built: Historian tags stream into Lakehouse//RT and feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders on the Integrity Console.
+        components:
+          - Integrity Console
+          - AVEVA PI System
+          - IBM Maximo
+          - Model Serving
+          - MLflow
+        stories:
+          - title: 'Databricks and Shell: industrial time series analytics on the Lakehouse'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: Building ML models for predictive maintenance in oil & gas
+            url: https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html
+      - name: Throughput & Linepack Monitoring
+        short: Operations
+        icon: iot
+        summary: Linepack, flow and imbalance watched live so the network stays balanced through the pipeline day.
+        problem: Linepack, nominations and actual flow drift apart across a pipeline day, so imbalances are discovered after gate close when there is no time left to rebalance the system.
+        who_benefits: Pipeline Control & Operations
+        how_built: Pipeline SCADA and nomination feeds land in Lakehouse//RT, and balance and forecast models scored in Model Serving surface imbalance early for controllers on the Control Room over certified AI/BI views.
+        components:
+          - Control Room
+          - Emerson Ovation
+          - Quorum PGAS
+          - Lakehouse//RT
+          - AI/BI
+        stories:
+          - title: Pipeline Flow Monitoring on the Databricks Platform
+            url: https://www.databricks.com/blog/pipeline-flow-monitoring
+      - name: Nominations & Scheduling
+        short: Logistics
+        icon: stream
+        summary: Nominations, cuts and confirmations optimised to minimise imbalance penalties.
+        problem: Nominations, cuts and confirmations move across separate scheduling tools and cycles, so schedulers rebalance late and imbalance penalties surface after the confirmations are already out.
+        who_benefits: Commercial & Scheduling
+        how_built: Nomination and allocation feeds conform on Delta Lake, optimisation models scored in Model Serving rebalance the schedule, and schedulers act from the Control Room on certified AI/BI views.
+        components:
+          - Control Room
+          - Quorum PGAS
+          - Model Serving
+          - Delta Lake
+          - AI/BI
+      - name: Capacity Marketing & Trading
+        short: Commercial
+        icon: market
+        summary: Transport and capacity positions reconciled before exposure limits breach.
+        problem: Transport deals, hedges and basis curves are marked in different tools, so the desk sees exposure late and a limit breach surfaces only after the position has moved.
+        who_benefits: Commercial & Scheduling
+        how_built: Deal capture and price feeds conform under Unity Catalog, exposure and mark-to-market models scored in Model Serving mark books consistently, and the desk works exposure from the Trading Workbench.
+        components:
+          - Trading Workbench
+          - ION Openlink Endur
+          - Platts Price Assess
+          - Model Serving
+          - Unity Catalog
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
+      - name: Incident & Field Service
+        short: Field ops
+        icon: chat
+        summary: Incidents triaged and field crews dispatched with a governed assistant instead of phone-tree guesswork.
+        problem: When an alarm or leak report comes in, controllers piece together the location, history and nearest crew from separate systems by phone, so response is slow and the record of what was decided is thin.
+        who_benefits: HSE & Compliance
+        how_built: Incident, GIS and asset data conform under Unity Catalog, and an Agent Bricks assistant grounded on governed tools drafts the response and dispatch on the Control Room over Lakebase.
+        components:
+          - Control Room
+          - Sphera Risk Mgmt
+          - Agent Bricks
+          - Lakebase
+          - Unity Catalog
+      - name: Regulatory Compliance
+        short: Regulatory
+        icon: erp
+        summary: Permit limits and evidence assembled from governed data before an inspection.
+        problem: Regulatory evidence is stitched from extracts and spreadsheets at inspection time, so permit limits and the trail behind a filing are hard to trace from source to submission when a regulator asks.
+        who_benefits: HSE & Compliance
+        how_built: Permit, emissions and integrity data conform under Unity Catalog on Delta Lake, giving one auditable lineage from source to filing surfaced for compliance on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Enablon EHS
+          - ROSEN ILI
+          - Unity Catalog
+          - Delta Lake
+      - name: Network Scenario Planning
+        short: Planning
+        icon: sheet
+        summary: Outage, demand and expansion scenarios simulated before they are committed on the network.
+        problem: Outage, demand and expansion questions are answered on spreadsheets against a stale model, so the network impact of a station outage or a demand swing is only understood after it has already constrained throughput.
+        who_benefits: Commercial & Scheduling
+        how_built: Historian, nomination and asset data conform on Delta Lake and mirror in Lakehouse//RT, and simulation models in Model Serving tracked in MLflow test outage and demand scenarios before they are committed.
+        components:
+          - Control Room
+          - Cognite Data Fusion
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+      - name: Workforce Safety
+        short: HSE
+        icon: gavel
+        summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.
+        problem: Safety signals live across permit-to-work, incident and barrier systems, so leading indicators of an unsafe condition are only connected after an incident when the investigation reconstructs them.
+        who_benefits: HSE & Compliance
+        how_built: Permit, incident and barrier data conform under Unity Catalog on Delta Lake, and leading-indicator models scored in Model Serving surface unsafe trends for the team on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Sphera Risk Mgmt
+          - Model Serving
+          - Unity Catalog
+          - Delta Lake
+      - name: Working Capital & Cash Flow
+        short: Finance
+        icon: erp
+        summary: Capacity revenue, imbalance cash-out and cost reconciled so cash position is current not month-end.
+        problem: Capacity revenue, imbalance cash-out and operating cost are reconciled at month-end across accounting and treasury tools, so the cash position lags the network and financing decisions are made on stale numbers.
+        who_benefits: Corporate & Network Leaders
+        how_built: Accounting and treasury data conform on Delta Lake under Unity Catalog, and reconciled cash and revenue surface on certified AI/BI views and the Trading Workbench so the position stays current.
+        components:
+          - Trading Workbench
+          - SAP S/4HANA
+          - Corporate Treasury Mart
+          - Unity Catalog
+          - AI/BI
+medallion:
+  Bronze:
+    short: Raw field and market
+    summary: SCADA and historian tags, nomination and allocation records, in-line inspection runs and deal capture tickets, landed exactly as received so a flow or a pressure reading can always be replayed as it stood.
+  Silver:
+    short: Conformed segment, cargo
+    summary: Segments, stations, meters and cargoes resolved into single conformed entities across control, integrity and commercial systems, with allocation balances reconciled and nomination schedules stitched to one logistics record.
+  Gold:
+    short: Throughput, margin, loss
+    summary: 'Contracted products operations and commercial run on: throughput and utilisation, capacity revenue and working capital, integrity risk and hydrocarbon loss rates.'
+citation_index:
+  aveva-pi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/pi-system/
+  emerson-ovation:
+    title: Emerson Ovation
+    url: https://www.emerson.com/en-us/automation/control-and-safety-systems/distributed-control-systems-dcs/ovation-distributed-control-system
+  cognite:
+    title: Cognite Data Fusion
+    url: https://www.cognite.com/
+  quorum-pgas:
+    title: Quorum PGAS
+    url: https://www.quorumsoftware.com/solutions/midstream/
+  ion-endur:
+    title: ION Openlink Endur
+    url: https://iongroup.com/commodities/
+  platts:
+    title: S&P Global Platts
+    url: https://www.spglobal.com/commodityinsights/en/products-services/energy
+  rosen:
+    title: ROSEN Group
+    url: https://www.rosen-group.com/
+  esri-arcgis:
+    title: Esri ArcGIS
+    url: https://www.esri.com/en-us/arcgis/products/arcgis-enterprise/overview
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  ibm-maximo:
+    title: IBM Maximo
+    url: https://www.ibm.com/products/maximo
+  sap-ariba:
+    title: SAP Ariba
+    url: https://www.sap.com/products/spend-management/ariba.html
+  sphera:
+    title: Sphera risk management
+    url: https://sphera.com/operational-risk-management-software/
+  enablon:
+    title: Wolters Kluwer Enablon
+    url: https://www.wolterskluwer.com/en/solutions/enablon
+  opc-ua:
+    title: OPC Unified Architecture
+    url: https://opcfoundation.org/about/opc-technologies/opc-ua/
+  epa-ghgrp:
+    title: EPA GHGRP
+    url: https://www.epa.gov/ghgreporting

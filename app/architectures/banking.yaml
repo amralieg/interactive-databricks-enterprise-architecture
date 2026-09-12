@@ -325,8 +325,8 @@ pipelines:
             cares: portfolio credit quality, NPL formation and provisioning across the book.
         ucs:
           - Regulatory Reporting
-          - Credit Early Warning
-          - Liquidity Forecasting
+          - CECL & CCAR Stress Testing
+          - FP&A & Financial Close
       - name: Retail Banking
         mark: AI/BI
         summary: Branch productivity, product penetration and attrition, judged on deposit and loan growth, household profitability and cross-sell.
@@ -345,8 +345,7 @@ pipelines:
         ucs:
           - Customer 360
           - Next-Best-Product
-          - Collections Optimization
-          - Open Banking Analytics
+          - Contact-Center AI
       - name: Commercial Banking
         mark: Model Serving
         summary: Relationship profitability, covenants and limit utilization, tracked on risk-adjusted return, exposure at default and rating migration.
@@ -384,7 +383,7 @@ pipelines:
         ucs:
           - Real-Time Fraud
           - AML Transaction Monitoring
-          - Operational Loss
+          - Perpetual KYC/KYB
           - Credit Early Warning
       - name: Treasury & ALM
         mark: AI/BI
@@ -402,7 +401,7 @@ pipelines:
           - name: Liquidity Risk Lead
             cares: LCR, NSFR and intraday liquidity under stress.
         ucs:
-          - Liquidity Forecasting
+          - CECL & CCAR Stress Testing
           - Regulatory Reporting
   - name: Technical
     icon: code
@@ -427,7 +426,7 @@ pipelines:
         ucs:
           - Real-Time Fraud
           - Regulatory Reporting
-          - Open Banking Analytics
+          - Perpetual KYC/KYB
       - name: Data Scientists
         mark: MLflow
         summary: PD/LGD credit-risk, AML transaction-monitoring, card-fraud and next-best-action models, and whether they still hold through a rate cycle.
@@ -470,7 +469,7 @@ pipelines:
         ucs:
           - AML Transaction Monitoring
           - Credit Early Warning
-          - Collections Optimization
+          - Contact-Center AI
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -666,27 +665,27 @@ agent_usecases:
           - How many AML cases are open past their SLA, and for which segments?
           - Which merchant categories are driving the most confirmed fraud?
           - What is the alert-to-SAR conversion rate by investigator team?
-      - name: Credit Risk Agent
+      - name: Servicing & Collections Agent
         icon: genie
-        summary: Explore portfolio credit quality, early-warning signals and provisioning across the book.
+        summary: Ask about service, collections and credit-decisioning turnaround across the operation in plain language.
         feeds:
-          - Moody's RiskCalc
+          - Temenos Infinity
+          - Salesforce FSC
           - Experian Bureau
           - Conformed customers and accounts
-          - NIM, NPL, liquidity ratios
         teams:
-          - Commercial Banking
-          - Chief Credit Officer & CFO
-          - Credit Risk Officers
+          - Retail Banking
+          - Head of Digital Banking
+          - Head of Branch Network
         questions:
-          - Which commercial names moved to a worse rating band this quarter?
-          - What is our NPL ratio by segment and region?
-          - Which exposures are approaching a covenant breach?
-          - How has expected loss changed since last month and why?
-          - Which borrowers show the strongest early-warning deterioration signals?
-      - name: Customer 360 Agent
+          - What is our contact-center call deflection rate with AI assist this month?
+          - Which service topics drive the most repeat calls and manual handling?
+          - What is credit-decision turnaround by product this quarter?
+          - How many delinquent accounts cured after the latest treatment strategy?
+          - Where are digital self-service journeys dropping off?
+      - name: Retail Growth Agent
         icon: genie
-        summary: Answer household and relationship questions across deposits, loans, cards and digital.
+        summary: Answer household, cross-sell and next-best-action questions across deposits, loans, cards and digital.
         feeds:
           - Salesforce FSC
           - Temenos Transact
@@ -702,7 +701,7 @@ agent_usecases:
           - What is deposit and loan growth by branch and relationship manager?
           - Which digitally-active customers have never been offered a card?
           - What is attrition risk for our top-decile households?
-      - name: Treasury & Liquidity Agent
+      - name: Treasury & ALM Agent
         icon: genie
         summary: Ask about funding, liquidity buffers and rate risk under stress.
         feeds:
@@ -812,18 +811,18 @@ agent_usecases:
             url: https://www.databricks.com/customers/discovery-bank
           - title: Banco Bradesco doubles conversion with next best action
             url: https://www.databricks.com/customers/banco-bradesco/lakeflow-declarative-pipelines
-      - name: Liquidity Forecasting
-        short: Treasury
+      - name: CECL & CCAR Stress Testing
+        short: Capital
         icon: gauge
-        summary: Cash and collateral projections under stress scenarios.
-        problem: Treasury projects cash, collateral and deposit runoff from monthly snapshots and spreadsheets, so buffers are sized on stale positions and a funding squeeze shows up too late to hedge.
-        who_benefits: Treasury & ALM
-        how_built: Deposit, market and position feeds land on Delta Lake, runoff models in Model Serving project buffers under stress, and gap and LCR scenarios surface in the ALM Dashboard and AI/BI.
+        summary: Expected credit loss and capital adequacy modelled under supervisory stress scenarios.
+        problem: CECL provisioning and CCAR stress runs are stitched from risk, finance and market extracts each cycle, so scenarios take weeks, assumptions are hard to reproduce and the capital story is fragile under examiner scrutiny.
+        who_benefits: Chief Credit Officer & CFO
+        how_built: Exposure, rating and macro feeds conform on Delta Lake under Unity Catalog, loss and pre-provision models tracked in MLflow run in Model Serving, and scenario results are certified for Nasdaq AxiomSL Reg Reporting and AI/BI.
         components:
-          - ALM Dashboard
-          - FIS Ambit Focus
+          - Nasdaq AxiomSL Reg Reporting
+          - Moody's RiskCalc
           - Model Serving
-          - AI/BI
+          - MLflow
           - Delta Lake
         stories:
           - title: How Databricks helps banks navigate interest rate changes
@@ -844,50 +843,47 @@ agent_usecases:
         stories:
           - title: BCBS 239 compliance in the age of AI (ABN AMRO)
             url: https://www.databricks.com/blog/bcbs-239-compliance-age-ai-turning-regulatory-burden-strategic-advantage
-      - name: Open Banking Analytics
-        short: Digital
+      - name: Perpetual KYC/KYB
+        short: Onboarding
         icon: api
-        summary: Consent, aggregation and payment initiation insights.
-        problem: Consent, aggregation and payment-initiation traffic from third parties arrives in fragmented API logs, so the bank cannot see how open-banking journeys perform or which partners drive value.
-        who_benefits: Retail Banking
-        how_built: Aggregation and consent feeds land through Lakeflow onto Delta Lake, are conformed under governance, and partner, consent and payment-initiation metrics are analyzed in AI/BI.
-        components:
-          - Plaid Aggregation
-          - Tink Open Banking
-          - Lakeflow
-          - Delta Lake
-          - AI/BI
-      - name: Collections Optimization
-        short: Lending
-        icon: people
-        summary: Treatment strategies ranked by recovery probability.
-        problem: Delinquent accounts get the same generic dunning regardless of who will actually pay, so recoveries are low, good customers are pushed away and collections cost more than they return.
-        who_benefits: Retail Banking
-        how_built: Servicing and behavior features in Feature Store feed recovery-probability models in Model Serving tracked in MLflow, so each account gets the treatment most likely to cure.
-        components:
-          - Fiserv DNA
-          - Model Serving
-          - Feature Store
-          - MLflow
-          - AI Functions
-        stories:
-          - title: Ophelos optimizes debt collection on Databricks
-            url: https://www.databricks.com/customers/ophelos
-          - title: Oakbrook builds a collections decision engine
-            url: https://www.databricks.com/customers/oakbrook
-      - name: Operational Loss
-        short: Risk
-        icon: gavel
-        summary: Loss events captured and capitalized for AMA frameworks.
-        problem: Operational loss events are logged in scattered spreadsheets and case tools, so capital under advanced measurement is modeled on incomplete history and control failures recur unseen.
+        summary: Continuous identity, sanctions and beneficial-ownership screening across the customer lifecycle.
+        problem: KYC and KYB run as point-in-time checks at onboarding, so refreshes lag, sanctions and adverse-media hits are missed between reviews, and remediation backlogs build with no single view of party risk.
         who_benefits: Risk & Compliance
-        how_built: Loss events and near-misses are captured into governed Delta Lake tables under Unity Catalog, aggregated for AMA capital, and analyzed in AI/BI and published as Data Products.
+        how_built: LexisNexis screening and Salesforce FSC party data conform under Unity Catalog, AI Functions and Model Serving score entity and network risk continuously, and analysts clear cases in the AML Investigator.
         components:
+          - AML Investigator
+          - LexisNexis Risk
+          - Salesforce FSC
+          - AI Functions
+          - Model Serving
           - Unity Catalog
-          - Delta Lake
-          - Nasdaq AxiomSL Reg Reporting
+      - name: FP&A & Financial Close
+        short: Finance
+        icon: people
+        summary: Month-end close and financial planning accelerated with governed data and AI-drafted variance commentary.
+        problem: Month-end close depends on manual reconciliation across the general ledger and dozens of feeder systems, so numbers land late, variance analysis is rushed and finance has little time left for forward planning.
+        who_benefits: Chief Credit Officer & CFO
+        how_built: General-ledger and subledger feeds conform on Delta Lake under Unity Catalog, AI Functions draft variance commentary, and planning and actuals are served through AI/BI and Genie for a faster, auditable close.
+        components:
+          - Temenos Transact
+          - Data Warehouse Mart
+          - AI Functions
           - AI/BI
-          - Data Products
+          - Genie
+          - Unity Catalog
+      - name: Contact-Center AI
+        short: Service
+        icon: chat
+        summary: Call summarization, agent assist and self-service deflection across the contact center.
+        problem: Contact-center agents move between core, card and CRM screens to answer a caller, so handle time is long, wrap-up is manual and customers repeat themselves across every channel.
+        who_benefits: Retail Banking
+        how_built: Call transcripts and CRM cases conform under Unity Catalog, Mosaic AI agents built with Agent Bricks summarize calls and suggest next steps against governed customer data, and deflection is served through Databricks Apps.
+        components:
+          - Salesforce FSC
+          - Temenos Infinity
+          - Mosaic AI
+          - Agent Bricks
+          - AI/BI
 medallion:
   Bronze:
     short: Raw core and channel logs

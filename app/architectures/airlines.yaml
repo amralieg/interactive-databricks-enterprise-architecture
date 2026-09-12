@@ -1,5 +1,5 @@
 name: Airlines
-description: 'Passenger and cargo operations: reservations and revenue management, network and crew planning, airport turnaround, and line maintenance.'
+description: 'For an airline: reservations and revenue management, network and crew planning, airport turnaround and line maintenance across the passenger operation.'
 sources:
   - name: Reservations & Revenue
     icon: erp
@@ -381,7 +381,7 @@ pipelines:
           - Network & Fleet Planning
           - IROPS Recovery
           - Continuous Pricing & NDC
-          - Fuel Burn & Tankering
+          - Unified Ops Control
       - name: Revenue & Pricing
         mark: Model Serving
         summary: Revenue management analysts setting bid prices and fare class availability, pricing teams filing fares against ATPCO rules and the NDC offer catalogue, and the loyalty and ancillary team merchandising seats, bags and partner earn.
@@ -403,8 +403,9 @@ pipelines:
             - tier economics, partner earn and the merchandising of seats, bags and lounge access.
         ucs:
           - Continuous Pricing & NDC
-          - Cargo Yield
-          - Loyalty & Ancillary
+          - Ancillary Merchandising
+          - Loyalty & FFP
+          - Passenger 360
       - name: Network Planning
         mark: AI/BI
         summary: Which routes are flown, at what frequency and with which aircraft, season by season, against slots and maintenance windows.
@@ -443,8 +444,7 @@ pipelines:
           - IROPS Recovery
           - Turnaround & OTP
           - Crew Pairing & Rostering
-          - Baggage Mishandling
-          - Fuel Burn & Tankering
+          - Unified Ops Control
       - name: Engineering & MRO
         mark: Lakeflow
         summary: Engineering and maintenance planning on predicted removals, tail health and AMOS work orders raised against the aircraft the airline already flies.
@@ -699,7 +699,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Network & Revenue Agent
+      - name: Network Planning Agent
         icon: genie
         summary: Ask about route profitability, yield and load factor in plain language across the commercial book.
         feeds:
@@ -717,7 +717,7 @@ agent_usecases:
           - Which fare classes are we spilling demand in?
           - What is yield by cabin on our top ten routes?
           - Where is ancillary revenue per passenger growing fastest?
-      - name: Operations & OTP Agent
+      - name: Operations Control Agent
         icon: genie
         summary: Explore on-time performance, delay causes and turnaround compliance across the operation.
         feeds:
@@ -735,7 +735,7 @@ agent_usecases:
           - Which stations have the worst turnaround compliance this month?
           - How many flights missed target off-block yesterday, and why?
           - Which rotations are most exposed to reactionary delay?
-      - name: Engineering & Fleet Reliability Agent
+      - name: Fleet Reliability Agent
         icon: genie
         summary: Answer tail-health, defect and predicted-removal questions across the fleet.
         feeds:
@@ -751,7 +751,7 @@ agent_usecases:
           - How many AOG events did we have this month and on which fleet?
           - Which aircraft show rising engine condition-monitoring trends?
           - What is component reliability by part number versus target?
-      - name: Passenger & Loyalty Agent
+      - name: Passenger Experience Agent
         icon: genie
         summary: Ask about the passenger journey, disruption impact and loyalty value across channels.
         feeds:
@@ -858,21 +858,19 @@ agent_usecases:
             url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
           - title: Predictive maintenance on the Databricks Lakehouse
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Fuel Burn & Tankering
-        short: Cost & emissions
-        icon: chart
-        summary: Route, load and tankering decisions that cut fuel burn and the emissions reported under CORSIA and EU ETS.
-        problem: Fuel is the largest controllable cost and the biggest emissions line. Tankering and route calls made without load and price data leave money and CORSIA exposure on the table.
-        who_benefits: Operations Control
-        how_built: Route, load and QAR burn data are conformed to Gold; tankering and burn recommendations are scored in Model Serving and reconciled against CORSIA and EU ETS reporting.
+      - name: Passenger 360
+        short: Customer 360
+        icon: custlake
+        summary: PNR, loyalty, clickstream and disruption history unified into one passenger view.
+        problem: A passenger's booking, loyalty, digital and disruption history sit in separate systems, so the airline treats a top-tier flyer like a stranger and no team can see the full relationship across the journey.
+        who_benefits: Revenue & Pricing
+        how_built: PNR data from Amadeus Altéa PSS, Loyalty & FFP and Web & App Clickstream are unified in CustomerLake under Unity Catalog, giving one governed passenger view every channel and the OCC read.
         components:
-          - Aircraft Sensor & QAR
-          - Model Serving
-          - AI/BI
-          - Lakeflow
-        stories:
-          - title: JetBlue improves fuel efficiency with Blue Sky
-            url: https://www.databricks.com/customers/jetblue-video
+          - CustomerLake
+          - Amadeus Altéa PSS
+          - Loyalty & FFP
+          - Web & App Clickstream
+          - Unity Catalog
       - name: Turnaround & OTP
         short: Punctuality
         icon: stream
@@ -888,47 +886,54 @@ agent_usecases:
         stories:
           - title: JetBlue Blue Sky operational digital twin
             url: https://www.databricks.com/customers/jetblue-video
-      - name: Baggage Mishandling
-        short: Service
-        icon: partner
-        summary: Predicting which connections will lose a bag from the connection time, the stand pair and the handler, and intervening before the flight departs.
-        problem: A bag lost at a tight connection is a service failure and a cost. The connections that will fail are predictable from connection time, stand pair and handler, if anyone scores them in time.
+      - name: Unified Ops Control
+        short: Operations
+        icon: gauge
+        summary: One real-time operating picture across flights, crew, aircraft and passengers for the OCC.
+        problem: The OCC watches flights, crew, aircraft and passengers on separate screens fed by separate systems, so no one sees the whole operation at once and a small delay becomes a cascade before it is understood.
         who_benefits: Operations Control
-        how_built: WorldTracer, movement and stand data are joined in the lakehouse; a risk model scores each connection so at-risk bags are intervened on before the flight departs.
+        how_built: Movement, crew, maintenance and booking feeds stream into Lakehouse//RT and are conformed to certified AI/BI Metric Views, so the OCC Recovery Cockpit shows one live common operating picture across the operation.
         components:
-          - SITA WorldTracer
-          - Model Serving
+          - OCC Recovery Cockpit
           - Lakehouse//RT
-          - Lakeflow
-      - name: Loyalty & Ancillary
-        short: Personalisation
-        icon: custlake
-        summary: Tier economics, partner earn and the merchandising of seats, bags and lounge access, scored per passenger against the profile the loyalty estate already holds.
-        problem: Seats, bags and lounge access are merchandised the same to everyone, while the profile needed to personalise them already exists behind the loyalty estate, unused.
-        who_benefits: Revenue & Pricing
-        how_built: Loyalty accruals and clickstream are activated through CustomerLake without a separate CDP; ancillary offers are scored per passenger and served into the booking path.
-        components:
-          - CustomerLake
-          - Model Serving
-          - Loyalty & FFP
           - AI/BI
+          - A-CDM Message Bus
+          - ACARS / OOOI Messages
+        stories:
+          - title: JetBlue Blue Sky operational digital twin
+            url: https://www.databricks.com/blog/accelerating-innovation-jetblue-using-databricks
+      - name: Ancillary Merchandising
+        short: Retailing
+        icon: product
+        summary: Seats, bags and lounge access merchandised per passenger against the loyalty profile.
+        problem: Seats, bags and lounge access are offered the same to everyone, so the airline leaves ancillary revenue on the table and the profile needed to personalise the offer sits unused behind the loyalty estate.
+        who_benefits: Revenue & Pricing
+        how_built: Loyalty and Web & App Clickstream signals feed offer-propensity models in Model Serving with features in Feature Store, and ranked ancillary offers are served through the NDC Offer & Order API into the booking path.
+        components:
+          - Model Serving
+          - Feature Store
+          - Loyalty & FFP
+          - NDC Offer & Order API
+          - CustomerLake
         stories:
           - title: Eurowings personalises search with AI Search and Model Serving
             url: https://www.databricks.com/customers/eurowings
+      - name: Loyalty & FFP
+        short: Loyalty
+        icon: custlake
+        summary: Tier economics, partner earn and redemption managed against member value across the programme.
+        problem: Members drift toward downgrade or churn between slow batch reviews, and points liability and partner-earn economics are hard to see until the balance sheet catches up.
+        who_benefits: Revenue & Pricing
+        how_built: Frequent-flyer accruals, redemptions and tier movement from Loyalty & FFP are unified in CustomerLake, and tier-migration and churn models score in Model Serving on certified AI/BI views.
+        components:
+          - CustomerLake
+          - Loyalty & FFP
+          - Model Serving
+          - MLflow
+          - AI/BI
+        stories:
           - title: How AI is redefining travel and hospitality
             url: https://www.databricks.com/blog/booking-bon-voyage-how-ai-redefining-travel-hospitality-experience
-      - name: Cargo Yield
-        short: Freight revenue
-        icon: product
-        summary: Capacity, air waybill and ULD build-up data joined to the passenger schedule, so belly capacity is sold at the right price instead of released late.
-        problem: Belly capacity is perishable. Sold late or at the wrong price it is lost revenue the passenger schedule already paid to fly.
-        who_benefits: Revenue & Pricing
-        how_built: Cargospot air waybill and ULD build-up data are joined to the passenger schedule in the lakehouse; capacity and price are recommended through Model Serving.
-        components:
-          - CHAMP Cargospot
-          - Model Serving
-          - AI/BI
-          - Lakeflow
 medallion:
   Bronze:
     short: Raw operational feeds

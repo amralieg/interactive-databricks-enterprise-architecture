@@ -1,5 +1,5 @@
 name: Paper & Packaging
-description: 'Pulp, paper, board and packaging: mill process control and quality, converting and MES, forestry and fiber supply, order-to-cash, energy and emissions, and OTIF logistics.'
+description: 'A pulp, paper, board and packaging manufacturer: mill process control and quality, converting and MES, reel and order traceability, forestry and fiber supply, reel inventory and order-to-cash working capital, and energy efficiency across the fleet of mills.'
 sources:
   - name: Mill Process Control
     icon: compute
@@ -375,10 +375,10 @@ pipelines:
           - name: COO
             cares: OEE, safety and machine reliability across the fleet of mills.
         ucs:
-          - OEE & Downtime
-          - Demand & S&OP
-          - Emissions & ESG
-          - OTIF & Logistics
+          - Machine & Line OEE
+          - Grade Demand & S&OP
+          - Steam & Power per Tonne
+          - Order-to-Cash Working Capital
       - name: Mill Operations
         mark: Lakehouse//RT
         summary: Shift managers and DCS operators running the paper machines and recovery boiler, converting and finishing on corrugator and folding-carton lines, and reliability engineering on the assets whose failure stops the machine.
@@ -397,10 +397,10 @@ pipelines:
           - name: Reliability eng
             cares: the assets whose failure stops the machine.
         ucs:
-          - Predictive Maintenance
-          - OEE & Downtime
-          - Sheet Break Reduction
-          - Energy Optimization
+          - Dryer & Roll Reliability
+          - Machine & Line OEE
+          - Web-Break & Edge-Crack Detection
+          - Steam & Power per Tonne
       - name: Process & QA
         mark: Model Serving
         summary: Process engineers on digester, refiner and dryer set-points, quality on basis weight, moisture and strength against grade spec, and R&D and fiber on furnish, additives and new-grade development.
@@ -419,9 +419,9 @@ pipelines:
           - name: R&D & fiber
             cares: furnish, additives and new-grade development.
         ucs:
-          - Quality & Defect Detection
-          - Sheet Break Reduction
-          - Grade & Yield
+          - Off-Quality Root-Cause
+          - Web-Break & Edge-Crack Detection
+          - Reel & Order Genealogy
       - name: Supply Chain
         mark: AI/BI
         summary: Demand planning and S&OP balancing orders against machine time and trim, order-to-cash and customer service on order status and claims, and logistics on warehouse, carrier and OTIF to the converter and brand owner.
@@ -440,9 +440,10 @@ pipelines:
           - name: Logistics
             cares: warehouse, carrier and OTIF to the customer.
         ucs:
-          - Demand & S&OP
-          - OTIF & Logistics
-          - Fiber & Forestry
+          - Grade Demand & S&OP
+          - Reel & Roll Inventory
+          - Order-to-Cash Working Capital
+          - Fiber & Forestry Supply
       - name: Energy & ESG
         mark: Genie One
         summary: Energy managers on steam, power and the recovery boiler, ESG and sustainability on Scope 1-3 emissions and CSRD reporting, and fiber sourcing on wood, recovered fiber and deforestation-free supply.
@@ -461,9 +462,9 @@ pipelines:
           - name: Fiber sourcing
             cares: wood, recovered fiber and deforestation-free supply.
         ucs:
-          - Energy Optimization
-          - Emissions & ESG
-          - Fiber & Forestry
+          - Steam & Power per Tonne
+          - Reel & Order Genealogy
+          - Fiber & Forestry Supply
   - name: Technical
     icon: code
     tiles:
@@ -668,7 +669,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Mill OEE & Downtime Agent
+      - name: Mill Operations Agent
         icon: genie
         summary: Ask about OEE, downtime and throughput by machine and line in plain language.
         feeds:
@@ -704,7 +705,7 @@ agent_usecases:
           - Which defect types are most common by machine and grade?
           - Where is trim loss highest across the order book?
           - Which set-points correlate with the current quality drift?
-      - name: Supply Chain & OTIF Agent
+      - name: Supply & OTIF Agent
         icon: genie
         summary: Answer demand, order-cycle and OTIF-risk questions across the network.
         feeds:
@@ -722,7 +723,7 @@ agent_usecases:
           - Where is demand outrunning available machine time and trim?
           - Which customers drive the most claims and short shipments?
           - What is forecast accuracy by grade versus last quarter?
-      - name: Energy & ESG Agent
+      - name: Energy & Fiber Agent
         icon: genie
         summary: Ask about energy intensity, emissions and fiber-origin compliance.
         feeds:
@@ -745,10 +746,10 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: OEE & Downtime
-        short: Reliability
+      - name: Machine & Line OEE
+        short: Production
         icon: gauge
-        summary: Overall equipment effectiveness and downtime attacked at the machine and line, with losses attributed to the right area and shift in near real time.
+        summary: Paper-machine and converting-line OEE and downtime attacked at the machine and line, with losses attributed to the right area and shift in near real time.
         problem: OEE and downtime are reviewed the next morning from manual logs, so a losing shift is explained after the tonnes are gone rather than corrected while the run is live.
         who_benefits: Mill Operations
         how_built: DCS, historian and MES feeds stream into Lakehouse//RT; OEE and downtime are computed on certified Metric Views and surfaced live on the Mill Control Tower with break-risk scored in Model Serving.
@@ -763,10 +764,10 @@ agent_usecases:
             url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
           - title: Multi-factory OEE solution accelerator
             url: https://www.databricks.com/blog/2022/11/29/solution-accelerator-multi-factory-overall-equipment-effectiveness.html
-      - name: Predictive Maintenance
+      - name: Dryer & Roll Reliability
         short: Reliability
         icon: iot
-        summary: Predicting failures on dryers, rolls, pumps and drives from sensor and historian data so an unplanned break becomes a planned maintenance window.
+        summary: Failures on dryers, rolls, pumps and drives predicted from sensor and historian data so an unplanned break becomes a planned maintenance window.
         problem: An unplanned failure on a dryer or drive tears the sheet and stops the machine for hours; maintenance run on a calendar fixes healthy assets and misses the ones about to fail.
         who_benefits: Mill Operations
         how_built: Historian vibration and process tags feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted failures raise Maximo work orders from the Reliability Watchtower.
@@ -782,10 +783,10 @@ agent_usecases:
             url: https://www.databricks.com/blog/2020/07/28/industrial-iot-analytics-with-deepiq-datastudio-and-databricks.html
           - title: Predictive maintenance on the Databricks Lakehouse
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Sheet Break Reduction
+      - name: Web-Break & Edge-Crack Detection
         short: Runnability
         icon: stream
-        summary: Predicting web and sheet breaks from wet-end and dryer conditions so the operator stabilises the machine before the sheet lets go.
+        summary: Web breaks, edge cracks and surface defects predicted from wet-end, dryer and inspection data so the operator stabilises the machine before the sheet lets go.
         problem: A sheet break costs tens of minutes of production and a threading effort, and the conditions that cause it hide in high-frequency wet-end and dryer data no operator can watch by eye.
         who_benefits: Process & QA
         how_built: Historian and QCS signals are conformed and served in Lakehouse//RT; break-risk models use Feature Store features and score in Model Serving, warning the operator through the Quality & Grade Cockpit before a break.
@@ -800,11 +801,11 @@ agent_usecases:
             url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
           - title: What is Overall Equipment Effectiveness (OEE)?
             url: https://www.databricks.com/blog/what-is-overall-equipment-effectiveness
-      - name: Quality & Defect Detection
+      - name: Off-Quality Root-Cause
         short: Quality
         icon: chart
-        summary: Surface defects, holes and streaks caught with machine vision and QCS data, with root cause narrowed to the station and set-point that produced them.
-        problem: Defects are found at inspection or by the customer, and QCS and camera data live apart from the process record, so root cause is reconstructed by hand long after the reel is made.
+        summary: Off-quality reels traced to the station and set-point that produced them, joining QCS, camera and process data.
+        problem: Defects and off-spec reels are found at inspection or by the customer, and QCS and camera data live apart from the process record, so root cause is reconstructed by hand long after the reel is made.
         who_benefits: Process & QA
         how_built: QCS measurements and web-inspection images are conformed on the lakehouse; computer-vision and defect models trained with MLflow score in Model Serving, and AI Functions classify defect and complaint text at scale.
         components:
@@ -818,23 +819,20 @@ agent_usecases:
             url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
           - title: Corning accelerates manufacturing quality with the Databricks Platform
             url: https://www.databricks.com/customers/corning-mosaic-ai
-      - name: Grade & Yield
-        short: Efficiency
+      - name: Reel & Roll Inventory
+        short: Inventory
         icon: sheet
-        summary: Basis-weight give-away, fiber yield and trim loss reduced by scoring the economical optimum for each grade rather than running to a safe margin.
-        problem: Machines are run heavy to stay inside spec, giving away fiber on every tonne, while trim loss and off-quality eat yield that no single system measures end to end.
-        who_benefits: Process & QA
-        how_built: QCS, furnish and order data are conformed to certified Metric Views; give-away and trim are optimised with Greycon patterns and Model Serving recommendations surfaced in the Quality & Grade Cockpit.
+        summary: Reel, roll and finished-goods inventory tuned to real order pull and aging rather than static safety-stock tables.
+        problem: Reels and finished rolls pile up in some grades and stock out in others because safety stock is set from static tables, so working capital sits in slow-moving inventory while hot orders wait on machine time.
+        who_benefits: Supply Chain
+        how_built: Order, production and warehouse inventory data are conformed to certified Metric Views; aging and reorder models score in Model Serving and drive reel and roll positioning in the S&OP & OTIF Planner.
         components:
-          - Quality & Grade Cockpit
-          - Valmet IQ QCS
-          - Greycon opt-Studio
+          - S&OP & OTIF Planner
+          - SAP S/4HANA
+          - Amtech ERP
           - Model Serving
           - AI/BI
-        stories:
-          - title: Databricks for Manufacturing
-            url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
-      - name: Demand & S&OP
+      - name: Grade Demand & S&OP
         short: Planning
         icon: market
         summary: Demand forecast to grade and customer, balanced against machine time and trim so the mill plans what it can sell and make profitably.
@@ -852,28 +850,28 @@ agent_usecases:
             url: https://www.databricks.com/customers/mondelez
           - title: Smarter supply chains with data and AI
             url: https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management
-      - name: OTIF & Logistics
-        short: Delivery
+      - name: Order-to-Cash Working Capital
+        short: Cash flow
         icon: globe
-        summary: On-time-in-full protected by predicting which orders will miss and moving production, inventory or carrier before the delivery fails.
-        problem: OTIF is measured after the miss, when a late order or short shipment has already cost a penalty and a brand-owner escalation that no dashboard prevented.
+        summary: Cash tied up in reels, receivables and slow orders freed by connecting order-to-cash, delivery and claims on one set of numbers.
+        problem: Working capital leaks across the order-to-cash cycle, late deliveries, disputed claims and reels waiting on trim, but order, shipment and receivables data sit in separate systems, so finance sees the cash impact only after the quarter closes.
         who_benefits: Supply Chain
-        how_built: ERP order, warehouse and TMS feeds are joined in the lakehouse; OTIF-risk models score each order in Model Serving and the S&OP & OTIF Planner flags at-risk deliveries in time to act.
+        how_built: ERP order, receivables, warehouse and TMS feeds are joined in the lakehouse; order-cycle and claims models score in Model Serving and the S&OP & OTIF Planner flags the orders tying up cash in time to act.
         components:
           - S&OP & OTIF Planner
-          - Blue Yonder TMS
           - SAP S/4HANA
-          - Model Serving
+          - Salesforce CRM
+          - Blue Yonder TMS
           - AI/BI
         stories:
           - title: Barilla streamlines manufacturing and supplier OTIF on Databricks
             url: https://www.databricks.com/customers/barilla
           - title: Digital supply chain reference architecture for manufacturing
             url: https://www.databricks.com/resources/architectures/manufacturing-digital-supply-chain-reference-architecture
-      - name: Energy Optimization
+      - name: Steam & Power per Tonne
         short: Energy
         icon: gauge
-        summary: Steam, power and recovery-boiler operation optimised so the mill cuts its largest variable cost without putting the machine's runnability at risk.
+        summary: Steam, power and recovery-boiler operation optimised so the mill cuts energy per tonne, its largest variable cost, without putting the machine's runnability at risk.
         problem: Energy is the mill's largest controllable cost, but steam and power are run to habit, and the levers that would cut them sit in DCS and metering data nobody optimises together.
         who_benefits: Energy & ESG
         how_built: Recovery-boiler, utility and historian data are conformed to Gold; energy models score in Model Serving and recommendations are surfaced on the Mill Control Tower against production targets.
@@ -888,25 +886,20 @@ agent_usecases:
             url: https://www.databricks.com/customers/shell
           - title: Sustainability reference architecture for manufacturing
             url: https://www.databricks.com/resources/architectures/sustainability-reference-architecture-for-manufacturing
-      - name: Emissions & ESG
-        short: Sustainability
+      - name: Reel & Order Genealogy
+        short: Traceability
         icon: product
-        summary: Scope 1-3 emissions and product carbon footprint per tonne computed from governed mill, energy and fiber data for CSRD and customer disclosure.
-        problem: Emissions and carbon-footprint numbers are assembled by hand from energy, production and fiber systems, so CSRD and customer requests take weeks and never tie back to the audited operation.
-        who_benefits: Energy & ESG
-        how_built: Energy, production and fiber-origin data are conformed under Unity Catalog with lineage; emissions and footprint are computed to certified Gold and filed through Emissions Reporting.
+        summary: Every reel and roll traced from furnish and machine run through converting to the customer order and shipment in one view.
+        problem: When a claim or off-spec escape lands, tracing a finished roll back through converting, the machine run and the furnish means stitching MES, QCS and ERP exports by hand, and one genealogy answer can take days.
+        who_benefits: Process & QA
+        how_built: Machine, converting and order records resolve to common reel, roll and order keys under Unity Catalog on Delta Lake, so the Quality & Grade Cockpit shows full forward-and-back reel-to-order genealogy at once.
         components:
-          - Emissions Reporting
+          - Quality & Grade Cockpit
+          - Kiwiplan MES
           - SAP S/4HANA
           - Unity Catalog
-          - AI/BI
-          - Cost & ESG Marts
-        stories:
-          - title: How Dow built a carbon footprint ledger on Databricks
-            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-          - title: Sustainability reference architecture for manufacturing
-            url: https://www.databricks.com/resources/architectures/sustainability-reference-architecture-for-manufacturing
-      - name: Fiber & Forestry
+          - Delta Lake
+      - name: Fiber & Forestry Supply
         short: Supply
         icon: network
         summary: Wood and recovered-fiber supply planned and traced from forest and recycler to the fiber line, with deforestation-free due diligence built in.

@@ -362,8 +362,8 @@ pipelines:
             cares: the data and AI foundation behind converged fixed and mobile offers.
         ucs:
           - Capacity Forecasting
-          - 5G Slice Orchestration
-          - Energy at Cell Sites
+          - Location Data Monetization
+          - Revenue Assurance & Leakage
           - Churn Prediction
       - name: Network Operations
         mark: Lakehouse//RT
@@ -383,8 +383,8 @@ pipelines:
         ucs:
           - Network Fault Correlation
           - Capacity Forecasting
-          - QoS & Dropped Calls
-          - Supply Chain & Devices
+          - Predictive Network Maintenance
+          - Field Dispatch Optimization
       - name: Commercial & Marketing
         mark: CustomerLake
         summary: Product owners on offer uptake, upsell and retention campaigns, scoring next-best-offer per subscriber before the contract renewal window.
@@ -402,9 +402,8 @@ pipelines:
             cares: 5G and connectivity contracts and the SLAs behind them.
         ucs:
           - Churn Prediction
-          - Offer Personalization
-          - Subscriber Packaging Mix
-          - 5G Slice Orchestration
+          - Next Best Offer
+          - Location Data Monetization
       - name: Customer Care
         mark: Apps
         summary: Care leaders on first-contact resolution, handle time and complaint drivers, putting subscriber and network context beside every ticket.
@@ -421,9 +420,9 @@ pipelines:
           - name: Digital Care
             cares: self-service deflection and the app experience beside the ticket.
         ucs:
-          - QoS & Dropped Calls
+          - Care Transcript Analysis
           - Churn Prediction
-          - Offer Personalization
+          - Next Best Offer
       - name: Revenue Assurance
         mark: AI/BI
         summary: Finance and fraud teams on leakage, disputes and roaming settlement, catching SIM-swap and IRSF loss before it clears interconnect.
@@ -440,8 +439,8 @@ pipelines:
           - name: Roaming & Interconnect Settlement
             cares: TAP discrepancies and partner dispute exposure.
         ucs:
-          - Fraud Detection
-          - Subscriber Packaging Mix
+          - Fraud & SIM-Swap
+          - Revenue Assurance & Leakage
           - Churn Prediction
   - name: Technical
     icon: code
@@ -486,7 +485,7 @@ pipelines:
             cares: SIM-swap, IRSF and subscription-fraud scoring.
         ucs:
           - Churn Prediction
-          - Fraud Detection
+          - Fraud & SIM-Swap
           - Capacity Forecasting
       - name: App Developers
         mark: Apps
@@ -507,9 +506,9 @@ pipelines:
             cares: next-best-action agents and governed writes to BSS and work orders.
         ucs:
           - Network Fault Correlation
-          - QoS & Dropped Calls
-          - Offer Personalization
-          - Supply Chain & Devices
+          - Care Transcript Analysis
+          - Next Best Offer
+          - Field Dispatch Optimization
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -697,7 +696,7 @@ agent_usecases:
           - Which transport paths are approaching capacity?
           - Where are outages affecting the most subscribers today?
           - Which sites show degrading performance counters this week?
-      - name: Subscriber & Churn Agent
+      - name: Churn & Retention Agent
         icon: genie
         summary: Explore churn risk, ARPU and NPS drivers across the subscriber base.
         feeds:
@@ -716,7 +715,7 @@ agent_usecases:
           - How does ARPU trend by segment this quarter?
           - How is the base distributed across plans and which packages are subscribers migrating to?
           - Which subscribers had a dropped call and then contacted care?
-      - name: Revenue Assurance & Fraud Agent
+      - name: Fraud & Revenue Assurance Agent
         icon: genie
         summary: Answer leakage, fraud and roaming-dispute questions on governed data.
         feeds:
@@ -734,7 +733,7 @@ agent_usecases:
           - Where is revenue leaking across rating and interconnect?
           - Which accounts show SIM-swap or IRSF patterns right now?
           - What is the value of unreconciled TAP discrepancies?
-      - name: Care & Field Service Agent
+      - name: Care & Dispatch Agent
         icon: genie
         summary: Ask about resolution rates, handle times and field-SLA risk in plain language.
         feeds:
@@ -810,8 +809,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/t-mobile
           - title: Telco Network Analytics Solution Accelerator
             url: https://www.databricks.com/solutions/accelerators/telco-network-analytics
-      - name: Fraud Detection
-        short: Revenue
+      - name: Fraud & SIM-Swap
+        short: Fraud
         icon: gavel
         summary: SIM swap, IRSF and subscription fraud flagged before settlement.
         problem: SIM-swap, IRSF and subscription fraud move faster than nightly rules, so loss clears through interconnect and roaming settlement before a static rules engine ever flags the pattern.
@@ -828,23 +827,20 @@ agent_usecases:
             url: https://www.databricks.com/customers/att
           - title: 'Securing the future: AT&T uses generative AI to transform fraud protection'
             url: https://www.databricks.com/blog/securing-future-att-uses-generative-ai-transform-fraud-protection
-      - name: QoS & Dropped Calls
-        short: Quality
-        icon: iot
-        summary: Radio and core KPIs tied to subscriber complaints and NPS.
-        problem: A subscriber complains about dropped calls while the network team sees only cell KPIs, so care and engineering argue over whose data is right rather than tying it to the metrics behind it.
-        who_benefits: Customer Care
-        how_built: Radio and core KPIs are stitched to subscriber sessions and complaints under Unity Catalog and surfaced beside the ticket in the Care Agent Desktop, so care sees the network cause on first contact.
+      - name: Revenue Assurance & Leakage
+        short: Assurance
+        icon: gavel
+        summary: Rating, interconnect and roaming leakage reconciled and recovered across the revenue chain.
+        problem: Revenue leaks between mediation, rating, interconnect and roaming settlement, and the gaps are chased in month-end spreadsheets long after the usage has already billed short or not at all.
+        who_benefits: Revenue Assurance
+        how_built: Subex, WeDo and GSMA TAP feeds are conformed on Delta Lake and reconciled end to end, so leakage across rating and interconnect surfaces on certified AI/BI views and Genie One answers where revenue is being lost.
         components:
-          - Care Agent Desktop
-          - Unity Catalog
-          - Genesys Cloud CX
-          - Delta Lake
+          - Subex Revenue Assurance
+          - WeDo RAID
+          - GSMA TAP Roaming
           - AI/BI
-        stories:
-          - title: Introducing the Data + AI Platform for Communications
-            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-communications
-      - name: Offer Personalization
+          - Genie One
+      - name: Next Best Offer
         short: Marketing
         icon: market
         summary: Next-best-offer scored per subscriber at renewal and in-app.
@@ -857,63 +853,61 @@ agent_usecases:
           - Model Serving
           - Feature Store
           - AI Functions
-      - name: 5G Slice Orchestration
-        short: 5G
-        icon: api
-        summary: Slice SLA monitored against enterprise customer contracts.
-        problem: Enterprise 5G slices carry contractual SLAs, but slice performance lives in the OSS while the contract lives in the BSS, so a breach is argued after the fact instead of caught as it happens.
-        who_benefits: CEO & CTO Office
-        how_built: Slice KPIs from the RAN and core are conformed on Lakehouse//RT and monitored against enterprise contract terms in AI/BI, so an SLA risk raises an alert before the customer notices.
+      - name: Predictive Network Maintenance
+        short: Reliability
+        icon: iot
+        summary: Cell site and transport failures predicted from performance counters and alarms before service degrades.
+        problem: Radio and transport hardware is maintained on fixed schedules or after it already fails, so a degrading site is only caught once subscribers feel dropped calls and a truck rolls to a hard-down cell.
+        who_benefits: Network Operations
+        how_built: Ericsson ENM and Nokia NetAct counters and alarms are conformed on Lakehouse//RT and scored with remaining-life and anomaly models tracked in MLflow and Model Serving, so the Field Dispatch Console raises planned work before a site goes hard down.
         components:
-          - Lakehouse//RT
+          - Field Dispatch Console
           - Ericsson ENM
-          - AI/BI
-          - Unity Catalog
           - Model Serving
+          - MLflow
+          - Lakehouse//RT
         stories:
-          - title: T-Mobile builds the largest and fastest 5G network on Databricks
-            url: https://www.databricks.com/customers/t-mobile
           - title: Introducing the Data + AI Platform for Communications
             url: https://www.databricks.com/blog/introducing-data-intelligence-platform-communications
-      - name: Energy at Cell Sites
-        short: Sustainability
-        icon: chart
-        summary: Site power consumption optimised against traffic load.
-        problem: Cell-site energy is a top operating cost, but power draw, traffic load and site telemetry sit apart, so sites run full power through low-traffic hours and the waste is invisible on the bill.
-        who_benefits: CEO & CTO Office
-        how_built: Site power and traffic telemetry are conformed on Delta Lake and modelled in Model Serving to schedule power against load, with savings tracked in AI/BI for the sustainability target.
-        components:
-          - Lakehouse//RT
-          - Model Serving
-          - Delta Lake
-          - AI/BI
-          - Data Products
-      - name: Subscriber Packaging Mix
-        short: Commercial
-        icon: market
-        summary: Plan, bundle and tariff mix analysed across the base so package migration and margin are seen.
-        problem: Subscribers sit across dozens of legacy and current plans, and the package mix, the migration between them and the margin of each bundle are spread across BSS and billing, so pricing and pack rationalisation run on stale spreadsheets.
-        who_benefits: Commercial & Marketing
-        how_built: Subscription, usage and billing records are conformed on Delta Lake and scored in Model Serving against CustomerLake features, so package mix, plan migration and per-package margin are tracked by segment in AI/BI and next-best-package is offered per subscriber.
-        components:
-          - Amdocs CES
-          - Netcracker BSS
-          - CustomerLake
-          - Model Serving
-          - AI/BI
-      - name: Supply Chain & Devices
-        short: Operations
-        icon: network
-        summary: Handset, SIM and network-equipment supply tracked against demand so stores and field crews are not left short.
-        problem: Handset and SIM stock, spare parts for field service and RAN build materials are planned in separate vendor tools, so a store runs out of a popular device or a truck roll waits on a part.
+      - name: Field Dispatch Optimization
+        short: Field service
+        icon: people
+        summary: Technician routing, parts and appointment windows optimised against SLA and travel.
+        problem: Truck rolls are scheduled from static rules, so technicians criss-cross territories, arrive without the right part and miss appointment windows while high-SLA jobs wait.
         who_benefits: Network Operations
-        how_built: Device, SIM, parts and work-order data are conformed on Delta Lake and forecast in Model Serving, so inventory for retail and field service is positioned against demand and surfaced in AI/BI and the Field Dispatch Console.
+        how_built: ServiceMax, Salesforce Field Service and Geotab telematics are conformed on Delta Lake and scored in Model Serving, so the Field Dispatch Console routes crews and parts against SLA risk and travel time on AI/BI.
         components:
+          - Field Dispatch Console
           - ServiceMax FSM
-          - Netcracker BSS
+          - Geotab Fleet
           - Model Serving
           - AI/BI
+      - name: Care Transcript Analysis
+        short: Contact centre
+        icon: chat
+        summary: Call and chat transcripts summarised and themed to surface complaint drivers and next best action.
+        problem: The reason subscribers call sits locked in thousands of untranscribed calls and chats, so care leaders see handle time and queue depth but never the themes driving repeat contacts and low NPS.
+        who_benefits: Customer Care
+        how_built: Genesys and Salesforce Service Cloud transcripts are summarised and themed with Mosaic AI and AI Functions under Unity Catalog, so complaint drivers and next best action surface beside the ticket in the Care Agent Desktop.
+        components:
+          - Care Agent Desktop
+          - Genesys Cloud CX
+          - Mosaic AI
+          - AI Functions
+          - Unity Catalog
+      - name: Location Data Monetization
+        short: New revenue
+        icon: market
+        summary: Privacy-safe aggregated location and mobility products packaged for external buyers.
+        problem: The operator sits on aggregate mobility and network-presence signals with real value to retail, transport and planning buyers, but there is no governed, privacy-safe way to package and share them as products.
+        who_benefits: CEO & CTO Office
+        how_built: Network and location signals are aggregated and anonymised on Delta Lake, published as governed Data Products in Unity Catalog and shared to buyers over Delta Sharing, with usage read in AI/BI.
+        components:
+          - Data Products
+          - Unity Catalog
           - Delta Lake
+          - Delta Sharing
+          - AI/BI
 medallion:
   Bronze:
     short: Raw network and BSS feeds

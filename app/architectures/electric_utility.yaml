@@ -1,0 +1,944 @@
+name: Electric Utility (Transmission & Distribution)
+description: 'Electric transmission and distribution utilities and distribution system operators: AMI and SCADA, ADMS and outage management, customer billing and DER orchestration, grid asset management and regulatory reporting across the intelligent grid.'
+sources:
+  - name: Metering & AMI
+    icon: iot
+    tiles:
+      - name: Itron OpenWay
+        icon: iot
+        summary: Advanced metering infrastructure interval reads, voltage events and remote connect/disconnect commands.
+        citations:
+          - itron
+        category: AMI Head-End System
+        what_it_is: Collects interval meter reads, voltage events and remote connect/disconnect commands from the electric AMI estate.
+        who_uses_it: Metering operations, revenue protection and grid analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 50-200 GB/day interval reads
+            interval: Hourly / daily meter reads
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k events/sec at peak
+            interval: Continuous meter events
+      - name: Landis+Gyr Gridstream
+        icon: iot
+        summary: Head-end collection, meter events and power-quality alarms from the AMI estate.
+        citations:
+          - landis-gyr
+        category: AMI Head-End System
+        what_it_is: Head-end collection of meter reads, events and power-quality alarms across the Gridstream AMI network.
+        who_uses_it: Metering operations, power-quality and distribution engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 30-120 GB/day
+            interval: Hourly / daily reads
+          stream:
+            types:
+              - semi-structured
+            volume: 1-8k events/sec
+            interval: Continuous alarms + events
+      - name: Sensus FlexNet
+        icon: stream
+        summary: RF mesh AMI reads and endpoint alarms for water and electric deployments on FlexNet.
+        citations:
+          - sensus
+        category: AMI Meter Data Management (MDMS)
+        what_it_is: RF-mesh AMI reads and endpoint alarms for electric and water endpoints, feeding meter data management and settlement.
+        who_uses_it: Metering operations, revenue protection and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-60 GB/day
+            interval: Hourly reads
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds-thousands of events/sec
+            interval: Continuous endpoint alarms
+  - name: SCADA & Grid Ops
+    icon: stream
+    tiles:
+      - name: AVEVA PI Historian
+        icon: db
+        summary: Substation analogs, breaker operations and equipment alarms at SCADA sampling rates.
+        citations:
+          - osisoft-pi
+        category: Process/Time-Series Historian
+        what_it_is: Stores substation analogs, breaker operations and equipment alarms at SCADA sampling rates as the grid time-series system of record.
+        who_uses_it: Control-centre operators, protection engineers and grid analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-100 GB/day tag history
+            interval: Hourly aggregates
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k samples/sec
+            interval: Continuous (sub-second)
+      - name: GE Vernova ADMS
+        icon: gauge
+        summary: 'Distribution management: fault location, switching orders and restoration state for the control centre.'
+        citations:
+          - ge-adms
+        category: Advanced Distribution Management (ADMS)
+        what_it_is: 'Runs distribution operations: fault location, switching orders and restoration state that the control centre acts on.'
+        who_uses_it: Control-centre operators, distribution operations and storm coordinators.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (near real-time)
+      - name: ABB Ellipse EAM
+        icon: erp
+        summary: 'Enterprise asset management: work orders, inspections and equipment condition for grid plant.'
+        citations:
+          - abb-ellipse
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages work orders, inspections and equipment condition for grid plant across the asset base.
+        who_uses_it: Reliability engineering, maintenance planning and asset management.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day
+            interval: Nightly batch
+      - name: AutoGrid Flex DERMS
+        icon: gauge
+        summary: 'Distributed energy resource management: forecasting, dispatch and control of behind-the-meter solar, storage and flexible load at the grid edge.'
+        category: DER Management System (DERMS)
+        what_it_is: Forecasts, dispatches and controls distributed energy resources (rooftop solar, batteries and flexible load) so the distribution grid stays within limits as DER penetration rises.
+        who_uses_it: DER operations, distribution planning and grid-edge teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k device signals/sec
+            interval: Continuous (near real-time)
+  - name: Customer & Billing
+    icon: erp
+    tiles:
+      - name: SAP IS-U
+        icon: erp
+        summary: Utility customer master, rate schedules, billing determinants and payment history.
+        citations:
+          - sap-isu
+        category: Utility Customer Information System (CIS)
+        what_it_is: Holds the customer master, rate schedules, billing determinants and payment history for the meter-to-cash process.
+        who_uses_it: Billing operations, credit and collections and Finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + billing cycles
+      - name: Oracle Utilities CCB
+        icon: db
+        summary: Customer care and billing for meter-to-cash, rate cases and collections workflows.
+        citations:
+          - oracle-ccb
+        category: Customer Care & Billing (CC&B)
+        what_it_is: Runs customer care and billing for meter-to-cash, rate application and collections workflows.
+        who_uses_it: Contact centre, billing analysts and credit & collections teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day
+            interval: Nightly batch + billing cycles
+          stream:
+            types:
+              - semi-structured
+            volume: tens of events/sec
+            interval: Continuous CDC
+      - name: Kubra Payment Portal
+        icon: partner
+        summary: Customer self-service payments, paperless billing enrolment and outage notifications.
+        citations:
+          - kubra
+        category: Customer Engagement & Payments Platform
+        what_it_is: Handles customer self-service payments, paperless-billing enrolment and outage notifications across channels.
+        who_uses_it: Customer operations, digital channels and billing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Hourly sync
+          stream:
+            types:
+              - semi-structured
+            volume: 100s of events/sec at peak
+            interval: Continuous (payments + notifications)
+  - name: GIS & Outage Mgmt
+    icon: globe
+    tiles:
+      - name: Esri ArcGIS Utility
+        icon: globe
+        summary: Network model, service territory and asset locations the field and planning teams navigate by.
+        citations:
+          - esri-utility
+        category: Geographic Information System (GIS)
+        what_it_is: Holds the electric network model, service territory and asset locations the field and planning teams navigate and analyse by.
+        who_uses_it: Distribution planning, GIS/asset data and field engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB network model
+            interval: Daily / weekly model syncs
+      - name: Milsoft OMS
+        icon: gauge
+        summary: 'Outage management: trouble tickets, crew dispatch and ETR communicated to customers.'
+        citations:
+          - milsoft-oms
+        category: Outage Management System (OMS)
+        what_it_is: Manages outage trouble tickets, crew dispatch and estimated restoration times communicated to customers.
+        who_uses_it: Control-centre operators, storm coordinators and customer operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day (higher on storm days)
+            interval: Continuous during events
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec on storm days
+            interval: Continuous (event-driven)
+      - name: Weather Telemetry
+        icon: stream
+        summary: Forecast and actual weather feeds by service territory, the exogenous driver behind net-load and demand forecasting.
+        category: Weather & Climate Data Feed
+        what_it_is: Forecast and actual temperature and weather feeds by service territory, used as the exogenous driver for net-load and demand forecasting.
+        who_uses_it: Load forecasting, distribution planning and grid operations teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: gridded forecast updates
+            interval: Multiple forecast cycles daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Regulatory Cost Accounting
+        icon: fed
+        summary: FERC and state jurisdictional cost ledgers left where they are and queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: FERC and state jurisdictional cost-of-service ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.
+        who_uses_it: Regulatory affairs, rate design and cost-of-service teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical ledgers
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: Green Button Connect
+        icon: api
+        summary: Customer-authorised interval usage from retailers and neighbouring utilities via Green Button standards.
+        citations:
+          - green-button
+        category: Customer Usage Data Exchange
+        what_it_is: Customer-authorised interval usage exchanged with retailers and neighbouring utilities under the Green Button standard.
+        who_uses_it: Customer analytics, energy-efficiency programs and digital teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-3 GB/day
+            interval: Daily + on-demand exports
+      - name: IEEE 2030.5 SEP2
+        icon: stream
+        summary: Smart Energy Profile demand-response events and thermostat enrollments parsed on arrival.
+        citations:
+          - ieee-2030
+        category: DER Control & Demand-Response Protocol
+        what_it_is: Smart Energy Profile demand-response events and thermostat/DER enrollments parsed on arrival for grid-edge coordination.
+        who_uses_it: DER operations, demand-response program and grid-edge teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 100s-1000s of events/sec
+            interval: Continuous (event-driven)
+      - name: Weather Data Services
+        icon: globe
+        summary: Forecast and actual temperature feeds consumed inbound for load forecasting models.
+        category: Weather & Climate Data Provider
+        what_it_is: Forecast and actual temperature and weather feeds consumed inbound as the exogenous driver for load-forecasting models.
+        who_uses_it: Load forecasting, grid operations and planning teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GBs/day gridded forecasts
+            interval: Multiple forecast cycles daily
+      - name: TSO/DSO Market Integration
+        icon: api
+        summary: 'Wholesale market signals at the transmission-distribution interface: locational prices, dispatch instructions and settlement for market participation.'
+        category: Wholesale Market / TSO-DSO Integration
+        what_it_is: Ingests ISO/RTO and TSO/DSO market data (locational marginal prices, dispatch instructions and settlement) for market participation and DER coordination at the transmission-distribution interface.
+        who_uses_it: Energy trading, DER operations and settlement teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs/day market data
+            interval: Market intervals (5-60 min) + daily settlement
+      - name: Event Streaming Bus
+        icon: eventbus
+        summary: Managed event streaming that buffers high-frequency metering and SCADA grid telemetry before Lakeflow ingestion into the lakehouse.
+        category: Streaming Ingestion Bus
+        what_it_is: Managed event-streaming (Apache Kafka, Amazon Kinesis, Azure Event Hubs or Google Pub/Sub) that lands high-frequency AMI, SCADA and grid telemetry as events before Lakeflow Connect and Auto Loader ingest them into the lakehouse.
+        who_uses_it: Streaming platform, grid analytics and data engineering teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k events/sec at peak
+            interval: Continuous (near real-time)
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: CEO & COO
+        mark: Genie One
+        summary: The CEO on SAIDI reliability, rate-case outcomes and the capital plan; the COO on storm-response cost and how fast the last customer was restored.
+        uses:
+          - - Genie One
+            - Ask what yesterday's SAIDI was by district without waiting on operations analytics.
+          - - AI/BI
+            - Reliability, losses and collections on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification and the business glossary, so "outage" means one thing across the utility.
+        sub:
+          - name: CEO
+            cares: SAIDI reliability, rate-case outcomes and the capital plan the board signs off.
+          - name: Chief Operating Officer
+            cares: storm-response cost and how fast the last customer was restored.
+          - name: CFO & Treasury
+            cares: the revenue requirement, capital spend and the return the commission allows.
+        ucs:
+          - Outage Response
+          - Financial Analytics
+          - Regulatory Reporting
+          - Load Forecasting
+      - name: Grid Operations
+        mark: Lakehouse//RT
+        summary: Control-centre operators and distribution planners on faults, switching orders and end-of-line voltage violations across blue-sky and storm days.
+        uses:
+          - - OMS Control Tower
+            - Restoration options costed against crew capacity and critical customers.
+          - - Lakehouse//RT
+            - Live feeder state at the latency a storm moves at.
+          - - AI/BI
+            - SAIDI and momentary counts on governed definitions.
+        sub:
+          - name: Control-Centre Operators
+            cares: live feeder state, switching orders and end-of-line voltage on blue-sky and storm days.
+          - name: Distribution Planners
+            cares: hosting capacity, DER interconnection and where the next constraint lands.
+          - name: Storm Coordinators
+            cares: crew staging, mutual aid and estimated restoration times.
+        ucs:
+          - Outage Response
+          - Grid Management
+          - Load Forecasting
+          - Transformer & Feeder Health
+      - name: Customer Operations
+        mark: AI/BI
+        summary: Contact centre and field service on high-bill complaints, move-in and move-out volume, payment arrangements and collections effectiveness.
+        uses:
+          - - AI/BI
+            - Call volume, first-call resolution and collections on certified Metric Views.
+          - - Genie One
+            - Ask which premises drove yesterday's complaint spike.
+          - - CustomerLake
+            - Segments and outreach without copying CIS profiles elsewhere.
+        sub:
+          - name: Contact Centre
+            cares: high-bill complaints, move-in and move-out volume and first-call resolution.
+          - name: Credit & Collections
+            cares: payment arrangements, delinquency and recoverable revenue.
+          - name: Revenue Protection
+            cares: meter tamper, theft cases and unbilled usage on the estate.
+        ucs:
+          - Customer 360
+          - Outage Comms
+      - name: Asset Management
+        mark: Lakeflow
+        summary: Engineering and vegetation management on inspection backlogs, transformer and conductor failure risk, and which assets to replace before the fault.
+        uses:
+          - - Asset Health Cockpit
+            - Condition scores and work order backlog by feeder class.
+          - - Lakeflow
+            - AMI, inspection and work-order feeds conformed for asset analytics.
+          - - MLflow
+            - Failure-risk models tracked for audit and reproduction.
+        sub:
+          - name: Reliability Engineering
+            cares: transformer and conductor failure risk and the fault before it happens.
+          - name: Vegetation Management
+            cares: grow-in risk, trim-cycle prioritisation and ignition exposure.
+          - name: Capital Programs
+            cares: replacement prioritisation against reliability and financial targets.
+        ucs:
+          - Transformer & Feeder Health
+          - Predictive Maintenance
+          - Financial Analytics
+      - name: Regulatory & Rates
+        mark: AI/BI
+        summary: Regulatory affairs on cost-of-service studies, class revenue requirements and rate design that survives a commission challenge.
+        uses:
+          - - Rate Case Analytics
+            - Cost allocation and class revenue requirements on governed ledgers.
+          - - AI/BI
+            - Regulatory KPIs the commission and board read.
+          - - Unity Catalog
+            - One definition of revenue and plant investment across finance and operations.
+        sub:
+          - name: Rate Design
+            cares: class revenue requirements and cost causation that survives challenge.
+          - name: Regulatory Affairs
+            cares: commission filings, data requests and the reliability record.
+          - name: Cost of Service
+            cares: jurisdictional cost allocation across finance and operations.
+        ucs:
+          - Regulatory Reporting
+          - Financial Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the AMI, SCADA, CIS and GIS feeds; own the Bronze to Silver path and the pager when a meter or outage feed breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for AMI head-ends, CIS and asset systems.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on meter and outage feeds.
+          - - Lakewatch
+            - Freshness on the tables the control centre reads every morning.
+        sub:
+          - name: AMI & SCADA Pipelines
+            cares: meter head-end and substation feeds and the pager when a read stops landing.
+          - name: CIS & GIS Integration
+            cares: customer, premise and network-model reconciliation across systems.
+          - name: Streaming Platform
+            cares: storm-day event volume and the freshness the control centre reads by.
+        ucs:
+          - Outage Response
+          - Load Forecasting
+          - Grid Management
+      - name: Data Scientists
+        mark: MLflow
+        summary: Load-forecasting, non-technical-loss and asset failure-risk models, and whether they still hold a season after deployment.
+        uses:
+          - - Feature Store
+            - Premise and feeder features defined once for training and serving.
+          - - MLflow
+            - Every forecast and failure-risk run tracked for audit and reproduction.
+          - - Model Serving
+            - Load and loss models scored in the operational path.
+        sub:
+          - name: Forecasting
+            cares: short- and long-term demand under weather, DER and electrification.
+          - name: Loss & Fraud
+            cares: non-technical-loss and tamper models from AMI anomalies.
+          - name: Asset Risk
+            cares: failure-risk and remaining-life models on grid plant.
+        ucs:
+          - Load Forecasting
+          - Predictive Maintenance
+          - Transformer & Feeder Health
+          - Grid Management
+      - name: App Developers
+        mark: Apps
+        summary: Ship the OMS control tower, asset-health and collections applications operations works in, hosted next to governed data.
+        uses:
+          - - Apps
+            - Storm and asset screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for restoration decisions and crew writes.
+          - - Agent Bricks
+            - Agents that draft a switching plan or work order against governed tools.
+        sub:
+          - name: Storm & Ops Apps
+            cares: the OMS control tower and switching screens operations runs a storm from.
+          - name: Asset & Collections Apps
+            cares: condition, work-order and revenue-recovery workbenches.
+          - name: Agents & Writeback
+            cares: switching-plan and work-order drafting against governed tools.
+        ucs:
+          - Outage Response
+          - Field Crew Assistant
+          - Customer 360
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for Unity Catalog-governed answers from the lakehouse, and storm updates in the channel operations already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: ADMS Switching Orders
+        icon: gauge
+        summary: Optimised switching steps written back into distribution management for operator approval.
+        citations:
+          - ge-adms
+      - name: OMS Crew Dispatch
+        icon: apps
+        summary: Crew assignments and ETR updates pushed to mobile devices in the field.
+        citations:
+          - milsoft-oms
+      - name: CIS Billing Adjustments
+        icon: erp
+        summary: High-bill remediation and payment-plan decisions written back into customer care and billing.
+        citations:
+          - oracle-ccb
+  - name: Grid & Market Partners
+    icon: partner
+    tiles:
+      - name: ISO Market Data
+        icon: market
+        summary: LMP, dispatch and settlement files shared with the independent system operator under schedule.
+      - name: Municipal Light & Power
+        icon: share
+        summary: Joint-use poles and mutual aid crews reading live outage tables over Delta Sharing.
+      - name: DER Aggregators
+        icon: api
+        summary: Demand-response enrollments and dispatch signals exchanged through standard APIs.
+        citations:
+          - ieee-2030
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: Reliability Reporting
+        icon: gavel
+        summary: SAIDI, SAIFI and major event day filings produced from the same governed tables operations runs on.
+      - name: Rate Case Submissions
+        icon: share
+        summary: Cost-of-service and class revenue studies filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Municipalities, regulators and research partners reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: OMS Control Tower
+        icon: gauge
+        short: Storm restoration
+        summary: 'The screen the control centre runs a major event from: crew dispatch, switching and ETR by feeder, on Databricks Apps over Lakebase.'
+      - name: Load Forecast Console
+        icon: chart
+        short: Demand planning
+        summary: Weather-adjusted load scenarios scored against purchased power and DER availability before the trading desk commits.
+      - name: Asset Health Cockpit
+        icon: iot
+        short: Grid reliability
+        summary: Transformer and conductor condition ranked by failure risk so vegetation and replacement crews are sent before the fault.
+      - name: Collections Workbench
+        icon: market
+        short: Revenue protection
+        summary: High-bill and delinquency cases prioritised by recoverable revenue and vulnerable-customer flags.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Reliability & Storm
+        icon: aibi
+        summary: SAIDI, SAIFI, restoration and crew performance on certified operations Metric Views.
+        kpis:
+          - SAIDI
+          - SAIFI
+          - Customers out
+          - Estimated restoration time
+          - Crew utilization
+        teams:
+          - Grid Operations
+          - CEO & COO
+          - Storm Coordinators
+      - name: Customer & Collections
+        icon: aibi
+        summary: Complaints, first-call resolution, collections effectiveness and non-technical loss.
+        kpis:
+          - High-bill complaints
+          - First-call resolution
+          - Collections effectiveness
+          - Non-technical loss
+          - Unbilled usage
+        teams:
+          - Customer Operations
+          - Credit & Collections
+          - Revenue Protection
+      - name: Asset Health & Capital
+        icon: aibi
+        summary: Asset condition, failure risk, work-order backlog and replacement priority.
+        kpis:
+          - Failure risk score
+          - Work-order backlog
+          - Remaining life
+          - Vegetation risk
+          - Reliability per capital dollar
+        teams:
+          - Asset Management
+          - Reliability Engineering
+          - Capital Programs
+      - name: Load & DER
+        icon: aibi
+        summary: Demand-forecast accuracy, DER output, hosting capacity and demand-response performance.
+        kpis:
+          - Demand forecast accuracy
+          - Peak load
+          - DER output
+          - Hosting capacity headroom
+          - Demand-response performance
+        teams:
+          - Grid Operations
+          - Distribution Planners
+          - Regulatory & Rates
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Grid & Outage Agent
+        icon: genie
+        summary: Ask about grid state, DER, outages and restoration in plain language.
+        feeds:
+          - GE Vernova ADMS
+          - Milsoft OMS
+          - AutoGrid Flex DERMS
+          - SAIDI, losses, collections
+        teams:
+          - Grid Operations
+          - CEO & COO
+          - Storm Coordinators
+        questions:
+          - What was SAIDI by district yesterday?
+          - How many customers are out now and what is the estimated restoration time?
+          - Which feeders are approaching thermal or voltage limits right now?
+          - How much behind-the-meter solar is offsetting load by feeder right now?
+          - How does this storm's restoration pace compare to the last major event?
+      - name: Asset & Reliability Agent
+        icon: genie
+        summary: Answer questions on transformer and feeder health, failure risk and replacement priority.
+        feeds:
+          - ABB Ellipse EAM
+          - AVEVA PI Historian
+          - Esri ArcGIS Utility
+          - Conformed meter, premise
+        teams:
+          - Asset Management
+          - Reliability Engineering
+          - Capital Programs
+        questions:
+          - Which transformers are at highest failure risk this quarter?
+          - Which feeders are overloaded against nameplate right now?
+          - What is remaining life on our aging conductor and transformers?
+          - Which assets are predicted to fail in the next quarter?
+          - Which replacement candidates give the most reliability improvement per dollar?
+      - name: Customer & Field Agent
+        icon: genie
+        summary: Explore billing, high-bill questions, outage communications and field work in plain language.
+        feeds:
+          - Oracle Utilities CCB
+          - SAP IS-U
+          - Kubra Payment Portal
+          - Conformed meter, premise
+        teams:
+          - Customer Operations
+          - Credit & Collections
+          - Storm Coordinators
+        questions:
+          - Which premises drove yesterday's high-bill complaint spike?
+          - What is first-call resolution in the contact centre this week?
+          - Which customers on outage still lack a restoration notification?
+          - How many field work orders are open past their SLA?
+          - What is collections effectiveness by segment this month?
+      - name: Finance & Regulatory Agent
+        icon: genie
+        summary: Ask about revenue requirement, capital spend, collections and reliability filings.
+        feeds:
+          - Regulatory Cost Accounting
+          - SAP IS-U
+          - TSO/DSO Market Integration
+          - SAIDI, losses, collections
+        teams:
+          - Regulatory & Rates
+          - CEO & COO
+          - Cost of Service
+        questions:
+          - What is our revenue requirement and allowed return this rate case?
+          - What were SAIDI and SAIFI for the reliability filing this period?
+          - How is capital spend tracking against the approved plan?
+          - What is collections effectiveness and the write-off trend this quarter?
+          - What is our DER interconnection backlog for the regulator?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Transformer & Feeder Health
+        short: Asset risk
+        icon: iot
+        summary: Distribution transformer and feeder failure risk scored from loading, condition and AMI voltage so replacements happen before the fault.
+        problem: Transformer and feeder condition sits across EAM records, SCADA analogs and AMI voltage, so overloaded and aging assets fail in service instead of being replaced on a risk-ranked plan.
+        who_benefits: Asset Management
+        how_built: EAM condition, PI historian loading and AMI voltage are conformed on Delta Lake and scored for failure risk in Model Serving tracked in MLflow, ranking assets in the Asset Health Cockpit.
+        components:
+          - Asset Health Cockpit
+          - ABB Ellipse EAM
+          - AVEVA PI Historian
+          - Model Serving
+          - MLflow
+        stories:
+          - title: AusNet Services predicts asset risk with Databricks
+            url: https://www.databricks.com/customers/ausnet-services
+      - name: Grid Management
+        short: Energy mix
+        icon: stream
+        summary: Feeder load, DER output and switching balanced so the distribution grid holds voltage and thermal limits as the energy mix shifts.
+        problem: DER, storage and flexible load swing feeder state minute to minute while dispatch signals, inverter telemetry and the network model live apart, so the grid runs conservatively and hosting capacity is left unused.
+        who_benefits: Grid Operations
+        how_built: ADMS, DERMS and IEEE 2030.5 telemetry land in Lakehouse//RT and set-points are scored in Model Serving, written back as ADMS Switching Orders with feeder limits held in Lakebase.
+        components:
+          - Lakehouse//RT
+          - Model Serving
+          - GE Vernova ADMS
+          - AutoGrid Flex DERMS
+          - ADMS Switching Orders
+        stories:
+          - title: Octopus Energy builds the world's largest virtual power plant (2026 Customer Awards)
+            url: https://www.databricks.com/blog/announcing-winners-2026-databricks-customer-awards
+      - name: Predictive Maintenance
+        short: Reliability
+        icon: gauge
+        summary: Failures on breakers, regulators and transformers predicted from condition and SCADA telemetry so plant is serviced on a planned window.
+        problem: Grid plant is maintained on a calendar, so a failing breaker or regulator is found when it trips a feeder, not on a planned window, and crews chase symptoms across disconnected systems.
+        who_benefits: Asset Management
+        how_built: PI historian and EAM condition data feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Asset Health Cockpit.
+        components:
+          - Asset Health Cockpit
+          - AVEVA PI Historian
+          - ABB Ellipse EAM
+          - MLflow
+          - Model Serving
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Outage Response
+        short: Storm & reliability
+        icon: gauge
+        summary: Restoring feeders and customers after weather and grid anomalies, optimising crew routing and switching against critical premises.
+        problem: When a storm hits, outages, crews and switching orders live in separate systems, so the control centre restores feeders blind to which fix strands another circuit or a critical customer.
+        who_benefits: Grid Operations
+        how_built: AMI, SCADA and OMS feeds land in Lakehouse//RT; restoration and crew-routing options are scored in Model Serving and run from the OMS Control Tower on Lakebase, writing switching back to ADMS.
+        components:
+          - OMS Control Tower
+          - Lakehouse//RT
+          - Model Serving
+          - Milsoft OMS
+          - Lakebase
+        stories:
+          - title: Alabama Power leverages Databricks for outage and storm modeling
+            url: https://www.databricks.com/blog/alabama-power-leverages-databricks-outage-and-storm-modeling
+          - title: Revolutionizing utility outage response with Databricks
+            url: https://www.databricks.com/blog/revolutionizing-utility-outage-response
+      - name: Load Forecasting
+        short: Demand
+        icon: chart
+        summary: Short- and long-term demand forecasts that account for weather, DER and electrification load growth.
+        problem: Demand is shifting under electrification, rooftop solar and heat waves, but forecasts built on last year's load and a spreadsheet miss the peaks that set purchased-power cost.
+        who_benefits: Grid Operations
+        how_built: Meter, weather and DER features are engineered in Feature Store and scored through Model Serving, tracked in MLflow, so the Load Forecast Console shows weather-adjusted load before the desk commits.
+        components:
+          - Load Forecast Console
+          - Feature Store
+          - Model Serving
+          - MLflow
+          - Weather Data Services
+        stories:
+          - title: Unlocking the future of energy with smart meter innovation (Southern Company)
+            url: https://www.databricks.com/blog/unlocking-future-energy-smart-meter-innovation
+      - name: Customer 360
+        short: Customer
+        icon: custlake
+        summary: A single governed view of every premise, joining billing, AMI usage and interactions so the contact centre and programs act on one profile.
+        problem: Customer data is split across CIS, payments and AMI, so agents answer high-bill and program questions from partial records and outreach targets the wrong premises.
+        who_benefits: Customer Operations
+        how_built: SAP IS-U, Oracle CCB and AMI usage conform on CustomerLake under Unity Catalog, so the contact centre, billing and programs read one governed premise profile in AI/BI.
+        components:
+          - CustomerLake
+          - SAP IS-U
+          - Oracle Utilities CCB
+          - Unity Catalog
+          - AI/BI
+      - name: Outage Comms
+        short: Comms
+        icon: chat
+        summary: Outage scope, estimated restoration and proactive notifications drafted for customers by an agent grounded in live OMS state.
+        problem: During an event the contact centre and notification channels lag the control centre, so customers get stale or no restoration times and call volume spikes exactly when crews are stretched.
+        who_benefits: Customer Operations
+        how_built: Milsoft OMS state and Kubra channels join in Lakehouse//RT; an agent on Agent Bricks drafts restoration ETAs and outage notifications against governed tools for agent approval.
+        components:
+          - Milsoft OMS
+          - Kubra Payment Portal
+          - Agent Bricks
+          - Lakehouse//RT
+          - AI Functions
+        stories:
+          - title: 'Hawaiian Electric: AI agents transforming electric grid operations'
+            url: https://www.databricks.com/blog/manual-autonomous-how-ai-agents-are-transforming-electric-grid-operations
+      - name: Field Crew Assistant
+        short: Field ops
+        icon: apps
+        summary: An assistant that gives field crews the switching plan, asset history and safety context for the job, and closes the work order on mobile.
+        problem: Crews arrive with paper switching orders and no asset history, so jobs stall on missing context and completions are keyed in later, leaving the network model and work records stale.
+        who_benefits: App Developers
+        how_built: EAM history, the GIS network model and OMS dispatch conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back through OMS Crew Dispatch.
+        components:
+          - OMS Crew Dispatch
+          - Esri ArcGIS Utility
+          - Agent Bricks
+          - Lakebase
+          - Unity Catalog
+      - name: Regulatory Reporting
+        short: Regulatory
+        icon: gavel
+        summary: Reliability, DER and sustainability filings produced from the same governed tables operations runs on, traceable back to source.
+        problem: SAIDI, SAIFI, DER interconnection and emissions filings are rebuilt each cycle from ledgers and exports the commission cannot trace, so filings lag and a number that cannot be sourced is one a regulator can strike.
+        who_benefits: Regulatory & Rates
+        how_built: Reliability, interconnection and emissions data conform to Gold under Unity Catalog and are published as governed Reliability Reporting products in AI/BI, filed with full lineage.
+        components:
+          - Reliability Reporting
+          - Unity Catalog
+          - AI/BI
+          - Regulatory Cost Accounting
+          - Data Products
+      - name: Financial Analytics
+        short: Finance
+        icon: sheet
+        summary: Revenue requirement, capital spend and collections tracked on governed ledgers so finance and rate design work from one set of numbers.
+        problem: Cost-of-service, capital and collections numbers are spread across finance and operations systems, so each rate case and board pack rebuilds them and the numbers rarely reconcile.
+        who_benefits: Regulatory & Rates
+        how_built: Jurisdictional cost ledgers are queried in place under Unity Catalog and modelled in AI/BI with Genie One, so revenue requirement, capital and collections are read from one governed set for rate cases and the board.
+        components:
+          - Regulatory Cost Accounting
+          - Unity Catalog
+          - AI/BI
+          - Genie One
+          - Rate Case Submissions
+medallion:
+  Bronze:
+    short: Raw meter and SCADA
+    summary: AMI interval reads, SCADA analogs and events, CIS billing extracts, OMS outage tickets and GIS asset records, landed exactly as received so a meter read or a protection trip can always be replayed.
+  Silver:
+    short: Conformed meter, premise
+    summary: Meters, premises, feeders and assets resolved into single conformed entities across AMI, CIS and GIS, with service point identifiers reconciled and outage events stitched to affected customers.
+  Gold:
+    short: SAIDI, losses, collections
+    summary: 'Contracted products operations and regulators run on: SAIDI and SAIFI by circuit, technical and non-technical loss, collections effectiveness, and demand forecast accuracy.'
+citation_index:
+  itron:
+    title: Itron OpenWay AMI
+    url: https://www.itron.com/na/solutions/what-we-enable/ami
+  landis-gyr:
+    title: Landis+Gyr Gridstream
+    url: https://www.landisgyr.com/
+  sensus:
+    title: Sensus FlexNet AMI
+    url: https://sensus.com/solutions/advanced-metering-infrastructure/
+  osisoft-pi:
+    title: AVEVA PI System
+    url: https://www.aveva.com/en/products/pi-system/
+  ge-adms:
+    title: GE Vernova grid software
+    url: https://www.gevernova.com/software
+  abb-ellipse:
+    title: Hitachi Energy Ellipse EAM
+    url: https://www.hitachienergy.com/
+  sap-isu:
+    title: SAP for Utilities
+    url: https://www.sap.com/industries/utilities.html
+  oracle-ccb:
+    title: Oracle Utilities Customer Care and Billing
+    url: https://www.oracle.com/industries/utilities/
+  kubra:
+    title: Kubra customer engagement
+    url: https://www.kubra.com/
+  esri-utility:
+    title: Esri ArcGIS Utility Network
+    url: https://www.esri.com/en-us/industries/utilities
+  milsoft-oms:
+    title: Milsoft Outage Management
+    url: https://www.milsoft.com/utility-solutions/
+  green-button:
+    title: Green Button data standard
+    url: https://www.greenbuttondata.org/
+  ieee-2030:
+    title: IEEE 2030.5 Smart Energy Profile
+    url: https://standards.ieee.org/standard/2030_5-2018.html

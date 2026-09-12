@@ -1,6 +1,6 @@
 """
 arch-explorer MCP server — exposes the shared reference-architecture templates
-(the same 63 industry YAMLs the web app reads) as MCP tools, so an agent can
+(the same 70 industry YAMLs the web app reads) as MCP tools, so an agent can
 list, fetch, and search Databricks Data Intelligence Platform reference
 architectures without the browser app.
 

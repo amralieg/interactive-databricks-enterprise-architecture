@@ -247,7 +247,7 @@ pipelines:
           - Medical Loss Ratio
           - Risk Adjustment
           - Member Retention
-          - Pharmacy Trend
+          - Utilization Forecasting
       - name: Actuarial & Finance
         mark: AI/BI
         summary: Pricing, reserving and risk-score reconciliation for Medicare and commercial blocks, chasing HCC completeness before the submission window closes.
@@ -268,7 +268,7 @@ pipelines:
         ucs:
           - Risk Adjustment
           - Medical Loss Ratio
-          - Pharmacy Trend
+          - Utilization Forecasting
       - name: Care Management
         mark: Model Serving
         summary: Nurses and care coordinators on rising-risk members, open gaps in care and readmission prevention before an avoidable ED visit or admission.
@@ -308,9 +308,9 @@ pipelines:
           - name: Provider Data Management
             cares: directory accuracy and roster currency by TIN for compliance.
         ucs:
-          - Network Adequacy
-          - Value-Based Contracts
           - HEDIS Quality
+          - Auto-Adjudication Rate
+          - Utilization Forecasting
       - name: Fraud & Integrity
         mark: Lakehouse//RT
         summary: SIU investigators on aberrant provider billing patterns, duplicate claims and pharmacy fraud, flagged pre-pay before dollars go out the door.
@@ -330,7 +330,7 @@ pipelines:
             cares: specialty and controlled-substance dispensing anomalies at the PBM.
         ucs:
           - Fraud Waste & Abuse
-          - Pharmacy Trend
+          - Auto-Adjudication Rate
   - name: Technical
     icon: code
     tiles:
@@ -586,7 +586,7 @@ agent_usecases:
           - How has membership grown by market and product?
           - What is risk-adjusted revenue per member month by line?
           - Where are IBNR reserves moving against booked estimates?
-      - name: Risk Adjustment Agent
+      - name: Risk-Adjusted Revenue Agent
         icon: genie
         summary: Explore HCC completeness, suspected gaps and encounter accuracy before submission.
         feeds:
@@ -604,7 +604,7 @@ agent_usecases:
           - How does average RAF score compare to last plan year?
           - Which providers have the largest documentation gaps?
           - Where would recapture most improve risk-adjusted revenue?
-      - name: Care & Quality Agent
+      - name: Care & Quality Gaps Agent
         icon: genie
         summary: Answer rising-risk, gap-in-care and prior-auth questions in plain language.
         feeds:
@@ -622,7 +622,7 @@ agent_usecases:
           - Where is prior-auth turnaround exceeding target?
           - Which members have open gaps in care across multiple measures?
           - What is the readmission rate for the managed panel?
-      - name: Payment Integrity & FWA Agent
+      - name: Fraud, Waste & Abuse Agent
         icon: genie
         summary: Ask about edit yield, recoveries and pharmacy and provider anomalies.
         feeds:
@@ -726,19 +726,19 @@ agent_usecases:
         stories:
           - title: SCAN Health Plan improves member care with Databricks
             url: https://www.databricks.com/customers/scan-health
-      - name: Network Adequacy
-        short: Provider
-        icon: globe
-        summary: Directory accuracy and time-and-distance standards monitored for regulatory compliance.
-        problem: Provider directories drift out of date across systems, so time-and-distance standards are proven with stale rosters and the plan risks a regulatory adequacy finding.
-        who_benefits: Provider Relations
-        how_built: Credentialing and roster feeds conform under Unity Catalog on Delta Lake and are measured against adequacy standards in AI/BI, with directory fixes written back after review.
+      - name: Auto-Adjudication Rate
+        short: Claims
+        icon: gauge
+        summary: First-pass auto-adjudication maximised with fewer pends, edits and manual rework.
+        problem: Claims fall out to manual pend queues on avoidable edit and eligibility mismatches, so adjudication is slow, inconsistent and costly and the same defects recur every cycle.
+        who_benefits: Fraud & Integrity
+        how_built: Facets and HealthEdge adjudication, edit and pend results conform on Delta Lake under Unity Catalog, and AI Functions cluster pend root causes scored in Model Serving so payment integrity raises first-pass fixes in the FWA Command Centre before the next cycle.
         components:
-          - Symplr Provider Data
-          - Unity Catalog
-          - AI/BI
-          - Delta Lake
-          - Provider Scorecard
+          - FWA Command Centre
+          - Facets Core Admin
+          - HealthEdge Source
+          - AI Functions
+          - Model Serving
       - name: Prior Auth Optimisation
         short: Utilisation
         icon: api
@@ -755,22 +755,19 @@ agent_usecases:
         stories:
           - title: Modernizing Prior Authorization with Advanced Analytics
             url: https://www.databricks.com/blog/modernizing-prior-authorization-advanced-analytics
-      - name: Pharmacy Trend
-        short: PBM
-        icon: product
-        summary: Specialty spend, formulary adherence and rebate performance reconciled to medical trend.
-        problem: Pharmacy claims, rebates and specialty spend sit with the PBM on a lag, so the plan cannot reconcile drug trend to medical trend or catch rebate leakage until the accrual is booked.
+      - name: Utilization Forecasting
+        short: Trend
+        icon: chart
+        summary: Inpatient, ED and pharmacy utilization forecast by cohort so trend and reserves hold.
+        problem: Utilization is understood only in the rear-view from booked claims, so IBNR reserves and trend assumptions are set on stale averages and miss the surges that blow the annual medical budget.
         who_benefits: Actuarial & Finance
-        how_built: PBM and medical claims conform on Delta Lake under Unity Catalog and reconcile as certified Metric Views in AI/BI, so specialty trend and rebate performance read against one set.
+        how_built: Paid-claim, authorization and pharmacy history conform on Delta Lake and feed forecasting models tracked in MLflow and scored in Model Serving, so utilization and trend by cohort read on certified AI/BI Metric Views before the reserve is booked.
         components:
-          - CVS Caremark PBM
+          - Model Serving
+          - MLflow
           - AI/BI
-          - Unity Catalog
           - Delta Lake
-          - Genie One
-        stories:
-          - title: How Caresource modernized its data architecture for better healthcare
-            url: https://www.databricks.com/blog/2022/04/07/how-caresource-modernized-its-data-architecture-to-provide-better-healthcare-to-members.html
+          - HealthEdge Source
       - name: Member Retention
         short: Growth
         icon: custlake
@@ -787,22 +784,19 @@ agent_usecases:
         stories:
           - title: SCAN Health Plan improves member care with Databricks
             url: https://www.databricks.com/customers/scan-health
-      - name: Value-Based Contracts
-        short: Provider
-        icon: partner
-        summary: Shared savings and quality bonuses calculated from governed claims and clinical data.
-        problem: Shared-savings and quality bonuses settle months late from claims and clinical data that never line up, so providers dispute the numbers and neither side trusts the scorecard.
-        who_benefits: Provider Relations
-        how_built: Claims, quality and attribution data are conformed as governed Data Products under Unity Catalog and shared with providers over OpenSharing, surfaced in the Provider Scorecard.
+      - name: Member Call Sentiment
+        short: Service
+        icon: chat
+        summary: Member call and message transcripts mined for sentiment, effort and churn signals.
+        problem: Member frustration lives in thousands of call recordings no one can read at scale, so the service failures that drive complaints, appeals and disenrollment surface only after the member has already left.
+        who_benefits: CEO & CFO
+        how_built: Member service transcripts land on Delta Lake under Unity Catalog and Mosaic AI summarises sentiment, contact drivers and resolution into governed tables surfaced in AI/BI and queryable through Genie One so service and retention teams act on the drivers.
         components:
-          - Provider Scorecard
-          - Data Products
+          - Mosaic AI
+          - AI/BI
+          - Genie One
           - Unity Catalog
-          - OpenSharing
           - Delta Lake
-        stories:
-          - title: Empowering smarter decisions to transform healthcare outcomes
-            url: https://www.databricks.com/customers/abacus-insights
 medallion:
   Bronze:
     short: Raw claims and enrollment

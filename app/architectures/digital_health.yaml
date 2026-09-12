@@ -411,7 +411,7 @@ pipelines:
         ucs:
           - Member Engagement
           - Digital Therapeutics
-          - Virtual Visit Ops
+          - Contact Center Sentiment
       - name: Care Management
         mark: Lakehouse//RT
         summary: Care managers running panels of chronic and rising-risk members; RPM nurses triaging device alerts through the day; health coaches driving adherence and behaviour change against the care plan.
@@ -431,7 +431,7 @@ pipelines:
             cares: adherence, behaviour change and coaching.
         ucs:
           - RPM & Alerting
-          - Care Gap Closure
+          - Digital Patient 360
           - Risk Stratification
           - Care Coordination
       - name: Payer Partners
@@ -452,9 +452,9 @@ pipelines:
           - name: Actuarial & VBC
             cares: cost, utilisation and outcomes attribution.
         ucs:
-          - Eligibility & Claims
           - Outcomes Analytics
-          - Care Gap Closure
+          - Digital Patient 360
+          - Risk Stratification
       - name: Product & Data
         mark: Model Serving
         summary: The Chief Product Officer on the digital experience and feature bets; the digital-therapeutics team on programme efficacy and FDA-cleared claims; data science on the models behind coaching, triage and outcomes.
@@ -492,7 +492,7 @@ pipelines:
         ucs:
           - FHIR Interoperability
           - RPM & Alerting
-          - Eligibility & Claims
+          - Digital Patient 360
       - name: Clinical ML
         mark: MLflow
         summary: Deterioration, readmission-risk, adherence and engagement models built from FHIR, device streams and claims; whether they still hold six months on as cohorts and devices shift.
@@ -506,7 +506,7 @@ pipelines:
         ucs:
           - Risk Stratification
           - Digital Therapeutics
-          - Care Gap Closure
+          - Contact Center Sentiment
       - name: App & FHIR Devs
         mark: Apps
         summary: Ship the member app, provider portal and care screens, and the SMART-on-FHIR APIs partners integrate against, hosted next to governed data.
@@ -705,7 +705,7 @@ agent_usecases:
           - What is average wait time from request to visit start?
           - Which programmes have the longest queue depth right now?
           - How has virtual visit volume grown month over month?
-      - name: RPM & Deterioration Agent
+      - name: Patient Deterioration Agent
         icon: genie
         summary: Explore device adherence, alert precision and rising risk across the panel.
         feeds:
@@ -813,22 +813,19 @@ agent_usecases:
         stories:
           - title: Flo Health scales personalised experiences on Databricks
             url: https://www.databricks.com/customers/flo-health
-      - name: Care Gap Closure
-        short: Quality
-        icon: gauge
-        summary: Finding open care gaps and quality-measure misses across the panel and driving the outreach and tasks that close them before the measurement window shuts.
-        problem: Care gaps and HEDIS misses hide across claims, clinical and engagement systems; found late, quality scores slip and avoidable cost lands that a timely nudge would have prevented.
-        who_benefits: Care Management
-        how_built: Claims, clinical and engagement data are conformed to certified Gold; gaps are computed on Unity Catalog definitions, scored for outreach priority in Model Serving and pushed to care teams via Health Cloud Sync.
+      - name: Contact Center Sentiment
+        short: Service
+        icon: chat
+        summary: Member call and message transcripts mined for sentiment, effort and churn signals.
+        problem: Member frustration lives in thousands of support calls and chat threads no one can read at scale, so the service failures that drive disengagement and churn surface only in anecdote, long after the member has cooled.
+        who_benefits: Member Growth
+        how_built: Twilio call and message transcripts land on Delta Lake under Unity Catalog and Mosaic AI summarises sentiment, contact drivers and resolution into governed tables surfaced in AI/BI and Genie One.
         components:
-          - Enrollment & Claims
+          - Twilio Comms
+          - Mosaic AI
           - AI/BI
-          - Model Serving
+          - Genie One
           - Unity Catalog
-          - Health Cloud Sync
-        stories:
-          - title: Healthcare and life sciences on the Databricks Platform
-            url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
       - name: Risk Stratification
         short: Population
         icon: chart
@@ -862,19 +859,19 @@ agent_usecases:
         stories:
           - title: Building a FHIR-native health data platform on Databricks Lakebase
             url: https://www.databricks.com/blog/building-fhir-native-health-data-platform-databricks-lakebase
-      - name: Eligibility & Claims
-        short: Revenue
-        icon: market
-        summary: Real-time eligibility and benefit checks in the visit path and clean claims out, so members are covered before care and revenue is not lost to rejects.
-        problem: Eligibility is checked late or not at all and claims reject on avoidable errors; members hit surprise bills and the platform chases denials it could have prevented at the point of care.
-        who_benefits: Payer Partners
-        how_built: Change Healthcare and Availity eligibility and claims traffic are conformed in the lakehouse; coverage is verified in the visit path and denial-risk is scored before submission, on pipelines built in Lakeflow.
+      - name: Digital Patient 360
+        short: Unified profile
+        icon: custlake
+        summary: One governed view of the patient across visits, devices, claims and engagement.
+        problem: A patient's history is scattered across telehealth, monitoring, engagement and payer systems, so care teams and product never see the whole person and every experience is built on a partial profile.
+        who_benefits: Care Management
+        how_built: Visit, device, claims and engagement data unify in CustomerLake under Unity Catalog and are served on Lakebase in the Member 360 Hub, so one governed patient profile powers care, coaching and personalisation.
         components:
-          - Change Healthcare
-          - Availity Gateway
-          - Enrollment & Claims
-          - Lakeflow
-          - AI/BI
+          - Member 360 Hub
+          - CustomerLake
+          - Epic FHIR APIs
+          - Lakebase
+          - Unity Catalog
       - name: Digital Therapeutics
         short: DTx
         icon: apps

@@ -1,5 +1,5 @@
 name: Renewables & Cleantech
-description: 'Utility-scale solar, wind and storage developers and IPPs: asset performance and SCADA, energy trading and PPAs, grid interconnection, O&M and field service, ESG and carbon.'
+description: 'Renewable independent power producers across solar, wind, storage and green hydrogen: asset performance and SCADA, generation forecasting and energy trading, electrolyser and plant optimisation, repowering and decommissioning, and ESG and carbon reporting.'
 sources:
   - name: SCADA & Historian
     icon: iot
@@ -363,7 +363,7 @@ pipelines:
           - name: Chief Sustainability
             cares: carbon, RECs and audited ESG disclosure.
         ucs:
-          - Portfolio & Finance
+          - Investment Simulation
           - ESG & Carbon
           - Generation Forecasting
       - name: Asset Ops
@@ -386,7 +386,7 @@ pipelines:
         ucs:
           - Fleet Performance
           - Predictive Maintenance
-          - Generation Forecasting
+          - Plant Design & Innovation
       - name: Energy Trading
         mark: Model Serving
         summary: Power traders scheduling and hedging generation into the ISO; PPA originators structuring offtake and shape risk; battery schedulers arbitraging price and ancillary markets.
@@ -406,7 +406,7 @@ pipelines:
             cares: price and ancillary-market arbitrage.
         ucs:
           - Energy Trading & PPA
-          - Storage Optimisation
+          - Electrolyser Optimisation
           - Curtailment & Dispatch
           - Generation Forecasting
       - name: O&M & Field
@@ -428,7 +428,7 @@ pipelines:
             cares: component availability and warranty recovery.
         ucs:
           - Predictive Maintenance
-          - O&M & Field Service
+          - Repowering & Decommissioning
           - Fleet Performance
       - name: Grid Ops
         mark: Lakehouse//RT
@@ -448,9 +448,9 @@ pipelines:
           - name: Plant Controls
             cares: PPC setpoints and dispatch response.
         ucs:
-          - Grid Interconnection
           - Curtailment & Dispatch
-          - Storage Optimisation
+          - Electrolyser Optimisation
+          - Generation Forecasting
   - name: Technical
     icon: code
     tiles:
@@ -655,7 +655,7 @@ agent_usecases:
     tiles:
       - name: Fleet Performance Agent
         icon: genie
-        summary: Ask about availability, performance ratio and production-to-plan across the fleet in plain language.
+        summary: Ask about availability, performance ratio, production-to-plan and new-site design across the fleet in plain language.
         feeds:
           - AVEVA PI System
           - Power Factors APM
@@ -670,10 +670,10 @@ agent_usecases:
           - Which assets are underperforming their P50 case this month?
           - How much production have we lost to curtailment this week?
           - Which sites show the largest soiling or degradation losses?
-          - What is fleet performance ratio by technology and OEM?
-      - name: Trading & PPA Agent
+          - What layout and technology gave the best yield across the fleet?
+      - name: Trading & Hydrogen Agent
         icon: genie
-        summary: Explore positions, forecast generation, imbalance and PPA settlement across the portfolio.
+        summary: Explore positions, forecast generation, PPA settlement and electrolyser dispatch across the portfolio.
         feeds:
           - ION Commodities ETRM
           - ICE Power Markets
@@ -686,16 +686,16 @@ agent_usecases:
         questions:
           - What is our open position by node for tomorrow?
           - How much imbalance cost did we incur last settlement period?
-          - Which PPAs are most exposed to shape and price risk right now?
-          - What is battery arbitrage value captured this month?
+          - Which hours are cheapest and greenest to run electrolysers today?
           - How does forecast generation compare to scheduled volume today?
-      - name: O&M & Reliability Agent
+          - Which PPAs are most exposed to shape and price risk right now?
+      - name: Reliability & Repowering Agent
         icon: genie
-        summary: Answer questions on work orders, component health and mean-time-to-repair across the fleet.
+        summary: Answer questions on component health, work orders and repower-versus-decommission decisions across the fleet.
         feeds:
           - IBM Maximo EAM
           - GE Vernova SCADA
-          - Salesforce Field Svc
+          - Power Factors APM
           - Conformed asset, meter, PPA
         teams:
           - O&M & Field
@@ -704,50 +704,32 @@ agent_usecases:
         questions:
           - Which turbines have predicted component removals this quarter?
           - What is mean-time-to-repair by fault type across the fleet?
-          - Which sites have the largest open work-order backlog?
-          - Where is truck-roll cost highest relative to generation?
+          - Which sites are the best candidates to repower versus decommission?
+          - Which assets are closest to end of design life?
           - Which components are we most likely to run short of spares on?
-      - name: Grid & Curtailment Agent
+      - name: ESG & Investment Agent
         icon: genie
-        summary: Ask about dispatch, curtailment, interconnection and grid-code compliance in real time.
+        summary: Ask about REC and carbon positions, portfolio returns and repowering cases in plain language.
         feeds:
-          - ISO Dispatch Signals
-          - ISO Interconnection
-          - ERCOT / CAISO
-          - PPC Setpoints
+          - REC Registries
+          - Watershed Carbon
+          - Project Finance
+          - Availability, PR, settlement
         teams:
-          - Grid Ops
-          - Interconnection Eng
-          - Plant Controls
+          - Executive Office
+          - Chief Sustainability
+          - CFO & Treasury
         questions:
-          - How much generation are we curtailing right now and where?
-          - Which sites are at risk of a grid-code compliance breach?
-          - What is our curtailment recovery in settlement this month?
-          - Where do our interconnection queue milestones stand?
-          - How are PPC setpoints tracking against dispatch instructions today?
+          - How many RECs and guarantees of origin have we issued this month?
+          - What are avoided emissions across the fleet quarter to date?
+          - What is portfolio IRR against the investment case right now?
+          - Which repowering cases give the best return and emissions?
+          - How are debt covenants tracking against live generation?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Predictive Maintenance
-        short: Turbine & inverter
-        icon: iot
-        summary: Predicting component failure from SCADA, vibration and defect history so a gearbox or inverter fault becomes a planned visit, not an unplanned outage.
-        problem: An unplanned turbine or inverter failure means lost generation and an emergency truck roll. Removals need predicting from actual condition, not a calendar, before the fault takes the asset offline.
-        who_benefits: O&M & Field
-        how_built: PI historian, GE and Huawei SCADA and Maximo defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise work orders from the O&M Work Planner.
-        components:
-          - O&M Work Planner
-          - AVEVA PI System
-          - MLflow
-          - Model Serving
-          - IBM Maximo EAM
-        stories:
-          - title: 'Databricks and Shell: industrial time series for asset monitoring'
-            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
-          - title: Predictive maintenance on the Databricks Lakehouse
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
       - name: Fleet Performance
         short: Availability & PR
         icon: gauge
@@ -784,6 +766,52 @@ agent_usecases:
             url: https://www.databricks.com/customers/sympower
           - title: Databricks for Energy
             url: https://www.databricks.com/solutions/industries/energy
+      - name: Predictive Maintenance
+        short: Turbine & inverter
+        icon: iot
+        summary: Predicting component failure from SCADA, vibration and defect history so a gearbox or inverter fault becomes a planned visit, not an unplanned outage.
+        problem: An unplanned turbine or inverter failure means lost generation and an emergency truck roll. Removals need predicting from actual condition, not a calendar, before the fault takes the asset offline.
+        who_benefits: O&M & Field
+        how_built: PI historian, GE and Huawei SCADA and Maximo defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise work orders from the O&M Work Planner.
+        components:
+          - O&M Work Planner
+          - AVEVA PI System
+          - MLflow
+          - Model Serving
+          - IBM Maximo EAM
+        stories:
+          - title: 'Databricks and Shell: industrial time series for asset monitoring'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Electrolyser Optimisation
+        short: Green hydrogen
+        icon: stream
+        summary: Running electrolysers when power is cheap, green and abundant, so each kilogram of hydrogen is produced at the lowest cost and carbon within stack limits.
+        problem: Electrolysers are run on flat schedules blind to price, curtailment and renewable availability, so hydrogen is made with expensive, higher-carbon power and stacks degrade faster than they earn.
+        who_benefits: Grid Ops
+        how_built: SCADA and stack telemetry land in Lakehouse//RT; a production model tracked in MLflow scores against live and forecast power prices in Model Serving, shifting electrolyser load to the cheapest green hours.
+        components:
+          - AVEVA PI System
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+          - ICE Power Markets
+      - name: Curtailment & Dispatch
+        short: Grid signals
+        icon: network
+        summary: Responding to ISO dispatch and curtailment instructions in real time, minimising lost generation and settling curtailment accurately.
+        problem: Curtailment and dispatch instructions arrive at grid latency; handled by hand or reconciled monthly, lost generation is over-curtailed and under-recovered in settlement.
+        who_benefits: Grid Ops
+        how_built: ISO dispatch signals stream into Lakehouse//RT; setpoint recommendations are scored in Model Serving and written back as PPC Setpoints, with curtailment reconciled for settlement.
+        components:
+          - PPC Setpoints
+          - ISO Dispatch Signals
+          - Lakehouse//RT
+          - Model Serving
+        stories:
+          - title: Sympower stabilises the grid with flexibility on Databricks
+            url: https://www.databricks.com/customers/sympower
       - name: Energy Trading & PPA
         short: Market revenue
         icon: market
@@ -802,68 +830,32 @@ agent_usecases:
             url: https://www.databricks.com/customers/octopus-energy
           - title: SSE Energy Solutions lowers emissions with Databricks
             url: https://www.databricks.com/customers/sse
-      - name: Curtailment & Dispatch
-        short: Grid signals
+      - name: Plant Design & Innovation
+        short: Site design
         icon: network
-        summary: Responding to ISO dispatch and curtailment instructions in real time, minimising lost generation and settling curtailment accurately.
-        problem: Curtailment and dispatch instructions arrive at grid latency; handled by hand or reconciled monthly, lost generation is over-curtailed and under-recovered in settlement.
-        who_benefits: Grid Ops
-        how_built: ISO dispatch signals stream into Lakehouse//RT; setpoint recommendations are scored in Model Serving and written back as PPC Setpoints, with curtailment reconciled for settlement.
+        summary: Designing and optimising new wind, solar and storage sites from fleet performance and weather, so layout and technology choices are grounded in what actually generates.
+        problem: New sites are designed on vendor yield decks and static assumptions, so layout, technology and storage sizing are locked in before the fleet’s own performance history is ever brought to bear.
+        who_benefits: Asset Ops
+        how_built: Weather, irradiance and fleet performance history are conformed in the lakehouse; yield and layout models tracked in MLflow score design options in Model Serving, read in AI/BI before commitment.
         components:
-          - PPC Setpoints
-          - ISO Dispatch Signals
-          - Lakehouse//RT
+          - Weather & Irradiance
+          - Power Factors APM
           - Model Serving
-        stories:
-          - title: Sympower stabilises the grid with flexibility on Databricks
-            url: https://www.databricks.com/customers/sympower
-      - name: Storage Optimisation
-        short: Battery dispatch
+          - MLflow
+          - AI/BI
+      - name: Repowering & Decommissioning
+        short: End of life
         icon: store
-        summary: Cycling battery storage against energy and ancillary-market prices, so each charge and discharge captures the most value within warranty and state-of-health limits.
-        problem: Battery value leaks when dispatch ignores forward prices, ancillary opportunity or degradation; cycled by rule of thumb, the asset trades against itself and ages faster than it earns.
-        who_benefits: Energy Trading
-        how_built: Live price and telemetry land in Lakehouse//RT; a dispatch model scored in Model Serving optimises cycling against ERCOT and CAISO prices from the Trading & Dispatch desk.
-        components:
-          - Trading & Dispatch
-          - Model Serving
-          - Lakehouse//RT
-          - ERCOT / CAISO
-          - AI/BI
-        stories:
-          - title: 'Octopus Energy: data-powered clean energy on Databricks'
-            url: https://www.databricks.com/customers/octopus-energy
-      - name: Grid Interconnection
-        short: Queue & compliance
-        icon: network
-        summary: Managing interconnection queue position, grid-code compliance and availability-to-grid, so a project energises on schedule and stays compliant once live.
-        problem: Interconnection terms, queue milestones and grid-code obligations sit in ISO documents and spreadsheets; missed conditions delay energisation and risk compliance penalties.
-        who_benefits: Grid Ops
-        how_built: Interconnection and compliance data are conformed in the lakehouse against live telemetry; queue and compliance status is explored in AI/BI and asked of Genie One on Unity Catalog definitions.
-        components:
-          - ISO Interconnection
-          - AI/BI
-          - Unity Catalog
-          - Genie One
-        stories:
-          - title: E.ON consolidates grid asset data on Databricks
-            url: https://www.databricks.com/customers/eon
-      - name: O&M & Field Service
-        short: Work orders
-        icon: erp
-        summary: Turning predicted and corrective work into scheduled field jobs, sequenced against crews, spares and site access, and closed on mobile.
-        problem: Work orders, technician schedules and spares live in separate systems, so crews are dispatched inefficiently, truck rolls stack up and warranty recovery is missed.
+        summary: Deciding when to repower, life-extend or decommission assets from degradation, component lifing and land and grid value, so end-of-life capital is spent where it pays.
+        problem: Repower-versus-decommission calls are made near contract end on gut feel, with degradation, component lifing and land and interconnection value trapped in separate systems and never brought together.
         who_benefits: O&M & Field
-        how_built: Maximo and field-service feeds are conformed in the lakehouse; the O&M Work Planner on Lakebase sequences jobs and Agent Bricks drafts work orders against governed tools.
+        how_built: Degradation, lifing and generation history conform against the asset register and Project Finance marts; end-of-life options are scored in Model Serving and ranked in AI/BI for the portfolio decision.
         components:
-          - O&M Work Planner
+          - Power Factors APM
           - IBM Maximo EAM
-          - Salesforce Field Svc
-          - Agent Bricks
-          - Lakebase
-        stories:
-          - title: 'Databricks and Shell: asset monitoring and work-order history'
-            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - Project Finance
+          - Model Serving
+          - AI/BI
       - name: ESG & Carbon
         short: RECs & carbon
         icon: gavel
@@ -882,13 +874,13 @@ agent_usecases:
             url: https://www.databricks.com/customers/sse
           - title: TotalEnergies powers cleaner energy with Databricks
             url: https://www.databricks.com/customers/totalenergies
-      - name: Portfolio & Finance
-        short: IRR & tax equity
+      - name: Investment Simulation
+        short: IRR & repowering
         icon: sheet
-        summary: Measuring portfolio returns, project-finance covenants and tax-equity waterfalls against live generation and settlement, so the investment case tracks reality.
-        problem: Returns, debt covenants and tax-equity flows are modelled in spreadsheets against stale production, so the portfolio's real performance is only known at quarter close.
+        summary: Simulating portfolio returns, project-finance covenants and repowering cases against live generation and settlement, so capital follows the assets that earn.
+        problem: Returns, debt covenants and repower-versus-build cases are modelled in spreadsheets against stale production, so the portfolio’s real performance and its best capital moves are only known at quarter close.
         who_benefits: Executive Office
-        how_built: Generation, settlement and cost feeds are conformed against the Project Finance marts; returns and covenants are analysed in AI/BI and asked of Genie One, published as governed Data Products.
+        how_built: Generation, settlement and cost feeds are conformed against the Project Finance marts; returns, covenants and repowering cases are simulated in AI/BI and asked of Genie One, published as governed Data Products.
         components:
           - Project Finance
           - AI/BI

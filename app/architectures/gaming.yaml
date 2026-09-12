@@ -1,5 +1,5 @@
 name: Gaming
-description: 'Interactive entertainment and iGaming: player lifecycle, in-game economy, live ops, fraud and responsible gaming compliance.'
+description: 'Game studios and publishers: player lifecycle, in-game economy and monetisation, live ops, user acquisition, and game integrity across mobile, PC and console titles.'
 sources:
   - name: Game Engines & Telemetry
     icon: iot
@@ -167,7 +167,7 @@ sources:
               - structured
             volume: sub-GB per pull
             interval: Daily / weekly pulls
-  - name: Payments & Wallet
+  - name: Payments & Commerce
     icon: market
     tiles:
       - name: Adyen Payments
@@ -189,34 +189,39 @@ sources:
               - semi-structured
             volume: 1-10k auths/sec at peak
             interval: Continuous (sub-second)
-      - name: Paysafe Skrill
+      - name: Xsolla
         icon: partner
-        summary: Digital wallet deposits and withdrawals for regulated iGaming markets.
+        summary: Web shop, global payments and merchant-of-record payouts for direct game sales.
         citations:
-          - paysafe
-        category: Digital Wallet / Payment Provider
-        what_it_is: Handles digital-wallet deposits and withdrawals for regulated iGaming markets with payout controls.
-        who_uses_it: Payments, Fraud and Compliance teams.
+          - xsolla
+        category: Game Commerce / Merchant of Record
+        what_it_is: Runs the web shop, global payment methods and merchant-of-record settlement for direct-to-player game sales outside the platform stores.
+        who_uses_it: Publishing, Payments and Finance teams.
         data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day sales + settlement
+            interval: Daily settlement + hourly deltas
           stream:
             types:
               - semi-structured
-            volume: hundreds of txns/sec at peak
-            interval: Continuous (deposit / withdrawal events)
-      - name: Pragmatic Play RGS
+            volume: hundreds of purchases/sec at peak
+            interval: Continuous (purchase events)
+      - name: RevenueCat
         icon: product
-        summary: Remote game server rounds, bet outcomes and jackpot contributions for casino content.
+        summary: In-app purchase and subscription receipts, entitlements and renewal state across stores.
         citations:
-          - pragmatic
-        category: Remote Game Server (RGS)
-        what_it_is: Runs casino content rounds and returns bet outcomes and jackpot contributions used for GGR and royalty calculation.
-        who_uses_it: Risk & Compliance, Finance and Content-partnership teams.
+          - revenuecat
+        category: In-App Purchase & Subscription Management
+        what_it_is: Validates in-app purchase and subscription receipts and tracks entitlements and renewal state across the App Store, Google Play and other stores.
+        who_uses_it: Monetisation, Product analytics and Finance teams.
         data_out:
           stream:
             types:
               - semi-structured
-            volume: thousands of rounds/sec at peak
-            interval: Continuous (round-level)
+            volume: thousands of purchase events/sec at peak
+            interval: Continuous (purchase / renewal events)
   - name: Player CRM & Support
     icon: custlake
     tiles:
@@ -273,11 +278,11 @@ sources:
     tiles:
       - name: SEON Fraud Prevention
         icon: gauge
-        summary: Device fingerprinting, velocity rules and chargeback signals at registration and deposit.
+        summary: Device fingerprinting, velocity rules and chargeback signals at registration and purchase.
         citations:
           - seon
         category: Fraud Prevention Platform
-        what_it_is: Fingerprints devices and applies velocity and enrichment rules at registration and deposit, returning fraud signals.
+        what_it_is: Fingerprints devices and applies velocity and enrichment rules at registration and purchase, returning fraud signals.
         who_uses_it: Fraud analysts and Risk operations teams.
         data_out:
           stream:
@@ -287,12 +292,12 @@ sources:
             interval: Continuous (sub-second)
       - name: Onfido Identity
         icon: people
-        summary: Document verification and biometric checks for KYC and age gating.
+        summary: Document and biometric checks for age assurance and account verification.
         citations:
           - onfido
-        category: Identity Verification (KYC)
-        what_it_is: Verifies identity documents and biometrics for KYC and age-gating at onboarding and payout.
-        who_uses_it: KYC, Compliance and Onboarding teams.
+        category: Identity & Age Verification
+        what_it_is: Verifies identity documents and biometrics for age assurance and account verification at onboarding.
+        who_uses_it: Trust & Safety, Onboarding and Player support teams.
         data_out:
           batch:
             types:
@@ -300,20 +305,20 @@ sources:
               - semi-structured
             volume: GBs/day verification results
             interval: Continuous / on-demand
-      - name: GeoComply Location
-        icon: globe
-        summary: Geolocation compliance pings proving the player is in an permitted jurisdiction.
+      - name: Easy Anti-Cheat / BattlEye
+        icon: gauge
+        summary: Kernel and behavioural anti-cheat detections and enforcement actions across PC and console.
         citations:
-          - geocomply
-        category: Geolocation Compliance
-        what_it_is: Emits geolocation compliance pings that prove the player is in a permitted jurisdiction before wagering.
-        who_uses_it: Compliance, Risk and Regulatory reporting teams.
+          - easy-anti-cheat
+        category: Anti-Cheat Enforcement
+        what_it_is: Detects and blocks cheating, tampering and botting across PC and console titles, returning the enforcement signals that protect fair play.
+        who_uses_it: Anti-cheat, Trust & Safety and Live Ops teams.
         data_out:
           stream:
             types:
               - semi-structured
-            volume: thousands of pings/sec at peak
-            interval: Continuous (location checks)
+            volume: thousands of detections/sec at peak
+            interval: Continuous (in-session)
       - name: Modulate / Quago Integrity
         icon: gauge
         summary: Voice-chat moderation and anti-cheat signals flagging toxicity, harm and manipulation.
@@ -378,18 +383,18 @@ cloud_integrations:
               - semi-structured
             volume: 1-10 GB/day
             interval: Daily platform reports
-      - name: Regulator GGR Feeds
+      - name: IARC Age Ratings
         icon: gavel
-        summary: Jurisdictional gross gaming revenue file layouts validated before submission windows.
-        category: Regulatory Reporting Data
-        what_it_is: Carries jurisdictional gross-gaming-revenue file layouts validated against schema before submission windows.
-        who_uses_it: Compliance, Regulatory reporting and Finance teams.
+        summary: Age-rating certificates and content descriptors validated before store submission.
+        category: Age Rating Certification (IARC)
+        what_it_is: Carries IARC age-rating certificates and content descriptors validated against store requirements before a title or update is submitted.
+        who_uses_it: Compliance, Publishing and Trust & Safety teams.
         data_out:
           batch:
             types:
               - structured
-            volume: sub-GB per filing
-            interval: Per regulatory cycle
+            volume: sub-GB per submission
+            interval: Per release / rating cycle
       - name: Amplitude / Mixpanel
         icon: chart
         summary: Product analytics on funnels, retention and feature adoption pulled inbound for cohort and live-ops analysis.
@@ -420,7 +425,7 @@ pipelines:
     tiles:
       - name: CEO & CFO
         mark: Genie One
-        summary: The CEO on MAU, payer conversion and studio ROI; the CFO on gross gaming revenue, hold percentage and chargeback loss rate.
+        summary: The CEO on MAU, payer conversion and studio ROI; the CFO on net bookings, refund exposure and chargeback loss rate.
         uses:
           - - Genie One
             - Ask what yesterday's ARPDAU was by title without waiting on analytics.
@@ -432,14 +437,14 @@ pipelines:
           - name: CEO
             cares: MAU, payer conversion and the studio ROI behind each live title.
           - name: CFO & Finance
-            cares: gross gaming revenue, hold percentage and chargeback loss rate.
+            cares: net bookings, refund exposure and chargeback loss rate.
           - name: Head of Studios
             cares: which titles earn their live-ops investment and which to sunset.
         ucs:
           - LTV & Monetisation
-          - Regulatory GGR
-          - Studio Royalty
-          - Chargeback Prevention
+          - In-Game Purchase Optimization
+          - UA & Ad Attribution
+          - Player Journey Analytics
       - name: Live Ops & Product
         mark: Model Serving
         summary: Live-ops managers on event-calendar performance, economy sink-and-source balance and how each content release moves retention and spend.
@@ -461,7 +466,7 @@ pipelines:
           - Live Ops Balancing
           - Player Churn Prediction
           - Content Personalisation
-          - Matchmaking Quality
+          - Game Health & Stability
       - name: Player Experience
         mark: CustomerLake
         summary: Community and VIP host teams on player sentiment, complaint drivers and the high-value accounts worth saving before they churn.
@@ -478,33 +483,31 @@ pipelines:
           - name: VIP Host
             cares: the high-value accounts worth saving before they churn.
           - name: Player Support Lead
-            cares: ticket drivers, refunds and how fast harm signals escalate.
+            cares: ticket drivers, refunds and how fast player-safety issues escalate.
         ucs:
           - Player Churn Prediction
           - Content Personalisation
-          - Responsible Gaming
+          - Anti-Cheat & Toxicity
       - name: Risk & Compliance
         mark: AI/BI
-        summary: Fraud analysts and compliance officers on AML and SAR alerts, self-exclusion enforcement and jurisdictional filings before payouts release.
+        summary: Fraud analysts and trust-and-safety leads on chargeback and bonus-abuse alerts, cheating and toxicity, and platform-policy compliance before payouts release.
         uses:
           - - Fraud Command Centre
             - Velocity and device clusters flagged before payouts release.
           - - AI/BI
-            - Chargeback and SAR metrics on certified Metric Views.
+            - Chargeback and abuse metrics on certified Metric Views.
           - - Unity Catalog
-            - One definition of GGR across platform and RGS.
+            - One definition of bookings across platform and stores.
         sub:
           - name: Fraud Analyst
             cares: velocity, device clusters and bonus abuse before payouts release.
-          - name: Compliance Officer
-            cares: jurisdictional filings and licence conditions per market.
-          - name: AML & SAR Investigator
-            cares: suspicious activity and the evidence behind every report.
+          - name: Trust & Safety Lead
+            cares: cheating, toxicity and player-safety policy across titles and markets.
+          - name: Payment Risk Investigator
+            cares: chargeback and refund-fraud cases and the evidence behind each.
         ucs:
           - Fraud & Bonus Abuse
-          - Responsible Gaming
-          - Chargeback Prevention
-          - Regulatory GGR
+          - Anti-Cheat & Toxicity
       - name: Marketing & UA
         mark: AI/BI
         summary: User acquisition on CPI, ROAS and creative performance by channel and geography, reallocating spend before daily budgets exhaust.
@@ -523,8 +526,8 @@ pipelines:
           - name: CRM Lifecycle Lead
             cares: win-back, VIP and lifecycle sends that lift retention.
         ucs:
+          - UA & Ad Attribution
           - LTV & Monetisation
-          - Content Personalisation
           - Player Churn Prediction
   - name: Technical
     icon: code
@@ -543,13 +546,13 @@ pipelines:
           - name: Streaming Platform Eng
             cares: the game, telemetry and event streams landing at tick scale.
           - name: Payments Data Eng
-            cares: wallet, RGS and settlement feeds into governed tables.
+            cares: wallet, purchase and settlement feeds into governed tables.
           - name: Reliability & On-call
             cares: the pager when a feed live ops or risk depends on breaks.
         ucs:
           - Live Ops Balancing
           - Fraud & Bonus Abuse
-          - Regulatory GGR
+          - Game Health & Stability
       - name: Data Scientists
         mark: MLflow
         summary: Churn, LTV, fraud and matchmaking models, and whether they still hold a season after each content patch.
@@ -571,7 +574,7 @@ pipelines:
           - Player Churn Prediction
           - LTV & Monetisation
           - Fraud & Bonus Abuse
-          - Matchmaking Quality
+          - Player Journey Analytics
       - name: App Developers
         mark: Apps
         summary: Ship the live ops, player 360 and fraud command applications the studio works in, hosted next to governed data.
@@ -631,23 +634,21 @@ consumers:
       - name: Publisher Analytics Share
         icon: share
         summary: Title performance and royalty positions shared with external studios over Delta Sharing.
-      - name: RGS Content Partners
+      - name: Co-Dev & Publishing Partners
         icon: product
-        summary: Round-level GGR and jackpot feeds exchanged with remote game server providers.
-        citations:
-          - pragmatic
+        summary: Title KPIs and build telemetry shared with co-development studios and publishing partners over Delta Sharing.
       - name: Affiliate Networks
         icon: partner
-        summary: Acquisition partner reporting reconciled against attributed deposits and NGR.
+        summary: Acquisition partner reporting reconciled against attributed installs and player spend.
   - name: Regulatory & Reporting
     icon: gavel
     tiles:
-      - name: GGR Regulatory Filings
+      - name: Age Rating & Content Compliance
         icon: gavel
-        summary: Jurisdictional gross gaming revenue and responsible gaming reports produced from governed tables.
-      - name: AML & SAR Reporting
+        summary: ESRB, PEGI and IARC content declarations and platform compliance produced from governed tables.
+      - name: Child Safety & Privacy
         icon: share
-        summary: Suspicious activity metrics filed from contracted Gold products.
+        summary: COPPA and GDPR-K child-safety and privacy evidence filed from governed logs.
   - name: Published Products
     icon: product
     tiles:
@@ -671,7 +672,7 @@ consumers:
       - name: Fraud Command Centre
         icon: stream
         short: Risk operations
-        summary: Velocity clusters, bonus abuse and chargeback patterns flagged before withdrawals approve.
+        summary: Velocity clusters, bonus abuse and chargeback patterns flagged before refunds or chargebacks settle.
       - name: UA Optimiser
         icon: market
         short: Acquisition spend
@@ -694,13 +695,13 @@ consumers:
           - Marketing & UA
       - name: Fraud & Chargebacks
         icon: aibi
-        summary: Chargeback loss, bonus abuse and payout-hold throughput across markets.
+        summary: Chargeback loss, bonus abuse and manual-review throughput across markets.
         kpis:
           - Chargeback loss rate
           - Bonus-abuse rate
           - Fraud false-positive rate
-          - Payout hold rate
-          - Alert-to-SAR conversion
+          - Manual review rate
+          - Refund rate
         teams:
           - Risk & Compliance
           - Fraud Analyst
@@ -718,18 +719,18 @@ consumers:
           - Marketing & UA
           - UA Manager
           - Growth Marketer
-      - name: Regulatory & GGR
+      - name: Trust & Safety
         icon: aibi
-        summary: Gross gaming revenue, hold percentage and responsible-gaming metrics by jurisdiction.
+        summary: Cheating, toxicity, content-rating and player-safety compliance across titles and markets.
         kpis:
-          - Gross gaming revenue
-          - Hold percentage
-          - GGR by jurisdiction
-          - Self-exclusion enforcement
-          - Filing timeliness
+          - Cheat detections
+          - Toxicity reports actioned
+          - Age-gate compliance
+          - Content-rating coverage
+          - Moderation SLA
         teams:
           - Risk & Compliance
-          - Compliance Officer
+          - Trust & Safety Lead
           - CEO & CFO
   - name: Agent Harnesses
     icon: agents
@@ -799,25 +800,25 @@ agent_usecases:
           - Which high-value players show early churn signals this week?
           - What is the response rate on the current win-back campaign?
           - Which segments have the highest lifetime value and lowest churn?
-          - Which players hit a deposit limit or harm marker in the last week?
-      - name: Fraud & Compliance Agent
+          - Which players filed a refund or dispute in the last week?
+      - name: Fraud & Integrity Agent
         icon: genie
-        summary: Answer questions on chargebacks, bonus abuse, AML and jurisdictional filings.
+        summary: Answer questions on chargebacks, bonus abuse, cheating and toxic behaviour on governed data.
         feeds:
           - SEON Fraud Prevention
+          - Modulate / Quago Integrity
+          - Easy Anti-Cheat / BattlEye
           - Adyen Payments
-          - GeoComply Location
-          - Regulator GGR Feeds
         teams:
           - Risk & Compliance
           - Fraud Analyst
-          - AML & SAR Investigator
+          - Trust & Safety Lead
         questions:
           - What is our chargeback loss rate this month versus last?
           - Which device or payment clusters look like coordinated bonus abuse?
-          - How many withdrawals are held pending fraud review, and for how long?
-          - Which jurisdictions are approaching a GGR filing deadline?
-          - What is the alert-to-SAR conversion rate by investigator?
+          - How many purchases are held pending fraud review, and for how long?
+          - Which titles show the most cheating or toxicity reports this week?
+          - What is the false-positive rate on our fraud and abuse flags?
       - name: Acquisition & LTV Agent
         icon: genie
         summary: Ask about UA spend, ROAS, CPI and predicted LTV by channel and geography.
@@ -904,51 +905,43 @@ agent_usecases:
         summary: Multi-accounting, collusion and promo abuse detected from device, payment and play graphs.
         problem: Multi-accounting, collusion and promo abuse hide across device, payment and play data, and siloed rules miss coordinated rings until the bonus and chargeback losses are already gone.
         who_benefits: Risk & Compliance
-        how_built: Device, payment and session graphs are conformed on Delta Lake and scored in Model Serving, so velocity and collusion clusters surface in the Fraud Command Centre before withdrawals release.
+        how_built: Device, payment and session graphs are conformed on Delta Lake and scored in Model Serving, so velocity and collusion clusters surface in the Fraud Command Centre before refunds or chargebacks settle.
         components:
           - Fraud Command Centre
           - Model Serving
           - SEON Fraud Prevention
-          - GeoComply Location
+          - Adyen Payments
           - Delta Lake
           - Feature Store
         stories:
           - title: Managing and analyzing game data at scale
             url: https://www.databricks.com/blog/managing-analyzing-game-data-scale
-      - name: Responsible Gaming
-        short: Compliance
-        icon: gavel
-        summary: Self-exclusion, deposit limits and harm markers enforced from governed player state.
-        problem: Harm markers, deposit limits and self-exclusion live in separate systems, so intervention comes too late and regulators penalise operators who cannot prove they acted on the warning signs.
-        who_benefits: Risk & Compliance
-        how_built: Player state is conformed under Unity Catalog and scored in Model Serving for harm markers, so limits and self-exclusion enforce from governed data and every intervention is auditable.
+      - name: Anti-Cheat & Toxicity
+        short: Integrity
+        icon: gauge
+        summary: Cheating, collusion and toxic voice and chat detected in session to protect fair play.
+        problem: Cheating, botting and toxic voice and chat drive honest players away, but the signals sit across game servers and moderation tools and manual review never keeps pace with live matches.
+        who_benefits: Player Experience
+        how_built: Server, chat and voice signals from Modulate and the game servers are scored in Model Serving with Mosaic AI and AI Functions, so cheating and toxicity are flagged in session and actioned from the Fraud Command Centre.
         components:
           - Fraud Command Centre
+          - Modulate / Quago Integrity
           - Model Serving
-          - Unity Catalog
-          - GeoComply Location
-          - AI/BI
-          - Feature Store
-        stories:
-          - title: Responsible Gaming solution accelerator
-            url: https://www.databricks.com/solutions/accelerators/responsible-gaming
-      - name: Matchmaking Quality
-        short: Engagement
-        icon: people
-        summary: Queue times and match fairness optimised without opening exploit vectors.
-        problem: Long queues and lopsided matches push players away, but tuning for fairness can open exploit vectors, and studios rarely have the live signal to balance both without guesswork.
+          - Mosaic AI
+          - AI Functions
+      - name: Player Journey Analytics
+        short: Funnels
+        icon: chart
+        summary: Onboarding, progression and funnel drop-off analysed across the full player journey.
+        problem: Onboarding and progression funnels are pieced together from product-analytics exports per tool, so studios cannot see where players stall, rage-quit or convert across the full journey.
         who_benefits: Live Ops & Product
-        how_built: Match, skill and session telemetry stream into Lakehouse//RT and feed matchmaking models in Model Serving, so queue time and fairness are tuned against real outcomes, not static brackets.
+        how_built: Telemetry and product-analytics events from Amplitude and the game backends are conformed on Delta Lake through Lakeflow, so onboarding, progression and funnel drop-off read per cohort in AI/BI.
         components:
-          - Model Serving
-          - Lakehouse//RT
-          - Custom Game Servers
-          - Feature Store
-          - MLflow
+          - Amplitude / Mixpanel
+          - Unity Gaming Services
+          - Delta Lake
+          - Lakeflow
           - AI/BI
-        stories:
-          - title: Personalizing players' experiences with recommendation systems
-            url: https://www.databricks.com/blog/personalizing-players-experiences-recommendation-systems
       - name: Content Personalisation
         short: Live ops
         icon: custlake
@@ -968,52 +961,49 @@ agent_usecases:
             url: https://www.databricks.com/blog/announcing-heroic-labs-satori-integration-databricks
           - title: Creating a player centric experience in games
             url: https://www.databricks.com/blog/creating-player-centric-experience-games
-      - name: Chargeback Prevention
-        short: Payments
+      - name: In-Game Purchase Optimization
+        short: Monetisation
         icon: market
-        summary: High-risk instruments and behaviours blocked before authorisation settles.
-        problem: Chargebacks land weeks after the deposit, so a risky card or behaviour is only caught once the money and the goods are gone, and manual review cannot keep pace with authorisation volume.
-        who_benefits: Risk & Compliance
-        how_built: Payment, device and behaviour features are scored in Model Serving in the authorisation path, so high-risk instruments are blocked from the Fraud Command Centre before settlement completes.
+        summary: Store offers, bundles and pricing tuned per player segment to lift payer conversion.
+        problem: Store offers and bundles are the same for everyone, so a whale sees a starter pack and a new player sees a price that scares them off, and monetisation leaves conversion and revenue on the table.
+        who_benefits: Live Ops & Product
+        how_built: Spend and behaviour features from the backends are scored in Model Serving against Feature Store, so per-segment store offers, bundles and price points are served and read in the Live Ops Console.
         components:
-          - Fraud Command Centre
+          - Live Ops Console
+          - Unity Gaming Services
           - Model Serving
-          - Adyen Payments
-          - SEON Fraud Prevention
           - Feature Store
-          - Delta Lake
-      - name: Regulatory GGR
-        short: Reporting
-        icon: gavel
-        summary: Jurisdiction-accurate gross gaming revenue reconciled across platform and RGS content.
-        problem: Gross gaming revenue must reconcile across platform, wallet and remote game servers per jurisdiction, yet the numbers sit in separate systems and filing windows leave no room for manual fixes.
-        who_benefits: Risk & Compliance
-        how_built: Platform, RGS and payment feeds are conformed under Unity Catalog into contracted Gold products, so jurisdiction-accurate GGR reports are produced from one governed source, not a spreadsheet.
-        components:
-          - Unity Catalog
-          - Data Products
-          - Pragmatic Play RGS
-          - Regulator GGR Feeds
           - AI/BI
-          - Delta Lake
-      - name: Studio Royalty
-        short: Partners
-        icon: product
-        summary: Third-party title revenue share calculated from governed round and jackpot data.
-        problem: Third-party title revenue share is calculated from partner ledgers and manual round exports, so royalties are slow, disputed and hard to reconcile against what actually happened in the game.
-        who_benefits: CEO & CFO
-        how_built: Round and jackpot data are conformed on Delta Lake and shared as governed products over OpenSharing, so studio royalties compute from the platform's own record and reconcile with partners.
+      - name: Game Health & Stability
+        short: Telemetry
+        icon: stream
+        summary: Crash, latency and performance telemetry triaged to protect the live player experience.
+        problem: Crashes, frame drops and latency spikes surface in store reviews and churn long before engineering connects them to a build, device or region, because telemetry is sampled and scattered.
+        who_benefits: Live Ops & Product
+        how_built: Unity and Unreal crash and performance telemetry stream into Lakehouse//RT on Delta Lake, so stability regressions are triaged by build, device and region in AI/BI before they spread.
         components:
-          - Pragmatic Play RGS
-          - Publisher Revenue Share
+          - Unity Client Telemetry
+          - Unreal Engine Telemetry
+          - Lakehouse//RT
           - Delta Lake
-          - OpenSharing
-          - Data Products
-          - Unity Catalog
+          - AI/BI
+      - name: UA & Ad Attribution
+        short: Acquisition
+        icon: market
+        summary: Install and in-app-event attribution tied to spend and predicted value per channel.
+        problem: User-acquisition spend is judged on installs from each network's own dashboard, so channels claim the same install, ad revenue is double-counted and budget chases volume over value.
+        who_benefits: Marketing & UA
+        how_built: AppsFlyer attribution and AppLovin ad-revenue feeds are conformed on Delta Lake and scored against predicted value in Model Serving, so ROAS and payback by channel read in the UA Optimiser.
+        components:
+          - UA Optimiser
+          - AppsFlyer Attribution
+          - AppLovin / Unity Ads
+          - Model Serving
+          - AI/BI
 medallion:
   Bronze:
     short: Raw event streams
-    summary: Client telemetry, payment authorisations, KYC decisions, game server events and marketing sends, landed exactly as received so a session or a wager can always be replayed.
+    summary: Client telemetry, payment authorisations, identity and age checks, game server events and marketing sends, landed exactly as received so a session or a purchase can always be replayed.
   Silver:
     short: Conformed player, session
     summary: Players, devices, sessions and titles resolved into single conformed entities across platform, payments and CRM, with cross-device identity stitched to one profile.
@@ -1030,12 +1020,12 @@ citation_index:
   adyen:
     title: Adyen payments platform
     url: https://www.adyen.com/
-  paysafe:
-    title: Paysafe digital wallets
-    url: https://www.paysafe.com/
-  pragmatic:
-    title: Pragmatic Play
-    url: https://www.pragmaticplay.com/
+  xsolla:
+    title: Xsolla game commerce
+    url: https://xsolla.com/
+  revenuecat:
+    title: RevenueCat
+    url: https://www.revenuecat.com/
   sf-gaming:
     title: Salesforce for gaming
     url: https://www.salesforce.com/solutions/industries/
@@ -1051,9 +1041,9 @@ citation_index:
   onfido:
     title: Onfido identity verification
     url: https://onfido.com/
-  geocomply:
-    title: GeoComply geolocation compliance
-    url: https://www.geocomply.com/
+  easy-anti-cheat:
+    title: Easy Anti-Cheat
+    url: https://www.easy.ac/
   appsflyer:
     title: AppsFlyer mobile attribution
     url: https://www.appsflyer.com/

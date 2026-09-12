@@ -448,7 +448,7 @@ pipelines:
         ucs:
           - Pricing & Rating
           - Loss Reserving
-          - Telematics & UBI
+          - Catastrophe Risk
       - name: Distribution & Agency
         mark: AI/BI
         summary: The chief distribution officer on agency production and mix; agency managers on quote-to-bind, retention and loss ratio by agent; the direct and digital team on quote conversion and customer lifetime value.
@@ -468,8 +468,8 @@ pipelines:
             cares: quote conversion and customer lifetime value.
         ucs:
           - Customer 360
-          - Underwriting Triage
-          - Pricing & Rating
+          - Distribution & Producer Analytics
+          - Contact-Center AI
       - name: Finance & Reinsurance
         mark: AI/BI
         summary: The CFO on combined ratio, capital and investor reporting; the ceded-reinsurance team on treaty recoveries and bordereaux; investor reporting on statutory, IFRS 17 and solvency results.
@@ -488,7 +488,6 @@ pipelines:
           - name: Investor Reporting
             cares: statutory, IFRS 17 and solvency results.
         ucs:
-          - Reinsurance Analytics
           - Loss Reserving
           - Catastrophe Risk
   - name: Technical
@@ -713,7 +712,7 @@ agent_usecases:
           - How has written premium grown by product versus last year?
           - Which agencies are binding business off our stated appetite?
           - What is the combined ratio trend by line over the last four quarters?
-      - name: Claims & Fraud Agent
+      - name: Claims & SIU Agent
         icon: genie
         summary: Explore cycle time, severity, leakage and SIU referrals across the claims book.
         feeds:
@@ -749,7 +748,7 @@ agent_usecases:
           - How much ceded recovery is outstanding on the last cat event?
           - What is our net position after the current reinsurance program?
           - Where has exposure grown fastest against appetite this year?
-      - name: Distribution & Retention Agent
+      - name: Distribution & Agency Agent
         icon: genie
         summary: Answer agency production, quote-to-bind and retention questions across channels.
         feeds:
@@ -854,22 +853,19 @@ agent_usecases:
         stories:
           - title: Catastrophe modeling reference architecture for insurance
             url: https://www.databricks.com/resources/architectures/catastrophe-modeling-reference-architecture-for-insurance
-      - name: Telematics & UBI
-        short: Usage-based
-        icon: stream
-        summary: Turning streaming driving behaviour into usage-based rate and claims reconstruction, priced on how a policyholder actually drives.
-        problem: Usage-based programmes generate high-frequency trip data that batch pipelines cannot land cleanly or fast enough, so pricing signals arrive late and trip quality is unproven.
-        who_benefits: Actuarial & Pricing
-        how_built: Telematics trips stream into Lakehouse//RT with quality checks; behaviour features are defined once in Feature Store and scored through Model Serving for UBI rate, on pipelines built in Lakeflow.
+      - name: Contact-Center AI
+        short: Service
+        icon: chat
+        summary: FNOL call summarization, agent assist and self-service deflection across the policyholder contact center.
+        problem: Contact-center staff switch between policy, billing and claims screens to take a first notice of loss or answer a policyholder, so handle time is long, wrap-up is manual and callers repeat themselves.
+        who_benefits: Claims Leadership
+        how_built: Call transcripts and case data conform under Unity Catalog, Mosaic AI agents built with Agent Bricks summarize calls and draft next steps against governed policy and claim data, and deflection is served through Databricks Apps.
         components:
-          - CMT Telematics
-          - Lakehouse//RT
-          - Model Serving
-          - Feature Store
-          - Lakeflow
-        stories:
-          - title: Smart Claims ingests telematics for usage-based insurance
-            url: https://www.databricks.com/resources/demos/tutorials/lakehouse-platform/dbdemos-fsi-smart-claims
+          - Snapsheet Claims
+          - Salesforce FSC
+          - Mosaic AI
+          - Agent Bricks
+          - AI/BI
       - name: Loss Reserving
         short: Actuarial
         icon: sheet
@@ -919,24 +915,19 @@ agent_usecases:
             url: https://www.databricks.com/customers/storebrand
           - title: Nationwide transforms data into member value
             url: https://www.databricks.com/customers/nationwide
-      - name: Reinsurance Analytics
-        short: Ceded risk
+      - name: Distribution & Producer Analytics
+        short: Distribution
         icon: share
-        summary: Measuring ceded structure, treaty recoveries and net PML, and sharing exposure with reinsurers on live tables rather than spreadsheets.
-        problem: Ceded exposure and treaty recoveries live in spreadsheets and file exchanges, so net position is unclear at renewal and recoveries are chased manually after the loss.
-        who_benefits: Finance & Reinsurance
-        how_built: Gross exposure, cat output and recoveries are conformed in the lakehouse against the Actuarial & Reserving marts; net PML and treaty economics are analysed in AI/BI on Unity Catalog definitions and shared to reinsurers over OpenSharing.
+        summary: Agency and producer performance, quote-to-bind and appetite adherence measured across every channel.
+        problem: Production, quote-to-bind and loss ratio by agent live in agency-management and CRM silos, so growing agencies writing off-appetite business are spotted late and channel economics are guesswork.
+        who_benefits: Distribution & Agency
+        how_built: Applied Epic and Vertafore book-of-business feeds conform with Salesforce FSC on the lakehouse under Unity Catalog, and producer production, retention and appetite adherence are scored in Model Serving and analysed in AI/BI.
         components:
-          - Actuarial & Reserving
-          - OpenSharing
+          - Applied Epic
+          - Vertafore AMS360
+          - Salesforce FSC
+          - Model Serving
           - AI/BI
-          - Unity Catalog
-          - Moody's RMS
-        stories:
-          - title: Milliman powers actuarial and risk analytics on Databricks
-            url: https://www.databricks.com/customers/milliman
-          - title: Design patterns for batch processing in financial services
-            url: https://www.databricks.com/blog/2023/01/09/design-patterns-batch-processing-financial-services.html
 medallion:
   Bronze:
     short: Raw policy, claims, telematics

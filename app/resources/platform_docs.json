@@ -1,0 +1,543 @@
+{
+"connectors": [
+{
+"n": "Confluence",
+"p": "ingestion/lakeflow-connect/confluence",
+"st": "GA"
+},
+{
+"n": "Google Analytics 4 (GA4)",
+"p": "ingestion/lakeflow-connect/google-analytics",
+"st": "GA"
+},
+{
+"n": "Google Drive",
+"p": "ingestion/lakeflow-connect/google-drive",
+"st": "GA"
+},
+{
+"n": "Microsoft Dynamics 365",
+"p": "ingestion/lakeflow-connect/d365",
+"st": "GA"
+},
+{
+"n": "Microsoft SharePoint",
+"p": "ingestion/lakeflow-connect/sharepoint",
+"st": "GA"
+},
+{
+"n": "Microsoft SQL Server",
+"p": "ingestion/lakeflow-connect/sql-server-overview",
+"st": "GA"
+},
+{
+"n": "NetSuite",
+"p": "ingestion/lakeflow-connect/netsuite",
+"st": "GA"
+},
+{
+"n": "Salesforce",
+"p": "ingestion/lakeflow-connect/salesforce-concepts",
+"st": "GA"
+},
+{
+"n": "ServiceNow",
+"p": "ingestion/lakeflow-connect/servicenow",
+"st": "GA"
+},
+{
+"n": "Workday Reports (RaaS)",
+"p": "ingestion/lakeflow-connect/workday-reports",
+"st": "GA"
+},
+{
+"n": "Zendesk Support",
+"p": "ingestion/lakeflow-connect/zendesk-support-overview",
+"st": "GA"
+},
+{
+"n": "MySQL",
+"p": "ingestion/lakeflow-connect/mysql",
+"st": "Public Preview"
+},
+{
+"n": "PostgreSQL",
+"p": "ingestion/lakeflow-connect/postgresql",
+"st": "Public Preview"
+},
+{
+"n": "Aha!",
+"p": "ingestion/lakeflow-connect/aha",
+"st": "Beta"
+},
+{
+"n": "Amplitude",
+"p": "ingestion/lakeflow-connect/amplitude-overview",
+"st": "Beta"
+},
+{
+"n": "Anaplan",
+"p": "ingestion/lakeflow-connect/anaplan",
+"st": "Beta"
+},
+{
+"n": "Anthropic",
+"p": "ingestion/lakeflow-connect/anthropic",
+"st": "Beta"
+},
+{
+"n": "Anysphere (Cursor) Audit Logs",
+"p": "ingestion/lakeflow-connect/anysphere-audit-logs",
+"st": "Beta"
+},
+{
+"n": "Anysphere (Cursor) Organization",
+"p": "ingestion/lakeflow-connect/anysphere-organization",
+"st": "Beta"
+},
+{
+"n": "Apache Kafka",
+"p": "ingestion/lakeflow-connect/kafka",
+"st": "Beta"
+},
+{
+"n": "Atlassian Audit Logs",
+"p": "ingestion/lakeflow-connect/atlassian-audit-logs",
+"st": "Beta"
+},
+{
+"n": "Celigo",
+"p": "ingestion/lakeflow-connect/celigo",
+"st": "Beta"
+},
+{
+"n": "GitHub",
+"p": "ingestion/lakeflow-connect/github-overview",
+"st": "Beta"
+},
+{
+"n": "Glean",
+"p": "ingestion/lakeflow-connect/glean",
+"st": "Beta"
+},
+{
+"n": "Gmail",
+"p": "ingestion/lakeflow-connect/gmail",
+"st": "Beta"
+},
+{
+"n": "Google Ads",
+"p": "ingestion/lakeflow-connect/google-ads",
+"st": "Beta"
+},
+{
+"n": "Google Search Console",
+"p": "ingestion/lakeflow-connect/google-search-console",
+"st": "Beta"
+},
+{
+"n": "Google Workspace",
+"p": "ingestion/lakeflow-connect/google-workspace",
+"st": "Beta"
+},
+{
+"n": "HubSpot",
+"p": "ingestion/lakeflow-connect/hubspot-overview",
+"st": "Beta"
+},
+{
+"n": "Jira",
+"p": "ingestion/lakeflow-connect/jira",
+"st": "Beta"
+},
+{
+"n": "LinkedIn Ads",
+"p": "ingestion/lakeflow-connect/linkedin-ads",
+"st": "Beta"
+},
+{
+"n": "Marketo",
+"p": "ingestion/lakeflow-connect/marketo",
+"st": "Beta"
+},
+{
+"n": "Meta Ads",
+"p": "ingestion/lakeflow-connect/meta-ads",
+"st": "Beta"
+},
+{
+"n": "Microsoft Outlook",
+"p": "ingestion/lakeflow-connect/outlook-overview",
+"st": "Beta"
+},
+{
+"n": "Monday.com",
+"p": "ingestion/lakeflow-connect/monday-com",
+"st": "Beta"
+},
+{
+"n": "Netskope Logs",
+"p": "ingestion/lakeflow-connect/netskope-logs",
+"st": "Beta"
+},
+{
+"n": "Notion",
+"p": "ingestion/lakeflow-connect/notion",
+"st": "Beta"
+},
+{
+"n": "OpenAI",
+"p": "ingestion/lakeflow-connect/openai",
+"st": "Beta"
+},
+{
+"n": "Oracle Database",
+"p": "ingestion/lakeflow-connect/oracle-integrated-overview",
+"st": "Beta"
+},
+{
+"n": "PagerDuty",
+"p": "ingestion/lakeflow-connect/pagerduty",
+"st": "Beta"
+},
+{
+"n": "Pendo",
+"p": "ingestion/lakeflow-connect/pendo-overview",
+"st": "Beta"
+},
+{
+"n": "RabbitMQ",
+"p": "ingestion/lakeflow-connect/rabbitmq",
+"st": "Beta"
+},
+{
+"n": "Reddit Ads",
+"p": "ingestion/lakeflow-connect/reddit-ads",
+"st": "Beta"
+},
+{
+"n": "Salesforce Marketing Cloud",
+"p": "ingestion/lakeflow-connect/sfmc-overview",
+"st": "Beta"
+},
+{
+"n": "SendGrid (Twilio)",
+"p": "ingestion/lakeflow-connect/sendgrid",
+"st": "Beta"
+},
+{
+"n": "Smartsheet",
+"p": "ingestion/lakeflow-connect/smartsheet-overview",
+"st": "Beta"
+},
+{
+"n": "Square",
+"p": "ingestion/lakeflow-connect/square",
+"st": "Beta"
+},
+{
+"n": "Strac",
+"p": "ingestion/lakeflow-connect/strac",
+"st": "Beta"
+},
+{
+"n": "TikTok Ads",
+"p": "ingestion/lakeflow-connect/tiktok-ads",
+"st": "Beta"
+},
+{
+"n": "Veeva Vault",
+"p": "ingestion/lakeflow-connect/veeva-vault",
+"st": "Beta"
+},
+{
+"n": "Verkada",
+"p": "ingestion/lakeflow-connect/verkada",
+"st": "Beta"
+},
+{
+"n": "Wiz Audit Logs",
+"p": "ingestion/lakeflow-connect/wiz-audit-logs",
+"st": "Beta"
+},
+{
+"n": "Workday HCM",
+"p": "ingestion/lakeflow-connect/workday-hcm-overview",
+"st": "Beta"
+},
+{
+"n": "Workiva",
+"p": "ingestion/lakeflow-connect/workiva",
+"st": "Beta"
+},
+{
+"n": "Zip",
+"p": "ingestion/lakeflow-connect/zip",
+"st": "Beta"
+},
+{
+"n": "Zoho Books",
+"p": "ingestion/lakeflow-connect/zoho-books",
+"st": "Beta"
+}
+],
+"ldp": [
+{
+"n": "Lakeflow Declarative Pipelines (overview)",
+"p": "ldp/"
+},
+{
+"n": "CDC / AUTO CDC (formerly APPLY CHANGES)",
+"p": "ldp/cdc"
+},
+{
+"n": "CDC advanced (AUTO CDC / SCD from snapshots)",
+"p": "ldp/cdc-advanced"
+},
+{
+"n": "Streaming tables (incremental)",
+"p": "ldp/concepts/streaming-tables"
+},
+{
+"n": "Materialized views",
+"p": "ldp/concepts/materialized-views"
+},
+{
+"n": "Incremental refresh (materialized views)",
+"p": "ldp/incremental-refresh"
+},
+{
+"n": "Expectations (data quality)",
+"p": "ldp/expectations"
+},
+{
+"n": "Expectation patterns (advanced data quality)",
+"p": "ldp/expectation-patterns"
+},
+{
+"n": "Data lineage (auto-captured in Unity Catalog)",
+"p": "data-governance/unity-catalog/data-lineage"
+},
+{
+"n": "Backfill / data-correction flows",
+"p": "ldp/flows-backfill"
+},
+{
+"n": "Stateful stream processing (state / watermarks)",
+"p": "ldp/stateful-processing"
+},
+{
+"n": "AI functions in pipelines (overview)",
+"p": "large-language-models/ai-functions"
+},
+{
+"n": "ai_query (batch LLM inference)",
+"p": "sql/language-manual/functions/ai_query"
+},
+{
+"n": "ai_parse_document (document parsing)",
+"p": "sql/language-manual/functions/ai_parse_document"
+},
+{
+"n": "Intelligent Document Processing (IDP)",
+"p": "agents/agent-bricks/intelligent-document-processing"
+},
+{
+"n": "Auto Loader (cloudFiles)",
+"p": "ingestion/cloud-object-storage/auto-loader/"
+},
+{
+"n": "Zerobus ingest (direct write API)",
+"p": "ingestion/zerobus-ingest"
+},
+{
+"n": "Change data capture from databases (database replication)",
+"p": "ldp/database-replication"
+}
+],
+"ingestion": [
+{
+"n": "Lakeflow Connect (managed connectors)",
+"p": "ingestion/lakeflow-connect/",
+"when": "Fully-managed, UC-governed ingestion from SaaS apps and databases with minimal config."
+},
+{
+"n": "Auto Loader",
+"p": "ingestion/cloud-object-storage/auto-loader/",
+"when": "Incrementally ingest files as they land in cloud object storage (cloudFiles)."
+},
+{
+"n": "Lakeflow Declarative Pipelines",
+"p": "ldp/",
+"when": "Declarative ETL for streaming tables, materialized views, CDC, and data-quality expectations."
+},
+{
+"n": "Zerobus ingest",
+"p": "ingestion/zerobus-ingest",
+"when": "High-throughput direct write of event/telemetry data straight into Delta via an API, no message bus."
+},
+{
+"n": "Lakehouse Federation",
+"p": "query-federation/",
+"when": "Query external databases/warehouses (e.g. Snowflake, Postgres) in place without moving data."
+},
+{
+"n": "Delta Sharing",
+"p": "data-sharing/",
+"when": "Ingest/share live data across orgs and platforms via the open sharing protocol."
+},
+{
+"n": "Databricks Marketplace",
+"p": "marketplace/",
+"when": "Acquire third-party datasets and data products as ready-to-use shares."
+}
+],
+"protocols": [
+{
+"n": "JDBC driver",
+"p": "integrations/jdbc/"
+},
+{
+"n": "ODBC driver",
+"p": "integrations/odbc/"
+},
+{
+"n": "Databricks SQL Connector for Python",
+"p": "dev-tools/python-sql-connector"
+},
+{
+"n": "Go SQL driver",
+"p": "dev-tools/go-sql-driver"
+},
+{
+"n": "Node.js SQL driver",
+"p": "dev-tools/nodejs-sql-driver"
+},
+{
+"n": "Databricks Connect (Spark Connect)",
+"p": "dev-tools/databricks-connect/"
+},
+{
+"n": "Statement Execution API (tutorial)",
+"p": "dev-tools/sql-execution-tutorial"
+},
+{
+"n": "SQL drivers & tools (overview)",
+"p": "dev-tools/sql-drivers-tools"
+},
+{
+"n": "BI tools / JDBC-ODBC integration (overview)",
+"p": "integrations/jdbc-odbc-bi"
+},
+{
+"n": "Partner Connect (overview)",
+"p": "partner-connect/"
+}
+],
+"apps": [
+{
+"n": "Databricks Apps (overview)",
+"p": "dev-tools/databricks-apps/"
+},
+{
+"n": "Get started with Apps",
+"p": "dev-tools/databricks-apps/get-started"
+},
+{
+"n": "Key concepts",
+"p": "dev-tools/databricks-apps/key-concepts"
+},
+{
+"n": "Develop apps (supported frameworks)",
+"p": "dev-tools/databricks-apps/app-development"
+},
+{
+"n": "Define the app runtime (run commands: Streamlit/Flask/Dash/Node)",
+"p": "dev-tools/databricks-apps/app-runtime"
+},
+{
+"n": "Streamlit tutorial",
+"p": "dev-tools/databricks-apps/tutorial-streamlit"
+},
+{
+"n": "Node.js tutorial",
+"p": "dev-tools/databricks-apps/tutorial-node"
+}
+],
+"governance": [
+{
+"n": "Unity Catalog (overview)",
+"p": "data-governance/unity-catalog/"
+},
+{
+"n": "Data governance (landing)",
+"p": "data-governance/"
+},
+{
+"n": "Administration (admin landing)",
+"p": "admin/"
+},
+{
+"n": "Account & workspace settings",
+"p": "admin/account-settings/"
+},
+{
+"n": "Security & compliance (landing)",
+"p": "security/"
+},
+{
+"n": "Access control / permissions (auth)",
+"p": "security/auth/access-control/"
+},
+{
+"n": "Unity Catalog data lineage",
+"p": "data-governance/unity-catalog/data-lineage"
+},
+{
+"n": "Audit logs (system tables)",
+"p": "admin/system-tables/audit-logs"
+},
+{
+"n": "Audit log configuration",
+"p": "admin/account-settings/audit-logs"
+},
+{
+"n": "System tables (overview)",
+"p": "admin/system-tables/"
+},
+{
+"n": "Budgets / budget policies (cost)",
+"p": "admin/usage/budget-policies"
+},
+{
+"n": "Usage system tables (cost/usage)",
+"p": "admin/usage/system-tables"
+}
+],
+"academy_gov": [
+{
+"t": "Databricks Platform Administration Fundamentals",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/1230/databricks-platform-administration-fundamentals"
+},
+{
+"t": "Databricks Identity Administration",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/1231/databricks-identity-administration"
+},
+{
+"t": "Databricks Workspace Administration and Security",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/1232/databricks-workspace-administration-and-security"
+},
+{
+"t": "Databricks Compute Resource Administration (compute & cost)",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/1233/databricks-compute-resource-administration"
+},
+{
+"t": "Get Started with Data Governance on Databricks (Unity Catalog, RLS/column masking, ABAC)",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/4653/get-started-with-data-governance-on-databricks"
+},
+{
+"t": "Databricks Accredited Platform Administrator (free accreditation exam)",
+"u": "https://customer-academy.databricks.com/learn/course/external/view/elearning/1229/databricks-accredited-platform-administrator-accreditation"
+}
+]
+}

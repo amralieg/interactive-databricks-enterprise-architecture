@@ -1,5 +1,5 @@
 name: Water Utilities
-description: 'Municipal and investor-owned water utilities: SCADA and AMI metering, network asset management, customer billing, field work orders, and regulatory quality reporting.'
+description: 'Municipal and investor-owned water and wastewater utilities: SCADA and AMI metering, network and asset management, leak and pressure operations, customer service and field work, drinking-water quality compliance, and energy, sustainability and financial reporting.'
 sources:
   - name: CIS & Billing
     icon: erp
@@ -330,9 +330,9 @@ pipelines:
           - name: CFO & Rates
             cares: the revenue requirement, collections and the capital budget behind the next rate filing.
         ucs:
-          - Capital Planning
+          - Financial Analytics
           - Leak Detection
-          - Drought Contingency
+          - Sustainability
       - name: Distribution Ops
         mark: Lakehouse//RT
         summary: Control room operators on pressure, storage and pump scheduling, holding pressure zones in compliance while trimming energy at the pumps.
@@ -350,9 +350,9 @@ pipelines:
             cares: night-flow anomalies and where to send crews to cut non-revenue water.
         ucs:
           - Pressure Management
-          - Pump Optimization
+          - Sustainability
           - Leak Detection
-          - Outage Response
+          - Demand Forecasting
       - name: Customer Operations
         mark: CustomerLake
         summary: Call centre and field service on outages, high-bill disputes and leak investigations, giving agents restoration ETA and account context.
@@ -369,8 +369,8 @@ pipelines:
           - name: Billing Analysts
             cares: unusual consumption explained from meter intervals before a bill is disputed.
         ucs:
-          - Outage Response
-          - High Bill Investigation
+          - Customer 360
+          - Field Crew Assistant
       - name: Asset Management
         mark: AI/BI
         summary: Engineers on main-replacement priority, pump health and capex planning, ranking mains on break risk, age and soil against renewal budget.
@@ -388,8 +388,8 @@ pipelines:
             cares: the pipe, valve and hydrant network kept accurate for every risk model.
         ucs:
           - Main Break Prediction
-          - Capital Planning
-          - Pump Optimization
+          - Pump & Plant Reliability
+          - Financial Analytics
       - name: Water Quality
         mark: Lakeflow
         summary: Quality teams on sample results, regulatory exceedances and public notification, tying lab and sensor data to limits before a deadline.
@@ -406,8 +406,8 @@ pipelines:
           - name: Public Notification
             cares: boil-water and exceedance notices issued to customers on time.
         ucs:
-          - Water Quality Exceedance
-          - Drought Contingency
+          - Water Quality Compliance
+          - Sustainability
   - name: Technical
     icon: code
     tiles:
@@ -431,7 +431,7 @@ pipelines:
         ucs:
           - Leak Detection
           - Demand Forecasting
-          - Water Quality Exceedance
+          - Water Quality Compliance
       - name: Data Scientists
         mark: MLflow
         summary: Leak-detection, demand-forecast, main-break and pump-optimisation models, and whether they still hold as weather and network state shift.
@@ -453,7 +453,7 @@ pipelines:
           - Leak Detection
           - Demand Forecasting
           - Main Break Prediction
-          - Pump Optimization
+          - Pump & Plant Reliability
       - name: App Developers
         mark: Apps
         summary: Ship the Network Control Center, Customer Impact and Quality Compliance apps control-room and quality teams work in, next to governed SCADA data.
@@ -472,9 +472,9 @@ pipelines:
           - name: Agent Developers
             cares: agents that draft pump setpoints and outage notices against governed tools.
         ucs:
-          - Outage Response
-          - High Bill Investigation
-          - Water Quality Exceedance
+          - Customer 360
+          - Field Crew Assistant
+          - Water Quality Compliance
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -654,7 +654,7 @@ agent_usecases:
     tiles:
       - name: Network & NRW Agent
         icon: genie
-        summary: Ask about pressure, non-revenue water, leaks and pump energy across the network in plain language.
+        summary: Ask about pressure, non-revenue water, leaks and demand across the network in plain language.
         feeds:
           - AVEVA PI System
           - Itron OpenWay
@@ -668,29 +668,11 @@ agent_usecases:
           - What was non-revenue water by district last month?
           - Which zones show the largest night-flow anomalies right now?
           - Where is pressure out of compliance across the network?
-          - How much pumping energy did we use against tariff windows this week?
           - Which areas should crews investigate first for leaks?
-      - name: Customer & Billing Agent
+          - What is next week's demand forecast by district against storage?
+      - name: Asset & Reliability Agent
         icon: genie
-        summary: Explore outages, high-bill disputes and consumption from AMI intervals.
-        feeds:
-          - Oracle Utilities C2M
-          - Itron OpenWay
-          - Cityworks AMS
-          - Conformed meter, asset, account
-        teams:
-          - Customer Operations
-          - Call Centre Agents
-          - Billing Analysts
-        questions:
-          - Which accounts have open high-bill disputes right now?
-          - What is the restoration ETA for the current outages?
-          - Which premises show consumption spikes that look like private-side leaks?
-          - What is first-call resolution in the contact centre this week?
-          - How many service orders are open past their SLA?
-      - name: Asset & Capital Agent
-        icon: genie
-        summary: Answer questions on main-break risk, pump health and replacement priority.
+        summary: Answer questions on main-break risk, pump and plant health and replacement priority.
         feeds:
           - Esri ArcGIS Utility
           - IBM Maximo
@@ -703,12 +685,30 @@ agent_usecases:
         questions:
           - Which mains exceed our break-rate threshold this year?
           - Where is main-break risk highest by material and soil type?
-          - Which pumps are showing the worst condition trend?
+          - Which pumps and motors are predicted to fail this quarter?
           - What replacement candidates give the most risk reduction per dollar?
           - What is remaining life on our aging cast-iron mains?
-      - name: Water Quality Agent
+      - name: Customer & Field Agent
         icon: genie
-        summary: Ask about sample results, exceedances and source-water risk against regulatory limits.
+        summary: Explore accounts, high-bill questions, outages and field work in plain language.
+        feeds:
+          - Oracle Utilities C2M
+          - Itron OpenWay
+          - Cityworks AMS
+          - Conformed meter, asset, account
+        teams:
+          - Customer Operations
+          - Call Centre Agents
+          - Field Service Dispatch
+        questions:
+          - Which accounts have open high-bill disputes right now?
+          - Which premises show consumption spikes that look like private-side leaks?
+          - What is first-call resolution in the contact centre this week?
+          - How many field work orders are open past their SLA?
+          - Which crews are closest to the next priority work order?
+      - name: Quality & Sustainability Agent
+        icon: genie
+        summary: Ask about sample results, exceedances, pump energy and emissions against regulatory limits.
         feeds:
           - Hach WIMS
           - KISTERS WISKI
@@ -721,9 +721,9 @@ agent_usecases:
         questions:
           - Which sample results are approaching a regulatory limit right now?
           - Are there any exceedances that need public notification today?
-          - How is source-water quality trending against drought conditions?
+          - How much pumping energy did we use against tariff windows this week?
+          - What is our greenhouse-gas intensity trend across the network?
           - Which sites are behind on their sampling schedule?
-          - What is our chlorine residual trend across the distribution system?
   - name: Business Use Cases
     icon: ztarget
     span: 8
@@ -765,53 +765,6 @@ agent_usecases:
         stories:
           - title: Sabesp Transforms Water Utility Operations with Lakehouse
             url: https://www.databricks.com/customers/sabesp
-      - name: Pressure Management
-        short: Operations
-        icon: stream
-        summary: Pressure zones optimised for compliance and energy cost.
-        problem: Pressure zones are tuned by hand to avoid low-pressure complaints, so the network runs over-pressured, wasting pump energy and driving the main breaks and leakage it was meant to prevent.
-        who_benefits: Distribution Ops
-        how_built: PI pressure and Schneider PRV telemetry land in Lakehouse//RT and feed optimisation models in Model Serving, so setpoints hold compliance at lowest energy from the Network Control Center.
-        components:
-          - Network Control Center
-          - AVEVA PI System
-          - Schneider EcoStruxure
-          - Model Serving
-          - Lakehouse//RT
-      - name: Pump Optimization
-        short: Energy
-        icon: iot
-        summary: Pump scheduling minimising energy while meeting storage targets.
-        problem: Pumps run on fixed schedules blind to tariff windows and tank state, so the utility burns energy at peak price and cycles equipment harder than storage targets actually require.
-        who_benefits: Distribution Ops
-        how_built: Pump, tank and tariff data feed scheduling models tracked in MLflow and scored in Model Serving, so optimised setpoints reach SCADA from the Network Control Center within hydraulic limits.
-        components:
-          - Network Control Center
-          - AVEVA PI System
-          - Model Serving
-          - MLflow
-          - Lakehouse//RT
-        stories:
-          - title: Vattenfall Builds Real-Time Energy Intelligence
-            url: https://www.databricks.com/customers/vattenfall/genie
-          - title: What is Predictive Maintenance?
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Water Quality Exceedance
-        short: Compliance
-        icon: gavel
-        summary: Lab and online sensor exceedances flagged before reporting deadlines.
-        problem: Lab results and online sensor readings sit in separate systems, so a chlorine or turbidity exceedance can be missed until a reporting deadline or notification clock has already started.
-        who_benefits: Water Quality
-        how_built: Hach WIMS lab results and WISKI sensor series are conformed through Lakeflow under Unity Catalog and checked against limits, flagging exceedances early in the Quality Compliance Hub.
-        components:
-          - Quality Compliance Hub
-          - Hach WIMS
-          - KISTERS WISKI
-          - Lakeflow
-          - Unity Catalog
-        stories:
-          - title: Turning smart digital water meter data into autonomous actions
-            url: https://www.databricks.com/customers/water-link
       - name: Main Break Prediction
         short: Assets
         icon: db
@@ -831,66 +784,114 @@ agent_usecases:
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
           - title: Pipeline Flow Monitoring
             url: https://www.databricks.com/blog/pipeline-flow-monitoring
-      - name: Outage Response
+      - name: Pump & Plant Reliability
+        short: Assets
+        icon: iot
+        summary: Pump, motor and treatment-plant failures predicted from condition and SCADA telemetry so equipment is serviced before it stops a plant.
+        problem: Pumps, motors and treatment plant are maintained on a calendar, so a failing pump is found when it trips a station, not on a planned window, and crews chase symptoms across systems.
+        who_benefits: Asset Management
+        how_built: PI historian and Maximo condition data feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders for maintenance planning.
+        components:
+          - IBM Maximo
+          - AVEVA PI System
+          - Model Serving
+          - MLflow
+          - Feature Store
+        stories:
+          - title: What is Predictive Maintenance?
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Pressure Management
+        short: Operations
+        icon: stream
+        summary: Pressure zones optimised for compliance and energy cost.
+        problem: Pressure zones are tuned by hand to avoid low-pressure complaints, so the network runs over-pressured, wasting pump energy and driving the main breaks and leakage it was meant to prevent.
+        who_benefits: Distribution Ops
+        how_built: PI pressure and Schneider PRV telemetry land in Lakehouse//RT and feed optimisation models in Model Serving, so setpoints hold compliance at lowest energy from the Network Control Center.
+        components:
+          - Network Control Center
+          - AVEVA PI System
+          - Schneider EcoStruxure
+          - Model Serving
+          - Lakehouse//RT
+      - name: Customer 360
         short: Customer
-        icon: gauge
-        summary: Outage scope, crew dispatch and restoration ETA for public communication.
-        problem: When a main breaks the call centre learns the scope from complaints, so agents cannot give a restoration time and crews are dispatched without knowing who is affected or how many.
+        icon: custlake
+        summary: A single governed view of every account, joining billing, AMI usage, outages and interactions so the contact centre acts on one profile.
+        problem: Customer data is split across CIS, AMI and work management, so agents answer high-bill and outage questions from partial records and cannot see the account's own consumption.
         who_benefits: Customer Operations
-        how_built: Network state, work orders and account data conform under Unity Catalog and surface in the Customer Impact Console on Lakebase, giving agents outage scope and a restoration ETA.
+        how_built: Oracle C2M billing, Itron AMI usage and work orders conform under Unity Catalog in the Customer Impact Console, so agents and Genie explain a bill or an outage from one governed account.
         components:
           - Customer Impact Console
-          - Cityworks AMS
-          - CustomerLake
-          - Lakebase
-          - AI/BI
-      - name: High Bill Investigation
-        short: Billing
-        icon: market
-        summary: Unusual consumption patterns explained from AMI intervals.
-        problem: A high-bill dispute lands with no way to see the meter's own intervals, so agents open a field visit for what is usually a private-side leak or a seasonal fill the data already explains.
-        who_benefits: Customer Operations
-        how_built: AMI interval reads from Itron join billing from Oracle C2M in the Customer Impact Console, so agents and Genie explain a spike from the consumption pattern before a truck rolls.
-        components:
-          - Customer Impact Console
-          - Itron OpenWay
           - Oracle Utilities C2M
-          - Genie One
+          - Itron OpenWay
+          - Unity Catalog
           - AI/BI
         stories:
           - title: Turning smart digital water meter data into autonomous actions
             url: https://www.databricks.com/customers/water-link
           - title: Sabesp Transforms Water Utility Operations with Lakehouse
             url: https://www.databricks.com/customers/sabesp
-      - name: Capital Planning
-        short: Finance
-        icon: erp
-        summary: Asset replacement and growth capital prioritised on risk and ROI.
-        problem: Renewal and growth capital is argued in spreadsheets, so replacement dollars chase the last failure instead of the risk-and-consequence ranking that would defend the plan to the board.
-        who_benefits: Asset Management
-        how_built: Asset condition, break risk and hydraulic constraint data are conformed under Unity Catalog and ranked on ROI in the Main Replacement Planner, published to finance on certified AI/BI views.
+      - name: Water Quality Compliance
+        short: Compliance
+        icon: gavel
+        summary: Lab and online sensor results checked against regulatory limits so exceedances are caught and reported before the deadline.
+        problem: Lab results and online sensor readings sit in separate systems, so a chlorine or turbidity exceedance can be missed until a reporting deadline or notification clock has already started.
+        who_benefits: Water Quality
+        how_built: Hach WIMS lab results and WISKI sensor series are conformed through Lakeflow under Unity Catalog and checked against limits, flagging exceedances early in the Quality Compliance Hub.
         components:
-          - Main Replacement Planner
-          - IBM Maximo
+          - Quality Compliance Hub
+          - Hach WIMS
+          - KISTERS WISKI
+          - Lakeflow
+          - Unity Catalog
+        stories:
+          - title: Turning smart digital water meter data into autonomous actions
+            url: https://www.databricks.com/customers/water-link
+      - name: Field Crew Assistant
+        short: Field ops
+        icon: apps
+        summary: An assistant that gives field crews the work order, asset history and network context for the job, and closes it on mobile.
+        problem: Crews arrive with a printed work order and no asset or network context, so jobs stall on missing information and completions are keyed in later, leaving work and network records stale.
+        who_benefits: Customer Operations
+        how_built: Cityworks work orders, the GIS network model and asset history conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back as Field Work Orders.
+        components:
+          - Field Work Orders
+          - Cityworks AMS
           - Esri ArcGIS Utility
+          - Agent Bricks
+          - Lakebase
+      - name: Sustainability
+        short: Energy & carbon
+        icon: globe
+        summary: Pump energy, greenhouse-gas intensity and water reuse optimised across the network for cost and carbon.
+        problem: Pumping is the utility's biggest energy cost and its largest controllable emissions, but energy, tariff and flow data sit apart from operations, so neither cost nor carbon is actually managed.
+        who_benefits: Distribution Ops
+        how_built: Pump, tank and tariff data feed optimisation models tracked in MLflow and scored in Model Serving, so energy and emissions are cut from the Network Control Center within hydraulic limits.
+        components:
+          - Network Control Center
+          - AVEVA PI System
+          - Model Serving
+          - MLflow
+          - Lakehouse//RT
+        stories:
+          - title: Vattenfall Builds Real-Time Energy Intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Financial Analytics
+        short: Finance
+        icon: sheet
+        summary: Cost per thousand gallons, collections and capital tracked on governed ledgers so finance, rates and operations work from one set of numbers.
+        problem: Cost-of-service, collections and capital numbers are spread across CIS, work management and finance systems, so each rate filing and board pack rebuilds them and the numbers rarely reconcile.
+        who_benefits: Asset Management
+        how_built: CIS, work-management and asset ledgers conform under Unity Catalog and are modelled in AI/BI with Genie One, so cost per gallon, collections and capital are read from one governed set for rate cases and the board.
+        components:
+          - Oracle Utilities C2M
           - AI/BI
           - Unity Catalog
+          - Genie One
+          - Main Replacement Planner
         stories:
           - title: How Scottish Water Made Its Capital Investment Data Conversational
             url: https://www.databricks.com/blog/how-scottish-water-made-its-capital-investment-data-conversational-databricks-genie
-      - name: Drought Contingency
-        short: Resilience
-        icon: globe
-        summary: Stage restrictions and supply alternatives modeled against source levels.
-        problem: Drought stages are called late off manual reservoir reads, so restrictions and alternative-supply moves lag the shortage and the utility loses the lead time to soften customer impact.
-        who_benefits: GM & Executive Office
-        how_built: NOAA hydrology and forecast feeds join source-level and demand data on Delta Lake and model supply scenarios in Model Serving, so restriction stages and interties are planned in AI/BI.
-        components:
-          - NOAA Hydrology API
-          - Weather Forecast API
-          - Model Serving
-          - AI/BI
-          - Delta Lake
 medallion:
   Bronze:
     short: Raw network and meter feeds

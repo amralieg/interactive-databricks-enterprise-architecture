@@ -1,0 +1,907 @@
+name: Oil & Gas Downstream Refining
+description: 'Refining operators: crude blending and feedstock selection, unit yield and process monitoring, laboratory quality and off-spec root-cause, crack-spread trading, energy and steam efficiency, prescriptive maintenance and product distribution across the refinery estate.'
+sources:
+  - name: Process Control & Historian
+    icon: iot
+    tiles:
+      - name: Honeywell Experion
+        icon: gauge
+        summary: DCS alarms, setpoints and unit sequences from crude, FCC and treating units.
+        citations:
+          - honeywell-exp
+        category: Distributed Control System (DCS)
+        what_it_is: Runs refining and process units in real time and emits the alarms, setpoints and unit sequences that describe how the plant is operating.
+        who_uses_it: Console operators, process control engineers and refinery operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k signals/sec
+            interval: Continuous (sub-second)
+      - name: AspenTech IP.21
+        icon: stream
+        summary: Process historian time-series for unit analytics, energy intensity and abnormal event detection.
+        citations:
+          - aspen-ip21
+        category: Process/Time-Series Historian
+        what_it_is: Stores process historian time-series for unit analytics, yield accounting, energy intensity and abnormal-event detection across the refinery.
+        who_uses_it: Process engineers, yield accounting and Energy teams.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 10-100k tags/sec
+            interval: Continuous historian stream
+      - name: Cognite Data Fusion
+        icon: db
+        summary: Contextualised equipment, sensor and document data unified across units and assets.
+        citations:
+          - cognite
+        category: Industrial DataOps Platform
+        what_it_is: Contextualises equipment, sensor, maintenance and document data into a unified industrial model across refinery units and assets.
+        who_uses_it: Reliability engineers, process engineering and Industrial DataOps.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 5-30 GB/day contextualised
+            interval: Continuous + periodic model updates
+  - name: Blend & Lab
+    icon: sheet
+    tiles:
+      - name: AspenTech PIMS
+        icon: sheet
+        summary: Crude selection, blend recipes and unit planning from the refinery planning model.
+        citations:
+          - aspen-pims
+        category: Refinery Planning & Blending (LP)
+        what_it_is: Runs the linear-programming planning model that sets crude selection, blend recipes and unit targets against the refinery margin.
+        who_uses_it: Planners, economics and scheduling and blend engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day plans + cases
+            interval: Planning cycles + on-demand what-if
+      - name: LabWare LIMS
+        icon: gavel
+        summary: Feed, intermediate and product assays, blend certifications and off-spec results.
+        citations:
+          - labware
+        category: Laboratory Information Management System (LIMS)
+        what_it_is: Manages feed, intermediate and product assays, blend certifications and off-spec results tied back to the units and tanks that produced them.
+        who_uses_it: Laboratory, Quality and blend engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-3 GB/day assays
+            interval: Per-sample + hourly
+  - name: Enterprise & Assets
+    icon: erp
+    tiles:
+      - name: SAP S/4HANA
+        icon: erp
+        summary: Finance postings, materials master, product movements and cost objects for the refinery.
+        citations:
+          - sap-s4
+        category: Enterprise Resource Planning (ERP)
+        what_it_is: Runs finance postings, the materials master, product movements and cost objects the back office and operations transact on.
+        who_uses_it: Finance, materials management and cost controllers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-50 GB/day
+            interval: Nightly batch + hourly deltas
+      - name: IBM Maximo
+        icon: gauge
+        summary: Asset registers, work orders and maintenance history for units, rotating equipment and heat exchangers.
+        citations:
+          - ibm-maximo
+        category: Enterprise Asset Management (EAM)
+        what_it_is: Manages asset registers, preventive and corrective work orders and maintenance history for units, rotating equipment and heat exchangers.
+        who_uses_it: Maintenance planners, reliability engineers and unit operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day work orders
+            interval: Hourly / event-driven
+      - name: SAP Ariba
+        icon: sheet
+        summary: Requisitions, supplier catalogues and materials sourcing for turnaround and unit work.
+        citations:
+          - sap-ariba
+        category: Procurement & Supply Management
+        what_it_is: Handles requisitions, supplier catalogues, sourcing events and materials commitments that keep turnaround and unit work supplied.
+        who_uses_it: Procurement, materials planning and supply chain teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 0.5-2 GB/day
+            interval: Continuous + nightly batch
+  - name: Commercial & Trading
+    icon: market
+    tiles:
+      - name: ION Openlink Endur
+        icon: market
+        summary: Crude and product deals, hedges and mark-to-market for the refining desk.
+        citations:
+          - ion-endur
+        category: Energy Trading & Risk Management (ETRM)
+        what_it_is: Captures crude and product deals, hedges and mark-to-market for the refining and risk desks across the book.
+        who_uses_it: Crude and product traders, middle office and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day deals + positions
+            interval: Intraday + end-of-day marks
+      - name: Platts Price Assess
+        icon: chart
+        summary: Benchmark curves and crack-spread indices the desk marks crude and products to.
+        citations:
+          - platts
+        category: Commodity Price Benchmark Provider
+        what_it_is: Supplies benchmark price assessments, curves and crack-spread indices the refining and risk desks mark physical and paper positions to.
+        who_uses_it: Trading, product marketing and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs reference data
+            interval: Daily assessment publication
+  - name: Safety & Environment
+    icon: gavel
+    tiles:
+      - name: Sphera Risk Mgmt
+        icon: gavel
+        summary: Process safety, management-of-change and incident investigations tied to units.
+        citations:
+          - sphera
+        category: Process Safety & Operational Risk Platform
+        what_it_is: Manages process safety, management-of-change and incident investigations tied to units and barriers.
+        who_uses_it: Process safety, HSE and integrity engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 0.5-2 GB/day cases + events
+            interval: Hourly / daily
+      - name: Enablon EHS
+        icon: observ
+        summary: Emissions events, flare logs and regulatory permit limits.
+        citations:
+          - enablon
+        category: EHS & Emissions Management System
+        what_it_is: Records emissions events, flare and vent logs and regulatory permit limits for environmental compliance.
+        who_uses_it: Environmental and emissions teams and Regulatory compliance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-4 GB/day events + logs
+            interval: Hourly / daily
+      - name: FLIR Optical Gas Img
+        icon: iot
+        summary: Leak detection surveys and repair verification imagery across units and tank farms.
+        category: Optical Gas Imaging / Leak Detection
+        what_it_is: Produces optical-gas imaging surveys and repair-verification imagery used to detect and confirm fugitive hydrocarbon leaks across units and tank farms.
+        who_uses_it: LDAR survey crews, integrity and environmental teams.
+        data_out:
+          batch:
+            types:
+              - unstructured
+            volume: 10s-100s of GB/survey
+            interval: Per-survey (periodic campaigns)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Treasury Mart
+        icon: fed
+        summary: Hedge effectiveness and working-capital marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Corporate treasury hedge-effectiveness and working-capital marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Treasury, Finance and Risk analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: OPC-UA Plant Gateway
+        icon: iot
+        summary: Plant protocol bridges normalising DCS and analyser telemetry on ingest before historian landing.
+        citations:
+          - opc-ua
+        category: OT Protocol Gateway
+        what_it_is: Bridges plant OPC-UA, DCS and analyser protocols and normalises unit telemetry on ingest before historian landing.
+        who_uses_it: Controls engineers, OT/IT integration and Streaming data engineers.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 5-50k tags/sec
+            interval: Continuous OT telemetry
+      - name: EPA GHGRP Templates
+        icon: gavel
+        summary: Greenhouse gas reporting layouts validated on ingest before filing windows.
+        citations:
+          - epa-ghgrp
+        category: Regulatory Reporting Schema
+        what_it_is: Greenhouse-gas reporting layouts and factors validated on ingest so emissions data conforms before filing windows.
+        who_uses_it: Environmental reporting and Regulatory compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: MBs (templates + factors)
+            interval: Annual + periodic updates
+      - name: ASTM Product Specs
+        icon: sheet
+        summary: Product specification standards validated on ingest so certifications conform before release.
+        citations:
+          - astm
+        category: Product Specification Standards
+        what_it_is: Product specification standards and test-method limits validated on ingest so blend certifications conform before product release.
+        who_uses_it: Laboratory, Quality and product marketing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs (specs + methods)
+            interval: Periodic standard updates
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Corporate & Refinery Leaders
+        mark: Genie One
+        summary: The CEO on refinery margin and utilisation; the CFO on crack-spread exposure and working capital when crude and product benchmarks move.
+        uses:
+          - - Genie One
+            - Ask what yesterday refinery margin and unit yields were without waiting on operations reporting.
+          - - AI/BI
+            - Margin, yield and energy on one certified set of Metric Views.
+          - - Unity Catalog
+            - Certification so yield means one thing across DCS and accounting.
+        sub:
+          - name: CEO
+            cares: refinery margin, utilisation and the trade between throughput and the energy transition.
+          - name: CFO & Treasury
+            cares: crack-spread exposure, working capital and the hedge book as benchmarks move.
+          - name: Chief Operating Officer
+            cares: unit availability, energy cost and the HSE and compliance record across the site.
+        ucs:
+          - Crack-Spread Trading
+          - Unit Yield Monitoring
+          - Sustainability & Circular Economy
+      - name: Operations & Process
+        mark: Lakehouse//RT
+        summary: Console operators and process engineers on unit yields, blend targets and energy when a unit swings, protecting refinery margin and giveaway.
+        uses:
+          - - Operations Console
+            - Unit yields and blend targets before the shift board posts.
+          - - Lakehouse//RT
+            - Live DCS state at the latency a unit swings at.
+          - - AI/BI
+            - Yield and energy on governed definitions.
+        sub:
+          - name: Console Operator
+            cares: unit stability, alarms and holding the blend and unit targets.
+          - name: Process Engineer
+            cares: yield accounting, giveaway and the constraints that limit the unit.
+          - name: Blend Engineer
+            cares: recipe selection and the certifications that keep product on spec.
+        ucs:
+          - Unit Yield Monitoring
+          - Crude Blend Optimization
+          - Energy & Steam Efficiency
+      - name: Quality & Reliability
+        mark: AI/BI
+        summary: Laboratory and reliability engineers on off-spec events, giveaway and unit health, tracing a quality miss to its cause before more product is affected.
+        uses:
+          - - Quality Cockpit
+            - Off-spec events with genealogy back to unit and feed.
+          - - Model Serving
+            - Defect and remaining-life models scored on lab and historian signals.
+          - - Unity Catalog
+            - One definition of off-spec across LIMS and historian.
+        sub:
+          - name: Quality Manager
+            cares: off-spec events, giveaway and product release before shipment.
+          - name: Reliability Engineer
+            cares: rotating-equipment and exchanger health and the failures that cut runs.
+          - name: Laboratory Lead
+            cares: assay turnaround and the genealogy behind a quality miss.
+        ucs:
+          - Off-Spec Root-Cause
+          - Prescriptive Maintenance
+          - Unit Yield Monitoring
+      - name: Commercial & Supply
+        mark: Model Serving
+        summary: Trading and product marketing on crack-spread margin, crude selection and product distribution, marking physical and paper books consistently.
+        uses:
+          - - Trading Workbench
+            - Physical and paper positions marked to crack-spread margin.
+          - - Model Serving
+            - Blend-economics and distribution models scored on live plans.
+          - - Unity Catalog
+            - One crude and product definition across ops and finance.
+        sub:
+          - name: Crude & Products Traders
+            cares: physical and paper positions marked to crack-spread margin.
+          - name: Economics & Scheduling
+            cares: crude selection and the blend economics behind the plan.
+          - name: Product Marketing
+            cares: rack and terminal distribution and the netback on lifted product.
+        ucs:
+          - Crack-Spread Trading
+          - Crude Blend Optimization
+          - Product Distribution & Logistics
+      - name: HSE & Compliance
+        mark: Unity Catalog
+        summary: Process safety and environmental teams on emissions, permits and incident trends, tracked on TRIR and flare volumes before regulator inspections.
+        uses:
+          - - HSE Dashboard
+            - Flare and leak trends before regulator inspections.
+          - - Unity Catalog
+            - Lineage from sensor to regulatory filing.
+          - - AI/BI
+            - TRIR and emissions on governed definitions.
+        sub:
+          - name: Process Safety
+            cares: management-of-change, incident trends and the barriers behind a safe envelope.
+          - name: Environmental & Emissions
+            cares: flare, vent and greenhouse filings from governed sensor lineage.
+          - name: Regulatory Compliance
+            cares: permit limits and the evidence trail before regulator inspections.
+        ucs:
+          - Workforce Safety
+          - Regulatory Compliance
+          - Sustainability & Circular Economy
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Data Engineers
+        mark: Lakeflow
+        summary: Land the DCS, historian, LIMS assay and deal-capture feeds; own the Bronze to Silver path and the pager when a plant pipeline breaks.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for historian, LIMS and accounting sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on unit and assay feeds.
+          - - Lakewatch
+            - Freshness on the yield and quality tables operations reads.
+        sub:
+          - name: Historian & DCS Eng
+            cares: high-volume tag ingestion from Experion and IP.21 into governed tables.
+          - name: Pipeline Reliability
+            cares: the Bronze to Silver path and the pager when a plant feed breaks.
+          - name: Lab & Accounting Eng
+            cares: assay, movement and cost feeds landed for quality and finance.
+        ucs:
+          - Unit Yield Monitoring
+          - Off-Spec Root-Cause
+          - Regulatory Compliance
+      - name: Data Scientists
+        mark: MLflow
+        summary: Blend-economics, remaining-useful-life, energy and soft-sensor models, and whether they still hold six months after deployment on the units.
+        uses:
+          - - Feature Store
+            - Historian and assay features read identically in training and serving.
+          - - MLflow
+            - Every blend and RUL run tracked for audit and reproduction.
+          - - Model Serving
+            - Blend and failure models scored in the operational path.
+        sub:
+          - name: Process DS
+            cares: soft-sensor, yield and blend-economics models on historian and assay data.
+          - name: Reliability DS
+            cares: remaining-useful-life and anomaly models on unit historian data.
+          - name: Energy DS
+            cares: energy and steam-optimisation models across the utilities system.
+        ucs:
+          - Crude Blend Optimization
+          - Prescriptive Maintenance
+          - Energy & Steam Efficiency
+      - name: App Developers
+        mark: Apps
+        summary: Ship the operations, quality cockpit and trading applications operators and desk teams work in, hosted next to governed unit data.
+        uses:
+          - - Apps
+            - Operational screens with no separate web tier to run or secure.
+          - - Lakebase
+            - Serverless Postgres for hold-release and movement state and governed writes.
+          - - Agent Bricks
+            - Agents that draft an off-spec response against governed tools.
+        sub:
+          - name: Operations App Dev
+            cares: the unit, quality and blend screens operators and lab teams work in.
+          - name: Commercial App Dev
+            cares: the exposure and distribution surfaces the desk marks books on.
+          - name: Writeback & Integration
+            cares: setpoint and hold-release writeback into DCS and LIMS systems.
+        ucs:
+          - Off-Spec Root-Cause
+          - Product Distribution & Logistics
+          - Crack-Spread Trading
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    from: bi
+    tiles:
+      - name: Tableau / Qlik / ThoughtSpot
+        icon: chart
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers and shift updates in the channel operations already works in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Operations Writeback
+    icon: opdb
+    tiles:
+      - name: DCS Setpoint Push
+        icon: stream
+        summary: Approved operating and blend targets written back within safe envelopes.
+        citations:
+          - honeywell-exp
+      - name: Maximo Work Orders
+        icon: erp
+        summary: Maintenance work orders raised from predicted equipment and exchanger risk.
+        citations:
+          - ibm-maximo
+      - name: LIMS Hold & Release
+        icon: gavel
+        summary: Hold and release decisions written back from governed off-spec lineage.
+        citations:
+          - labware
+  - name: Customers & Partners
+    icon: partner
+    tiles:
+      - name: Product Certificate API
+        icon: api
+        summary: Product quality certificates served to buyers and terminals from governed lab lineage.
+        citations:
+          - labware
+      - name: Terminal Operator Feed
+        icon: globe
+        summary: Product movements and inventory exchanged with terminals without spreadsheet reconciliation.
+        citations:
+          - sap-s4
+      - name: Regulator Feed
+        icon: share
+        summary: Emissions and fuels data exchanged with regulators from governed products.
+        citations:
+          - epa-ghgrp
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: GHG & Emissions Filing
+        icon: gavel
+        summary: Regulatory greenhouse submissions produced from governed sensor and flare data.
+        citations:
+          - epa-ghgrp
+      - name: Fuels & Product Filing
+        icon: share
+        summary: Fuels and product-quality filings produced from contracted Gold products.
+        citations:
+          - astm
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Buyers, terminals and regulators reading live tables with no copy.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: Operations Console
+        icon: gauge
+        short: Yield live
+        summary: Unit yields, blend targets and energy on Databricks Apps over Lakebase.
+      - name: Quality Cockpit
+        icon: gavel
+        short: Off-spec view
+        summary: Off-spec events, giveaway and lab genealogy on one surface before product ships.
+      - name: Trading Workbench
+        icon: market
+        short: Crack-spread view
+        summary: Physical and paper positions marked to crack-spread margin on one surface.
+      - name: HSE Dashboard
+        icon: gavel
+        short: Emissions live
+        summary: Flare, leak and permit exceedances before inspections and board review.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Unit Yield & Energy
+        icon: aibi
+        summary: Unit yields, giveaway, energy intensity and utilisation on certified operations Metric Views.
+        kpis:
+          - Unit yield
+          - Product giveaway
+          - Energy intensity
+          - Unit availability
+          - Refinery utilisation
+        teams:
+          - Operations & Process
+          - Corporate & Refinery Leaders
+          - Process Engineer
+      - name: Quality & Reliability
+        icon: aibi
+        summary: Off-spec rate, first-pass certification, unit health and predicted failures across the estate.
+        kpis:
+          - Off-spec rate
+          - First-pass certification
+          - Assay turnaround
+          - Unit MTBF
+          - Predicted failures
+        teams:
+          - Quality & Reliability
+          - Quality Manager
+          - Reliability Engineer
+      - name: Margin & Distribution
+        icon: aibi
+        summary: Crack-spread margin, exposure, hedge effectiveness and product distribution across the book.
+        kpis:
+          - Crack-spread margin
+          - Exposure vs limit
+          - Hedge effectiveness
+          - Product netback
+          - Distribution on-time rate
+        teams:
+          - Commercial & Supply
+          - Risk & Middle Office
+          - Corporate & Refinery Leaders
+      - name: HSE & Emissions
+        icon: aibi
+        summary: Flare and vent volumes, permit compliance, leaks and safety indicators.
+        kpis:
+          - Flare volume
+          - GHG emissions
+          - Permit exceedances
+          - Open leaks
+          - TRIR
+        teams:
+          - HSE & Compliance
+          - Environmental & Emissions
+          - Process Safety
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Unit Operations Agent
+        icon: genie
+        summary: Ask about unit yields, blend targets, energy intensity and unit health in plain language.
+        feeds:
+          - Honeywell Experion
+          - AspenTech IP.21
+          - Cognite Data Fusion
+          - Conformed unit, batch
+        teams:
+          - Operations & Process
+          - Process Engineer
+          - Corporate & Refinery Leaders
+        questions:
+          - What were unit yields by unit yesterday versus plan?
+          - Where is giveaway costing the most margin right now?
+          - Which units have the worst energy intensity this month?
+          - How much margin is at risk from the current unit constraints?
+          - What is refinery utilisation by unit this quarter?
+      - name: Product Quality Agent
+        icon: genie
+        summary: Explore off-spec events, blend certifications and lab genealogy across LIMS and the units.
+        feeds:
+          - LabWare LIMS
+          - AspenTech PIMS
+          - IBM Maximo
+          - Conformed unit, batch
+        teams:
+          - Quality & Reliability
+          - Quality Manager
+          - Laboratory Lead
+        questions:
+          - Which off-spec events happened this week and what caused them?
+          - Which blends are closest to their certification limit right now?
+          - What is first-pass certification by product this month?
+          - Which tanks are affected if this feed comes in off-spec?
+          - What is assay turnaround by lab and product this week?
+      - name: Refining Margin Agent
+        icon: genie
+        summary: Answer questions on crack-spread margin, crude selection, exposure and product distribution.
+        feeds:
+          - ION Openlink Endur
+          - Platts Price Assess
+          - SAP S/4HANA
+          - Yield, margin, energy
+        teams:
+          - Commercial & Supply
+          - Risk & Middle Office
+          - Corporate & Refinery Leaders
+        questions:
+          - What is our crack-spread margin by product today?
+          - Which crude slate gives the best margin against current benchmarks?
+          - Which desks are closest to their exposure limits right now?
+          - How effective are our current hedges against benchmark moves?
+          - Which product lifts have the best netback this week?
+      - name: Process Safety Agent
+        icon: genie
+        summary: Ask about emissions, flare volumes, permits and safety incidents across the refinery.
+        feeds:
+          - Enablon EHS
+          - Sphera Risk Mgmt
+          - FLIR Optical Gas Img
+          - EPA GHGRP Templates
+        teams:
+          - HSE & Compliance
+          - Environmental & Emissions
+          - Process Safety
+        questions:
+          - What are our flare and vent volumes by unit this month?
+          - Which permits are closest to their limit right now?
+          - How many leaks were detected and how many are still open?
+          - What is our TRIR trend across the site this year?
+          - Which units are driving the most greenhouse-gas emissions?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Crude Blend Optimization
+        short: Blending
+        icon: sheet
+        summary: Crude selection and blend recipes tuned to margin while holding every product on spec.
+        problem: Crude selection and blend recipes are set on a planning model that drifts from the actual units and assays, so blends give away quality or miss margin and the reconciliation happens long after the barrels are made.
+        who_benefits: Operations & Process
+        how_built: Planning, historian and assay data conform on Delta Lake, and blend-economics models scored in Model Serving tie recipes to margin and spec on the Operations Console over certified AI/BI views.
+        components:
+          - Operations Console
+          - AspenTech PIMS
+          - LabWare LIMS
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
+      - name: Unit Yield Monitoring
+        short: Operations
+        icon: gauge
+        summary: Unit yields and giveaway watched live so a swing is corrected before margin is lost.
+        problem: Unit yields and giveaway are reconciled after the fact in yield accounting, so a drifting unit is corrected long after the margin is lost and the historian signals that flagged it sit unused.
+        who_benefits: Operations & Process
+        how_built: DCS and historian tags land in Lakehouse//RT and conform on Delta Lake, so the Operations Console shows unit yields and giveaway by unit on certified AI/BI Metric Views.
+        components:
+          - Operations Console
+          - Honeywell Experion
+          - AspenTech IP.21
+          - Lakehouse//RT
+          - AI/BI
+        stories:
+          - title: 'Databricks and Shell: industrial time series analytics on the Lakehouse'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+      - name: Off-Spec Root-Cause
+        short: Quality
+        icon: observ
+        summary: Every off-spec event traced from tank and blend back to unit and feed in minutes not days.
+        problem: When product goes off-spec, tracing it from tank and blend back to the unit, feed and operating window takes days of manual joins across LIMS, DCS and historian while more product is affected.
+        who_benefits: Quality & Reliability
+        how_built: LIMS assays and historian signals conform under Unity Catalog on Delta Lake, so the Quality Cockpit resolves off-spec genealogy and the operating cause in minutes to contain the event.
+        components:
+          - Quality Cockpit
+          - LabWare LIMS
+          - AspenTech IP.21
+          - Unity Catalog
+          - Delta Lake
+      - name: Crack-Spread Trading
+        short: Commercial
+        icon: market
+        summary: Physical and hedge books reconciled to crack-spread margin before exposure limits breach.
+        problem: Crude and product deals, paper hedges and benchmark curves are marked in different tools, so the desk sees crack-spread exposure late and a limit breach surfaces only after the position has moved.
+        who_benefits: Commercial & Supply
+        how_built: Deal capture and price feeds conform under Unity Catalog, crack-spread and mark-to-market models scored in Model Serving mark books consistently, and the desk works exposure from the Trading Workbench.
+        components:
+          - Trading Workbench
+          - ION Openlink Endur
+          - Platts Price Assess
+          - Model Serving
+          - Unity Catalog
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
+      - name: Energy & Steam Efficiency
+        short: Energy
+        icon: stream
+        summary: Fuel gas, steam and power intensity modelled by unit for cost and carbon reduction.
+        problem: Energy is billed at the site and the meter, not the unit or the utility, so nobody can see fuel, steam and power intensity by unit or act on the biggest offenders for cost or carbon reduction.
+        who_benefits: Operations & Process
+        how_built: Historian and utility tags conform on Delta Lake and are modelled to fuel, steam and power intensity by unit, surfaced on the Operations Console and certified AI/BI views for cost and carbon.
+        components:
+          - Operations Console
+          - AspenTech IP.21
+          - Cognite Data Fusion
+          - AI/BI
+          - Delta Lake
+        stories:
+          - title: Repsol drives sustainability efforts with Databricks
+            url: https://www.databricks.com/customers/repsol
+      - name: Prescriptive Maintenance
+        short: Reliability
+        icon: iot
+        summary: Rotating equipment and exchanger failures predicted with the recommended action attached.
+        problem: A pump, compressor or exchanger failure cuts a unit run for hours, yet failures are found after the equipment stops rather than predicted from the sensor drift that preceded them, with no recommended action attached.
+        who_benefits: Quality & Reliability
+        how_built: Historian tags feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, and an Agent Bricks assistant drafts the recommended work order on the Operations Console.
+        components:
+          - Operations Console
+          - AspenTech IP.21
+          - Model Serving
+          - MLflow
+          - Agent Bricks
+        stories:
+          - title: 'Databricks and Shell: industrial time series analytics on the Lakehouse'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: Building ML models for predictive maintenance in oil & gas
+            url: https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html
+      - name: Product Distribution & Logistics
+        short: Logistics
+        icon: globe
+        summary: Rack, terminal and movement plans aligned to production and demand so lifts are never short.
+        problem: Product movements, terminal inventory and rack demand live in separate systems, so lifts slip and product is short or long at the rack before anyone sees the whole distribution picture.
+        who_benefits: Commercial & Supply
+        how_built: Movement and demand data conform on Delta Lake, optimisation models scored in Model Serving align movements, and product marketing works the plan from the Trading Workbench on certified AI/BI views.
+        components:
+          - Trading Workbench
+          - SAP S/4HANA
+          - Model Serving
+          - AI/BI
+          - Delta Lake
+      - name: Regulatory Compliance
+        short: Regulatory
+        icon: erp
+        summary: Permit limits, fuels and product evidence assembled from governed data before an inspection.
+        problem: Regulatory evidence is stitched from extracts and spreadsheets at inspection time, so permit limits and the trail behind a fuels or product filing are hard to trace from source to submission when a regulator asks.
+        who_benefits: HSE & Compliance
+        how_built: Permit, emissions and product data conform under Unity Catalog on Delta Lake against reporting layouts, giving one auditable lineage from source to filing surfaced for compliance on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Enablon EHS
+          - ASTM Product Specs
+          - Unity Catalog
+          - Delta Lake
+      - name: Workforce Safety
+        short: HSE
+        icon: gavel
+        summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.
+        problem: Safety signals live across permit-to-work, incident and barrier systems, so leading indicators of an unsafe condition are only connected after an incident when the investigation reconstructs them.
+        who_benefits: HSE & Compliance
+        how_built: Permit, incident and barrier data conform under Unity Catalog on Delta Lake, and leading-indicator models scored in Model Serving surface unsafe trends for the team on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Sphera Risk Mgmt
+          - Model Serving
+          - Unity Catalog
+          - Delta Lake
+      - name: Sustainability & Circular Economy
+        short: Sustainability
+        icon: observ
+        summary: Emissions, renewable feedstock and co-processing tracked from governed sensor lineage.
+        problem: Emissions, renewable-feedstock and co-processing data are stitched from historian extracts and spreadsheets, so intensity and circular-economy metrics are hard to trace from sensor to submission when a regulator or buyer asks.
+        who_benefits: HSE & Compliance
+        how_built: Flare, feedstock and emissions events conform on Delta Lake against EPA GHGRP layouts under Unity Catalog, giving one auditable lineage from sensor to filing surfaced on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - EPA GHGRP Templates
+          - Enablon EHS
+          - Unity Catalog
+          - Delta Lake
+        stories:
+          - title: Repsol drives sustainability efforts with Databricks
+            url: https://www.databricks.com/customers/repsol
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
+medallion:
+  Bronze:
+    short: Raw plant and market
+    summary: DCS and historian tags, laboratory assays, blend plans and deal capture tickets, landed exactly as received so a yield or a lab result can always be replayed as it stood.
+  Silver:
+    short: Conformed unit, batch
+    summary: Units, streams, tanks and batches resolved into single conformed entities across control, laboratory and commercial systems, with blend recipes reconciled and assay results stitched to one product definition.
+  Gold:
+    short: Yield, margin, energy
+    summary: 'Contracted products operations and commercial run on: unit yields and giveaway, crack-spread margin, energy intensity and off-spec rates.'
+citation_index:
+  honeywell-exp:
+    title: Honeywell Experion PKS
+    url: https://process.honeywell.com/us/en/products/control-and-supervision/experion-pks
+  aspen-ip21:
+    title: AspenTech IP.21
+    url: https://www.aspentech.com/en/products/msc/aspen-infoplus21
+  cognite:
+    title: Cognite Data Fusion
+    url: https://www.cognite.com/
+  aspen-pims:
+    title: AspenTech PIMS
+    url: https://www.aspentech.com/en/products/msc/aspen-pims-ao
+  labware:
+    title: LabWare LIMS
+    url: https://www.labware.com/
+  sap-s4:
+    title: SAP S/4HANA
+    url: https://www.sap.com/products/erp/s4hana.html
+  ibm-maximo:
+    title: IBM Maximo
+    url: https://www.ibm.com/products/maximo
+  sap-ariba:
+    title: SAP Ariba
+    url: https://www.sap.com/products/spend-management/ariba.html
+  ion-endur:
+    title: ION Openlink Endur
+    url: https://iongroup.com/commodities/
+  platts:
+    title: S&P Global Platts
+    url: https://www.spglobal.com/commodityinsights/en/products-services/energy
+  sphera:
+    title: Sphera risk management
+    url: https://sphera.com/operational-risk-management-software/
+  enablon:
+    title: Wolters Kluwer Enablon
+    url: https://www.wolterskluwer.com/en/solutions/enablon
+  opc-ua:
+    title: OPC Unified Architecture
+    url: https://opcfoundation.org/about/opc-technologies/opc-ua/
+  epa-ghgrp:
+    title: EPA GHGRP
+    url: https://www.epa.gov/ghgreporting
+  astm:
+    title: ASTM International
+    url: https://www.astm.org/products-services/standards-and-publications.html

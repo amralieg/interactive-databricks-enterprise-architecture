@@ -1,5 +1,5 @@
 name: Manufacturing
-description: 'Discrete and process manufacturing: ERP and MES shop-floor execution, quality and traceability, supply chain planning, and asset maintenance.'
+description: 'Discrete and process manufacturers: ERP and MES shop-floor execution, machine-vision quality and serial traceability, demand and supply chain planning, and asset maintenance across every plant.'
 sources:
   - name: ERP & Planning
     icon: erp
@@ -51,6 +51,18 @@ sources:
               - structured
             volume: 5-20 GB/day scenarios
             interval: Planning cycles + on-demand what-if
+      - name: S&P Global Commodity Insights
+        icon: market
+        summary: Metals, energy and chemical commodity prices and market indices that drive raw-material cost, S&OP assumptions and supplier risk exposure.
+        category: Commodities & Market Data
+        what_it_is: External commodity price benchmarks and market indices (metals, energy, chemicals) used to set raw-material cost assumptions, S&OP scenarios and supplier exposure.
+        who_uses_it: S&OP planning, procurement and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day price feeds
+            interval: Intraday to daily benchmarks
   - name: MES & Shop Floor
     icon: stream
     tiles:
@@ -278,8 +290,8 @@ pipelines:
             cares: the loss buckets and the Kaizen backlog that lift throughput.
         ucs:
           - OEE & Downtime
-          - Energy Intensity
           - Yield Optimisation
+          - Digital Twin & Industrial AI
       - name: Production & Scheduling
         mark: AI/BI
         summary: Finite scheduling, changeover sequencing and labour loading against orders commercial already promised, watched on schedule adherence and WIP ageing.
@@ -341,6 +353,7 @@ pipelines:
             cares: supplier OTIF and single-source concentration risk.
         ucs:
           - S&OP / IBP
+          - Demand Forecasting
           - Inventory Optimisation
           - Supplier Risk
       - name: Maintenance & Reliability
@@ -765,22 +778,19 @@ agent_usecases:
             url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
           - title: 'IoT in manufacturing: strategy, components and use cases'
             url: https://www.databricks.com/blog/iot-in-manufacturing
-      - name: Energy Intensity
-        short: Sustainability
-        icon: stream
-        summary: kWh per unit by line and product for carbon reporting and cost reduction.
-        problem: Energy is billed at the meter and the site, not the line or product, so nobody can see kWh per unit or act on the biggest intensity offenders for cost or carbon reporting.
-        who_benefits: Plant Leadership
-        how_built: PI System and IP.21 tags are conformed on Delta Lake and modelled to kWh per unit by line and product, surfaced in Plant Performance and certified AI/BI views for ESG and cost.
+      - name: Demand Forecasting
+        short: Demand planning
+        icon: market
+        summary: SKU-level demand sensed from order and shipment history to drive the S&OP plan and the production schedule.
+        problem: Demand is planned from static history and a spreadsheet consensus, so forecast error whipsaws the S&OP plan, inflates safety stock and starves the schedule when real orders diverge from the number.
+        who_benefits: Supply Chain
+        how_built: SAP, Oracle SCM and Kinaxis order and shipment history are conformed on Delta Lake and scored by demand models in Model Serving tracked in MLflow, so the Supply Control Tower and certified AI/BI views drive S&OP with sensed SKU-level demand.
         components:
-          - Plant Performance
-          - AVEVA PI System
-          - AspenTech IP.21
-          - AI/BI
-          - Delta Lake
-        stories:
-          - title: How Tata Steel is shifting manufacturing toward sustainability
-            url: https://www.databricks.com/blog/2022/08/02/how-tata-steel-is-shifting-global-manufacturing-and-production-toward-sustainability.html
+          - Supply Control Tower
+          - Kinaxis Maestro
+          - SAP S/4HANA
+          - Model Serving
+          - MLflow
       - name: Supplier Risk
         short: Resilience
         icon: partner

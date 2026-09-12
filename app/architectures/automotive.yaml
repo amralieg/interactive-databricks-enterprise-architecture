@@ -1,5 +1,5 @@
 name: Automotive
-description: Vehicle design, manufacturing, dealer networks, connected services, and aftersales across OEMs, tier suppliers, and mobility fleets.
+description: 'Automotive OEMs: vehicle design and simulation, plant manufacturing and quality, dealer networks and customer 360, connected services and aftersales across the tier supply base and mobility fleets.'
 sources:
   - name: Engineering & PLM
     icon: product
@@ -339,8 +339,8 @@ pipelines:
             cares: the EV transition, software revenue and where the vehicle portfolio is headed.
         ucs:
           - Predictive Quality
-          - Launch Curve Tracking
-          - Supplier PPM
+          - Vehicle Design Simulation
+          - Customer & Dealer 360
           - EV Battery Health
       - name: Manufacturing
         mark: Lakehouse//RT
@@ -359,8 +359,8 @@ pipelines:
             cares: the SOP ramp and closing quality gaps against the launch curve.
         ucs:
           - Predictive Quality
-          - Launch Curve Tracking
-          - Supplier PPM
+          - Vehicle Design Simulation
+          - Supplier Lead-Time Risk
       - name: Quality Engineering
         mark: AI/BI
         summary: Defect pareto, supplier PPM and containment across plants, tracked on warranty cost per vehicle, scrap rate and time-to-containment.
@@ -378,9 +378,8 @@ pipelines:
             cares: emerging defect clusters and the recall or OTA fix that follows.
         ucs:
           - Predictive Quality
-          - Supplier PPM
           - Warranty Recovery
-          - OTA Campaign Mgmt
+          - Connected Diagnostics
       - name: Sales & Marketing
         mark: Model Serving
         summary: Incentive planning, conquest targeting and digital lead scoring, judged on incentive spend per unit, conquest rate and margin.
@@ -398,7 +397,7 @@ pipelines:
             cares: lead scoring, conquest targeting and the dealer handoff.
         ucs:
           - Dealer Inventory Opt
-          - Connected Diagnostics
+          - Customer & Dealer 360
       - name: Aftersales
         mark: Apps
         summary: Service retention, parts availability and warranty recovery, measured on retention rate, parts fill rate and chargeback recovery.
@@ -417,6 +416,7 @@ pipelines:
         ucs:
           - Warranty Recovery
           - Parts Forecasting
+          - Dealer Service Assistant
           - Connected Diagnostics
           - EV Battery Health
   - name: Technical
@@ -754,22 +754,19 @@ agent_usecases:
             url: https://www.databricks.com/customers/toyota/lakeflow-connect
           - title: Predictive quality starts where defect detection stops
             url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
-      - name: Launch Curve Tracking
-        short: Program
-        icon: sheet
-        summary: Build and quality ramp against SOP targets by week.
-        problem: A new-model launch must hit build rate and quality targets week over week, but ramp data is scattered across MES, quality and program spreadsheets, so gaps surface too late to correct.
+      - name: Vehicle Design Simulation
+        short: Engineering
+        icon: network
+        summary: Aero, mass and crash design-space explored with simulation and surrogate models before metal is cut.
+        problem: Each design iteration waits on a full CAE run and a physical prototype, so aero, mass and crash trade-offs are explored slowly and late, and the design-space that would cut fuel and cost is never fully searched.
         who_benefits: Manufacturing
-        how_built: Build, quality and station data are conformed on Delta Lake under Unity Catalog and tracked on the Plant Cockpit and AI/BI against SOP targets, so program teams see the ramp by week.
+        how_built: Dassault 3DEXPERIENCE CAD and simulation results with Teamcenter configuration are conformed on Delta Lake; surrogate models trained in MLflow and served through Model Serving explore the design-space so trade-offs are proven virtually before build.
         components:
-          - Plant Cockpit
-          - AI/BI
-          - Unity Catalog
-          - Siemens Opcenter
-          - Delta Lake
-        stories:
-          - title: Automotive giant turns data into business value with Databricks
-            url: https://www.databricks.com/blog/automotive-giant-turns-data-business-value-databricks
+          - Dassault 3DEXPERIENCE
+          - Siemens Teamcenter
+          - Model Serving
+          - MLflow
+          - Feature Store
       - name: Connected Diagnostics
         short: Telematics
         icon: stream
@@ -815,35 +812,32 @@ agent_usecases:
         stories:
           - title: Al-Futtaim becomes customer-centric with Databricks
             url: https://www.databricks.com/customers/al-futtaim
-      - name: OTA Campaign Mgmt
-        short: Software
-        icon: api
-        summary: Feature rollouts and recalls delivered over the air.
-        problem: Software features and safety fixes must reach the right VINs over the air, but eligibility, version state and results live in systems that disagree, so rollouts stall or misfire.
-        who_benefits: Quality Engineering
-        how_built: VIN, version and telematics state are conformed under Unity Catalog and scored in Model Serving, so campaigns target eligible VINs and results are tracked against R155 compliance.
+      - name: Customer & Dealer 360
+        short: Retail
+        icon: custlake
+        summary: One governed view of the customer and dealer across CRM, DMS and registration for sales and marketing.
+        problem: The same customer shows up in the CRM, the DMS and registration data as three different records, so sales and marketing cannot see one owner across purchase, service and conquest and every campaign targets a fragment.
+        who_benefits: Sales & Marketing
+        how_built: VinSolutions leads, CDK deals and service history and Polk registration are resolved to one VIN and owner under Unity Catalog, so a governed customer and dealer 360 is read in AI/BI and asked of Genie.
         components:
-          - OEM Telematics Gateway
+          - CDK Global DMS
+          - VinSolutions CRM
+          - Polk Registration
           - Unity Catalog
-          - Model Serving
-          - UNECE WP.29 R155
-          - Aptiv Smart Vehicle
-      - name: Supplier PPM
-        short: Quality
-        icon: zplug
-        summary: Incoming quality scored and ranked across the supply base.
-        problem: Incoming quality varies lot by lot, but supplier defect data is buried in inspection systems, so problem suppliers are ranked on gut feel long after bad parts reach the line.
-        who_benefits: Quality Engineering
-        how_built: Inspection, containment and line-defect data are conformed under Unity Catalog and scored in Quality Command and Model Serving, ranking supplier PPM so problem lots are caught early.
-        components:
-          - Quality Command
-          - Bosch Nexeed
-          - Model Serving
           - AI/BI
-          - Unity Catalog
-        stories:
-          - title: Predictive quality starts where defect detection stops
-            url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+      - name: Dealer Service Assistant
+        short: Aftersales
+        icon: apps
+        summary: A governed assistant giving service advisors next-best repair, parts and retention actions on the vehicle in the bay.
+        problem: A service advisor juggles repair procedures, connected fault codes and warranty rules across separate screens, so diagnosis is slow, fixes miss first visit and retention offers are guessed rather than grounded in the vehicle's history.
+        who_benefits: Aftersales
+        how_built: Mitchell repair procedures, telematics fault codes and governed service history are grounded through Mosaic AI and Model Serving into the Service Advisor App, so advisors get next-best repair, parts and retention actions on the vehicle in front of them.
+        components:
+          - Service Advisor App
+          - Mitchell Repair
+          - OEM Telematics Gateway
+          - Mosaic AI
+          - Model Serving
       - name: Parts Forecasting
         short: Aftersales
         icon: product

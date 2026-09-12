@@ -1,6 +1,52 @@
 name: Pharmaceuticals
 description: 'Drug discovery through commercial: clinical trials, GxP manufacturing, regulatory submissions and pharmacovigilance for biopharma and generics.'
 sources:
+  - name: Discovery & R&D
+    icon: notebook
+    tiles:
+      - name: Benchling R&D Cloud
+        icon: notebook
+        summary: Electronic lab notebook, sample registration and structured assay results across discovery research.
+        citations:
+          - benchling
+        category: Electronic Lab Notebook / R&D Platform
+        what_it_is: Registers samples, captures structured experiments and assay results and holds chain of custody, keeping discovery bench work linked to a compound and target identity.
+        who_uses_it: Discovery Research, Assay Biologists and Computational Chemists.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Nightly sync + on save
+      - name: Genedata Screener
+        icon: observ
+        summary: High-throughput screening and dose-response analysis with hit calling and assay QC across campaigns.
+        citations:
+          - genedata
+        category: High-Throughput Screening Analytics
+        what_it_is: Analyses high-throughput and high-content screening runs into normalised dose-response, hit calls and assay-QC metrics across the screening cascade.
+        who_uses_it: Assay Biologists, Screening Scientists and Computational Chemists.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-50 GB/campaign (well-level)
+            interval: Per-run + campaign cycles
+      - name: Dotmatics Luma
+        icon: db
+        summary: Compound and target registration with chemical structure and structure-activity relationship data.
+        citations:
+          - dotmatics
+        category: Chemistry Registration & SAR Informatics
+        what_it_is: Registers compounds and targets and manages chemical structures and structure-activity relationship tables so medicinal chemistry runs on one governed dataset.
+        who_uses_it: Computational Chemists, Medicinal Chemistry and Discovery Research.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day (structures + SAR)
+            interval: Nightly + on registration
   - name: Clinical & EDC
     icon: people
     tiles:
@@ -313,6 +359,7 @@ pipelines:
           - name: Chief Commercial Officer
             cares: launch uptake, country sequencing and revenue against forecast.
         ucs:
+          - Target Identification
           - Enrollment Forecast
           - Demand & Supply
           - Safety Signal Detect
@@ -358,7 +405,7 @@ pipelines:
           - Yield Optimisation
           - Batch Genealogy
           - Cold Chain Integrity
-          - Serialization Trace
+          - Demand & Supply
       - name: Quality & Reg
         mark: Unity Catalog
         summary: QA and RA on deviations, submissions and inspection readiness, tracking batch release rate and CAPA aging before FDA and EMA audits.
@@ -377,9 +424,9 @@ pipelines:
           - name: Quality Control
             cares: release and stability testing turnaround from the LIMS.
         ucs:
-          - Inspection Readiness
           - Batch Genealogy
-          - Serialization Trace
+          - Protocol Deviation
+          - Safety Signal Detect
       - name: Medical & Safety
         mark: Model Serving
         summary: Pharmacovigilance and medical affairs on safety narratives and scientific engagement, watching serious adverse event rates and signal timeliness, kept firewalled from commercial so medical stays non-promotional.
@@ -417,7 +464,6 @@ pipelines:
           - name: Market Access
             cares: payer coverage, contracting and launch uptake by market.
         ucs:
-          - HCP Engagement
           - Demand & Supply
   - name: Technical
     icon: code
@@ -461,7 +507,8 @@ pipelines:
           - name: Safety Signal Science
             cares: disproportionality and NLP models over ICSR and case text.
         ucs:
-          - Enrollment Forecast
+          - Lead Optimization / QSAR
+          - Assay & Screening Analytics
           - Yield Optimisation
           - Safety Signal Detect
       - name: App Developers
@@ -484,8 +531,7 @@ pipelines:
         ucs:
           - Batch Genealogy
           - Safety Signal Detect
-          - Inspection Readiness
-          - HCP Engagement
+          - Enrollment Forecast
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -661,7 +707,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Enrollment & Trials Agent
+      - name: Trial Enrollment Agent
         icon: genie
         summary: Ask how enrollment is tracking and where data quality is at risk before database lock.
         feeds:
@@ -679,7 +725,7 @@ agent_usecases:
           - What is query aging by site ahead of database lock?
           - Where is the protocol-deviation rate trending up?
           - Which studies are at risk of missing their readout date?
-      - name: Manufacturing & Batch Release Agent
+      - name: Batch Release Agent
         icon: genie
         summary: Explore batch release, yield and open deviations across the GMP suites.
         feeds:
@@ -697,7 +743,7 @@ agent_usecases:
           - Where is LIMS release testing behind schedule?
           - Which lines have the most right-first-time failures?
           - How does batch release rate compare to the plan?
-      - name: Safety Signals Agent
+      - name: Safety Signal Agent
         icon: genie
         summary: Answer adverse-event, signal and reporting-timeliness questions across the safety database.
         feeds:
@@ -714,7 +760,7 @@ agent_usecases:
           - How many ICSRs are in the processing backlog?
           - Which expedited reports are near their reporting deadline?
           - What is the average case-processing time this month?
-      - name: Quality & Inspection Agent
+      - name: Inspection Readiness Agent
         icon: genie
         summary: Ask about CAPA aging, repeat deviations and lineage before FDA and EMA inspections.
         feeds:
@@ -861,61 +907,50 @@ agent_usecases:
             url: https://www.databricks.com/blog/2022/03/22/amgen-modernizes-analytics-with-a-unified-data-lakehouse-to-speed-drug-development-delivery.html
           - title: Integra Life Sciences gains supply and demand visibility
             url: https://www.databricks.com/customers/integra-life-sciences
-      - name: Inspection Readiness
-        short: Quality
-        icon: gavel
-        summary: Repeat deviations and open CAPAs ranked before FDA or EMA visits.
-        problem: Repeat deviations and open CAPAs scatter across QMS and quality systems, so audit prep is a fire drill and a finding a prior inspection raised is still open when the next one lands.
-        who_benefits: Quality & Reg
-        how_built: Deviation, CAPA and batch data are conformed under Unity Catalog and ranked in the Quality Command app on Lakebase, so repeat issues and audit exposure are visible before FDA or EMA visits.
+      - name: Target Identification
+        short: Discovery
+        icon: network
+        summary: Genes, targets and pathways prioritised from assay, screening and omics evidence for the discovery pipeline.
+        problem: Target hypotheses are argued from assay results, screening hits and literature that sit in separate systems, so promising targets are missed and dead ends are chased for months before the evidence is even assembled.
+        who_benefits: Biopharma Leaders
+        how_built: Benchling assay data and Genedata screening results are conformed on Delta Lake under Unity Catalog and ranked against target evidence with AI Functions, so target hypotheses carry traceable support before a programme commits.
         components:
-          - Quality Command
-          - MasterControl QMS
-          - Veeva QualityDocs
-          - Unity Catalog
-          - AI/BI
-          - Lakebase
-        stories:
-          - title: Partner solutions built on Databricks Genie for pharma operations
-            url: https://www.databricks.com/blog/transforming-industries-conversational-ai-partner-solutions-built-databricks-genie
-          - title: How TetraScience accelerates biopharma with production-ready data
-            url: https://www.databricks.com/blog/how-tetrascience-accelerates-biopharma-production-ready-data-and-scientific-intelligence
-      - name: HCP Engagement
-        short: Commercial
-        icon: custlake
-        summary: Field and medical touchpoints scored for compliant outreach prioritisation.
-        problem: Field, medical and digital touchpoints sit in separate systems, so HCPs get uncoordinated, non-compliant outreach and reps cannot see which next action actually matters for each physician.
-        who_benefits: Commercial
-        how_built: CRM, prescription and engagement signals are unified in CustomerLake and next-best-action models in Model Serving prioritise compliant outreach delivered into the field workflow.
-        components:
-          - Veeva CRM
-          - IQVIA OCE
-          - CustomerLake
-          - Model Serving
+          - Benchling R&D Cloud
+          - Genedata Screener
           - AI Functions
-        stories:
-          - title: Elevating customer experience with AI-enabled omnichannel Next Best Action
-            url: https://www.databricks.com/blog/elevating-customer-experience-ai-enabled-omnichannel-next-best-action
-          - title: Next Best Action for healthcare and life sciences
-            url: https://www.databricks.com/solutions/accelerators/next-best-action-healthcare-and-life-sciences
-      - name: Serialization Trace
-        short: DSCSA
-        icon: api
-        summary: Saleable returns and suspect product investigations from EPCIS lineage.
-        problem: Saleable-return verification and suspect-product checks need item-level history, but serialization events sit in the packaging line and partner systems, so a DSCSA query is a manual hunt.
-        who_benefits: Mfg & Supply
-        how_built: EPCIS serialization events are conformed on Delta Lake under Unity Catalog and served as transaction statements over OpenSharing, so returns and suspect-product traces resolve from one lineage.
-        components:
-          - GS1 EPCIS Pharma
-          - Rockwell PharmaSuite
           - Unity Catalog
           - Delta Lake
-          - OpenSharing
         stories:
-          - title: How Johnson & Johnson uses data to optimize its supply chain
-            url: https://www.databricks.com/blog/2022/04/25/democratizing-data-for-supply-chain-optimization.html
-          - title: Managing recalls with barcode traceability in the data lakehouse
-            url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
+          - title: AstraZeneca builds a knowledge graph to generate novel target hypotheses
+            url: https://www.databricks.com/customers/astrazeneca
+          - title: 'Genesis Workbench: a blueprint for life sciences applications on Databricks'
+            url: https://www.databricks.com/blog/genesis-workbench-blueprint-life-sciences-applications-databricks
+      - name: Lead Optimization / QSAR
+        short: Discovery
+        icon: chart
+        summary: Structure-activity relationships modelled so chemists optimise potency, selectivity and ADMET before synthesis.
+        problem: Lead optimisation cycles on synthesise-test-repeat with structure-activity data trapped in chemists' spreadsheets, so the signal that should steer the next molecule surfaces slowly and good series are abandoned late.
+        who_benefits: Biopharma Leaders
+        how_built: Dotmatics structure and SAR data and Genedata assay results become features scored by QSAR models in Model Serving and tracked in MLflow, so potency, selectivity and ADMET are predicted before the next round of synthesis.
+        components:
+          - Dotmatics Luma
+          - Genedata Screener
+          - Model Serving
+          - MLflow
+          - Feature Store
+      - name: Assay & Screening Analytics
+        short: Discovery
+        icon: observ
+        summary: High-throughput screening runs analysed at scale for hit calling, dose-response and assay QC across campaigns.
+        problem: High-throughput screens generate millions of well-level readings the plate software cannot analyse across runs, so hit calling drifts between campaigns and failing assays are caught late.
+        who_benefits: Biopharma Leaders
+        how_built: Genedata Screener and Benchling assay data land through Lakeflow on Delta Lake, and dose-response and QC models score in Model Serving, so hits and assay drift surface across the whole screening cascade.
+        components:
+          - Genedata Screener
+          - Benchling R&D Cloud
+          - Lakeflow
+          - Model Serving
+          - Delta Lake
 medallion:
   Bronze:
     short: Raw trial and plant
@@ -975,3 +1010,12 @@ citation_index:
   gs1-epcis:
     title: GS1 EPCIS
     url: https://www.gs1.org/standards/epcis
+  benchling:
+    title: Benchling R&D Cloud
+    url: https://www.benchling.com/
+  genedata:
+    title: Genedata Screener
+    url: https://www.genedata.com/products/screener/
+  dotmatics:
+    title: Dotmatics Luma
+    url: https://www.dotmatics.com/

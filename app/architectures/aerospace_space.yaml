@@ -1,5 +1,5 @@
 name: Aerospace & Space
-description: 'Aerospace OEMs, satellite operators and launch providers: PLM and the digital thread, MES and supply chain, MRO and fleet reliability, satellite telemetry, mission ops and earned-value program control.'
+description: 'Aerospace & defense OEMs and MRO providers: PLM and the digital thread, MES with in-line FOD and quality, supply chain, MRO turnaround and fleet reliability, workforce safety, satellite telemetry and earned-value program control.'
 sources:
   - name: PLM & Engineering
     icon: dev
@@ -108,6 +108,18 @@ sources:
               - structured
             volume: 20-80 GB/day
             interval: Nightly batch + hourly deltas
+      - name: Fastmarkets Commodity Prices
+        icon: market
+        summary: Titanium, aluminium, nickel-alloy and composite commodity prices and market indices that inform should-cost, procurement and supply-chain risk.
+        category: Commodities & Market Data
+        what_it_is: External commodity price benchmarks for aerospace metals and composites and market indices used for should-cost estimation, procurement and supplier risk exposure.
+        who_uses_it: Procurement, program finance and Supply chain.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: MBs-GBs/day price feeds
+            interval: Intraday to daily benchmarks
       - name: AVEVA PI Historian
         icon: iot
         summary: 'Process and test historian: equipment, engine and test-stand time-series underpinning SPC, OEE and anomaly detection.'
@@ -379,7 +391,6 @@ pipelines:
         ucs:
           - Digital Thread
           - Simulation & Test
-          - Geospatial Intelligence
       - name: Mfg & Quality
         mark: Lakehouse//RT
         summary: Production and assembly on rate, takt and station performance, quality and MRB on nonconformance and first-pass yield, and supply chain on part availability and supplier quality across the extended aerospace supply base.
@@ -399,8 +410,9 @@ pipelines:
             cares: part availability and supplier quality across the supply base.
         ucs:
           - MES Yield & Quality
+          - FOD & Defect Detection
+          - Workforce Safety
           - Supply Chain Risk
-          - Predictive Maintenance
       - name: Mission & Fleet
         mark: Lakehouse//RT
         summary: Mission operations on satellite health, orbits and anomaly response, the ground segment on telemetry, tracking and command across the constellation, and fleet reliability on engine and airframe health across the delivered fleet.
@@ -420,9 +432,7 @@ pipelines:
             cares: engine and airframe health across the delivered fleet.
         ucs:
           - Satellite Telemetry
-          - Anomaly Detection
           - Predictive Maintenance
-          - Geospatial Intelligence
       - name: Compliance & Sec
         mark: Unity Catalog
         summary: Export and ITAR control over technical data and licensing, compliance and audit on AS9100, DO-178C and contract terms, and security over controlled unclassified information and who may see which part of the program.
@@ -757,10 +767,10 @@ agent_usecases:
       - name: Predictive Maintenance
         short: Reliability
         icon: iot
-        summary: Predicting engine and component removal from on-wing telemetry and defect history so an unplanned removal becomes a planned shop visit.
-        problem: An unplanned engine or component removal grounds a vehicle and cascades through the fleet. Removals need predicting from actual condition, not a calendar, so the fix becomes a planned base visit.
+        summary: Predicting engine and component removal from on-wing telemetry and defect history so an unplanned removal becomes a planned shop visit with a shorter MRO turnaround.
+        problem: An unplanned engine or component removal grounds a vehicle and cascades through the fleet, and when the shop visit does come, parts, slots and task cards are planned late so MRO turnaround drags and the asset sits on the ground.
         who_benefits: Mission & Fleet
-        how_built: Engine condition, historian and Maintenix defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise work orders from the Fleet Health Watch.
+        how_built: Engine condition, historian and Maintenix defect history feed remaining-useful-life models tracked in MLflow and scored in Model Serving; predicted removals raise work orders and pre-stage parts and slots from the Fleet Health Watch, compressing MRO turnaround.
         components:
           - Fleet Health Watch
           - Engine Health Monitor
@@ -790,29 +800,26 @@ agent_usecases:
         stories:
           - title: Zerobus Ingest for telemetry and IoT at scale
             url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
-      - name: Anomaly Detection
-        short: Mission ops
+      - name: FOD & Defect Detection
+        short: Manufacturing
         icon: observ
-        summary: Emerging spacecraft and engine anomalies detected across telemetry before they become a failure or a lost contact.
-        problem: Anomaly signal hides across thousands of telemetry parameters; by the time a trend clears a manual review the spacecraft or engine is already degraded or lost.
-        who_benefits: Mission & Fleet
-        how_built: Telemetry is conformed to Gold; anomaly-detection models score emerging trends in Model Serving and surface them to mission and reliability teams from Mission Control before they become failures.
+        summary: Foreign-object debris and assembly defects caught in-line with machine vision before a unit moves down the pulse line.
+        problem: Foreign-object debris and assembly defects are caught at final inspection or, worse, in the field, long after the station that caused them, and on a safety-critical aerostructure a single missed FOD event is a grounding risk.
+        who_benefits: Mfg & Quality
+        how_built: MES station records and in-line inspection imagery are conformed under Unity Catalog; vision and defect models score in Model Serving with features in Feature Store, so the Yield & MRB Cockpit flags FOD and defects at the station before a unit is at risk.
         components:
-          - Mission Control
-          - CCSDS Telemetry
+          - Yield & MRB Cockpit
+          - Siemens Opcenter MES
+          - DELMIA Apriso
           - Model Serving
-          - Lakehouse//RT
-          - AI Functions
-        stories:
-          - title: Rolls-Royce monitors engines in real time on Databricks
-            url: https://www.databricks.com/customers/rolls-royce
+          - Feature Store
       - name: Digital Thread
         short: Engineering
         icon: network
-        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision is traceable from requirement to serial.
-        problem: Requirements, CAD, change orders and the as-built record live in CATIA, Teamcenter and Windchill separately, so tracing a requirement to the serial that flew is a manual reconciliation across systems.
+        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision and every part are traceable from requirement to serial, with counterfeit parts caught.
+        problem: Requirements, CAD, change orders and the as-built record live in CATIA, Teamcenter and Windchill separately, so tracing a requirement to the serial that flew is a manual reconciliation, and an unauthorised or counterfeit part can slip into the build undetected.
         who_benefits: Eng & Design
-        how_built: PLM, requirements and MES feeds are conformed in Silver under Unity Catalog; the Digital Thread View traces a requirement from design to the as-built serial and its test evidence with lineage.
+        how_built: PLM, requirements and MES genealogy are conformed in Silver under Unity Catalog; the Digital Thread View traces a requirement from design to the as-built serial and its test evidence, and flags parts whose genealogy or supplier provenance does not reconcile.
         components:
           - CATIA / 3DEXPERIENCE
           - Siemens Teamcenter
@@ -905,24 +912,19 @@ agent_usecases:
         stories:
           - title: Databricks for Federal Government
             url: https://www.databricks.com/solutions/industries/federal-government
-      - name: Geospatial Intelligence
-        short: Space data
-        icon: globe
-        summary: Earth-observation imagery and downlinked geospatial data turned into analytics products joined to the rest of the estate.
-        problem: Earth-observation and downlinked geospatial data sit in specialist pipelines that never join cleanly to business data, so imagery-derived insight takes weeks and cannot be shared as a governed product.
-        who_benefits: Mission & Fleet
-        how_built: Downlinked imagery and geospatial data are processed with spatial SQL and H3 on the lakehouse; analytics products are scored in Model Serving and published over OpenSharing to customers and analysts.
+      - name: Workforce Safety
+        short: EHS
+        icon: iot
+        summary: Safety events and near-misses on the factory and test floor surfaced from sensor, historian and machine signals before someone is hurt.
+        problem: Safety incidents and near-misses are logged after the fact on paper, so the leading signals in historian, machine and test-stand data that precede an injury on the floor are never acted on in time.
+        who_benefits: Mfg & Quality
+        how_built: Historian, MES and test-stand signals are conformed on Delta Lake; AI Functions and models in Model Serving score near-miss and hazard patterns, surfaced in AI/BI so EHS and production act before an incident.
         components:
-          - AI/BI
-          - Delta Lake
+          - AVEVA PI Historian
+          - Siemens Opcenter MES
           - Model Serving
-          - OpenSharing
-          - Ground Station Feeds
-        stories:
-          - title: 'Geospatial unbounded: spatial SQL, AI/BI maps and sharing'
-            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
-          - title: 'Nousot and Xcel Energy: AI and geospatial intelligence'
-            url: https://www.databricks.com/blog/nousot-and-xcel-energy-harnessing-ai-and-geospatial-intelligence-natural-disaster-mitigation
+          - AI Functions
+          - AI/BI
 medallion:
   Bronze:
     short: Raw engineering and telemetry feeds

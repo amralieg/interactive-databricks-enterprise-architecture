@@ -287,7 +287,7 @@ pipelines:
           - name: Head of Content
             cares: greenlight and licensing bets and the return each title earns across platforms.
         ucs:
-          - Content ROI
+          - Content & Licensing Monetization
           - Ad Yield Optimisation
           - Subscriber Churn
           - Audience Measurement
@@ -309,7 +309,7 @@ pipelines:
           - name: Content Strategy
             cares: which titles and genres to commission from completion and ROI signals.
         ucs:
-          - Content ROI
+          - Content Metadata Enrichment
           - Personalised Recommend
           - Audience Measurement
       - name: Ad Sales
@@ -331,7 +331,7 @@ pipelines:
             cares: pod structure, trafficking and delivery reconciliation across linear and streaming.
         ucs:
           - Ad Yield Optimisation
-          - Makegood Automation
+          - Audience Segmentation
           - Audience Measurement
       - name: Distribution
         mark: Lakehouse//RT
@@ -353,7 +353,7 @@ pipelines:
         ucs:
           - QoE Monitoring
           - Subscriber Churn
-          - Live Event Scaling
+          - Subscription Pricing & Packaging
           - Personalised Recommend
       - name: News & Production
         mark: Apps
@@ -373,8 +373,8 @@ pipelines:
           - name: Social & Digital
             cares: talent clips and owned-account reach scored back to parent titles.
         ucs:
-          - Rights Compliance
-          - Social Clip Analytics
+          - Content Localization
+          - Content Metadata Enrichment
   - name: Technical
     icon: code
     tiles:
@@ -398,7 +398,7 @@ pipelines:
         ucs:
           - Audience Measurement
           - QoE Monitoring
-          - Makegood Automation
+          - Audience Segmentation
       - name: Data Scientists
         mark: MLflow
         summary: Subscriber churn, recommendation, ad-yield and reach-forecast models, and whether they still hold six months after deployment across linear and OTT.
@@ -438,9 +438,9 @@ pipelines:
           - name: Platform Dev
             cares: governed writes and rundown state on serverless Postgres.
         ucs:
-          - Live Event Scaling
-          - Makegood Automation
-          - Social Clip Analytics
+          - Subscription Pricing & Packaging
+          - Content & Licensing Monetization
+          - Content Localization
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -634,7 +634,7 @@ agent_usecases:
           - How does linear versus streaming reach compare this quarter?
           - Which demos are we under-delivering against upfront guarantees?
           - What is duplicated reach across linear, OTT and CTV panels?
-      - name: Ad Yield & Delivery Agent
+      - name: Ad Yield Agent
         icon: genie
         summary: Explore pacing, delivery and makegood exposure across linear and streaming.
         feeds:
@@ -652,7 +652,7 @@ agent_usecases:
           - Where is makegood liability accumulating right now?
           - Which pods have the lowest fill rate on streaming?
           - What scatter inventory is priced below market?
-      - name: Content & Programming Agent
+      - name: Programming & Slate Agent
         icon: genie
         summary: Answer content ROI, completion and title-performance questions on governed data.
         feeds:
@@ -670,7 +670,7 @@ agent_usecases:
           - Which catalog titles are driving new subscribers?
           - How does content ROI compare across platforms by title?
           - Which premieres under-performed against their lead-in?
-      - name: Streaming & Churn Agent
+      - name: Subscriber Retention Agent
         icon: genie
         summary: Ask about QoE, concurrency and subscriber churn risk in plain language.
         feeds:
@@ -727,19 +727,19 @@ agent_usecases:
         stories:
           - title: Comcast Advertising powers campaign success with predictive insights
             url: https://www.databricks.com/customers/comcast/databricks-apps
-      - name: Content ROI
-        short: Programming
+      - name: Content Metadata Enrichment
+        short: Content
         icon: product
-        summary: Title investment scored on acquisition, retention and licensing revenue.
-        problem: Greenlight, licensing and marketing bets rest on gut and lagging ratings, so no one can say what a title truly returned in acquisition, retention and licensing across platforms.
-        who_benefits: Network & Studio Chiefs
-        how_built: Viewing, subscription and Studio Cost Ledger data are conformed under Unity Catalog and scored in Schedule Optimizer, so title P&L and content ROI read on governed definitions.
+        summary: Assets auto-tagged and enriched with entities, topics and scene descriptors for search and curation.
+        problem: Descriptive metadata is missing or inconsistent across the archive and incoming assets, so search, rights and recommendation all run on sparse tags and editors re-tag the same content by hand.
+        who_benefits: Programming
+        how_built: Dalet and Avid assets are enriched with entities, topics and scene descriptors using Mosaic AI and AI Functions under Unity Catalog, so consistent metadata powers search, curation and recommendation.
         components:
-          - Schedule Optimizer
-          - Studio Cost Ledger
-          - AI/BI
+          - Dalet Galaxy
+          - Avid MediaCentral
+          - Mosaic AI
+          - AI Functions
           - Unity Catalog
-          - Genie One
         stories:
           - title: Warner Bros. Discovery curates the viewer experience
             url: https://www.databricks.com/customers/warner-bros-discovery
@@ -763,19 +763,19 @@ agent_usecases:
             url: https://www.databricks.com/customers/showtime
           - title: Flagging at-risk subscribers for direct-to-consumer media
             url: https://www.databricks.com/blog/2020/08/18/flagging-at-risk-subscribers-for-direct-to-consumer-media-services.html
-      - name: Rights Compliance
-        short: Legal
-        icon: gavel
-        summary: Window and territory violations flagged before playout or syndication.
-        problem: Rights windows and territory restrictions live in contracts apart from the schedule, so a title can be booked to air where or when a licence does not actually permit.
-        who_benefits: News & Production
-        how_built: Rightsline windows are conformed under Unity Catalog and checked with AI Functions in Schedule Optimizer, so window and territory violations flag before playout or syndication.
+      - name: Subscription Pricing & Packaging
+        short: DTC
+        icon: market
+        summary: Plan tiers, bundles and price points tuned to engagement and churn for direct-to-consumer.
+        problem: Streaming plans, price points and bundles are set on instinct and rarely revisited, so the tier mix leaves revenue on the table and pushes price-sensitive subscribers to cancel instead of downgrade.
+        who_benefits: Distribution
+        how_built: Zuora subscription, billing and viewing signals are conformed on Delta Lake and scored in Model Serving against CustomerLake features, so tier and bundle economics and price sensitivity read by segment in AI/BI.
         components:
-          - Rightsline
-          - Unity Catalog
-          - AI Functions
-          - Delta Lake
-          - Schedule Optimizer
+          - Zuora Media
+          - CustomerLake
+          - Model Serving
+          - Feature Store
+          - AI/BI
       - name: QoE Monitoring
         short: Streaming
         icon: stream
@@ -790,6 +790,8 @@ agent_usecases:
           - Lakehouse//RT
           - Model Serving
         stories:
+          - title: FOX Sports reimagines the live fan experience
+            url: https://www.databricks.com/customers/fox-sports
           - title: Building QoS analytics for streaming video services
             url: https://www.databricks.com/blog/2020/05/06/how-to-build-a-quality-of-service-qos-analytics-solution-for-streaming-video-services.html
       - name: Personalised Recommend
@@ -810,51 +812,45 @@ agent_usecases:
             url: https://www.databricks.com/customers/viacom18
           - title: Personalization strategies for media companies
             url: https://www.databricks.com/blog/personalization-strategies-for-media
-      - name: Makegood Automation
-        short: Ad ops
-        icon: gauge
-        summary: Under-delivery offers priced and approved before account teams escalate.
-        problem: When a campaign under-delivers, makegoods are worked by hand across traffic and ad-server data, so liability piles up and account teams escalate before a fair replacement is priced.
+      - name: Audience Segmentation
+        short: Audience
+        icon: custlake
+        summary: First-party audience segments built from viewing, subscription and engagement for sales and activation.
+        problem: Sales promises audiences it cannot prove and marketing targets broad demos, because first-party viewing, subscription and engagement signals are never resolved into durable, addressable segments.
         who_benefits: Ad Sales
-        how_built: Order and delivery data from WideOrbit and FreeWheel are scored in Model Serving and surfaced in Yield Manager on Lakebase, so under-delivery offers are priced and approved before escalation.
+        how_built: Viewing, subscription and panel signals are resolved in CustomerLake and modelled into segments with Feature Store and Model Serving, so addressable first-party audiences are read in AI/BI for sales and activation.
         components:
-          - Yield Manager
-          - WideOrbit WO Traffic
-          - FreeWheel Ad Server
+          - CustomerLake
+          - Nielsen One
+          - Feature Store
           - Model Serving
-          - Lakebase
-      - name: Social Clip Analytics
-        short: Distribution
-        icon: observ
-        summary: Talent and brand clips scored on reach and sentiment tied back to parent titles.
-        problem: Talent and brand clips scatter across social platforms with no line back to the titles they promote, so no one sees which clips drove reach or how sentiment moved around a show.
-        who_benefits: News & Production
-        how_built: Social feeds land through Social Platform APIs and are scored for reach and sentiment with AI Functions and Agent Bricks, so clip performance ties back to parent titles in AI/BI.
-        components:
-          - Social Platform APIs
-          - AI Functions
-          - Agent Bricks
           - AI/BI
-          - Delta Lake
-        stories:
-          - title: SEGA lifts player retention with sentiment analysis
-            url: https://www.databricks.com/customers/sega
-      - name: Live Event Scaling
-        short: Operations
-        icon: iot
-        summary: Capacity and ad pod density planned from historical concurrency curves.
-        problem: A marquee live event can spike concurrency far past forecast, so capacity and ad pod density are guessed and the network risks a buffering meltdown or unsold, wasted inventory.
+      - name: Content Localization
+        short: Global
+        icon: stream
+        summary: Subtitles, dubbing and market versions generated and quality-checked at scale.
+        problem: Localizing catalogue for new markets means slow, costly manual subtitling and dubbing, so titles reach international audiences late and smaller-language markets are skipped entirely.
         who_benefits: Distribution
-        how_built: Historical concurrency curves are processed with Apache Spark in Lakehouse//RT and read in Live Ops Console, so capacity and SCTE-35 pod density are planned from real demand.
+        how_built: Source assets and scripts are transcribed, translated and quality-checked with Mosaic AI and AI Functions on Delta Lake, so subtitles, dubs and market versions are generated and reviewed far faster than manual workflows.
         components:
-          - Live Ops Console
-          - Conviva Experience
-          - SCTE-35 Ad Markers
-          - Lakehouse//RT
-          - Apache Spark
-        stories:
-          - title: FOX Sports reimagines the live fan experience
-            url: https://www.databricks.com/customers/fox-sports
+          - Dalet Galaxy
+          - Mosaic AI
+          - AI Functions
+          - Model Serving
+          - Delta Lake
+      - name: Content & Licensing Monetization
+        short: Monetization
+        icon: share
+        summary: Content, rights and audience data packaged as governed products for licensees and partners.
+        problem: Licensing and syndication run on emailed spreadsheets and one-off extracts, so rights holders and platform partners get stale data and the publisher cannot see or price the value of its own catalogue and audience.
+        who_benefits: Network & Studio Chiefs
+        how_built: Rights, viewing and audience data are conformed under Unity Catalog and published as governed Data Products shared to licensees and partners over Delta Sharing, with consumption read in AI/BI.
+        components:
+          - Data Products
+          - Rightsline
+          - Unity Catalog
+          - Delta Sharing
+          - AI/BI
 medallion:
   Bronze:
     short: Raw audience feeds

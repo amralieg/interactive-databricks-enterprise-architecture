@@ -315,7 +315,7 @@ pipelines:
         ucs:
           - Real-Time Fraud
           - Interchange Optimisation
-          - Liquidity Forecasting
+          - Modernized Acquiring
           - Payment Routing
       - name: Product & Payments
         mark: Model Serving
@@ -337,8 +337,8 @@ pipelines:
         ucs:
           - Payment Routing
           - Credit Underwriting
-          - Open Banking Lending
-          - Real-Time Fraud
+          - Transaction Enrichment
+          - Agentic Commerce
       - name: Risk & Fraud
         mark: AI/BI
         summary: Fraud analysts on velocity rules, chargeback rate and AML alert queues, balancing fraud loss against the false-positive decline rate on good volume.
@@ -360,7 +360,7 @@ pipelines:
           - Real-Time Fraud
           - AML Monitoring
           - Chargeback Prevention
-          - Merchant Onboarding
+          - Merchant 360
       - name: Merchant Growth
         mark: CustomerLake
         summary: Sales and success on the onboarding funnel, merchant churn and support load, tracking activation and revenue per merchant account.
@@ -379,8 +379,8 @@ pipelines:
           - name: Onboarding & KYB
             cares: time-to-first-transaction and keeping bad actors out at signup.
         ucs:
-          - Merchant Onboarding
-          - Merchant Churn
+          - Modernized Acquiring
+          - Merchant 360
           - Chargeback Prevention
       - name: Finance & Treasury
         mark: AI/BI
@@ -400,7 +400,7 @@ pipelines:
           - name: FP&A
             cares: net interest margin, take rate and the numbers behind the forward book.
         ucs:
-          - Liquidity Forecasting
+          - Modernized Acquiring
           - Interchange Optimisation
           - Credit Underwriting
   - name: Technical
@@ -447,8 +447,8 @@ pipelines:
         ucs:
           - Real-Time Fraud
           - Credit Underwriting
-          - Merchant Churn
-          - Open Banking Lending
+          - Merchant 360
+          - Transaction Enrichment
       - name: App Developers
         mark: Apps
         summary: Ship the payments console, fraud command and merchant applications product and risk teams work in, hosted next to governed transaction data.
@@ -469,7 +469,7 @@ pipelines:
         ucs:
           - Real-Time Fraud
           - Chargeback Prevention
-          - Merchant Onboarding
+          - Agentic Commerce
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -647,7 +647,7 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Payments & Volume Agent
+      - name: Authorisation & Volume Agent
         icon: genie
         summary: Ask about payment volume, take rate and authorisation performance by product in plain language.
         feeds:
@@ -664,7 +664,7 @@ agent_usecases:
           - Where is take rate strongest and weakest across products?
           - Which BINs or networks are driving the most declines?
           - How does volume growth compare to last quarter by segment?
-      - name: Fraud & Disputes Agent
+      - name: Fraud & Chargebacks Agent
         icon: genie
         summary: Ask about fraud loss, chargebacks and alert queues across the book in plain language.
         feeds:
@@ -698,7 +698,7 @@ agent_usecases:
           - What is revenue per merchant by segment this quarter?
           - Which merchants have rising support load and disputes?
           - What is time-to-first-transaction for new signups?
-      - name: Treasury & Settlement Agent
+      - name: Settlement & Treasury Agent
         icon: genie
         summary: Ask about settlement floats, funding and interchange revenue in plain language.
         feeds:
@@ -757,19 +757,23 @@ agent_usecases:
         stories:
           - title: Block prevents fraud and payment risk in real time
             url: https://www.databricks.com/customers/block/lakeflow-declarative-pipelines
-      - name: Merchant Onboarding
-        short: Growth
+      - name: Modernized Acquiring
+        short: Acquiring
         icon: partner
-        summary: KYB risk scored at signup so sales does not onboard bad actors.
-        problem: KYB checks are stitched across identity, sanctions and document vendors by hand at signup, so sales either onboards risky merchants or loses good ones to days of manual review.
-        who_benefits: Merchant Growth
-        how_built: Onfido and AML Screening signals are scored with AI Functions against a conformed party graph, giving Merchant 360 a risk decision at signup under Unity Catalog lineage.
+        summary: A unified acquiring platform where authorization, settlement and dispute data land in one governed lakehouse.
+        problem: Acquiring runs across processor silos with nightly files, so settlement, authorization and dispute data never reconcile in one place and launching new payment methods or geographies is slow.
+        who_benefits: Payments Leadership
+        how_built: Adyen and Stripe authorization, settlement and dispute events land through Lakeflow onto Delta Lake under Unity Catalog, conformed once and served to AI/BI and the Payments Console.
         components:
-          - Merchant 360
-          - Onfido Identity
-          - AML Screening
-          - AI Functions
-          - Unity Catalog
+          - Payments Console
+          - Adyen Platform
+          - Stripe Payments
+          - Lakeflow
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: Airwallex powers global banking with data and AI
+            url: https://www.databricks.com/customers/airwallex/gcp
       - name: Credit Underwriting
         short: Lending
         icon: sheet
@@ -820,13 +824,13 @@ agent_usecases:
             url: https://www.databricks.com/blog/modern-bsaaml-compliance-databricks
           - title: Coins.ph powers anti-money-laundering with Databricks
             url: https://www.databricks.com/customers/coins-ph
-      - name: Merchant Churn
-        short: Retention
+      - name: Merchant 360
+        short: Merchant view
         icon: custlake
-        summary: At-risk merchants identified from volume dips and support signals.
-        problem: A merchant quietly routes volume to a rival for weeks before anyone notices, because volume dips, support tickets and disputes live in systems that never meet in one view.
+        summary: One governed view of every merchant across payments, support and risk, so retention and cross-sell are proactive.
+        problem: A merchant's volume, support tickets, disputes and risk signals live in systems that never meet, so churn is seen only after volume walks and cross-sell is guesswork.
         who_benefits: Merchant Growth
-        how_built: CRM, support and volume signals are unified in CustomerLake and scored for churn in Model Serving, surfacing at-risk merchants in Merchant 360 before the volume walks.
+        how_built: CRM, support and volume signals are unified in CustomerLake under Unity Catalog and scored for churn and cross-sell in Model Serving, surfacing the whole relationship in Merchant 360.
         components:
           - Merchant 360
           - Salesforce Fintech CRM
@@ -851,35 +855,32 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
           - Data Products
-      - name: Open Banking Lending
+      - name: Transaction Enrichment
         short: Data
         icon: api
-        summary: Aggregated account data scored for affordability with consent lineage.
-        problem: Consent-based account data arrives as raw feeds with no lineage, so affordability decisions are hard to defend to regulators and every lender rebuilds the same categorisation.
+        summary: Raw card and account transactions enriched with clean merchant name, category and logo for every downstream use.
+        problem: Raw transaction descriptors are cryptic, so cardholders dispute charges they do not recognise, categorisation is inconsistent and every fraud, lending and insight use case rebuilds the same enrichment.
         who_benefits: Product & Payments
-        how_built: Open Banking and ISO 20022 feeds are conformed under Unity Catalog, then categorised and scored for affordability in Model Serving with consent lineage carried through Feature Store.
+        how_built: Card-network BIN and acquirer transaction feeds conform on Delta Lake under Unity Catalog, and AI Functions resolve clean merchant name, category and location once for every downstream consumer.
         components:
-          - Open Banking Feeds
-          - SWIFT ISO 20022
-          - Feature Store
-          - Model Serving
-          - Unity Catalog
-      - name: Liquidity Forecasting
-        short: Treasury
-        icon: erp
-        summary: Settlement floats and funding needs predicted before central bank windows.
-        problem: Settlement floats and funding needs are guessed from spreadsheets, so treasury holds costly buffers or scrambles for liquidity before scheme and central-bank settlement windows.
-        who_benefits: Finance & Treasury
-        how_built: SWIFT ISO 20022 settlement flows are modelled in Model Serving and surfaced in the Treasury Workbench, so AI/BI shows float and funding scenarios on Delta Lake before month-end close.
-        components:
-          - Treasury Workbench
-          - SWIFT ISO 20022
-          - Model Serving
-          - AI/BI
+          - Adyen Platform
+          - Visa / Mastercard BIN
+          - AI Functions
           - Delta Lake
-        stories:
-          - title: Airwallex powers global banking with data and AI
-            url: https://www.databricks.com/customers/airwallex/gcp
+          - Unity Catalog
+      - name: Agentic Commerce
+        short: AI commerce
+        icon: market
+        summary: AI agents that transact on a consumer's behalf, authenticated and authorized through governed payment rails.
+        problem: Agent-initiated purchases break assumptions built for human checkout, so intent, authorization and spend controls for AI shopping agents have no governed place to run or be audited.
+        who_benefits: Product & Payments
+        how_built: Marqeta issuing and Stripe intents are orchestrated by Mosaic AI agents built with Agent Bricks, scored for risk in Model Serving and exposed through Databricks Apps with spend controls under Unity Catalog.
+        components:
+          - Stripe Payments
+          - Marqeta Card Issuing
+          - Mosaic AI
+          - Model Serving
+          - Databricks Apps
 medallion:
   Bronze:
     short: Raw auth streams

@@ -1,5 +1,5 @@
 name: Construction
-description: Capital projects, job costing, field operations, subcontractor management, and BIM coordination across general contractors and owners.
+description: 'For EPC firms and general contractors: capital program controls, bid and proposal creation, field and equipment operations, materials procurement, BIM coordination, and workforce safety across the projects they build and the owners they deliver to.'
 sources:
   - name: Project Management
     icon: sheet
@@ -320,10 +320,10 @@ pipelines:
           - name: Regional VP
             cares: job-level margin and delivery risk across the region's active work.
         ucs:
-          - WIP Forecasting
-          - Portfolio Benchmarking
-          - Earned Value Mgmt
-          - Safety Analytics
+          - Working Capital & Cash Flow
+          - Earned Value & Completion Monitoring
+          - Construction Sustainability & Embodied Carbon
+          - Workforce Safety Analytics
       - name: Project Managers
         mark: AI/BI
         summary: Schedule, budget, change orders and subcontractor performance, run on CPI, SPI, RFI aging and forecast at completion.
@@ -340,10 +340,10 @@ pipelines:
           - name: Cost Controller
             cares: CPI, SPI and forecast at completion against the budget.
         ucs:
-          - Earned Value Mgmt
-          - Change Order Control
-          - Schedule Recovery
-          - BIM Clash Prevention
+          - Earned Value & Completion Monitoring
+          - BIM Design Coordination & Simulation
+          - Materials & Procurement Planning
+          - Working Capital & Cash Flow
       - name: Estimating
         mark: Model Serving
         summary: Bid pricing, risk allowances and historical productivity, judged on win rate, margin sensitivity and unit-cost variance.
@@ -360,9 +360,9 @@ pipelines:
           - name: Cost Analyst
             cares: unit-cost benchmarks and historical productivity behind each bid.
         ucs:
-          - Subcontractor Risk
-          - Labor Productivity
-          - Portfolio Benchmarking
+          - Bid & Proposal Intelligence
+          - Materials & Procurement Planning
+          - Earned Value & Completion Monitoring
       - name: Field Superintendents
         mark: Lakehouse//RT
         summary: Daily production, labor hours and safety observations, tracked on units per labor hour, equipment idle time and near-miss rate.
@@ -379,9 +379,9 @@ pipelines:
           - name: Field Engineer
             cares: layout, quantities and the as-built record feeding cost.
         ucs:
-          - Labor Productivity
-          - Equipment Utilization
-          - Schedule Recovery
+          - Site Progress & Reality Capture
+          - Equipment Predictive Maintenance
+          - Prescriptive Equipment Maintenance
       - name: Safety & Quality
         mark: Apps
         summary: Incident prevention, inspections and closeout documentation, measured on TRIR, leading-indicator closure and punch-list burndown.
@@ -398,9 +398,9 @@ pipelines:
           - name: Quality Manager
             cares: inspections, punch-list burndown and closeout documentation.
         ucs:
-          - Safety Analytics
-          - Subcontractor Risk
-          - BIM Clash Prevention
+          - Workforce Safety Analytics
+          - Site Progress & Reality Capture
+          - Bid & Proposal Intelligence
   - name: Technical
     icon: code
     tiles:
@@ -422,9 +422,9 @@ pipelines:
           - name: Platform Engineer
             cares: Unity Catalog governance and the pager when a feed stalls.
         ucs:
-          - Earned Value Mgmt
-          - WIP Forecasting
-          - Equipment Utilization
+          - Earned Value & Completion Monitoring
+          - Working Capital & Cash Flow
+          - Equipment Predictive Maintenance
       - name: Data Scientists
         mark: MLflow
         summary: Bid win-probability, productivity-forecast and safety-leading-indicator models, and whether they still hold across a new project type and region.
@@ -443,9 +443,9 @@ pipelines:
           - name: MLOps Engineer
             cares: MLflow tracking and Model Serving for every deployed model.
         ucs:
-          - Labor Productivity
-          - Subcontractor Risk
-          - Schedule Recovery
+          - Bid & Proposal Intelligence
+          - Equipment Predictive Maintenance
+          - Site Progress & Reality Capture
       - name: App Developers
         mark: Apps
         summary: Ship the project command, bid analyzer, field daily log and safety dashboard apps PMs and superintendents work in, next to governed job data.
@@ -464,9 +464,9 @@ pipelines:
           - name: Agent Developer
             cares: agents drafting change orders and recovery plans on governed data.
         ucs:
-          - Change Order Control
-          - Safety Analytics
-          - Schedule Recovery
+          - Prescriptive Equipment Maintenance
+          - Workforce Safety Analytics
+          - Materials & Procurement Planning
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -646,9 +646,9 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Job Cost & WIP Agent
+      - name: Cost & Completion Agent
         icon: genie
-        summary: Ask about job margin, earned value and forecast at completion across the portfolio.
+        summary: Track job margin, earned value and forecast at completion across the portfolio.
         feeds:
           - Trimble Viewpoint Vista
           - Sage 300 CRE
@@ -664,9 +664,9 @@ agent_usecases:
           - How much change-order exposure is pending but not yet approved?
           - Which jobs have the largest variance to forecast at completion?
           - What is total backlog and projected revenue by region?
-      - name: Field Production & Equipment Agent
+      - name: Field & Fleet Agent
         icon: genie
-        summary: Explore labor productivity, daily production and equipment utilisation.
+        summary: Run daily production, site progress and equipment health across active sites.
         feeds:
           - Procore
           - Samsara Fleet
@@ -682,9 +682,9 @@ agent_usecases:
           - Which crews are behind the daily production plan?
           - What is equipment utilisation by asset across active sites?
           - Which trades are on the critical path and slipping?
-      - name: Safety & Quality Agent
+      - name: Site Safety Agent
         icon: genie
-        summary: Answer leading-indicator, incident and punch-list questions across sites.
+        summary: Surface leading indicators, incidents and punch-list risk across sites.
         feeds:
           - HammerTech
           - OSHA Incident Data
@@ -700,9 +700,9 @@ agent_usecases:
           - Which inspection and permit items are overdue?
           - Where is punch-list burndown behind at closeout?
           - Which subcontractors have the worst safety observation record?
-      - name: Estimating & Subcontractor Risk Agent
+      - name: Bid & Estimating Agent
         icon: genie
-        summary: Ask about bid win rate, unit costs and subcontractor prequalification.
+        summary: Score bid win rate, unit costs and subcontractor prequalification before award.
         feeds:
           - ISNetworld
           - Dodge Construction Network
@@ -723,13 +723,27 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: Earned Value Mgmt
-        short: Finance
+      - name: Bid & Proposal Intelligence
+        short: Preconstruction
+        icon: market
+        summary: Win probability, unit-cost basis and subcontractor risk brought together so bids are priced on evidence, not memory.
+        problem: Estimators price new work from memory and scattered historical jobs, and subcontractor prequalification, safety and past performance sit in separate systems, so trades are awarded on price without a clear read on cost basis or delivery risk.
+        who_benefits: Estimating
+        how_built: Dodge leads, ISNetworld scores and Viewpoint historical cost conform on Delta Lake under Unity Catalog; win-probability and subcontractor-risk models tracked in MLflow score through Model Serving, and Mosaic AI drafts proposal narratives in the Bid Analyzer.
+        components:
+          - Bid Analyzer
+          - Dodge Construction Network
+          - ISNetworld
+          - Model Serving
+          - MLflow
+          - Mosaic AI
+      - name: Earned Value & Completion Monitoring
+        short: Controls
         icon: chart
-        summary: CPI and SPI integrated across ERP and schedule systems.
+        summary: CPI, SPI and forecast at completion integrated across ERP and schedule so progress is read on one certified basis.
         problem: CPI and SPI live in the scheduler while actual cost sits in the ERP, so earned value is rebuilt by hand in spreadsheets and is stale the moment the job moves.
         who_benefits: Project Managers
-        how_built: ERP job cost and P6 progress land through Lakeflow and conform on Delta Lake under Unity Catalog, so Project Command serves one certified CPI and SPI per job.
+        how_built: ERP job cost and P6 progress land through Lakeflow and conform on Delta Lake under Unity Catalog, so Project Command serves one certified CPI, SPI and forecast at completion per job on AI/BI.
         components:
           - Project Command
           - Trimble Viewpoint Vista
@@ -740,125 +754,104 @@ agent_usecases:
         stories:
           - title: Hanwha builds an integrated data system for smarter decision making
             url: https://www.databricks.com/customers/hanwha-corporation
-      - name: Change Order Control
-        short: Commercial
-        icon: erp
-        summary: Pending and approved COs tracked against margin impact.
-        problem: Pending change orders sit in email and PM tools while their margin impact lives in the ERP, so exposure is unknown until a CO is approved and the job has already moved.
-        who_benefits: Project Managers
-        how_built: Procore COs and Sage job cost conform under Unity Catalog and Project Command tracks each pending and approved CO against forecast margin before it is signed.
-        components:
-          - Project Command
-          - Procore
-          - Sage 300 CRE
-          - Unity Catalog
-          - AI/BI
-          - Delta Lake
-        stories:
-          - title: Hanwha builds an integrated data system for smarter decision making
-            url: https://www.databricks.com/customers/hanwha-corporation
-      - name: Labor Productivity
-        short: Field
-        icon: people
-        summary: Units per labor hour benchmarked by trade and job.
-        problem: Daily production and labor hours are logged on paper and in field apps, so units per labor hour by trade is only known weeks later at cost close, too late to correct.
-        who_benefits: Field Superintendents
-        how_built: Field Daily Log lands production quantities and hours through Lakeflow into Delta Lake, benchmarking units per labor hour by trade and job in AI/BI at site latency.
-        components:
-          - Field Daily Log
-          - Procore
-          - Lakeflow
-          - Delta Lake
-          - AI/BI
-          - Lakehouse//RT
-        stories:
-          - title: Novade improves construction safety and efficiency with Databricks
-            url: https://www.databricks.com/customers/novade
-      - name: Equipment Utilization
-        short: Fleet
-        icon: iot
-        summary: Owned and rented assets ranked by idle time and cost.
-        problem: Owned and rented assets scatter across yards and jobsites, so idle machines keep billing while another site waits, and no one can see true utilization by asset.
-        who_benefits: Field Superintendents
-        how_built: Samsara and rental telematics stream into Lakehouse//RT and are joined to jobsite geofences on Delta Lake, ranking assets by idle time and cost in the Field Daily Log.
-        components:
-          - Field Daily Log
-          - Samsara Fleet
-          - United Rentals Total Control
-          - Lakehouse//RT
-          - Delta Lake
-          - AI/BI
-        stories:
-          - title: Maximizing equipment utilization through geospatial analytics
-            url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
-          - title: Trackunit eliminates construction downtime on Databricks
-            url: https://www.databricks.com/customers/trackunit
-      - name: BIM Clash Prevention
+      - name: BIM Design Coordination & Simulation
         short: Design
         icon: product
-        summary: Clashes resolved before they become field rework.
-        problem: Clashes between structural, mechanical and electrical models surface in the field as rework, because coordination runs in siloed BIM tools disconnected from the schedule.
+        summary: Clashes and 4D sequence options explored against the schedule before the field ever builds them.
+        problem: Clashes between structural, mechanical and electrical models surface in the field as rework, because coordination and 4D what-if run in siloed BIM tools disconnected from the schedule and cost.
         who_benefits: Project Managers
-        how_built: Revit and Navisworks clash runs land under Unity Catalog and are joined to P6 activities on Delta Lake, so unresolved clashes are ranked by schedule impact in AI/BI.
+        how_built: Revit, Navisworks and iTwin clash and 4D runs land under Unity Catalog and join to P6 on Delta Lake, so unresolved clashes and simulated sequences are ranked by schedule and cost impact in AI/BI before the field builds them.
         components:
           - Autodesk Revit
           - Navisworks
+          - Bentley iTwin
           - Primavera P6
           - Unity Catalog
-          - Delta Lake
           - AI/BI
-      - name: Subcontractor Risk
-        short: Supply
-        icon: zplug
-        summary: Prequalification and performance scored before award.
-        problem: Subcontractor prequalification, safety scores and past performance sit in separate systems, so trades are awarded on price without a clear view of delivery and default risk.
-        who_benefits: Estimating
-        how_built: ISNetworld scores and historical performance conform on Delta Lake and feed a risk model in Model Serving, surfaced through the Bid Analyzer before a trade is awarded.
+      - name: Site Progress & Reality Capture
+        short: Field
+        icon: iot
+        summary: 360 site capture turned into percent-complete, quality and condition signals against the plan.
+        problem: Progress is argued from walkthrough photos and daily logs nobody aggregates, so percent-complete, quality gaps and site conditions are known late and rework is caught only after it is buried.
+        who_benefits: Field Superintendents
+        how_built: OpenSpace 360 capture and Autodesk Build issues land on Delta Lake, vision models tracked in MLflow score progress and defects in Model Serving, and percent-complete surfaces in the Field Daily Log against the P6 plan.
         components:
-          - Bid Analyzer
-          - ISNetworld
+          - Field Daily Log
+          - OpenSpace
+          - Autodesk Build
           - Model Serving
-          - Unity Catalog
-          - Delta Lake
           - MLflow
-      - name: Schedule Recovery
-        short: Planning
-        icon: sheet
-        summary: Recovery options costed when critical path slips.
-        problem: When the critical path slips, recovery options are argued in meetings without cost, so crews are added or resequenced with no view of the margin hit until it is already spent.
-        who_benefits: Project Managers
-        how_built: P6 progress and job cost conform on Delta Lake and recovery scenarios are costed with AI Functions in Project Command, so the cheapest path back to plan is chosen fast.
-        components:
-          - Project Command
-          - Primavera P6
-          - AI Functions
-          - Model Serving
           - Delta Lake
-          - Unity Catalog
-      - name: WIP Forecasting
-        short: Finance
-        icon: erp
-        summary: Revenue and cost at completion before month-end close.
-        problem: Work-in-progress and cost at completion are assembled manually from ERP and field data at month-end, so revenue and margin are known too late to steer the job.
-        who_benefits: GC President & COO
-        how_built: ERP job cost and field production conform through Lakeflow on Delta Lake, and forecast-at-completion models in Model Serving publish WIP to AI/BI before close.
+      - name: Equipment Predictive Maintenance
+        short: Fleet
+        icon: iot
+        summary: Failures on owned and rented machines predicted from telematics before they stall the crew.
+        problem: Owned and rented machines fail on the job with no warning, and the telematics and DVIR signals that would have flagged the fault sit unused, so a breakdown stalls the crew and blows the schedule.
+        who_benefits: Field Superintendents
+        how_built: Samsara and United Rentals telematics and DVIR stream into Lakehouse//RT and conform on Delta Lake, and remaining-life and anomaly models tracked in MLflow score in Model Serving so failures become planned repairs before the machine stops.
         components:
-          - Trimble Viewpoint Vista
-          - Sage 300 CRE
-          - Lakeflow
+          - Samsara Fleet
+          - United Rentals Total Control
+          - Lakehouse//RT
           - Model Serving
-          - AI/BI
+          - MLflow
           - Delta Lake
         stories:
-          - title: Hanwha builds an integrated data system for smarter decision making
-            url: https://www.databricks.com/customers/hanwha-corporation
-      - name: Safety Analytics
+          - title: Trackunit eliminates construction downtime on Databricks
+            url: https://www.databricks.com/customers/trackunit
+          - title: Maximizing equipment utilization through geospatial analytics
+            url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
+      - name: Prescriptive Equipment Maintenance
+        short: Reliability
+        icon: gauge
+        summary: The right repair, parts and lowest-impact window recommended once a fault is predicted.
+        problem: Even when a fault is predicted, the crew still guesses the fix, the parts and the window, so machines wait on the wrong spares and maintenance competes with the production schedule.
+        who_benefits: Field Superintendents
+        how_built: Predicted failures, parts and utilization conform on Delta Lake, AI Functions and Model Serving recommend the repair, parts and lowest-impact window, and the work order and its state are managed in the Field Daily Log on Lakebase.
+        components:
+          - Field Daily Log
+          - Samsara Fleet
+          - AI Functions
+          - Model Serving
+          - Lakebase
+          - Delta Lake
+      - name: Materials & Procurement Planning
+        short: Supply
+        icon: zplug
+        summary: Long-lead materials and buyout tied to the schedule so a late delivery never surprises the critical path.
+        problem: Long-lead materials and subcontractor buyout are tracked in spreadsheets against a moving schedule, so a late steel or switchgear delivery stalls the critical path before anyone sees the exposure.
+        who_benefits: Project Managers
+        how_built: Procore procurement, Sage commitments and openBIM quantity takeoffs conform on Delta Lake, and delivery-risk models in Model Serving tie material need dates to the P6 plan in Project Command so buyout stays ahead of the build.
+        components:
+          - Project Command
+          - Procore
+          - Sage 300 CRE
+          - Primavera P6
+          - Model Serving
+          - Delta Lake
+      - name: Construction Sustainability & Embodied Carbon
+        short: ESG
+        icon: share
+        summary: Embodied carbon and waste diversion computed per project from real material quantities.
+        problem: Owners and codes now demand embodied carbon and waste diversion by project, but the material quantities and haul data needed sit across BIM, ERP and field logs, so carbon is estimated with crude factors that will not survive an audit.
+        who_benefits: GC President & COO
+        how_built: openBIM quantity data, ERP purchases and field waste logs conform under Unity Catalog, embodied carbon and diversion are computed on Delta Lake, and certified figures publish as Data Products on AI/BI for owner ESG reporting.
+        components:
+          - Data Products
+          - IFC / COBie / BCF
+          - Unity Catalog
+          - Delta Lake
+          - AI/BI
+        stories:
+          - title: Colas unifies data across 50 countries with Databricks
+            url: https://www.databricks.com/customers/colas
+      - name: Workforce Safety Analytics
         short: EHS
         icon: gavel
-        summary: Leading indicators predicting recordable incidents.
+        summary: Leading indicators predicting recordable incidents before TRIR moves.
         problem: Incidents are counted after they happen, while leading indicators like near-misses and inspection gaps sit in field apps no one aggregates until TRIR has already moved.
         who_benefits: Safety & Quality
-        how_built: HammerTech observations and OSHA logs conform on Delta Lake and feed leading-indicator models in Model Serving, surfaced in the Safety Dashboard before TRIR rises.
+        how_built: HammerTech observations, OSHA logs and OpenSpace safety analytics conform on Delta Lake and feed leading-indicator models in Model Serving, surfaced in the Safety Dashboard before TRIR rises.
         components:
           - Safety Dashboard
           - HammerTech
@@ -869,23 +862,21 @@ agent_usecases:
         stories:
           - title: Novade improves construction safety and efficiency with Databricks
             url: https://www.databricks.com/customers/novade
-      - name: Portfolio Benchmarking
-        short: Executive
-        icon: chart
-        summary: Job performance compared across regions and types.
-        problem: Job performance is compared in slide decks built by hand, so the executive team cannot see margin, schedule and safety across regions and job types on one consistent basis.
+      - name: Working Capital & Cash Flow
+        short: Finance
+        icon: erp
+        summary: WIP, retention and cost at completion assembled before month-end so cash is steered, not discovered.
+        problem: Work-in-progress, retention and cost at completion are assembled by hand from ERP and field data at month-end, so cash position and margin are known too late to steer the job or the portfolio.
         who_benefits: GC President & COO
-        how_built: Certified job margin, schedule and safety metrics conform under Unity Catalog and are compared across regions and types in AI/BI, with Genie One answering ad hoc questions.
+        how_built: ERP job cost and field production conform through Lakeflow on Delta Lake, and forecast-at-completion models in Model Serving publish WIP, retention and cash exposure to AI/BI before close.
         components:
-          - Genie One
+          - Trimble Viewpoint Vista
+          - Sage 300 CRE
+          - Lakeflow
+          - Model Serving
           - AI/BI
-          - Unity Catalog
-          - Data Products
           - Delta Lake
-          - SQL Warehouses
         stories:
-          - title: Colas unifies data across 50 countries with Databricks
-            url: https://www.databricks.com/customers/colas
           - title: Hanwha builds an integrated data system for smarter decision making
             url: https://www.databricks.com/customers/hanwha-corporation
 medallion:

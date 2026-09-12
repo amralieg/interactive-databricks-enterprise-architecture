@@ -1,5 +1,5 @@
 name: Data Centers & Cloud
-description: 'Colocation and hyperscale data-center operations: DCIM and critical facilities, power and cooling efficiency, capacity and interconnection, energy and sustainability, and tenant service.'
+description: 'Colocation and hyperscale data-center operators: DCIM and critical facilities, power and cooling efficiency, capacity forecasting, energy and sustainability, cyber and physical security monitoring, field operations, and financial analytics.'
 sources:
   - name: DCIM & Assets
     icon: erp
@@ -395,9 +395,9 @@ pipelines:
             cares: availability, SLA exposure and sustainability commitments.
         ucs:
           - Capacity Planning
-          - PUE & Sustainability
+          - Sustainability
           - Energy Procurement
-          - Uptime & Availability
+          - Financial Analytics
       - name: Facilities Ops
         mark: Lakehouse//RT
         summary: Critical facility engineers watching the power chain and cooling loops on a live floor, shift operators in the NOC acknowledging alarms against the clock, and mechanical and electrical teams keeping UPS, generators and chillers inside their operating envelope.
@@ -418,8 +418,8 @@ pipelines:
         ucs:
           - Cooling Optimization
           - Predictive Maintenance
-          - Incident & Change
           - Uptime & Availability
+          - Field Ops Assistant
       - name: Capacity & IX
         mark: AI/BI
         summary: Capacity planners tracking power, cooling and space headroom hall by hall before a sales commitment strands a cabinet, and interconnection product managers monetising cross-connects and fabric ports across the meet-me room.
@@ -437,7 +437,7 @@ pipelines:
             cares: cross-connect and fabric-port monetisation.
         ucs:
           - Capacity Planning
-          - Interconnect Revenue
+          - Financial Analytics
       - name: Sustainability
         mark: Model Serving
         summary: Energy procurement teams hedging and buying power against volatile wholesale markets, and ESG and sustainability leads accounting for PUE, WUE and Scope 1-3 carbon across the estate for regulators, investors and tenants.
@@ -454,7 +454,7 @@ pipelines:
           - name: ESG & sustainability
             cares: PUE, WUE and Scope 1-3 carbon accounting.
         ucs:
-          - PUE & Sustainability
+          - Sustainability
           - Energy Procurement
       - name: Service & Sec
         mark: Agent Bricks
@@ -475,8 +475,7 @@ pipelines:
             cares: metered power reconciled against colo contracts.
         ucs:
           - Incident & Change
-          - Physical Security
-          - Tenant Billing & SLA
+          - Cyber Threat Monitoring
   - name: Technical
     icon: code
     tiles:
@@ -683,7 +682,7 @@ agent_usecases:
     tiles:
       - name: Facility Operations Agent
         icon: genie
-        summary: Ask about live power, cooling and alarms across the floor in plain language.
+        summary: Ask about live power, cooling, alarms and reliability across the floor in plain language.
         feeds:
           - JCI Metasys
           - Vertiv Environet
@@ -691,35 +690,53 @@ agent_usecases:
           - PUE, uptime, capacity
         teams:
           - Facilities Ops
-          - Executive Team
           - Optimization Eng
+          - Executive Team
         questions:
           - Which halls are running hottest against their thermal envelope right now?
           - What is current PUE by site and how is it trending today?
           - Which cooling units are drawing the most power for the least effect?
-          - Where are active critical alarms concentrated?
-          - Which power chains are closest to their capacity limit?
-      - name: Capacity & Interconnection Agent
+          - Which critical assets are predicted to fail on a live floor?
+          - Where is availability risk concentrated across the power and cooling chain?
+      - name: Capacity & Energy Agent
         icon: genie
-        summary: Explore power, cooling and space headroom and cross-connect utilisation.
+        summary: Explore power, cooling and space headroom and energy cost across the estate.
         feeds:
           - Sunbird dcTrack
           - Schneider PowerLogic
-          - Equinix Fabric
-          - Conformed site, asset, tenant
+          - Utility & Energy Mkts
+          - PUE, uptime, capacity
         teams:
           - Capacity & IX
+          - Sustainability
           - Executive Team
-          - Facilities Ops
         questions:
           - Where do we have stranded power capacity by hall?
-          - Which cabinets have space but no available power?
-          - What is cross-connect utilisation across the meet-me room?
           - Where will the next megawatt of demand land?
+          - How much power did we buy on spot versus contract this week?
+          - Which sites have the best carbon-intensity buying windows today?
           - Which sites are closest to selling out of cooling?
-      - name: Energy & Sustainability Agent
+      - name: Incident & Security Agent
         icon: genie
-        summary: Answer PUE, WUE, energy-cost and carbon questions across the estate.
+        summary: Answer questions on incidents, change risk, cyber threats and field work in plain language.
+        feeds:
+          - ServiceNow ITSM
+          - Kentik NPM
+          - SolarWinds NPM
+          - Conformed site, asset, tenant
+        teams:
+          - Service & Sec
+          - Facilities Ops
+          - NOC operators
+        questions:
+          - Which incidents are open past their SLA right now?
+          - Which change records carry the highest risk this window?
+          - Where did anomalous access or network activity occur this week?
+          - Which control networks show signs of lateral movement?
+          - How many field work orders are open past their SLA?
+      - name: Sustainability & Finance Agent
+        icon: genie
+        summary: Ask about PUE, WUE, carbon, energy cost and return on capacity across the estate.
         feeds:
           - Schneider PowerLogic
           - PDU Branch Metering
@@ -728,31 +745,13 @@ agent_usecases:
         teams:
           - Sustainability
           - Executive Team
-          - Facilities Ops
+          - ESG & sustainability
         questions:
           - What is PUE and WUE by site this month versus last?
-          - How much power did we buy on spot versus contract this week?
           - What are Scope 1-3 emissions by site quarter to date?
-          - Which sites have the best carbon-intensity buying windows today?
+          - What is energy cost per megawatt across the estate?
           - Where is energy spend growing fastest relative to load?
-      - name: Service & Tenant Agent
-        icon: genie
-        summary: Ask about SLAs, tenant power, incidents and physical access in plain language.
-        feeds:
-          - ServiceNow ITSM
-          - Genetec Security
-          - Tenant Billing
-          - Conformed site, asset, tenant
-        teams:
-          - Service & Sec
-          - Capacity & IX
-          - Executive Team
-        questions:
-          - Which tenants are closest to breaching an uptime SLA?
-          - What is metered power draw versus committed power by tenant?
-          - Which incidents are open past their SLA right now?
-          - Where did anomalous after-hours access occur this week?
-          - Which change records carry the highest risk this window?
+          - What is the return on the last megawatt we deployed?
   - name: Business Use Cases
     icon: ztarget
     span: 8
@@ -776,24 +775,22 @@ agent_usecases:
             url: https://www.databricks.com/blog/ai-doesnt-scale-until-you-stop-calling-it-innovation
           - title: Databricks IoT platform for predictive maintenance and optimization
             url: https://www.databricks.com/resources/demos/tutorials/lakehouse-platform/iot-and-predictive-maintenance
-      - name: PUE & Sustainability
-        short: Carbon & PUE
-        icon: chart
-        summary: Measuring PUE, WUE and Scope 1-3 carbon across the estate from the same governed telemetry the floor runs on, so a disclosure is produced continuously rather than reassembled each quarter.
-        problem: PUE, WUE and carbon are reassembled by hand each reporting cycle from meters, spreadsheets and vendor portals the auditors cannot see into, so disclosures lag the operation by a quarter.
-        who_benefits: Sustainability
-        how_built: Meter, BMS and utility feeds are conformed to Gold with lineage in Unity Catalog; PUE, WUE and Scope 1-3 emissions are published as governed Data Products and read in AI/BI.
+      - name: Capacity Planning
+        short: Headroom
+        icon: sheet
+        summary: Tracking power, cooling and space headroom cabinet by cabinet so a sales commitment lands where capacity exists instead of stranding a megawatt behind a full breaker.
+        problem: Power, cooling and space are tracked in separate DCIM, BMS and spreadsheet views, so capacity is sold against stale headroom and megawatts strand behind full breakers and hot aisles.
+        who_benefits: Capacity & IX
+        how_built: DCIM, branch-circuit and cooling feeds are conformed in the lakehouse; headroom and stranded capacity by hall are modelled and explored in the Capacity Planner on AI/BI.
         components:
+          - Capacity Planner
           - AI/BI
-          - Unity Catalog
-          - Utility & Energy Mkts
-          - Data Products
-          - PDU Branch Metering
+          - Sunbird dcTrack
+          - Nlyte DCIM
+          - Schneider PowerLogic
         stories:
-          - title: How Dow built a carbon footprint ledger on Databricks
-            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-          - title: Vattenfall quantifies carbon impact at second-level granularity
-            url: https://www.databricks.com/customers/vattenfall/genie
+          - title: E.ON unifies energy asset data on the Databricks Platform
+            url: https://www.databricks.com/customers/eon
       - name: Predictive Maintenance
         short: Critical plant
         icon: iot
@@ -812,95 +809,6 @@ agent_usecases:
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
           - title: Turning predictive-maintenance scores into a reliability app
             url: https://developers.databricks.com/perspectives/databricks-supports-predictive-maintenance-iot-analytics-for-energy-operations
-      - name: Capacity Planning
-        short: Headroom
-        icon: sheet
-        summary: Tracking power, cooling and space headroom cabinet by cabinet so a sales commitment lands where capacity exists instead of stranding a megawatt behind a full breaker.
-        problem: Power, cooling and space are tracked in separate DCIM, BMS and spreadsheet views, so capacity is sold against stale headroom and megawatts strand behind full breakers and hot aisles.
-        who_benefits: Capacity & IX
-        how_built: DCIM, branch-circuit and cooling feeds are conformed in the lakehouse; headroom and stranded capacity by hall are modelled and explored in the Capacity Planner on AI/BI.
-        components:
-          - Capacity Planner
-          - AI/BI
-          - Sunbird dcTrack
-          - Nlyte DCIM
-          - Schneider PowerLogic
-        stories:
-          - title: E.ON unifies energy asset data on the Databricks Platform
-            url: https://www.databricks.com/customers/eon
-      - name: Interconnect Revenue
-        short: Meet-me room
-        icon: network
-        summary: Monetising cross-connects and fabric ports by joining interconnection records to network telemetry, so the meet-me room is priced and provisioned on real utilisation.
-        problem: Interconnection revenue and port utilisation live in the fabric platform while the traffic that justifies them lives in network telemetry, so cross-connects are priced and provisioned blind to real use.
-        who_benefits: Capacity & IX
-        how_built: Equinix Fabric and Digital Realty records are joined to SolarWinds and Kentik telemetry in the lakehouse; utilisation and revenue are surfaced through AI/BI and the Tenant Portal.
-        components:
-          - Equinix Fabric
-          - Digital Realty Fabric
-          - Kentik NPM
-          - AI/BI
-          - Tenant Portal
-      - name: Incident & Change
-        short: ITSM
-        icon: opdb
-        summary: Correlating the alarm storm into the one incident that matters and scoring the risk of every change before it touches a live floor.
-        problem: A single fault throws hundreds of BMS and network alarms into ServiceNow at once and change risk is judged on memory, so the real incident is buried and risky changes reach live floors.
-        who_benefits: Service & Sec
-        how_built: Alarms and tickets from ServiceNow ITSM and the BMS estate are correlated in Lakehouse//RT; an agent on Agent Bricks drafts the incident and flags change risk against history.
-        components:
-          - ServiceNow ITSM
-          - Lakehouse//RT
-          - Agent Bricks
-          - SNMP & Telemetry
-          - AI Functions
-      - name: Energy Procurement
-        short: Power buying
-        icon: market
-        summary: Buying and hedging power against volatile wholesale markets from a forecast of site load and carbon intensity, instead of a static block bought a year ahead.
-        problem: Power is the largest operating cost and is bought against static blocks and gut feel, so the operator is exposed to spot volatility and misses the carbon-intensity windows that cut cost and emissions.
-        who_benefits: Sustainability
-        how_built: Site-load, market-price and carbon-intensity feeds are conformed to Gold; forecasts scored in Model Serving inform hedging and demand-response decisions read in AI/BI.
-        components:
-          - Model Serving
-          - AI/BI
-          - Utility & Energy Mkts
-          - Delta Lake
-          - Lakeflow
-        stories:
-          - title: Helen forecasts energy demand and production with Databricks
-            url: https://www.databricks.com/customers/helen
-          - title: Vattenfall builds real-time energy-market intelligence
-            url: https://www.databricks.com/customers/vattenfall/genie
-      - name: Physical Security
-        short: Access & video
-        icon: zshield
-        summary: Fusing access-control and video events with facility state to flag tailgating, anomalous access and perimeter risk before it becomes an incident.
-        problem: Access control, video and facility systems each see one slice, so tailgating and anomalous after-hours access only surface on a manual review of footage after something has already gone wrong.
-        who_benefits: Service & Sec
-        how_built: Genetec and Lenel events are joined to facility state in the lakehouse; anomaly models in Model Serving flag risk to the Critical Ops Cockpit and physical-security teams.
-        components:
-          - Genetec Security
-          - Lenel OnGuard
-          - Model Serving
-          - Lakehouse//RT
-          - Critical Ops Cockpit
-      - name: Tenant Billing & SLA
-        short: Metering
-        icon: product
-        summary: Billing metered power draw and reporting SLA and uptime to every tenant from branch-circuit meters, so an invoice and a service credit come from the same governed record.
-        problem: Metered power for billing and uptime for SLA credits are pulled from different systems by hand, so invoices are late, disputes are common, and a service credit is argued rather than evidenced.
-        who_benefits: Service & Sec
-        how_built: PDU branch-circuit reads and power-chain uptime are conformed to Gold; tenant billing, SLA and interconnection views are served through the Tenant Portal and shared over Delta Sharing.
-        components:
-          - Tenant Portal
-          - PDU Branch Metering
-          - Tenant Billing
-          - Data Products
-          - Unity Catalog
-        stories:
-          - title: Databricks Data Intelligence Platform for Energy (AMI metering)
-            url: https://www.databricks.com/company/newsroom/press-releases/databricks-launches-data-intelligence-platform-energy-bringing
       - name: Uptime & Availability
         short: Resilience
         icon: gauge
@@ -919,6 +827,94 @@ agent_usecases:
             url: https://www.databricks.com/company/newsroom/press-releases/databricks-launches-data-intelligence-platform-energy-bringing
           - title: E.ON improves grid asset management on Databricks
             url: https://www.databricks.com/customers/eon
+      - name: Energy Procurement
+        short: Power buying
+        icon: market
+        summary: Buying and hedging power against volatile wholesale markets from a forecast of site load and carbon intensity, instead of a static block bought a year ahead.
+        problem: Power is the largest operating cost and is bought against static blocks and gut feel, so the operator is exposed to spot volatility and misses the carbon-intensity windows that cut cost and emissions.
+        who_benefits: Sustainability
+        how_built: Site-load, market-price and carbon-intensity feeds are conformed to Gold; forecasts scored in Model Serving inform hedging and demand-response decisions read in AI/BI.
+        components:
+          - Model Serving
+          - AI/BI
+          - Utility & Energy Mkts
+          - Delta Lake
+          - Lakeflow
+        stories:
+          - title: Helen forecasts energy demand and production with Databricks
+            url: https://www.databricks.com/customers/helen
+          - title: Vattenfall builds real-time energy-market intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Sustainability
+        short: Carbon & WUE
+        icon: chart
+        summary: Measuring WUE, water and Scope 1-3 carbon across the estate from the same governed telemetry the floor runs on, so disclosure is produced continuously rather than reassembled each quarter.
+        problem: PUE, WUE and carbon are reassembled by hand each reporting cycle from meters, spreadsheets and vendor portals the auditors cannot see into, so disclosures lag the operation by a quarter.
+        who_benefits: Sustainability
+        how_built: Meter, BMS and utility feeds are conformed to Gold with lineage in Unity Catalog; PUE, WUE and Scope 1-3 emissions are published as governed Data Products and read in AI/BI.
+        components:
+          - AI/BI
+          - Unity Catalog
+          - Utility & Energy Mkts
+          - Data Products
+          - PDU Branch Metering
+        stories:
+          - title: How Dow built a carbon footprint ledger on Databricks
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+          - title: Vattenfall quantifies carbon impact at second-level granularity
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Incident & Change
+        short: ITSM
+        icon: opdb
+        summary: Correlating the alarm storm into the one incident that matters and scoring the risk of every change before it touches a live floor.
+        problem: A single fault throws hundreds of BMS and network alarms into ServiceNow at once and change risk is judged on memory, so the real incident is buried and risky changes reach live floors.
+        who_benefits: Service & Sec
+        how_built: Alarms and tickets from ServiceNow ITSM and the BMS estate are correlated in Lakehouse//RT; an agent on Agent Bricks drafts the incident and flags change risk against history.
+        components:
+          - ServiceNow ITSM
+          - Lakehouse//RT
+          - Agent Bricks
+          - SNMP & Telemetry
+          - AI Functions
+      - name: Cyber Threat Monitoring
+        short: Security
+        icon: zshield
+        summary: Fusing network flow, device and access telemetry to detect threats to the facility and its control systems before they become incidents.
+        problem: Network, facility-control and access systems each see one slice, so a lateral-movement or OT intrusion only surfaces on manual review after it has already reached a control network.
+        who_benefits: Service & Sec
+        how_built: Kentik flow, SolarWinds device and SNMP telemetry join access events in Lakehouse//RT; anomaly and threat models in Model Serving flag risk to the Critical Ops Cockpit and security teams.
+        components:
+          - Kentik NPM
+          - SolarWinds NPM
+          - SNMP & Telemetry
+          - Model Serving
+          - Lakehouse//RT
+      - name: Field Ops Assistant
+        short: Workforce
+        icon: apps
+        summary: An assistant that gives smart-hands and facility technicians the work order, asset location and procedure for the job, and closes it on mobile.
+        problem: Technicians hunt across DCIM, ITSM and runbooks for the asset, the circuit and the procedure, so a smart-hands job or a PM takes longer than the work itself and records lag behind.
+        who_benefits: Facilities Ops
+        how_built: ServiceNow work orders, DCIM asset location and procedures conform under Unity Catalog; an assistant on Agent Bricks serves technicians from Databricks Apps over Lakebase, writing completions back to ServiceNow.
+        components:
+          - ServiceNow ITSM
+          - Nlyte DCIM
+          - Agent Bricks
+          - Lakebase
+          - Unity Catalog
+      - name: Financial Analytics
+        short: Finance
+        icon: sheet
+        summary: Energy cost, capital per megawatt and cost-to-serve tracked on governed ledgers against live utilisation, so finance and operations work from one set of numbers.
+        problem: Energy cost, capital and cost-to-serve are pulled from meters, market feeds and finance systems by hand, so each board pack rebuilds them and the return on a megawatt is only known at quarter close.
+        who_benefits: Executive Team
+        how_built: Meter, market and finance feeds are conformed against the Utility & Energy Mkts marts under Unity Catalog and analysed in AI/BI with Genie One, published as governed Data Products.
+        components:
+          - Utility & Energy Mkts
+          - AI/BI
+          - Genie One
+          - Unity Catalog
+          - Data Products
 medallion:
   Bronze:
     short: Raw facility & sensor feeds

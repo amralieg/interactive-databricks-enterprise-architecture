@@ -1,0 +1,1032 @@
+name: Capital Markets (Sell-Side)
+description: 'Banks and broker-dealers: pricing and spread optimization, inventory and balance-sheet analytics, research augmentation, trade lifecycle and settlement, market and credit risk, margin and collateral, trade surveillance and conduct, deal screening, client analytics, and regulatory reporting.'
+sources:
+  - name: Order & Execution
+    icon: market
+    tiles:
+      - name: ION Fidessa
+        icon: market
+        summary: 'Sell-side order and execution management: order flow, algos and venue connectivity, the system of record for the order lifecycle on the desk.'
+        citations:
+          - fidessa
+        category: Sell-Side OMS / Trading Platform
+        what_it_is: ION Fidessa's sell-side order and execution management, holding order flow, algos and venue connectivity across the trading lifecycle.
+        who_uses_it: Sell-side traders, desk operations and execution teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10-40 GB/day orders + executions
+            interval: End-of-day batch
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k order/exec events/sec at peak
+            interval: Continuous CDC (near real-time)
+      - name: Broadridge
+        icon: erp
+        summary: Post-trade processing, books-and-records and settlement management across asset classes for the broker-dealer.
+        citations:
+          - broadridge
+        category: Post-Trade Processing Platform
+        what_it_is: Broadridge post-trade processing holding books-and-records, confirmations and settlement state across asset classes for the broker-dealer.
+        who_uses_it: Operations, settlements and middle office.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 20-80 GB/day trades + settlement
+            interval: Multiple cycles daily
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of lifecycle events/sec
+            interval: Continuous CDC
+      - name: FIS Front Arena
+        icon: gauge
+        summary: Cross-asset trading and position management for the sell-side book, feeding trades, positions and P&L into the estate.
+        citations:
+          - fis
+        category: Sell-Side Trading & Position Platform
+        what_it_is: FIS Front Arena cross-asset trading and position management, feeding trades, positions and P&L for the sell-side book.
+        who_uses_it: Traders, product control and middle office.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day positions + P&L
+            interval: End-of-day + intraday snapshots
+          stream:
+            types:
+              - semi-structured
+            volume: hundreds of trade events/sec
+            interval: Continuous CDC
+      - name: Trading Technologies
+        icon: stream
+        summary: 'Multi-asset derivatives execution: order routing, algos and exchange gateways, the source of the child-order and fill stream.'
+        citations:
+          - tradingtech
+        category: Execution Management System (EMS)
+        what_it_is: Trading Technologies multi-asset derivatives execution with order routing, algos and exchange gateways, the source of the child-order and fill stream.
+        who_uses_it: Execution traders and desk heads.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k child orders + fills/sec at peak
+            interval: Continuous (sub-second)
+  - name: Market & Reference Data
+    icon: market
+    tiles:
+      - name: Bloomberg B-PIPE
+        icon: market
+        summary: 'Consolidated real-time market-data feed: prices, quotes and corporate actions across venues and asset classes.'
+        citations:
+          - bloomberg-bpipe
+        category: Consolidated Market Data Feed
+        what_it_is: Bloomberg's consolidated real-time market-data feed carrying prices, quotes and corporate actions across venues and asset classes.
+        who_uses_it: Trading desks, quant research and market-data engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k ticks/sec at peak
+            interval: Continuous streaming
+      - name: LSEG Refinitiv
+        icon: market
+        summary: Real-time and historical pricing, tick history, fundamentals and reference data feeding valuation and analytics.
+        citations:
+          - refinitiv
+        category: Market Data & Analytics Platform
+        what_it_is: Real-time and historical pricing, tick history, fundamentals and reference data feeding valuation and analytics.
+        who_uses_it: Trading desks, quant research and valuation teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale tick history
+            interval: Daily history loads
+          stream:
+            types:
+              - semi-structured
+            volume: 10k-100k ticks/sec
+            interval: Continuous streaming
+      - name: ICE Data Services
+        icon: market
+        summary: Evaluated pricing, reference data and end-of-day feeds for fixed income and cross-asset valuation.
+        citations:
+          - ice-data
+        category: Evaluated Pricing & Reference Data
+        what_it_is: Evaluated pricing, reference data and end-of-day feeds for fixed income and cross-asset valuation.
+        who_uses_it: Valuation, fixed-income desks and risk teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day evaluated prices
+            interval: End-of-day + intraday snaps
+      - name: Security Master
+        icon: db
+        summary: 'The golden instrument and issuer record: identifiers, terms and corporate actions every position and trade resolves against.'
+        category: Security Master / Reference Data
+        what_it_is: The golden instrument and issuer record holding identifiers, terms and corporate actions that every position and trade resolves against.
+        who_uses_it: Reference-data engineers, operations and every downstream desk.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of reference + corporate actions
+            interval: Daily refresh + intraday updates
+  - name: Risk & Pricing
+    icon: gauge
+    tiles:
+      - name: Murex MX.3
+        icon: gauge
+        summary: 'Cross-asset trading, valuation and risk platform: pricing, sensitivities and limit state for the trading book.'
+        citations:
+          - murex
+        category: Cross-Asset Trading & Risk Platform
+        what_it_is: Cross-asset trading, valuation and risk platform providing pricing, sensitivities and limit state for the trading book.
+        who_uses_it: Market risk, the trading desk and product control.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-20 GB/day positions + sensitivities
+            interval: Daily + scenario runs
+      - name: Nasdaq Calypso
+        icon: gauge
+        summary: Capital-markets and treasury platform for derivatives pricing, collateral and risk on the sell side.
+        citations:
+          - calypso
+        category: Capital Markets Trading & Risk Platform
+        what_it_is: Capital-markets and treasury platform for derivatives pricing, collateral and risk on the sell side.
+        who_uses_it: Sell-side trading, collateral management and risk.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-15 GB/day valuations + collateral
+            interval: Daily + intraday runs
+          stream:
+            types:
+              - semi-structured
+            volume: tens of trade events/sec
+            interval: Continuous CDC
+      - name: MSCI Barra
+        icon: chart
+        summary: 'Multi-asset factor models and risk analytics: factor exposures, attribution and portfolio risk decomposition.'
+        citations:
+          - msci-barra
+        category: Factor Risk Model Library
+        what_it_is: 'Multi-asset factor models and risk analytics: factor exposures, attribution and portfolio risk decomposition.'
+        who_uses_it: Quant research, risk and portfolio managers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of factor exposures + models
+            interval: Daily / monthly refresh
+      - name: Numerix
+        icon: market
+        summary: Derivatives pricing and analytics library for structured products, curves and Monte Carlo valuation.
+        citations:
+          - numerix
+        category: Derivatives Pricing & Analytics Library
+        what_it_is: Derivatives pricing and analytics library for structured products, curves and Monte Carlo valuation.
+        who_uses_it: Quant developers, structuring and valuation teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of curves + valuations
+            interval: On demand + end-of-day
+  - name: Post-Trade & Custody
+    icon: partner
+    tiles:
+      - name: DTCC
+        icon: partner
+        summary: 'Central clearing, settlement and trade-confirmation infrastructure: matched trades, affirmations and settlement status.'
+        citations:
+          - dtcc
+        category: Clearing & Settlement Utility
+        what_it_is: Central clearing, settlement and trade-confirmation infrastructure carrying matched trades, affirmations and settlement status.
+        who_uses_it: Post-trade operations, settlements and clearing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 5-25 GB/day confirms + settlement
+            interval: Multiple settlement cycles daily
+          stream:
+            types:
+              - semi-structured
+            volume: tens of status events/sec
+            interval: Continuous status flow
+      - name: SWIFT Network
+        icon: stream
+        summary: Interbank messaging for settlement, confirmations and custody instructions across counterparties and agents.
+        citations:
+          - swift
+        category: Interbank Messaging Network
+        what_it_is: Interbank messaging for settlement, confirmations and custody instructions across counterparties and agents.
+        who_uses_it: Settlements, custody operations and treasury.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: tens-hundreds of messages/sec
+            interval: Continuous message flow
+      - name: FIX Gateways
+        icon: api
+        summary: The FIX order and execution message bus with venues, brokers and counterparties, the ground truth for orders and fills.
+        citations:
+          - fix
+        category: Order Routing Protocol Gateway
+        what_it_is: The FIX order and execution message bus with venues, brokers and counterparties, the ground truth for orders and fills.
+        who_uses_it: Execution traders, desk operations and market-data engineering.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k order/exec messages/sec at peak
+            interval: Continuous (sub-second)
+      - name: Custodian Feeds
+        icon: db
+        summary: Position, cash and settlement records from the custodian, reconciled against the internal book of record.
+        category: Custodian Book of Record
+        what_it_is: Position, cash and settlement records from the custodian, reconciled against the internal book of record.
+        who_uses_it: Investment operations, reconciliation and fund accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-10 GB/day positions + cash
+            interval: Daily custodian files
+  - name: Research & Deal Data
+    icon: chart
+    tiles:
+      - name: FactSet
+        icon: chart
+        summary: Fundamentals, estimates, ownership and analytics feeding research, screening and client analysis.
+        citations:
+          - factset
+        category: Financial Data & Analytics Platform
+        what_it_is: Fundamentals, estimates, ownership and analytics feeding research, screening and client analysis.
+        who_uses_it: Research analysts, strats and coverage banking.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day fundamentals + estimates
+            interval: Daily feed
+      - name: S&P Capital IQ
+        icon: chart
+        summary: Company financials, comparables and market intelligence feeding research notes, comps and deal screening.
+        citations:
+          - capitaliq
+        category: Market Intelligence Platform
+        what_it_is: S&P Capital IQ company financials, comparables and market intelligence feeding research, comps and deal screening.
+        who_uses_it: Research, coverage banking and strats.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 1-5 GB/day financials + comps
+            interval: Daily feed
+      - name: PitchBook
+        icon: product
+        summary: Private-market, deal and comparable data for coverage screening and pipeline analysis.
+        citations:
+          - pitchbook
+        category: Private Market & Deal Data
+        what_it_is: PitchBook private-market, deal and comparable data for coverage screening and pipeline analysis.
+        who_uses_it: Coverage banking, research and strategy.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of deal + company data
+            interval: Daily + on-demand
+      - name: Dealogic
+        icon: partner
+        summary: Deal, league-table and capital-markets activity data for ECM, DCM and M&A coverage.
+        citations:
+          - dealogic
+        category: Capital Markets Deal Data
+        what_it_is: Dealogic deal, league-table and capital-markets activity data for ECM, DCM and M&A coverage.
+        who_uses_it: Coverage banking, syndicate and strategy.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GBs of deal + league-table data
+            interval: Daily + on-demand
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Firm Balance Sheet
+        icon: fed
+        summary: The firm ledger, funding and balance-sheet mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited positions and capital.
+        category: Firm Ledger / Balance-Sheet Mart
+        what_it_is: The firm ledger, funding and balance-sheet mart kept in the incumbent system and queried in place, giving one audited view of positions, funding and capital.
+        who_uses_it: Product control, treasury and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical positions
+            interval: Queried on demand (federated)
+cloud_integrations:
+  - name: Cloud ETL
+    icon: etl
+    from: ingest
+    tiles: []
+  - name: 3rd Party
+    icon: zplug
+    tiles:
+      - name: FIX Protocol Feeds
+        icon: stream
+        summary: Streaming FIX order, execution and market-data sessions parsed on arrival and landed as structured events.
+        citations:
+          - fix
+        category: FIX Messaging Feed
+        what_it_is: Streaming FIX order, execution and market-data sessions parsed on arrival and landed as structured events.
+        who_uses_it: Market-data engineering and execution operations.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 1-10k messages/sec at peak
+            interval: Continuous (sub-second)
+      - name: Market Data Bus
+        icon: stream
+        summary: Existing Kafka and multicast market-data topics carrying ticks, quotes and reference updates land here and are drawn generically on the reference board.
+        category: Streaming Market Data Bus
+        what_it_is: Existing Kafka and multicast market-data topics carrying ticks, quotes and reference updates consumed into the lakehouse.
+        who_uses_it: Market-data engineering and quant research.
+        data_out:
+          stream:
+            types:
+              - semi-structured
+            volume: 50k-500k ticks/sec at peak
+            interval: Continuous streaming
+      - name: Vendor Data APIs
+        icon: api
+        summary: Bloomberg, LSEG and FactSet request/response and file APIs consumed inbound through managed ELT connectors.
+        category: Market Data Vendor API
+        what_it_is: Bloomberg, LSEG and FactSet request/response and file APIs consumed inbound through managed ELT connectors.
+        who_uses_it: Market-data engineering and research.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: 1-5 GB/day
+            interval: Daily + on-demand pulls
+pipelines:
+  - name: Business
+    icon: zbrief
+    tiles:
+      - name: Markets Leadership
+        mark: Genie One
+        summary: The Head of Markets on trading revenue and the client franchise; the markets COO on desk P&L, cost and balance-sheet usage; the CFO on return on balance sheet across the sales-and-trading business.
+        uses:
+          - - Genie One
+            - Ask what a desk earned, or which clients drove flow last quarter, without waiting on an analyst.
+          - - AI/BI
+            - Revenue, spread capture, inventory and balance-sheet usage on one certified set of Metric Views.
+          - - Unity Catalog
+            - One governed client and security master, so "revenue" and "flow" mean one thing across the firm.
+        sub:
+          - name: Head of Markets
+            cares: trading revenue, spread capture and the client franchise.
+          - name: Markets COO
+            cares: desk P&L, cost and balance-sheet usage across products.
+          - name: CFO
+            cares: return on balance sheet across sales and trading.
+        ucs:
+          - Pricing & Spreads
+          - Inventory & Balance Sheet
+          - Client Analytics
+      - name: Trading Desks
+        mark: Lakehouse//RT
+        summary: Desk heads on spread capture, inventory and desk P&L; market makers quoting two-way prices against risk and axes; execution traders working client flow and proving best execution after the fill.
+        uses:
+          - - Lakehouse//RT
+            - Order, execution, market and inventory state at the latency a desk actually trades at.
+          - - Model Serving
+            - Pricing, hedging and venue models scored inside the quoting decision.
+          - - AI/BI
+            - Spread capture, inventory and fill quality on the same definitions the desk defends.
+        sub:
+          - name: Desk heads
+            cares: spread capture, inventory and desk P&L.
+          - name: Market makers
+            cares: quoting two-way prices against risk and axes.
+          - name: Execution traders
+            cares: client flow and best execution after the fill.
+        ucs:
+          - Pricing & Spreads
+          - Trade Lifecycle
+          - Market & Credit Risk
+      - name: Risk Management
+        mark: AI/BI
+        summary: The CRO and market risk on VaR, stress and limit usage across books; credit risk on counterparty and issuer exposure; treasury and collateral on margin and funding under stress.
+        uses:
+          - - AI/BI
+            - VaR, exposure, margin and limit usage across every book on certified Metric Views.
+          - - Model Serving
+            - Stress, VaR and collateral models scored on demand rather than overnight.
+          - - Unity Catalog
+            - Governed, auditable risk numbers with lineage from feed to report.
+        sub:
+          - name: Chief Risk Officer
+            cares: VaR, stress and limit usage across the firm.
+          - name: Market risk
+            cares: exposure and sensitivities by book and factor.
+          - name: Credit risk
+            cares: counterparty and issuer exposure under stress.
+        ucs:
+          - Market & Credit Risk
+          - Margin & Collateral
+          - Regulatory Reporting
+      - name: Strats & Banking
+        mark: MLflow
+        summary: Pricing quants and structurers building pricing and hedging models; research analysts producing notes and estimates at scale; coverage bankers screening companies and comparables for the next deal.
+        uses:
+          - - Feature Store
+            - Pricing and research features defined once and read identically in research and production.
+          - - MLflow
+            - Every pricing model and research run tracked for audit and reproduction.
+          - - Agent Bricks
+            - Research and deal-screening agents grounded on governed filings, estimates and market data.
+        sub:
+          - name: Strats & Structuring
+            cares: pricing and hedging models the desk quotes against.
+          - name: Research
+            cares: notes and estimates produced at scale on governed data.
+          - name: Coverage Banking
+            cares: screening companies and comparables for the next deal.
+        ucs:
+          - Research Augmentation
+          - Deal Screening
+          - Pricing & Spreads
+      - name: Compliance & Surveil
+        mark: AI Functions
+        summary: Trade surveillance analysts investigating manipulation and spoofing alerts; conduct and compliance officers on off-channel communications and personal-account dealing; the regulatory reporting team filing MiFID II, CAT and transaction reports on time.
+        uses:
+          - - AI Functions
+            - Communications and trade data screened for manipulation and conduct patterns at scale.
+          - - Genie One
+            - Investigators ask for a trader's activity around an event in plain language.
+          - - Unity Catalog
+            - Audit trails and lineage that satisfy a regulatory examination.
+        sub:
+          - name: Surveillance
+            cares: manipulation, spoofing and wash-trade investigations.
+          - name: Conduct & Compliance
+            cares: off-channel communications and personal-account dealing.
+          - name: Regulatory reporting
+            cares: MiFID II, CAT and transaction reporting on time.
+        ucs:
+          - Surveillance & Conduct
+          - Regulatory Reporting
+          - Client Analytics
+  - name: Technical
+    icon: code
+    tiles:
+      - name: Quant Developers
+        mark: MLflow
+        summary: Turn research notebooks in Python, R and kdb+/q into production signals and backtests, and own the libraries the desk and PMs run against.
+        uses:
+          - - Notebooks & IDEs
+            - Python, R and VS Code against governed tick and reference data.
+          - - MLflow
+            - Backtests and models versioned, tracked and reproducible for audit.
+          - - Feature Store
+            - Factor and signal libraries shared across research and production.
+        sub:
+          - name: Signal Developers
+            cares: research notebooks turned into production signals the desk trades on.
+          - name: Backtest Engineers
+            cares: reproducible backtests and versioned models for audit.
+          - name: Quant Library Owners
+            cares: the factor and pricing libraries PMs and the desk run against.
+      - name: Market Data Engineers
+        mark: Lakeflow
+        summary: Land Bloomberg B-PIPE, LSEG and ICE feeds and FIX order flow, curate the security master, and keep tick and reference tables fresh for every desk.
+        uses:
+          - - Lakeflow Connect
+            - Managed connectors for market-data, OMS and custody sources.
+          - - Lakeflow Designer
+            - Declarative pipelines with expectations on price and reference feeds.
+          - - Lakewatch
+            - Freshness on the tick and reference tables the desks open at the bell.
+        sub:
+          - name: Ingestion Engineers
+            cares: Bloomberg, LSEG and ICE feeds and FIX order flow landed on time.
+          - name: Pipeline Engineers
+            cares: Bronze-to-Silver conforming and expectations on price and reference feeds.
+          - name: Platform Reliability
+            cares: freshness of the tick and reference tables the desks open at the bell.
+      - name: Risk Systems Engineers
+        mark: Model Serving
+        summary: Wire Murex and Nasdaq Calypso valuations, Monte Carlo VaR and stress engines into governed pipelines so risk numbers are timely, explainable and reproducible.
+        uses:
+          - - Model Serving
+            - VaR, stress and pricing models scored on demand at book scale.
+          - - Apache Spark
+            - Distributed Monte Carlo and revaluation across the full position set.
+          - - Unity Catalog
+            - Lineage from raw feed to reported risk number for the regulator.
+        sub:
+          - name: Risk Platform Engineers
+            cares: pricing and valuation engines wired into governed pipelines.
+          - name: Compute Engineers
+            cares: distributed Monte Carlo VaR and revaluation across the full position set.
+          - name: Model Ops
+            cares: risk numbers timely, explainable and reproducible for the regulator.
+consumers:
+  - name: BI & Productivity
+    icon: chart
+    tiles:
+      - name: Tableau / Power BI
+        icon: chart
+        summary: External BI against SQL warehouses, with Unity Catalog permissions enforced end to end.
+      - name: Microsoft Teams
+        icon: chat
+        summary: Genie in Teams for governed answers, and risk and surveillance alerts in the channel desks already work in (Beta).
+      - name: Notebooks & IDEs
+        icon: notebook
+        summary: Notebooks, VS Code and JetBrains against governed data and Genie Code.
+  - name: Distribution & Partners
+    icon: partner
+    tiles:
+      - name: Client Data Sharing
+        icon: share
+        summary: Research, axes and post-trade data shared to clients and counterparties over Delta Sharing rather than file exchange.
+      - name: Prime Brokers
+        icon: partner
+        summary: Positions, margin and financing state exchanged with prime brokers and counterparties on live tables.
+      - name: Data Marketplace
+        icon: market
+        summary: Curated market and reference datasets consumed and published through Databricks Marketplace.
+  - name: Operational Writeback
+    icon: opdb
+    tiles:
+      - name: OMS / EMS Writeback
+        icon: db
+        summary: Target positions, orders and restrictions written back into ION Fidessa and Broadridge so the decision reaches the trading path.
+      - name: Risk Limit Writeback
+        icon: gauge
+        summary: Updated limits and exposure flags pushed back into the risk and OMS systems the desk trades against.
+      - name: Alert & Case Queue
+        icon: gavel
+        summary: Surveillance alerts and cases pushed to the investigation queue analysts already work.
+  - name: Regulatory & Reporting
+    icon: gavel
+    tiles:
+      - name: MiFID II / CAT Filings
+        icon: gavel
+        summary: Transaction and order-event reporting to the regulator produced from the same governed tables the firm trades on.
+        citations:
+          - mifid2
+          - cat
+      - name: Regulatory Reporting
+        icon: share
+        summary: EMIR, SFTR and prudential submissions filed from contracted Gold products.
+  - name: Published Products
+    icon: product
+    tiles:
+      - name: Data Products
+        icon: product
+        summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
+      - name: Sharing Recipients
+        icon: share
+        summary: Allocators, administrators and partners reading live tables with no copy and no egress duplication.
+  - name: Databricks Apps
+    icon: apps
+    tiles:
+      - name: TCA Workbench
+        icon: market
+        short: Execution quality
+        summary: Where execution traders see slippage, venue performance and cost against benchmark before and after every fill, on Databricks Apps over Lakebase.
+      - name: Risk Cockpit
+        icon: gauge
+        short: Firm-wide exposure
+        summary: VaR, stress and limit usage across every book on one screen, re-run intraday instead of waiting for the overnight batch.
+      - name: Surveillance Console
+        icon: gavel
+        short: Market abuse alerts
+        summary: Manipulation, spoofing and wash-trade alerts triaged with the trader's full order and comms context in one investigation view.
+      - name: Quant Research Lab
+        icon: notebook
+        short: Backtesting
+        summary: Where quants build, backtest and promote signals from notebook to monitored pipeline against governed tick and factor data.
+  - name: AI/BI Dashboards
+    icon: aibi
+    tiles:
+      - name: Revenue & Inventory
+        icon: aibi
+        summary: Trading revenue, spread capture and inventory across every desk on certified Metric Views.
+        kpis:
+          - Trading revenue
+          - Spread capture
+          - Inventory
+          - Return on balance sheet
+          - Desk P&L
+        teams:
+          - Markets Leadership
+          - Trading Desks
+          - Strats & Banking
+      - name: Firm Risk & Exposure
+        icon: aibi
+        summary: VaR, stress, limit usage and counterparty exposure across the firm.
+        kpis:
+          - VaR
+          - Stress loss
+          - Limit utilization
+          - Counterparty exposure
+          - Sensitivities
+        teams:
+          - Risk Management
+          - Chief Risk Officer
+          - Credit risk
+      - name: Execution Quality (TCA)
+        icon: aibi
+        summary: Slippage, venue performance and market impact against benchmark.
+        kpis:
+          - Implementation shortfall
+          - Slippage vs benchmark
+          - Venue fill rate
+          - Market impact
+          - Spread capture
+        teams:
+          - Trading Desks
+          - Execution traders
+          - Desk heads
+      - name: Surveillance & Regulatory
+        icon: aibi
+        summary: Alert quality, case backlog and regulatory reporting timeliness.
+        kpis:
+          - Alert volume
+          - False-positive rate
+          - Case backlog
+          - Report timeliness
+          - Reporting completeness
+        teams:
+          - Compliance & Surveil
+          - Surveillance
+          - Regulatory reporting
+  - name: Agent Harnesses
+    icon: agents
+    tiles:
+      - name: Omnigent OSS
+        icon: omni
+        short: Databricks, open source
+        summary: Open-source meta-harness above existing agent frameworks, enabling agent composition, collaboration and centralised governance from one interface. A managed Beta is available.
+        capabilities:
+          - Build
+          - Deploy
+          - Optimize
+          - Govern
+        related:
+          - Agent Bricks
+          - Unity AI Gateway
+      - name: Claude Code
+        icon: code
+        short: 3rd-party harness
+        summary: Anthropic's coding harness working against the platform through MCP, with spend, routing and policy governed by Unity AI Gateway.
+      - name: OpenAI Codex
+        icon: code
+        short: 3rd-party harness
+        summary: OpenAI's coding harness connected over MCP, governed at runtime by Unity AI Gateway rather than trusted by configuration.
+      - name: Any MCP Harness
+        icon: mcp
+        short: Cursor, IDEs, frameworks
+        summary: Cursor and other IDE agents, LangGraph and CrewAI frameworks, and any other harness that speaks MCP, admitted and scoped in the Unity AI Gateway registry.
+agent_usecases:
+  - name: Genie Agents
+    icon: genie
+    span: 3
+    cols: 2
+    tiles:
+      - name: Pricing & Trading Agent
+        icon: genie
+        summary: Ask about spreads, inventory, flow and client profitability across every desk in plain language.
+        feeds:
+          - ION Fidessa
+          - Security Master
+          - Murex MX.3
+          - Conformed trades, positions, instruments
+        teams:
+          - Markets Leadership
+          - Trading Desks
+          - Strats & Banking
+        questions:
+          - What is our spread capture by desk and product this week?
+          - Which inventory positions are stale or over funding cost?
+          - Which clients drove the most flow and revenue this quarter?
+          - Where are we quoting off-market versus the axe?
+          - What is return on balance sheet by desk right now?
+      - name: Execution & TCA Agent
+        icon: genie
+        summary: Explore slippage, venue performance and transaction cost against benchmark.
+        feeds:
+          - FIX Gateways
+          - ION Fidessa
+          - Bloomberg B-PIPE
+          - P&L, risk, TCA, exposure
+        teams:
+          - Trading Desks
+          - Execution traders
+          - Desk heads
+        questions:
+          - What was our implementation shortfall by desk this week?
+          - Which venues delivered the best fill quality for large orders?
+          - How does slippage compare against arrival-price benchmark by asset class?
+          - Which algos are underperforming on market impact right now?
+          - Where are we paying the most in spread by symbol?
+      - name: Market & Credit Risk Agent
+        icon: genie
+        summary: Ask about VaR, stress, sensitivities and counterparty exposure across books.
+        feeds:
+          - Murex MX.3
+          - Nasdaq Calypso
+          - MSCI Barra
+          - P&L, risk, TCA, exposure
+        teams:
+          - Risk Management
+          - Chief Risk Officer
+          - Market risk
+        questions:
+          - What is our firm-wide VaR today, and the trend this month?
+          - How does the book behave under a rates +200bp stress scenario?
+          - Which counterparties carry the largest exposure right now?
+          - Which books are closest to a limit breach?
+          - What are our largest factor sensitivities across the portfolio?
+      - name: Surveillance & Conduct Agent
+        icon: genie
+        summary: Investigate manipulation, off-channel conduct and completeness across orders and trades.
+        feeds:
+          - FIX Gateways
+          - DTCC
+          - Conformed trades, positions, instruments
+        teams:
+          - Compliance & Surveil
+          - Surveillance
+          - Regulatory reporting
+        questions:
+          - Which traders showed spoofing-like order patterns this week?
+          - Which desks show off-channel or conduct exceptions this month?
+          - Which alert types have the worst false-positive rate?
+          - How many surveillance cases are open past their SLA?
+          - Is our order and trade data complete for the reporting period?
+  - name: Business Use Cases
+    icon: ztarget
+    span: 8
+    cols: 5
+    tiles:
+      - name: Research Augmentation
+        short: Research
+        icon: notebook
+        summary: Augmenting analysts and strats with governed access to filings, estimates, market and internal data plus LLMs, so a research note or a pricing model is built in hours against one source rather than assembled by hand.
+        problem: Analysts stitch research from filings, vendor terminals and internal spreadsheets by hand, so notes are slow, coverage is thin, and the same numbers are re-derived on every desk.
+        who_benefits: Strats & Banking
+        how_built: Filings, estimates and market data are conformed in the lakehouse; Agent Bricks and AI Functions ground research assistants on governed data and code, tracked in MLflow.
+        components:
+          - Quant Research Lab
+          - Agent Bricks
+          - AI Functions
+          - FactSet
+          - MLflow
+        stories:
+          - title: Jefferies modernizes equity research with agentic analytics
+            url: https://www.databricks.com/blog/jefferies-modernizes-equity-research-scale-databricks-and-agentic-analytics
+          - title: MCP-powered financial AI workflows on Databricks
+            url: https://www.databricks.com/blog/mcp-powered-financial-ai-workflows-databricks
+      - name: Pricing & Spreads
+        short: Pricing
+        icon: market
+        summary: Pricing risk, quoting spreads and routing flow with market data and inventory in one place, so quotes reflect real axes and cost and the desk defends its spread capture.
+        problem: Pricing sits in desk spreadsheets and the EMS while inventory and cost sit elsewhere, so quotes lag the market, spread capture is measured days later, and axes are missed.
+        who_benefits: Trading Desks
+        how_built: FIX order and execution events are joined to market data and inventory in Lakehouse//RT; pricing and spread analytics are computed to Gold and read in the TCA Workbench and AI/BI on the desk's own definitions.
+        components:
+          - TCA Workbench
+          - FIX Gateways
+          - Bloomberg B-PIPE
+          - AI/BI
+          - Lakehouse//RT
+      - name: Market & Credit Risk
+        short: Risk
+        icon: gauge
+        summary: VaR, stress, sensitivities and counterparty exposure across every book, re-run intraday instead of waiting for an overnight batch that is stale by the open.
+        problem: Risk is aggregated overnight in engines that cannot be re-run intraday, so a shock is seen the next morning and limit breaches are explained after the loss.
+        who_benefits: Risk Management
+        how_built: Murex and Nasdaq Calypso valuations and position feeds are conformed to Gold; VaR, stress and counterparty models are scored in Model Serving and read in the Risk Cockpit and AI/BI.
+        components:
+          - Risk Cockpit
+          - Murex MX.3
+          - Model Serving
+          - MSCI Barra
+          - AI/BI
+        stories:
+          - title: S&P Global unifies data intelligence
+            url: https://www.databricks.com/customers/sp-global
+          - title: MCP-powered financial AI workflows on Databricks
+            url: https://www.databricks.com/blog/mcp-powered-financial-ai-workflows-databricks
+      - name: Surveillance & Conduct
+        short: Conduct
+        icon: gavel
+        summary: Detecting spoofing, layering, wash trades and off-channel conduct across orders, executions and communications, with an audit trail a regulator will accept.
+        problem: Surveillance and e-comms conduct run across siloed vendor systems with gappy data, so alerts are noisy, investigations are slow, and completeness cannot be proven to an examiner.
+        who_benefits: Compliance & Surveil
+        how_built: Orders, executions and communications are unified in the lakehouse with Unity Catalog completeness checks; detectors and AI Functions score patterns and cases open in the Surveillance Console.
+        components:
+          - Surveillance Console
+          - AI Functions
+          - Unity Catalog
+          - Model Serving
+          - Lakehouse//RT
+        stories:
+          - title: 'FINRA: predictive fraud detection at scale'
+            url: https://www.databricks.com/blog/2019/06/05/customer-spotlight-finra.html
+          - title: Coinbase scales real-time security
+            url: https://www.databricks.com/customers/coinbase/lakeflow
+      - name: Client Analytics
+        short: Coverage
+        icon: chart
+        summary: Ranking clients by revenue, flow and profitability across products so coverage and pricing target the accounts that matter and no franchise client is under-served.
+        problem: Client revenue and flow live in separate desk, product and CRM systems, so coverage cannot see a client's whole relationship and pricing and resourcing decisions are made blind.
+        who_benefits: Markets Leadership
+        how_built: Trade, flow and revenue data are conformed under Unity Catalog; profitability and wallet analytics are served to certified Metric Views coverage and sales read in AI/BI and Genie One.
+        components:
+          - AI/BI
+          - Genie One
+          - S&P Capital IQ
+          - FactSet
+          - Unity Catalog
+        stories:
+          - title: S&P Global unifies data intelligence
+            url: https://www.databricks.com/customers/sp-global
+      - name: Deal Screening
+        short: Pitchbooks
+        icon: aisvc
+        summary: Screening companies, comparables and market data for banking coverage so pitch ideas, comps and deal targets are generated from one governed source instead of manual terminal pulls.
+        problem: Bankers assemble comps, precedents and pitch materials by pulling from terminals and spreadsheets, so ideas are slow, comps are inconsistent, and coverage misses timely targets.
+        who_benefits: Strats & Banking
+        how_built: Company, deal and market data are conformed in the lakehouse and joined to comparables; Agent Bricks drafts screens and comps against governed data, tracked in MLflow.
+        components:
+          - S&P Capital IQ
+          - PitchBook
+          - Dealogic
+          - Agent Bricks
+          - MLflow
+        stories:
+          - title: Jefferies modernizes equity research with agentic analytics
+            url: https://www.databricks.com/blog/jefferies-modernizes-equity-research-scale-databricks-and-agentic-analytics
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+      - name: Regulatory Reporting
+        short: Reporting
+        icon: gavel
+        summary: Producing MiFID II, CAT, EMIR and transaction reports from the same governed data the firm trades on, complete and on time.
+        problem: Regulatory reports are assembled from reconciled extracts under deadline, so late fixes and re-submissions are routine and lineage back to the source is hard to prove.
+        who_benefits: Compliance & Surveil
+        how_built: Trade, order and reference data are conformed to Gold with Unity Catalog lineage; MiFID II and CAT submissions are generated and filed from contracted products with a full audit trail.
+        components:
+          - Regulatory Reporting
+          - Unity Catalog
+          - MiFID II / CAT Filings
+          - DTCC
+          - FIX Gateways
+        stories:
+          - title: 'FINRA: predictive fraud detection at scale'
+            url: https://www.databricks.com/blog/2019/06/05/customer-spotlight-finra.html
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+      - name: Trade Lifecycle
+        short: Settlement
+        icon: cdc
+        summary: Automating the trade lifecycle from execution to confirmation and settlement across OMS, clearing and custody so breaks and fails are caught at T+0 rather than discovered at settlement.
+        problem: Executions, confirms and settlement records are reconciled in batch across OMS, clearing and custody, so breaks and fails surface late when they are expensive and slow to resolve.
+        who_benefits: Trading Desks
+        how_built: FIX fills, DTCC confirms and Broadridge settlement feeds stream into the lakehouse; matching runs continuously and breaks and fails are flagged against the firm ledger before settlement.
+        components:
+          - FIX Gateways
+          - DTCC
+          - Custodian Feeds
+          - Broadridge
+          - Lakeflow
+        stories:
+          - title: Investment management reference architecture
+            url: https://www.databricks.com/resources/architectures/financial-services-investment-management-reference-architecture
+      - name: Margin & Collateral
+        short: Collateral
+        icon: gauge
+        summary: Optimizing margin and collateral across CCPs, clients and financing so the firm posts the cheapest eligible collateral and sees funding cost and exposure intraday.
+        problem: Margin calls and collateral eligibility live across clearing, treasury and prime-brokerage systems reconciled in batch, so the firm over-posts collateral and sees funding cost only after the fact.
+        who_benefits: Risk Management
+        how_built: Clearing, collateral and financing feeds are conformed to Gold; optimization and exposure models are scored in Model Serving and read in the Risk Cockpit and AI/BI.
+        components:
+          - Risk Cockpit
+          - Nasdaq Calypso
+          - Model Serving
+          - DTCC
+          - AI/BI
+        stories:
+          - title: S&P Global unifies data intelligence
+            url: https://www.databricks.com/customers/sp-global
+      - name: Inventory & Balance Sheet
+        short: Balance sheet
+        icon: market
+        summary: Analyzing inventory, positions and balance-sheet usage across desks so capital, funding and RWA are allocated to the flow that earns and stale inventory is worked down.
+        problem: Inventory and balance-sheet usage are stitched from desk, treasury and risk extracts that never agree, so capital and funding sit against stale positions and the return on balance sheet is unclear.
+        who_benefits: Markets Leadership
+        how_built: Positions, funding and capital data are conformed against the firm ledger; inventory and balance-sheet metrics are served to certified Metric Views the desk and treasury read in AI/BI and Genie One.
+        components:
+          - Firm Balance Sheet
+          - AI/BI
+          - Genie One
+          - Murex MX.3
+          - Data Products
+        stories:
+          - title: Nasdaq reinvents finance with Databricks
+            url: https://www.databricks.com/customers/nasdaq
+          - title: MCP-powered financial AI workflows on Databricks
+            url: https://www.databricks.com/blog/mcp-powered-financial-ai-workflows-databricks
+medallion:
+  Bronze:
+    short: Raw trade and market feeds
+    summary: FIX order and execution messages, Bloomberg and LSEG market-data ticks, position and risk extracts from Fidessa, Broadridge and Murex, and DTCC confirms, landed exactly as received so a fill or a price can always be replayed as it stood.
+  Silver:
+    short: Conformed trades, positions, instruments
+    summary: Orders, executions, positions and instruments resolved into single conformed entities across the OMS, risk and custody estates, with the security master and legal-entity identifiers reconciled and trades stitched to one lifecycle.
+  Gold:
+    short: P&L, risk, TCA, exposure
+    summary: 'Contracted products the desk, risk and compliance teams run on: P&L and spread capture by desk, VaR and exposure by factor and counterparty, margin and collateral, and regulatory positions.'
+citation_index:
+  fidessa:
+    title: ION Fidessa
+    url: https://en.wikipedia.org/wiki/Fidessa
+  broadridge:
+    title: Broadridge
+    url: https://www.broadridge.com/
+  fis:
+    title: FIS Front Arena
+    url: https://www.fisglobal.com/
+  tradingtech:
+    title: Trading Technologies
+    url: https://www.tradingtechnologies.com/
+  bloomberg-bpipe:
+    title: Bloomberg B-PIPE market data
+    url: https://www.bloomberg.com/professional/products/data/enterprise-catalog/market/
+  refinitiv:
+    title: LSEG Data & Analytics (Refinitiv)
+    url: https://www.lseg.com/en/data-analytics
+  ice-data:
+    title: ICE Data Services
+    url: https://www.ice.com/market-data
+  factset:
+    title: FactSet
+    url: https://www.factset.com/
+  murex:
+    title: Murex MX.3
+    url: https://www.murex.com/
+  calypso:
+    title: Nasdaq Calypso (Adenza)
+    url: https://www.nasdaq.com/solutions/fintech/nasdaq-calypso/middle-office-trading-risk
+  msci-barra:
+    title: MSCI Barra factor models
+    url: https://www.msci.com/our-solutions/analytics/multi-asset-class-factor-models
+  numerix:
+    title: Numerix analytics
+    url: https://www.numerix.com/
+  dtcc:
+    title: DTCC clearing and settlement
+    url: https://www.dtcc.com/
+  swift:
+    title: SWIFT messaging network
+    url: https://en.wikipedia.org/wiki/SWIFT
+  fix:
+    title: FIX Trading Community
+    url: https://www.fixtrading.org/
+  capitaliq:
+    title: S&P Capital IQ
+    url: https://www.spglobal.com/marketintelligence/en/
+  pitchbook:
+    title: PitchBook
+    url: https://pitchbook.com/
+  dealogic:
+    title: Dealogic
+    url: https://www.dealogic.com/
+  mifid2:
+    title: MiFID II (ESMA)
+    url: https://en.wikipedia.org/wiki/Markets_in_Financial_Instruments_Directive_2014
+  cat:
+    title: Consolidated Audit Trail (CAT)
+    url: https://www.catnmsplan.com/

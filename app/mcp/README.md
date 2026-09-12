@@ -13,7 +13,7 @@ with no code change.
 
 | Tool | Args | Returns |
 |------|------|---------|
-| `list_industries` | — | `[{id, name, description}]` for all 63 industries |
+| `list_industries` | — | `[{id, name, description}]` for all 70 industries |
 | `get_architecture` | `industry_id` | the full architecture for one industry (sources, cloud integrations, pipelines/medallion, consumers, agent use cases) |
 | `search_architectures` | `query` | `[{id, name, matches}]` — industries whose name/description/components mention the query |
 | `list_resources` | `kind` | one of the shared maps: `accelerators`, `connectors`, `links`, `references` |

@@ -287,7 +287,7 @@ pipelines:
           - Embedded Value
           - New Business Strain
           - Reserve Adequacy
-          - Reinsurance Recovery
+          - Statutory & NAIC Reporting
       - name: Actuarial & Reserving
         mark: AI/BI
         summary: Appointed actuaries on reserve adequacy, mortality and lapse experience studies and the model governance a statutory opinion depends on.
@@ -328,7 +328,6 @@ pipelines:
             cares: the automated rules and evidence-ordering logic behind accelerated issue.
         ucs:
           - Mortality Underwriting
-          - Straight-Through Processing
       - name: Claims
         mark: Lakehouse//RT
         summary: Claims operations on death verification, contestable-period review and beneficiary payout, ranking open claims by SLA and fraud signal before disbursement.
@@ -347,9 +346,9 @@ pipelines:
           - name: Claims Fraud & SIU
             cares: fraud signals and referrals raised ahead of disbursement.
         ucs:
+          - Claims Processing
           - Claims Fraud Detection
-          - Reinsurance Recovery
-          - Reserve Adequacy
+          - Contact-Center AI
       - name: Distribution
         mark: CustomerLake
         summary: Agency leaders on producer productivity, block persistency and suitability compliance when a lapse or replacement spike shows up.
@@ -369,8 +368,8 @@ pipelines:
             cares: next-best-offer and cross-sell into in-force households.
         ucs:
           - Lapse & Persistency
-          - Agent Suitability
           - Cross-sell Propensity
+          - Contact-Center AI
   - name: Technical
     icon: code
     tiles:
@@ -392,8 +391,8 @@ pipelines:
           - name: Platform & Governance
             cares: Unity Catalog structure and access across admin and finance data.
         ucs:
-          - Straight-Through Processing
-          - Reinsurance Recovery
+          - Claims Processing
+          - Statutory & NAIC Reporting
           - Reserve Adequacy
       - name: Data Scientists
         mark: MLflow
@@ -435,9 +434,9 @@ pipelines:
           - name: Agent Experience
             cares: the producer-facing performance and suitability screens.
         ucs:
-          - Straight-Through Processing
+          - Claims Processing
           - Claims Fraud Detection
-          - Agent Suitability
+          - Contact-Center AI
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -629,7 +628,7 @@ agent_usecases:
           - Which products show the weakest embedded value this period?
           - How have lapse rates moved against assumption by cohort?
           - What is new business strain by product and distribution channel?
-      - name: Underwriting & New Business Agent
+      - name: New Business Underwriting Agent
         icon: genie
         summary: Explore straight-through-processing rates, evidence bottlenecks and risk classification.
         feeds:
@@ -647,7 +646,7 @@ agent_usecases:
           - Where are offers expiring before evidence completes?
           - How does risk-class distribution compare to the pricing assumption?
           - Which cases show anti-selection signals from MIB hits?
-      - name: Claims & Integrity Agent
+      - name: Claims & Contestability Agent
         icon: genie
         summary: Answer death, disability and waiver claim questions with fraud and contestability signals.
         feeds:
@@ -765,32 +764,33 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
           - Genie One
-      - name: Agent Suitability
-        short: Compliance
+      - name: Contact-Center AI
+        short: Service
         icon: gavel
-        summary: Sales practices and replacement activity monitored against suitability rules.
-        problem: Suitability and replacement rules are checked in periodic manual reviews, so a churning book or an unsuitable annuity sale is caught in audit rather than when the pattern first appears.
-        who_benefits: Distribution
-        how_built: Sales, replacement and complaint data are conformed under Unity Catalog and scored with AI Functions, surfacing suitability outliers by producer in the Agent Performance Hub for review.
+        summary: Call summarization, agent assist and self-service deflection across the policyholder and claims contact center.
+        problem: Contact-center staff move between admin, claims and CRM screens to answer a policyholder or take a claim, so handle time is long, wrap-up is manual and callers repeat themselves.
+        who_benefits: Claims
+        how_built: Call transcripts and case data conform under Unity Catalog, Mosaic AI agents built with Agent Bricks summarize interactions and draft next steps against governed policy and claim data, and deflection is served through Databricks Apps.
         components:
-          - Agent Performance Hub
+          - Call Centre Telephony
           - Salesforce Financial Services
-          - AI Functions
-          - Unity Catalog
+          - Mosaic AI
+          - Agent Bricks
           - AI/BI
-      - name: Reinsurance Recovery
-        short: Treaty
+      - name: Statutory & NAIC Reporting
+        short: Regulatory
         icon: partner
-        summary: Ceded claims and experience reconciled to bordereaux without manual disputes.
-        problem: Ceded premium and claims are reconciled to reinsurer bordereaux by hand across treaties, so recoveries are missed, disputes drag on and the net position is never quite trusted.
+        summary: NAIC annual-statement schedules and risk-based-capital returns assembled from one governed model with full lineage.
+        problem: Statutory statements and RBC returns are stitched from actuarial, admin and finance systems each cycle, so reconciliation is manual, lineage is hard to prove and a restatement can trigger a finding.
         who_benefits: CEO & CFO
-        how_built: Bordereaux, ceded claims and treaty terms are conformed on Delta Lake under Unity Catalog and reconciled in AI/BI, then shared back to reinsurers over OpenSharing without file swaps.
+        how_built: Ledger, reserve and policy data conform on Delta Lake under Unity Catalog with full lineage against the NAIC filing specifications, and returns are assembled in AI/BI and published as Data Products.
         components:
-          - Reinsurance Bordereaux
+          - SAP S/4HANA Insurance
+          - NAIC Statutory Filings
           - Unity Catalog
           - Delta Lake
-          - OpenSharing
           - AI/BI
+          - Data Products
       - name: Cross-sell Propensity
         short: Growth
         icon: custlake
@@ -807,24 +807,23 @@ agent_usecases:
         stories:
           - title: Customer 360 reference architecture for insurance
             url: https://www.databricks.com/resources/architectures/c360-reference-architecture-for-insurance
-      - name: Straight-Through Processing
-        short: Operations
+      - name: Claims Processing
+        short: Claims
         icon: api
-        summary: Clean applications issued without manual touch when evidence and rules align.
-        problem: Clean applications still stop for manual touch because evidence, rules and admin systems never line up, so simple cases take as long as complex ones and applicants abandon.
-        who_benefits: Underwriting
-        how_built: ACORD messages land via Lakeflow, are evidence-checked with AI Functions and scored in Model Serving, then auto-issued from the Underwriting Decision Hub with servicing state on Lakebase.
+        summary: Death, disability and waiver claims triaged and paid straight through when documents and policy checks align.
+        problem: Claims arrive as calls, forms and documents across admin and TPA systems, so simple death and disability claims wait behind complex ones and payout SLAs slip.
+        who_benefits: Claims
+        how_built: Sedgwick and FINEOS claim feeds land via Lakeflow and are checked with AI Functions and scored in Model Serving, so the Claims Adjudication Console on Lakebase auto-adjudicates clean claims and routes the rest.
         components:
-          - Underwriting Decision Hub
-          - ACORD Life Standards
+          - Claims Adjudication Console
+          - Sedgwick Life Claims
+          - FINEOS Life
           - AI Functions
           - Model Serving
           - Lakebase
         stories:
           - title: AXA Japan modernizes data and analytics with Databricks
             url: https://www.databricks.com/customers/axa-japan
-          - title: 'Navigating the impact of AI in insurance: opportunities and challenges'
-            url: https://www.databricks.com/blog/navigating-impact-ai-insurance-opportunities-and-challenges
       - name: Embedded Value
         short: Strategy
         icon: product

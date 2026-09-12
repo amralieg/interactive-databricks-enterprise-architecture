@@ -1,5 +1,5 @@
 name: Chemical Manufacturing
-description: 'Process manufacturing: batch recipes, plant operations, quality labs, regulatory compliance, and global supply chains for specialty and commodity chemicals.'
+description: 'A specialty and commodity chemicals producer: feedstock and formulation control, batch plant operations on reactors and continuous lines, QC labs and product stewardship, rotating-asset reliability, molecular design, and bulk global supply chains.'
 sources:
   - name: ERP & Supply
     icon: erp
@@ -295,9 +295,9 @@ pipelines:
           - name: Chief Sustainability Officer
             cares: Scope 1 and 2 intensity and the credibility of what the company reports.
         ucs:
-          - Emissions Tracking
-          - Energy Optimization
-          - Regulatory Submissions
+          - Carbon Intensity & Circularity
+          - Steam & Power per Ton
+          - Rotating-Equipment Reliability
       - name: Plant Operations
         mark: Lakehouse//RT
         summary: Shift handover, batch execution and abnormal situation management, run on OEE, first-pass yield and deviation count.
@@ -314,9 +314,9 @@ pipelines:
           - name: Reliability Engineer
             cares: rotating-equipment uptime and the unplanned trips that break the plan.
         ucs:
-          - Predictive Maintenance
+          - Rotating-Equipment Reliability
           - Golden Batch
-          - Predictive Quality
+          - Off-Spec Root-Cause
       - name: Process Engineering
         mark: AI/BI
         summary: Recipe optimization, scale-up and golden batch comparison, judged on yield per batch, energy per ton and off-spec rate.
@@ -334,8 +334,8 @@ pipelines:
             cares: the setpoints that lift yield and cut energy inside the safe envelope.
         ucs:
           - Golden Batch
-          - Energy Optimization
-          - Recipe Scale-Up
+          - Steam & Power per Ton
+          - Autonomous Formulation Lab
       - name: Quality & Regulatory
         mark: Apps
         summary: CoA release, stability and regulatory submissions, tracked on CoA compliance, right-first-time release and REACH filing timeliness.
@@ -352,9 +352,9 @@ pipelines:
           - name: Product Steward
             cares: SDS accuracy, hazard classification and substance volume limits.
         ucs:
-          - Predictive Quality
+          - Off-Spec Root-Cause
           - Batch Genealogy
-          - Regulatory Submissions
+          - Carbon Intensity & Circularity
       - name: Supply Chain
         mark: Model Serving
         summary: Demand allocation, tank scheduling and customer prioritization, measured on on-time-in-full, margin per ton and contract-fill rate.
@@ -371,8 +371,8 @@ pipelines:
           - name: Customer Service
             cares: on-time-in-full and contract-fill promises to key accounts.
         ucs:
-          - Demand Allocation
-          - Tank Scheduling
+          - Grade & Tonnage Forecasting
+          - Feedstock & Bulk Planning
           - Batch Genealogy
   - name: Technical
     icon: code
@@ -396,8 +396,8 @@ pipelines:
             cares: the pager when the batch, yield and CoA tables stall before a shift.
         ucs:
           - Batch Genealogy
-          - Predictive Quality
-          - Emissions Tracking
+          - Off-Spec Root-Cause
+          - Carbon Intensity & Circularity
       - name: Data Scientists
         mark: MLflow
         summary: Golden-batch, predictive-quality, energy-optimisation and predictive-maintenance models, and whether they still hold across a recipe scale-up.
@@ -416,9 +416,9 @@ pipelines:
           - name: MLOps Engineer
             cares: every quality and RUL model tracked, reproduced and safely re-served.
         ucs:
-          - Golden Batch
-          - Predictive Maintenance
-          - Recipe Scale-Up
+          - Molecular Design-Space Simulation
+          - Rotating-Equipment Reliability
+          - Autonomous Formulation Lab
       - name: App Developers
         mark: Apps
         summary: Ship the batch cockpit, golden batch analytics, CoA workbench and allocation optimizer apps operations and quality work in, next to governed batch data.
@@ -437,9 +437,9 @@ pipelines:
           - name: Agent & Lakebase Dev
             cares: release and allocation state, and agents that draft work orders.
         ucs:
-          - Predictive Quality
+          - Off-Spec Root-Cause
           - Batch Genealogy
-          - Demand Allocation
+          - Grade & Tonnage Forecasting
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -617,9 +617,9 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Batch & Yield Agent
+      - name: Batch Performance Agent
         icon: genie
-        summary: Ask about batch yield, OEE and golden-batch deviation by plant and product in plain language.
+        summary: Ask about batch yield, golden-batch deviation and off-spec drivers by plant and product in plain language.
         feeds:
           - AVEVA PI System
           - Honeywell Uniformance
@@ -635,9 +635,9 @@ agent_usecases:
           - What is OEE by unit and line this week?
           - Which deviations are open and on which batches?
           - What is energy per ton by product versus target?
-      - name: Quality & Compliance Agent
+      - name: Quality & Release Agent
         icon: genie
-        summary: Explore CoA release, off-spec and regulatory filing status across the lab estate.
+        summary: Explore CoA release, off-spec root-cause and regulatory filing status across the lab estate.
         feeds:
           - LabWare LIMS
           - Thermo SampleManager
@@ -655,7 +655,7 @@ agent_usecases:
           - Which SDS records are out of date for shipped products?
       - name: Reliability & Maintenance Agent
         icon: genie
-        summary: Answer asset health, remaining-life and maintenance-cost questions.
+        summary: Answer rotating-equipment health, remaining-life and maintenance-cost questions.
         feeds:
           - IBM Maximo
           - AVEVA PI System
@@ -672,7 +672,7 @@ agent_usecases:
           - What is MTBF trend on the assets that stop the plant?
       - name: Supply & Allocation Agent
         icon: genie
-        summary: Ask about demand allocation, tank scheduling and OTIF across the network.
+        summary: Ask about grade demand, feedstock planning and OTIF across the network.
         feeds:
           - SAP TM
           - ORBCOMM Tank Monitoring
@@ -693,13 +693,13 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: Predictive Quality
+      - name: Off-Spec Root-Cause
         short: Quality
         icon: gavel
-        summary: Off-spec predicted from in-process tags before batch completion.
-        problem: Off-spec is only found when the lab tests the finished batch, so a bad run is discovered hours after the deviation and the whole batch is scrapped or reworked at full cost.
+        summary: Off-spec batches traced to the in-process deviation that caused them, in flight.
+        problem: When a batch goes off-spec, the deviation that caused it is buried across historian, phase and lab records, so root-cause takes days of manual correlation and the same failure repeats on the next run.
         who_benefits: Quality & Regulatory
-        how_built: In-process historian tags land in Bronze, conform to batch-and-phase records, and feed quality models scored in Model Serving so the Batch Cockpit flags off-spec before the run completes.
+        how_built: In-process historian tags conform to batch-and-phase records and feed quality models scored in Model Serving, so the Batch Cockpit flags the driving deviation and its root cause before the run completes.
         components:
           - Batch Cockpit
           - AVEVA PI System
@@ -727,10 +727,10 @@ agent_usecases:
         stories:
           - title: Chevron Phillips Chemical tackles GenAI with Databricks
             url: https://www.databricks.com/customers/chevron-phillips-chemical
-      - name: Energy Optimization
-        short: Sustainability
+      - name: Steam & Power per Ton
+        short: Energy
         icon: chart
-        summary: Steam and power consumption minimized per ton produced.
+        summary: Steam and power minimized per ton produced, unit by unit.
         problem: Steam and power are the biggest cost after feedstock, yet usage is trended per site weeks later, so nobody sees which units and setpoints drive energy per ton while the batch still runs.
         who_benefits: Process Engineering
         how_built: Utility and process tags conform alongside batch data, and AI Functions and models in Golden Batch Analytics rank the setpoints that cut energy per ton without pushing the batch off spec.
@@ -743,10 +743,10 @@ agent_usecases:
         stories:
           - title: Databricks and Shell collaborate to simplify industrial time series analytics on the Lakehouse
             url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
-      - name: Predictive Maintenance
+      - name: Rotating-Equipment Reliability
         short: Reliability
         icon: zplug
-        summary: Pump and agitator failures predicted before unplanned downtime.
+        summary: Pump, agitator and compressor failures predicted before an unplanned trip.
         problem: Pumps, agitators and compressors fail without warning, and an unplanned trip on a continuous line cascades into lost batches and emergency repairs costlier than any planned fix.
         who_benefits: Plant Operations
         how_built: Vibration and process tags from the historian conform to asset records and feed remaining-life models in Model Serving, so predicted failures raise work orders in IBM Maximo before the trip.
@@ -775,13 +775,13 @@ agent_usecases:
         stories:
           - title: How DuPont achieved 11x latency reduction and 4x cost reduction with Photon
             url: https://www.databricks.com/blog/how-dupont-achieved-11x-latency-reduction-and-4x-cost-reduction-photon
-      - name: Emissions Tracking
+      - name: Carbon Intensity & Circularity
         short: EHS
         icon: gavel
-        summary: Scope 1 and 2 intensity by plant and product.
-        problem: Scope 1 and 2 emissions are assembled each quarter from spreadsheets and utility bills, so intensity by plant and product is an estimate that lands too late to change how a batch is run.
+        summary: Scope 1 and 2 intensity and material circularity by plant and product.
+        problem: Scope 1 and 2 emissions and recycled-content figures are assembled each quarter from spreadsheets and utility bills, so intensity and circularity by plant and product are estimates that land too late to change how a batch is run.
         who_benefits: CEO & EHS Council
-        how_built: Energy and process data conform with emissions factors on Delta Lake and are processed with Apache Spark under Unity Catalog, giving auditable Scope 1 and 2 intensity by plant and product in AI/BI.
+        how_built: Energy, process and material-recovery data conform with emissions factors on Delta Lake and are processed with Apache Spark under Unity Catalog, giving auditable Scope 1 and 2 intensity and circularity by plant and product in AI/BI.
         components:
           - AVEVA PI System
           - Apache Spark
@@ -791,13 +791,13 @@ agent_usecases:
         stories:
           - title: How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale
             url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-      - name: Demand Allocation
-        short: Supply Chain
+      - name: Grade & Tonnage Forecasting
+        short: Demand
         icon: sheet
-        summary: Finite capacity allocated to highest-value orders.
-        problem: When capacity is tight, scarce product goes to whoever shouts loudest, so low-margin spot orders consume tonnes a contracted customer needed and margin leaks on every call.
+        summary: Demand for each product grade and tonnage forecast across regions and contracts.
+        problem: Demand for each grade swings with commodity cycles and customer contracts, but forecasts are built in spreadsheets per region, so plants plan to numbers that miss the actual pull and either strand tonnes or stock out of the high-margin grade.
         who_benefits: Supply Chain
-        how_built: Orders, inventory and plan data conform from ERP and planning, and demand and margin models in the Allocation Optimizer rank scarce product by contract and value for the planner to commit.
+        how_built: Orders, contracts and ICIS price signals conform from ERP and planning, and demand models in the Allocation Optimizer forecast grade-level tonnage by region for the S&OP plan to commit against.
         components:
           - Allocation Optimizer
           - SAP S/4HANA PP-PI
@@ -807,45 +807,45 @@ agent_usecases:
         stories:
           - title: Corning streamlines data with Databricks Lakeflow Jobs
             url: https://www.databricks.com/customers/corning
-      - name: Tank Scheduling
-        short: Logistics
+      - name: Feedstock & Bulk Planning
+        short: Supply
         icon: stream
-        summary: Bulk movements scheduled against rail and vessel windows.
-        problem: Bulk product moves against narrow rail and vessel windows, but tank levels, plans and transport slots sit in separate systems, so a missed window means demurrage or a tank running dry.
+        summary: Feedstock supply and bulk movements planned against tanks, rail and vessel windows.
+        problem: Feedstock arrives and product ships in bulk against narrow rail and vessel windows, but tank levels, material plans and transport slots sit in separate systems, so a missed window means demurrage, a stockout of raw feed, or a tank running dry.
         who_benefits: Supply Chain
-        how_built: Tank telemetry and transport plans conform to production schedules on Delta Lake, and models scored in Lakehouse//RT sequence bulk movements against live rail and vessel windows for the planner.
+        how_built: Tank telemetry, material plans and transport windows conform to production schedules on Delta Lake, and models scored in Lakehouse//RT sequence feedstock replenishment and bulk movements against live rail and vessel windows for the planner.
         components:
           - SAP TM
           - ORBCOMM Tank Monitoring
           - Model Serving
           - Lakehouse//RT
           - AI/BI
-      - name: Regulatory Submissions
-        short: Compliance
-        icon: share
-        summary: REACH and TRI filings from governed operational data.
-        problem: REACH volumes and TRI release figures are compiled by hand from many plant and lab systems near each deadline, so filings become fire drills and one wrong number risks a compliance finding.
-        who_benefits: Quality & Regulatory
-        how_built: Volume, exposure and release data conform from operational systems into governed data products under Unity Catalog, so REACH and TRI submissions are generated from one auditable source of record.
-        components:
-          - ECHA REACH
-          - EPA TRI Reporting
-          - Sphera Product Steward
-          - Unity Catalog
-          - Data Products
-      - name: Recipe Scale-Up
+      - name: Molecular Design-Space Simulation
         short: R&D
-        icon: product
-        summary: Lab recipes translated to plant parameters with risk guards.
-        problem: A recipe that works in the lab behaves differently at plant scale, and with lab and plant data apart, scale-up is trial and error that burns weeks of reactor time and off-spec material.
+        icon: network
+        summary: Candidate molecules and formulations screened across a simulated property design space before lab work.
+        problem: New molecules and materials are found by physical trial, so the design space is explored one slow, costly experiment at a time and promising candidates are never simulated or ranked before reactor time is committed.
         who_benefits: Process Engineering
-        how_built: Lab and plant historian data conform to common material and equipment keys, and models in Golden Batch Analytics turn lab recipes into plant setpoints with risk guards before the first run.
+        how_built: Historical experiment, property and formulation data conform on Delta Lake, and Mosaic AI models tracked in MLflow simulate the property design space so chemists screen and rank candidates virtually before committing lab and reactor time.
+        components:
+          - LabWare LIMS
+          - Delta Lake
+          - Mosaic AI
+          - MLflow
+          - AI/BI
+      - name: Autonomous Formulation Lab
+        short: Formulation
+        icon: product
+        summary: Formulations optimized and translated to plant setpoints by a self-driving lab-to-plant loop.
+        problem: A formulation that works in the lab behaves differently at plant scale, and with lab and plant data apart, recipe control and scale-up are trial and error that burn weeks of reactor time and off-spec material.
+        who_benefits: Process Engineering
+        how_built: Lab and plant historian data conform to common material and equipment keys, and Mosaic AI models tracked in MLflow propose and rank formulations, turning lab recipes into governed plant setpoints with risk guards before the first run.
         components:
           - Golden Batch Analytics
           - LabWare LIMS
           - AVEVA PI System
           - MLflow
-          - Model Serving
+          - Mosaic AI
 medallion:
   Bronze:
     short: Raw historian and LIMS feeds
@@ -870,7 +870,7 @@ citation_index:
     title: AVEVA PI System
     url: https://www.aveva.com/en/products/pi-system/
   honeywell:
-    title: Honeywell Forge
+    title: Honeywell Uniformance PHD
     url: https://www.honeywell.com/us/en/products/automation
   opcenter-psm:
     title: Siemens Opcenter PSM
