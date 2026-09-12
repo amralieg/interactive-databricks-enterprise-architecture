@@ -56,7 +56,7 @@ MAP = {
     "tours/data-science-and-ai/finetuning": ["Model Serving"],
     "tours/data-science-and-ai/model-serving-databricks": ["Model Serving"],
     "tours/data-science-and-ai/mosaic-ai-agent-framework-evaluation": ["Agent Bricks", "MLflow"],
-    "tours/data-science/mosaic-ai-gateway": ["Unity AI Gateway"],
+    "tours/data-science/mosaic-ai-gateway": ["Unity Gateway"],
     "tours/data-sharing/managing-consumer-requests": ["OpenSharing"],
     "tours/data-sharing/marketplace-for-data-providers": ["OpenSharing"],
     "tours/data-sharing/multi-cloud-delta-sharing": ["OpenSharing"],

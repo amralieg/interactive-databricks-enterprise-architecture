@@ -61,7 +61,7 @@ ALIAS = {
     "Zerobus": "Zerobus Ingest",
     "Lakebase": "Lakebase Autoscaling",
     "Model Serving": "Custom Model Serving capability (CPU serving)",
-    "Unity AI Gateway": "Unity Gateway",
+    "Unity Gateway": "Unity Gateway",
     "AI Functions": "Other AI functions",
     "Knowledge Assistant": "Knowledge Assistant",
 }

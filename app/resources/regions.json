@@ -9,7 +9,7 @@
   "Lakehouse//RT": "Lakehouse Real-Time",
   "Model Serving": "Custom Model Serving capability (CPU serving)",
   "Serverless Compute": "Serverless compute",
-  "Unity AI Gateway": "Unity Gateway",
+  "Unity Gateway": "Unity Gateway",
   "Zerobus": "Zerobus Ingest"
  },
  "clouds": {
