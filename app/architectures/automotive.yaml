@@ -416,7 +416,7 @@ pipelines:
         ucs:
           - Warranty Recovery
           - Parts Forecasting
-          - Dealer Service Assistant
+          - Vehicle Cyber Threat Monitoring
           - Connected Diagnostics
           - EV Battery Health
   - name: Technical
@@ -825,19 +825,24 @@ agent_usecases:
           - Polk Registration
           - Unity Catalog
           - AI/BI
-      - name: Dealer Service Assistant
-        short: Aftersales
-        icon: apps
-        summary: A governed assistant giving service advisors next-best repair, parts and retention actions on the vehicle in the bay.
-        problem: A service advisor juggles repair procedures, connected fault codes and warranty rules across separate screens, so diagnosis is slow, fixes miss first visit and retention offers are guessed rather than grounded in the vehicle's history.
-        who_benefits: Aftersales
-        how_built: Mitchell repair procedures, telematics fault codes and governed service history are grounded through Mosaic AI and Model Serving into the Service Advisor App, so advisors get next-best repair, parts and retention actions on the vehicle in front of them.
+      - name: Vehicle Cyber Threat Monitoring
+        short: Security
+        icon: gavel
+        summary: Connected-fleet telemetry and IT/OT logs correlated to detect and triage cyber threats to vehicles and back-end services.
+        problem: Connected vehicles and their back-end services widen the attack surface well beyond the plant, but security telemetry from ECUs, telematics gateways and cloud services sits in separate tools, so a coordinated threat is caught late and triaged without the vehicle context.
+        who_benefits: Security
+        how_built: Vehicle telematics, ECU and IT/OT logs stream through Lakeflow into the security lakehouse, are correlated and scored in Model Serving with Lakewatch triage, and analysts investigate with full lineage in Unity Catalog governed by Unity Gateway.
         components:
-          - Service Advisor App
-          - Mitchell Repair
-          - OEM Telematics Gateway
-          - Mosaic AI
+          - Lakeflow
+          - Lakewatch
           - Model Serving
+          - Unity Catalog
+          - Unity Gateway
+        stories:
+          - title: Rivian builds connected-vehicle intelligence on Databricks
+            url: https://www.databricks.com/customers/rivian
+          - title: Threat detection at scale with the Databricks Lakehouse
+            url: https://www.databricks.com/solutions/accelerators/threat-detection
       - name: Parts Forecasting
         short: Aftersales
         icon: product

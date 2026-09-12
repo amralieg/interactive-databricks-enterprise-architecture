@@ -3627,7 +3627,7 @@ const ARCH = {
             { n:"CFO & Finance", cares:"one certified number behind the forecast and the board pack." },
             { n:"Chief Risk Officer", cares:"the risk position and whether a control actually held." }
           ],
-          ucs:["Demand Forecasting","Regulatory Reporting","Customer Segmentation"] },
+          ucs:["Demand Forecasting","Real-Time Fraud","Predictive Maintenance"] },
         { n:"Business Teams", mark:"Genie",
           long:"Finance, marketing, sales, service and operations. The largest population on the platform, with no SQL between them and the answer, and the group most exposed to a wrong number.",
           uses:[
@@ -3640,7 +3640,7 @@ const ARCH = {
             { n:"Service & Operations", cares:"the exception queue and the action taken on live data, not last night's extract." },
             { n:"Finance & Planning", cares:"self-service numbers they filter themselves rather than raising a ticket for." }
           ],
-          ucs:["Customer Segmentation","Personalisation","Customer Service Agents"] },
+          ucs:["Demand Forecasting","Personalization","Churn Prediction"] },
         { n:"Risk & Compliance", mark:"Unity Catalog",
           long:"Risk, audit, data protection and the regulatory reporting function. They are not asking the platform for insight so much as for evidence: who touched what, where a number came from, and whether the control actually held.",
           uses:[
@@ -3653,7 +3653,7 @@ const ARCH = {
             { n:"Data Protection", cares:"who can see which data, and where a number actually came from." },
             { n:"Regulatory Reporting", cares:"submissions that trace back to source without a spreadsheet trail." }
           ],
-          ucs:["Fraud & Financial Crime","Regulatory Reporting","Document Intelligence"] },
+          ucs:["Real-Time Fraud","Improper Payments","Claims Automation"] },
       ]},
       /* Ordered from the data's own path: engineered, modelled, analysed, then built on. */
       { box:"Technical", ic:"code", tiles:[
@@ -3670,7 +3670,7 @@ const ARCH = {
             { n:"Pipeline Engineers", cares:"Bronze-to-Silver reliability and expectations living in the pipeline." },
             { n:"Platform On-call", cares:"the pager when a published table stalls before the business reads it." }
           ],
-          ucs:["Supply Chain Visibility","Demand Forecasting","Fraud & Financial Crime"] },
+          ucs:["Route Optimization","Demand Forecasting","Yield Excursion Detection"] },
         { n:"Data Scientists", mark:"MLflow",
           long:"The team building the forecasting, propensity, risk and pricing models, and the one accountable for whether a model still holds six months after it shipped.",
           uses:[
@@ -3684,7 +3684,7 @@ const ARCH = {
             { n:"Applied Scientists", cares:"the forecasting, propensity, risk and pricing models that must still hold." },
             { n:"MLOps", cares:"every run tracked so a production model can be explained six months later." }
           ],
-          ucs:["Churn & Retention","Predictive Maintenance","Personalisation"] },
+          ucs:["Churn Prediction","Predictive Maintenance","Readmission Reduction"] },
         { n:"Data Analysts", mark:"AI/BI",
           long:"The team that answers what the business cannot answer for itself, and usually the first to notice that a definition has drifted.",
           uses:[
@@ -3697,7 +3697,7 @@ const ARCH = {
             { n:"Business Analysts", cares:"the question the business cannot answer for itself." },
             { n:"Reporting", cares:"being the first to notice a definition has quietly drifted." }
           ],
-          ucs:["Demand Forecasting","Customer Segmentation","Regulatory Reporting"] },
+          ucs:["Demand Forecasting","Real-Time Fraud","Improper Payments"] },
         { n:"Analytics Engineers", mark:"Unity Catalog",
           long:"The layer between engineering and analysis. They model raw tables into tested, documented marts and own what the business words actually mean.",
           uses:[
@@ -3710,7 +3710,7 @@ const ARCH = {
             { n:"Metrics Owners", cares:"one definition of revenue every tool reads." },
             { n:"dbt Developers", cares:"existing dbt projects keeping their tests and lineage on Databricks." }
           ],
-          ucs:["Regulatory Reporting","Demand Forecasting","Supply Chain Visibility"] },
+          ucs:["Claims Automation","Demand Forecasting","Route Optimization"] },
         { n:"App Developers", mark:"Apps",
           long:"The team building the applications and agents the business works in, rather than another dashboard for it to read.",
           uses:[
@@ -3724,7 +3724,7 @@ const ARCH = {
             { n:"Agent Builders", cares:"agents built and evaluated against governed tools, not a private prompt." },
             { n:"Integration Engineers", cares:"single-row reads and writes on Lakebase over the same governed data." }
           ],
-          ucs:["Personalisation","Customer Service Agents","Document Intelligence"] },
+          ucs:["Personalization","Readmission Reduction","Claims Automation"] },
         { n:"Platform Governance & Admin", mark:"Unity Catalog",
           long:"The team that governs, secures and runs the platform itself: Unity Catalog policy, identity and access, cost controls and the audit trail across every workspace. They do not build the pipelines or the models; they make sure whoever does can be trusted, funded and proven.",
           uses:[
@@ -3739,7 +3739,7 @@ const ARCH = {
             { n:"Identity Administrator", cares:"SSO, SCIM, groups and least-privilege access across the estate." },
             { n:"FinOps & Cost Admin", cares:"budget policies, usage system tables and chargeback by team." }
           ],
-          ucs:["Regulatory Reporting","Fraud & Financial Crime","Document Intelligence"] },
+          ucs:["Improper Payments","Real-Time Fraud","Yield Excursion Detection"] },
       ]},
     ]},
 
@@ -3774,23 +3774,19 @@ const ARCH = {
          platform, arriving and leaving through the same governed door. An
          industry view specialises these four. */
       { box:"Databricks Apps", ic:"apps", tiles:[
-        { n:"Business Apps", s:"Built in-house", ic:"apps",
-          long:"Line-of-business applications your teams build on Databricks Apps over Lakebase, reading governed data and calling platform endpoints rather than holding their own copy." },
-        { n:"Embedded Analytics", s:"In-product dashboards", ic:"aibi",
-          long:"Dashboards and metrics surfaced inside your own product or portal, served by SQL warehouses with end-user permissions enforced by Unity Catalog." },
-        { n:"Operations Consoles", s:"Run the day", ic:"gauge",
-          long:"The screen an operations, service or control team runs the working day from: current state, the exception queue and the action taken, on live data rather than on last night's extract. Built on Databricks Apps with Lakebase behind it for the writes." },
-        { n:"Internal Copilots", s:"Agent assistants", ic:"agents",
-          long:"Assistants for staff rather than for customers: the agent a case handler, planner or engineer asks before deciding, grounded in the organisation's own documents and tables through Agent Bricks and governed by Unity Gateway." },
-      ]},
+{"n":"Store Command Centre","s":"Retail","ic":"gauge","long":"Traffic, conversion and labor against plan on Databricks Apps over Lakebase."},
+{"n":"NOC War Room","s":"Telecommunication","ic":"gauge","long":"Live alarms, subscriber impact and restoration progress on Databricks Apps over Lakebase."},
+{"n":"Claims Command Center","s":"Insurance","ic":"gauge","long":"The screen the claims desk runs the day from: severity, fraud and subrogation scores on every open claim, next-best-action and reserve guidance, on Databricks Apps over Lakebase."},
+{"n":"Plant Performance","s":"Manufacturing","ic":"gauge","long":"The screen the shift supervisor runs the day from: downtime pareto, scrap by reason and orders at risk, on Databricks Apps over Lakebase."}
+]},
       /* Certified AI/BI dashboards the business reads, built on governed Metric
          Views rather than a private query. An industry view specialises these. */
       { box:"AI/BI Dashboards", ic:"aibi", tiles:[
-        { n:"Revenue & Growth", ic:"aibi", long:"Revenue, growth and segment performance on certified commercial Metric Views.", kpis:["Revenue vs plan","Growth rate","Customer lifetime value","Win rate","Marketing ROI"], teams:["Business Teams","BI Analysts","Executive Team"] },
-        { n:"Operations & Service", ic:"aibi", long:"Throughput, utilisation and service levels across the operation.", kpis:["On-time performance","Utilisation","Service level","Backlog","Cost to serve"], teams:["Business Teams","Analytics Engineers"] },
-        { n:"Risk & Controls", ic:"aibi", long:"Fraud, exposure and control health with lineage to the source.", kpis:["Fraud rate","Open alerts","Exposure vs limit","Control pass rate","Loss vs forecast"], teams:["Risk & Compliance","BI Analysts"] },
-        { n:"Finance & Cost", ic:"aibi", long:"Margin, spend and forecast against certified financial definitions.", kpis:["Gross margin","Spend vs budget","Forecast accuracy","Cash conversion","Unit cost"], teams:["Business Teams","BI Analysts","Executive Team"] },
-      ]},
+{"n":"Comp Sales & Margin","s":"Retail","ic":"aibi","long":"Comparable sales, gross margin after markdowns and category performance on certified Metric Views.","kpis":["Comparable sales","Gross margin","Markdown rate","Sell-through","Basket size"],"teams":["Merchant Leadership","Merchandising","Planning & Allocation"]},
+{"n":"Network Performance","s":"Telecommunication","ic":"aibi","long":"Cell and transport KPIs, alarms and restoration times on certified views.","kpis":["Dropped-call rate","Alarm-to-restoration","Cell availability","Transport utilisation","Outage impact"],"teams":["Network Operations","CEO & CTO Office","Data Engineers"]},
+{"n":"Plant OEE & Downtime","s":"Manufacturing","ic":"aibi","long":"Line and shift OEE, downtime pareto and throughput on certified Metric Views.","kpis":["OEE","Availability","Performance","Quality rate","Downtime by reason"],"teams":["Plant Leadership","Production & Scheduling","Continuous Improvement"]},
+{"n":"Fraud & AML Operations","s":"Banking","ic":"aibi","long":"Fraud loss, alert volumes, false-positive rates and SAR throughput.","kpis":["Fraud loss rate","Alert volume","False-positive rate","Alert-to-SAR conversion","Dispute volume"],"teams":["Risk & Compliance","Head of Fraud","Head of Financial Crime"]}
+]},
       /* Harnesses sit on this rail rather than in the band above it. They are not
          something the business builds, they are another client arriving at the
          platform from outside and leaving through the same governed door as a BI
@@ -3827,135 +3823,30 @@ const ARCH = {
      Consumers rail, where the other outside clients of the platform live. */
   top: {
     name:"Genie Agents & Business Use Cases", ic:"zapps",
-    sub:"What the platform is used for. Generic by design: an industry view specialises this band.",
+    sub:"What the platform is used for, drawn from multiple industries: each tile is labelled with the industry it comes from. An industry view replaces this band with that sector\u2019s own.",
     /* Business use cases take the larger half because they are the point; the
        Genie Agents the business asks its questions through take the smaller one.
        Genie Agents lead here and the applications drop to the Consumers rail: an
        industry view specialises both. */
     secs:[
       { title:"Genie Agents", ic:"genie", span:3, cols:2, tiles:[
-        { n:"Customer & Revenue Agent", ic:"genie",
-          long:"Ask about customers, segments and revenue in plain language across the governed customer estate.",
-          feeds:["CRM & Commerce","Conformed customer 360","CustomerLake","Model Serving"],
-          teams:["Business Teams","BI Analysts","Data Scientists"],
-          questions:["Which segments are growing fastest this quarter?","What is revenue by product and region versus plan?","Which customers are most likely to churn right now?","Where is lifetime value concentrated across the base?","Which campaigns drove the best return last month?"] },
-        { n:"Operations & Supply Agent", ic:"genie",
-          long:"Explore demand, supply and service performance on live operational data.",
-          feeds:["ERP & Core Systems","Conformed operations","Lakehouse//RT","AI/BI"],
-          teams:["Business Teams","Analytics Engineers","Data Scientists"],
-          questions:["Where is demand outrunning supply this week?","Which sites or lines have the worst utilisation?","What is on-time performance by route today?","Which SKUs are at risk of stockout?","Where are service levels below target right now?"] },
-        { n:"Risk & Compliance Agent", ic:"genie",
-          long:"Answer fraud, risk and control questions with full lineage back to the source.",
-          feeds:["Transaction Streams","Feature Store","Unity Catalog","Model Serving"],
-          teams:["Risk & Compliance","Data Scientists","BI Analysts"],
-          questions:["What is our fraud rate by channel today?","Which alerts are still open past SLA?","Where is exposure concentrated across the book?","Which controls failed in the last audit window?","What drove this month's loss versus forecast?"] },
-        { n:"Finance & Margin Agent", ic:"genie",
-          long:"Ask about cost, margin and forecast against certified financial definitions.",
-          feeds:["ERP & Core Systems","Conformed finance","Unity Catalog","AI/BI"],
-          teams:["Business Teams","BI Analysts","Analytics Engineers"],
-          questions:["What is gross margin by product this quarter?","Where is cost growing faster than revenue?","How does spend compare to budget by team?","Which units are dragging the consolidated forecast?","What is the cash impact of the current pipeline?"] },
-      ]},
+{"n":"Plant Performance Agent","s":"Manufacturing","ic":"genie","long":"Ask about OEE, downtime and scrap by line and shift in plain language.","feeds":["Siemens Opcenter","Rockwell FactoryTalk","AVEVA PI System","OEE, yield, OTIF"],"teams":["Plant Leadership","Production & Scheduling","Continuous Improvement"],"questions":["What was OEE by line and shift yesterday, and where did the losses go?","Which downtime reason codes cost the most this week?","What is scrap cost by line and product this month versus last?","Which lines are behind the production plan right now?","What would a line-rate or changeover change do to throughput before we run it?"]},
+{"n":"Fraud & Financial Crime Agent","s":"Banking","ic":"genie","long":"Ask about fraud losses, alert quality and AML case backlogs in plain language.","feeds":["Visa DPS / Auth","NICE Actimize","FICO Falcon","Conformed customers and accounts"],"teams":["Risk & Compliance","Head of Fraud","AML Investigators"],"questions":["What is our card fraud loss rate this month versus last?","Which alert types have the worst false-positive rate right now?","How many AML cases are open past their SLA, and for which segments?","Which merchant categories are driving the most confirmed fraud?","What is the alert-to-SAR conversion rate by investigator team?"]},
+{"n":"Network Operations Agent","s":"Telecommunication","ic":"genie","long":"Ask about cell performance, alarms and outage impact in plain language.","feeds":["Ericsson ENM","Nokia NetAct","Cisco Crosswork","Churn, ARPU, network KPI"],"teams":["Network Operations","CEO & CTO Office","Data Engineers"],"questions":["Which cells have the worst dropped-call rate right now?","What is the current alarm-to-restoration time by region?","Which transport paths are approaching capacity?","Where are outages affecting the most subscribers today?","Which sites show degrading performance counters this week?"]},
+{"n":"Merchandising & Pricing Agent","s":"Retail","ic":"genie","long":"Ask about comparable sales, sell-through and markdown health by category in plain language.","feeds":["SAP S/4HANA Retail","NCR Voyix POS","SymphonyAI IRIS","Comp, margin, in-stock"],"teams":["Merchandising","Merchant Leadership","Planning & Allocation"],"questions":["What were comparable sales yesterday by banner and category?","Which SKUs are overstocked and heading into markdown season?","What is gross margin after markdowns by department this month?","Which categories are beating and missing the merchandise plan?","How is sell-through trending versus last year for the new season?"]}
+]},
       { title:"Business Use Cases", ic:"ztarget", span:8, cols:5, tiles:[
-        { n:"Customer Segmentation", s:"Customer 360", ic:"custlake",
-          long:"Unified customer profiles built on the lakehouse, segmented and activated through CustomerLake without copying data into a separate CDP.",
-          problem:"Customer data is split across CRM, commerce, service and loyalty systems, so every team segments off a partial copy and the same customer is treated three different ways.",
-          who:"Business Teams",
-          how:"Identity is resolved on governed tables with CustomerLake, segments are scored in Model Serving, and audiences are pushed to activation channels through Reverse ETL rather than a separate CDP.",
-          comps:["CustomerLake","Unity Catalog","Model Serving","AI/BI","Reverse ETL"],
-          stories:[
-            { t:"Conde Nast unifies data for personalised experiences", u:"https://www.databricks.com/customers/conde_nast" },
-            { t:"Publicis Groupe delivers real-time personalised campaigns", u:"https://www.databricks.com/customers/publicis-groupe" }
-          ] },
-        { n:"Churn & Retention", s:"Predictive", ic:"chart",
-          long:"Propensity and churn models trained on governed features, served as endpoints and pushed back into the channels that act on them.",
-          problem:"Churn shows up in the renewal number when it is too late to act, while the leading signals sit unjoined across product, billing and service history.",
-          who:"Data Scientists",
-          how:"Features are defined once in Feature Store, propensity and churn models are tracked in MLflow and served from Model Serving, and at-risk cohorts are activated through CustomerLake.",
-          comps:["Feature Store","MLflow","Model Serving","CustomerLake","AI/BI"],
-          stories:[
-            { t:"HOMER lifts engagement and cuts churn with Databricks", u:"https://www.databricks.com/customers/homer" },
-            { t:"SEGA Europe changes the game in player retention", u:"https://www.databricks.com/customers/sega" }
-          ] },
-        { n:"Fraud & Financial Crime", s:"Real time", ic:"gavel",
-          long:"Streaming detection on Zerobus or Lakeflow streaming pipelines, with Lakehouse//RT for millisecond-latency lookups and full lineage for investigators.",
-          problem:"Fraud has to be caught in the authorisation path in milliseconds, but rules-only screening blocks good customers, misses new patterns and leaves investigators without lineage.",
-          who:"Risk & Compliance",
-          how:"Events stream through Zerobus into Lakehouse//RT, per-entity features are scored by Model Serving before capture, and every decision keeps full lineage in Unity Catalog for the investigator.",
-          comps:["Zerobus","Lakehouse//RT","Model Serving","Feature Store","Unity Catalog"],
-          stories:[
-            { t:"Real-time fraud detection with Spark Real-Time Mode and Lakebase", u:"https://www.databricks.com/blog/how-build-real-time-fraud-detection-using-spark-real-time-mode-and-lakebase" },
-            { t:"Block prevents fraud and payment risk in real time", u:"https://www.databricks.com/customers/block/lakeflow-declarative-pipelines" }
-          ] },
-        { n:"Demand Forecasting", s:"Planning", ic:"market",
-          long:"Hierarchical forecasting across products, locations and channels, reading conformed Silver tables and publishing Gold planning products.",
-          problem:"Demand is planned from aggregate history in legacy tools, so promotions, seasonality and capacity limits are missed and the plan is stale before it is even agreed.",
-          who:"Business Teams",
-          how:"Conformed Silver tables feed hierarchical forecasts engineered in Feature Store and scored in Model Serving, then published as Gold planning products read in AI/BI.",
-          comps:["Feature Store","Model Serving","MLflow","AI/BI","Data Products"],
-          stories:[
-            { t:"Build fine-grained demand forecasts at scale", u:"https://www.databricks.com/solutions/accelerators/demand-forecasting" },
-            { t:"Suntory Beverage and Food accelerates decisions with Databricks", u:"https://www.databricks.com/customers/suntorybeveragefood" }
-          ] },
-        { n:"Personalisation", s:"Recommendations", ic:"model",
-          long:"Retrieval and ranking over governed data via AI Search and Model Serving, served to customer-facing apps at low latency.",
-          problem:"Recommendations run on stale batch exports and a separate serving stack, so the offer misses the moment and the model the science team trained is not the one in production.",
-          who:"App Developers",
-          how:"Retrieval and ranking run over governed data with AI Search and Model Serving, served to customer-facing apps on Lakebase at low latency, with features shared from Feature Store.",
-          comps:["AI Search","Model Serving","Feature Store","Apps","Lakebase"],
-          stories:[
-            { t:"Eurowings personalises search with AI Search and Model Serving", u:"https://www.databricks.com/customers/eurowings" },
-            { t:"Conde Nast powers personalised experiences with Databricks", u:"https://www.databricks.com/customers/conde_nast" }
-          ] },
-        { n:"Customer Service Agents", s:"Agentic", ic:"agents",
-          long:"Genie Agents and Agent Bricks agents grounded in documents, tickets and transactions, taking action in business tools rather than only answering.",
-          problem:"Support volume scales with the customer base and the answers already live in docs and past tickets, but agents re-solve the same questions by hand every day.",
-          who:"Business Teams",
-          how:"Documents, tickets and transactions are governed in Unity Catalog and served to Agent Bricks agents with AI Functions and Model Serving, taking action in business tools under Unity Gateway.",
-          comps:["Agent Bricks","AI Functions","Model Serving","Unity Gateway","Genie"],
-          stories:[
-            { t:"Lumen reaches 35% ticket deflection with GenAI", u:"https://www.databricks.com/customers/lumen-technologies" },
-            { t:"Lippert improves customer support with Agent Bricks", u:"https://www.databricks.com/customers/lippert" }
-          ] },
-        { n:"Document Intelligence", s:"Unstructured", ic:"docs",
-          long:"Contracts, claims, statements and correspondence parsed into governed tables with AI Functions and Agent Bricks, so the value locked in unstructured files joins the same models and dashboards the structured estate feeds.",
-          problem:"Contracts, claims and statements hold the value but sit as PDFs outside the warehouse, so the answers locked in them never join the models and dashboards the structured estate feeds.",
-          who:"Business Teams",
-          how:"Documents are parsed into governed tables with AI Functions and Agent Bricks, landed on Delta Lake under Unity Catalog, and joined to the rest of the estate for Model Serving and AI/BI.",
-          comps:["AI Functions","Agent Bricks","Unity Catalog","Delta Lake","Model Serving"],
-          stories:[
-            { t:"Cracking complex contracts with GenAI on Databricks", u:"https://www.databricks.com/blog/cracking-complex-contracts-genai-azure-databricks" },
-            { t:"EY-Parthenon turns unstructured M&A data into strategy", u:"https://www.databricks.com/customers/ey-parthenon" }
-          ] },
-        { n:"Predictive Maintenance", s:"Asset health", ic:"gauge",
-          long:"Sensor and telemetry history joined to work orders and parts, predicting the failure early enough to plan the intervention rather than absorb the outage.",
-          problem:"Assets are maintained on a calendar, so a failure discovered in service cancels the plan and cascades, while the condition signal that could have warned sat unread in telemetry.",
-          who:"Business Teams",
-          how:"Sensor and telemetry history joins work orders in Lakehouse//RT; remaining-useful-life models tracked in MLflow score in Model Serving so a removal becomes a planned intervention read in AI/BI.",
-          comps:["Lakehouse//RT","Feature Store","MLflow","Model Serving","AI/BI"],
-          stories:[
-            { t:"Rolls-Royce keeps its engines running on Databricks", u:"https://www.databricks.com/customers/rolls-royce" },
-            { t:"Predictive maintenance on the Databricks Lakehouse", u:"https://www.databricks.com/blog/what-is-predictive-maintenance" }
-          ] },
-        { n:"Supply Chain Visibility", s:"End to end", ic:"stream",
-          long:"Suppliers, inventory positions, shipments and demand signals conformed into one view, with simulation on top of it so a disruption can be answered rather than only reported.",
-          problem:"Suppliers, inventory, shipments and demand live in different systems, so a disruption is reported after it lands instead of being answered while there is still time to move.",
-          who:"Business Teams",
-          how:"Feeds conform through Lakeflow onto Delta Lake into one governed view; scenarios are simulated in Model Serving and shared as Data Products read in AI/BI.",
-          comps:["Lakeflow","Delta Lake","Model Serving","AI/BI","Data Products"],
-          stories:[
-            { t:"Supply chain and distribution optimization on Databricks", u:"https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization" },
-            { t:"UPL optimizes supply chain operations with demand forecasting", u:"https://www.databricks.com/customers/upl" }
-          ] },
-        { n:"Regulatory Reporting", s:"Risk & compliance", ic:"gavel",
-          long:"Regulatory and risk submissions produced from governed tables with lineage back to source, so a challenge from a regulator is answered from the platform rather than from a spreadsheet trail.",
-          problem:"Regulatory and risk submissions are stitched from dozens of systems each cycle, so reconciliation is manual, lineage is hard to prove and one restatement can trigger a finding.",
-          who:"Risk & Compliance",
-          how:"Risk and finance data conform into governed Gold tables under Unity Catalog with full lineage, and returns are assembled from certified definitions and published as Data Products read in AI/BI.",
-          comps:["Unity Catalog","Delta Lake","AI/BI","Data Products","Genie One"],
-          stories:[
-            { t:"BCBS 239 compliance in the age of AI (ABN AMRO)", u:"https://www.databricks.com/blog/bcbs-239-compliance-age-ai-turning-regulatory-burden-strategic-advantage" }
-          ] },
-      ]},
+{"n":"Demand Forecasting","s":"Retail","ic":"chart","long":"SKU-store forecasts updated from POS, web and local signals.","problem":"Category-level forecasts built on last year's averages miss local demand, so some doors overstock while others stock out before planners can react to what is actually selling.","who":"Planning & Allocation","how":"POS, e-commerce and local signals like weather land through Lakeflow, features are engineered in Feature Store, and SKU-store models scored in Model Serving feed the Demand Planning Hub.","comps":["Demand Planning Hub","Lakeflow","Feature Store","Model Serving","Weather & Local Events"],"stories":[{"t":"ABFRL scales demand forecasting and allocation on Databricks","u":"https://www.databricks.com/customers/aditya-birla-fashion-and-retail-ltd"},{"t":"Walgreens forecasts inventory across nearly 9,000 pharmacies","u":"https://www.databricks.com/customers/walgreens"}]},
+{"n":"Churn Prediction","s":"Telecommunication","ic":"custlake","long":"Churn risk scored by usage, care and network quality signals.","problem":"Subscribers leave after dropped calls or a billing dispute, but usage, care and network signals sit in separate systems, so churn is seen only once the number has already ported out.","who":"Commercial & Marketing","how":"Usage, care and network-quality features are engineered in Feature Store and scored in Model Serving, surfacing save offers in the Churn Prevention Hub before the renewal window closes.","comps":["Churn Prevention Hub","Feature Store","Model Serving","CustomerLake","MLflow"],"stories":[{"t":"How to predict the likelihood of each telco customer churning","u":"https://www.databricks.com/blog/2021/02/24/solution-accelerator-telco-customer-churn-predictor.html"},{"t":"Graph analytics for telco customer churn prediction","u":"https://www.databricks.com/solutions/accelerators/graph-analytics-telco-customer-churn-prediction"}]},
+{"n":"Real-Time Fraud","s":"Banking","ic":"gavel","long":"Authorization decisions scored before funds leave the account.","problem":"A stolen card or account is drained in the seconds between swipe and settlement, and overnight batch fraud checks only tell you how much you lost after the money is gone.","who":"Risk & Compliance","how":"Authorization messages land in Lakehouse//RT, fraud models in Model Serving score transaction features within the authorization window, and a decline returns before funds leave the account.","comps":["Visa DPS / Auth","Lakehouse//RT","Model Serving","Feature Store","MLflow"],"stories":[{"t":"Coinbase scales real-time fraud detection on Databricks","u":"https://www.databricks.com/customers/coinbase/lakeflow"},{"t":"Maya cuts fraud losses by up to 98%","u":"https://www.databricks.com/customers/maya"}]},
+{"n":"Predictive Maintenance","s":"Manufacturing","ic":"iot","long":"Component failure predicted from historian and vibration signals before the line stops.","problem":"Failures surface only when a line stops, and the historian and vibration signals that would have warned days earlier sit unused in a plant historian nobody queries.","who":"Maintenance & Reliability","how":"Historian and vibration signals feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Maintenance Hub before the line stops.","comps":["Maintenance Hub","AVEVA PI System","Model Serving","MLflow","Lakehouse//RT"],"stories":[{"t":"Rolls-Royce keeps their engines running with data intelligence","u":"https://www.databricks.com/customers/rolls-royce"},{"t":"What is predictive maintenance on the Databricks platform","u":"https://www.databricks.com/blog/what-is-predictive-maintenance"}]},
+{"n":"Claims Automation","s":"Insurance","ic":"gauge","long":"Straight-through processing of low-complexity claims with severity scoring and next-best-action, so adjusters spend their time on the claims that need them.","problem":"Claims arrive as FNOL calls, photos, PDFs and telematics across different systems; triaged by hand, simple claims wait behind complex ones and leakage and cycle time run away.","who":"Claims Leadership","how":"Policy, claim and telematics feeds land through Lakeflow; severity is scored in Model Serving and documents parsed with Document Intelligence, and the Claims Command Center on Lakebase drives assignment and reserves.","comps":["Claims Command Center","Guidewire ClaimCenter","AI Functions","Model Serving","Lakebase"],"stories":[{"t":"Smart Claims: automating P&C claims on Databricks","u":"https://www.databricks.com/solutions/accelerators/smart-claims-for-insurance"},{"t":"Smart Claims end-to-end processing demo","u":"https://www.databricks.com/resources/demos/tutorials/lakehouse-platform/dbdemos-fsi-smart-claims"}]},
+{"n":"Route Optimization","s":"Transport & Logistics","ic":"sheet","long":"Multi-stop routes optimised for miles, HOS and appointment windows.","problem":"Multi-stop routes are built by hand against static maps, so miles, driver-hour limits and appointment windows never line up and every re-plan after a disruption is slow guesswork.","who":"Transportation Ops","how":"TMS orders land through Lakeflow onto Delta Lake, distance and time matrices are built with Apache Spark, and optimised stop sequences are scored in Model Serving and pushed to the Control Tower.","comps":["Control Tower","Oracle OTM","Apache Spark","Model Serving","Delta Lake"],"stories":[{"t":"Scalable Route Generation solution accelerator","u":"https://www.databricks.com/solutions/accelerators/scalable-route-generation"},{"t":"iFood tests business hypotheses with Databricks and Tableau","u":"https://www.databricks.com/customers/ifood"},{"t":"Cleanaway optimises its collection fleet with Databricks","u":"https://www.databricks.com/customers/cleanaway"}]},
+{"n":"Readmission Reduction","s":"Healthcare","ic":"people","long":"Discharge risk scored and interventions triggered before the 30-day window opens.","problem":"Discharge decisions are made without knowing who will bounce back, and the clinical, social and utilisation signals that predict a readmission sit in systems that never meet.","who":"Population Health","how":"Encounter and history features in Feature Store feed readmission models scored at discharge in Model Serving, ranking risk in the Population Health Registry for outreach.","comps":["Population Health Registry","Model Serving","MLflow","Feature Store","Epic Caboodle"],"stories":[{"t":"Reducing referral leakage and readmissions with Databricks Genie","u":"https://www.databricks.com/blog/transforming-healthcare-referrals-fivetran-agentic-ai-and-databricks-genie"}]},
+{"n":"Yield Excursion Detection","s":"Semiconductors","ic":"chart","long":"Detecting yield loss by layer, tool and product before wafers complete the route.","problem":"A yield excursion can ruin whole lots before anyone sees it, yet defect, parametric and tool data sit apart, so root cause takes weeks and the loss compounds shift after shift.","who":"Yield Engineering","how":"SECS/GEM, MES and ATE feeds land in Lakehouse//RT and correlate on Delta Lake; excursion models score in Model Serving and surface in the Yield Workbench before a lot is dispositioned.","comps":["Yield Workbench","PDF Solutions Exensio","Lakehouse//RT","Model Serving","Delta Lake"],"stories":[{"t":"Semiconductors on the Databricks Data Intelligence Platform","u":"https://www.databricks.com/blog/semiconductors-data-intelligence-platform"}]},
+{"n":"Personalization","s":"E-commerce","ic":"custlake","long":"Product recommendations and content ranked per visitor.","problem":"Every visitor sees the same merchandising, so relevant products stay buried and conversion leaks, and the signals to rank per shopper sit split across web, CRM and order systems.","who":"Growth Marketing","how":"Clickstream and order features are engineered in Feature Store and scored through Model Serving in the storefront path, so recommendations rank per visitor at page latency.","comps":["Model Serving","Feature Store","MLflow","AI Functions","Klaviyo"],"stories":[{"t":"Flaconi delivers real-time recommendations that lift conversion","u":"https://www.databricks.com/customers/flaconi"},{"t":"Myntra powers personalized shopping for 70M monthly users","u":"https://www.databricks.com/customers/myntra"},{"t":"Pandora scales personalized email recommendations across markets","u":"https://www.databricks.com/customers/pandora"}]},
+{"n":"Improper Payments","s":"Public Sector","ic":"gauge","long":"Scoring eligibility, identity and payment signals together so improper and fraudulent payments are prevented, not chased after the money is gone.","problem":"Benefits are optimised to pay quickly, so integrity checks run after the money is out the door and improper payments are chased through pay-and-chase rather than prevented.","who":"Program Directors","how":"Eligibility, claims and payment feeds land in Lakehouse//RT; entity resolution and risk models score each claim in Model Serving so high-risk payments are held before disbursement.","comps":["Improper Payment Radar","Lakehouse//RT","Model Serving","Merative Cúram SPM","Unity Catalog"],"stories":[{"t":"Bringing real-time fraud prevention to government benefits","u":"https://www.databricks.com/blog/bringing-real-time-fraud-prevention-government-benefits"},{"t":"Operationalizing AI for public sector fraud prevention","u":"https://www.databricks.com/blog/operationalizing-ai-public-sector-fraud-prevention"}]}
+]},
     ],
   },
 
