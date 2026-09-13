@@ -44,11 +44,11 @@ sources:
             interval: Continuous (engagement events)
       - name: SeatGeek Enterprise
         icon: market
-        summary: Secondary market listings, transfer activity and dynamic pricing signals.
+        summary: Enterprise ticketing listings, transfer activity and resale demand signals.
         citations:
           - seatgeek
-        category: Secondary Ticketing Marketplace
-        what_it_is: Supplies secondary-market listings, transfer activity and dynamic-pricing signals that reveal true demand.
+        category: Enterprise Ticketing Platform
+        what_it_is: Supplies enterprise ticketing listings, transfer activity and resale demand signals as an illustrative feed.
         who_uses_it: Ticketing, Pricing analysts and Yield management teams.
         data_out:
           batch:
@@ -255,8 +255,6 @@ cloud_integrations:
       - name: Rights Holder Metadata
         icon: zplug
         summary: Media rights windows and blackout rules from league partners.
-        citations:
-          - stats-perform
         category: Media Rights Metadata
         what_it_is: Supplies media-rights windows and blackout rules from league partners that govern where content may air.
         who_uses_it: Media rights, Broadcast operations and Legal teams.
@@ -464,8 +462,6 @@ consumers:
       - name: League Revenue Share
         icon: gavel
         summary: Gate and local revenue reports filed to the league.
-        citations:
-          - stats-perform
       - name: Safety Incident Reports
         icon: share
         summary: Crowd and medical incidents documented from governed logs.
@@ -761,10 +757,10 @@ agent_usecases:
       - name: Crowd Safety Analytics
         short: Operations
         icon: gauge
-        summary: Density and ingress patterns flagged before capacity thresholds.
+        summary: Estimated crowd density and developing hotspots flagged as thresholds are approached or exceeded.
         problem: Ingress crushes, density hot-spots and medical incidents are spotted by eye across dozens of cameras, so crews react after a bottleneck has already become a safety risk.
         who_benefits: Game-Day Ops
-        how_built: Access-control and crowd-density feeds stream into Lakehouse//RT and are scored against density thresholds in Model Serving, alerting crews from Game-Day Command before capacity is breached.
+        how_built: Access-control and crowd-density feeds stream into Lakehouse//RT and are scored against density thresholds in Model Serving, alerting venue incident command from Game-Day Command when thresholds are approached or exceeded.
         components:
           - Game-Day Command
           - Genetec Security Center

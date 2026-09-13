@@ -170,7 +170,7 @@ sources:
         citations:
           - clinvar
         category: Variant Reference Database
-        what_it_is: Public references for variant pathogenicity (ClinVar) and population allele frequency (gnomAD) used to annotate and classify called variants.
+        what_it_is: Public annotation references for variant pathogenicity (ClinVar) and population allele frequency (gnomAD) used to annotate and classify called variants, distinct from scoring reference panels, with the gnomAD reference locator not supplied here.
         who_uses_it: Bioinformatics, Variant Scientists and Reference Data Curators.
         data_out:
           batch:
@@ -526,7 +526,7 @@ consumers:
       - name: Pipeline QC Console
         icon: iot
         short: Bioinformatics
-        summary: Run-level QC metrics and pipeline failures surfaced before downstream annotation consumes bad calls.
+        summary: Run-level QC metrics and pipeline failures surfaced before downstream annotation consumes bad calls, with supported-run provenance inspection and reconstruction kept separate from signed-report approval history.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -706,8 +706,6 @@ agent_usecases:
           - COSMIC Cancer DB
           - Unity Catalog
         stories:
-          - title: How Regeneron accelerates genomic discovery and drug-target ID
-            url: https://www.databricks.com/customers/regeneron
           - title: Biogen annotates two million variants in minutes with Databricks
             url: https://www.databricks.com/customers/biogen
       - name: Biomarker Discovery
@@ -765,6 +763,9 @@ agent_usecases:
           - Benchling R&D Cloud
           - Unity Catalog
           - AI Functions
+        stories:
+          - title: How Regeneron accelerates genomic discovery and drug-target ID
+            url: https://www.databricks.com/customers/regeneron
       - name: Single-Cell Analytics
         short: Discovery
         icon: notebook
@@ -786,10 +787,10 @@ agent_usecases:
       - name: Pipeline Reproducibility
         short: Quality
         icon: gavel
-        summary: Every analysis from FASTQ to report traced for CAP, CLIA and FDA inspection.
+        summary: Supported runs traced from FASTQ to report for CAP, CLIA and FDA inspection.
         problem: An inspector can ask how a report was produced years later, but pipeline versions, parameters and reference data are scattered across scripts and servers, so reconstructing a run is painful.
         who_benefits: Regulatory & Quality
-        how_built: Every run is tracked in MLflow and its inputs and outputs versioned on Delta Lake under Unity Catalog, so the Pipeline QC Console can replay any analysis from FASTQ to signed report.
+        how_built: Every run is tracked in MLflow and its inputs and outputs versioned on Delta Lake under Unity Catalog, so the Pipeline QC Console can reconstruct supported runs from FASTQ, with signed-report approval provenance retained separately.
         components:
           - Pipeline QC Console
           - MLflow
@@ -831,10 +832,10 @@ agent_usecases:
       - name: Polygenic Risk Scoring
         short: Prediction
         icon: gauge
-        summary: Genome-wide risk scores computed and validated for disease-predisposition programmes.
+        summary: Genome-wide risk scores computed with versioned weights and applicable-population evaluation for disease-predisposition programmes.
         problem: Polygenic scores depend on many variants, ancestry-matched references and versioned weights, so a score computed in a notebook cannot be reproduced or defended when a programme wants to act on it.
         who_benefits: Bioinformatics
-        how_built: Variant calls are scored against reference panels from gnomAD and dbGaP in Model Serving with weights and runs versioned in MLflow on Delta Lake under Unity Catalog, so polygenic risk scores are reproducible and ancestry-aware.
+        how_built: Variant calls are scored against reference panels from gnomAD and dbGaP in Model Serving with score definitions, weights and runs versioned in MLflow on Delta Lake under Unity Catalog, so polygenic risk scores are reproducible with documented weight provenance and applicable evaluation populations rather than assumed ancestry-awareness.
         components:
           - ClinVar & gnomAD
           - dbGaP Authorised Access
@@ -849,7 +850,7 @@ medallion:
     short: Conformed sample, variant
     summary: Samples, subjects, assays and variant calls resolved into single conformed entities across LIMS, sequencers and analysis pipelines, with sample lineage reconciled from collection through report.
   Gold:
-    short: Actionable clinical biomarkers
+    short: Curated variants and lab metrics
     summary: 'Contracted products clinical and research teams run on: variant classification tiers, trial enrolment biomarker rates, lab turnaround time, and pipeline QC pass rates.'
 citation_index:
   illumina-basespace:

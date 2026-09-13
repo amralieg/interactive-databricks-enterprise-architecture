@@ -590,7 +590,7 @@ consumers:
         summary: Published, contracted result and utilization products discoverable in Unity Catalog Domains.
       - name: Sharing Recipients
         icon: share
-        summary: Hospitals, health plans and registries reading live tables with no copy and no egress duplication.
+        summary: Hospitals, health plans and registries accessing governed result and utilization products, reducing bespoke exports with recipient copies and transfer behavior dependent on the sharing mode.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -788,8 +788,6 @@ agent_usecases:
           - DI Instrument Manager
           - AI/BI
         stories:
-          - title: Kythera Labs builds its business on Spark Declarative Pipelines
-            url: https://www.databricks.com/customers/kythera-labs
           - title: Databricks for Healthcare and Life Sciences
             url: https://www.databricks.com/solutions/industries/healthcare-and-life-sciences
       - name: Digital Pathology AI
@@ -817,7 +815,7 @@ agent_usecases:
         summary: Routine results released automatically against rules and prior-result deltas, so technologists spend their time on the cases that actually need a human.
         problem: Every result queues for manual verification even when it is normal and consistent with history, so technologist time is spent on the routine and the abnormal waits behind it.
         who_benefits: Lab Operations
-        how_built: Analyzer results flow through the middleware into the lakehouse; delta-check and autoverification models score each result in Model Serving so routine results release and only exceptions reach a technologist.
+        how_built: Analyzer results flow through the middleware into the lakehouse; automatic release follows laboratory-approved autoverification rules in the LIS and middleware, with delta-check and model outputs from Model Serving used under that same release policy so routine results release and only exceptions reach a technologist.
         components:
           - DI Instrument Manager
           - Analyzer Data
@@ -892,10 +890,10 @@ agent_usecases:
       - name: Critical Value Alerts
         short: Operations
         icon: stream
-        summary: Critical and life-threatening results detected and routed to the ordering clinician the moment they verify, with acknowledgement closing the loop.
+        summary: Verified critical-threshold results flagged for timely routing to the ordering clinician, with predictive deterioration surfaced as separate review flags and acknowledgement closing the loop.
         problem: Critical values depend on a technologist reaching a clinician by phone, so a life-threatening result can wait in a queue and read-back is hard to evidence.
         who_benefits: Lab Operations
-        how_built: Verified results stream through the interface engine into Lakehouse//RT; critical-value and early-deterioration models score in Model Serving and alerts route to the clinician over FHIR with acknowledgement tracked.
+        how_built: Verified results stream through the interface engine into Lakehouse//RT; critical-threshold breaches raise notifications while early-deterioration models in Model Serving surface separate review flags; results deliver over FHIR to a routing target with an explicit acknowledgement and escalation workflow rather than guaranteed instant delivery.
         components:
           - Rhapsody Engine
           - Lakehouse//RT

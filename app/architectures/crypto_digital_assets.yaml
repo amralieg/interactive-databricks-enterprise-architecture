@@ -139,11 +139,11 @@ sources:
     tiles:
       - name: Fireblocks Custody
         icon: key
-        summary: 'MPC-based wallet infrastructure and transfer policy engine: key shares, whitelists and signed withdrawals, the source of truth for custodied balances and movement.'
+        summary: 'MPC-based wallet infrastructure and transfer policy engine: non-secret key-operation metadata, whitelists and signed-withdrawal records, the source of truth for custodied balances and movement, excluding private keys and MPC key-share material.'
         citations:
           - fireblocks
         category: Digital-Asset Custody (MPC Wallet)
-        what_it_is: MPC-based wallet infrastructure and transfer policy engine carrying key shares, whitelists and signed withdrawals, the source of truth for custodied balances and movement.
+        what_it_is: MPC-based wallet infrastructure and transfer policy engine carrying non-secret key-operation and policy metadata, whitelists and signed-withdrawal records, the source of truth for custodied balances and movement, with private keys and MPC key-share material excluded from ingestion.
         who_uses_it: Custody operations, wallet security and treasury.
         data_out:
           batch:
@@ -387,9 +387,9 @@ cloud_integrations:
             interval: Continuous (real-time)
       - name: Node RPC Streams
         icon: stream
-        summary: Block, mempool and decoded contract events streamed from node and indexer endpoints, landed as governed on-chain tables without bespoke per-chain plumbing.
+        summary: Block, mempool and decoded contract events streamed from node and indexer endpoints into reusable governed on-chain tables, with chain-specific decoding and finality handling.
         category: On-Chain Streaming Feed
-        what_it_is: Block, mempool and decoded contract events streamed from node and indexer endpoints, landed as governed on-chain tables without bespoke per-chain plumbing.
+        what_it_is: Block, mempool and decoded contract events streamed from node and indexer endpoints into reusable governed on-chain tables, with chain-specific decoding and finality handling.
         who_uses_it: Blockchain engineering, trading and surveillance.
         data_out:
           stream:
@@ -417,7 +417,7 @@ pipelines:
     tiles:
       - name: Exec & Finance
         mark: Genie One
-        summary: The CEO on growth against regulatory cost and the trade between listings and risk; the CFO and treasury on liquidity, stablecoin reserves and fiat and crypto exposure; the Chief Risk Officer on counterparty, market and financial-crime risk across the book.
+        summary: The CEO on growth against regulatory cost and the trade between listings and risk; the CFO and treasury on liquidity, stablecoin holdings and fiat and crypto exposure; the Chief Risk Officer on counterparty, market and financial-crime risk across the book.
         uses:
           - - Genie One
             - Ask what the firm's exposure or yesterday's trading revenue was without booking analyst time.
@@ -605,7 +605,7 @@ consumers:
           - notabene
       - name: PoR Attestations
         icon: docs
-        summary: Proof-of-reserves and MiCA-style disclosures produced from reconciled on-chain and ledger balances for clients and auditors.
+        summary: Reserve-reconciliation evidence supporting proof-of-reserves and MiCA-style disclosures, from reconciled on-chain and ledger balances for clients and auditors.
   - name: Data Products
     icon: product
     tiles:
@@ -614,7 +614,7 @@ consumers:
         summary: Published, contracted market, on-chain and risk products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Funds, regulators and partner venues reading live governed tables with no copy and no egress duplication.
+        summary: Funds, regulators and partner venues reading live governed tables through governed sharing that reduces bespoke exports, with materialization and data transfer depending on recipient mode.
       - name: On-Chain Data Sets
         icon: network
         summary: Decoded, enriched on-chain datasets monetised to the wider ecosystem as governed, contracted products.
@@ -632,7 +632,7 @@ consumers:
       - name: Custody Control
         icon: key
         short: Balances & keys
-        summary: Wallet balances, key operations and withdrawal approvals reconciled to the ledger on one governed screen, with proof-of-reserves attestations produced from the same numbers.
+        summary: Wallet balances, key operations and withdrawal approvals reconciled to the ledger on one governed screen, with reserve-reconciliation evidence for the responsible attestation process produced from the same numbers.
       - name: Treasury Cockpit
         icon: market
         short: Liquidity & exposure
@@ -684,7 +684,7 @@ consumers:
         summary: Liquidity, reserves and counterparty exposure across venues and banks.
         kpis:
           - Liquidity buffer
-          - Stablecoin reserves
+          - Stablecoin holdings
           - Counterparty exposure
           - Settlement float
           - Net exposure
@@ -789,7 +789,7 @@ agent_usecases:
           - Chief Risk Officer
         questions:
           - What is our fiat and crypto liquidity across venues and banks?
-          - How much stablecoin reserve backing do we hold right now?
+          - What are our stablecoin holdings and redemption exposure right now?
           - Which counterparties carry the largest exposure today?
           - What settlement float is expected before the next window?
           - What was net trading revenue yesterday across the book?
@@ -822,7 +822,7 @@ agent_usecases:
         summary: Scoring deposits, withdrawals and logins inline for fraud and account takeover, with sub-second features computed on live transaction data.
         problem: Crypto fraud and account takeover move in seconds and are irreversible once a withdrawal confirms; microbatch feature pipelines add latency that costs accuracy and money.
         who_benefits: Risk & Fraud
-        how_built: Transaction and login events stream into Lakehouse//RT; features from Feature Store are scored through Model Serving in milliseconds behind the withdrawal path.
+        how_built: Transaction and login events stream into Lakehouse//RT; features from Feature Store are scored through Model Serving, with millisecond scoring as the design target behind the withdrawal path.
         components:
           - Model Serving
           - Feature Store
@@ -905,10 +905,10 @@ agent_usecases:
       - name: Proof of Reserves
         short: Custody assurance
         icon: key
-        summary: Reconciling on-chain wallet balances to the internal ledger and attesting holdings to clients, auditors and regulators from governed data.
+        summary: Reconciling on-chain wallet balances to the internal ledger to produce reserve evidence supporting attestations to clients, auditors and regulators.
         problem: After exchange collapses, clients and regulators demand provable reserves, but on-chain balances and the internal ledger live in separate systems reconciled by hand.
         who_benefits: Custody Ops
-        how_built: On-chain balances from custody wallets and Core Ledger postings are reconciled in Lakehouse//RT; the Custody Control app produces governed, audited proof-of-reserves attestations.
+        how_built: On-chain balances from custody wallets and Core Ledger postings are reconciled in Lakehouse//RT; the Custody Control app produces reserve-reconciliation evidence, stating the asset and liability coverage basis, that supports the separate attestation process.
         components:
           - Custody Control
           - Fireblocks Custody
@@ -918,7 +918,7 @@ agent_usecases:
       - name: Treasury & Settlement
         short: Liquidity
         icon: db
-        summary: Managing fiat and crypto liquidity, stablecoin reserves and settlement exposure across venues, banks and custodians in near real time.
+        summary: Managing fiat and crypto liquidity, stablecoin holdings and redemption exposure, and settlement exposure across venues, banks and custodians in near real time.
         problem: Liquidity and settlement exposure sit across exchanges, banks, stablecoins and custodians; treasury sees it too late to move funds before a shortfall or a stuck settlement.
         who_benefits: Exec & Finance
         how_built: Ledger, custody and settlement feeds are conformed to Gold; exposure and liquidity are surfaced in the Treasury Cockpit with Genie and AI/BI on certified Metric Views.
@@ -969,7 +969,7 @@ medallion:
     summary: Wallets, addresses, tokens, customers and trades resolved into single conformed entities across the on-chain, exchange and custody estates, chain reorganisations reconciled, token contracts decoded, and internal accounts stitched to the on-chain addresses they control.
   Gold:
     short: Risk, liquidity, compliance
-    summary: 'Contracted products the trading, risk and compliance teams run on: real-time risk and counterparty exposure, order-book depth and liquidity, wallet and transaction risk scores, proof-of-reserves attestations, and regulator-ready AML and market-surveillance reporting.'
+    summary: 'Contracted products the trading, risk and compliance teams run on: real-time risk and counterparty exposure, order-book depth and liquidity, wallet and transaction risk scores, reserve-reconciliation evidence for attestations, and regulator-ready AML and market-surveillance reporting.'
 citation_index:
   alchemy:
     title: Alchemy blockchain node infrastructure

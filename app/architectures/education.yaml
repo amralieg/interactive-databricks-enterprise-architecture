@@ -1,5 +1,5 @@
 name: Education
-description: 'Higher education and K-12: student lifecycle from inquiry through alumni, learning outcomes, financial aid, and campus operations.'
+description: 'Higher-education-led with selected K-12 variants: student lifecycle from inquiry through alumni, learning outcomes, financial aid, and campus operations.'
 sources:
   - name: Student Information
     icon: erp
@@ -466,7 +466,7 @@ consumers:
           - ellucian-banner
       - name: Canvas Grade Passback
         icon: notebook
-        summary: Final grades and outcome mastery pushed to the LMS of record after faculty approval.
+        summary: Final grades and outcome mastery pushed to the LMS of record after faculty approval, with the SIS retaining authority for the official transcript.
         citations:
           - canvas-lms
       - name: Advising Mobile
@@ -493,7 +493,7 @@ consumers:
     tiles:
       - name: IPEDS & Federal Reporting
         icon: gavel
-        summary: IPEDS, Clery and financial responsibility metrics produced from the same governed tables the institution runs on.
+        summary: IPEDS, Clery and financial-responsibility metrics, each produced under its own reporting regime, from the same governed tables the institution runs on.
         citations:
           - ipeds
       - name: FERPA Audit Trail
@@ -507,7 +507,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Consortia, researchers and state agencies reading live tables with no copy and no egress duplication.
+        summary: Consortia, researchers and state agencies accessing governed products, reducing bespoke exports with copies and transfer behavior dependent on the sharing mode.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -522,7 +522,7 @@ consumers:
       - name: Course Demand Planner
         icon: sheet
         short: Section planning
-        summary: Historical fill and waitlist patterns scored against instructional capacity before the schedule locks.
+        summary: Historical fill and waitlist patterns scored against instructional capacity, with headcount, housing and staffing scenarios, before the schedule locks.
       - name: Aid Packaging Workbench
         icon: market
         short: Award decisions
@@ -798,7 +798,7 @@ agent_usecases:
         summary: Learning outcomes and employment metrics produced from governed tables accreditors can trace.
         problem: Accreditors want learning-outcome and employment evidence traced to source, but the metrics are rebuilt by hand each cycle from spreadsheets no one can audit back to the record.
         who_benefits: President & Provost
-        how_built: Outcome and employment data are conformed into governed data products on Delta Lake under Unity Catalog, so accreditation metrics in AI/BI trace to the same tables the institution runs on.
+        how_built: Outcome and institution-held graduate-employment data are conformed into governed data products on Delta Lake under Unity Catalog, so accreditation metrics in AI/BI trace to the same tables the institution runs on.
         components:
           - IPEDS / State Reporting
           - Data Products
@@ -827,7 +827,7 @@ agent_usecases:
         summary: Graduate outcomes and giving propensity scored from the same student record advancement already trusts.
         problem: Advancement works from nightly flat-file extracts of the student record, so graduate outcomes and giving propensity are stale and disconnected from the academic history they depend on.
         who_benefits: President & Provost
-        how_built: The conformed student record feeds giving-propensity models in Model Serving and a graduate-outcome view in Student 360, so advancement reads live segments in AI/BI without a copied file.
+        how_built: The conformed student record, advancement interactions and giving history feed giving-propensity models in Model Serving and a graduate-outcome view in Student 360, so advancement reads live segments in AI/BI without a copied file.
         components:
           - Student 360
           - CustomerLake

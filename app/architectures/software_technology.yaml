@@ -472,7 +472,7 @@ pipelines:
           - - Lakeflow
             - Product, billing and telemetry feeds conformed for analytics.
           - - Entitlement Sync
-            - Access and permission events monitored for drift and abuse.
+            - Outbound plan-limit and feature-flag updates that keep entitlements matching the contract.
           - - MLflow
             - Reliability and anomaly models tracked for audit and reproduction.
         sub:
@@ -618,7 +618,7 @@ consumers:
         summary: Access and change evidence for SOC 2 and ISO 27001 produced from the same governed tables the company runs on.
       - name: Privacy & DSAR
         icon: zshield
-        summary: GDPR and CCPA subject access and deletion requests fulfilled from one governed customer record.
+        summary: GDPR and CCPA subject access and deletion requests anchored on one governed customer record that coordinates discovery across source, derived and downstream systems, with fulfillment through the applicable system workflows.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -900,17 +900,17 @@ agent_usecases:
           - AI Functions
           - Model Serving
         stories:
-          - title: Lumen reaches 35% ticket deflection with GenAI
+          - title: Lumen deflects support tickets with GenAI
             url: https://www.databricks.com/customers/lumen-technologies
           - title: Lippert improves customer support with Agent Bricks
             url: https://www.databricks.com/customers/lippert
       - name: Entitlement Telemetry
         short: Security
         icon: key
-        summary: Access, permission and feature-entitlement events monitored for drift and abuse, so what a customer can reach always matches what they bought.
+        summary: Access, permission and feature-entitlement events monitored against contract and policy state, with authorized corrections when what a customer can reach drifts from what they bought.
         problem: Entitlements drift as plans change and integrations proliferate, and access anomalies hide in event logs no one joins to the contract or the customer record.
         who_benefits: Platform & Security
-        how_built: Access and permission events stream into Lakehouse//RT; anomaly models in Model Serving flag drift and abuse, and corrected limits are pushed back through Entitlement Sync under Unity Catalog.
+        how_built: Access and permission events stream into Lakehouse//RT; anomaly models in Model Serving flag drift and abuse against contract and policy state, and policy-authorized limit corrections are pushed back through Entitlement Sync under Unity Catalog.
         components:
           - Kafka Event Streams
           - Lakehouse//RT

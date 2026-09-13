@@ -720,10 +720,10 @@ agent_usecases:
       - name: On-Shelf Availability
         short: Operations
         icon: iot
-        summary: Gaps detected from POS voids, inventory and shelf vision before customers leave empty-handed.
+        summary: Shelf gaps detected earlier from POS voids, inventory and shelf vision and prioritised for store teams.
         problem: A shelf gap is found only when a customer leaves empty-handed, because POS voids, backroom stock and shelf scans live in separate systems and phantom inventory hides the real out-of-stock.
         who_benefits: Store Operations
-        how_built: POS, inventory and shelf-vision signals stream into Lakehouse//RT and are scored against expected sell-down, so store teams get out-of-stock alerts at shelf level before the customer notices.
+        how_built: POS, inventory and shelf-vision signals stream into Lakehouse//RT and are scored against expected sell-down, so store teams get prioritised out-of-stock alerts at shelf level earlier, ahead of most customer discovery.
         components:
           - Lakehouse//RT
           - Trax Shelf Analytics
@@ -775,7 +775,7 @@ agent_usecases:
         summary: Shift plans aligned to forecast traffic and fresh production workloads.
         problem: Shift plans are built on a fixed template, so registers are overstaffed on a slow morning and the fresh counter is short when a forecast peak and a production run land at the same hour.
         who_benefits: Store Operations
-        how_built: Forecast traffic and fresh-production workload are scored in Model Serving on conformed Delta Lake data, so shift plans are built to demand and published to store screens on Apps.
+        how_built: Forecast traffic and fresh-production workload are scored in Model Serving on conformed Delta Lake data, so shift plans are built to demand while respecting staff availability, skills and scheduling rules, and published to store screens on Apps for manager approval.
         components:
           - Model Serving
           - AI/BI
@@ -785,10 +785,10 @@ agent_usecases:
       - name: E-commerce Substitution
         short: Digital
         icon: partner
-        summary: Pick accuracy and substitution rules tuned from historical customer acceptance.
+        summary: Eligible substitution candidates ranked by predicted acceptance, with pick accuracy tracked as a separate fulfillment measure.
         problem: When a picked item is out, the substitution is a guess, so shoppers get a swap they reject, refunds climb and the store loses the basket and the trust behind the next online order.
         who_benefits: Loyalty & Marketing
-        how_built: Pick, substitution and acceptance history are engineered in Feature Store and scored with Model Serving and AI Functions, so substitution rules are tuned to what each household will actually accept.
+        how_built: Pick, substitution and acceptance history are engineered in Feature Store and scored with Model Serving and AI Functions, so eligible substitution candidates are ranked by predicted household acceptance and item eligibility, with item-picking accuracy measured separately.
         components:
           - Instacart Marketplace
           - Ocado Smart Platform
@@ -829,10 +829,10 @@ agent_usecases:
       - name: Shrink Attribution
         short: Loss prevention
         icon: chart
-        summary: Theft, spoilage and scanning errors separated by department and store pattern.
+        summary: Recorded waste, verified adjustments and unexplained residual shrink distinguished by department and store pattern, with suspected causes ranked for review.
         problem: Shrink shows up as one lump on the P&L, so theft, spoilage and scan errors are impossible to separate and the store never knows which lever, security, process or training, actually moves it.
         who_benefits: CEO & COO
-        how_built: POS, inventory and audit data are conformed on Delta Lake under Unity Catalog and scored in Model Serving, so shrink is split by cause and department and read by store and pattern in AI/BI.
+        how_built: POS, inventory and audit data are conformed on Delta Lake under Unity Catalog and scored in Model Serving, so recorded waste and verified scan adjustments are separated from unexplained residual shrink, with suspected causes ranked by department for store review in AI/BI.
         components:
           - AI/BI
           - Model Serving

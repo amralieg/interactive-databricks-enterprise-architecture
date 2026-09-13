@@ -186,11 +186,11 @@ sources:
             interval: On-demand + daily batch
       - name: Everify I-9
         icon: gavel
-        summary: Employment eligibility verification and audit trail for US placements.
+        summary: E-Verify employment eligibility verification status alongside the employer's I-9 records for US placements.
         citations:
           - everify
         category: Employment Eligibility Verification
-        what_it_is: Performs employment eligibility verification and audit trail for US placements.
+        what_it_is: Provides E-Verify employment eligibility verification status and references the employer's I-9 records and audit trail for US placements.
         who_uses_it: Onboarding, HR and compliance teams.
         data_out:
           batch:
@@ -676,7 +676,7 @@ agent_usecases:
           - Which clients are below target spread this month?
           - Where is margin leaking through missed timecard approvals?
           - What is gross margin by client and skill this quarter?
-          - Which rate cards are out of line with the market benchmark?
+          - Which rate cards are out of line with the market wage benchmark and modeled bill rate?
           - How much did off-cycle adjustments cost us last pay run?
       - name: Workforce Operations Agent
         icon: genie
@@ -757,7 +757,7 @@ agent_usecases:
         short: Compliance
         icon: gavel
         summary: Expiring licences flagged before they block placement or shift.
-        problem: Licences, background checks and I-9s expire quietly across thousands of active placements, and one lapsed credential can pull a worker off a client shift or void a healthcare contract.
+        problem: Licence renewals, background-check status and I-9 completion or reverification each run on different clocks across thousands of active placements, and one missed credential can pull a worker off a client shift or void a healthcare contract.
         who_benefits: Compliance & Risk
         how_built: Credential and licence-board feeds land through Lakeflow and conform under Unity Catalog; expiry rules surface on the Compliance Dashboard so renewals dispatch before a placement is blocked.
         components:
@@ -772,7 +772,7 @@ agent_usecases:
       - name: Overtime Control
         short: Workforce
         icon: stream
-        summary: Overtime hours predicted and capped against client rules.
+        summary: Overtime hours forecast and flagged against client scheduling rules for scheduler action.
         problem: Overtime accrues shift by shift against client-specific rules, and by the time it lands on the invoice the margin on the assignment is already gone and hard to claw back.
         who_benefits: Workforce Operations
         how_built: Timecard and schedule data stream into Lakehouse//RT and feed overtime-forecast models in Model Serving, so the Coverage Console flags at-risk shifts before the hours are worked.
@@ -830,10 +830,10 @@ agent_usecases:
       - name: Rate Benchmarking
         short: Pricing
         icon: chart
-        summary: Bill rates compared to market benchmarks by skill and metro.
+        summary: Pay rates benchmarked against market wages, with indicative bill rates derived from employer costs and target margin by skill and metro.
         problem: Bill and pay rates are set from stale spreadsheets and gut feel, so recruiters lose deals by overpricing scarce skills and leave margin on the table where the market has already moved.
         who_benefits: Recruiting & Sales
-        how_built: Internal placement rates join external market benchmarks under Unity Catalog and serve in AI/BI, so recruiters see market spread by skill and metro inside the Recruiter Workbench.
+        how_built: Internal pay rates join external market wage benchmarks under Unity Catalog and serve in AI/BI, with an indicative bill-rate bridge from employer costs and target margin, so recruiters see market spread by skill and metro inside the Recruiter Workbench.
         components:
           - Recruiter Workbench
           - Lightcast Labour Market

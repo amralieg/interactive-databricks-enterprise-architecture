@@ -25,10 +25,15 @@ const { serve } = require("./lib_serve");
   server.close();
   let bad = 0;
   const short = rows.filter(r => !(r.uc >= 1 && r.genie >= 1 && r.dash >= 1 && r.app >= 1));
+  // S1: assert the exact ten/four contract (not merely non-empty). dash/app keep
+  // their non-empty contract because the reviewed spec fixes only uc=10, genie=4.
+  const wrong = rows.filter(r => r.uc !== 10 || r.genie !== 4);
   rows.forEach(r => { if (!(r.uc && r.genie && r.dash && r.app)) bad++; });
   console.log(`industries scanned: ${rows.length}`);
   console.log(`missing a section (uc/genie/dash/app==0): ${short.length}`);
   short.slice(0, 30).forEach(r => console.log(`  ❌ ${r.id}  uc=${r.uc} genie=${r.genie} dash=${r.dash} app=${r.app}  [${r.sec}]`));
+  console.log(`wrong count (uc!=10 or genie!=4): ${wrong.length}`);
+  wrong.slice(0, 30).forEach(r => console.log(`  ❌ ${r.id}  uc=${r.uc} genie=${r.genie}  [${r.sec}]`));
   // distribution of counts
   const dist = {};
   rows.forEach(r => { const k = `${r.uc}/${r.genie}/${r.dash}/${r.app}`; dist[k] = (dist[k] || 0) + 1; });
@@ -36,5 +41,5 @@ const { serve } = require("./lib_serve");
   Object.entries(dist).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => console.log(`  ${k}: ${v}`));
   console.log("page errors:", errs.length);
   errs.slice(0, 5).forEach(e => console.log("  ! " + e));
-  process.exit(short.length || errs.length ? 1 : 0);
+  process.exit(short.length || wrong.length || errs.length ? 1 : 0);
 })().catch(e => { console.error(e); process.exit(2); });

@@ -261,7 +261,7 @@ cloud_integrations:
     tiles:
       - name: ISO Dispatch Signals
         icon: stream
-        summary: Real-time dispatch, AGC and curtailment instructions from the ISO, streamed in so the plant and traders react at grid latency.
+        summary: Real-time dispatch and, where applicable, AGC and curtailment instructions from the ISO, streamed in so the plant and traders react at grid latency; cadence is market- and service-specific.
         citations:
           - iso
         category: ISO Dispatch & AGC Feed
@@ -568,7 +568,7 @@ consumers:
         kpis:
           - Availability
           - Capacity factor
-          - Heat rate
+          - Heat rate (thermal units)
           - Forced outage rate
           - Start reliability
         teams:
@@ -581,7 +581,7 @@ consumers:
         kpis:
           - Open position
           - Forecast accuracy
-          - Spark/dark spread
+          - Spark spread (dark where applicable)
           - Imbalance cost
           - Ancillary revenue
         teams:
@@ -667,7 +667,7 @@ agent_usecases:
           - Which units have the poorest start reliability this quarter?
       - name: Nuclear & Safety Agent
         icon: genie
-        summary: Answer questions on safety-system margins, equipment reliability and the licensing basis.
+        summary: Answer questions on safety-system margins, equipment reliability and the licensing basis from as-of observational analytics, with licensed systems and engineers authoritative.
         feeds:
           - Framatome Teleperm XS
           - Nuclear Plant Computer
@@ -680,7 +680,7 @@ agent_usecases:
         questions:
           - Which safety-system margins are trending toward their limits?
           - What is equipment reliability on safety-related systems this cycle?
-          - Where are we against technical specifications right now?
+          - Where do observed parameters stand against approved limits as of the latest data?
           - How is fuel-cycle performance tracking against the plan?
           - What is our dose and effluent margin this period?
       - name: Trading & Dispatch Agent
@@ -697,7 +697,7 @@ agent_usecases:
           - Schedulers
         questions:
           - What is our open position by node for tomorrow?
-          - What is the spark and dark spread across the fleet right now?
+          - What is the spark spread across the gas fleet right now, with dark spread only where coal exposure applies?
           - How does forecast generation compare to scheduled volume today?
           - How much imbalance cost did we incur last settlement period?
           - What ancillary revenue have we captured this month?
@@ -763,10 +763,10 @@ agent_usecases:
       - name: Nuclear Safety & Optimization
         short: Nuclear
         icon: zshield
-        summary: Safety-system margins, equipment reliability and fuel-cycle performance monitored so the plant runs to its licensing basis and optimises the cycle within limits.
+        summary: Safety-system margins, equipment reliability and fuel-cycle performance monitored as non-safety observational analytics against approved limits and cycle plans, with licensed systems and engineers authoritative, so the plant runs to its licensing basis and optimises the cycle within limits.
         problem: Safety-parameter, equipment-reliability and fuel-cycle data live in separate I&C and engineering systems, so margin erosion and reliability trends are reconstructed by hand rather than watched continuously against the licensing basis.
         who_benefits: Nuclear & Safety
-        how_built: Teleperm XS and plant-computer signals conform under Unity Catalog with lineage; reliability and margin models tracked in MLflow are scored in Model Serving for reactor engineering and licensing.
+        how_built: Teleperm XS and plant-computer signals conform under Unity Catalog with lineage as non-safety observational data with as-of freshness; reliability and margin models tracked in MLflow are scored in Model Serving for reactor engineering and licensing, which remain authoritative over the licensing basis.
         components:
           - Framatome Teleperm XS
           - Nuclear Plant Computer
@@ -794,7 +794,7 @@ agent_usecases:
       - name: Heat-Rate Optimization
         short: Efficiency
         icon: stream
-        summary: Combustion, steam-cycle and cooling setpoints tuned against live conditions so each unit burns the least fuel per MWh within its operating envelope.
+        summary: Combustion, steam-cycle and cooling setpoints tuned against live conditions so each thermal unit burns the least fuel per MWh within its operating envelope.
         problem: Units run on conservative, static setpoints tuned for the worst case, so heat rate drifts and fuel and carbon are spent holding margins the live conditions do not need.
         who_benefits: Plant Operations
         how_built: DCS and historian telemetry land in Lakehouse//RT; heat-rate models tracked in MLflow score against live load in Model Serving and are delivered as DCS Setpoint Advisories for engineer approval.

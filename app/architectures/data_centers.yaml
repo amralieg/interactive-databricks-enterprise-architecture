@@ -593,7 +593,7 @@ consumers:
         summary: Contracted uptime and service-credit reporting to tenants produced from contracted Gold products rather than reassembled by hand under deadline.
       - name: Audit Evidence
         icon: docs
-        summary: Immutable query and access logs proving who saw what and when, covering facility and tenant audit requirements without extra instrumentation.
+        summary: Immutable query and access logs recording who saw what and when, supporting specified facility and tenant audit controls rather than covering every requirement.
   - name: Sharing & Products
     icon: product
     tiles:
@@ -602,7 +602,7 @@ consumers:
         summary: Published, contracted facility and tenant products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Tenant Data Sharing
         icon: share
-        summary: Live power, uptime and interconnection data shared to each tenant over Delta Sharing with no copy and no egress duplication.
+        summary: Live power, uptime and interconnection data shared to each tenant over Delta Sharing, reducing bespoke exports subject to the recipient's access mode.
       - name: Sharing Recipients
         icon: share
         summary: Partners, utilities and regulators reading live governed tables directly rather than by nightly file exchange.
@@ -793,8 +793,8 @@ agent_usecases:
       - name: Cooling Optimization
         short: Efficiency
         icon: iot
-        summary: Optimising chiller, CRAH and airflow setpoints against live heat load to cut the cooling energy that is a third of a site's power, without leaving the thermal envelope.
-        problem: Cooling runs on static, conservative setpoints tuned for the worst case, so a third of site power is spent holding halls colder than the live heat load actually needs.
+        summary: Optimising chiller, CRAH and airflow setpoints against live heat load to cut the cooling energy that is a material, site-dependent share of a site's power, without leaving the thermal envelope.
+        problem: Cooling runs on static, conservative setpoints tuned for the worst case, so a material, site-dependent share of site power is spent holding halls colder than the live heat load actually needs.
         who_benefits: Facilities Ops
         how_built: BMS, chiller and PDU telemetry lands in Lakehouse//RT; setpoint models tracked in MLflow score against live load in Model Serving and are surfaced as advisories in the Critical Ops Cockpit.
         components:
@@ -881,10 +881,10 @@ agent_usecases:
       - name: Sustainability
         short: Carbon & WUE
         icon: chart
-        summary: Measuring WUE, water and Scope 1-3 carbon across the estate from the same governed telemetry the floor runs on, so disclosure is produced continuously rather than reassembled each quarter.
+        summary: Measuring WUE, water and Scope 1-3 carbon across the estate, combining governed telemetry with water records and applicable non-electricity activity data, so disclosure is produced continuously rather than reassembled each quarter.
         problem: PUE, WUE and carbon are reassembled by hand each reporting cycle from meters, spreadsheets and vendor portals the auditors cannot see into, so disclosures lag the operation by a quarter.
         who_benefits: Sustainability
-        how_built: Meter, BMS and utility feeds are conformed to Gold with lineage in Unity Catalog; PUE, WUE and Scope 1-3 emissions are published as governed Data Products and read in AI/BI.
+        how_built: Meter, BMS and utility feeds are conformed to Gold with lineage in Unity Catalog; water records and applicable fuel, refrigerant and value-chain activity supply WUE and non-electricity emissions within stated organizational and reporting boundaries; PUE, WUE and Scope 1-3 emissions are published as governed Data Products and read in AI/BI.
         components:
           - AI/BI
           - Unity Catalog

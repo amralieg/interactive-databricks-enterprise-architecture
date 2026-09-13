@@ -529,7 +529,7 @@ consumers:
         summary: Jurisdiction filings from governed transaction data.
       - name: PCI Scope Reports
         icon: share
-        summary: Cardholder data environment attestations.
+        summary: Cardholder-data-environment scoping and assessment-evidence support, with attestation remaining the assessor's responsibility.
   - name: Published Products
     icon: product
     tiles:
@@ -545,7 +545,7 @@ consumers:
       - name: Attribution Hub
         icon: chart
         short: Marketing mix
-        summary: Multi-touch attribution across paid, owned and marketplace channels.
+        summary: Multi-touch attributed credit across paid, owned and marketplace channels, distinguished from causal incrementality.
       - name: Pricing Workbench
         icon: market
         short: Elasticity
@@ -553,7 +553,7 @@ consumers:
       - name: Fulfillment Command
         icon: gauge
         short: Delivery SLA
-        summary: Promise vs actual ship and delivery by node and carrier.
+        summary: Freshness-qualified ATP visibility and promise vs actual ship and delivery by node and carrier.
       - name: CX Console
         icon: custlake
         short: Customer health
@@ -661,7 +661,7 @@ agent_usecases:
         questions:
           - What was yesterday's conversion rate by channel?
           - What is blended CAC and LTV-to-CAC by acquisition channel?
-          - Which campaigns drove the most incremental revenue this week?
+          - Which campaigns drove the most attributed revenue, and where does incrementality differ?
           - How is AOV trending across paid, owned and marketplace?
           - What is return on ad spend by channel and campaign?
       - name: Fulfillment & Delivery Agent
@@ -773,10 +773,10 @@ agent_usecases:
       - name: Inventory ATP
         short: Operations
         icon: stream
-        summary: Available-to-promise accurate at add-to-cart.
+        summary: Freshness-qualified available-to-promise visibility at add-to-cart, with OMS holding reservation authority.
         problem: Available-to-promise is computed from a nightly snapshot, so the cart shows stock that is already gone and oversells trigger cancellations, split shipments and refunds.
         who_benefits: Operations
-        how_built: OMS and WMS events stream through Zerobus into Lakehouse//RT, and Fulfillment Command serves an ATP position accurate at add-to-cart across every node.
+        how_built: OMS and WMS events stream through Zerobus into Lakehouse//RT, and Fulfillment Command serves a freshness-qualified ATP position at add-to-cart across nodes, with OMS retaining reservation authority.
         components:
           - Fulfillment Command
           - Lakehouse//RT
@@ -855,15 +855,15 @@ agent_usecases:
           - Klaviyo
           - AI/BI
         stories:
-          - title: Skechers lifts CTR 324% and cuts acquisition cost with segmentation
+          - title: Skechers lifts CTR 324% with customer segmentation and LTV
             url: https://www.databricks.com/customers/skechers
       - name: Agent-to-Agent Transactions
         short: Agentic
         icon: network
-        summary: Machine shoppers and AI agents transacting against governed catalogue and checkout.
+        summary: Machine shoppers and AI agents operating against governed catalogue and delegated checkout, with commerce and payment systems holding order-commitment authority.
         problem: Third-party AI agents are starting to browse, negotiate and buy on a shopper's behalf, but the storefront exposes no governed, real-time interface for them, so the brand loses control of price, stock and the relationship.
         who_benefits: CEO & Growth CFO
-        how_built: Mosaic AI agents expose catalogue, price and available-to-promise from Manhattan Active Omni through governed tools on Databricks Apps and Lakebase, so external agents transact against one governed model with Stripe Payments settling the order.
+        how_built: Mosaic AI agents expose catalogue, price and available-to-promise from Manhattan Active Omni through governed tools on Databricks Apps and Lakebase, so external agents transact against one governed model under delegated checkout authorization, with commerce and payment systems committing the order and Stripe Payments settling it.
         components:
           - Mosaic AI
           - Databricks Apps

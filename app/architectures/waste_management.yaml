@@ -281,8 +281,6 @@ cloud_integrations:
       - name: Recycling Market Indices
         icon: market
         summary: Commodity bale price indices for MRF revenue planning.
-        citations:
-          - machinex
         category: Commodity Price Index Provider
         what_it_is: Commodity bale price indices used to forecast MRF revenue and time bale sales against the market.
         who_uses_it: MRF plant managers, pricing & revenue and sustainability teams.
@@ -549,7 +547,7 @@ consumers:
       - name: Commercial Pricing Hub
         icon: market
         short: Account margin
-        summary: Service pricing and margin by customer segment before renewal.
+        summary: Service pricing, margin, receivables ageing and disposal-payment timing by customer segment before renewal.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -594,7 +592,7 @@ consumers:
           - Pricing & Revenue
       - name: Sustainability & ESG
         icon: aibi
-        summary: Diversion rate, methane emissions, carbon intensity and franchise compliance.
+        summary: Diversion rate, estimated methane emissions, fleet carbon intensity and franchise compliance, distinct from captured landfill gas.
         kpis:
           - Diversion rate
           - Landfill methane
@@ -694,7 +692,7 @@ agent_usecases:
           - Where would a price adjustment most improve margin without raising churn?
       - name: Sustainability & ESG Agent
         icon: genie
-        summary: Ask about diversion, methane and emissions against franchise commitments in plain language.
+        summary: Ask about diversion, estimated methane emissions and fleet-activity carbon against franchise commitments, distinct from gas-capture readings, in plain language.
         feeds:
           - Wastebits Reporting
           - Landfill Gas Monitor
@@ -790,7 +788,7 @@ agent_usecases:
         summary: Recycling contamination, diversion and landfill-gas and fleet emissions tracked together for circular-economy performance and sustainability reporting.
         problem: Contamination downgrades recycling with no feedback to the route, while landfill gas capture and fleet emissions are reported from spreadsheets months late, so circular-economy and carbon commitments cannot be shown live.
         who_benefits: Sustainability
-        how_built: Lift-sensor and MRF camera streams feed contamination vision models in Model Serving with flags written back to the account, and landfill gas and fleet telemetry conform on Delta Lake under Unity Catalog for diversion and emissions evidence in the Diversion Registry.
+        how_built: Lift-sensor and MRF camera streams feed contamination vision models in Model Serving with flags written back to the account, and landfill gas-capture readings and fleet activity with emissions factors conform on Delta Lake under Unity Catalog for diversion and emissions evidence in the Diversion Registry, keeping captured gas distinct from estimated methane emissions.
         components:
           - Diversion Registry
           - Machinex MRF SCADA

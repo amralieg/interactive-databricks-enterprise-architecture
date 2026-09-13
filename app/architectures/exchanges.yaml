@@ -139,7 +139,7 @@ sources:
             interval: Daily + intraday corporate actions
       - name: ANNA DSB ISIN/UPI
         icon: db
-        summary: 'The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the reference every instrument resolves against.'
+        summary: 'The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the reference OTC derivative instruments resolve against.'
         citations:
           - dsb
         category: Instrument Identifier Registry
@@ -319,7 +319,7 @@ cloud_integrations:
     tiles:
       - name: Multicast Feed Bus
         icon: stream
-        summary: Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
+        summary: Captured exchange market-data and order-entry channels (ITCH market data, OUCH order entry and vendor feeds) landed as structured depth, order and trade events.
         citations:
           - itch
         category: Streaming Market Data Bus
@@ -472,7 +472,7 @@ pipelines:
     tiles:
       - name: Feed Engineers
         mark: Lakeflow
-        summary: Capture ITCH and OUCH multicast, OPRA and consolidated-tape feeds and Exegy-style feed handlers off Kafka, curate the depth and trade tables, and keep every tick feed fresh for calculation and distribution.
+        summary: Capture ITCH market-data and OUCH order-entry channels, OPRA and consolidated-tape feeds through feed handlers, curate the depth and trade tables, and keep every tick feed fresh for calculation and distribution.
         uses:
           - - Lakeflow Connect
             - Managed connectors for matching-engine, reference and vendor sources.
@@ -551,7 +551,7 @@ consumers:
     tiles:
       - name: Member Limit Writeback
         icon: db
-        summary: Member credit and position-limit decisions written back into the clearing and membership systems so the answer reaches the risk-control path.
+        summary: Member credit and position-limit decisions written back into the clearing and membership systems, with CCP-owned margin and default decisions conditional on integrated-clearing scope, so the answer reaches the risk-control path.
       - name: Surveillance Cases
         icon: gavel
         summary: Manipulation and abuse alerts pushed to the investigation and disciplinary case queue analysts already work.
@@ -563,7 +563,7 @@ consumers:
     tiles:
       - name: CAT / MiFID Reports
         icon: gavel
-        summary: Consolidated Audit Trail and MiFID order-and-trade reporting produced by the venue from the same governed tables it matches on.
+        summary: Consolidated Audit Trail and MiFID order-and-trade reporting produced by the venue from captured authoritative order and trade records.
         citations:
           - cat
           - mifid
@@ -597,7 +597,7 @@ consumers:
       - name: Surveillance Console
         icon: gavel
         short: Market abuse
-        summary: Manipulation, spoofing and layering alerts triaged with the member's full order and print context in one investigation view, with a case trail a regulator will accept.
+        summary: Manipulation, spoofing and layering alerts triaged with the member's full order and print context in one investigation view, with a case trail that supports regulatory examination.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -634,7 +634,7 @@ consumers:
           - Member margin
           - Position concentration
           - Settlement fails
-          - Default-fund coverage
+          - Default-fund coverage (integrated clearing)
           - Limit breaches
         teams:
           - Clearing & Membership
@@ -705,7 +705,7 @@ agent_usecases:
           - Which gateways are closest to capacity at peak?
       - name: Fees & Listings Agent
         icon: genie
-        summary: Explore fee and rebate revenue, captured order flow and the listing pipeline.
+        summary: Explore fee and rebate revenue, captured order flow, and the listing pipeline grounded in issuer research and pipeline attributes.
         feeds:
           - Venue Revenue Mart
           - Nasdaq Matching
@@ -739,7 +739,7 @@ agent_usecases:
           - Which members have the most settlement fails this week?
       - name: Surveillance & Integrity Agent
         icon: genie
-        summary: Investigate manipulation, cross-venue abuse and order-trail completeness.
+        summary: Investigate manipulation and cross-venue abuse as investigation leads across accessible order and trade evidence.
         feeds:
           - Nasdaq SMARTS
           - CTA/UTP SIP
@@ -814,7 +814,7 @@ agent_usecases:
       - name: Manipulation Detection
         short: Market abuse
         icon: gavel
-        summary: Detecting spoofing, layering, wash trades and momentum ignition across the venue's order flow in real time, with an audit trail and completeness a regulator will accept.
+        summary: Detecting spoofing, layering, wash trades and momentum ignition across the venue's order flow in real time, with an audit trail and completeness that supports a regulatory examination.
         problem: Surveillance runs in a vendor silo with gappy data and end-of-day batches, so spoofing and layering are seen too late, alerts are noisy, and completeness cannot be proven to an examiner.
         who_benefits: Surveil & Integrity
         how_built: Orders, executions and messages are unified in Lakehouse//RT with Unity Catalog completeness checks; detectors and AI Functions score manipulation patterns and cases open in the Surveillance Console.
@@ -832,7 +832,7 @@ agent_usecases:
       - name: Listing Prospects
         short: Listings
         icon: product
-        summary: Identifying companies and issuers likely to list or cross-list from market activity, sector momentum and reference data so the listings team reaches prospects before competitors.
+        summary: Identifying companies and issuers likely to list or cross-list from market activity, sector momentum, issuer research and listing-pipeline attributes so the listings team reaches prospects before competitors.
         problem: The listings team works from manual research and relationships, so timely prospects, cross-listing candidates and at-risk issuers are missed and the pipeline stays thin.
         who_benefits: Listings & Products
         how_built: Market activity, sector and reference data are conformed in the lakehouse; prospect-scoring models and Agent Bricks rank candidates read in AI/BI and Genie.
@@ -848,7 +848,7 @@ agent_usecases:
       - name: Member Credit Monitoring
         short: Member risk
         icon: gauge
-        summary: Monitoring member positions, margin and concentration across the trading day so credit and default risk are seen intraday, not after a member fails.
+        summary: Monitoring member positions, margin and concentration across the trading day so venue credit exposure is seen intraday, while CCP-owned margin and default decisions remain with the clearing house under integrated-clearing scope.
         problem: Member position and margin state lives across clearing and membership systems reconciled in batch, so credit exposure and concentration surface late when a default is expensive.
         who_benefits: Clearing & Membership
         how_built: Member position, margin and clearing feeds are conformed to Gold; credit and concentration models are scored in Model Serving and watched in AI/BI intraday.
@@ -861,7 +861,7 @@ agent_usecases:
       - name: Corporate Actions
         short: Reference
         icon: cdc
-        summary: Ingesting and normalising dividends, splits, mergers and re-organisations and applying them to instruments and member positions so downstream feeds and settlement stay correct.
+        summary: Ingesting and normalising dividends, splits, mergers and re-organisations, applying them to instruments and producing position-impact outputs handed to authoritative clearing and settlement systems so downstream feeds stay correct.
         problem: Corporate actions arrive from many sources in incompatible formats and must be applied point-in-time; a missed split or wrong ex-date silently corrupts prices, positions and member feeds.
         who_benefits: Clearing & Membership
         how_built: SIX and vendor corporate-actions feeds are ingested with Lakeflow and versioned as slowly-changing records in Delta Lake, applied to instruments under Unity Catalog lineage so history is replayable.
@@ -882,7 +882,7 @@ agent_usecases:
         summary: Correlating orders and trades across the venue's own markets and external venues and asset classes so manipulation that spans books and products is detected, not just single-symbol abuse.
         problem: Surveillance runs per market and per asset class, so cross-venue and cross-asset schemes, spoofing in one book to move another, slip through the gaps between siloed systems.
         who_benefits: Surveil & Integrity
-        how_built: Order and trade trails across markets and external feeds are conformed under one instrument identity in Unity Catalog; cross-market detectors and AI Functions score patterns in the Surveillance Console.
+        how_built: Order and trade trails across markets and external feeds are conformed under FIGI and ISIN instrument identity with LEI resolving legal entities in Unity Catalog; cross-market detectors and AI Functions score public market context and available participant-level trails in the Surveillance Console.
         components:
           - Surveillance Console
           - Nasdaq SMARTS
@@ -927,7 +927,7 @@ agent_usecases:
 medallion:
   Bronze:
     short: Raw feeds and messages
-    summary: ITCH and OUCH order-book messages, OPRA and consolidated-tape ticks, matching-engine gateway and latency telemetry, corporate-actions announcements and member position and margin files, landed exactly as received so a print or a quote can always be replayed as it stood.
+    summary: ITCH market-data and OUCH order-entry messages, OPRA and consolidated-tape ticks, matching-engine gateway and latency telemetry, corporate-actions announcements and member position and margin files, landed exactly as received so a print or a quote can always be replayed as it stood.
   Silver:
     short: Conformed books, instruments, members
     summary: Order books, executions, instruments and member positions resolved into single conformed entities across the matching, telemetry and clearing estates, with FIGI, ISIN and LEI identifiers reconciled and every print stitched to one security.

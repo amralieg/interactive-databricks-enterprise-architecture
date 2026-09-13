@@ -735,7 +735,7 @@ agent_usecases:
         stories:
           - title: MissionWired drives strong donor campaigns through predictive data
             url: https://www.databricks.com/customers/missionwired
-          - title: 'Australian Red Cross Lifeblood: 2023 Databricks Data Team Awards'
+          - title: Australian Red Cross Lifeblood boosts blood-donor engagement and donation frequency
             url: https://www.databricks.com/blog/announcing-winners-2023-databricks-data-team-awards
       - name: Grant Compliance
         short: Audit
@@ -803,10 +803,10 @@ agent_usecases:
       - name: Sanctions Screening
         short: Risk
         icon: gavel
-        summary: Donor and vendor matches resolved against watchlists on every gift.
-        problem: Every gift and vendor must clear watchlists, yet manual name matching against sanctions lists is slow and error-prone, leaving the organisation exposed on the matches it misses.
+        summary: Donor and vendor names screened against applicable watchlists, generating candidate matches for review.
+        problem: Applicable screening policy requires donors and vendors to be checked against watchlists, yet manual name matching against sanctions lists is slow and error-prone, leaving the organisation exposed on the matches it misses.
         who_benefits: Grants & Compliance
-        how_built: Donor and vendor records are matched against parsed OFAC lists with AI Functions under Unity Catalog, resolving hits on every gift with a lineage trail for audit.
+        how_built: Donor and vendor records are screened against parsed OFAC and applicable watchlists with AI Functions under Unity Catalog, generating candidate matches resolved through authorized policy or reviewer adjudication with a lineage trail for audit.
         components:
           - OFAC Sanctions Lists
           - AI Functions

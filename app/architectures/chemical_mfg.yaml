@@ -492,7 +492,7 @@ consumers:
     tiles:
       - name: Setpoint Advisor
         icon: gauge
-        summary: Optimized setpoints pushed to DCS within guardrails.
+        summary: Optimized setpoint proposals sent for engineer and DCS approval within guardrails.
       - name: Batch Hold/Release
         icon: gavel
         summary: Quality holds propagated to MES and warehouse.
@@ -711,10 +711,10 @@ agent_usecases:
       - name: Off-Spec Root-Cause
         short: Quality
         icon: gavel
-        summary: Off-spec batches traced to the in-process deviation that caused them, in flight.
+        summary: Off-spec batches ranked against probable in-process contributors from available phase and lab evidence, in flight.
         problem: When a batch goes off-spec, the deviation that caused it is buried across historian, phase and lab records, so root-cause takes days of manual correlation and the same failure repeats on the next run.
         who_benefits: Quality & Regulatory
-        how_built: In-process historian tags conform to batch-and-phase records and feed quality models scored in Model Serving, so the Batch Cockpit flags the driving deviation and its root cause before the run completes.
+        how_built: In-process historian tags conform to batch-and-phase records and feed quality models scored in Model Serving, so the Batch Cockpit ranks probable contributors and flags early quality risk before the run completes.
         components:
           - Batch Cockpit
           - AVEVA PI System
@@ -729,7 +729,7 @@ agent_usecases:
       - name: Golden Batch
         short: Process
         icon: iot
-        summary: Optimal trajectories identified and enforced on new runs.
+        summary: Optimal trajectories identified, recommended and monitored on new runs.
         problem: Two operators run the same recipe and get different yields, yet the best batch's trajectory lives in tribal memory, so no run can be held against what good actually looked like.
         who_benefits: Process Engineering
         how_built: Historian trajectories conform to golden-batch references on Delta Lake, and deviation from the best profile is scored and shown in Golden Batch Analytics so operators steer the run in flight.
@@ -849,7 +849,7 @@ agent_usecases:
       - name: Autonomous Formulation Lab
         short: Formulation
         icon: product
-        summary: Formulations optimized and translated to plant setpoints by a self-driving lab-to-plant loop.
+        summary: Formulations optimized and translated into engineer-approved plant setpoint proposals through bounded lab automation.
         problem: A formulation that works in the lab behaves differently at plant scale, and with lab and plant data apart, recipe control and scale-up are trial and error that burn weeks of reactor time and off-spec material.
         who_benefits: Process Engineering
         how_built: Lab and plant historian data conform to common material and equipment keys, and Mosaic AI models tracked in MLflow propose and rank formulations, turning lab recipes into governed plant setpoints with risk guards before the first run.

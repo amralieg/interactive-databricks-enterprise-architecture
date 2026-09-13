@@ -603,11 +603,11 @@ consumers:
           - Merchant Success
       - name: Treasury & Settlement
         icon: aibi
-        summary: Float, funding and interchange revenue across settlement cycles.
+        summary: Float, funding, issuer interchange revenue and acquirer scheme cost across settlement cycles.
         kpis:
           - Settlement float
           - Funding cost
-          - Interchange revenue
+          - Issuer interchange revenue
           - Liquidity buffer
           - Scheme fee reconciliation
         teams:
@@ -700,7 +700,7 @@ agent_usecases:
           - What is time-to-first-transaction for new signups?
       - name: Settlement & Treasury Agent
         icon: genie
-        summary: Ask about settlement floats, funding and interchange revenue in plain language.
+        summary: Ask about settlement floats, funding, and interchange revenue and cost in plain language.
         feeds:
           - SWIFT ISO 20022
           - Card Network Mart
@@ -711,7 +711,7 @@ agent_usecases:
           - Head of Settlement
         questions:
           - What is our expected settlement float before the next window?
-          - How much interchange revenue did each product generate this month?
+          - How much issuer interchange revenue did each program earn, and what acquirer scheme costs applied this month?
           - Where are scheme fees diverging from reconciliation?
           - What funding do we need before month-end close?
           - How has net interest margin moved with rates this quarter?
@@ -723,10 +723,10 @@ agent_usecases:
       - name: Real-Time Fraud
         short: Authorisation
         icon: gauge
-        summary: Mule and card-testing patterns blocked before settlement funds move.
+        summary: Card-testing and mule patterns scored on authorisation and payout paths for fast action.
         problem: Card-testing and mule networks move funds inside the authorisation window, but rules engines score in isolation and by the time a batch flags the pattern the payout has already settled.
         who_benefits: Risk & Fraud
-        how_built: Authorisation events land in Lakehouse//RT, device and velocity features are read from Lakebase, and Model Serving scores every transaction inside the Fraud Command Centre before funds move.
+        how_built: Authorisation events land in Lakehouse//RT and device and velocity features are read from Lakebase. Model Serving scores authorisation and payout risk, the acquirer enforces declines and holds, and the Fraud Command Centre monitors patterns and initiates authorised action.
         components:
           - Fraud Command Centre
           - Adyen Platform
@@ -747,7 +747,7 @@ agent_usecases:
         summary: Dispute-prone merchants and instruments surfaced before scheme deadlines.
         problem: Disputes surface weeks after the sale, so chargeback-prone merchants and instruments are only caught once scheme fees, fines and write-offs have already hit the acquiring book.
         who_benefits: Risk & Fraud
-        how_built: Adyen dispute and settlement events are conformed on the platform and scored in Model Serving, surfacing at-risk merchants in the Fraud Command Centre before scheme representment deadlines.
+        how_built: Adyen dispute and settlement events are conformed on the platform and scored in Model Serving. At-risk merchants surface in the Fraud Command Centre for representment before scheme deadlines, and remediation feedback goes to merchants to prevent future disputes.
         components:
           - Fraud Command Centre
           - Adyen Platform
@@ -808,7 +808,7 @@ agent_usecases:
       - name: AML Monitoring
         short: Compliance
         icon: gavel
-        summary: Transaction monitoring tuned to reduce false positives without missing SARs.
+        summary: Transaction monitoring tuned to reduce false positives while tracking detection coverage and SAR timeliness.
         problem: Legacy transaction-monitoring rules fire on thresholds, burying analysts under false positives while genuinely suspicious structuring slips through and SAR deadlines are missed.
         who_benefits: Risk & Fraud
         how_built: NICE Actimize alerts and AML Screening signals are enriched and scored in Model Serving, so the Fraud Command Centre ranks true risk on certified data under Unity Catalog lineage.
@@ -845,10 +845,10 @@ agent_usecases:
       - name: Interchange Optimisation
         short: Revenue
         icon: chart
-        summary: MCC and routing choices maximising take rate within scheme rules.
+        summary: Legitimate MCC corrections and rate qualification, issuer revenue separate from acquirer cost.
         problem: Interchange leaks through wrong MCC coding, missed rate qualifications and suboptimal routing, and the scheme mart is too slow and siloed to show where take rate is being lost.
         who_benefits: Finance & Treasury
-        how_built: Settlement and scheme data from the Card Network Mart are modelled in AI/BI as governed Data Products, exposing the MCC and routing choices that lift take rate within scheme rules.
+        how_built: Settlement and scheme data from the Card Network Mart are modelled in AI/BI as governed Data Products, separating issuer interchange revenue from acquirer interchange and scheme cost and exposing legitimate MCC corrections and eligible rate qualification within scheme rules.
         components:
           - Treasury Workbench
           - Card Network Mart
@@ -858,7 +858,7 @@ agent_usecases:
       - name: Transaction Enrichment
         short: Data
         icon: api
-        summary: Raw card and account transactions enriched with clean merchant name, category and logo for every downstream use.
+        summary: Raw card and account transactions enriched with clean merchant name, category and location for every downstream use.
         problem: Raw transaction descriptors are cryptic, so cardholders dispute charges they do not recognise, categorisation is inconsistent and every fraud, lending and insight use case rebuilds the same enrichment.
         who_benefits: Product & Payments
         how_built: Card-network BIN and acquirer transaction feeds conform on Delta Lake under Unity Catalog, and AI Functions resolve clean merchant name, category and location once for every downstream consumer.
@@ -874,7 +874,7 @@ agent_usecases:
         summary: AI agents that transact on a consumer's behalf, authenticated and authorized through governed payment rails.
         problem: Agent-initiated purchases break assumptions built for human checkout, so intent, authorization and spend controls for AI shopping agents have no governed place to run or be audited.
         who_benefits: Product & Payments
-        how_built: Marqeta issuing and Stripe intents are orchestrated by Mosaic AI agents built with Agent Bricks, scored for risk in Model Serving and exposed through Databricks Apps with spend controls under Unity Catalog.
+        how_built: Marqeta issuing and Stripe intents are orchestrated by Mosaic AI agents built with Agent Bricks and scored for risk in Model Serving. Spend controls are enforced by consumer mandates and Marqeta card controls, while Unity Catalog governs and audits agent activity.
         components:
           - Stripe Payments
           - Marqeta Card Issuing

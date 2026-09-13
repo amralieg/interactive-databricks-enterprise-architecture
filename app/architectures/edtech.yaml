@@ -595,7 +595,7 @@ consumers:
     tiles:
       - name: LTI Grade Passback
         icon: reverse
-        summary: Grades and mastery written back into the customer's LMS gradebook over LTI so the score reaches the course the learner works in.
+        summary: Grades and supported mastery representations written back into the customer's LMS gradebook over LTI so the score reaches the course the learner works in.
         citations:
           - oneroster
       - name: CRM Health Writeback
@@ -626,7 +626,7 @@ consumers:
         summary: Access and consent evidence for FERPA and COPPA produced from the same governed tables the product runs on.
       - name: Privacy & DSAR
         icon: zshield
-        summary: GDPR and CCPA subject access and deletion for learners and guardians fulfilled from one governed learner record.
+        summary: GDPR and CCPA subject access and deletion for learners and guardians coordinated across linked learner, guardian and tenant records rather than a single record.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -641,7 +641,7 @@ consumers:
       - name: Outcomes Studio
         icon: chart
         short: Efficacy analytics
-        summary: Where learning scientists and product prove which content, sequence and intervention actually move outcomes, on the same certified metrics the executive team reads.
+        summary: Where learning scientists and product evaluate which content, sequence and intervention move outcomes, with causal estimates conditioned on documented study design, on the same certified metrics the executive team reads.
       - name: Integrity Monitor
         icon: watch
         short: Exam integrity
@@ -754,7 +754,7 @@ agent_usecases:
           - How does engagement differ between free and paid learners?
       - name: Learning Outcomes Agent
         icon: genie
-        summary: Explore mastery, adaptive-path performance and content efficacy across the product.
+        summary: Explore mastery, adaptive-path performance and content efficacy, qualifying control comparisons by study type.
         feeds:
           - xAPI Record Store
           - Instructure Canvas
@@ -790,7 +790,7 @@ agent_usecases:
           - What is the ARR bridge for the quarter so far?
       - name: Trust & Integrity Agent
         icon: genie
-        summary: Ask about exam anomalies, proctoring signals and support deflection.
+        summary: Ask about exam anomalies, proctoring flags, reviewed safety cases, DSAR status and support deflection.
         feeds:
           - Proctorio
           - Zendesk Support
@@ -850,7 +850,7 @@ agent_usecases:
       - name: Content Efficacy
         short: Efficacy
         icon: chart
-        summary: Proving which content, sequence and intervention actually move learning outcomes, measured against a control rather than asserted from a content calendar.
+        summary: Comparing which content, sequence and intervention move learning outcomes against a control, with causal claims conditioned on documented study design and assignment rather than asserted from a content calendar.
         problem: Content is shipped on intuition and refreshed on a calendar, while the evidence of what actually teaches sits unjoined across engagement, assessment and outcome data.
         who_benefits: Learning Science
         how_built: Engagement and outcome events are conformed to certified Metric Views; efficacy is measured in AI/BI from the Outcomes Studio on one definition of mastery under Unity Catalog.

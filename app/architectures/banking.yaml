@@ -436,7 +436,7 @@ pipelines:
           - - MLflow
             - Every PD and fraud model tracked for audit and reproduction.
           - - Model Serving
-            - Fraud and PD models scored in the authorization path.
+            - Fraud models scored in the authorization path; PD models scored in lending, monitoring and stress workflows.
         sub:
           - name: Credit Risk Modelers
             cares: PD, LGD and early-warning models that hold through a rate cycle.
@@ -726,10 +726,10 @@ agent_usecases:
       - name: Real-Time Fraud
         short: Payments
         icon: gavel
-        summary: Authorization decisions scored before funds leave the account.
+        summary: Fraud scores returned to the authorization switch within its configured decision budget.
         problem: A stolen card or account is drained in the seconds between swipe and settlement, and overnight batch fraud checks only tell you how much you lost after the money is gone.
         who_benefits: Risk & Compliance
-        how_built: Authorization messages land in Lakehouse//RT, fraud models in Model Serving score transaction features within the authorization window, and a decline returns before funds leave the account.
+        how_built: Authorization messages land in Lakehouse//RT, fraud models in Model Serving score transaction features within the authorization window, and a fraud score or decision returns to the authorization switch within its configured decision budget.
         components:
           - Visa DPS / Auth
           - Lakehouse//RT
@@ -814,7 +814,7 @@ agent_usecases:
       - name: CECL & CCAR Stress Testing
         short: Capital
         icon: gauge
-        summary: Expected credit loss and capital adequacy modelled under supervisory stress scenarios.
+        summary: Expected credit loss and capital adequacy modelled under supervisory stress scenarios, with CECL and CCAR as applicable US-regime examples.
         problem: CECL provisioning and CCAR stress runs are stitched from risk, finance and market extracts each cycle, so scenarios take weeks, assumptions are hard to reproduce and the capital story is fragile under examiner scrutiny.
         who_benefits: Chief Credit Officer & CFO
         how_built: Exposure, rating and macro feeds conform on Delta Lake under Unity Catalog, loss and pre-provision models tracked in MLflow run in Model Serving, and scenario results are certified for Nasdaq AxiomSL Reg Reporting and AI/BI.

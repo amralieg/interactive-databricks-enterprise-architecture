@@ -480,7 +480,7 @@ consumers:
     tiles:
       - name: EDI 852/867
         icon: api
-        summary: Store-level inventory and consumption to retailers.
+        summary: Retailer store-level inventory and consumption inbound, with derived insights shared back.
         citations:
           - nielseniq
       - name: Retailer Portals
@@ -516,7 +516,7 @@ consumers:
     tiles:
       - name: Nutrition Labeling
         icon: gavel
-        summary: Label compliance tracked from recipe to package.
+        summary: Label compliance tracked from recipe to package for food and beverage variants.
       - name: ESG Packaging Reports
         icon: share
         summary: Recycled content disclosures to retailers.
@@ -539,11 +539,11 @@ consumers:
       - name: Consensus Forecast
         icon: sheet
         short: Demand planning
-        summary: Statistical, sales and finance inputs merged into one plan.
+        summary: Statistical, sales, finance and external o9 forecast inputs merged into one plan.
       - name: Promo ROI Analyzer
         icon: chart
         short: Trade spend
-        summary: Lift, incrementality and payback by event and retailer.
+        summary: Lift, estimated incrementality and payback by event and retailer.
       - name: Supply Command
         icon: gauge
         short: Service levels
@@ -598,7 +598,7 @@ consumers:
           - On-shelf availability
           - Distribution voids
           - Chargeback recovery
-          - Retail-media ROAS
+          - Attributed retail-media ROAS
         teams:
           - Sales & Accounts
           - Trade Marketing
@@ -732,10 +732,10 @@ agent_usecases:
       - name: Trade Promotion ROI
         short: Marketing
         icon: partner
-        summary: Promo events evaluated on true incrementality.
+        summary: Promo events evaluated on estimated incrementality.
         problem: Trade spend is the second-largest line on the P&L, yet promo results are judged on gross lift, so teams keep funding events that simply pulled forward volume they would have sold anyway.
         who_benefits: Trade Marketing
-        how_built: Promo calendars, shipments and syndicated scan are conformed on Delta Lake and decomposed with Model Serving, so the Promo ROI Analyzer shows true incrementality on certified AI/BI views.
+        how_built: Promo calendars, shipments and syndicated scan are conformed on Delta Lake and decomposed with Model Serving, so the Promo ROI Analyzer shows estimated incrementality against a modeled baseline on certified AI/BI views.
         components:
           - Promo ROI Analyzer
           - SAP TPM
@@ -753,7 +753,7 @@ agent_usecases:
         summary: First-party consumer identities unified into one governed profile.
         problem: D2C sites, loyalty programs and household panels each hold a slice of the consumer, so the same person is counted many times and the brand never sees a single, consented view to activate on.
         who_benefits: Brand & Category
-        how_built: Household-panel data from Circana Liquid Data and field CRM from Salesforce Consumer Goods are conformed on Delta Lake under Unity Catalog into governed Data Products, resolving one consented consumer profile brand teams activate without copying data off-platform.
+        how_built: First-party D2C and loyalty records with consent history are resolved on Delta Lake under Unity Catalog into governed Data Products, giving one consented consumer profile brand teams activate to authorized destinations; Circana household panels enrich segments at household level rather than proving identity.
         components:
           - Delta Lake
           - Unity Catalog
@@ -766,7 +766,7 @@ agent_usecases:
         summary: Households clustered by behaviour to target activation and innovation.
         problem: Brands market to broad demographics because behavioural segments live in agency decks and one-off studies, so activation, assortment and innovation all aim at an average shopper who does not exist.
         who_benefits: Trade Marketing
-        how_built: Household-panel and consumption data from Circana Liquid Data and NielsenIQ Connect feed clustering features in Feature Store scored in Model Serving, so governed shopper segments surface in AI/BI for activation.
+        how_built: Household-panel and consumption data from Circana Liquid Data and NielsenIQ Connect feed clustering features in Feature Store scored in Model Serving, so governed household segments surface in AI/BI for permitted audience activation.
         components:
           - Circana Liquid Data
           - NielsenIQ Connect
@@ -795,7 +795,7 @@ agent_usecases:
         summary: Retail media spend tied to sell-through outcomes.
         problem: Retail media budgets grow every year, but spend on retailer platforms is reported in each retailer's walled garden, so nobody can tie an impression to real sell-through and true return.
         who_benefits: Trade Marketing
-        how_built: Retail media data from Amazon Vendor Central and Instacart Ads & Data is conformed on Delta Lake and joined to sell-through, so ROAS and incremental sales surface in AI/BI and Model Serving.
+        how_built: Advertising measurement data from Instacart Ads & Data is conformed on Delta Lake and joined to sell-through, so attributed ROAS and estimated incremental sales are distinguished in AI/BI and Model Serving, with Amazon Vendor Central supplying purchase-order and traffic context.
         components:
           - Instacart Ads & Data
           - Amazon Vendor Central
@@ -810,10 +810,10 @@ agent_usecases:
       - name: Joint Demand Planning
         short: Collaboration
         icon: share
-        summary: Retailer POS shared into one collaborative forecast without copying data.
+        summary: Retailer POS shared into one collaborative forecast through governed access.
         problem: Retailers hold the real sell-out signal but share it as late spreadsheets, so the manufacturer plans on shipments that lag true demand and both sides carry the cost of the gap.
         who_benefits: Demand Planning
-        how_built: Retailer POS is shared live through Delta Sharing into the Consensus Forecast, so joint forecasts run on governed sell-out without either side copying the other's data, with o9 Demand Planning models scored in Model Serving.
+        how_built: Retailer POS is shared through Delta Sharing into the Consensus Forecast, so joint forecasts run on governed sell-out with governed access that reduces bespoke extracts, consuming o9 Demand Planning forecast outputs rather than porting its models.
         components:
           - Consensus Forecast
           - Delta Sharing
@@ -839,7 +839,7 @@ agent_usecases:
         summary: An internal assistant answering brand, promo and supply questions from governed data.
         problem: Analysts and field reps lose hours hunting across syndicated reports, promo systems and planning tools for answers, and the knowledge walks out the door when an expert leaves.
         who_benefits: Sales & Accounts
-        how_built: Mosaic AI agents grounded in Genie answer natural-language questions over governed share, promo and supply Data Products, so any employee gets a cited answer without waiting on an analyst.
+        how_built: Mosaic AI agents grounded in Genie answer natural-language questions over governed share, promo and supply Data Products, so authorized employees get a cited answer without waiting on an analyst.
         components:
           - Mosaic AI
           - Genie

@@ -208,11 +208,11 @@ sources:
     tiles:
       - name: Higg Index MSI
         icon: gavel
-        summary: Material sustainability scores and facility social audits.
+        summary: Material sustainability impact scores, with facility disclosures and social-audit records tracked as a separate input class.
         citations:
           - higg
         category: Sustainability Scoring Platform
-        what_it_is: Supplies material sustainability scores and facility social audits used to score styles and factories on ESG.
+        what_it_is: Supplies material sustainability impact scores used to score styles; facility disclosures and social-audit records are a separate input class rather than the same product.
         who_uses_it: Sourcing, Sustainability and Compliance teams.
         data_out:
           batch:
@@ -490,7 +490,7 @@ consumers:
     tiles:
       - name: EDI 850/856 ASN
         icon: api
-        summary: Wholesale orders and advance ship notices to department store partners.
+        summary: Inbound retailer EDI 850 purchase orders received and outbound EDI 856 shipment notices sent, linked to shipment and routing-compliance evidence for deduction reconciliation.
       - name: Endless Aisle API
         icon: partner
         summary: Store lookups against central inventory for clienteling.
@@ -787,10 +787,10 @@ agent_usecases:
       - name: Sustainable Sourcing
         short: ESG
         icon: gavel
-        summary: Preferred materials and audited factories scored at style level.
+        summary: Preferred materials and factory disclosures scored at style level, with audit status reserved for linked audit evidence.
         problem: Buyers pick materials and factories with no live view of sustainability scores or audit status, so ESG claims and due-diligence rules are reconciled after the buy instead of shaping it.
         who_benefits: Sourcing & Production
-        how_built: Higg material scores and factory disclosures are conformed under Unity Catalog and joined to style records, scored at style level and read in AI/BI so sourcing sees the ESG picture before commitment.
+        how_built: Higg material-impact scores and factory disclosures are conformed under Unity Catalog and joined to style records, scored at style level and read in AI/BI, keeping material impact, disclosures and separately evidenced audit status distinct so sourcing sees the ESG picture before commitment.
         components:
           - Higg Index MSI
           - Open Supply Hub
@@ -849,7 +849,7 @@ agent_usecases:
         summary: Physical samples replaced by digital fit approval.
         problem: Every style spins up multiple physical protos shipped between design and factories, adding weeks and cost to the calendar and a material footprint the sustainability targets can no longer absorb.
         who_benefits: Sourcing & Production
-        how_built: 3D samples and material libraries from CLO 3D and Adobe Substance are governed as assets under Unity Catalog beside PLM style records, so fit is approved digitally before a physical proto is cut.
+        how_built: Designers evaluate digital fit in CLO 3D and record approvals in Centric PLM, with Unity Catalog linking versioned 3D and material assets from CLO 3D and Adobe Substance to the evidence, so fewer physical protos are cut.
         components:
           - CLO 3D
           - Adobe Substance

@@ -494,9 +494,7 @@ consumers:
     tiles:
       - name: FCC / Ofcom Filing
         icon: gavel
-        summary: Children's programming, political and sponsorship disclosures filed from governed as-run logs.
-        citations:
-          - scte35
+        summary: Children's programming, political and sponsorship disclosures prepared and reviewed under applicable FCC or Ofcom requirements from governed as-run logs.
       - name: Music Rights Reporting
         icon: share
         summary: Performance and mechanical usage reported to PROs from contracted Gold products.
@@ -808,7 +806,7 @@ agent_usecases:
           - Brightcove
           - AI Functions
         stories:
-          - title: Viacom18 personalizes viewing for 600M+ viewers
+          - title: Viacom18 personalizes viewing on the Databricks platform
             url: https://www.databricks.com/customers/viacom18
           - title: Personalization strategies for media companies
             url: https://www.databricks.com/blog/personalization-strategies-for-media
@@ -842,7 +840,7 @@ agent_usecases:
         short: Monetization
         icon: share
         summary: Content, rights and audience data packaged as governed products for licensees and partners.
-        problem: Licensing and syndication run on emailed spreadsheets and one-off extracts, so rights holders and platform partners get stale data and the publisher cannot see or price the value of its own catalogue and audience.
+        problem: Licensing and syndication run on emailed spreadsheets and one-off extracts, so rights holders and platform partners get stale data and the publisher cannot package or monetize its own catalogue and audience as governed data products.
         who_benefits: Network & Studio Chiefs
         how_built: Rights, viewing and audience data are conformed under Unity Catalog and published as governed Data Products shared to licensees and partners over Delta Sharing, with consumption read in AI/BI.
         components:

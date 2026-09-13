@@ -597,7 +597,7 @@ consumers:
           - Reliability Engineer
       - name: Finance & Working Capital
         icon: aibi
-        summary: Program margin, inventory turns, cash conversion and the close across plants.
+        summary: Program margin, inventory turns, cash conversion and receivables aging across plants.
         kpis:
           - Program margin
           - Inventory turns
@@ -712,7 +712,7 @@ agent_usecases:
           - Where is cash tied up across inventory and receivables right now?
           - What is our cash conversion cycle versus target by plant?
           - Which orders are at risk of missing their promised date?
-          - How is the close tracking against the calendar this period?
+          - Which receivables are aging past terms across the machine business?
   - name: Business Use Cases
     icon: ztarget
     span: 8
@@ -851,7 +851,7 @@ agent_usecases:
         summary: Structural, hydraulic and thermal design-space explored with simulation and surrogate models before metal is cut and a prototype is built.
         problem: Each design iteration waits on a full CAE run and a physical prototype, so structural, hydraulic and thermal trade-offs are explored slowly and late, and the design that would cut weight, cost and warranty is never fully searched.
         who_benefits: Engineering & Programs
-        how_built: Teamcenter and Windchill design data and connected-asset field telemetry conform on Delta Lake; surrogate models tracked in MLflow and served through Model Serving explore the design-space so trade-offs are proven virtually before build.
+        how_built: Teamcenter and Windchill design data and connected-asset field telemetry conform on Delta Lake; surrogate models tracked in MLflow and served through Model Serving explore the design-space so structural, hydraulic and thermal trade-offs are estimated and compared for engineering review, with surrogate inputs including PLM-linked simulation and test evidence.
         components:
           - Siemens Teamcenter
           - PTC Windchill

@@ -579,7 +579,7 @@ consumers:
     tiles:
       - name: OMS / EMS Writeback
         icon: db
-        summary: Target positions, orders and restrictions written back into ION Fidessa and Broadridge so the decision reaches the trading path.
+        summary: Orders and trading restrictions written back into ION Fidessa, while settlement and books-and-records updates return to Broadridge, so each decision reaches the right path.
       - name: Risk Limit Writeback
         icon: gauge
         summary: Updated limits and exposure flags pushed back into the risk and OMS systems the desk trades against.
@@ -606,7 +606,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Allocators, administrators and partners reading live tables with no copy and no egress duplication.
+        summary: Allocators, administrators and partners reading live tables through governed sharing that reduces separately maintained extracts.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -842,7 +842,7 @@ agent_usecases:
       - name: Surveillance & Conduct
         short: Conduct
         icon: gavel
-        summary: Detecting spoofing, layering, wash trades and off-channel conduct across orders, executions and communications, with an audit trail a regulator will accept.
+        summary: Detecting spoofing, layering, wash trades and off-channel conduct across captured orders, executions and communications, with an audit trail that supports regulatory examination.
         problem: Surveillance and e-comms conduct run across siloed vendor systems with gappy data, so alerts are noisy, investigations are slow, and completeness cannot be proven to an examiner.
         who_benefits: Compliance & Surveil
         how_built: Orders, executions and communications are unified in the lakehouse with Unity Catalog completeness checks; detectors and AI Functions score patterns and cases open in the Surveillance Console.
@@ -894,7 +894,7 @@ agent_usecases:
       - name: Regulatory Reporting
         short: Reporting
         icon: gavel
-        summary: Producing MiFID II, CAT, EMIR and transaction reports from the same governed data the firm trades on, complete and on time.
+        summary: Producing MiFID II, CAT, EMIR and transaction reports from the same governed data the firm trades on, targeting complete, on-time submissions under applicable regimes.
         problem: Regulatory reports are assembled from reconciled extracts under deadline, so late fixes and re-submissions are routine and lineage back to the source is hard to prove.
         who_benefits: Compliance & Surveil
         how_built: Trade, order and reference data are conformed to Gold with Unity Catalog lineage; MiFID II and CAT submissions are generated and filed from contracted products with a full audit trail.

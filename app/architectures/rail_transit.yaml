@@ -395,7 +395,7 @@ pipelines:
           - Energy & Traction Opt
       - name: Revenue & Fares
         mark: AI/BI
-        summary: Revenue and ridership teams on farebox recovery, demand and fares; fare collection teams on AFC integrity, reconciliation and revenue protection.
+        summary: Revenue and ridership teams on farebox recovery, demand and fares including freight lane and tonnage planning; fare collection teams on AFC integrity, reconciliation and revenue protection.
         uses:
           - - Ridership Studio
             - Ridership, origin-destination demand and farebox recovery on certified definitions.
@@ -538,7 +538,7 @@ consumers:
           - maximo
       - name: Dispatch Writeback
         icon: db
-        summary: Recovery and movement decisions written back into the dispatch and TMS estate so the answer reaches the controller's screen.
+        summary: Controller-approved recovery and movement plans written back into the incumbent dispatch and TMS estate, which retains movement authority, so the answer reaches the controller's screen.
       - name: Crew & Field Mobile
         icon: apps
         summary: Roster changes, standby calls and inspection tasks pushed to the devices crew and field teams actually carry.
@@ -576,7 +576,7 @@ consumers:
       - name: Ridership Studio
         icon: market
         short: Demand & revenue
-        summary: Where revenue and ridership analysts see origin-destination demand, farebox recovery and the revenue at risk on a line before a service or fare change.
+        summary: Where revenue and ridership analysts see origin-destination demand, freight lane and tonnage forecasts, farebox recovery and the revenue at risk on a line before a service or fare change.
       - name: Safety Insights
         icon: gavel
         short: Safety & compliance
@@ -612,11 +612,12 @@ consumers:
           - Maintenance planning
       - name: Ridership & Farebox
         icon: aibi
-        summary: Ridership, origin-destination demand and farebox recovery by line.
+        summary: Ridership, origin-destination demand and farebox recovery by line, with a freight lane and tonnage demand view.
         kpis:
           - Ridership
           - Origin-destination demand
           - Farebox recovery
+          - Freight lane and tonnage demand
           - Load factor
           - Fare revenue
         teams:
@@ -707,7 +708,7 @@ agent_usecases:
           - Which wayside detector alarms have not yet been actioned?
       - name: Ridership & Revenue Agent
         icon: genie
-        summary: Grow ridership, origin-destination demand and farebox recovery.
+        summary: Grow ridership, origin-destination demand and farebox recovery, with a freight lane and tonnage demand variant.
         feeds:
           - Cubic AFC
           - GIRO HASTUS
@@ -721,6 +722,7 @@ agent_usecases:
           - What is ridership by line and time band this week versus last?
           - Which origin-destination pairs are growing fastest?
           - What is farebox recovery by line this quarter?
+          - Which freight lanes and commodities are forecast to grow in tonnage?
           - Where is capacity most mismatched to demand at peak?
           - How did the last fare change affect ridership and revenue?
       - name: Safety & Compliance Agent
@@ -791,7 +793,7 @@ agent_usecases:
         summary: Optimising train movements, meets and passes across a congested network so throughput and reliability rise without new track.
         problem: On a single-track or congested network, meet-and-pass and dispatch decisions made locally leave capacity and reliability on the table that a network-wide view would recover.
         who_benefits: Network Ops
-        how_built: Movement, TMS and infrastructure feeds are conformed and served in Lakehouse//RT; movement-optimisation models are scored through Model Serving and actioned from the Dispatch Cockpit on Lakebase.
+        how_built: Movement, TMS and infrastructure feeds are conformed and served in Lakehouse//RT; movement-optimisation models are scored through Model Serving and surfaced as controller-approved recovery plans passed to the incumbent dispatch and signaling systems from the Dispatch Cockpit on Lakebase.
         components:
           - Dispatch Cockpit
           - RailConnect TMS
@@ -799,9 +801,9 @@ agent_usecases:
           - Lakehouse//RT
           - Lakebase
         stories:
-          - title: J.B. Hunt builds its transportation network on Databricks
+          - title: J.B. Hunt builds its transportation network on Databricks (cross-mode transportation context)
             url: https://www.databricks.com/customers/jbhunt
-          - title: A major freight railroad scales pipelines with Genie Code
+          - title: A major freight railroad scales pipelines with Genie Code (data-engineering enablement)
             url: https://www.databricks.com/blog/how-major-freight-railroad-scaled-pipeline-creation-genie-code
       - name: Ridership & Freight Demand Forecast
         short: Demand
@@ -870,10 +872,10 @@ agent_usecases:
       - name: Workforce & Track-Worker Safety
         short: Safety
         icon: people
-        summary: Track-worker protection and crew fatigue risk flagged from roadway-worker, movement and duty data before someone is put in harm's way.
+        summary: Track-worker proximity and crew fatigue risk indicators flagged from roadway-worker, movement and duty data to support safe-access and duty decisions.
         problem: Roadway-worker protection and crew fatigue depend on signals scattered across PTC, movement and rostering systems, so unsafe track access and over-limit duties are caught after the near-miss, not before.
         who_benefits: Fleet & Assets
-        how_built: PTC roadway-worker events, AVL movement and HASTUS duty state conform on Delta Lake, and proximity and fatigue-risk models tracked in MLflow score in Model Serving so unsafe access and duty breaches surface in AI/BI before they happen.
+        how_built: PTC roadway-worker events, AVL movement and HASTUS duty state conform on Delta Lake, and proximity and fatigue-risk models tracked in MLflow score in Model Serving so supervisor-reviewed risk indicators surface in AI/BI to support existing track-access and duty controls.
         components:
           - Wabtec I-ETMS PTC
           - AVL / GPS Telemetry

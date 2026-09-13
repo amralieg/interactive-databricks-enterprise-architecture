@@ -543,7 +543,7 @@ consumers:
       - name: Shipment Tracker
         icon: globe
         short: Export cargo
-        summary: Port stock, vessel laytime and assay disputes on one surface for marketing.
+        summary: Port stock, vessel laytime and assay disputes plus inbound consumables buffers and replenishment on one surface for marketing and materials planning.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -693,7 +693,7 @@ agent_usecases:
           - Intelex EHS
           - Wearable Proximity
           - Envirosuite
-          - Corporate Risk Ledger
+          - AVEVA PI System
         teams:
           - Safety & ESG
           - HSE Manager
@@ -783,9 +783,9 @@ agent_usecases:
       - name: Consumables & Supply Planning
         short: Materials
         icon: partner
-        summary: Reagents, tyres, grinding media and explosives planned to real consumption and lead times so a stockout never stops the pit or plant.
+        summary: Reagents, tyres, grinding media and explosives planned to real consumption and lead times to reduce the risk a stockout stops the pit or plant.
         problem: Critical consumables are planned from static reorder points and spreadsheets, so the operation carries too much of the wrong stock and still runs short on the reagent, tyre or grinding media that stops a shovel or a mill.
-        who_benefits: Marketing & Sales
+        who_benefits: Mine Operations
         how_built: SAP consumption and supplier lead-time data conform on Delta Lake and are scored in Model Serving, so the Shipment Tracker and certified AI/BI views tune buffers to real variability and flag single-source exposure before a stockout.
         components:
           - Shipment Tracker

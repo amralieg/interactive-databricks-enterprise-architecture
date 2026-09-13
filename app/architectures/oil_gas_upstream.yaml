@@ -502,9 +502,7 @@ consumers:
           - sap-is-oil
       - name: Crude Assay API
         icon: api
-        summary: Assay and quality certificates served to marketers and refiners from governed lab lineage.
-        citations:
-          - slb-ofm
+        summary: Authorized assay and quality certificates served to marketers and refiners.
       - name: Regulator Feed
         icon: globe
         summary: Emissions and production data exchanged with regulators without spreadsheet reconciliation.
@@ -782,7 +780,7 @@ agent_usecases:
           - MLflow
           - Delta Lake
         stories:
-          - title: Devon Energy processes a full well in hours across geophysical and seismic data
+          - title: Devon Energy reimagines analytics and ML for oil & gas exploration
             url: https://www.databricks.com/customers/devon-energy
       - name: Reservoir Management
         short: Subsurface
@@ -819,7 +817,7 @@ agent_usecases:
       - name: Materials & Supply Planning
         short: Supply chain
         icon: partner
-        summary: Field materials demand forecast so rig and facility work is never waiting on parts.
+        summary: Field materials demand forecast to reduce parts shortages, expedites and work delays.
         problem: Materials demand is set from static reorder tables, so field work waits on long-lead parts while warehouses carry the wrong stock and expedite costs pile up on the busiest campaigns.
         who_benefits: Commercial & Supply
         how_built: SAP Ariba and Maximo demand and lead-time data conform on Delta Lake and are scored in Model Serving, so materials plans track real variability on certified AI/BI views for planners.
@@ -861,7 +859,7 @@ agent_usecases:
         summary: Flare, vent and leak volumes filed from governed historian lineage.
         problem: Regulatory greenhouse filings are stitched from historian extracts and spreadsheets, so flare, vent and leak volumes are hard to trace from sensor to submission when a regulator asks.
         who_benefits: HSE & Compliance
-        how_built: Flare and emissions events conform on Delta Lake against EPA GHGRP layouts under Unity Catalog, and optical-gas detections scored in Model Serving give one auditable lineage on the HSE Dashboard.
+        how_built: Flare and emissions events conform on Delta Lake against EPA GHGRP layouts under Unity Catalog. Optical-gas detections, method-based emissions estimates and approved filing values stay distinct, giving one auditable lineage on the HSE Dashboard.
         components:
           - HSE Dashboard
           - EPA GHGRP Templates
@@ -871,7 +869,7 @@ agent_usecases:
         stories:
           - title: Repsol drives sustainability efforts with Databricks
             url: https://www.databricks.com/customers/repsol
-          - title: Pipeline Flow Monitoring detects leaks as small as 0.01% of throughput
+          - title: Pipeline flow monitoring for leak detection
             url: https://www.databricks.com/blog/pipeline-flow-monitoring
 medallion:
   Bronze:

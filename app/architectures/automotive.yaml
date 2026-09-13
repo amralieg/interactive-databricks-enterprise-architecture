@@ -344,7 +344,7 @@ pipelines:
           - EV Battery Health
       - name: Manufacturing
         mark: Lakehouse//RT
-        summary: Line balancing, andon response and launch curve tracking, run on OEE, cycle time and bottleneck-station losses against takt.
+        summary: Line balancing, andon response and launch curve tracking, run on OEE, cycle time and bottleneck-station losses against takt, with design engineering leading vehicle design simulation.
         uses:
           - - Plant Cockpit
             - Live OEE and bottleneck stations on the floor.
@@ -400,7 +400,7 @@ pipelines:
           - Customer & Dealer 360
       - name: Aftersales
         mark: Apps
-        summary: Service retention, parts availability and warranty recovery, measured on retention rate, parts fill rate and chargeback recovery.
+        summary: Service retention, parts availability and warranty recovery, measured on retention rate, parts fill rate and chargeback recovery, with product security accountable for vehicle cyber threat monitoring and Aftersales collaborating.
         uses:
           - - Service Advisor App
             - Next-best service offers on governed vehicle history.
@@ -541,8 +541,6 @@ consumers:
       - name: EU CO2 Fleet Targets
         icon: share
         summary: Fleet emissions reported to regulators.
-        citations:
-          - unece-r155
   - name: Published Products
     icon: product
     tiles:
@@ -760,7 +758,7 @@ agent_usecases:
         summary: Aero, mass and crash design-space explored with simulation and surrogate models before metal is cut.
         problem: Each design iteration waits on a full CAE run and a physical prototype, so aero, mass and crash trade-offs are explored slowly and late, and the design-space that would cut fuel and cost is never fully searched.
         who_benefits: Manufacturing
-        how_built: Dassault 3DEXPERIENCE CAD and simulation results with Teamcenter configuration are conformed on Delta Lake; surrogate models trained in MLflow and served through Model Serving explore the design-space so trade-offs are proven virtually before build.
+        how_built: Dassault 3DEXPERIENCE CAD and simulation results with Teamcenter configuration are conformed on Delta Lake; surrogate models trained in MLflow and served through Model Serving explore the design-space so candidate trade-offs are evaluated before build.
         components:
           - Dassault 3DEXPERIENCE
           - Siemens Teamcenter
@@ -818,7 +816,7 @@ agent_usecases:
         summary: One governed view of the customer and dealer across CRM, DMS and registration for sales and marketing.
         problem: The same customer shows up in the CRM, the DMS and registration data as three different records, so sales and marketing cannot see one owner across purchase, service and conquest and every campaign targets a fragment.
         who_benefits: Sales & Marketing
-        how_built: VinSolutions leads, CDK deals and service history and Polk registration are resolved to one VIN and owner under Unity Catalog, so a governed customer and dealer 360 is read in AI/BI and asked of Genie.
+        how_built: VinSolutions leads, CDK deals and service history and Polk registration are resolved into linked customer, dealer and VIN entities with effective-dated ownership or usage under Unity Catalog, so a governed customer and dealer 360 is read in AI/BI and asked of Genie.
         components:
           - CDK Global DMS
           - VinSolutions CRM
@@ -839,8 +837,6 @@ agent_usecases:
           - Unity Catalog
           - Unity Gateway
         stories:
-          - title: Rivian builds connected-vehicle intelligence on Databricks
-            url: https://www.databricks.com/customers/rivian
           - title: Threat detection at scale with the Databricks Lakehouse
             url: https://www.databricks.com/solutions/accelerators/threat-detection
       - name: Parts Forecasting

@@ -344,7 +344,7 @@ cloud_integrations:
             interval: Continuous (near real-time)
       - name: IATA NDC / ONE Order APIs
         icon: api
-        summary: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic. Managed ELT connectors and existing Kafka or managed event-bus topics carrying movement, baggage and sensor events land here too, and are drawn generically on the reference board.
+        summary: Offer and order APIs replacing the filed-fare and coupon model, consumed inbound for partner shopping traffic.
         citations:
           - ndc
         category: Airline Retailing APIs (NDC / ONE Order)
@@ -592,7 +592,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Lessors, maintenance partners and alliance members reading live tables with no copy and no egress duplication.
+        summary: Lessors, maintenance partners and alliance members reading live tables, reducing separately maintained extracts and duplication, with recipient access and reuse scoped by agreements.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -828,10 +828,10 @@ agent_usecases:
       - name: Crew Pairing & Rostering
         short: Planning
         icon: people
-        summary: Building legal, low-cost pairings and rosters under flight time limitations, and repairing them when the operation moves.
-        problem: Legal, low-cost pairings must hold under flight-time limitations and then be repaired the moment the operation moves, without ever tipping a crew into illegality.
+        summary: AIMS generates and validates legality-constrained pairings and rosters under flight time limitations, while lakehouse models flag duty risk and support authorized roster repair when the operation moves.
+        problem: Legal, low-cost pairings must hold under flight-time limitations and then be repaired the moment the operation moves, keeping crews within legality.
         who_benefits: Operations Control
-        how_built: AIMS pairing and roster state is conformed and served in Lakehouse//RT; disruption models flag crews nearing duty limits so rosters are repaired before they break.
+        how_built: AIMS generates and validates pairings and roster state, conformed and served in Lakehouse//RT; disruption models identify crews nearing duty limits and support authorized roster repair before rosters break.
         components:
           - AIMS Crew Management
           - Lakehouse//RT

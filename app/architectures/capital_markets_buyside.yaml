@@ -602,7 +602,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Allocators, administrators and partners reading live tables with no copy and no egress duplication.
+        summary: Allocators, administrators and partners reading live tables, reducing extract duplication, with access and reuse scoped by agreement.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -807,7 +807,7 @@ agent_usecases:
       - name: TCA & Best Execution
         short: Execution
         icon: market
-        summary: Measuring slippage, venue performance and market impact against benchmark so execution improves and best execution can be proven to clients and regulators.
+        summary: Measuring slippage, venue performance and market impact against benchmark so execution improves and best-execution review is evidenced for clients and regulators.
         problem: Execution cost is measured in spreadsheets days after the fill, so venue and algo choices are never corrected while they still matter, and best execution is asserted rather than shown.
         who_benefits: Trading Desks
         how_built: FIX order and execution events are joined to market data in the lakehouse; slippage and venue analytics are computed to Gold and explored in the TCA Workbench on the desk's own definitions.
@@ -841,10 +841,10 @@ agent_usecases:
       - name: Trade Surveillance
         short: Market abuse
         icon: gavel
-        summary: Detecting spoofing, layering, wash trades and insider patterns across orders, executions and communications, with an audit trail a regulator will accept.
+        summary: Detecting spoofing, layering, wash trades and insider patterns across orders, executions and communications, with evidence and lineage that support regulatory examination.
         problem: Surveillance runs across siloed vendor systems with gappy data, so alerts are noisy, investigations are slow, and completeness cannot be proven to an examiner.
         who_benefits: Compliance & Surveil
-        how_built: Orders, executions and comms are unified in the lakehouse with Unity Catalog completeness checks; detectors and AI Functions score patterns and cases open in the Surveillance Console.
+        how_built: Orders, executions and comms are unified in the lakehouse with pipeline completeness checks and Unity Catalog lineage; detectors and AI Functions score patterns and cases open in the Surveillance Console.
         components:
           - Surveillance Console
           - AI Functions
@@ -893,7 +893,7 @@ agent_usecases:
       - name: Regulatory Reporting
         short: Reporting
         icon: gavel
-        summary: Producing MiFID II, CAT, EMIR and transaction reports from the same governed data the firm trades on, complete and on time.
+        summary: Producing applicable MiFID II, CAT, EMIR and transaction reports from the same governed data the firm trades on, under direct or delegated filing responsibility.
         problem: Regulatory reports are assembled from reconciled extracts under deadline, so late fixes and re-submissions are routine and lineage back to the source is hard to prove.
         who_benefits: Compliance & Surveil
         how_built: Trade, order and reference data are conformed to Gold with Unity Catalog lineage; MiFID II and CAT submissions are generated and filed from contracted products with a full audit trail.
@@ -911,10 +911,10 @@ agent_usecases:
       - name: NAV & Reconciliation
         short: Breaks
         icon: cdc
-        summary: Reconciling positions, cash and transactions across the IBOR, custodian and fund accountant so NAV breaks are caught at T+0 rather than surfacing when the fund strikes its price.
+        summary: Reconciling positions, cash and transactions across the IBOR, custodian and fund accountant so pre-NAV breaks are caught against the latest available snapshots rather than surfacing when the fund strikes its price.
         problem: Positions, cash and prices are reconciled in batch against the custodian and administrator, so breaks surface at NAV strike when they are expensive to resolve and threaten a late or restated price.
         who_benefits: Trading Desks
-        how_built: FIX fills, DTCC confirms and custodian feeds stream into the lakehouse; matching runs continuously and NAV breaks are flagged against the investment book of record before the fund strikes.
+        how_built: FIX fills, DTCC confirms and daily custodian feeds land in the lakehouse; matching runs against the latest available custody and administrator snapshots, and fund operations resolve pre-NAV position and cash exceptions against the investment book of record before the fund strikes.
         components:
           - FIX Gateways
           - DTCC

@@ -499,7 +499,7 @@ consumers:
         summary: Quality and utilisation metrics shared with payers under value-based arrangements.
       - name: HIE Clinical Exchange
         icon: api
-        summary: Summaries and referrals exchanged with regional health information exchanges.
+        summary: Summaries and referrals exchanged with regional health information exchanges, with FHIR Bulk Data used as analytics-export context rather than the transactional exchange interface.
         citations:
           - fhir-bulk
       - name: Employer Reporting
@@ -524,7 +524,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Researchers, payers and affiliates reading live tables with no copy and no egress duplication.
+        summary: Researchers, payers and affiliates reading governed live tables that reduce routine file exports.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -543,7 +543,7 @@ consumers:
       - name: Sepsis Surveillance
         icon: iot
         short: Patient safety
-        summary: Early warning from vitals, labs and nursing assessments before bundle compliance windows close.
+        summary: Clinician-reviewed early warning from vitals, labs and nursing assessments to support timely bedside assessment.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -761,7 +761,7 @@ agent_usecases:
         summary: Deterioration detected from streaming vitals and labs before codes are called.
         problem: Sepsis turns deadly in hours, yet the vitals, labs and nursing signals of early deterioration are scattered across monitors and the chart and seen only when someone looks.
         who_benefits: Quality & Safety
-        how_built: Streaming vitals and labs feed early-warning models tracked in MLflow and scored in Model Serving; the Sepsis Surveillance app alerts the bedside before the bundle window closes.
+        how_built: Streaming vitals and labs feed early-warning models tracked in MLflow and scored in Model Serving; the Sepsis Surveillance app surfaces clinician-reviewed warnings to support timely bedside assessment.
         components:
           - Sepsis Surveillance
           - Capsule Medical Device
@@ -787,10 +787,10 @@ agent_usecases:
       - name: FHIR Data Pipelines
         short: Interoperability
         icon: api
-        summary: HL7 v2 and FHIR from every EHR conformed into one longitudinal patient record.
+        summary: HL7 v2 and FHIR from participating EHRs conformed into one longitudinal patient record.
         problem: Clinical data lands from Epic, Cerner and community EHRs as HL7 messages and nested FHIR JSON, so every team rebuilds the same patient and every downstream join drifts from a different copy.
         who_benefits: Population Health
-        how_built: HL7 and FHIR Bulk Data feeds land through Lakeflow on Delta Lake and are conformed to FHIR resources under Unity Catalog, so one governed patient and encounter model serves every clinical and analytics use case.
+        how_built: HL7 and FHIR Bulk Data feeds land through Lakeflow on Delta Lake and are conformed to FHIR resources under Unity Catalog, so one governed patient and encounter model serves selected clinical and analytics workflows.
         components:
           - HL7 FHIR Bulk Data
           - Epic Caboodle
@@ -826,10 +826,10 @@ agent_usecases:
       - name: Patient Services
         short: Digital front door
         icon: chat
-        summary: Self-service scheduling, triage and a patient chatbot grounded in governed clinical data.
+        summary: Self-service scheduling, administrative routing and a patient chatbot grounded in governed clinical data, with clinician-approved triage support and escalation.
         problem: Patients wait on hold to book, reschedule or ask a simple question, so access suffers and call queues swell while the answers sit in systems the front desk cannot search quickly.
         who_benefits: Clinical Operations
-        how_built: Scheduling and FHIR data are served on Lakebase and Databricks Apps, and Agent Bricks agents grounded in governed data handle scheduling, triage and patient questions with AI Functions.
+        how_built: Scheduling and FHIR data are served on Lakebase and Databricks Apps, and Agent Bricks agents grounded in governed data handle scheduling, administrative routing and patient questions with AI Functions, escalating to clinician-approved triage support where clinical urgency is involved.
         components:
           - Databricks Apps
           - Agent Bricks

@@ -1,5 +1,5 @@
 name: Shipping & Ports
-description: 'For port and terminal operators: vessel and berth planning, throughput forecasting, crane and equipment maintenance, yard and gate flow, safety and incident detection, and tariff revenue across the container and bulk terminals they run.'
+description: 'For port and terminal operators, container-terminal-led with bulk-terminal adaptations: vessel and berth planning, throughput forecasting, crane and equipment maintenance, yard and gate flow, safety and incident detection, and tariff revenue.'
 sources:
   - name: Terminal Operating
     icon: erp
@@ -267,11 +267,11 @@ cloud_integrations:
             interval: Continuous message flow
       - name: Port Authority AIS Feed
         icon: api
-        summary: Real-time berth occupancy and pilot boarding events from the port authority.
+        summary: AIS-derived berth occupancy estimates from the port authority, distinct from PCS pilot-order and port-call events.
         citations:
           - pcs
         category: Port Authority Data Feed
-        what_it_is: Provides real-time berth occupancy and pilot-boarding events from the port authority, aligning the terminal to harbour-wide movement.
+        what_it_is: Provides AIS-derived berth occupancy estimates from the port authority; authority-confirmed berth and pilot events are supplied separately through PCS and port-call records.
         who_uses_it: Terminal Operations, Harbour Master and Berth Planners.
         data_out:
           stream:
@@ -543,7 +543,7 @@ consumers:
       - name: Customs Hold Console
         icon: gavel
         short: Clearance status
-        summary: Declaration holds, inspections and release milestones in one operations view.
+        summary: Declaration holds, inspections, release milestones and security and dangerous-goods incident triage in one operations view.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -562,7 +562,7 @@ consumers:
           - Berth Planner
       - name: Container Dwell & Demurrage
         icon: aibi
-        summary: Dwell days, demurrage exposure and yard density across the terminal.
+        summary: Dwell days, demurrage exposure and yard density across the terminal, with tonnage and stockpile measures as bulk adaptations.
         kpis:
           - Container dwell
           - Demurrage exposure
@@ -652,7 +652,7 @@ agent_usecases:
           - Which cranes show the highest fuel burn per move this week?
       - name: Dwell & Yard Agent
         icon: genie
-        summary: Manage dwell days, demurrage exposure and yard density across the stacks.
+        summary: Manage dwell days, yard density and terminal storage demurrage exposure by fee owner across the stacks.
         feeds:
           - CyberLogitec OPUS
           - Identec RFID Gates
@@ -790,10 +790,10 @@ agent_usecases:
       - name: Incident & Safety Detection
         short: Detection
         icon: gavel
-        summary: Yard collisions, security breaches and dangerous-goods anomalies detected from sensor and declaration data as they happen.
-        problem: Straddle and AGV near-misses, perimeter breaches and mis-declared dangerous goods surface only at inspection or after an incident, because the sensor, gate and declaration signals that would flag them are never watched together.
+        summary: Security breaches and dangerous-goods anomalies triaged from sensor and declaration data as they happen.
+        problem: Perimeter breaches, security events and mis-declared dangerous goods surface only at inspection or after an incident, because the gate, sensor and declaration signals that would flag them are never watched together.
         who_benefits: Customs & Security
-        how_built: SICK yard-automation, Identec gate and INTTRA declaration events stream into Lakehouse//RT, and anomaly and computer-vision models in Model Serving raise incidents in the Customs Hold Console, with Mosaic AI drafting the response.
+        how_built: Identec gate, SICK yard-automation and INTTRA declaration events stream into Lakehouse//RT, and anomaly models in Model Serving raise security and dangerous-goods incidents in the Customs Hold Console, with Mosaic AI drafting the response.
         components:
           - Customs Hold Console
           - SICK Yard Automation
@@ -821,10 +821,10 @@ agent_usecases:
       - name: Workforce Safety
         short: Safety
         icon: people
-        summary: Straddle, AGV and quay-worker proximity and near-miss risk flagged from yard-automation and gate signals before someone is hurt.
-        problem: Worker and equipment interactions on the quay and in the yard are reviewed after a near-miss or injury, while the position and proximity data that predicts them sits unaggregated across yard-automation and gate sensors.
+        summary: Worker-equipment proximity and near-miss risk flagged from worker-location observations and equipment position for supervisor review.
+        problem: Worker and equipment interactions on the quay and in the yard are reviewed after a near-miss, while worker-location observations and equipment position data that would flag them sit unaggregated across yard-automation and gate sensors.
         who_benefits: Terminal Operations
-        how_built: SICK yard-automation position and Identec gate events conform on Delta Lake, and proximity and near-miss models tracked in MLflow score in Model Serving so unsafe interactions are flagged in AI/BI for supervisor action.
+        how_built: SICK yard-automation equipment position, worker-location observations and Identec gate events conform on Delta Lake, and proximity and near-miss models tracked in MLflow score in Model Serving so unsafe interactions are flagged in AI/BI for supervisor action.
         components:
           - SICK Yard Automation
           - Identec RFID Gates
@@ -835,10 +835,10 @@ agent_usecases:
       - name: Emissions & Environmental Reporting
         short: ESG
         icon: chart
-        summary: Emissions and noise metrics reported to port authority programs.
-        problem: Emissions, energy and noise metrics for port-authority programs are stitched by hand from crane fuel, vessel AIS and equipment telemetry each cycle, so numbers arrive late and untraced.
+        summary: Emissions and energy metrics reported to port authority programs.
+        problem: Emissions and energy metrics for port-authority programs are stitched by hand from crane fuel, vessel AIS and equipment telemetry each cycle, so numbers arrive late and untraced.
         who_benefits: Port Director Office
-        how_built: AIS, crane fuel and equipment telemetry conform on Delta Lake with Unity Catalog lineage, so emissions metrics are computed once and reported to port-authority programs from certified AI/BI products.
+        how_built: AIS, crane fuel and equipment telemetry conform on Delta Lake with Unity Catalog lineage, so emissions and energy metrics are computed once under applicable calculation assumptions and reported to port-authority programs from certified AI/BI products.
         components:
           - AIS Vessel Tracking
           - Kalmar Insight
@@ -852,7 +852,7 @@ agent_usecases:
       - name: Demurrage & Storage Revenue
         short: Commercial
         icon: market
-        summary: Handling, storage and demurrage charges reconciled to actual moves so revenue tied up in the yard is captured, not leaked.
+        summary: Terminal handling, storage and demurrage receivables reconciled to actual moves so terminal revenue tied up in the yard is captured, not leaked.
         problem: Handling and storage charges bill from the TOS, but rebates, contract rates and free-dwell exceptions live in other systems, so revenue leaks wherever billed and actual moves diverge.
         who_benefits: Commercial & Tariffs
         how_built: Jade Master Terminal and Tideworks Mainsail data conform on Delta Lake and reconcile to actual crane and gate events, so handling, storage and demurrage revenue is verified on certified AI/BI views.
@@ -872,7 +872,7 @@ medallion:
     summary: TOS moves, AIS position reports, berth plans, customs declarations and gate transactions, landed exactly as received so a dwell time or a crane move can always be replayed.
   Silver:
     short: Conformed vessel, visit, unit
-    summary: Vessels, port calls, containers and bills of lading resolved into single conformed entities across TOS, PCS and carrier systems, with voyage legs stitched to one visit.
+    summary: Vessels, port calls, containers and bills of lading resolved into single conformed entities across TOS, PCS and carrier systems, with voyage legs stitched to one visit and tonnage or stockpile measures as bulk-terminal adaptations.
   Gold:
     short: Throughput, dwell, crane rate
     summary: 'Contracted products terminal and port authority teams run on: crane moves per hour, truck turnaround, vessel berth productivity, container dwell and demurrage exposure.'

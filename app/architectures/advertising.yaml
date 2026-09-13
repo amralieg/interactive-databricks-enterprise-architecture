@@ -769,15 +769,13 @@ agent_usecases:
         stories:
           - title: Comcast Advertising powers ad campaign success with predictive insights
             url: https://www.databricks.com/customers/comcast/databricks-apps
-          - title: Publicis Groupe delivers real-time personalized campaigns
-            url: https://www.databricks.com/customers/publicis-groupe
       - name: Programmatic Bid Optimization
         short: Performance
         icon: market
         summary: Bids adjusted in real time against CPA, ROAS and incrementality targets.
         problem: Bids are set on stale rules and yesterday's reports, so budget floods low-value inventory and CPA and ROAS targets slip while the auction has already moved on.
         who_benefits: Performance Marketing
-        how_built: OpenRTB bid logs stream into Lakehouse//RT, propensity features come from Feature Store, and bid modifiers are scored in Model Serving and pushed to The Trade Desk in the auction path.
+        how_built: OpenRTB bid logs stream into Lakehouse//RT, propensity features come from Feature Store, and bid modifiers are scored in Model Serving and pushed to The Trade Desk through the DSP integration at its supported decision cadence.
         components:
           - The Trade Desk
           - IAB Tech Lab OpenRTB
@@ -823,10 +821,10 @@ agent_usecases:
       - name: Frequency Management
         short: Reach
         icon: stream
-        summary: Cross-platform frequency caps enforced before waste accumulates.
+        summary: Cross-platform frequency measured and caps applied through participating platforms before waste accumulates.
         problem: Each platform caps frequency only against its own impressions, so the same household is hit far past the point of return and spend is wasted on people already saturated.
         who_benefits: Media Planning
-        how_built: Cross-platform delivery lands through Lakeflow, identity is unified on a graph, and household frequency is reconciled on Delta Lake and enforced from the Campaign Command Center.
+        how_built: Cross-platform delivery lands through Lakeflow, identity is unified on a graph, household frequency is reconciled on Delta Lake, and caps are applied through participating platforms from the Campaign Command Center.
         components:
           - Campaign Command Center
           - The Trade Desk
@@ -842,7 +840,7 @@ agent_usecases:
         summary: Sponsored search and display tuned against on-shelf availability.
         problem: Retail media runs in walled gardens, so brands buy sponsored placements blind to on-shelf availability and cannot tie the spend back to the sales it actually moved.
         who_benefits: Media Planning
-        how_built: Retailer and sales signals join first-party data on Delta Lake, segments are built in Audience Studio, and audiences are shared to Amazon Ads via clean rooms with results read in AI/BI.
+        how_built: Retailer and sales signals join first-party data on Delta Lake, product-location availability suppresses unavailable offers and reallocates spend, segments are built in Audience Studio, and audiences are shared to Amazon Ads via clean rooms with results read in AI/BI.
         components:
           - Audience Studio
           - Amazon Ads
@@ -868,7 +866,7 @@ agent_usecases:
       - name: Fraud & IVT Detection
         short: Quality
         icon: gavel
-        summary: Invalid traffic removed before it bills or pollutes attribution.
+        summary: Suspected invalid traffic flagged and confirmed IVT excluded from eligible billing and attribution.
         problem: Invalid traffic and spoofed inventory drain budgets and poison attribution, and by the time verification reports flag it the money is spent and the models are already skewed.
         who_benefits: Brand Safety
         how_built: OpenRTB and delivery events stream into Lakehouse//RT, anomaly models score traffic in Model Serving, and confirmed IVT is filtered and surfaced by severity in the Brand Safety Console.
@@ -894,10 +892,10 @@ agent_usecases:
       - name: Privacy-Safe Clean Rooms
         short: Identity
         icon: partner
-        summary: Overlap and attribution computed without raw PII leaving either party.
+        summary: Overlap and attribution computed through clean-room controls that share approved aggregates, not raw PII.
         problem: Overlap and attribution with retailers and publishers need matched records, but neither side will hand over raw PII, so measurement stalls in legal review and manual file swaps.
         who_benefits: Performance Marketing
-        how_built: First-party data stays governed under Unity Catalog while overlap and attribution run in Audience Studio against partner data over OpenSharing, with no raw PII leaving either side.
+        how_built: First-party data stays governed under Unity Catalog while overlap and attribution run in Audience Studio against partner data over OpenSharing, with disclosure governed by clean-room access policies and approved aggregate outputs.
         components:
           - Audience Studio
           - LiveRamp Data Clean Room

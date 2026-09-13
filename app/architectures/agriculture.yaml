@@ -782,7 +782,7 @@ agent_usecases:
         summary: Elevator grain positions and input stock tuned to real throughput and lead time rather than static reorder tables.
         problem: Grain piles up in some elevators and input stock sits idle at others because positions are tracked in separate accounting systems, so working capital is locked in the wrong inventory while a location runs short at the worst moment.
         who_benefits: Finance & Risk
-        how_built: Grain accounting, receiving and input-purchase data are conformed on Delta Lake, and inventory and reorder models scored in AI/BI tune elevator grain positions and input stock to real throughput and lead time.
+        how_built: Grain accounting, receiving and input-purchase data are conformed on Delta Lake, and inventory and reorder models scored in Model Serving tune elevator grain positions and input stock to real throughput and lead time, with recommendations presented in AI/BI.
         components:
           - Agvance (SSI)
           - SAP S/4HANA Agribusiness
@@ -835,8 +835,6 @@ agent_usecases:
           - AI/BI
           - Genie One
         stories:
-          - title: UPL optimizes supply chain operations with demand forecasting
-            url: https://www.databricks.com/customers/upl
           - title: FMC optimizes harvests with data and AI
             url: https://www.databricks.com/customers/fmc-corporation
       - name: Fleet & Equipment Reliability

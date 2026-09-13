@@ -44,7 +44,7 @@ sources:
             interval: Continuous alarms + events
       - name: Sensus FlexNet
         icon: stream
-        summary: RF mesh AMI reads and endpoint alarms for water and electric deployments on FlexNet.
+        summary: AMI collection and network reads and endpoint alarms for electric and water deployments on FlexNet.
         citations:
           - sensus
         category: AMI Meter Data Management (MDMS)
@@ -532,7 +532,7 @@ consumers:
           - ge-adms
       - name: OMS Crew Dispatch
         icon: apps
-        summary: Crew assignments and ETR updates pushed to mobile devices in the field.
+        summary: Crew assignments and ETR updates pushed to mobile devices in the field, with completion relayed to the authoritative EAM work record.
         citations:
           - milsoft-oms
       - name: CIS Billing Adjustments
@@ -559,7 +559,7 @@ consumers:
     tiles:
       - name: Reliability Reporting
         icon: gavel
-        summary: SAIDI, SAIFI and major event day filings produced from the same governed tables operations runs on.
+        summary: SAIDI, SAIFI and major-event-day reliability filings, plus interconnection application-backlog and applicable emissions records, produced from the same governed tables operations runs on.
       - name: Rate Case Submissions
         icon: share
         summary: Cost-of-service and class revenue studies filed from contracted Gold products.
@@ -571,14 +571,14 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Municipalities, regulators and research partners reading live tables with no copy and no egress duplication.
+        summary: Municipalities, regulators and research partners accessing governed products, reducing bespoke exports with copies and transfer behavior dependent on the sharing mode.
   - name: Databricks Apps
     icon: apps
     tiles:
       - name: OMS Control Tower
         icon: gauge
         short: Storm restoration
-        summary: 'The screen the control centre runs a major event from: crew dispatch, switching and ETR by feeder, on Databricks Apps over Lakebase.'
+        summary: 'The screen the control centre runs a major event from: crew dispatch, switching proposals and ETR by feeder, with switching executed through ADMS after operator approval, on Databricks Apps over Lakebase.'
       - name: Load Forecast Console
         icon: chart
         short: Demand planning
@@ -735,7 +735,7 @@ agent_usecases:
           - What is collections effectiveness by segment this month?
       - name: Finance & Regulatory Agent
         icon: genie
-        summary: Ask about revenue requirement, capital spend, collections and reliability filings.
+        summary: Ask about revenue requirement, capital spend, collections, reliability filings and interconnection application status.
         feeds:
           - Regulatory Cost Accounting
           - SAP IS-U
@@ -778,7 +778,7 @@ agent_usecases:
         summary: Feeder load, DER output and switching balanced so the distribution grid holds voltage and thermal limits as the energy mix shifts.
         problem: DER, storage and flexible load swing feeder state minute to minute while dispatch signals, inverter telemetry and the network model live apart, so the grid runs conservatively and hosting capacity is left unused.
         who_benefits: Grid Operations
-        how_built: ADMS, DERMS and IEEE 2030.5 telemetry land in Lakehouse//RT and set-points are scored in Model Serving, written back as ADMS Switching Orders with feeder limits held in Lakebase.
+        how_built: ADMS, DERMS and IEEE 2030.5 telemetry land in Lakehouse//RT; DER voltage setpoint advisories are scored in Model Serving and routed through DERMS, while discrete switching plans are proposed for operator approval and executed through ADMS; Lakebase holds a governed working copy of approved feeder constraints, with incumbent systems retaining approval and execution.
         components:
           - Lakehouse//RT
           - Model Serving
@@ -873,8 +873,8 @@ agent_usecases:
         icon: apps
         summary: An assistant that gives field crews the switching plan, asset history and safety context for the job, and closes the work order on mobile.
         problem: Crews arrive with paper switching orders and no asset history, so jobs stall on missing context and completions are keyed in later, leaving the network model and work records stale.
-        who_benefits: App Developers
-        how_built: EAM history, the GIS network model and OMS dispatch conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back through OMS Crew Dispatch.
+        who_benefits: Grid Operations
+        how_built: EAM history, the GIS network model and OMS dispatch conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back through OMS Crew Dispatch, which relays completion to the authoritative EAM work record.
         components:
           - OMS Crew Dispatch
           - Esri ArcGIS Utility

@@ -844,10 +844,10 @@ agent_usecases:
       - name: Patient Recruitment
         short: Digital
         icon: custlake
-        summary: Pre-screened cohorts identified from RWE and registries.
-        problem: Roughly 80% of trials miss enrollment timelines because eligible patients are hard to find, and the EHR and registry signals that would surface them sit outside the trial systems.
+        summary: Candidate cohorts identified from RWE and registries for site screening.
+        problem: Trials often miss enrollment timelines because eligible patients are hard to find, and the EHR and registry signals that would surface them sit outside the trial systems.
         who_benefits: Clinical Operations
-        how_built: De-identified EHR and registry data from Flatiron and IQVIA are conformed under Unity Catalog, and cohort models in Model Serving pre-screen eligible patients against protocol criteria.
+        how_built: De-identified EHR and registry data from Flatiron and IQVIA are conformed under Unity Catalog, and cohort models in Model Serving estimate protocol-eligible cohort feasibility, with eligibility confirmation and patient contact handled through authorized site recruitment workflows.
         components:
           - Flatiron Oncology EHR
           - IQVIA Real World
@@ -857,15 +857,13 @@ agent_usecases:
         stories:
           - title: Clinical operations intelligence belongs on the Lakehouse
             url: https://www.databricks.com/blog/clinical-operations-intelligence-belongs-lakehouse
-          - title: How Regeneron is discovering new treatments with AI
-            url: https://www.databricks.com/customers/regeneron
       - name: Clinical Data Repository
         short: Modernisation
         icon: db
         summary: Legacy SDTM and study marts modernised into one governed repository.
         problem: Historical study data is trapped in ageing SDTM marts and per-study silos, so pooled analysis and legacy queries are slow and every cross-study question turns into another migration project.
         who_benefits: Data Management
-        how_built: Legacy SDTM marts are queried in place through federation and conformed onto Delta Lake under Unity Catalog by Lakeflow, so one governed clinical data repository serves pooled analysis without a copy-and-migrate project.
+        how_built: Federation provides continuing access to retained legacy SDTM marts, while selected datasets are materialized onto Delta Lake under Unity Catalog by Lakeflow, so one governed clinical data repository serves pooled analysis.
         components:
           - Legacy SDTM Mart
           - CDISC Standards

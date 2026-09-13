@@ -438,9 +438,9 @@ pipelines:
         summary: Export and ITAR control over technical data and licensing, compliance and audit on AS9100, DO-178C and contract terms, and security over controlled unclassified information and who may see which part of the program.
         uses:
           - - Unity Catalog
-            - Row, column and tag policy so controlled technical data reaches only cleared people.
+            - Row, column and tag policy so controlled technical data reaches only compliance-authorized people.
           - - AI Functions
-            - Export markings and control classifications inferred across documents at scale.
+            - Advisory export markings and control classifications inferred across documents at scale for compliance approval.
           - - Genie One
             - Ask who accessed a controlled dataset this quarter without a manual audit pull.
         sub:
@@ -530,7 +530,7 @@ consumers:
         summary: Tier-1 and component suppliers reading live demand, quality and forecast tables over Delta Sharing rather than nightly file exchange.
       - name: Prime & Gov Sharing
         icon: globe
-        summary: Primes, subcontractors and government customers reading contracted program data over governed sharing with no egress copy.
+        summary: Primes, subcontractors and government customers reading contracted program data over governed sharing, reducing duplicate extracts.
       - name: Digital Twin Exchange
         icon: share
         summary: As-built configuration and telemetry-fed digital twins shared to operators and MRO partners as live products.
@@ -557,7 +557,7 @@ consumers:
     tiles:
       - name: Commanding Writeback
         icon: stream
-        summary: Anomaly responses and manoeuvre plans written back to the ground system so the decision reaches the spacecraft.
+        summary: Anomaly responses and manoeuvre plans proposed for controller review, with the authorized ground system validating and transmitting spacecraft commands.
         citations:
           - kratos
       - name: Ground Ops Portal
@@ -586,7 +586,7 @@ consumers:
       - name: Mission Control
         icon: gauge
         short: Satellite mission ops
-        summary: 'The cockpit mission controllers run a pass from: satellite health, contact schedule and anomalies from live CCSDS telemetry, with responses drafted and written back to the ground system, on Databricks Apps over Lakebase.'
+        summary: 'The cockpit mission controllers run a pass from: satellite health, contact schedule and anomalies from live CCSDS telemetry, with responses drafted for controller review before the authorized ground system validates and executes them, on Databricks Apps over Lakebase.'
       - name: Program Cockpit
         icon: sheet
         short: EVM & schedule
@@ -598,7 +598,7 @@ consumers:
       - name: Digital Thread View
         icon: network
         short: Requirements to as-built
-        summary: Where systems engineering traces a requirement from CATIA and Teamcenter through to the as-built serial and its test evidence, on the same governed data the whole program reads.
+        summary: Where systems engineering traces a requirement from CATIA and Teamcenter through to the as-built serial and its test evidence, on the same governed data the whole program reads, with the Yield & MRB Cockpit as its manufacturing-quality module for station yield, nonconformance and disposition.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -789,7 +789,7 @@ agent_usecases:
         summary: Billions of rows of live satellite telemetry ingested and served at low latency so operations dashboards and anomaly checks keep up with the pass.
         problem: Constellation telemetry arrives faster than legacy ground software can land and query it, so mission dashboards lag the pass and a second serving layer has to be maintained alongside the data platform.
         who_benefits: Mission & Fleet
-        how_built: CCSDS frames and ground-station downlink stream through Zerobus into Lakehouse//RT; operations dashboards and anomaly checks run directly on the live tables with no separate serving system.
+        how_built: Decommutated CCSDS telemetry events and ground-station downlink stream through Zerobus into Lakehouse//RT; operations dashboards and anomaly checks run directly on the live tables with no separate serving system.
         components:
           - Mission Control
           - CCSDS Telemetry
@@ -816,7 +816,7 @@ agent_usecases:
       - name: Digital Thread
         short: Engineering
         icon: network
-        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision and every part are traceable from requirement to serial, with counterfeit parts caught.
+        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision and every part are traceable from requirement to serial, with provenance anomalies flagged for investigation.
         problem: Requirements, CAD, change orders and the as-built record live in CATIA, Teamcenter and Windchill separately, so tracing a requirement to the serial that flew is a manual reconciliation, and an unauthorised or counterfeit part can slip into the build undetected.
         who_benefits: Eng & Design
         how_built: PLM, requirements and MES genealogy are conformed in Silver under Unity Catalog; the Digital Thread View traces a requirement from design to the as-built serial and its test evidence, and flags parts whose genealogy or supplier provenance does not reconcile.
@@ -836,7 +836,7 @@ agent_usecases:
         summary: Simulation results and physical test data joined so models are validated against test and surrogate models cut the next analysis cycle.
         problem: Simulation output and flight- and rig-test data never meet, so validating a model against test is a manual export and each design iteration waits on another full analysis run.
         who_benefits: Eng & Design
-        how_built: Ansys simulation output and test-stand and flight telemetry are conformed in the lakehouse; surrogate and reliability models trained in MLflow are validated against test and read from the Feature Store.
+        how_built: Ansys simulation output and test-stand and flight telemetry are conformed in the lakehouse; surrogate and reliability models tracked in MLflow are validated against test and used for inference, with Feature Store providing their engineered inputs.
         components:
           - Ansys Simulation
           - Test & Flight Data
@@ -899,10 +899,10 @@ agent_usecases:
       - name: ITAR & Export Control
         short: Compliance
         icon: gavel
-        summary: Controlled technical data governed so export-controlled information reaches only cleared people and every access is auditable.
+        summary: Controlled technical data governed so export-controlled information reaches only compliance-authorized, licensed people and every access is auditable.
         problem: Export-controlled technical data is scattered across engineering and program systems, so proving that only cleared, licensed people saw ITAR-controlled data is a manual, error-prone audit.
         who_benefits: Compliance & Sec
-        how_built: Technical data is governed under Unity Catalog with row, column and tag policy; AI Functions infer export markings across documents and access is auditable from the ITAR & Export Filing tables.
+        how_built: Technical data is governed under Unity Catalog with row, column and tag policy; AI Functions infer advisory export markings for compliance review, and access is conditioned on compliance-approved classifications, eligibility and licensing, auditable from the ITAR & Export Filing tables.
         components:
           - Unity Catalog
           - AI Functions
@@ -915,7 +915,7 @@ agent_usecases:
       - name: Workforce Safety
         short: EHS
         icon: iot
-        summary: Safety events and near-misses on the factory and test floor surfaced from sensor, historian and machine signals before someone is hurt.
+        summary: Safety events and near-misses on the factory and test floor surfaced from sensor, historian and machine signals to enable earlier intervention.
         problem: Safety incidents and near-misses are logged after the fact on paper, so the leading signals in historian, machine and test-stand data that precede an injury on the floor are never acted on in time.
         who_benefits: Mfg & Quality
         how_built: Historian, MES and test-stand signals are conformed on Delta Lake; AI Functions and models in Model Serving score near-miss and hazard patterns, surfaced in AI/BI so EHS and production act before an incident.

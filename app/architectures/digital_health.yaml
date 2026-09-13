@@ -328,11 +328,11 @@ cloud_integrations:
     tiles:
       - name: Twilio Event Streams
         icon: stream
-        summary: Delivery, open and reply events from SMS and voice outreach streamed in for engagement and adherence analysis.
+        summary: Channel-appropriate delivery, response and interaction events from SMS and voice outreach streamed in for engagement and adherence analysis.
         citations:
           - twilio
         category: Communications Event Stream
-        what_it_is: Streams delivery, open and reply events from SMS and voice outreach for engagement and adherence analysis.
+        what_it_is: Streams channel-appropriate delivery, response and interaction events from SMS and voice outreach for engagement and adherence analysis.
         who_uses_it: Member Growth, member-engagement and lifecycle-marketing teams.
         data_out:
           stream:
@@ -567,10 +567,10 @@ consumers:
     tiles:
       - name: HIPAA & HITRUST
         icon: gavel
-        summary: PHI access, audit and de-identification governed in Unity Catalog, with HIPAA and HITRUST evidence produced from the same tables.
+        summary: PHI access, audit and de-identification governed in Unity Catalog, with HIPAA and HITRUST assessment evidence supported from the same tables.
       - name: HEDIS & Star Ratings
         icon: sheet
-        summary: Quality measures, HEDIS and Star Ratings submissions produced from contracted Gold products, not a separate extract.
+        summary: Quality measures, HEDIS and Star Ratings evidence produced from contracted Gold products, with payer partners as the applicable submission owners.
   - name: Published Products
     icon: product
     tiles:
@@ -579,7 +579,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Payers, health-system partners and researchers reading live tables with no copy and no egress duplication.
+        summary: Payers, health-system partners and researchers accessing governed products, reducing bespoke exports with copies and transfer behavior dependent on the sharing mode.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -875,7 +875,7 @@ agent_usecases:
       - name: Digital Therapeutics
         short: DTx
         icon: apps
-        summary: Powering evidence-based digital coaching for chronic conditions and proving programme efficacy for cleared claims and payer contracts.
+        summary: Powering evidence-based digital coaching for chronic conditions and supporting programme evaluation and evidence preparation for applicable claims and payer contracts.
         problem: Digital therapeutics live or die on efficacy evidence, but coaching signals, device readings and outcomes sit apart, so personalisation is coarse and the evidence base is slow to build.
         who_benefits: Product & Data
         how_built: Device, engagement and clinical data are aggregated into a member view; coaching and efficacy models tracked in MLflow score through Model Serving and Feature Store into the programme in the Member 360 Hub.
@@ -913,7 +913,7 @@ agent_usecases:
         summary: Coordinating hand-offs across virtual visits, RPM, coaching and the EHR so the member has one care plan, not a set of disconnected touchpoints.
         problem: A member's care is split across telehealth, monitoring, coaching and their provider's EHR; without a shared plan the touchpoints contradict each other and work falls between the teams.
         who_benefits: Clinical Ops
-        how_built: A unified member and care-plan view is served on Lakebase; agents draft hand-offs and updates against governed tools with Agent Bricks and AI Functions and write back to the EHR and Health Cloud.
+        how_built: A unified member and care-plan view is served on Lakebase; agents draft hand-offs and proposed updates against governed tools with Agent Bricks and AI Functions, and the care team accepts changes before active-plan updates write back to the EHR and Health Cloud.
         components:
           - Care Command Center
           - Agent Bricks

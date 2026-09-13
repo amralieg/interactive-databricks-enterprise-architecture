@@ -545,7 +545,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Customers, EMS partners and auditors reading live tables with no copy and no egress duplication.
+        summary: Customers, EMS partners and auditors reading live tables through governed sharing that reduces bespoke export copies, with recipient materialization depending on the sharing and execution mode.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -767,7 +767,7 @@ agent_usecases:
         summary: Account, order, device and support history joined so sales and success see the whole customer, not fragments.
         problem: Sales sees orders, success sees tickets and product sees telemetry, and none of them meet, so the customer is served from fragments and churn signals are missed.
         who_benefits: Commercial & Aftermarket
-        how_built: Salesforce, order and device telemetry are conformed to Gold under Unity Catalog, so a governed Customer 360 is read in AI/BI and Genie on the definitions the commercial team already reports.
+        how_built: Salesforce, order, device telemetry and ServiceMax support history are conformed to Gold under Unity Catalog, linked through account and registered-device relationships, so a governed Customer 360 is read in AI/BI and Genie on the definitions the commercial team already reports.
         components:
           - Salesforce
           - Device Telemetry
@@ -848,7 +848,7 @@ agent_usecases:
       - name: Quality Event Root-Cause
         short: Quality
         icon: gavel
-        summary: Defect and quality events traced to the board, lot, supplier and process that caused them rather than reconstructed by hand.
+        summary: Defect and quality events linked to probable contributors across board, lot, supplier and process rather than reconstructed by hand.
         problem: When a quality event hits, root cause is reconstructed by hand across MES, inspection and QMS, so the same escape recurs and CAPA backlog ages toward the next audit.
         who_benefits: Quality & Reliability
         how_built: AOI inspection, MES genealogy and QMS non-conformances conform on Delta Lake, and models in Model Serving with AI Functions surface probable cause in the Quality Cockpit for CAPA.

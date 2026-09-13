@@ -365,7 +365,7 @@ pipelines:
           - - Pricing Cockpit
             - Quote and contract price guidance held to margin floors at the point of sale.
           - - AI/BI
-            - Pipeline, win rate and share of wallet on governed customer data.
+            - Pipeline, win rate and estimated share of wallet on governed customer data.
         sub:
           - name: Sales leadership
             cares: territory targets, rep productivity and share of wallet.
@@ -560,14 +560,14 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Suppliers, carriers and buying groups reading live tables with no copy and no egress duplication.
+        summary: Suppliers, carriers and buying groups reading governed shared tables without separately maintained publisher extracts.
   - name: Databricks Apps
     icon: apps
     tiles:
       - name: Inventory Command
         icon: gauge
         short: Replenishment
-        summary: Replenishment, safety-stock and dead-stock recommendations by SKU and branch, so buyers reorder on predicted demand instead of a fixed reorder point, on Databricks Apps over Lakebase.
+        summary: Replenishment, safety-stock, dead-stock and warehouse labor and pick-path recommendations by SKU and branch, so buyers reorder on predicted demand instead of a fixed reorder point, on Databricks Apps over Lakebase.
       - name: Pricing Cockpit
         icon: market
         short: Quote guidance
@@ -575,7 +575,7 @@ consumers:
       - name: OTIF Control Tower
         icon: stream
         short: Service levels
-        summary: Live order and shipment state against the promised delivery date, flagging the orders that will miss on-time-in-full before they leave the dock.
+        summary: Live order and shipment state against the promised delivery date, flagging orders that will miss on-time-in-full and reviewing route plans handed to Oracle OTM for execution.
       - name: Rebate Manager
         icon: gavel
         short: Margin recovery
@@ -624,9 +624,9 @@ consumers:
           - Finance & Rebates
       - name: Sales & Customer Health
         icon: aibi
-        summary: Share of wallet, churn risk and cross-sell across the account base.
+        summary: Estimated share of wallet, churn risk and cross-sell across the account base.
         kpis:
-          - Share of wallet
+          - Estimated share of wallet
           - Churn risk
           - Cross-sell rate
           - Win rate
@@ -706,7 +706,7 @@ agent_usecases:
           - How much earned rebate is still uncaptured against contract terms?
       - name: Customer Growth Agent
         icon: genie
-        summary: Grow share of wallet, spotting churn and cross-sell across the account base.
+        summary: Grow estimated share of wallet, spotting churn and cross-sell across the account base.
         feeds:
           - Salesforce Sales Cloud
           - SAP Commerce Cloud
@@ -719,7 +719,7 @@ agent_usecases:
         questions:
           - Which accounts are drifting and reducing order frequency?
           - Where is the biggest cross-sell whitespace by account?
-          - What is share of wallet on our top 100 customers?
+          - What is estimated share of wallet, against a modeled category-spend denominator, on our top 100 customers?
           - Which reps are below target on productivity this quarter?
           - How is the B2B web channel converting versus the branch?
       - name: Demand & Supply Agent
@@ -785,7 +785,7 @@ agent_usecases:
         summary: Delivery routes, carrier choice and last-mile execution optimised across the branch and DC network to cut freight cost and hit the delivery window.
         problem: Routes and carrier assignments are planned in silos per branch, so trucks run half-empty, freight spend climbs and delivery windows slip.
         who_benefits: Supply Chain & Ops
-        how_built: Order, shipment and TMS feeds are conformed; route and load plans are generated in Model Serving and executed from the OTIF Control Tower against live in-transit state.
+        how_built: Order, shipment and TMS feeds are conformed; route and load plans are generated in Model Serving, reviewed in the OTIF Control Tower and handed to Oracle OTM for transport execution against live in-transit state.
         components:
           - OTIF Control Tower
           - Oracle OTM
@@ -842,8 +842,6 @@ agent_usecases:
         stories:
           - title: Reckitt on Databricks
             url: https://www.databricks.com/customers/reckitt
-          - title: Ahold Delhaize on Databricks
-            url: https://www.databricks.com/customers/ahold-delhaize
       - name: Customer 360 & Retention
         short: Growth
         icon: custlake
@@ -886,7 +884,7 @@ agent_usecases:
         summary: DC labor and pick paths balanced to real throughput so pickers land where the volume is and overtime stops piling up at peak.
         problem: DC labor is planned on last year's averages, so pickers are misallocated across shifts and branches, throughput sags at peak and overtime climbs while another site sits idle.
         who_benefits: Supply Chain & Ops
-        how_built: Manhattan, Blue Yonder and Körber WMS move events stream into Lakehouse//RT and conform on Delta Lake, and labor and throughput models in Model Serving balance staffing and pick paths shown in the Inventory Command app on AI/BI.
+        how_built: Manhattan, Blue Yonder and Körber WMS move events stream into Lakehouse//RT and conform on Delta Lake, and labor and throughput models in Model Serving balance staffing and pick paths shown in the Inventory Command app on AI/BI and handed to the existing WMS workflow.
         components:
           - Inventory Command
           - Manhattan Active WMS
@@ -900,7 +898,7 @@ agent_usecases:
         summary: Delivery trucks and warehouse material-handling equipment watched for failures before a breakdown strands a route or stalls a pick line.
         problem: Delivery trucks and warehouse material-handling equipment fail without warning, so a breakdown strands a route or stalls a pick line and the automation telemetry that would have flagged it goes unused.
         who_benefits: Supply Chain & Ops
-        how_built: Körber automation telemetry, TMS movements and project44 in-transit signals stream into Lakehouse//RT, and remaining-life and anomaly models tracked in MLflow score in Model Serving so failures become planned repairs before a route or line stops.
+        how_built: Asset-condition and maintenance-history inputs, with Körber automation telemetry and TMS and project44 movement signals, stream into Lakehouse//RT, and remaining-life models score component failure risk in Model Serving tracked in MLflow while movement anomalies raise operational alerts, so failures become planned repairs before a route or line stops.
         components:
           - Körber WMS
           - Oracle OTM

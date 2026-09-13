@@ -633,7 +633,7 @@ agent_usecases:
           - Which downtime reason codes cost the most this week?
           - What is scrap cost by line and product this month versus last?
           - Which lines are behind the production plan right now?
-          - What would a line-rate or changeover change do to throughput before we run it?
+          - What do approved scenario models estimate a line-rate or changeover change would do to throughput?
       - name: Quality & Traceability Agent
         icon: genie
         summary: Explore first-pass yield, non-conformance and lot genealogy across MES and QMS.
@@ -843,7 +843,7 @@ agent_usecases:
         summary: A live virtual model of the line and its assets, so a process or capacity change is simulated before it runs on the floor.
         problem: Process and capacity changes are trialled on the physical line because there is no governed, live model of the plant to simulate against, so every experiment costs real output and risk.
         who_benefits: Production & Scheduling
-        how_built: Historian, MES and quality signals are conformed on Delta Lake and mirrored in Lakehouse//RT, and physics-plus-ML models in Model Serving tracked in MLflow simulate throughput, quality and failure so a change is proven virtually before it runs.
+        how_built: Historian, MES and quality signals are conformed on Delta Lake and mirrored in Lakehouse//RT, and physics-plus-ML models in Model Serving tracked in MLflow estimate throughput, quality and failure effects for engineering review before a change runs on the line.
         components:
           - AVEVA PI System
           - Lakehouse//RT

@@ -262,11 +262,11 @@ sources:
             interval: Monthly issuance + transfers
       - name: Watershed Carbon
         icon: globe
-        summary: 'Carbon and emissions accounting: avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.'
+        summary: 'Carbon and emissions accounting: avoided-emissions, Scope reporting and ESG disclosure records built from measured production.'
         citations:
           - watershed
         category: Carbon & ESG Accounting Platform
-        what_it_is: Carbon and emissions accounting for avoided-emissions, Scope reporting and audited ESG disclosure built from metered production.
+        what_it_is: Carbon and emissions accounting for avoided-emissions, Scope reporting and ESG disclosure records built from measured production and stated methodologies.
         who_uses_it: Chief Sustainability Office, ESG reporting and finance teams.
         data_out:
           batch:
@@ -476,7 +476,7 @@ pipelines:
             - Generation, price and failure models scored in the operational path.
       - name: Controls & Apps
         mark: Apps
-        summary: Ship the APM control room, trading desk and O&M planner the fleet works in, and write PPC setpoints and work orders back to the systems of record next to governed data.
+        summary: Ship the APM control room, trading desk and O&M planner the fleet works in, and write PPC setpoint recommendations and work orders back to the systems of record next to governed data, with existing plant controllers enforcing permissible actions.
         uses:
           - - Apps
             - Operational screens with no separate web tier to run or secure.
@@ -509,7 +509,7 @@ consumers:
         summary: Metered generation, availability and settlement shared live to offtakers and corporate PPA buyers over Delta Sharing rather than monthly files.
       - name: OEM Warranty Sharing
         icon: partner
-        summary: Turbine and inverter telemetry shared to OEMs under warranty and availability guarantees, with no copy and no egress duplication.
+        summary: Turbine and inverter telemetry shared to OEMs under warranty and availability guarantees, avoiding separately maintained extracts where the recipient and transfer arrangement allows.
   - name: Operational Writeback
     icon: opdb
     tiles:
@@ -520,7 +520,7 @@ consumers:
           - maximo
       - name: PPC Setpoints
         icon: opdb
-        summary: Curtailment and dispatch setpoints written back to the power plant controller so the recommendation reaches the grid.
+        summary: Curtailment and dispatch setpoint recommendations written back to the power plant controller, which applies them within permissible grid and protection limits.
       - name: Field Mobile
         icon: apps
         summary: Scheduled and corrective jobs, checklists and completions pushed to the devices field technicians actually carry.
@@ -534,7 +534,7 @@ consumers:
           - mrets
       - name: Emissions Reporting
         icon: sheet
-        summary: Avoided-emissions and ESG disclosure filed from contracted Gold products, audit-ready against metered production.
+        summary: Avoided-emissions and ESG disclosure filed from contracted Gold products, audit-supporting against measured production and stated methodology.
         citations:
           - watershed
   - name: Published Products
@@ -545,7 +545,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Offtakers, OEMs, lenders and grid partners reading live tables with no copy and no egress duplication.
+        summary: Offtakers, OEMs, lenders and grid partners reading live tables, avoiding separately maintained extracts where the recipient and transfer arrangement allows.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -564,13 +564,13 @@ consumers:
       - name: ESG & REC Ledger
         icon: gavel
         short: Carbon & certificates
-        summary: Metered generation reconciled to REC and guarantee-of-origin issuance and avoided-emissions accounting, audit-ready for the board and the offtaker.
+        summary: Metered generation reconciled to REC and guarantee-of-origin issuance and avoided-emissions accounting, audit-supporting for the board and the offtaker.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
       - name: Fleet Performance
         icon: aibi
-        summary: Availability, performance ratio, loss accounting and production-to-plan on certified Metric Views.
+        summary: Availability, performance ratio, loss accounting and production-to-plan on certified Metric Views, with performance ratio and soiling as solar measures.
         kpis:
           - Availability
           - Performance ratio
@@ -669,7 +669,7 @@ agent_usecases:
           - What was availability by site yesterday versus plan?
           - Which assets are underperforming their P50 case this month?
           - How much production have we lost to curtailment this week?
-          - Which sites show the largest soiling or degradation losses?
+          - Which solar sites show the largest soiling or degradation losses?
           - What layout and technology gave the best yield across the fleet?
       - name: Trading & Hydrogen Agent
         icon: genie
@@ -733,7 +733,7 @@ agent_usecases:
       - name: Fleet Performance
         short: Availability & PR
         icon: gauge
-        summary: Availability, performance ratio and loss accounting across a mixed-OEM solar, wind and storage fleet, so underperformance is found and closed against the production case.
+        summary: Availability, loss accounting and technology-appropriate yield across a mixed-OEM solar, wind and storage fleet, with performance ratio and soiling as solar measures, so underperformance is found and closed against the production case.
         problem: Underperformance hides in per-OEM SCADA silos and monthly reports; by the time a soiling loss or a curtailment pattern is spotted, weeks of generation are already gone.
         who_benefits: Asset Ops
         how_built: SCADA and APM feeds are conformed to certified Gold; availability, PR and loss accounting are explored in AI/BI and surfaced in the APM Control Room on definitions certified in Unity Catalog.
@@ -787,10 +787,10 @@ agent_usecases:
       - name: Electrolyser Optimisation
         short: Green hydrogen
         icon: stream
-        summary: Running electrolysers when power is cheap, green and abundant, so each kilogram of hydrogen is produced at the lowest cost and carbon within stack limits.
+        summary: Running electrolysers when power is cheap and renewable, trading off cost and carbon under stack constraints and applicable green-hydrogen criteria.
         problem: Electrolysers are run on flat schedules blind to price, curtailment and renewable availability, so hydrogen is made with expensive, higher-carbon power and stacks degrade faster than they earn.
         who_benefits: Grid Ops
-        how_built: SCADA and stack telemetry land in Lakehouse//RT; a production model tracked in MLflow scores against live and forecast power prices in Model Serving, shifting electrolyser load to the cheapest green hours.
+        how_built: SCADA and stack telemetry land in Lakehouse//RT; a production model tracked in MLflow scores against live and forecast power prices in Model Serving, shifting electrolyser load toward lower-cost, lower-carbon hours within stack and eligibility constraints.
         components:
           - AVEVA PI System
           - Lakehouse//RT
@@ -803,7 +803,7 @@ agent_usecases:
         summary: Responding to ISO dispatch and curtailment instructions in real time, minimising lost generation and settling curtailment accurately.
         problem: Curtailment and dispatch instructions arrive at grid latency; handled by hand or reconciled monthly, lost generation is over-curtailed and under-recovered in settlement.
         who_benefits: Grid Ops
-        how_built: ISO dispatch signals stream into Lakehouse//RT; setpoint recommendations are scored in Model Serving and written back as PPC Setpoints, with curtailment reconciled for settlement.
+        how_built: ISO dispatch signals stream into Lakehouse//RT; setpoint recommendations are scored in Model Serving and written back as PPC Setpoints, which the plant controller applies within permissible grid and protection limits, with curtailment reconciled for settlement.
         components:
           - PPC Setpoints
           - ISO Dispatch Signals
@@ -859,7 +859,7 @@ agent_usecases:
       - name: ESG & Carbon
         short: RECs & carbon
         icon: gavel
-        summary: Reconciling metered generation to REC and guarantee-of-origin issuance and avoided-emissions accounting, audit-ready for the board and offtakers.
+        summary: Reconciling measured generation, registry-confirmed certificates and methodology-dependent avoided-emissions accounting into audit-supporting evidence for the board and offtakers.
         problem: RECs, guarantees of origin and carbon disclosure are stitched together from meter extracts and spreadsheets at reporting time, so issuance is late and the audit trail is fragile.
         who_benefits: Executive Office
         how_built: Metered generation is conformed to Gold and reconciled to REC Registries and Watershed Carbon; the ESG & REC Ledger publishes issuance and disclosure through AI/BI on Unity Catalog definitions.
@@ -899,7 +899,7 @@ medallion:
     summary: Turbines, inverters, sites and meters resolved into single conformed entities across SCADA, asset management and metering, with plant hierarchy, availability states and PPA and offtake contracts reconciled to one asset register.
   Gold:
     short: Availability, PR, settlement
-    summary: 'Contracted products operations, commercial and finance teams run on: availability and performance ratio by site and asset, production against P50 and P90, PPA settlement and imbalance, and ESG, carbon and REC positions.'
+    summary: 'Contracted products operations, commercial and finance teams run on: availability and technology-appropriate performance measures, including solar performance ratio, by site and asset, production against P50 and P90, PPA settlement and imbalance, and ESG, carbon and REC positions.'
 citation_index:
   pi:
     title: AVEVA PI System

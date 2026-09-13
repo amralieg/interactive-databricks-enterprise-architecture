@@ -112,13 +112,13 @@ sources:
     tiles:
       - name: CVS Caremark PBM
         icon: market
-        summary: Pharmacy claims, formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.
+        summary: Pharmacy claims and rebate accruals from the pharmacy benefit manager, with MMIT formulary access and Accredo specialty dispensing as optional independent enrichments.
         citations:
           - caremark
           - mmit
           - accredo
         category: Pharmacy Benefit Manager (PBM)
-        what_it_is: Adjudicates pharmacy claims and carries formulary access edits, specialty dispensing and rebate accruals from the pharmacy benefit manager.
+        what_it_is: Adjudicates pharmacy claims and carries rebate accruals from the pharmacy benefit manager, with MMIT formulary access and Accredo specialty dispensing shown as optional independent enrichment sources rather than Caremark-owned feeds.
         who_uses_it: Actuarial & Finance, pharmacy integrity and clinical-pharmacy teams.
         data_out:
           batch:
@@ -446,7 +446,7 @@ consumers:
     tiles:
       - name: CMS Star & HEDIS
         icon: gavel
-        summary: HEDIS, Stars and MLR reports produced from the same governed tables operations runs on.
+        summary: HEDIS, Stars and MLR reports produced from the same governed tables operations runs on, with each regime's outputs following its own validation process.
         citations:
           - ncqa-hedis
       - name: State Filing Packages
@@ -475,7 +475,7 @@ consumers:
       - name: FWA Command Centre
         icon: gauge
         short: Payment integrity
-        summary: Provider and pharmacy anomaly clusters flagged before claims pay or after for recovery.
+        summary: Provider and pharmacy anomaly clusters flagged before claims pay or after for recovery, with a separate claims-operations pend-remediation module distinct from SIU fraud referrals.
       - name: Provider Scorecard
         icon: market
         short: Network value
@@ -617,7 +617,7 @@ agent_usecases:
           - Nurse Care Coordinators
           - Utilization Management
         questions:
-          - Which members are rising-risk and should be outreached this week?
+          - Which members are rising-risk on the latest monthly scores and should be outreached this week?
           - What is our HEDIS gap-closure rate by measure before season?
           - Where is prior-auth turnaround exceeding target?
           - Which members have open gaps in care across multiple measures?
@@ -684,7 +684,7 @@ agent_usecases:
         summary: Measure gaps closed through outreach before submission season, not after chart chase.
         problem: Care gaps are found in the retrospective chart chase after the measurement year, so outreach happens too late to close them and the plan's Stars rating and bonus slip.
         who_benefits: Care Management
-        how_built: Claims, lab and clinical feeds conform on Delta Lake and run against certified HEDIS measures, so open gaps rank for outreach in AI/BI and the Care Manager Console before season.
+        how_built: Claims, lab and clinical feeds conform on Delta Lake and run as governed calculations against applicable HEDIS measure specifications, so open gaps rank for outreach in AI/BI and the Care Manager Console before season.
         components:
           - Care Manager Console
           - NCQA HEDIS Measures
@@ -714,7 +714,7 @@ agent_usecases:
         short: Clinical
         icon: people
         summary: High-cost members identified and engaged before preventable admissions.
-        problem: Rising-risk members are spotted only after an avoidable ED visit or admission, because claims, pharmacy and clinical signals live apart and nurses cannot see who is deteriorating now.
+        problem: Rising-risk members are spotted only after an avoidable ED visit or admission, because claims, pharmacy and clinical signals live apart and nurses lack a periodic view of who is rising in risk for preventive outreach.
         who_benefits: Care Management
         how_built: Member features from claims and clinical feeds are built in Feature Store and scored monthly in Model Serving, ranking rising-risk members in the Care Manager Console for outreach.
         components:
@@ -732,7 +732,7 @@ agent_usecases:
         summary: First-pass auto-adjudication maximised with fewer pends, edits and manual rework.
         problem: Claims fall out to manual pend queues on avoidable edit and eligibility mismatches, so adjudication is slow, inconsistent and costly and the same defects recur every cycle.
         who_benefits: Fraud & Integrity
-        how_built: Facets and HealthEdge adjudication, edit and pend results conform on Delta Lake under Unity Catalog, and AI Functions cluster pend root causes scored in Model Serving so payment integrity raises first-pass fixes in the FWA Command Centre before the next cycle.
+        how_built: Facets and HealthEdge adjudication, edit and pend results conform on Delta Lake under Unity Catalog, and AI Functions cluster pend root causes scored in Model Serving so claims operations raises administrative first-pass fixes in a dedicated FWA Command Centre module before the next cycle, with fraud referrals reserved for the integrity workflow.
         components:
           - FWA Command Centre
           - Facets Core Admin

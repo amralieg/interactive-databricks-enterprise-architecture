@@ -576,7 +576,7 @@ consumers:
       - name: Evidence Finder
         icon: media
         short: Search & redaction
-        summary: Where investigators search transcribed body-worn and in-car video, case notes and reports by what was said and seen, with redaction and disclosure tracked for court.
+        summary: Where investigators search transcribed body-worn and in-car video, case notes and reports by what was said and indexed in metadata, with redaction and disclosure tracked for court.
       - name: EMS Demand Planner
         icon: iot
         short: Ambulance deployment
@@ -686,7 +686,7 @@ agent_usecases:
           - Which beats are running slowest against the standard right now?
           - How many calls are holding in queue and for how long?
           - Where is call-for-service demand concentrating this shift?
-          - How does dispatch-to-on-scene time break down into call-taking, dispatch and travel?
+          - How does call-received-to-on-scene time break down into call processing, dispatch or turnout and travel?
       - name: Crime Analysis Agent
         icon: genie
         summary: Explore incident patterns, hotspots and clearance across records and calls for service.
@@ -803,7 +803,7 @@ agent_usecases:
       - name: Evidence Search
         short: Video & case search
         icon: media
-        summary: Making hours of body-worn and in-car video, case notes and reports searchable by what was said and seen, with redaction and disclosure tracked so evidence reaches court on time.
+        summary: Making hours of body-worn and in-car video, case notes and reports searchable by what was said and indexed in metadata, with redaction and disclosure tracked so evidence reaches court on time.
         problem: Digital evidence piles up faster than anyone can review it, and finding the moment that matters means scrubbing hours of video by hand while disclosure deadlines run.
         who_benefits: Investigations
         how_built: Evidence metadata and transcripts are governed in Unity Catalog; AI Functions transcribe and summarise while AI Search finds the moment across the case, surfaced in the Evidence Finder.
@@ -820,7 +820,7 @@ agent_usecases:
         short: Plate reads & alerts
         icon: network
         summary: Turning ALPR reads and BOLOs into timely leads, matching plate reads against wanted and missing-person lists and pushing alerts to the field before the vehicle is gone.
-        problem: ALPR generates millions of reads that mostly sit unqueried, so a hit against a wanted or missing-person list arrives too late to act on, or never surfaces at all.
+        problem: ALPR reads and watch-list hits sit in systems that do not share context, so cross-system enrichment and follow-up on a wanted or missing-person lead can lag or fall between agencies.
         who_benefits: Investigations
         how_built: Plate reads land in Lakehouse//RT and match against governed watch-lists in Model Serving; hits push to the field through BOLO & Alerts with evidence linked in Genetec Clearance.
         components:
@@ -838,7 +838,7 @@ agent_usecases:
         summary: Bringing first-responder location, status and telemetry together over broadband so a supervisor sees a responder in trouble and moves backup before a check-in is missed.
         problem: Officer status lives on the radio and in the supervisor's head, so a responder in trouble is noticed when a check-in is missed rather than when the signals first turn.
         who_benefits: Patrol Ops
-        how_built: FirstNet location and telemetry feeds stream into Lakehouse//RT; models flag distress and isolation in Model Serving so supervisors move backup before a check-in is missed.
+        how_built: Responder endpoint status and AVL location events carried over FirstNet stream into Lakehouse//RT; models surface supervisor-facing risk indicators in Model Serving so supervisors move backup before a check-in is missed.
         components:
           - FirstNet Broadband
           - AVL Telemetry

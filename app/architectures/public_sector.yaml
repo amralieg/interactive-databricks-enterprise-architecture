@@ -321,7 +321,7 @@ cloud_integrations:
             interval: Periodic + on-demand API
       - name: Grants.gov / SAM.gov
         icon: gavel
-        summary: Federal grant opportunity, award and entity registration feeds consumed for grants and subrecipient management.
+        summary: Federal grant opportunity feeds from Grants.gov consumed for grants management; award and entity-registration references remain unverified.
         citations:
           - grantsgov
         category: Federal Grants & Entity Registry
@@ -387,7 +387,7 @@ pipelines:
           - - Unity Catalog
             - One governed catalogue and lineage across every agency domain.
           - - OpenSharing
-            - Cross-agency and public data shared live without copies or egress.
+            - Cross-agency and public data shared live, avoiding separately maintained extracts where supported.
           - - AI/BI
             - Published, certified products the portal and analysts read from the same source.
         sub:
@@ -519,7 +519,7 @@ consumers:
           - accela
       - name: Do Not Pay Sync
         icon: gavel
-        summary: Confirmed bad actors and payment holds synced to disbursement and Do Not Pay controls.
+        summary: Policy-authorized payment holds and reviewed case statuses synced to disbursement and Do Not Pay controls.
   - name: Regulatory & Reporting
     icon: gavel
     tiles:
@@ -537,7 +537,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Other agencies and researchers reading live tables with no copy and no egress duplication.
+        summary: Other agencies and researchers reading live tables, avoiding separately maintained extracts where the arrangement supports it.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -548,7 +548,7 @@ consumers:
       - name: Constituent 360 Hub
         icon: custlake
         short: One resident view
-        summary: One governed profile per resident stitched across case, benefits, tax and 311 records, so a caseworker sees the whole person instead of one agency's slice.
+        summary: One governed profile per resident stitched across case, benefits, tax and 311 records, so a caseworker sees the whole person while a permission-scoped resident view exposes only self-service records.
       - name: Permit Throughput
         icon: stream
         short: Cycle-time board
@@ -725,10 +725,10 @@ agent_usecases:
       - name: Improper Payments
         short: Payment integrity
         icon: gauge
-        summary: Scoring eligibility, identity and payment signals together so improper and fraudulent payments are prevented, not chased after the money is gone.
+        summary: Scoring eligibility, identity and payment signals together so high-risk payments are held for review before disbursement, not chased after the money is gone.
         problem: Benefits are optimised to pay quickly, so integrity checks run after the money is out the door and improper payments are chased through pay-and-chase rather than prevented.
         who_benefits: Program Directors
-        how_built: Eligibility, claims and payment feeds land in Lakehouse//RT; entity resolution and risk models score each claim in Model Serving so high-risk payments are held before disbursement.
+        how_built: Eligibility, claims and payment feeds land in Lakehouse//RT; entity resolution and risk models score each claim in Model Serving so high-risk payments are held for review under applicable agency rules before disbursement, with suspected risk kept distinct from adjudicated determinations.
         components:
           - Improper Payment Radar
           - Lakehouse//RT
@@ -809,7 +809,7 @@ agent_usecases:
       - name: Open Data Platform
         short: Transparency
         icon: globe
-        summary: Publishing certified open data and answering the public from the governed source, so the portal never drifts from the numbers the agency runs on.
+        summary: Publishing certified open data and answering the public from the governed source, so governed refreshes reduce portal drift from the numbers the agency runs on.
         problem: Publishing open data means hand-built extracts that go stale, and the public portal drifts from the governed source it was copied from.
         who_benefits: Chief Data Officer
         how_built: Curated Gold tables are published as data products and served to the portal and to residents through Genie and OpenSharing, governed by Unity Catalog.
@@ -875,7 +875,7 @@ agent_usecases:
         summary: Building constituent-facing services on governed data so residents complete online what used to need a counter visit, with plain-language help.
         problem: Residents drop out of online services that are slow, fragmented and disconnected from the data behind them.
         who_benefits: Constituent Services
-        how_built: Constituent-facing services are built as Databricks Apps over Lakebase next to governed data, with Genie answering resident questions in plain language.
+        how_built: Constituent-facing services are built as Databricks Apps over Lakebase next to governed data, using a permission-scoped resident view of Constituent 360 Hub separate from the caseworker workspace, with Genie answering resident questions in plain language.
         components:
           - Constituent 360 Hub
           - Apps

@@ -652,7 +652,8 @@ agent_usecases:
           - What was RevPAR by property and segment last weekend versus the same weekend last year?
           - Which channels are driving the most bookings this week, and at what net ADR?
           - Where is booking pace behind the forecast for the next 30 days?
-          - Which properties are out of rate parity against the compset right now?
+          - Which properties show rate-parity breaches across our own distribution channels right now?
+          - What is our rate gap or index against the competitive set by property?
           - How does length-of-stay mix compare to the same period last year?
       - name: Guest 360 Agent
         icon: genie
@@ -692,7 +693,7 @@ agent_usecases:
           - Which detractor surveys are still open past their recovery SLA?
       - name: Owner Reporting Agent
         icon: genie
-        summary: Ask about owner statements, NOI and STR index position across the estate.
+        summary: Ask about owner statements and NOI, operator GOP and market STR index position across the estate, each a distinct measure.
         feeds:
           - Ownership Group Marts
           - STR Benchmark Feed
@@ -853,13 +854,14 @@ agent_usecases:
         summary: A round-the-clock assistant answering guest requests and booking services.
         problem: Guest questions and service requests arrive at all hours across chat, app and phone, but staff cannot cover every channel overnight, so requests queue and the experience slips exactly when it should feel effortless.
         who_benefits: Front Office & Ops
-        how_built: Mosaic AI agents grounded in Genie answer guest requests and book spa, dining and room services against governed Oracle OPERA Cloud and SevenRooms CRM data through Databricks Apps, escalating to staff only when needed.
+        how_built: Mosaic AI agents grounded in Genie answer guest requests, booking spa through Book4Time Spa and dining through SevenRooms CRM while routing room-service requests to the property workflow, grounded in governed Oracle OPERA Cloud data through Databricks Apps and escalating to staff when needed.
         components:
           - Mosaic AI
           - Genie
           - Databricks Apps
           - Oracle OPERA Cloud
           - SevenRooms CRM
+          - Book4Time Spa
 medallion:
   Bronze:
     short: Raw guest and booking feeds

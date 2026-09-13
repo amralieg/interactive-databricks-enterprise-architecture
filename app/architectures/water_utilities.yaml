@@ -520,7 +520,7 @@ consumers:
           - cityworks
       - name: AMI Valves & Alerts
         icon: iot
-        summary: Remote valve commands and customer leak notifications from AMI flags.
+        summary: Customer leak notifications from AMI flags, kept separate from authorized valve operations under existing SCADA controls.
         citations:
           - itron
   - name: Regulatory & Reporting
@@ -654,7 +654,7 @@ agent_usecases:
     tiles:
       - name: Network & NRW Agent
         icon: genie
-        summary: Ask about pressure, non-revenue water, leaks and demand across the network in plain language.
+        summary: Ask about pressure, non-revenue water from district inflow and authorized consumption, leaks and demand across the network in plain language.
         feeds:
           - AVEVA PI System
           - Itron OpenWay
@@ -714,6 +714,7 @@ agent_usecases:
           - KISTERS WISKI
           - EPA SDWIS Feed
           - NRW, pressure, compliance
+          - Pumping energy, tariff, emissions factors
         teams:
           - Water Quality
           - Compliance Officers
@@ -732,10 +733,10 @@ agent_usecases:
       - name: Leak Detection
         short: NRW
         icon: iot
-        summary: Distribution leaks inferred from AMI night flow and pressure transients.
+        summary: Distribution loss localized from district inflow and authorized consumption, with AMI night-flow and pressure anomalies prioritising where to investigate.
         problem: Distribution leaks hide as background loss until a main bursts, and crews chase them across thousands of miles of buried pipe with little night-flow evidence to say where to dig first.
         who_benefits: Distribution Ops
-        how_built: AMI night-flow and PI pressure transients land in Lakehouse//RT and score against leak models in Model Serving, so anomalies surface on the Network Control Center for crew dispatch.
+        how_built: District inflow and authorized consumption establish the network balance while AMI night-flow and PI pressure transients land in Lakehouse//RT and score against leak models in Model Serving, so distribution-loss anomalies surface on the Network Control Center for crew dispatch, separate from private-side meter alerts.
         components:
           - Network Control Center
           - Itron OpenWay
@@ -806,7 +807,7 @@ agent_usecases:
         summary: Pressure zones optimised for compliance and energy cost.
         problem: Pressure zones are tuned by hand to avoid low-pressure complaints, so the network runs over-pressured, wasting pump energy and driving the main breaks and leakage it was meant to prevent.
         who_benefits: Distribution Ops
-        how_built: PI pressure and Schneider PRV telemetry land in Lakehouse//RT and feed optimisation models in Model Serving, so setpoints hold compliance at lowest energy from the Network Control Center.
+        how_built: PI pressure and Schneider PRV telemetry land in Lakehouse//RT and feed optimisation models in Model Serving, so the Network Control Center recommends authorized pressure setpoints subject to hydraulic and existing SCADA control limits.
         components:
           - Network Control Center
           - AVEVA PI System
@@ -863,10 +864,10 @@ agent_usecases:
       - name: Sustainability
         short: Energy & carbon
         icon: globe
-        summary: Pump energy, greenhouse-gas intensity and water reuse optimised across the network for cost and carbon.
+        summary: Pump energy and greenhouse-gas intensity optimised across the network for cost and carbon.
         problem: Pumping is the utility's biggest energy cost and its largest controllable emissions, but energy, tariff and flow data sit apart from operations, so neither cost nor carbon is actually managed.
         who_benefits: Distribution Ops
-        how_built: Pump, tank and tariff data feed optimisation models tracked in MLflow and scored in Model Serving, so energy and emissions are cut from the Network Control Center within hydraulic limits.
+        how_built: Pump, tank and tariff data feed optimisation models tracked in MLflow and scored in Model Serving, so energy and emissions are cut from the Network Control Center within hydraulic limits. The Vattenfall reference is a pumped-storage energy and carbon analogy, with water-network optimisation the proposed application.
         components:
           - Network Control Center
           - AVEVA PI System
@@ -882,7 +883,7 @@ agent_usecases:
         summary: Cost per thousand gallons, collections and capital tracked on governed ledgers so finance, rates and operations work from one set of numbers.
         problem: Cost-of-service, collections and capital numbers are spread across CIS, work management and finance systems, so each rate filing and board pack rebuilds them and the numbers rarely reconcile.
         who_benefits: Asset Management
-        how_built: CIS, work-management and asset ledgers conform under Unity Catalog and are modelled in AI/BI with Genie One, so cost per gallon, collections and capital are read from one governed set for rate cases and the board.
+        how_built: CIS, work-management and asset ledgers conform under Unity Catalog and are modelled in AI/BI with Genie One, so cost per thousand gallons, collections and capital are read from one governed set for rate cases and the board.
         components:
           - Oracle Utilities C2M
           - AI/BI

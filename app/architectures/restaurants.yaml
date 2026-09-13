@@ -486,7 +486,7 @@ consumers:
     tiles:
       - name: Food Safety Audits
         icon: gavel
-        summary: HACCP and health inspection records produced from governed operations tables.
+        summary: HACCP monitoring records and external inspection evidence assembled from governed operations tables for compliance review.
       - name: Franchise Disclosure
         icon: share
         summary: Unit economic summaries filed from contracted Gold products.
@@ -551,10 +551,10 @@ consumers:
           - FP&A
       - name: Delivery & Loyalty
         icon: aibi
-        summary: Channel mix, marketplace margin and loyalty engagement across the base.
+        summary: Channel mix, marketplace net proceeds and loyalty engagement across the base.
         kpis:
           - Delivery channel mix
-          - Net margin per check
+          - Net proceeds per check
           - Redemption lift
           - Visit frequency
           - Points liability
@@ -657,7 +657,7 @@ agent_usecases:
           - Loyalty Manager
           - Digital & Delivery
         questions:
-          - What is net margin per delivered check by channel and store?
+          - What are net marketplace proceeds per delivered check by channel and store?
           - Which delivery platform drives the most profitable orders this month?
           - Which loyalty members are lapsing before their points expire?
           - What is redemption lift on the current offer versus baseline?
@@ -755,7 +755,7 @@ agent_usecases:
         summary: Kitchen and drive-thru times improved with bump-to-ticket analytics.
         problem: Slow tickets and drive-thru lanes are only felt at the register, so managers coach on anecdotes while the bump and timing data that shows where seconds are lost stays trapped in the kitchen display.
         who_benefits: Operations
-        how_built: Kitchen bump and drive-thru timing events stream from QSR Automations KDS into Lakehouse//RT, and Store Performance tracks ticket and lane times by store and daypart against the service target.
+        how_built: Kitchen ticket and bump events from QSR Automations KDS and optional drive-thru timer events stream into Lakehouse//RT, and Store Performance tracks kitchen ticket times and drive-thru lane times as distinct intervals by store and daypart against the service target.
         components:
           - Store Performance
           - QSR Automations KDS
@@ -768,10 +768,10 @@ agent_usecases:
       - name: Delivery Channel Mix
         short: Digital
         icon: partner
-        summary: Marketplace fees and order mix optimised for net margin per store.
+        summary: Marketplace fees and order mix optimised for net proceeds after fees, promotions and refunds per store.
         problem: Third-party delivery adds orders but commissions, promos and refunds bury the real margin, so operators cannot see which channel or store actually makes money on a delivered check.
         who_benefits: Marketing & Loyalty
-        how_built: Order, fee and payout feeds from DoorDash Marketplace and Uber Eats Merchant conform on Delta Lake, and margin per channel and store is modeled so operators shift mix toward the platforms that net most.
+        how_built: Order, fee and payout feeds from DoorDash Marketplace and Uber Eats Merchant conform on Delta Lake, and net proceeds after fees, promotions and refunds are modeled by channel and store so operators shift mix toward the platforms that net most.
         components:
           - DoorDash Marketplace
           - Uber Eats Merchant

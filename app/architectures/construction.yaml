@@ -594,8 +594,8 @@ consumers:
           - TRIR
           - Near-miss rate
           - Leading-indicator closure
-          - Permit compliance
-          - Punch-list burndown
+          - Certification currency
+          - Punch-list burndown (closeout quality)
         teams:
           - Safety & Quality
           - EHS Director
@@ -818,7 +818,7 @@ agent_usecases:
       - name: Materials & Procurement Planning
         short: Supply
         icon: zplug
-        summary: Long-lead materials and buyout tied to the schedule so a late delivery never surprises the critical path.
+        summary: Long-lead materials and buyout tied to the schedule so late delivery risk is surfaced earlier against the critical path.
         problem: Long-lead materials and subcontractor buyout are tracked in spreadsheets against a moving schedule, so a late steel or switchgear delivery stalls the critical path before anyone sees the exposure.
         who_benefits: Project Managers
         how_built: Procore procurement, Sage commitments and openBIM quantity takeoffs conform on Delta Lake, and delivery-risk models in Model Serving tie material need dates to the P6 plan in Project Command so buyout stays ahead of the build.
@@ -835,7 +835,7 @@ agent_usecases:
         summary: Embodied carbon and waste diversion computed per project from real material quantities.
         problem: Owners and codes now demand embodied carbon and waste diversion by project, but the material quantities and haul data needed sit across BIM, ERP and field logs, so carbon is estimated with crude factors that will not survive an audit.
         who_benefits: GC President & COO
-        how_built: openBIM quantity data, ERP purchases and field waste logs conform under Unity Catalog, embodied carbon and diversion are computed on Delta Lake, and certified figures publish as Data Products on AI/BI for owner ESG reporting.
+        how_built: openBIM quantity data, ERP purchases and field waste logs conform under Unity Catalog, embodied carbon and diversion are computed on Delta Lake using versioned emission factors or EPDs and stated project boundaries, and governed estimates publish as Data Products on AI/BI for owner ESG reporting.
         components:
           - Data Products
           - IFC / COBie / BCF
@@ -851,7 +851,7 @@ agent_usecases:
         summary: Leading indicators predicting recordable incidents before TRIR moves.
         problem: Incidents are counted after they happen, while leading indicators like near-misses and inspection gaps sit in field apps no one aggregates until TRIR has already moved.
         who_benefits: Safety & Quality
-        how_built: HammerTech observations, OSHA logs and OpenSpace safety analytics conform on Delta Lake and feed leading-indicator models in Model Serving, surfaced in the Safety Dashboard before TRIR rises.
+        how_built: HammerTech incident and observation records and labor exposure hours conform on Delta Lake with OpenSpace safety analytics and feed leading-indicator models in Model Serving, surfaced in the Safety Dashboard before TRIR rises; OSHA Incident Data is used only for industry benchmarking.
         components:
           - Safety Dashboard
           - HammerTech

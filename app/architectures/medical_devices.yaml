@@ -560,7 +560,7 @@ consumers:
     tiles:
       - name: FDA UDI & MDR Filing
         icon: gavel
-        summary: UDI records and MDR reports filed to GUDID and MAUDE from governed device tables.
+        summary: UDI records registered to GUDID and MDR packages prepared for authorized submission from governed device tables, with MAUDE read as a public adverse-event reference.
         citations:
           - gudid
       - name: EU MDR / EUDAMED
@@ -701,7 +701,7 @@ agent_usecases:
           - What is the complaint and MDR rate by device family?
           - Which CAPAs are open past their target closure date?
           - Where are complaints repeating across sites and products?
-          - How does our complaint rate compare to MAUDE peers?
+          - What are peer MAUDE report counts and patterns, noting reporting-population limitations?
       - name: Device Manufacturing Agent
         icon: genie
         summary: Explore first-pass yield, OEE and nonconformance across the lines.
@@ -806,7 +806,7 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
         stories:
-          - title: 'Insulet: connected Omnipod device analytics on Databricks'
+          - title: Insulet modernizes data with Lakeflow Connect on Databricks
             url: https://www.databricks.com/customers/insulet/lakeflow-connect
           - title: GE Healthcare builds device and patient views on Databricks
             url: https://www.databricks.com/company/newsroom/press-releases/databricks-introduces-lakehouse-for-the-healthcare-and-life-sciences-industries-to-drive-transformation-across-healthcare-ecosystem
@@ -824,7 +824,7 @@ agent_usecases:
           - Model Serving
           - AI/BI
         stories:
-          - title: Insulet cuts manufacturing data latency on Databricks
+          - title: Insulet modernizes data with Lakeflow Connect on Databricks
             url: https://www.databricks.com/customers/insulet/lakeflow-connect
       - name: Supply Risk Visibility
         short: Supply chain
@@ -903,7 +903,7 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
         stories:
-          - title: Insulet guides product updates with live device data
+          - title: Insulet modernizes data with Lakeflow Connect on Databricks
             url: https://www.databricks.com/customers/insulet/lakeflow-connect
       - name: Device Digital Twin & Simulation
         short: Engineering

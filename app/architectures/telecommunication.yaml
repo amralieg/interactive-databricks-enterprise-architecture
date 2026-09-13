@@ -404,7 +404,7 @@ pipelines:
         summary: Product owners on offer uptake, upsell and retention campaigns, scoring next-best-offer per subscriber before the contract renewal window.
         uses:
           - - Offer Management
-            - Propensity-scored upsell before renewal.
+            - Propensity-scored upsell before renewal, delivered through the Churn Prevention Hub.
           - - CustomerLake
             - Segments without copying profiles into a separate CDP.
         sub:
@@ -439,7 +439,7 @@ pipelines:
           - Next Best Offer
       - name: Revenue Assurance
         mark: AI/BI
-        summary: Finance and fraud teams on leakage, disputes and roaming settlement, catching SIM-swap and IRSF loss before it clears interconnect.
+        summary: Finance and fraud teams on leakage, disputes and roaming settlement, flagging SIM-change account takeover and catching IRSF loss before it clears interconnect.
         uses:
           - - AI/BI
             - Leakage and fraud loss on certified views.
@@ -575,7 +575,7 @@ consumers:
         summary: Call completion and coverage metrics filed to the regulator.
       - name: Lawful Intercept Audit
         icon: share
-        summary: Compliance evidence from governed access logs.
+        summary: Governed access logs contributing to lawful-intercept audit evidence alongside applicable authorization and case records.
   - name: Published Products
     icon: product
     tiles:
@@ -744,7 +744,7 @@ agent_usecases:
           - What is our fraud loss rate this month versus last?
           - Which roaming partners exceed dispute thresholds?
           - Where is revenue leaking across rating and interconnect?
-          - Which accounts show SIM-swap or IRSF patterns right now?
+          - Which accounts show SIM-change and identity-context anomalies, separate from IRSF usage patterns?
           - What is the value of unreconciled TAP discrepancies?
       - name: Care & Dispatch Agent
         icon: genie
@@ -828,7 +828,7 @@ agent_usecases:
         summary: SIM swap, IRSF and subscription fraud flagged before settlement.
         problem: SIM-swap, IRSF and subscription fraud move faster than nightly rules, so loss clears through interconnect and roaming settlement before a static rules engine ever flags the pattern.
         who_benefits: Revenue Assurance
-        how_built: CDR, usage and device signals are scored in real time through Model Serving on Lakehouse//RT, with flagged accounts raised to revenue-assurance and care before the charge settles.
+        how_built: CDR, usage and device signals score IRSF and subscription-fraud patterns in real time through Model Serving on Lakehouse//RT, while SIM-change and identity-context anomalies flag account takeover, raising flagged accounts to revenue-assurance and care before loss clears settlement.
         components:
           - Mobileum Fraud
           - Model Serving
@@ -843,7 +843,7 @@ agent_usecases:
       - name: Revenue Assurance & Leakage
         short: Assurance
         icon: gavel
-        summary: Rating, interconnect and roaming leakage reconciled and recovered across the revenue chain.
+        summary: Rating, interconnect and roaming leakage reconciled and identified for recovery across the revenue chain.
         problem: Revenue leaks between mediation, rating, interconnect and roaming settlement, and the gaps are chased in month-end spreadsheets long after the usage has already billed short or not at all.
         who_benefits: Revenue Assurance
         how_built: Subex, WeDo and GSMA TAP feeds are conformed on Delta Lake and reconciled end to end, so leakage across rating and interconnect surfaces on certified AI/BI views and Genie One answers where revenue is being lost.
@@ -911,10 +911,10 @@ agent_usecases:
       - name: Location Data Monetization
         short: New revenue
         icon: market
-        summary: Privacy-safe aggregated location and mobility products packaged for external buyers.
+        summary: Privacy-reviewed aggregated location and mobility products released under defined disclosure conditions for external buyers.
         problem: The operator sits on aggregate mobility and network-presence signals with real value to retail, transport and planning buyers, but there is no governed, privacy-safe way to package and share them as products.
         who_benefits: CEO & CTO Office
-        how_built: Network and location signals are aggregated and anonymised on Delta Lake, published as governed Data Products in Unity Catalog and shared to buyers over Delta Sharing, with usage read in AI/BI.
+        how_built: Network and location signals are aggregated and anonymised on Delta Lake, published as privacy-reviewed Data Products in Unity Catalog under defined disclosure conditions and shared to buyers over Delta Sharing, with usage read in AI/BI.
         components:
           - Data Products
           - Unity Catalog

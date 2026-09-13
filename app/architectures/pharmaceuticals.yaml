@@ -556,7 +556,7 @@ consumers:
           - werum-pasx
       - name: EDC Query Resolution
         icon: people
-        summary: Data queries closed in EDC from governed discrepancy reports.
+        summary: Authorized data-query closures written back to EDC from governed discrepancy reports, distinct from clinical deviation records.
         citations:
           - medidata-rave
       - name: CAPA Work Orders
@@ -585,7 +585,7 @@ consumers:
     tiles:
       - name: FDA / EMA Submissions
         icon: gavel
-        summary: eCTD packages and periodic safety reports from governed clinical and safety tables.
+        summary: eCTD publishing and periodic safety reports assembled from governed clinical and safety products; CDISC covers clinical dataset standards only.
         citations:
           - cdisc
       - name: GxP Audit Evidence
@@ -807,7 +807,7 @@ agent_usecases:
         summary: Visit and dosing deviations surfaced before database lock.
         problem: Visit-window and dosing deviations hide inside EDC queries and monitoring notes, so data managers find them at database lock when a fix means reopening the study and re-monitoring sites.
         who_benefits: Clinical Operations
-        how_built: Query, visit and dosing data are conformed on Delta Lake under Unity Catalog with expectations in Lakeflow, so deviations surface in the Trial Command Centre while the visit can still be fixed.
+        how_built: Query, visit and dosing data are conformed on Delta Lake under Unity Catalog with expectations in Lakeflow, so the Trial Command Centre raises prospective visit-window alerts, resolves data queries and documents actual deviations for authorized corrective action.
         components:
           - Trial Command Centre
           - Medidata Rave EDC
@@ -838,10 +838,10 @@ agent_usecases:
       - name: Batch Genealogy
         short: Traceability
         icon: stream
-        summary: Raw material to finished dose traced in minutes during quality holds.
+        summary: Raw material to finished dose traced rapidly during quality holds.
         problem: When a quality hold hits, tracing raw-material lots to finished doses across MES, LIMS and ERP takes days of manual reconciliation, and every hour the batch sits is cost and supply risk.
         who_benefits: Mfg & Supply
-        how_built: Batch records, LIMS results and material moves are conformed on Delta Lake under Unity Catalog, so genealogy from raw lot to finished dose resolves in minutes in the Batch Release Cockpit.
+        how_built: Batch records, LIMS results and material moves are conformed on Delta Lake under Unity Catalog, so genealogy from raw lot to finished dose resolves rapidly in the Batch Release Cockpit.
         components:
           - Batch Release Cockpit
           - Werum PAS-X
@@ -876,10 +876,10 @@ agent_usecases:
       - name: Cold Chain Integrity
         short: Distribution
         icon: observ
-        summary: Temperature excursions predicted and rerouted before product quality is lost.
+        summary: Temperature excursions predicted so distribution can reroute or quarantine to reduce excursion impact.
         problem: Temperature excursions in transit are found after delivery when a shipment is already spoiled, so product is written off and patients wait while lanes that keep failing go unfixed.
         who_benefits: Mfg & Supply
-        how_built: Shipment sensor and logistics events stream into Lakehouse//RT and excursion-risk models in Model Serving flag lanes early, so distribution reroutes before product quality is lost.
+        how_built: Shipment sensor and logistics events stream into Lakehouse//RT and excursion-risk models in Model Serving flag lanes early, supporting reroute or quarantine decisions that reduce excursion impact.
         components:
           - Lakehouse//RT
           - Model Serving

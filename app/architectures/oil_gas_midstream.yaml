@@ -553,7 +553,7 @@ consumers:
       - name: Control Room
         icon: gauge
         short: Linepack live
-        summary: Linepack, nominations and station load on Databricks Apps over Lakebase.
+        summary: Linepack, nominations and station load plus incident triage, scenario and security-investigation views on Databricks Apps over Lakebase.
       - name: Integrity Console
         icon: network
         short: Metal loss view
@@ -697,7 +697,7 @@ agent_usecases:
           - ION Openlink Endur
           - Platts Price Assess
           - SAP S/4HANA
-          - Production, margin, loss
+          - Throughput, margin, loss
         teams:
           - Commercial & Scheduling
           - Risk & Middle Office
@@ -865,10 +865,10 @@ agent_usecases:
       - name: Cyber Threat Monitoring & Detection
         short: OT security
         icon: observ
-        summary: OT and IT telemetry correlated across the pipeline network so threats to SCADA and control systems are detected and contained early.
+        summary: OT and IT telemetry correlated across the pipeline network so threats to SCADA and control systems are detected and investigated early, with authorized response owned by existing OT and security teams.
         problem: OT threat detection, asset inventory and IT security logs sit in separate tools, so an intrusion into pipeline SCADA or a control-system anomaly is seen late and the blast radius across stations is hard to scope when it matters.
         who_benefits: Corporate & Network Leaders
-        how_built: Dragos OT telemetry, historian signals and IT security logs conform under Unity Catalog on Delta Lake, and detection models scored in Model Serving correlate threats across the network on the Control Room before they spread.
+        how_built: Dragos OT telemetry, historian signals and IT security logs conform under Unity Catalog on Delta Lake, and detection models scored in Model Serving correlate and surface threats across the network for investigation on the Control Room, routing authorized response to OT and security teams.
         components:
           - Control Room
           - Dragos Platform

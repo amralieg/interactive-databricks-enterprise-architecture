@@ -432,10 +432,10 @@ pipelines:
         mark: Model Serving
         summary: Pricing actuaries setting rate plans against ISO loss costs and the filed rate; reserving actuaries booking IBNR and case reserves; the telematics team turning driving behaviour into usage-based rate.
         uses:
-          - - Pricing Workbench
+          - - Earnix Rating
             - Rate adequacy and loss-cost trend before a rate change is filed.
           - - Model Serving
-            - GLM and willingness-to-pay models scored in the quote path.
+            - GLM and approved rating models scored in the quote path; exploratory willingness-to-pay analysis kept separate until filed and permitted.
           - - MLflow
             - Every rate and reserving model versioned for the filing and audit.
         sub:
@@ -518,7 +518,7 @@ pipelines:
         summary: GLM and gradient-boosted pricing models built in the lakehouse and pushed into the Earnix rating engine, tested against ISO loss costs and the filed rate plan before a rate change is bound.
         uses:
           - - Model Serving
-            - Rating and willingness-to-pay models scored in the quote path.
+            - Rating models scored in the quote path using approved, jurisdiction-permitted factors, with willingness-to-pay analysis kept exploratory.
           - - MLflow
             - Every rate model versioned against the filed plan for audit.
           - - AI/BI
@@ -566,7 +566,7 @@ consumers:
           - guidewire-cc
       - name: Rating Engine Sync
         icon: market
-        summary: Model outputs and price-optimisation factors synced into the rating engine behind the quote.
+        summary: Approved, jurisdiction-permitted rating factors synced into the rating engine behind the quote, separate from exploratory price-optimisation analysis.
         citations:
           - earnix
   - name: Regulatory & Reporting
@@ -586,7 +586,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Reinsurers, MGAs and audit partners reading live tables with no copy and no egress duplication.
+        summary: Reinsurers, MGAs and audit partners reading governed live tables that reduce routine file duplication.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -637,7 +637,7 @@ consumers:
           - SIU & Fraud
       - name: Catastrophe Exposure & PML
         icon: aibi
-        summary: Modelled PML, accumulation and ceded recoveries by peril and treaty.
+        summary: Modelled PML, accumulation, modeled treaty recoveries and booked outstanding recoverables by peril and treaty.
         kpis:
           - Gross PML
           - Net PML
@@ -732,7 +732,7 @@ agent_usecases:
           - Which claims have ClaimSearch links to prior losses on other policies?
       - name: Catastrophe & Reinsurance Agent
         icon: genie
-        summary: Ask about exposure, PML and ceded recoveries by peril and treaty.
+        summary: Ask about exposure, PML and ceded recoveries by peril and treaty, distinguishing modeled treaty recoveries from booked outstanding recoverables.
         feeds:
           - Moody's RMS
           - Verisk Touchstone
@@ -774,7 +774,7 @@ agent_usecases:
       - name: Claims Automation
         short: Claims
         icon: gauge
-        summary: Straight-through processing of low-complexity claims with severity scoring and next-best-action, so adjusters spend their time on the claims that need them.
+        summary: Straight-through intake, triage and assignment for eligible low-complexity claims with severity scoring, next-best-action and reserve recommendations, so adjusters spend their time on the claims that need them.
         problem: Claims arrive as FNOL calls, photos, PDFs and telematics across different systems; triaged by hand, simple claims wait behind complex ones and leakage and cycle time run away.
         who_benefits: Claims Leadership
         how_built: Policy, claim and telematics feeds land through Lakeflow; severity is scored in Model Serving and documents parsed with Document Intelligence, and the Claims Command Center on Lakebase drives assignment and reserves.
@@ -827,7 +827,7 @@ agent_usecases:
         summary: Moving from static annual rate tables to segmented, model-driven rate served into the quote, tested against loss costs and the filed plan.
         problem: Static rate plans cannot express true risk, so rate is inadequate on some segments and uncompetitive on others, and every change waits on a slow filing cycle.
         who_benefits: Actuarial & Pricing
-        how_built: ISO loss costs and internal experience are conformed in the lakehouse; GLM and gradient-boosted models tracked in MLflow score through Model Serving into the Earnix rating engine, on definitions certified in Unity Catalog.
+        how_built: ISO loss costs and internal experience are conformed in the lakehouse; GLM and gradient-boosted models tracked in MLflow score through Model Serving into the Earnix rating engine using only approved, jurisdiction-permitted factors, on definitions certified in Unity Catalog.
         components:
           - Earnix Rating
           - Model Serving

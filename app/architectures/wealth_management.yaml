@@ -488,7 +488,7 @@ pipelines:
           - - Genie One
             - Investigators ask for a client's activity around an event in plain language.
           - - Unity Catalog
-            - Audit trails and lineage that satisfy a regulatory examination.
+            - Audit trails and lineage as traceable evidence supporting a regulatory examination.
         sub:
           - name: Compliance
             cares: suitability, Reg BI and books-and-records.
@@ -577,7 +577,7 @@ consumers:
         summary: Form ADV, Reg BI and books-and-records evidence produced from the same governed tables the firm runs on.
       - name: Client Statements
         icon: share
-        summary: Performance, holdings and fee statements and 1099 reporting generated from contracted Gold products.
+        summary: Performance, holdings and fee statements from contracted Gold products, with 1099 reporting produced from authorized custodian and tax records under the responsible entity's process.
   - name: Published Products
     icon: product
     tiles:
@@ -586,7 +586,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Custodians, sub-advisors and partners reading live tables with no copy and no egress duplication.
+        summary: Custodians, sub-advisors and partners reading governed shared tables without separately maintained publisher extracts.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -839,7 +839,7 @@ agent_usecases:
       - name: Tax-Loss Harvesting
         short: Tax alpha
         icon: chart
-        summary: Finding realised-loss opportunities across a household's taxable accounts given current lots and estimated tax rate, before the tax year closes.
+        summary: Finding unrealized-loss harvesting candidates across a household's taxable accounts given current lots and estimated tax rate, before the tax year closes.
         problem: Tax-loss opportunities hide in per-account cost-basis data that is never viewed at household level, so harvestable losses expire unclaimed and wash-sale rules are hard to police.
         who_benefits: Investments
         how_built: Cost-basis and lot data are conformed to Gold; harvest candidates are scored across the household and surfaced in the Rebalancing Console and to advisors in Genie.
@@ -916,7 +916,7 @@ agent_usecases:
       - name: KYC AML & Suitability
         short: Compliance
         icon: gavel
-        summary: Screening clients and monitoring account activity for KYC, AML and suitability with an audit trail a regulator will accept, without drowning supervisors in false positives.
+        summary: Screening clients and monitoring account activity for KYC, AML and suitability with traceable evidence supporting regulatory examination, without drowning supervisors in false positives.
         problem: Screening and suitability run across siloed compliance systems with gappy data, so alerts are noisy, investigations are slow and completeness cannot be proven to an examiner.
         who_benefits: Risk & Compliance
         how_built: Client, activity and communications data are unified in the lakehouse; AI Functions and models score suitability and abuse patterns with LexisNexis screening, and cases open in the supervision queue.
@@ -937,7 +937,7 @@ medallion:
     summary: Custodial position and transaction files from Pershing, Fidelity and Schwab, Addepar and Orion portfolio extracts, Salesforce FSC activity and eMoney financial plans, landed exactly as received so a holding or a fee can always be replayed as it stood.
   Silver:
     short: Conformed household, account, position
-    summary: Households, clients, accounts and positions resolved into single conformed entities across the custody, portfolio and CRM estates, with security identifiers reconciled and every account linked to one household and one advisor.
+    summary: Households, clients, accounts and positions resolved into single conformed entities across the custody, portfolio and CRM estates, with security identifiers reconciled and each account linked to one primary reporting household and advisor per reporting period, retaining effective-dated links for other valid entity, household and advisory relationships.
   Gold:
     short: AUM, fees, performance, flows
     summary: 'Contracted products the wealth business runs on: AUM and net new assets by advisor and household, fee revenue and margin, time-weighted performance and attribution, and net flows by segment and channel.'

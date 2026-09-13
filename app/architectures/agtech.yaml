@@ -1,5 +1,5 @@
 name: AgTech
-description: 'An agriculture technology provider: precision-ag analytics and variable-rate prescriptions, connected-equipment telematics, satellite and sensor networks, crop and genetics R&D simulation, grower and customer 360, and a governed ag-data marketplace.'
+description: 'An agriculture technology provider: precision-ag analytics and variable-rate prescriptions, connected-equipment telematics, satellite and sensor networks, crop and genetics R&D simulation, grower and customer 360, and a governed ag-data marketplace. The board represents digital-platform, equipment-OEM and input-provider variants rather than one vendor owning every named platform.'
 sources:
   - name: Farm Mgmt Platforms
     icon: appbuilder
@@ -382,7 +382,7 @@ pipelines:
     tiles:
       - name: Digital Product
         mark: Genie One
-        summary: 'The leaders of the digital ag platform: the chief digital officer and precision-ag product managers who own FieldView, Operations Center and the grower and agronomist experience, and the platform GM who answers for adoption and connected acres.'
+        summary: 'The leaders of the digital ag platform: the chief digital officer and precision-ag product managers who own the provider''s grower and agronomist experience and its integrations to FieldView, Operations Center and other external systems, and the platform GM who answers for adoption and connected acres.'
         uses:
           - - Genie One
             - Ask how many acres synced last week or which prescription workflow is stalling without booking analyst time.
@@ -431,7 +431,7 @@ pipelines:
           - - Model Serving
             - Remaining-life and anomaly models scored against streaming telemetry.
           - - Apache Spark
-            - Petabyte-scale geospatial and telemetry processing across the connected fleet.
+            - Large-scale geospatial and telemetry processing across the connected fleet.
         sub:
           - name: Telematics Engineering
             cares: machine, implement and as-applied telemetry off the CAN bus.
@@ -597,7 +597,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Growers, food and CPG partners and regulators reading live tables with no copy and no egress duplication.
+        summary: Growers, food and CPG partners and regulators reading live tables, reducing duplicate extracts under scoped agreements.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -743,7 +743,7 @@ agent_usecases:
           - How does uptime compare across dealer service territories?
       - name: Carbon MRV Agent
         icon: genie
-        summary: Answer questions on enrolled acres, practice change and verified carbon outcomes.
+        summary: Answer questions on enrolled acres, practice change and recorded verified and issued carbon status, distinct from modeled estimates.
         feeds:
           - Planet Imagery
           - Sentinel Hub
@@ -832,13 +832,11 @@ agent_usecases:
         stories:
           - title: Syngenta accelerates crop protection research with Gaia
             url: https://www.databricks.com/customers/syngenta
-          - title: FMC optimizes harvests with data and AI
-            url: https://www.databricks.com/customers/fmc-corporation
       - name: Fleet Telematics
         short: Equipment
         icon: iot
-        summary: Ingesting machine and implement telemetry at petabyte scale so the OEM turns raw CAN-bus feeds into engineering, service and agronomic insight.
-        problem: Machine data doubles or triples each year, and legacy stores cannot ingest and geospatially analyse it fast enough to feed engineering, sales and service teams.
+        summary: Ingesting machine and implement telemetry at illustrative large-provider scale so the OEM turns machine-bus feeds into engineering, service and agronomic insight.
+        problem: Machine telemetry arrives at large-provider scale, and legacy stores cannot ingest and geospatially analyse it fast enough to feed engineering, sales and service teams.
         who_benefits: Equipment Eng
         how_built: Telemetry streams into Lakehouse//RT and is processed with Apache Spark and H3 indexing on Delta Lake, giving every downstream team one scalable view of the connected fleet.
         components:
@@ -897,10 +895,10 @@ agent_usecases:
       - name: Ag Data Marketplace
         short: Data sharing
         icon: globe
-        summary: Governed field, yield and sustainability data products published and shared live to growers, CPG partners and regulators with no copy.
+        summary: Governed field, yield and sustainability data products published and shared live to growers, CPG partners and regulators, reducing bespoke extracts under governed agreements.
         problem: Partners, food companies and regulators each get bespoke extracts by email and SFTP, so data leaves governance the moment it ships and every new consumer is another one-off pipeline to maintain.
         who_benefits: Digital Product
-        how_built: Conformed field, yield and sustainability tables are packaged as contracted data products in Unity Catalog and shared live over Delta Sharing and OpenSharing, so consumers read governed tables with no copy and no egress duplication.
+        how_built: Conformed field, yield and sustainability tables are packaged as contracted data products in Unity Catalog and shared live over Delta Sharing and OpenSharing, so consumers read governed tables with recipient access and reuse governed by agreements, reducing unnecessary duplication.
         components:
           - Data Products
           - Unity Catalog
@@ -910,7 +908,7 @@ agent_usecases:
       - name: Carbon MRV
         short: Sustainability
         icon: gavel
-        summary: Measuring, reporting and verifying practice-change carbon at supply-shed scale so every credit stands up to an audit.
+        summary: Measuring, reporting and verifying practice-change carbon at supply-shed scale, keeping modeled estimates, submitted evidence and issued credits separated and audit-ready.
         problem: Carbon programs enrol acres faster than they can prove the outcome, and measurement stitched from spreadsheets and one-off models will not survive verification.
         who_benefits: Sustainability
         how_built: Imagery, practice and soil data feed carbon and emissions models scored in Model Serving, with Unity Catalog holding an auditable lineage from field practice to reported credit.

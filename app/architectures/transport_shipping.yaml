@@ -836,10 +836,10 @@ agent_usecases:
       - name: Driver & Workforce Safety
         short: Safety
         icon: gavel
-        summary: Unsafe driving and fatigue flagged from dashcam, harsh-driving and HOS signals before a crash or CSA hit.
+        summary: Unsafe driving and fatigue surfaced from dashcam, harsh-driving and HOS signals to prioritise driver coaching and reduce incident risk.
         problem: Unsafe driving and fatigue surface only after a crash or a CSA score hit, while the dashcam, harsh-driving and hours-of-service signals that predict them sit unaggregated across telematics and ELD systems.
         who_benefits: Transportation Ops
-        how_built: Samsara dashcam, Geotab harsh-driving, Omnitracs HOS and FMCSA safety data conform on Delta Lake, and risk models in Model Serving flag drivers and behaviours before an incident, surfaced in AI/BI for coaching.
+        how_built: Samsara dashcam, Geotab harsh-driving and Omnitracs HOS signals conform on Delta Lake, and risk models in Model Serving prioritise drivers and behaviours for coaching in AI/BI, while FMCSA status stays separate carrier-onboarding context.
         components:
           - Samsara Fleet
           - Geotab Fleet
@@ -864,7 +864,7 @@ agent_usecases:
       - name: Scope 3 Emissions
         short: Sustainability
         icon: gavel
-        summary: Emissions per shipment calculated for shipper ESG reporting.
+        summary: Emissions per shipment calculated for shipper Scope 3 reporting, distinct from the carrier's own inventory boundary.
         problem: Shippers demand emissions per shipment, but the mileage, mode and fuel data needed sit across TMS and telematics, so carbon is estimated with crude averages that will not survive an audit.
         who_benefits: CEO & Network Office
         how_built: Shipment, mode and fuel data are conformed under Unity Catalog, emissions per load are computed on Delta Lake, and certified figures publish as Data Products shared to shippers over OpenSharing.

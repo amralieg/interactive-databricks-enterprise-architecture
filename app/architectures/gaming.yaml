@@ -490,17 +490,17 @@ pipelines:
           - Anti-Cheat & Toxicity
       - name: Risk & Compliance
         mark: AI/BI
-        summary: Fraud analysts and trust-and-safety leads on chargeback and bonus-abuse alerts, cheating and toxicity, and platform-policy compliance before payouts release.
+        summary: Fraud analysts and trust-and-safety leads on chargeback and bonus-abuse alerts, cheating and toxicity, and platform-policy compliance before refunds and chargebacks settle.
         uses:
           - - Fraud Command Centre
-            - Velocity and device clusters flagged before payouts release.
+            - Velocity and device clusters flagged before refunds and chargebacks settle.
           - - AI/BI
             - Chargeback and abuse metrics on certified Metric Views.
           - - Unity Catalog
             - One definition of bookings across platform and stores.
         sub:
           - name: Fraud Analyst
-            cares: velocity, device clusters and bonus abuse before payouts release.
+            cares: velocity, device clusters and bonus abuse before refunds and chargebacks settle.
           - name: Trust & Safety Lead
             cares: cheating, toxicity and player-safety policy across titles and markets.
           - name: Payment Risk Investigator
@@ -672,7 +672,7 @@ consumers:
       - name: Fraud Command Centre
         icon: stream
         short: Risk operations
-        summary: Velocity clusters, bonus abuse and chargeback patterns flagged before refunds or chargebacks settle.
+        summary: Velocity clusters, bonus abuse and chargeback patterns flagged before refunds or chargebacks settle, alongside cheat and toxicity cases with moderation review and enforcement kept separate from payment-risk dispositions.
       - name: UA Optimiser
         icon: market
         short: Acquisition spend

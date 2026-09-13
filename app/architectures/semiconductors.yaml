@@ -502,12 +502,12 @@ consumers:
     tiles:
       - name: MES Hold & Release
         icon: db
-        summary: Automated hold and release written back into MES for dispatch lists.
+        summary: Hold and release written back into MES for dispatch lists under authorized disposition rules.
         citations:
           - applied-e3
       - name: Recipe & R2R Adjust
         icon: erp
-        summary: Run-to-run adjustments pushed to equipment hosts within approved guard bands.
+        summary: Run-to-run adjustment recommendations pushed to equipment hosts, where the incumbent APC applies them within approved guard bands.
       - name: Maintenance Work Orders
         icon: apps
         summary: Predicted tool removals raised as maintenance work orders on technician devices.
@@ -688,7 +688,7 @@ agent_usecases:
           - Which recipes show the most run-to-run variability by tool?
           - Where is overlay or CD drifting toward guard bands?
           - Which yield signatures should feed back into design rules and IP revisions?
-          - Where can test time be trimmed without losing coverage by product?
+          - Which candidate test reductions meet coverage and escape-risk criteria by product?
           - Which design-technology changes correlate with the biggest yield gains?
       - name: Supply & Materials Agent
         icon: genie
@@ -783,7 +783,7 @@ agent_usecases:
         summary: Closed-loop recipe adjustments within guard bands against inline metrology.
         problem: Run-to-run adjustments rely on delayed metrology and spreadsheets, so recipe corrections arrive a lot too late and drift pushes wafers past guard bands before anyone intervenes.
         who_benefits: Fab Operations
-        how_built: Inline overlay and CD metrology land in Lakehouse//RT; AI Functions compute closed-loop offsets in Model Serving and write back to equipment hosts via SECS/GEM within approved guard bands.
+        how_built: Inline overlay and CD metrology land in Lakehouse//RT; an offset model in Model Serving computes closed-loop adjustments, orchestrated back to equipment hosts via SECS/GEM, where the incumbent APC applies them within approved guard bands.
         components:
           - ASML YieldStar
           - SECS/GEM Tool Interface
@@ -832,7 +832,7 @@ agent_usecases:
         summary: Test time and coverage trade-offs scored per product for good die cost.
         problem: Test time is a big slice of good-die cost, yet coverage and time trade-offs are guessed per product because parametric results and escape data never sit together for analysis.
         who_benefits: Yield Engineering
-        how_built: ATE parametric dumps and OSAT files conform on Delta Lake; models in Model Serving score coverage-versus-time trade-offs per product to trim test flows without losing quality.
+        how_built: ATE parametric dumps and OSAT files conform on Delta Lake; models in Model Serving score coverage-versus-time trade-offs per product, and candidate test reductions are evaluated against coverage and escape-risk criteria before approved changes apply through the existing test workflow.
         components:
           - Teradyne UltraFLEX
           - OSAT Test File Exchange

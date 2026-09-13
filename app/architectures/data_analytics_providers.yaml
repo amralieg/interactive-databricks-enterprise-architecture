@@ -142,11 +142,11 @@ sources:
             interval: Daily + intraday corporate actions
       - name: ANNA DSB ISIN/UPI
         icon: db
-        summary: 'The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the reference every instrument resolves against.'
+        summary: 'The ANNA Derivatives Service Bureau: ISIN, CFI and UPI allocation for OTC derivatives, the identifier reference for OTC derivative instruments.'
         citations:
           - dsb
         category: Instrument Identifier Registry
-        what_it_is: The ANNA Derivatives Service Bureau allocating ISIN, CFI and UPI for OTC derivatives, the reference every instrument resolves against.
+        what_it_is: The ANNA Derivatives Service Bureau allocating ISIN, CFI and UPI for OTC derivatives, the identifier reference for OTC derivative instruments.
         who_uses_it: Reference-data engineering, regulatory reporting and operations.
         data_out:
           batch:
@@ -309,11 +309,11 @@ cloud_integrations:
     tiles:
       - name: Multicast Feed Bus
         icon: stream
-        summary: Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
+        summary: Exchange multicast market-data channels (ITCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
         citations:
           - itch
         category: Streaming Market Data Bus
-        what_it_is: Exchange multicast market-data channels (ITCH, OUCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
+        what_it_is: Exchange multicast market-data channels (ITCH and vendor feeds) captured off the wire and landed as structured depth and trade events.
         who_uses_it: Feed engineering and platform reliability.
         data_out:
           stream:
@@ -323,11 +323,11 @@ cloud_integrations:
             interval: Continuous (sub-millisecond)
       - name: FIX / FAST Gateways
         icon: api
-        summary: FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.
+        summary: FAST-encoded market-data sessions with vendors parsed on arrival and landed as structured events; FIX order-entry from members is an exchange-affiliated optional variant.
         citations:
           - fix
         category: FIX/FAST Messaging Gateway
-        what_it_is: FIX order-entry and FAST-encoded market-data sessions with members and vendors parsed on arrival and landed as structured events.
+        what_it_is: FAST-encoded market-data sessions with vendors parsed on arrival and landed as structured events, with FIX member order-entry included only as an exchange-affiliated optional variant.
         who_uses_it: Feed engineering and market operations.
         data_out:
           stream:
@@ -401,7 +401,7 @@ pipelines:
           - - Data Products
             - Signal, factor, reference and index datasets published as contracted, discoverable products.
           - - OpenSharing
-            - Live datasets delivered to subscribers with no copy and no egress duplication.
+            - Live datasets delivered to subscribers through governed sharing that reduces bespoke exports.
           - - Unity Catalog
             - Entitlements, lineage and usage governed from the same catalogue the products live in.
         sub:
@@ -417,7 +417,7 @@ pipelines:
           - Client Intelligence & Churn
       - name: Index Products
         mark: AI/BI
-        summary: Index product managers launching and maintaining benchmarks; the index calculation team running real-time and end-of-day levels and rebalances; benchmark governance proving methodology, restatements and IOSCO compliance to regulators and licensees.
+        summary: Index product managers launching and maintaining benchmarks; the index calculation team running real-time and end-of-day levels and rebalances; benchmark governance evidencing methodology, restatements and supporting IOSCO compliance to regulators and licensees.
         uses:
           - - AI/BI
             - Index levels, constituent weights and rebalance impact on one certified set of Metric Views.
@@ -462,7 +462,7 @@ pipelines:
     tiles:
       - name: Feed Engineers
         mark: Lakeflow
-        summary: Capture ITCH and OUCH multicast, OPRA and consolidated-tape feeds and Exegy-style feed handlers off Kafka, curate the depth and trade tables, and keep every tick feed fresh for calculation and distribution.
+        summary: Capture ITCH multicast, OPRA and consolidated-tape feeds and vendor feed handlers off Kafka, curate the depth and trade tables, and keep every tick feed fresh for calculation and distribution.
         uses:
           - - Lakeflow Connect
             - Managed connectors for matching-engine, reference and vendor sources.
@@ -472,7 +472,7 @@ pipelines:
             - Freshness on the tick and reference tables every desk and subscriber depends on.
         sub:
           - name: Ingestion Engineers
-            cares: ITCH and OUCH multicast, OPRA and consolidated-tape feeds captured off the wire on time.
+            cares: ITCH multicast, OPRA and consolidated-tape feeds captured off the wire on time.
           - name: Pipeline Engineers
             cares: depth and trade tables conformed with expectations on every tick feed.
           - name: Platform Reliability
@@ -568,7 +568,7 @@ consumers:
         summary: Published, contracted market-data and index products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Subscribers, vendors and index licensees reading live tables with no copy and no egress duplication.
+        summary: Subscribers, vendors and index licensees reading live tables through governed sharing that reduces bespoke exports, with materialization and transfer depending on recipient mode.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -587,7 +587,7 @@ consumers:
       - name: Data Quality Console
         icon: gavel
         short: Data quality
-        summary: Cleaning and reconciliation exceptions triaged with full source context in one view, tracing a published value back to its source with a case trail subscribers and auditors accept.
+        summary: Cleaning and reconciliation exceptions triaged with full source context in one view, tracing a published value back to its source with a case trail made available for subscriber and auditor review.
   - name: AI/BI Dashboards
     icon: aibi
     tiles:
@@ -753,10 +753,10 @@ agent_usecases:
       - name: Feed Latency Optimization
         short: Distribution
         icon: stream
-        summary: Delivering tick, reference and signal feeds to subscribers with the lowest latency and full sequence integrity, on one governed platform instead of a separate real-time silo.
+        summary: Monitoring and optimizing tick, reference and signal feed delivery for latency and sequence gaps, distinguishing the wire dissemination plant from governed analytical products.
         problem: Feeds land in a low-latency plant that analytics cannot touch, so delivery latency and gaps are debugged from partial logs and subscribers hit drops before the vendor sees them.
         who_benefits: Data Business
-        how_built: ITCH, OPRA and SIP feeds land through the Multicast Feed Bus and Zerobus into Lakehouse//RT; delivery latency and sequence integrity are computed to Gold and watched in Feed Ops Monitor and served over Delta Sharing Feeds.
+        how_built: ITCH, OPRA and SIP feeds land through the Multicast Feed Bus and Zerobus into Lakehouse//RT; delivery latency and sequence gaps are computed to Gold and watched in Feed Ops Monitor, with analytical products served over Delta Sharing Feeds separately from wire dissemination.
         components:
           - Feed Ops Monitor
           - Multicast Feed Bus
@@ -787,7 +787,7 @@ agent_usecases:
       - name: Custom Index Creation
         short: Benchmarks
         icon: chart
-        summary: Designing, calculating and maintaining custom and thematic benchmarks at the scale of thousands of indices, with a methodology audit trail for every restatement.
+        summary: Designing, calculating and maintaining custom and thematic benchmarks, illustratively at the scale of thousands of indices, with a methodology audit trail for restatements.
         problem: Custom index launches run in bespoke engines that cannot scale to thousands of client benchmarks or replay a methodology change, so launches are slow and restatements are hard to defend.
         who_benefits: Index Products
         how_built: Constituent, pricing and corporate-actions data are conformed in the lakehouse; levels and rebalance impact are computed in Model Serving and signed off in the Index Cockpit against certified Metric Views.
@@ -826,7 +826,7 @@ agent_usecases:
         summary: Packaging factor, alternative-data and signal datasets as contracted products and delivering them to subscribers over sharing and marketplaces instead of bespoke file feeds.
         problem: Every new data package is a custom extract-and-FTP build, so time-to-launch is long, copies proliferate, and the vendor cannot see who consumes what or prove entitlement.
         who_benefits: Vendor Exec
-        how_built: Curated factor and alt-data are published as contracted Data Products, discoverable in Unity Catalog and delivered over OpenSharing and Cloud Marketplaces to entitled Sharing Recipients with no copy.
+        how_built: Curated factor and alt-data are published as contracted Data Products, discoverable in Unity Catalog and delivered over OpenSharing and Cloud Marketplaces to entitled Sharing Recipients, reducing bespoke file exports.
         components:
           - Data Products
           - Sharing Recipients
@@ -873,10 +873,10 @@ agent_usecases:
       - name: Entity Resolution & MDM
         short: MDM
         icon: db
-        summary: Mastering instruments, issuers and identifiers across FIGI, ISIN, LEI and internal symbols so every feed, index and product resolves to the same entity.
+        summary: Mastering typed instruments, issuers, indices and subscribers across FIGI, ISIN, LEI and internal symbols so every feed, index and product resolves to the right entity.
         problem: Vendor, venue and internal symbologies disagree, so the same instrument appears under many keys and joins across feeds, indices and products break in ways nobody can trace.
         who_benefits: Data Quality & Governance
-        how_built: FIGI, ISIN, LEI and vendor identifiers are conformed into one governed entity master in Delta Lake, with Unity Catalog lineage so every product resolves to a single instrument.
+        how_built: Typed instrument, issuer, index, subscriber and content masters are conformed with explicit relationships in Delta Lake, with Unity Catalog lineage and FIGI, ISIN and LEI scoped to the entities they identify.
         components:
           - GLEIF LEI
           - ANNA DSB ISIN/UPI
@@ -891,10 +891,10 @@ agent_usecases:
       - name: Lineage & Provenance
         short: Provenance
         icon: network
-        summary: Tracking the full lineage and provenance of every published field from source feed through transformation to product, so subscribers and auditors can trust and trace the data.
+        summary: Tracking captured lineage and source and version provenance across supported paths from source feed through transformation to product, so subscribers and auditors can trace the data.
         problem: Provenance lives in tribal knowledge and scattered scripts, so when a subscriber or auditor asks where a value came from, the vendor cannot show the path from source to product.
         who_benefits: Data Quality & Governance
-        how_built: Every feed and transformation is governed in Unity Catalog with column-level lineage on Delta Lake, so provenance for any published field is queried and shared with subscribers on demand.
+        how_built: Feeds and transformations are governed in Unity Catalog with column-level lineage on Delta Lake, so captured provenance for supported published fields is queried and shared with subscribers on demand.
         components:
           - Unity Catalog
           - Delta Lake
@@ -923,7 +923,7 @@ medallion:
     summary: OPRA and consolidated-tape ticks, news and alternative-data content, reference and corporate-actions announcements and index constituent files, landed exactly as received so a print or a signal can always be replayed as it stood.
   Silver:
     short: Conformed feeds, entities, indices
-    summary: Ticks, entities, instruments and index constituents resolved into single conformed entities across the feed, reference and index estates, with FIGI, ISIN and LEI identifiers reconciled and every record stitched to one security.
+    summary: Ticks, instruments, issuers, indices, subscribers and content resolved into typed conformed entities across the feed, reference and index estates, with FIGI, ISIN and LEI identifiers reconciled and related through explicit relationships.
   Gold:
     short: Signals, index, usage, quality
     summary: 'Contracted products the data business runs on: sentiment and factor signals, custom index levels and rebalance impact, market-data consumption by subscriber and entitlement, and data-quality and lineage metrics.'

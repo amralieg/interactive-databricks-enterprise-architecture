@@ -466,7 +466,7 @@ consumers:
           - munich-allfinanz
       - name: Claims Payments
         icon: market
-        summary: Adjudicated claim amounts released to disbursement after fraud review.
+        summary: Approved, adjudicated claim amounts released to disbursement after authorized adjudication.
         citations:
           - sedgwick
   - name: Dist. & Reinsurance
@@ -502,7 +502,7 @@ consumers:
         summary: Published, contracted products discoverable in Unity Catalog Domains and shared over OpenSharing.
       - name: Sharing Recipients
         icon: share
-        summary: Reinsurers, distributors and regulators reading live tables with no copy and no egress duplication.
+        summary: Reinsurers, distributors and regulators reading governed live tables that reduce routine file duplication.
   - name: Databricks Apps
     icon: apps
     tiles:
@@ -612,7 +612,7 @@ agent_usecases:
     tiles:
       - name: Actuarial & Reserving Agent
         icon: genie
-        summary: Ask about reserve adequacy, experience versus assumptions and margin by product.
+        summary: Ask about reserve adequacy, experience versus assumptions and margin by product, with embedded-value answers labelled by valuation basis and AXIS run date.
         feeds:
           - Moody's Analytics AXIS
           - FINEOS Life
@@ -813,7 +813,7 @@ agent_usecases:
         summary: Death, disability and waiver claims triaged and paid straight through when documents and policy checks align.
         problem: Claims arrive as calls, forms and documents across admin and TPA systems, so simple death and disability claims wait behind complex ones and payout SLAs slip.
         who_benefits: Claims
-        how_built: Sedgwick and FINEOS claim feeds land via Lakeflow and are checked with AI Functions and scored in Model Serving, so the Claims Adjudication Console on Lakebase auto-adjudicates clean claims and routes the rest.
+        how_built: Sedgwick and FINEOS claim feeds land via Lakeflow and are checked with AI Functions and scored in Model Serving, so entitlement and beneficiary verification precede authorized adjudication in the Claims Adjudication Console on Lakebase, which auto-adjudicates clean claims under approved rules, releases approved amounts and routes the rest.
         components:
           - Claims Adjudication Console
           - Sedgwick Life Claims
@@ -830,7 +830,7 @@ agent_usecases:
         summary: In-force value and new business contribution tracked for portfolio decisions.
         problem: Embedded value and new-business contribution are assembled from actuarial extracts quarters late, so portfolio and reinsurance decisions run on a picture of the book that is already stale.
         who_benefits: CEO & CFO
-        how_built: In-force, reserve and margin data are conformed under Unity Catalog and rolled up in the Reserve Analytics Workbench, so embedded value by product is queryable in AI/BI and Genie One.
+        how_built: In-force, reserve and margin data are conformed under Unity Catalog, and the Reserve Analytics Workbench reconciles and reports AXIS-derived embedded-value results under a stated valuation basis and run date, queryable in AI/BI and Genie One.
         components:
           - Reserve Analytics Workbench
           - Moody's Analytics AXIS

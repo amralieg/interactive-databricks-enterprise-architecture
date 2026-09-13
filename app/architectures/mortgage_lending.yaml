@@ -424,7 +424,7 @@ pipelines:
           - - Model Serving
             - Credit and eligibility models scored alongside DU and LPA findings.
           - - Unity Catalog
-            - Auditable decision lineage and reason codes a regulator will accept.
+            - Auditable decision lineage and reason codes that support compliance review.
         sub:
           - name: Underwriters
             cares: clearing conditions and rendering the credit decision.
@@ -754,7 +754,7 @@ agent_usecases:
         summary: Assembling the full loan file, running it against DU and LPA and a scored recommendation, and surfacing only the exceptions that need human judgment.
         problem: Underwriters re-key data from pay stubs, bank statements and bureau pulls across five systems, so files sit in queues and straight-through cases still wait behind manual review.
         who_benefits: Underwriting
-        how_built: Documents are extracted with AI Functions and joined to DU and LPA findings in the lakehouse; a scored recommendation and reason codes are served to the Underwriting Copilot for exception-only review.
+        how_built: Documents are extracted with AI Functions and joined to DU and LPA findings in the lakehouse; a scored recommendation and reason codes are served to the Underwriting Copilot for exception-only review under lender-approved straight-through rules.
         components:
           - Underwriting Copilot
           - Fannie Mae DU
@@ -769,7 +769,7 @@ agent_usecases:
       - name: Credit Decisioning
         short: Credit risk
         icon: identity
-        summary: Scoring creditworthiness on bureau, income, asset and alternative data with models that are accurate, explainable and defensible for every applicant.
+        summary: Scoring creditworthiness on bureau, income, asset and alternative data with models evaluated for predictive quality, explainability and policy compliance.
         problem: Traditional scorecards decline thin-file and non-traditional borrowers a lender could safely approve, and the models are hard to explain when the decision is challenged.
         who_benefits: Underwriting
         how_built: Bureau, income and cash-flow data are conformed and engineered in Feature Store; credit models are trained and versioned in MLflow and scored in Model Serving with Unity Catalog lineage.
@@ -787,10 +787,10 @@ agent_usecases:
       - name: Fair Lending & HMDA
         short: Compliance
         icon: gavel
-        summary: Monitoring approval, pricing and denial outcomes for disparate impact and producing HMDA and adverse-action evidence a regulator will accept.
+        summary: Monitoring approval, pricing and denial outcomes for disparate impact and producing HMDA and adverse-action evidence that supports examiner review.
         problem: Fair-lending testing runs quarterly on extracts in spreadsheets, so disparate impact is found after loans are booked and completeness is hard to prove to the CFPB.
         who_benefits: Underwriting
-        how_built: Decision, pricing and HMDA fields are conformed to Gold with Unity Catalog lineage; fairness metrics and reason codes are computed with AI Functions and read in the Fair Lending Monitor.
+        how_built: Decision, pricing and HMDA fields are conformed to Gold with Unity Catalog lineage; defined statistical fairness metrics and reason codes derived from actual decisions are computed, with AI Functions assisting narrative preparation, and read in the Fair Lending Monitor.
         components:
           - Fair Lending Monitor
           - HMDA / LAR
@@ -806,7 +806,7 @@ agent_usecases:
         summary: Classifying and extracting income, asset, title and closing documents into structured loan data as soon as they arrive, instead of a stipulation queue.
         problem: Borrower documents arrive as phone photos and mixed-quality scans in the POS, and manual indexing and re-keying is the slowest, most error-prone step in the file.
         who_benefits: Origination
-        how_built: Documents stream in from Blend and the POS and are classified and extracted with AI Functions and Agent Bricks, then written back into Encompass as structured, verified fields.
+        how_built: Documents stream in from Blend and the POS and are classified and extracted with AI Functions and Agent Bricks, then written back into Encompass as structured, extracted fields, marked verified only after the income and asset verification step.
         components:
           - Doc & OCR Stream
           - AI Functions

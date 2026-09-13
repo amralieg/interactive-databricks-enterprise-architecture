@@ -214,8 +214,6 @@ cloud_integrations:
       - name: Municipal Permit APIs
         icon: api
         summary: Zoning and permit filings consumed inbound for development risk monitoring.
-        citations:
-          - procore
         category: Government Permit / Zoning Data
         what_it_is: Zoning and permit filings consumed inbound for development risk monitoring.
         who_uses_it: Project Controls, Development Director and Governance Engineering teams.
@@ -458,7 +456,7 @@ consumers:
           - honeywell-forge
       - name: FM Work Orders
         icon: stream
-        summary: Predictive maintenance tasks raised in ServiceChannel before failures.
+        summary: Anomaly-triggered inspection and maintenance recommendations raised in ServiceChannel.
         citations:
           - servicechannel
   - name: Investors & Tenants
@@ -487,7 +485,7 @@ consumers:
           - measurabl
       - name: IFRS 16 / ASC 842
         icon: share
-        summary: Lease liability schedules from contracted Gold products.
+        summary: Corporate-lessee lease liability schedules, where applicable, from the SAP real estate accounting variant.
         citations:
           - sap-rem
   - name: Published Products
@@ -549,7 +547,7 @@ consumers:
           - Brokerage Team
       - name: Development & Capex
         icon: aibi
-        summary: Draw schedules, cost-to-complete and development IRR against covenants.
+        summary: Draw schedules, cost-to-complete and development IRR against approved project cash-flow assumptions and lender covenants.
         kpis:
           - Budget variance
           - Schedule variance
@@ -644,7 +642,7 @@ agent_usecases:
           - Which proposals are at risk of expiring options this month?
       - name: Development & Capex Agent
         icon: genie
-        summary: Answer questions on draw schedules, cost-to-complete and development IRR.
+        summary: Answer questions on draw schedules, cost-to-complete and development IRR against approved project cash flows and lender covenants.
         feeds:
           - Procore Project Mgmt
           - Oracle Aconex
@@ -752,7 +750,7 @@ agent_usecases:
         summary: Cost-to-complete and IRR tracked against lender covenants in real time.
         problem: Development budgets and schedules live in the project system while draws and covenants live in finance, so cost-to-complete and IRR are reconciled by hand and slippage surfaces only at the lender report.
         who_benefits: Development
-        how_built: Procore budget, schedule and draw data land through Lakeflow and are tracked against covenants in AI/BI, so cost-to-complete and IRR update live on the Development Tracker.
+        how_built: Procore budget, schedule and draw data land through Lakeflow and are joined to finance-approved project cash flows and lender covenant terms in AI/BI, so cost-to-complete and IRR update live on the Development Tracker.
         components:
           - Development Tracker
           - Procore Project Mgmt

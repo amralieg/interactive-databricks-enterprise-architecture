@@ -214,9 +214,9 @@ sources:
     tiles:
       - name: Wholesale Partner Mart
         icon: fed
-        summary: Department store sell-in marts queried in place under Unity Catalog.
+        summary: Owned-brand department store sell-in marts queried in place under Unity Catalog.
         category: Wholesale Data Mart
-        what_it_is: Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        what_it_is: Owned-brand department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
         who_uses_it: Wholesale, Merchandising and Finance analysts.
         data_out:
           batch:
@@ -490,7 +490,7 @@ consumers:
           - shopify
       - name: Wholesale EDI
         icon: share
-        summary: 850/856 orders and ASNs to department store partners over governed products.
+        summary: 850/856 orders and ASNs to department store partners for owned-brand wholesale over governed products.
       - name: 3PL Fulfillment Feed
         icon: globe
         summary: Outbound shipment status from 3PLs without nightly spreadsheet chases.
@@ -676,7 +676,7 @@ agent_usecases:
           - What is churn risk for our top-decile households?
       - name: Sourcing & Supply Agent
         icon: genie
-        summary: Ask about vendor OTIF, market share and wholesale sell-in across the network.
+        summary: Ask about vendor OTIF, market share and owned-brand wholesale sell-in across the network.
         feeds:
           - E2open Supply Planning
           - NielsenIQ POS
@@ -688,7 +688,7 @@ agent_usecases:
         questions:
           - Which vendors are missing OTIF and lead-time targets?
           - How is our market share trending versus the category?
-          - Which wholesale partners are driving sell-in growth?
+          - For owned-brand wholesale, which partners are driving sell-in growth?
           - Where are inbound containers late and putting receipts at risk?
           - Which SKUs show the widest gap between plan and syndicated demand?
   - name: Business Use Cases
@@ -751,10 +751,10 @@ agent_usecases:
       - name: Household Identity Resolution
         short: Customer 360
         icon: custlake
-        summary: Fragmented web, loyalty and POS identities resolved into one household profile.
+        summary: Fragmented web, loyalty and POS records resolved to one person, then linked through governed household relationships.
         problem: The same shopper appears as separate records in commerce, loyalty and POS, so offers double-count, journeys break across channels and no one can see the household behind the transactions.
         who_benefits: Digital & CRM
-        how_built: Adobe Experience Platform, Salesforce Loyalty and NCR Voyix POS identities are conformed in CustomerLake on Delta Lake under Unity Catalog, resolving one governed household profile without copying customer data off-platform.
+        how_built: Adobe Experience Platform, Salesforce Loyalty and NCR Voyix POS identities are conformed in CustomerLake on Delta Lake under Unity Catalog, resolving cross-channel person identities first and then linking them through governed household relationships, preserving individual records and consent without copying customer data off-platform.
         components:
           - CustomerLake
           - Adobe Experience Plat
@@ -819,7 +819,7 @@ agent_usecases:
         summary: Labour, traffic and conversion aligned so the right staff meet peak demand.
         problem: Labour is scheduled to a fixed template while traffic and conversion swing by daypart, so peak hours are understaffed, slow hours overstaffed and sales per labour hour never recovers.
         who_benefits: Store Operations
-        how_built: NCR Voyix POS traffic, conversion and labour feeds land in Lakehouse//RT and are conformed on Delta Lake, so the Store Command Centre matches staffing to forecast demand on certified AI/BI Metric Views.
+        how_built: NCR Voyix POS transactions are joined to footfall and workforce events in Lakehouse//RT and conformed on Delta Lake, so the Store Command Centre matches staffing to forecast demand and computes conversion against store visitor counts on certified AI/BI Metric Views.
         components:
           - Store Command Centre
           - Lakehouse//RT

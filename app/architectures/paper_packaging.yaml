@@ -408,7 +408,7 @@ pipelines:
           - - Quality & Grade Cockpit
             - Basis weight, moisture and defect trends against grade spec by reel.
           - - Model Serving
-            - Break-risk, defect and quality models scored inside the control loop.
+            - Break-risk, defect and quality models scored as supervisory recommendations the operator or approved policy accepts.
           - - AI Functions
             - Lab notes, defect images and complaints classified at scale from unstructured data.
         sub:
@@ -529,7 +529,7 @@ consumers:
     tiles:
       - name: DCS Setpoint Write
         icon: compute
-        summary: Recommended set-points and grade targets written back toward the DCS so the answer reaches the control loop.
+        summary: Recommended set-points and grade targets written back for operator acceptance and executed by the incumbent DCS.
         citations:
           - valmet-dna
       - name: Maximo Work Orders
@@ -789,7 +789,7 @@ agent_usecases:
         summary: Web breaks, edge cracks and surface defects predicted from wet-end, dryer and inspection data so the operator stabilises the machine before the sheet lets go.
         problem: A sheet break costs tens of minutes of production and a threading effort, and the conditions that cause it hide in high-frequency wet-end and dryer data no operator can watch by eye.
         who_benefits: Process & QA
-        how_built: Historian and QCS signals are conformed and served in Lakehouse//RT; break-risk models use Feature Store features and score in Model Serving, warning the operator through the Quality & Grade Cockpit before a break.
+        how_built: Historian, QCS and existing web-inspection defect outputs are conformed and served in Lakehouse//RT; break-risk models use Feature Store features and score in Model Serving, warning the operator through the Quality & Grade Cockpit before a break.
         components:
           - Quality & Grade Cockpit
           - AVEVA PI Historian
@@ -846,7 +846,7 @@ agent_usecases:
           - Model Serving
           - AI/BI
         stories:
-          - title: Mondelez scales SKU demand forecasting on Databricks
+          - title: Mondelez scales SKU demand forecasting on Databricks (cross-industry example)
             url: https://www.databricks.com/customers/mondelez
           - title: Smarter supply chains with data and AI
             url: https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management
@@ -871,7 +871,7 @@ agent_usecases:
       - name: Steam & Power per Tonne
         short: Energy
         icon: gauge
-        summary: Steam, power and recovery-boiler operation optimised so the mill cuts energy per tonne, its largest variable cost, without putting the machine's runnability at risk.
+        summary: Steam, power and recovery-boiler operation optimised to cut energy per tonne, a major controllable cost, with recommendations evaluated against runnability constraints.
         problem: Energy is the mill's largest controllable cost, but steam and power are run to habit, and the levers that would cut them sit in DCS and metering data nobody optimises together.
         who_benefits: Energy & ESG
         how_built: Recovery-boiler, utility and historian data are conformed to Gold; energy models score in Model Serving and recommendations are surfaced on the Mill Control Tower against production targets.
@@ -903,7 +903,7 @@ agent_usecases:
         short: Supply
         icon: network
         summary: Wood and recovered-fiber supply planned and traced from forest and recycler to the fiber line, with deforestation-free due diligence built in.
-        problem: Fiber is the mill's largest raw-material spend and now its biggest compliance exposure; harvest, procurement and recovered-fiber data are scattered, and EUDR due diligence is a manual paper chase.
+        problem: Fiber is the mill's largest raw-material spend and a growing compliance exposure; harvest, procurement and recovered-fiber data are scattered, and EUDR due diligence is a manual paper chase.
         who_benefits: Supply Chain
         how_built: Forestry, scaling and recovered-fiber feeds are conformed on the lakehouse; supply and quality are read in AI/BI and Genie, and fiber-origin lineage under Unity Catalog supports EUDR chain-of-custody.
         components:
