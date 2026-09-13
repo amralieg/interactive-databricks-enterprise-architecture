@@ -283,11 +283,6 @@ sources:
         fmt: 'DEF'
         summary: 'CDISC metadata standard describing dataset structure for regulatory submissions.'
         spec_url: https://www.cdisc.org/standards/data-exchange/define-xml
-      - name: 'SAS XPORT'
-        icon: zbraces
-        fmt: 'XPT'
-        summary: 'SAS transport file format required for FDA clinical dataset submissions.'
-        spec_url: https://www.cdisc.org/standards/data-exchange
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

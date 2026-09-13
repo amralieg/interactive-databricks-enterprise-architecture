@@ -363,11 +363,6 @@ sources:
           - 'Canvas'
           - 'TAO'
           - 'Respondus'
-      - name: 'Common Cartridge'
-        icon: zbraces
-        fmt: 'CC'
-        summary: '1EdTech packaging format for portable digital course content.'
-        spec_url: https://www.1edtech.org/standards/cc
       - name: 'Caliper Analytics'
         icon: zbraces
         fmt: 'CAL'

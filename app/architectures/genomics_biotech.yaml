@@ -240,11 +240,6 @@ sources:
         fmt: 'BAM'
         summary: 'Binary Alignment/Map format for compressed sequence alignments to a reference.'
         spec_url: https://github.com/samtools/hts-specs
-      - name: 'CRAM'
-        icon: zbraces
-        fmt: 'CRAM'
-        summary: 'Reference-based compressed alignment format, smaller than BAM.'
-        spec_url: https://github.com/samtools/hts-specs
       - name: 'VCF'
         icon: zbraces
         fmt: 'VCF'

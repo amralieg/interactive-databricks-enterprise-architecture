@@ -315,11 +315,6 @@ sources:
         fmt: 'OCPP'
         summary: 'Open Charge Point Protocol between EV chargers and management systems.'
         spec_url: https://openchargealliance.org/protocols/open-charge-point-protocol/
-      - name: 'OCPI'
-        icon: zbraces
-        fmt: 'OCPI'
-        summary: 'Open Charge Point Interface for roaming across EV charging networks.'
-        spec_url: https://evroaming.org/ocpi-background/
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

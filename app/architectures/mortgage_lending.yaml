@@ -332,11 +332,6 @@ sources:
           - 'ICE Mortgage Technology'
           - 'Blend'
           - 'Fannie Mae'
-      - name: 'MISMO SMART Doc'
-        icon: zbraces
-        fmt: 'SMART'
-        summary: 'MISMO standard for tamper-evident electronic mortgage documents.'
-        spec_url: https://www.mismo.org/
       - name: 'iLAD'
         icon: zbraces
         fmt: 'iLAD'

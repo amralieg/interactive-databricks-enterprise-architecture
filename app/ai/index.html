@@ -3901,7 +3901,7 @@ const ARCH = {
         fed:[
           { n:"Azure Synapse", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time.", what:"Synapse dedicated SQL pool tables read in place through Lakehouse Federation during migration, with Unity Catalog governance applied at query time.", users:"BI and data-warehouse migration teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale warehouse tables", interval:"Query-time federation (no copy)" } } },
           { n:"Azure SQL Database", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data.", what:"Azure SQL operational tables joined with lakehouse data in place, without moving or copying the source.", users:"Application and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"operational tables", interval:"Query-time federation (no copy)" } } },
-          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
         ],
         ingest:[
           { n:"Azure Data Factory", role:"etl", ic:"etl", long:"Existing ADF pipelines keep landing data; Databricks activities run notebooks and jobs inside the same orchestration." },
@@ -3975,7 +3975,7 @@ const ARCH = {
         fed:[
           { n:"BigQuery", role:"fed-dw", ic:"fed", long:"Queried in place through Lakehouse Federation. No copy, and Unity Catalog governance applies at query time.", what:"BigQuery warehouse tables read in place through Lakehouse Federation, with Unity Catalog governance applied at query time and no copy.", users:"BI and data-warehouse migration teams.", dataOut:{ batch:{ types:["structured"], vol:"TB-scale warehouse tables", interval:"Query-time federation (no copy)" } } },
           { n:"Cloud SQL", role:"fed-db", ic:"fed", long:"Federated OLTP source, joined with lakehouse tables without moving the data.", what:"Cloud SQL operational tables joined with lakehouse data in place, without moving or copying the source.", users:"Application and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"operational tables", interval:"Query-time federation (no copy)" } } },
-          { n:"Hive Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
+          { n:"Metastore", role:"fed-hms", ic:"fed", long:"Legacy HMS federated into Unity Catalog so existing tables stay queryable during migration.", what:"Legacy Hive Metastore tables federated into Unity Catalog so they stay queryable during migration to a governed catalog.", users:"Platform and migration teams.", dataOut:{ batch:{ types:["structured"], vol:"existing HMS tables", interval:"Query-time federation (no copy)" } } },
         ],
         ingest:[
           { n:"Cloud Data Fusion", role:"etl", ic:"etl", long:"Existing Data Fusion pipelines keep landing data into GCS for Auto Loader and Lakeflow to pick up." },
@@ -5034,7 +5034,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 33;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
+const SCHEMA = 34;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */

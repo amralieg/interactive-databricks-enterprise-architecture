@@ -276,11 +276,6 @@ sources:
         fmt: 'DNP3'
         summary: 'Distributed Network Protocol for SCADA communications across T&D networks.'
         spec_url: https://www.dnp.org/About/Overview-of-DNP3-Protocol
-      - name: 'IEC 60870-5'
-        icon: zbraces
-        fmt: '60870'
-        summary: 'IEC telecontrol protocol suite (101/104) for SCADA over serial and IP networks.'
-        spec_url: https://webstore.iec.ch/en/publication/3755
       - name: 'COMTRADE'
         icon: zbraces
         fmt: 'CTR'

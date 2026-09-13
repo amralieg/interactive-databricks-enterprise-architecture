@@ -316,11 +316,6 @@ sources:
         fmt: 'TAP3'
         summary: 'GSMA Transferred Account Procedure for roaming usage settlement between operators.'
         spec_url: https://www.gsma.com/
-      - name: 'RAP'
-        icon: zbraces
-        fmt: 'RAP'
-        summary: 'GSMA Returned Account Procedure for rejecting and correcting roaming TAP files.'
-        spec_url: https://www.gsma.com/
       - name: 'NRTRDE'
         icon: zbraces
         fmt: 'NRT'

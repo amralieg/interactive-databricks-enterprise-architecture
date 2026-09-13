@@ -271,11 +271,6 @@ sources:
         fmt: 'MT'
         summary: 'Legacy SWIFT FIN message types for cross-border payments and correspondent banking.'
         spec_url: https://www.swift.com/standards
-      - name: 'ISO 15022'
-        icon: zbraces
-        fmt: '15022'
-        summary: 'Securities messaging standard for settlement, custody and corporate actions.'
-        spec_url: https://www.iso15022.org/
       - name: 'BAI2'
         icon: zbraces
         fmt: 'BAI2'

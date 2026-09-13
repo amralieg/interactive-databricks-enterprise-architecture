@@ -314,11 +314,6 @@ sources:
         fmt: 'PNR'
         summary: 'Passenger Name Record, the reservation system-of-record for itineraries, fares and passenger data.'
         spec_url: https://www.iata.org/en/programs/passenger/
-      - name: 'PNRGOV'
-        icon: zbraces
-        fmt: 'GOV'
-        summary: 'IATA XML standard for reporting PNR data to government border and security authorities.'
-        spec_url: https://www.iata.org/contentassets/18a5fdb2dc144d619a8c10dc1472ae80/pnrgov20xml20implementation20guide2016_1.pdf
       - name: 'IATA NDC'
         icon: zbraces
         fmt: 'NDC'

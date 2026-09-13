@@ -328,11 +328,6 @@ sources:
         fmt: 'papi'
         summary: 'papiNet REST API version of its supply-chain message standard.'
         spec_url: https://www.papinet.org/
-      - name: 'JDF'
-        icon: zbraces
-        fmt: 'JDF'
-        summary: 'CIP4 Job Definition Format for print production workflow automation.'
-        spec_url: https://www.cip4.org/
       - name: 'XJDF'
         icon: zbraces
         fmt: 'XJDF'

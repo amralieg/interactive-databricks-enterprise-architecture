@@ -298,11 +298,6 @@ sources:
         fmt: 'OSI'
         summary: 'Open Simulation Interface for sensor and environment data exchange in AD simulation.'
         spec_url: https://www.asam.net/standards/detail/osi/
-      - name: 'EANCOM'
-        icon: zbraces
-        fmt: 'EANC'
-        summary: 'GS1 EDIFACT subset for orders, dispatch and invoices across the automotive supply base.'
-        spec_url: https://www.gs1.org/standards/edi
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

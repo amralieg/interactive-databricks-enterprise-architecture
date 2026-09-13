@@ -268,11 +268,6 @@ sources:
         fmt: 'GEM'
         summary: 'SEMI Generic Equipment Model for host-to-tool factory automation.'
         spec_url: https://www.semi.org/en/standards
-      - name: 'HSMS'
-        icon: zbraces
-        fmt: 'HSMS'
-        summary: 'SEMI High-Speed SECS Message Services for equipment communications over TCP/IP.'
-        spec_url: https://www.semi.org/en/standards
       - name: 'SEMI EDA'
         icon: zbraces
         fmt: 'EDA'

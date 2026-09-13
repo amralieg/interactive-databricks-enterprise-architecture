@@ -301,11 +301,6 @@ sources:
           - 'HaCon'
           - 'Trapeze'
           - 'Siemens Mobility'
-      - name: 'SIRI'
-        icon: zbraces
-        fmt: 'SIRI'
-        summary: 'CEN Service Interface for Real Time Information across transit operators.'
-        spec_url: https://www.transmodel-cen.eu/standards/siri/
       - name: 'railML'
         icon: zbraces
         fmt: 'railML'

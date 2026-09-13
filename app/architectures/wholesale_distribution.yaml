@@ -290,11 +290,6 @@ sources:
         fmt: 'X12'
         summary: 'ANSI X12 EDI transaction sets for POs, invoices and ship notices with trading partners.'
         spec_url: https://x12.org/
-      - name: 'ASN'
-        icon: zbraces
-        fmt: 'ASN'
-        summary: 'Advance Ship Notice (EDI 856) detailing inbound shipment contents.'
-        spec_url: https://www.gs1.org/standards/edi
       - name: 'EPCIS'
         icon: zbraces
         fmt: 'EPC'

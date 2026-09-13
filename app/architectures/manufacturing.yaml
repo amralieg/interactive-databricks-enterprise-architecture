@@ -241,11 +241,6 @@ sources:
           - 'Rockwell FactoryTalk'
           - 'Siemens Opcenter'
           - 'AVEVA MES'
-      - name: 'BatchML'
-        icon: zbraces
-        fmt: 'BML'
-        summary: 'XML implementation of ISA-88 for batch process control information.'
-        spec_url: https://www.mesa.org/topics-resources/b2mml-batchml/
       - name: 'Sparkplug'
         icon: zbraces
         fmt: 'SPKP'

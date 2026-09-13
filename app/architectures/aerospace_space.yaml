@@ -327,11 +327,6 @@ sources:
         fmt: 'OEM'
         summary: 'CCSDS orbit data messages (OEM/OMM/OPM) for exchanging spacecraft ephemeris and orbit state.'
         spec_url: https://ccsds.org/Pubs/502x0b3e1.pdf
-      - name: 'CCSDS Attitude Messages'
-        icon: zbraces
-        fmt: 'AEM'
-        summary: 'CCSDS attitude data messages for exchanging spacecraft orientation and pointing state.'
-        spec_url: https://ccsds.org/Pubs/505x0b1s.pdf
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

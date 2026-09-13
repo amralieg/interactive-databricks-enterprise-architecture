@@ -355,11 +355,6 @@ sources:
           - 'Murex'
           - 'Calypso'
           - 'DTCC'
-      - name: 'ISO 15022'
-        icon: zbraces
-        fmt: '15022'
-        summary: 'Securities messaging for settlement, custody and corporate actions with custodians.'
-        spec_url: https://www.iso15022.org/
       - name: 'ISO 20022'
         icon: zbraces
         fmt: '20022'

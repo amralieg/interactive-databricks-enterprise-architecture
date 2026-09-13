@@ -322,11 +322,6 @@ sources:
         fmt: 'ITCH'
         summary: 'Nasdaq direct-feed protocol broadcasting full order-book market data.'
         spec_url: https://www.nasdaq.com/solutions/nasdaq-totalview-itch
-      - name: 'LSEG RWF'
-        icon: zbraces
-        fmt: 'RWF'
-        summary: 'LSEG Refinitiv Wire Format, the binary encoding behind real-time data feeds.'
-        spec_url: https://developers.lseg.com/
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

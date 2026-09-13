@@ -242,11 +242,6 @@ sources:
         fmt: 'X12'
         summary: 'ANSI X12 EDI transaction sets for merchandise supply-chain messaging.'
         spec_url: https://x12.org/
-      - name: 'EANCOM'
-        icon: zbraces
-        fmt: 'EANC'
-        summary: 'GS1 EDIFACT subset for order-to-cash with suppliers.'
-        spec_url: https://www.gs1.org/standards/edi
       - name: 'EPCIS'
         icon: zbraces
         fmt: 'EPC'

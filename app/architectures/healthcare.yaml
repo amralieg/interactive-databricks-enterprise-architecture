@@ -251,18 +251,6 @@ sources:
           - 'Epic'
           - 'Oracle Health'
           - 'Redox'
-      - name: 'CDA/C-CDA'
-        icon: zbraces
-        fmt: 'CDA'
-        summary: 'HL7 Clinical Document Architecture for structured documents like discharge summaries.'
-        spec_url: https://www.hl7.org/implement/standards/product_brief.cfm?product_id=492
-        spark_connector: 'spark-xml'
-        spark_repo: https://github.com/databricks/spark-xml
-        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
-        source_systems:
-          - 'Epic'
-          - 'Oracle Health'
-          - 'MEDITECH'
       - name: 'DICOM'
         icon: zbraces
         fmt: 'DCM'

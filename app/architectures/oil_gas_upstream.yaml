@@ -258,11 +258,6 @@ sources:
         fmt: 'SEGY'
         summary: 'SEG standard format for storing seismic reflection trace data.'
         spec_url: https://library.seg.org/pb-assets/technical-standards/seg_y_rev2_0-mar2017-1686080998003.pdf
-      - name: 'LAS'
-        icon: zbraces
-        fmt: 'LAS'
-        summary: 'CWLS Log ASCII Standard for well-log curve data.'
-        spec_url: https://www.cwls.org/products/
 cloud_integrations:
   - name: Cloud ETL
     icon: etl
