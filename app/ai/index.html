@@ -3161,7 +3161,20 @@ function markBadge(t){
 /* The tile-corner dot markup, shared by the source rail and the horizontal bands so
    both surfaces mark accelerators and connectors identically. */
 function badgeDotHtml(t){ const b = markBadge(t); return b ? `<span class="badge-dot ${b.kind}" title="${esc(T(b.head))}" aria-hidden="true"></span>` : ""; }
+/* A data-format tile (PNR, FIX, HL7) shows its short code as a monogram badge
+   rather than a shared glyph, so the rail previews which standards the industry
+   speaks. Font auto-shrinks so a six-character code (railML) still fits. */
+function fmtBadge(code, cls){
+  const txt = String(code).slice(0, 6);
+  const fs = txt.length >= 6 ? 6 : txt.length >= 5 ? 7 : txt.length >= 4 ? 8.5 : txt.length === 3 ? 10.5 : 12;
+  return `<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" aria-hidden="true">` +
+    `<rect x="2.3" y="5" width="19.4" height="14" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/>` +
+    `<text x="12" y="12.5" text-anchor="middle" dominant-baseline="central" fill="currentColor" stroke="none" ` +
+    `font-family="ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-weight="700" ` +
+    `font-size="${fs}" letter-spacing="-0.2">${esc(txt)}</text></svg>`;
+}
 function titleIcon(t, cls){
+  if(t && t.fmt) return fmtBadge(t.fmt, cls);
   const m = t && (t.mark || t.n);
   return markSvg(m, cls) || svg((t && t.ic) || "dot", cls);
 }
@@ -3437,6 +3450,21 @@ const ARCH = {
         { n:"Market & Reference Data", ic:"market", long:"Pricing, benchmark and reference feeds from external providers.", what:"Pricing, benchmark and reference feeds bought from external data providers to enrich internal analytics.", users:"Trading, risk, finance and analytics teams.", dataOut:{ batch:{ types:["structured"], vol:"MBs-GBs/day", interval:"Scheduled (intraday to daily)" } } },
         { n:"Partner Feeds", ic:"partner", long:"Partner and supplier data received over Delta Sharing or OpenSharing.", what:"Partner and supplier datasets received over Delta Sharing or OpenSharing, with no copy for Delta recipients.", users:"Supply-chain, partnerships and B2B analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"varies by partner", interval:"Shared / scheduled" } } },
         { n:"Public & Open Data", ic:"globe", long:"Open government, geospatial and demographic datasets.", what:"Open government, geospatial and demographic datasets blended with internal data for context.", users:"Data-science, policy and market-analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"MBs-GBs per dataset", interval:"Periodic refresh" } } },
+      ]},
+      /* The interchange standards data actually arrives in. On an industry board
+         the YAML replaces this with that industry's own formats; the reference
+         board carries the most recognised ones, each tagged with the industry
+         that lives on it, so the section reads as an industry-awareness legend. */
+      { box:"Data Formats", ic:"zbraces", tiles:[
+        { n:"FHIR · Healthcare", fmt:"FHIR", ic:"zbraces", long:"HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON standard for exchanging health data.", spec_url:"https://www.hl7.org/fhir/overview.html" },
+        { n:"FIX · Capital Markets", fmt:"FIX", ic:"zbraces", long:"Financial Information eXchange protocol for real-time order routing and trade execution.", spec_url:"https://www.fixtrading.org/standards/fix-protocol/" },
+        { n:"ISO 20022 · Payments", fmt:"20022", ic:"zbraces", long:"Rich XML/JSON financial messaging standard, now the global rail for modern payments.", spec_url:"https://www.iso20022.org/" },
+        { n:"EDIFACT · Supply Chain", fmt:"EDI", ic:"zbraces", long:"UN/EDIFACT electronic data interchange for orders, shipments and invoices across trade.", spec_url:"https://unece.org/trade/uncefact/introducing-unedifact" },
+        { n:"GS1 EPCIS · Retail & CPG", fmt:"EPC", ic:"zbraces", long:"GS1 event standard for supply-chain visibility and item-level traceability.", spec_url:"https://www.gs1.org/standards/epcis" },
+        { n:"OPC UA · Manufacturing", fmt:"OPCUA", ic:"zbraces", long:"OPC Unified Architecture, the backbone protocol for Industry 4.0 machine data.", spec_url:"https://opcfoundation.org/about/opc-technologies/opc-ua/" },
+        { n:"PNR · Airlines", fmt:"PNR", ic:"zbraces", long:"Passenger Name Record, the reservation system-of-record for itineraries and passenger data.", spec_url:"https://www.iata.org/en/programs/passenger/" },
+        { n:"DICOM · Medical Imaging", fmt:"DCM", ic:"zbraces", long:"Digital Imaging and Communications in Medicine for medical images and metadata.", spec_url:"https://www.dicomstandard.org/" },
+        { n:"STIX/TAXII · Cybersecurity", fmt:"STIX", ic:"zbraces", long:"OASIS standards for representing and sharing structured cyber threat intelligence.", spec_url:"https://oasis-open.github.io/cti-documentation/" },
       ]},
       /* `from` appends the current cloud provider's tiles to this group, so one
          provider dataset feeds Sources, Ingest, Consumers and the bottom band. */
@@ -5588,6 +5616,17 @@ function openDetail(id, via){
      generic `what` leads instead; commercial mode shows both. */
   const catMode = (displayMode === "category" && !!t.cat);
   if(!catMode) html += `<h4>${esc(T("What it is"))}</h4><p>${esc(dispProse(t.long) || T("No description yet."))}</p>`;
+  /* A data-format tile links straight to the governing specification. This is the
+     one place the drawer links off-Databricks: standards-body specs (IATA, HL7,
+     GS1, IEC, OASIS) are neutral authoritative references, not vendor marketing,
+     so linkRow's Databricks-only rule is deliberately bypassed here. */
+  if(t.spec_url){
+    html += `<h4>${esc(T("Standard reference"))}</h4><div class="d-links">` +
+      `<a class="d-link" href="${esc(t.spec_url)}" target="_blank" rel="noopener">` +
+      `<span class="dl-t">${esc(displayName(t))}</span>` +
+      `<span class="dl-s">${esc(host(t.spec_url))}</span>` +
+      `<span class="dl-go" aria-hidden="true">&#8599;</span></a></div>`;
+  }
   /* Source enrichment: what the system does, who runs it, and the data it emits
      split into Batch and Streaming, each with shape (structured / semi- /
      unstructured), a typical volume and a cadence. Absent fields render nothing. */
