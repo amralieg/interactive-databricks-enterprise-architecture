@@ -35,9 +35,18 @@ function loadLabels(){
   const block = (html.match(/const INDUSTRY_CATALOG = \[([\s\S]*?)\];/) || [])[1] || '';
   const map = {};
   for (const m of block.matchAll(/\["([a-z0-9_]+)"\s*,\s*"([^"]+)"\]/g)){
-    map[m[1]] = m[2].replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+    map[m[1]] = m[2].trim();
   }
   return map;
+}
+
+// Split "Oil & Gas (Midstream)" into a short base title and its qualifier so the
+// qualifier can render as its own accent line. Without this, same-base variants
+// (the three Oil & Gas boards, the two Capital Markets boards) collapse to
+// identical cards once the parenthetical is dropped.
+function splitLabel(label){
+  const m = label.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  return m ? { base: m[1].trim(), qual: m[2].trim() } : { base: label, qual: '' };
 }
 
 // Auto-shrink the title so a long single word (e.g. Telecommunications) never
@@ -63,6 +72,8 @@ function head(fs_){ return `<meta charset="utf-8"><style>
   .mid{flex:1;display:flex;flex-direction:column;justify-content:center}
   .kick{margin:0;font-size:22px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#FF5F46}
   h1{margin:76px 0 76px;font-size:${fs_}px;line-height:1.02;font-weight:850;letter-spacing:-.025em;color:#fff;max-width:720px}
+  h1.has-qual{margin-bottom:16px}
+  .qual{margin:0 0 60px;font-size:46px;font-weight:800;line-height:1.05;letter-spacing:-.01em;color:#FF5F46;max-width:720px}
   p.sub{margin:0;font-size:31px;line-height:1.36;color:#C6D6DD;max-width:640px;font-weight:500}
   .foot{margin:0;font-size:21px;font-weight:600;color:#8AA4AD}
 </style>`; }
@@ -73,14 +84,16 @@ function watermark(glyph){
 }
 
 function card(label, glyph){
-  return `<!DOCTYPE html><html><head>${head(fontFor(label))}</head><body>
+  const { base, qual } = splitLabel(label);
+  return `<!DOCTYPE html><html><head>${head(fontFor(base))}</head><body>
   <div class="accent"></div>
   ${watermark(glyph)}
   <div class="wrap">
     <div class="brand">${LOGO}</div>
     <div class="mid">
       <div class="kick">Reference Architecture</div>
-      <h1>${esc(label)}</h1>
+      <h1${qual ? ' class="has-qual"' : ''}>${esc(base)}</h1>
+      ${qual ? `<div class="qual">${esc(qual)}</div>` : ''}
       <p class="sub">${SUB}</p>
     </div>
     <div class="foot">${CREDIT}</div>
