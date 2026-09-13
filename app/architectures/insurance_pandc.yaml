@@ -322,6 +322,13 @@ sources:
         fmt: 'ACORD'
         summary: 'ACORD Property & Casualty XML standards for policy, claims and billing data.'
         spec_url: https://www.acord.org/standards-architecture/acord-data-standards
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Guidewire'
+          - 'Duck Creek'
+          - 'Majesco'
       - name: 'ACORD AL3'
         icon: zbraces
         fmt: 'AL3'

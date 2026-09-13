@@ -308,6 +308,13 @@ sources:
         fmt: 'MISMO'
         summary: 'MISMO XML data standard for the US mortgage origination and servicing lifecycle.'
         spec_url: https://www.mismo.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'ICE Mortgage Technology'
+          - 'Blend'
+          - 'Fannie Mae'
       - name: 'MISMO SMART Doc'
         icon: zbraces
         fmt: 'SMART'

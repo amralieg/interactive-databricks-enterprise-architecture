@@ -299,6 +299,13 @@ sources:
         fmt: 'papi'
         summary: 'Global XML e-business standard for the pulp, paper and packaging supply chain.'
         spec_url: https://www.papinet.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SAP'
+          - 'Kiwiplan'
+          - 'Greycon'
       - name: 'papiNet APIs'
         icon: zbraces
         fmt: 'papi'

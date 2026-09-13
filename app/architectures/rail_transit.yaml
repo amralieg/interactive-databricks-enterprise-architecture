@@ -277,6 +277,13 @@ sources:
         fmt: 'NeTEx'
         summary: 'CEN Network Timetable Exchange for detailed public-transport network data.'
         spec_url: https://netex-cen.eu/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'HaCon'
+          - 'Trapeze'
+          - 'Siemens Mobility'
       - name: 'SIRI'
         icon: zbraces
         fmt: 'SIRI'

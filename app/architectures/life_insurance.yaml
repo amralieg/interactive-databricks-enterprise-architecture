@@ -204,6 +204,13 @@ sources:
         fmt: 'ACORD'
         summary: 'ACORD Life & Annuity XML standards for new business, policy and claims data.'
         spec_url: https://www.acord.org/standards-architecture/acord-data-standards
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'FINEOS'
+          - 'Majesco'
+          - 'Equisoft'
       - name: 'ACORD L&A EDI'
         icon: zbraces
         fmt: 'L&A'

@@ -246,6 +246,13 @@ sources:
         fmt: 'WML'
         summary: 'OGC WaterML standard for exchanging hydrological time-series observations.'
         spec_url: https://www.ogc.org/standard/waterml/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'USGS'
+          - 'KISTERS'
+          - 'Aquatic Informatics'
       - name: 'EPANET INP'
         icon: zbraces
         fmt: 'INP'

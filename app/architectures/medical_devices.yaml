@@ -319,11 +319,25 @@ sources:
         fmt: 'DCM'
         summary: 'Standard for medical imaging data and device interoperability.'
         spec_url: https://www.dicomstandard.org/
+        spark_connector: 'pixels'
+        spark_repo: https://github.com/databricks-industry-solutions/pixels
+        databricks_resource: https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html
+        source_systems:
+          - 'GE HealthCare'
+          - 'Philips'
+          - 'Canon Medical'
       - name: 'FHIR Device'
         icon: zbraces
         fmt: 'FHIR'
         summary: 'HL7 FHIR Device resources for representing devices in modern health APIs.'
         spec_url: https://www.hl7.org/fhir/device.html
+        spark_connector: 'dbignite'
+        spark_repo: https://github.com/databrickslabs/dbignite
+        databricks_resource: https://www.databricks.com/solutions/accelerators/fhir
+        source_systems:
+          - 'Philips HealthSuite'
+          - 'GE HealthCare'
+          - 'Masimo'
   - name: Federation Sources
     icon: fed
     from: fed

@@ -335,6 +335,13 @@ sources:
         fmt: 'FpML'
         summary: 'XML standard for OTC derivatives trade representation and lifecycle processing.'
         spec_url: https://www.fpml.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Murex'
+          - 'Calypso'
+          - 'DTCC'
       - name: 'ISO 15022'
         icon: zbraces
         fmt: '15022'

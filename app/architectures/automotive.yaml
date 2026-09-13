@@ -264,6 +264,13 @@ sources:
         fmt: 'ODR'
         summary: 'ASAM logical road-network description for simulation and automated-driving development.'
         spec_url: https://www.asam.net/standards/detail/opendrive/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'dSPACE'
+          - 'IPG Automotive'
+          - 'Vector'
       - name: 'OpenSCENARIO'
         icon: zbraces
         fmt: 'OSC'

@@ -227,6 +227,13 @@ sources:
         fmt: '20022'
         summary: 'Rich financial messaging standard now the global rail for modern payments.'
         spec_url: https://www.iso20022.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SWIFT'
+          - 'Volante'
+          - 'Form3'
       - name: 'ISO 8583'
         icon: zbraces
         fmt: '8583'

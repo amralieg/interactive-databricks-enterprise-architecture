@@ -206,6 +206,13 @@ sources:
         fmt: 'PIDX'
         summary: 'Petroleum Industry Data Exchange XML for procurement and invoicing in oil & gas.'
         spec_url: https://pidx.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SAP'
+          - 'OpenText'
+          - 'Oildex'
       - name: 'DEXPI'
         icon: zbraces
         fmt: 'DEXPI'

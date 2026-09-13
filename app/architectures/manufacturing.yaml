@@ -217,6 +217,13 @@ sources:
         fmt: 'B2MML'
         summary: 'Business To Manufacturing Markup Language implementing ISA-95 integration.'
         spec_url: https://www.mesa.org/topics-resources/b2mml-batchml/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Rockwell FactoryTalk'
+          - 'Siemens Opcenter'
+          - 'AVEVA MES'
       - name: 'BatchML'
         icon: zbraces
         fmt: 'BML'

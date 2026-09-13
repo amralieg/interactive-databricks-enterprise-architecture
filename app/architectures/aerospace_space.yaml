@@ -298,6 +298,13 @@ sources:
         fmt: 'XTCE'
         summary: 'XML Telemetric and Command Exchange for describing spacecraft telemetry and command databases.'
         spec_url: https://ccsds.org/Pubs/660x0b2.pdf
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'GMV'
+          - 'Kratos'
+          - 'Ball Aerospace'
       - name: 'CCSDS Orbit Messages'
         icon: zbraces
         fmt: 'OEM'

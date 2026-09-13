@@ -232,6 +232,13 @@ sources:
         fmt: 'VCF'
         summary: 'Variant Call Format for storing genetic variants against a reference genome.'
         spec_url: https://github.com/samtools/hts-specs
+        spark_connector: 'Glow'
+        spark_repo: https://github.com/projectglow/glow
+        databricks_resource: https://www.databricks.com/blog/2019/10/18/introducing-glow-an-open-source-toolkit-for-large-scale-genomic-analysis.html
+        source_systems:
+          - 'Illumina DRAGEN'
+          - 'Broad GATK'
+          - '10x Genomics'
   - name: Federation Sources
     icon: fed
     from: fed

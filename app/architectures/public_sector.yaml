@@ -278,6 +278,13 @@ sources:
         fmt: 'LDML'
         summary: 'OASIS Akoma Ntoso XML for legislation and legal documents.'
         spec_url: https://www.oasis-open.org/committees/legaldocml/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Xcential'
+          - 'Propylon'
+          - 'OASIS LegalDocML'
       - name: 'LegalXML ECF'
         icon: zbraces
         fmt: 'ECF'

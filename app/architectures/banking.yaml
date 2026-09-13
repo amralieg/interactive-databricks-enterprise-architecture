@@ -242,6 +242,13 @@ sources:
         fmt: '20022'
         summary: 'Rich XML/JSON financial messaging standard for payments, cash management and reporting.'
         spec_url: https://www.iso20022.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SWIFT'
+          - 'Temenos'
+          - 'Finastra'
       - name: 'SWIFT MT'
         icon: zbraces
         fmt: 'MT'

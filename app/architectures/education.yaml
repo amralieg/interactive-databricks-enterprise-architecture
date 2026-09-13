@@ -216,6 +216,13 @@ sources:
         fmt: 'SIF'
         summary: 'Systems Interoperability Framework for exchanging K-12 administrative data.'
         spec_url: https://a4l.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'PowerSchool'
+          - 'Infinite Campus'
+          - 'Ellucian'
       - name: 'PESC Transcripts'
         icon: zbraces
         fmt: 'PESC'

@@ -339,6 +339,13 @@ sources:
         fmt: 'QTI'
         summary: 'Question and Test Interoperability for portable assessment content and results.'
         spec_url: https://www.1edtech.org/standards/qti
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Canvas'
+          - 'TAO'
+          - 'Respondus'
       - name: 'Common Cartridge'
         icon: zbraces
         fmt: 'CC'

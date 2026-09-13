@@ -292,6 +292,13 @@ sources:
         fmt: 'CAP'
         summary: 'OASIS Common Alerting Protocol for all-hazard public warning messages.'
         spec_url: https://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2.html
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Everbridge'
+          - 'FEMA IPAWS'
+          - 'Rave Mobile Safety'
       - name: 'EDXL'
         icon: zbraces
         fmt: 'EDXL'

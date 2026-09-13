@@ -288,6 +288,13 @@ sources:
         fmt: 'SPL'
         summary: 'FDA Structured Product Labeling XML for drug product and label information.'
         spec_url: https://www.fda.gov/industry/fda-data-standards-advisory-board/structured-product-labeling-resources
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Veeva Vault RIM'
+          - 'ArisGlobal'
+          - 'FDA ESG'
       - name: 'CDISC'
         icon: zbraces
         fmt: 'CDISC'

@@ -3471,6 +3471,13 @@ const ARCH = {
       { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
         { n:"Other", ic:"fed", long:"Any other warehouse, database or catalog Lakehouse Federation can reach: Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server and more. Queried in place under Unity Catalog, with no copy.", what:"Any other warehouse, database or catalog Lakehouse Federation can reach (Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server), queried in place under Unity Catalog with no copy.", users:"BI and analytics teams spanning heterogeneous systems.", dataOut:{ batch:{ types:["structured"], vol:"queried in place, no copy", interval:"Query-time federation" } } },
       ]},
+      { box:"Connectors", ic:"zplug", tiles:[
+        { n:"spark-xml · XML standards", fmt:"XML", ic:"zplug", long:"Databricks Spark XML reader and writer, now built into Apache Spark 4.0, for FpML, ACORD, MISMO, C-CDA, ISO 20022 and other XML standards.", spark_connector:"spark-xml", spark_repo:"https://github.com/databricks/spark-xml", databricks_resource:"https://docs.databricks.com/aws/en/query/formats/xml" },
+        { n:"dbignite · FHIR", fmt:"FHIR", ic:"zplug", long:"Databricks Labs library that flattens FHIR bundles into analytics-ready Spark tables.", spark_connector:"dbignite", spark_repo:"https://github.com/databrickslabs/dbignite", databricks_resource:"https://www.databricks.com/solutions/accelerators/fhir" },
+        { n:"pixels · DICOM", fmt:"DCM", ic:"zplug", long:"Databricks solution accelerator that catalogs and processes DICOM medical images at scale on Spark.", spark_connector:"pixels", spark_repo:"https://github.com/databricks-industry-solutions/pixels", databricks_resource:"https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html" },
+        { n:"Glow · Genomics", fmt:"VCF", ic:"zplug", long:"Open-source toolkit from Databricks and Regeneron that loads VCF, BGEN and Plink genomic files into Spark DataFrames.", spark_connector:"Glow", spark_repo:"https://github.com/projectglow/glow", databricks_resource:"https://www.databricks.com/blog/2019/10/18/introducing-glow-an-open-source-toolkit-for-large-scale-genomic-analysis.html" },
+        { n:"Mosaic · Geospatial", fmt:"GEO", ic:"zplug", long:"Databricks Labs Spark extension for large-scale geospatial data: GeoJSON, Shapefile and WKT with H3 indexing.", spark_connector:"Mosaic", spark_repo:"https://github.com/databrickslabs/mosaic", databricks_resource:"https://www.databricks.com/blog/2021/10/11/efficient-point-in-polygon-joins-via-pyspark-and-bng-geospatial-indexing.html" },
+      ]},
     ]},
 
     /* The pocket under the Z's left arm: everything that lands data but is NOT a
@@ -4996,7 +5003,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 31;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
+const SCHEMA = 32;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -5626,6 +5633,21 @@ function openDetail(id, via){
       `<span class="dl-t">${esc(displayName(t))}</span>` +
       `<span class="dl-s">${esc(host(t.spec_url))}</span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a></div>`;
+  }
+  if(t.spark_connector){
+    html += `<h4>${esc(T("Spark connector"))}</h4><div class="d-links">` +
+      `<a class="d-link" href="${esc(t.spark_repo)}" target="_blank" rel="noopener">` +
+      `<span class="dl-t">${esc(t.spark_connector)}</span>` +
+      `<span class="dl-s">${esc(host(t.spark_repo))}</span>` +
+      `<span class="dl-go" aria-hidden="true">&#8599;</span></a>` +
+      (t.databricks_resource ? `<a class="d-link" href="${esc(t.databricks_resource)}" target="_blank" rel="noopener">` +
+        `<span class="dl-t">${esc(T("Databricks resource"))}</span>` +
+        `<span class="dl-s">${esc(host(t.databricks_resource))}</span>` +
+        `<span class="dl-go" aria-hidden="true">&#8599;</span></a>` : "") +
+      `</div>`;
+    if(Array.isArray(t.source_systems) && t.source_systems.length){
+      html += `<h4>${esc(T("Source systems"))}</h4><p>${esc(t.source_systems.join(" · "))}</p>`;
+    }
   }
   /* Source enrichment: what the system does, who runs it, and the data it emits
      split into Batch and Streaming, each with shape (structured / semi- /

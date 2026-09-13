@@ -256,6 +256,13 @@ sources:
         fmt: 'XBRL'
         summary: 'XBRL Global Ledger taxonomy for transaction-level accounting data exchange.'
         spec_url: https://www.xbrl.org/the-standard/what/gl/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SAP'
+          - 'Oracle NetSuite'
+          - 'Workiva'
       - name: 'SAF-T'
         icon: zbraces
         fmt: 'SAFT'

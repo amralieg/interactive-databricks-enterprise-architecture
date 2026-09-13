@@ -327,6 +327,13 @@ sources:
         fmt: 'FHIR'
         summary: 'HL7 FHIR REST/resources standard for modern interoperable lab and health data.'
         spec_url: https://www.hl7.org/fhir/overview.html
+        spark_connector: 'dbignite'
+        spark_repo: https://github.com/databrickslabs/dbignite
+        databricks_resource: https://www.databricks.com/solutions/accelerators/fhir
+        source_systems:
+          - 'Epic'
+          - 'Health Gorilla'
+          - 'Rhapsody'
       - name: 'CLSI LIS01'
         icon: zbraces
         fmt: 'LIS01'

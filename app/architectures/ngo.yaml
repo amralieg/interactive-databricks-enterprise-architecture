@@ -206,6 +206,13 @@ sources:
         fmt: 'IATI'
         summary: 'International Aid Transparency Initiative XML standard for publishing aid activity data.'
         spec_url: https://iatistandard.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'IATI Registry'
+          - 'AidStream'
+          - 'DevResults'
       - name: 'HXL'
         icon: zbraces
         fmt: 'HXL'

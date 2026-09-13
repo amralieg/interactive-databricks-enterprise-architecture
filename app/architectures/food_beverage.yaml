@@ -212,6 +212,13 @@ sources:
         fmt: 'GS1X'
         summary: 'GS1 XML business messages for supply-chain transactions.'
         spec_url: https://www.gs1.org/standards/edi-xml
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'SAP'
+          - '1WorldSync'
+          - 'GS1 GDSN'
       - name: 'GDSN'
         icon: zbraces
         fmt: 'GDSN'

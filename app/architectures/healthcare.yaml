@@ -226,16 +226,37 @@ sources:
         fmt: 'FHIR'
         summary: 'HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON health standard.'
         spec_url: https://www.hl7.org/fhir/overview.html
+        spark_connector: 'dbignite'
+        spark_repo: https://github.com/databrickslabs/dbignite
+        databricks_resource: https://www.databricks.com/solutions/accelerators/fhir
+        source_systems:
+          - 'Epic'
+          - 'Oracle Health'
+          - 'Redox'
       - name: 'CDA/C-CDA'
         icon: zbraces
         fmt: 'CDA'
         summary: 'HL7 Clinical Document Architecture for structured documents like discharge summaries.'
         spec_url: https://www.hl7.org/implement/standards/product_brief.cfm?product_id=492
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Epic'
+          - 'Oracle Health'
+          - 'MEDITECH'
       - name: 'DICOM'
         icon: zbraces
         fmt: 'DCM'
         summary: 'Digital Imaging and Communications in Medicine for medical images and metadata.'
         spec_url: https://www.dicomstandard.org/
+        spark_connector: 'pixels'
+        spark_repo: https://github.com/databricks-industry-solutions/pixels
+        databricks_resource: https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html
+        source_systems:
+          - 'GE HealthCare'
+          - 'Siemens Healthineers'
+          - 'Sectra'
       - name: 'X12N'
         icon: zbraces
         fmt: 'X12N'

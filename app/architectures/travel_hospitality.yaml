@@ -232,6 +232,13 @@ sources:
         fmt: 'OTA'
         summary: 'OpenTravel Alliance XML messages for travel and hospitality distribution.'
         spec_url: https://opentravel.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Amadeus'
+          - 'Sabre'
+          - 'SiteMinder'
       - name: 'OpenTravel 2.0'
         icon: zbraces
         fmt: 'OTA2'

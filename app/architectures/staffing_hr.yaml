@@ -238,6 +238,13 @@ sources:
         fmt: 'HRX'
         summary: 'HR Open Standards XML for recruiting, staffing and workforce data exchange.'
         spec_url: https://www.hropenstandards.org/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Workday'
+          - 'SAP SuccessFactors'
+          - 'Bullhorn'
       - name: 'HR-JSON'
         icon: zbraces
         fmt: 'HRJ'

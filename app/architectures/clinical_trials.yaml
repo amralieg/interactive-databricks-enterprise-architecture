@@ -254,6 +254,13 @@ sources:
         fmt: 'ODM'
         summary: 'CDISC Operational Data Model for capturing, exchanging and archiving eCRF data.'
         spec_url: https://www.cdisc.org/standards/data-exchange/odm-xml
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Medidata Rave'
+          - 'Oracle Clinical'
+          - 'Veeva CDMS'
       - name: 'Define-XML'
         icon: zbraces
         fmt: 'DEF'

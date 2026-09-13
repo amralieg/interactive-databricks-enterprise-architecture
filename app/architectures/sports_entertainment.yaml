@@ -208,6 +208,13 @@ sources:
         fmt: 'SML'
         summary: 'IPTC SportsML-G2 XML for exchanging sports schedules, results and statistics.'
         spec_url: https://iptc.org/standards/sportsml-g2/
+        spark_connector: 'spark-xml'
+        spark_repo: https://github.com/databricks/spark-xml
+        databricks_resource: https://docs.databricks.com/aws/en/query/formats/xml
+        source_systems:
+          - 'Stats Perform'
+          - 'Genius Sports'
+          - 'Sportradar'
       - name: 'IPTC Sport Schema'
         icon: zbraces
         fmt: 'IPTC'
