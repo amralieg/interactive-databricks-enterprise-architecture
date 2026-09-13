@@ -236,6 +236,23 @@ sources:
               - structured
             volume: MBs (standards + controlled terminology)
             interval: Periodic standard releases
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Legacy SDTM Mart
+        icon: fed
+        summary: Historical submission datasets queried in place under Unity Catalog.
+        category: Clinical Data Warehouse / Submission Data Mart
+        what_it_is: Historical SDTM and ADaM submission datasets kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Biostatistics, Statistical Programmers and Regulatory Affairs.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical datasets
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -271,23 +288,6 @@ sources:
         fmt: 'XPT'
         summary: 'SAS transport file format required for FDA clinical dataset submissions.'
         spec_url: https://www.cdisc.org/standards/data-exchange
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Legacy SDTM Mart
-        icon: fed
-        summary: Historical submission datasets queried in place under Unity Catalog.
-        category: Clinical Data Warehouse / Submission Data Mart
-        what_it_is: Historical SDTM and ADaM submission datasets kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Biostatistics, Statistical Programmers and Regulatory Affairs.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical datasets
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

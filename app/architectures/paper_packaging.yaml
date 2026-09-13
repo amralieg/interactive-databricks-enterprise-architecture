@@ -291,6 +291,23 @@ sources:
               - structured
             volume: 100s-1000s of readings/sec
             interval: Continuous metering
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Cost & ESG Marts
+        icon: fed
+        summary: Historical cost, emissions and quality marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Enterprise Data Warehouse
+        what_it_is: Historical cost, emissions and quality marts kept in the incumbent warehouse and queried in place through federation instead of copied.
+        who_uses_it: Finance, ESG reporting and Executive analytics.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -326,23 +343,6 @@ sources:
         fmt: 'JMF'
         summary: 'CIP4 Job Messaging Format for real-time print shop-floor messaging.'
         spec_url: https://www.cip4.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Cost & ESG Marts
-        icon: fed
-        summary: Historical cost, emissions and quality marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
-        category: Enterprise Data Warehouse
-        what_it_is: Historical cost, emissions and quality marts kept in the incumbent warehouse and queried in place through federation instead of copied.
-        who_uses_it: Finance, ESG reporting and Executive analytics.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

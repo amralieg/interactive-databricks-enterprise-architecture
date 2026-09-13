@@ -198,6 +198,23 @@ sources:
               - semi-structured
             volume: hundreds of events/sec at peak
             interval: Continuous clickstream
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Research Grants Ledger
+        icon: fed
+        summary: Sponsored research accounting and effort certification marts left where they are and queried in place under Unity Catalog.
+        category: Sponsored Research Data Warehouse
+        what_it_is: Sponsored-research accounting and effort-certification marts kept in the incumbent system and queried in place through federation.
+        who_uses_it: Sponsored programs, Research finance and Compliance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale ledgers
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -233,23 +250,6 @@ sources:
         fmt: '1R'
         summary: '1EdTech standard for roster, enrolment and grade exchange.'
         spec_url: https://www.1edtech.org/standards/oneroster
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Research Grants Ledger
-        icon: fed
-        summary: Sponsored research accounting and effort certification marts left where they are and queried in place under Unity Catalog.
-        category: Sponsored Research Data Warehouse
-        what_it_is: Sponsored-research accounting and effort-certification marts kept in the incumbent system and queried in place through federation.
-        who_uses_it: Sponsored programs, Research finance and Compliance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale ledgers
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

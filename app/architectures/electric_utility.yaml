@@ -241,6 +241,23 @@ sources:
               - semi-structured
             volume: 100s-1000s of GPS + event reads/sec
             interval: Continuous (vehicle + crew telemetry)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Regulatory Cost Accounting
+        icon: fed
+        summary: FERC and state jurisdictional cost ledgers left where they are and queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: FERC and state jurisdictional cost-of-service ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.
+        who_uses_it: Regulatory affairs, rate design and cost-of-service teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical ledgers
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -269,23 +286,6 @@ sources:
         fmt: 'CTR'
         summary: 'IEC transient data exchange format from fault recorders and relays.'
         spec_url: https://webstore.iec.ch/en/publication/24421
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Regulatory Cost Accounting
-        icon: fed
-        summary: FERC and state jurisdictional cost ledgers left where they are and queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: FERC and state jurisdictional cost-of-service ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.
-        who_uses_it: Regulatory affairs, rate design and cost-of-service teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical ledgers
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

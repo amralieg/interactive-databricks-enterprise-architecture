@@ -322,6 +322,23 @@ sources:
               - semi-structured
             volume: 50-200 GB/day messages + metadata
             interval: Continuous capture, batch load
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Custodial BoR
+        icon: fed
+        summary: Portfolio accounting and the custodial book of record left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled positions and cost basis.
+        category: Custodial Book of Record
+        what_it_is: Portfolio accounting and the custodial book of record kept in the incumbent system and queried in place, giving one reconciled view of positions and cost basis.
+        who_uses_it: Investment operations, fund accounting and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical positions + cost basis
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -352,23 +369,6 @@ sources:
         fmt: 'OFX'
         summary: 'Open Financial Exchange for account aggregation and financial data feeds.'
         spec_url: https://financialdataexchange.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Custodial BoR
-        icon: fed
-        summary: Portfolio accounting and the custodial book of record left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled positions and cost basis.
-        category: Custodial Book of Record
-        what_it_is: Portfolio accounting and the custodial book of record kept in the incumbent system and queried in place, giving one reconciled view of positions and cost basis.
-        who_uses_it: Investment operations, fund accounting and finance.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical positions + cost basis
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

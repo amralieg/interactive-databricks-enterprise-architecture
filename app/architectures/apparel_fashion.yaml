@@ -235,6 +235,23 @@ sources:
               - semi-structured
             volume: MBs/month
             interval: Periodic certification updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Wholesale Partner Mart
+        icon: fed
+        summary: Department store sell-in and chargeback marts queried in place under Unity Catalog.
+        category: Wholesale Data Mart
+        what_it_is: Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Wholesale, Finance and Merchandising analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -258,23 +275,6 @@ sources:
         fmt: 'BOL'
         summary: 'GS1 US Bill of Lading guideline for standardised freight documentation.'
         spec_url: https://www.gs1us.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Wholesale Partner Mart
-        icon: fed
-        summary: Department store sell-in and chargeback marts queried in place under Unity Catalog.
-        category: Wholesale Data Mart
-        what_it_is: Department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Wholesale, Finance and Merchandising analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -196,6 +196,23 @@ sources:
               - semi-structured
             volume: 1-5 GB/cycle
             interval: Monthly / quarterly treaty cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: MGU Admin Feeds
+        icon: fed
+        summary: Managing general underwriter policy detail left at partners and queried in place under Unity Catalog.
+        category: Delegated Authority Admin System
+        what_it_is: Managing-general-underwriter policy and bordereau detail kept at partners and queried in place through federation instead of being copied in.
+        who_uses_it: Actuarial & Reserving, delegated-authority and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale partner marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -216,23 +233,6 @@ sources:
         fmt: 'L&A'
         summary: 'ACORD Life & Annuity transaction standards for carrier-distributor interchange.'
         spec_url: https://www.acord.org/standards-architecture/acord-data-standards
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: MGU Admin Feeds
-        icon: fed
-        summary: Managing general underwriter policy detail left at partners and queried in place under Unity Catalog.
-        category: Delegated Authority Admin System
-        what_it_is: Managing-general-underwriter policy and bordereau detail kept at partners and queried in place through federation instead of being copied in.
-        who_uses_it: Actuarial & Reserving, delegated-authority and Finance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale partner marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

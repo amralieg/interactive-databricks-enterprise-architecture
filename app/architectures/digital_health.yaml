@@ -301,6 +301,23 @@ sources:
               - semi-structured
             volume: tens of payment events/sec
             interval: Continuous (webhook / API)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Enrollment & Claims
+        icon: fed
+        summary: Employer and payer eligibility, enrollment and adjudicated-claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the paid claims.
+        category: Eligibility & Claims Data Warehouse
+        what_it_is: Employer and payer eligibility, enrollment and adjudicated-claims marts kept where they are and queried in place through federation instead of being copied.
+        who_uses_it: Payer Partners, Actuarial & VBC and care-management teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale claims marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -338,23 +355,6 @@ sources:
         fmt: 'SHC'
         summary: 'Verifiable, signed FHIR-based health credentials for portable patient records.'
         spec_url: https://smarthealth.cards/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Enrollment & Claims
-        icon: fed
-        summary: Employer and payer eligibility, enrollment and adjudicated-claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the paid claims.
-        category: Eligibility & Claims Data Warehouse
-        what_it_is: Employer and payer eligibility, enrollment and adjudicated-claims marts kept where they are and queried in place through federation instead of being copied.
-        who_uses_it: Payer Partners, Actuarial & VBC and care-management teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale claims marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

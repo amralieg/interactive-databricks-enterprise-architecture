@@ -314,6 +314,23 @@ sources:
               - structured
             volume: 0.2-1 GB/day QC results
             interval: Per-run + daily peer comparison
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Billing & Claims Marts
+        icon: fed
+        summary: Historical billing, denial and claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled financial numbers.
+        category: Revenue Cycle Data Warehouse
+        what_it_is: Historical billing, denial and claims marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the reconciled financial numbers.
+        who_uses_it: Revenue Cycle, Denials management and CFO & finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -344,23 +361,6 @@ sources:
         fmt: 'LIS02'
         summary: 'CLSI message specification for transferring lab orders and results.'
         spec_url: https://clsi.org/shop/standards/lis02/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Billing & Claims Marts
-        icon: fed
-        summary: Historical billing, denial and claims marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reconciled financial numbers.
-        category: Revenue Cycle Data Warehouse
-        what_it_is: Historical billing, denial and claims marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the reconciled financial numbers.
-        who_uses_it: Revenue Cycle, Denials management and CFO & finance.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

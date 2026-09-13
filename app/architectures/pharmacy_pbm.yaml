@@ -319,6 +319,23 @@ sources:
               - semi-structured
             volume: hundreds of fill events/sec at peak
             interval: Continuous (dispensing telemetry)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Rebate & Claims Marts
+        icon: fed
+        summary: Historical adjudicated-claims, rebate accrual and DIR marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Claims & Rebate Data Warehouse
+        what_it_is: Historical adjudicated-claims, rebate accrual and DIR marts kept where they are and queried in place through federation instead of being copied.
+        who_uses_it: PBM Leadership, finance and Network Pricing teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -342,23 +359,6 @@ sources:
         fmt: 'RTPB'
         summary: 'NCPDP Real-Time Prescription Benefit for point-of-care price and coverage checks.'
         spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Rebate & Claims Marts
-        icon: fed
-        summary: Historical adjudicated-claims, rebate accrual and DIR marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
-        category: Claims & Rebate Data Warehouse
-        what_it_is: Historical adjudicated-claims, rebate accrual and DIR marts kept where they are and queried in place through federation instead of being copied.
-        who_uses_it: PBM Leadership, finance and Network Pricing teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

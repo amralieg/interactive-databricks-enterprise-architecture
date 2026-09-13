@@ -233,6 +233,23 @@ sources:
               - structured
             volume: MBs-GBs/day price feeds
             interval: Intraday to daily benchmarks
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Partner Foundry Marts
+        icon: fed
+        summary: Yield and capacity marts left at the foundry and queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Yield and capacity marts kept at the foundry and queried in place through federation instead of copied into the lakehouse.
+        who_uses_it: Yield engineering, capacity planning and Foundry interface teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale yield/capacity marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -261,23 +278,6 @@ sources:
         fmt: 'EDA'
         summary: 'SEMI Equipment Data Acquisition (Interface A) for rich equipment data collection.'
         spec_url: https://www.semi.org/en/standards
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Partner Foundry Marts
-        icon: fed
-        summary: Yield and capacity marts left at the foundry and queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Yield and capacity marts kept at the foundry and queried in place through federation instead of copied into the lakehouse.
-        who_uses_it: Yield engineering, capacity planning and Foundry interface teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale yield/capacity marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

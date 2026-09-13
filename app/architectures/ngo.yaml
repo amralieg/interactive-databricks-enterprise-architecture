@@ -198,6 +198,24 @@ sources:
               - semi-structured
             volume: check-in and incident events
             interval: Continuous (event-driven)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: UN Agency Data Mart
+        icon: fed
+        summary: OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog.
+        category: Partner Data Warehouse / Marts
+        what_it_is: OCHA and cluster reference datasets kept at partner agencies and queried in place through federation instead of being copied.
+        who_uses_it: Program, coordination and M&E analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: GB-scale reference marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -218,24 +236,6 @@ sources:
         fmt: 'HXL'
         summary: 'Humanitarian Exchange Language, lightweight hashtags added to humanitarian datasets.'
         spec_url: https://hxlstandard.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: UN Agency Data Mart
-        icon: fed
-        summary: OCHA and cluster reference datasets left at partners and queried in place under Unity Catalog.
-        category: Partner Data Warehouse / Marts
-        what_it_is: OCHA and cluster reference datasets kept at partner agencies and queried in place through federation instead of being copied.
-        who_uses_it: Program, coordination and M&E analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-              - semi-structured
-            volume: GB-scale reference marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

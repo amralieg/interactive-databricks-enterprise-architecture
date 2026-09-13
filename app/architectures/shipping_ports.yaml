@@ -226,6 +226,23 @@ sources:
               - structured
             volume: MBs-GBs (rates + events)
             interval: Daily rate refresh
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Carrier Schedule Marts
+        icon: fed
+        summary: Vessel schedules and capacity marts left with carriers and queried in place under Unity Catalog.
+        category: Carrier Schedule Warehouse
+        what_it_is: Carrier-side vessel schedule and capacity marts kept with the lines and queried in place through federation rather than copied into the terminal.
+        who_uses_it: Terminal Operations, Berth Planners and Commercial & Tariffs analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -249,23 +266,6 @@ sources:
         fmt: 'BOL'
         summary: 'DCSA standardised electronic bill of lading data model.'
         spec_url: https://dcsa.org/standards/ebill-of-lading
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Carrier Schedule Marts
-        icon: fed
-        summary: Vessel schedules and capacity marts left with carriers and queried in place under Unity Catalog.
-        category: Carrier Schedule Warehouse
-        what_it_is: Carrier-side vessel schedule and capacity marts kept with the lines and queried in place through federation rather than copied into the terminal.
-        who_uses_it: Terminal Operations, Berth Planners and Commercial & Tariffs analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

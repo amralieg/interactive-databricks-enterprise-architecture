@@ -193,6 +193,23 @@ sources:
               - structured
             volume: 0.1-0.5 GB/day
             interval: Daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Studio Cost Ledger
+        icon: fed
+        summary: Production accounting and amortisation marts queried in place under Unity Catalog for title P&L.
+        category: Production Finance Warehouse
+        what_it_is: Production accounting and amortisation marts kept in existing warehouses and queried in place through federation for title P&L.
+        who_uses_it: Finance, Production accounting and Content strategy teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale cost history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -216,23 +233,6 @@ sources:
         fmt: 'SDI'
         summary: 'SMPTE Serial Digital Interface for uncompressed video transport over coax.'
         spec_url: https://www.smpte.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Studio Cost Ledger
-        icon: fed
-        summary: Production accounting and amortisation marts queried in place under Unity Catalog for title P&L.
-        category: Production Finance Warehouse
-        what_it_is: Production accounting and amortisation marts kept in existing warehouses and queried in place through federation for title P&L.
-        who_uses_it: Finance, Production accounting and Content strategy teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale cost history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

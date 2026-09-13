@@ -234,6 +234,23 @@ sources:
               - structured
             volume: GBs/day
             interval: Daily order + payout feed
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance Revenue Mart
+        icon: fed
+        summary: Revenue recognition marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Revenue-recognition marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Finance and Revenue Operations analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -259,23 +276,6 @@ sources:
           - 'SAP'
           - '1WorldSync'
           - 'GS1 GDSN'
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Finance Revenue Mart
-        icon: fed
-        summary: Revenue recognition marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Revenue-recognition marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Finance and Revenue Operations analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

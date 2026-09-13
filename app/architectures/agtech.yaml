@@ -309,6 +309,23 @@ sources:
               - semi-structured
             volume: simulation outputs per field-scenario
             interval: Per model run
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Commercial Data Mart
+        icon: fed
+        summary: Legacy commercial, dealer and R&D data marts left where they are and queried in place under Unity Catalog, which avoids a second copy of numbers still under retention and contract.
+        category: Federated Data Warehouse / Marts
+        what_it_is: Legacy commercial, dealer and R&D marts queried in place under Unity Catalog, avoiding a second copy of numbers still under retention and contract.
+        who_uses_it: Commercial, Dealer Network and Crop Science R&D teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: billions of historical rows queried in place
+            interval: Query-time federation
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -334,23 +351,6 @@ sources:
         fmt: 'BUS'
         summary: 'ISO 11783 plug-and-play network between tractors, implements and displays.'
         spec_url: https://www.aef-online.org/the-aef/isobus.html
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Commercial Data Mart
-        icon: fed
-        summary: Legacy commercial, dealer and R&D data marts left where they are and queried in place under Unity Catalog, which avoids a second copy of numbers still under retention and contract.
-        category: Federated Data Warehouse / Marts
-        what_it_is: Legacy commercial, dealer and R&D marts queried in place under Unity Catalog, avoiding a second copy of numbers still under retention and contract.
-        who_uses_it: Commercial, Dealer Network and Crop Science R&D teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: billions of historical rows queried in place
-            interval: Query-time federation
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

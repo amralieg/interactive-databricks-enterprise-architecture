@@ -265,6 +265,23 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous CDC
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Rebate Mart
+        icon: fed
+        summary: Rebate, chargeback and margin marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Finance Data Warehouse
+        what_it_is: Rebate, chargeback and margin marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
+        who_uses_it: Finance & Rebates, CFO & controllers and Rebate & pricing admin analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -300,23 +317,6 @@ sources:
           - 'SAP'
           - 'Infor'
           - '1WorldSync'
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Finance & Rebate Mart
-        icon: fed
-        summary: Rebate, chargeback and margin marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
-        category: Finance Data Warehouse
-        what_it_is: Rebate, chargeback and margin marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
-        who_uses_it: Finance & Rebates, CFO & controllers and Rebate & pricing admin analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

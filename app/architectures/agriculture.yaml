@@ -233,6 +233,23 @@ sources:
               - semi-structured
             volume: 100s of MB
             interval: Per sampling / issuance cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Legacy Co-op Mart
+        icon: fed
+        summary: Patronage and historical elevator marts queried in place under Unity Catalog.
+        category: Co-op Data Warehouse
+        what_it_is: Patronage and historical elevator marts kept in the legacy warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance & Risk, CFO & Controller and Member board analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -263,23 +280,6 @@ sources:
         fmt: 'eAG'
         summary: 'AgGateway XML e-business standards for orders, shipments and product catalogues in agriculture.'
         spec_url: https://aggateway.org/GetConnected/StandardsGuidelines/XML.aspx
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Legacy Co-op Mart
-        icon: fed
-        summary: Patronage and historical elevator marts queried in place under Unity Catalog.
-        category: Co-op Data Warehouse
-        what_it_is: Patronage and historical elevator marts kept in the legacy warehouse and queried in place through federation rather than copied.
-        who_uses_it: Finance & Risk, CFO & Controller and Member board analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

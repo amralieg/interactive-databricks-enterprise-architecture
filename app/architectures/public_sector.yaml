@@ -260,6 +260,23 @@ sources:
               - semi-structured
             volume: 0.5-3 GB/day
             interval: Daily + reporting cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: State Data Warehouse
+        icon: fed
+        summary: Legacy agency data marts and mainframe extracts left where they are and queried in place under Unity Catalog, which avoids a second copy of records still under retention.
+        category: Legacy Data Warehouse / Marts
+        what_it_is: Historical agency marts and mainframe extracts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Program, finance and reporting analysts across agencies.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -290,23 +307,6 @@ sources:
         fmt: 'ECF'
         summary: 'OASIS Electronic Court Filing standard for court document exchange.'
         spec_url: https://docs.oasis-open.org/legalxml-courtfiling/ecf/v5.0/ecf-v5.0.html
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: State Data Warehouse
-        icon: fed
-        summary: Legacy agency data marts and mainframe extracts left where they are and queried in place under Unity Catalog, which avoids a second copy of records still under retention.
-        category: Legacy Data Warehouse / Marts
-        what_it_is: Historical agency marts and mainframe extracts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Program, finance and reporting analysts across agencies.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

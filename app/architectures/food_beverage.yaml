@@ -194,6 +194,23 @@ sources:
               - structured
             volume: 1-5 GB/day
             interval: Daily + settlement cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Co-manufacturer Inventory
+        icon: fed
+        summary: Third-party production inventory and batch status left at co-packers and queried in place under Unity Catalog.
+        category: External Partner Data Source
+        what_it_is: Third-party production inventory and batch status left at co-packers and queried in place through federation instead of manual spreadsheet chases.
+        who_uses_it: Supply Chain, Planning and Co-pack Operations teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10s-100s GB (federated)
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -224,23 +241,6 @@ sources:
         fmt: 'GDSN'
         summary: 'Global Data Synchronisation Network catalogue messages for product master data.'
         spec_url: https://www.gs1.org/services/gdsn
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Co-manufacturer Inventory
-        icon: fed
-        summary: Third-party production inventory and batch status left at co-packers and queried in place under Unity Catalog.
-        category: External Partner Data Source
-        what_it_is: Third-party production inventory and batch status left at co-packers and queried in place through federation instead of manual spreadsheet chases.
-        who_uses_it: Supply Chain, Planning and Co-pack Operations teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: 10s-100s GB (federated)
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

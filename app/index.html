@@ -1941,6 +1941,7 @@
   /* Swatch beside each row in the Highlights menu, same colour as the dot. */
   .hl-swatch { display:inline-block; width:7.2px; height:7.2px; border-radius:50%; background:var(--bd);
     box-shadow:0 0 4px .8px var(--bd); flex:0 0 auto; margin-right:2px; }
+  .hl-sub { padding:1px 10px 5px 26px; font-size:10.5px; color:var(--faint); line-height:1.3; }
   /* Search box at the top of the Region menu, and the location gloss per row. */
   .pal-menu .men-search { padding:6px 8px 4px; }
   .pal-menu .men-search input { width:100%; box-sizing:border-box; font-size:12px; padding:6px 9px;
@@ -3200,6 +3201,43 @@ function connectorFor(t){
   for(const id in CONNECTORS){ const c = CONNECTORS[id]; if(c.re.test(t.n)) return { n:c.n, note:c.note, u:connectorUrl(c.slug) }; }
   return null;
 }
+const LAKEFLOW_OFFICIAL = [
+  [/salesforce marketing cloud/i, "Salesforce Marketing Cloud"],
+  [/\bsalesforce\b/i, "Salesforce"],
+  [/\bservicenow\b/i, "ServiceNow"],
+  [/\bworkday\b/i, "Workday"],
+  [/\bnetsuite\b/i, "NetSuite"],
+  [/\bhubspot\b/i, "HubSpot"],
+  [/\bzendesk\b/i, "Zendesk"],
+  [/\bjira\b/i, "Jira"],
+  [/\bconfluence\b/i, "Confluence"],
+  [/\bgithub\b/i, "GitHub"],
+  [/\bgmail\b/i, "Gmail"],
+  [/\bnotion\b/i, "Notion"],
+  [/\bpagerduty\b/i, "PagerDuty"],
+  [/\bamplitude\b/i, "Amplitude"],
+  [/\bmarketo\b/i, "Marketo"],
+  [/dynamics ?365/i, "Dynamics 365"],
+  [/google analytics/i, "Google Analytics"],
+  [/google ads/i, "Google Ads"],
+  [/\bsharepoint\b/i, "SharePoint"],
+  [/sql server/i, "SQL Server"],
+  [/\bpostgres(ql)?\b/i, "PostgreSQL"],
+  [/\bmysql\b/i, "MySQL"],
+];
+const LAKEFLOW_COMMUNITY = [
+  [/\bstripe\b/i, "Stripe"],
+];
+function dataConnectorFor(t){
+  if(!t) return null;
+  if(t.spark_connector) return { n:t.spark_connector, kind:"Spark", tier:"Community", u:t.spark_repo || "" };
+  if(t.conn) return { n:(t.conn.n || t.conn), kind:"Lakeflow", tier:(t.conn.tier || "Official"), u:(t.conn.u || "") };
+  if(t.cat && typeof t.n === "string"){
+    for(const [re, n] of LAKEFLOW_OFFICIAL){ if(re.test(t.n)) return { n:n, kind:"Lakeflow", tier:"Official", u:"" }; }
+    for(const [re, n] of LAKEFLOW_COMMUNITY){ if(re.test(t.n)) return { n:n, kind:"Lakeflow", tier:"Community", u:"" }; }
+  }
+  return null;
+}
 /* Single resolver the tile dot, drawer callout and every export share, so accel
    and connector marking stay in one place. Accelerator (use case) wins if both
    somehow resolve, but they are disjoint by construction (problem vs cat). */
@@ -3220,7 +3258,7 @@ function markBadge(t){
    is the corner fill order: a lone dot lands top-right, extras spread from there. */
 const HL_ORDER = ["story", "conn", "tour", "demo", "course", "video", "accel"];
 const DEFAULT_HL_OFF = [];   /* all highlight kinds on by default */
-const HL_TITLE = { story:"Customer Stories", conn:"Lakeflow Connectors",
+const HL_TITLE = { story:"Customer Stories", conn:"Data Connector",
   tour:"Product Tours", demo:"Product Demos", course:"Free Academy Courses",
   video:"Videos", accel:"Solution Accelerators" };
 /* A glowing dot for a drawer SECTION, in that highlight's colour. Placed on the
@@ -3285,7 +3323,7 @@ function hlKinds(t){
   const persona = isPersonaTile(t);
   const stories = persona ? personaStories(t) : (t.stories || []);
   if(stories.length) out.push("story");
-  if(!persona && connectorFor(t)) out.push("conn");
+  if(!persona && dataConnectorFor(t)) out.push("conn");
   const ds = persona ? personaDemos(t) : tileDemos(t);
   if(ds.some(d=>d.kind === "tour")) out.push("tour");
   if(ds.some(d=>d.kind !== "tour")) out.push("demo");
@@ -3296,9 +3334,11 @@ function hlKinds(t){
   return out;
 }
 function hlDotsHtml(t){
-  return hlKinds(t).map(k=>
-    `<span class="badge-dot hl-${k}" data-hl="${k}" title="${esc(T(HL_TITLE[k]))}" aria-hidden="true"></span>`
-  ).join("");
+  return hlKinds(t).map(k=>{
+    let title = T(HL_TITLE[k]);
+    if(k === "conn"){ const dc = dataConnectorFor(t); if(dc) title = T(HL_TITLE.conn) + " \u00b7 " + dc.n + " \u00b7 " + T(dc.kind) + " \u00b7 " + T(dc.tier); }
+    return `<span class="badge-dot hl-${k}" data-hl="${k}" title="${esc(title)}" aria-hidden="true"></span>`;
+  }).join("");
 }
 /* A data-format tile (PNR, FIX, HL7) shows its short code as a monogram badge
    rather than a shared glyph, so the rail previews which standards the industry
@@ -3590,32 +3630,20 @@ const ARCH = {
         { n:"Partner Feeds", ic:"partner", long:"Partner and supplier data received over Delta Sharing or OpenSharing.", what:"Partner and supplier datasets received over Delta Sharing or OpenSharing, with no copy for Delta recipients.", users:"Supply-chain, partnerships and B2B analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"varies by partner", interval:"Shared / scheduled" } } },
         { n:"Public & Open Data", ic:"globe", long:"Open government, geospatial and demographic datasets.", what:"Open government, geospatial and demographic datasets blended with internal data for context.", users:"Data-science, policy and market-analytics teams.", dataOut:{ batch:{ types:["structured", "semi-structured"], vol:"MBs-GBs per dataset", interval:"Periodic refresh" } } },
       ]},
-      /* The interchange standards data actually arrives in. On an industry board
-         the YAML replaces this with that industry's own formats; the reference
-         board carries the most recognised ones, each tagged with the industry
-         that lives on it, so the section reads as an industry-awareness legend. */
-      { box:"Data Formats", ic:"zbraces", tiles:[
-        { n:"FHIR · Healthcare", fmt:"FHIR", ic:"zbraces", long:"HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON standard for exchanging health data.", spec_url:"https://www.hl7.org/fhir/overview.html" },
-        { n:"FIX · Capital Markets", fmt:"FIX", ic:"zbraces", long:"Financial Information eXchange protocol for real-time order routing and trade execution.", spec_url:"https://www.fixtrading.org/standards/fix-protocol/" },
-        { n:"ISO 20022 · Payments", fmt:"20022", ic:"zbraces", long:"Rich XML/JSON financial messaging standard, now the global rail for modern payments.", spec_url:"https://www.iso20022.org/" },
-        { n:"EDIFACT · Supply Chain", fmt:"EDI", ic:"zbraces", long:"UN/EDIFACT electronic data interchange for orders, shipments and invoices across trade.", spec_url:"https://unece.org/trade/uncefact/introducing-unedifact" },
-        { n:"GS1 EPCIS · Retail & CPG", fmt:"EPC", ic:"zbraces", long:"GS1 event standard for supply-chain visibility and item-level traceability.", spec_url:"https://www.gs1.org/standards/epcis" },
-        { n:"OPC UA · Manufacturing", fmt:"OPCUA", ic:"zbraces", long:"OPC Unified Architecture, the backbone protocol for Industry 4.0 machine data.", spec_url:"https://opcfoundation.org/about/opc-technologies/opc-ua/" },
-        { n:"PNR · Airlines", fmt:"PNR", ic:"zbraces", long:"Passenger Name Record, the reservation system-of-record for itineraries and passenger data.", spec_url:"https://www.iata.org/en/programs/passenger/" },
-        { n:"DICOM · Medical Imaging", fmt:"DCM", ic:"zbraces", long:"Digital Imaging and Communications in Medicine for medical images and metadata.", spec_url:"https://www.dicomstandard.org/" },
-        { n:"STIX/TAXII · Cybersecurity", fmt:"STIX", ic:"zbraces", long:"OASIS standards for representing and sharing structured cyber threat intelligence.", spec_url:"https://oasis-open.github.io/cti-documentation/" },
-      ]},
       /* `from` appends the current cloud provider's tiles to this group, so one
          provider dataset feeds Sources, Ingest, Consumers and the bottom band. */
       { box:"Federation Sources", ic:"fed", from:"fed", tail:true, tiles:[
         { n:"Other", ic:"fed", long:"Any other warehouse, database or catalog Lakehouse Federation can reach: Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server and more. Queried in place under Unity Catalog, with no copy.", what:"Any other warehouse, database or catalog Lakehouse Federation can reach (Snowflake, BigQuery, Postgres, MySQL, Teradata, Oracle, SQL Server), queried in place under Unity Catalog with no copy.", users:"BI and analytics teams spanning heterogeneous systems.", dataOut:{ batch:{ types:["structured"], vol:"queried in place, no copy", interval:"Query-time federation" } } },
       ]},
-      { box:"Connectors", ic:"zplug", tiles:[
-        { n:"spark-xml · XML standards", fmt:"XML", ic:"zplug", long:"Databricks Spark XML reader and writer, now built into Apache Spark 4.0, for FpML, ACORD, MISMO, C-CDA, ISO 20022 and other XML standards.", spark_connector:"spark-xml", spark_repo:"https://github.com/databricks/spark-xml", databricks_resource:"https://docs.databricks.com/aws/en/query/formats/xml" },
-        { n:"dbignite · FHIR", fmt:"FHIR", ic:"zplug", long:"Databricks Labs library that flattens FHIR bundles into analytics-ready Spark tables.", spark_connector:"dbignite", spark_repo:"https://github.com/databrickslabs/dbignite", databricks_resource:"https://www.databricks.com/solutions/accelerators/fhir" },
-        { n:"pixels · DICOM", fmt:"DCM", ic:"zplug", long:"Databricks solution accelerator that catalogs and processes DICOM medical images at scale on Spark.", spark_connector:"pixels", spark_repo:"https://github.com/databricks-industry-solutions/pixels", databricks_resource:"https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html" },
-        { n:"Glow · Genomics", fmt:"VCF", ic:"zplug", long:"Open-source toolkit from Databricks and Regeneron that loads VCF, BGEN and Plink genomic files into Spark DataFrames.", spark_connector:"Glow", spark_repo:"https://github.com/projectglow/glow", databricks_resource:"https://www.databricks.com/blog/2019/10/18/introducing-glow-an-open-source-toolkit-for-large-scale-genomic-analysis.html" },
-        { n:"Mosaic · Geospatial", fmt:"GEO", ic:"zplug", long:"Databricks Labs Spark extension for large-scale geospatial data: GeoJSON, Shapefile and WKT with H3 indexing.", spark_connector:"Mosaic", spark_repo:"https://github.com/databrickslabs/mosaic", databricks_resource:"https://www.databricks.com/blog/2021/10/11/efficient-point-in-polygon-joins-via-pyspark-and-bng-geospatial-indexing.html" },
+      /* The interchange standards data actually arrives in. On an industry board
+         the YAML replaces this with that industry's own formats; the reference
+         board carries the most recognised ones, each tagged with the industry
+         that lives on it, so the section reads as an industry-awareness legend. */
+      { box:"Data Formats", ic:"zbraces", tiles:[
+        { n:"FHIR · Healthcare", fmt:"FHIR", ic:"zbraces", long:"HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON standard for exchanging health data.", spec_url:"https://www.hl7.org/fhir/overview.html", spark_connector:"dbignite", spark_repo:"https://github.com/databrickslabs/dbignite", databricks_resource:"https://www.databricks.com/solutions/accelerators/fhir" },
+        { n:"ISO 20022 · Payments", fmt:"20022", ic:"zbraces", long:"Rich XML/JSON financial messaging standard, now the global rail for modern payments.", spec_url:"https://www.iso20022.org/", spark_connector:"spark-xml", spark_repo:"https://github.com/databricks/spark-xml", databricks_resource:"https://docs.databricks.com/aws/en/query/formats/xml" },
+        { n:"FIX · Capital Markets", fmt:"FIX", ic:"zbraces", long:"Financial Information eXchange protocol for real-time order routing and trade execution.", spec_url:"https://www.fixtrading.org/standards/fix-protocol/" },
+        { n:"DICOM · Medical Imaging", fmt:"DCM", ic:"zbraces", long:"Digital Imaging and Communications in Medicine for medical images and metadata.", spec_url:"https://www.dicomstandard.org/", spark_connector:"pixels", spark_repo:"https://github.com/databricks-industry-solutions/pixels", databricks_resource:"https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html" },
       ]},
     ]},
 
@@ -5071,7 +5099,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 32;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
+const SCHEMA = 33;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -7385,9 +7413,12 @@ function paintHlMenu(){
   const off = hlsOff(), c = hlCounts();
   const rows = ['<div class="men-hd">Highlights</div>',
     '<button data-hl-all="1" class="' + (off.size ? "" : "on") + '"><span>All highlights</span></button>'];
-  HL_ORDER.forEach(k=> rows.push('<button class="cnt' + (off.has(k) ? "" : " on") +
-    '" data-hl="' + k + '"><span class="hl-swatch hl-' + k + '"></span><span>' +
-    esc(HL_TITLE[k]) + '</span><i>' + (c[k] || 0) + '</i></button>'));
+  HL_ORDER.forEach(k=>{
+    rows.push('<button class="cnt' + (off.has(k) ? "" : " on") +
+      '" data-hl="' + k + '"><span class="hl-swatch hl-' + k + '"></span><span>' +
+      esc(HL_TITLE[k]) + '</span><i>' + (c[k] || 0) + '</i></button>');
+    if(k === "conn") rows.push('<div class="hl-sub">Lakeflow: Official &middot; Community &nbsp;|&nbsp; Spark: Community</div>');
+  });
   rows.push('<div class="dl-note">Each colour marks one kind. A box with several lines them up in a row.</div>');
   hlMenu.innerHTML = rows.join("");
   hlMenu.querySelectorAll("button").forEach(b=> b.onclick = e=>{

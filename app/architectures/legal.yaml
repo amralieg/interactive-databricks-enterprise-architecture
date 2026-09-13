@@ -195,6 +195,23 @@ sources:
               - unstructured
             volume: GB-scale reference + usage
             interval: Periodic + on-demand
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Client ERP Contract Mart
+        icon: fed
+        summary: Corporate customer contract and vendor obligation marts left in place and queried under Unity Catalog.
+        category: Corporate Contract / Obligation Mart
+        what_it_is: Corporate customer contract and vendor-obligation marts queried in place through federation instead of being copied.
+        who_uses_it: Corporate legal, contract management and finance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale contract marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -220,23 +237,6 @@ sources:
         fmt: 'ECF'
         summary: 'OASIS Electronic Court Filing standard for exchanging court documents.'
         spec_url: https://docs.oasis-open.org/legalxml-courtfiling/ecf/v5.0/ecf-v5.0.html
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Client ERP Contract Mart
-        icon: fed
-        summary: Corporate customer contract and vendor obligation marts left in place and queried under Unity Catalog.
-        category: Corporate Contract / Obligation Mart
-        what_it_is: Corporate customer contract and vendor-obligation marts queried in place through federation instead of being copied.
-        who_uses_it: Corporate legal, contract management and finance analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale contract marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

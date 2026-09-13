@@ -314,6 +314,23 @@ sources:
               - structured
             volume: GBs (property + hazard reference)
             interval: Periodic refresh + on-demand
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Actuarial & Reserving
+        icon: fed
+        summary: Reserving triangles, actuarial marts and reinsurance bordereaux left where they are and queried in place under Unity Catalog, which avoids a second copy of the booked reserves.
+        category: Actuarial Data Warehouse
+        what_it_is: Legacy reserving triangles, actuarial marts and reinsurance bordereaux kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Actuarial & Pricing, reserving actuaries and Finance & Reinsurance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -334,23 +351,6 @@ sources:
         fmt: 'AL3'
         summary: 'Legacy ACORD flat-file standard for agency-carrier P&C data interchange.'
         spec_url: https://www.acord.org/standards-architecture/acord-data-standards
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Actuarial & Reserving
-        icon: fed
-        summary: Reserving triangles, actuarial marts and reinsurance bordereaux left where they are and queried in place under Unity Catalog, which avoids a second copy of the booked reserves.
-        category: Actuarial Data Warehouse
-        what_it_is: Legacy reserving triangles, actuarial marts and reinsurance bordereaux kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Actuarial & Pricing, reserving actuaries and Finance & Reinsurance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

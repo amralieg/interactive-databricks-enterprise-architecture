@@ -251,6 +251,23 @@ sources:
               - unstructured
             volume: 100s of MB/day
             interval: Periodic content updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Warranty Mart
+        icon: fed
+        summary: Warranty accrual and revenue recognition marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Warranty accrual and revenue-recognition marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance, Warranty management and Revenue accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -286,23 +303,6 @@ sources:
         fmt: 'EANC'
         summary: 'GS1 EDIFACT subset for orders, dispatch and invoices across the automotive supply base.'
         spec_url: https://www.gs1.org/standards/edi
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Finance & Warranty Mart
-        icon: fed
-        summary: Warranty accrual and revenue recognition marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Warranty accrual and revenue-recognition marts kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Finance, Warranty management and Revenue accounting.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

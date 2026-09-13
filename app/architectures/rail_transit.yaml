@@ -259,6 +259,23 @@ sources:
               - semi-structured
             volume: GBs per inspection run
             interval: Per inspection run (weekly/monthly)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Cost & Revenue Marts
+        icon: fed
+        summary: Finance, farebox recovery and subsidy marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Finance Data Warehouse
+        what_it_is: Finance, farebox-recovery and subsidy marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
+        who_uses_it: Executive Team, CFO & Finance and Revenue & demand analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -294,23 +311,6 @@ sources:
         fmt: 'railML'
         summary: 'Open XML standard for exchanging railway infrastructure and timetable data.'
         spec_url: https://www.railml.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Cost & Revenue Marts
-        icon: fed
-        summary: Finance, farebox recovery and subsidy marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
-        category: Finance Data Warehouse
-        what_it_is: Finance, farebox-recovery and subsidy marts kept in the incumbent warehouse and queried in place through federation, avoiding a second copy of the audited numbers.
-        who_uses_it: Executive Team, CFO & Finance and Revenue & demand analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

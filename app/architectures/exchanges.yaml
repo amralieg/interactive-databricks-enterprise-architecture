@@ -292,6 +292,23 @@ sources:
               - structured
             volume: GBs of confirms + settlement/day
             interval: Multiple settlement cycles daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Venue Revenue Mart
+        icon: fed
+        summary: The transaction, listing and fee revenue mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited fee and rebate numbers.
+        category: Revenue / Fee Data Mart
+        what_it_is: The transaction, listing and fee revenue mart kept in the incumbent warehouse and queried in place, giving one audited view of fee and rebate numbers.
+        who_uses_it: Finance, commercial and membership teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale billing + usage history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -310,23 +327,6 @@ sources:
         fmt: 'ITCH'
         summary: 'Nasdaq direct-feed protocol broadcasting the full order book.'
         spec_url: https://www.nasdaq.com/solutions/nasdaq-totalview-itch
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Venue Revenue Mart
-        icon: fed
-        summary: The transaction, listing and fee revenue mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited fee and rebate numbers.
-        category: Revenue / Fee Data Mart
-        what_it_is: The transaction, listing and fee revenue mart kept in the incumbent warehouse and queried in place, giving one audited view of fee and rebate numbers.
-        who_uses_it: Finance, commercial and membership teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale billing + usage history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

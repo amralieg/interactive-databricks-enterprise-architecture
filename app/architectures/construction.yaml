@@ -230,6 +230,23 @@ sources:
               - semi-structured
             volume: 0.5-2 GB/day
             interval: Hourly / daily sync
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Owner Reporting Mart
+        icon: fed
+        summary: Owner KPI and portfolio marts queried in place under Unity Catalog.
+        category: Owner Reporting Warehouse
+        what_it_is: Owner KPI and portfolio marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: GC President & COO, Regional VPs and Owner reporting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -253,23 +270,6 @@ sources:
         fmt: 'COBie'
         summary: 'Construction-Operations Building Information Exchange for asset handover data.'
         spec_url: https://www.nibs.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Owner Reporting Mart
-        icon: fed
-        summary: Owner KPI and portfolio marts queried in place under Unity Catalog.
-        category: Owner Reporting Warehouse
-        what_it_is: Owner KPI and portfolio marts kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: GC President & COO, Regional VPs and Owner reporting analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -289,6 +289,23 @@ sources:
               - semi-structured
             volume: 5-20k events/sec at peak
             interval: Continuous clickstream
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Revenue Accounting
+        icon: fed
+        summary: Revenue accounting and proration marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
+        category: Airline Revenue Accounting
+        what_it_is: Passenger revenue accounting and proration marts holding the audited flown-revenue numbers, kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Revenue accounting, commercial finance, and financial reporting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -317,23 +334,6 @@ sources:
         fmt: 'SSIM'
         summary: 'IATA Standard Schedules Information Manual format for exchanging flight schedules.'
         spec_url: https://www.iata.org/en/publications/manuals/standard-schedules-information
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Revenue Accounting
-        icon: fed
-        summary: Revenue accounting and proration marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited numbers.
-        category: Airline Revenue Accounting
-        what_it_is: Passenger revenue accounting and proration marts holding the audited flown-revenue numbers, kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Revenue accounting, commercial finance, and financial reporting analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

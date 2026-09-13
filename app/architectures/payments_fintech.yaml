@@ -219,6 +219,23 @@ sources:
               - semi-structured
             volume: Campaign + engagement events
             interval: Continuous (events)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Card Network Mart
+        icon: fed
+        summary: Scheme reporting and interchange marts queried in place under Unity Catalog.
+        category: Scheme / Interchange Data Mart
+        what_it_is: Scheme reporting and interchange marts kept in the incumbent warehouse and queried in place, giving one view of interchange and settlement.
+        who_uses_it: Settlement operations, finance and the payments business.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale interchange + settlement history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -249,23 +266,6 @@ sources:
         fmt: 'nexo'
         summary: 'nexo standards for interoperable card acceptance between terminals and acquirers.'
         spec_url: https://www.nexo-standards.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Card Network Mart
-        icon: fed
-        summary: Scheme reporting and interchange marts queried in place under Unity Catalog.
-        category: Scheme / Interchange Data Mart
-        what_it_is: Scheme reporting and interchange marts kept in the incumbent warehouse and queried in place, giving one view of interchange and settlement.
-        who_uses_it: Settlement operations, finance and the payments business.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale interchange + settlement history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

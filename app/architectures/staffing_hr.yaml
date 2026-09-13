@@ -230,6 +230,23 @@ sources:
               - semi-structured
             volume: GBs across datasets
             interval: Weekly / on-demand API
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Client HRIS Marts
+        icon: fed
+        summary: Client employee and cost centre marts queried in place under Unity Catalog.
+        category: HRIS Data Warehouse / Marts
+        what_it_is: Client employee and cost-centre marts queried in place via federation under Unity Catalog.
+        who_uses_it: HR analytics, finance and client reporting teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale HRIS marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -255,23 +272,6 @@ sources:
         fmt: 'LER'
         summary: 'Learning and Employment Record Resource Standard for verifiable credentials.'
         spec_url: https://www.hropenstandards.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Client HRIS Marts
-        icon: fed
-        summary: Client employee and cost centre marts queried in place under Unity Catalog.
-        category: HRIS Data Warehouse / Marts
-        what_it_is: Client employee and cost-centre marts queried in place via federation under Unity Catalog.
-        who_uses_it: HR analytics, finance and client reporting teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale HRIS marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

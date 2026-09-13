@@ -314,6 +314,23 @@ sources:
               - structured
             volume: 0.5-2 GB/day
             interval: Nightly
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Cloud Warehouse Marts
+        icon: fed
+        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Cloud Data Warehouse
+        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation rather than copied.
+        who_uses_it: Finance, RevOps and analytics engineers.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -332,23 +349,6 @@ sources:
         fmt: 'VEX'
         summary: 'Vulnerability Exploitability eXchange for communicating vulnerability impact.'
         spec_url: https://spdx.dev/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Cloud Warehouse Marts
-        icon: fed
-        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
-        category: Cloud Data Warehouse
-        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation rather than copied.
-        who_uses_it: Finance, RevOps and analytics engineers.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

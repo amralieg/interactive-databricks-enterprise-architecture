@@ -273,6 +273,23 @@ sources:
               - semi-structured
             volume: 0.5-2 GB/day
             interval: Hourly
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance & Billing Mart
+        icon: fed
+        summary: Agency billing, rebates and client invoicing marts left in place and queried under Unity Catalog.
+        category: Finance Data Warehouse
+        what_it_is: Agency billing, rebates and client invoicing marts kept in existing warehouses and queried in place through federation.
+        who_uses_it: Finance, Billing and Rebate teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale billing history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -296,23 +313,6 @@ sources:
         fmt: 'ADC'
         summary: 'IAB Advertising Common Object Model, the shared object layer OpenRTB and OpenDirect build on.'
         spec_url: https://iabtechlab.com/standards/openmedia/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Finance & Billing Mart
-        icon: fed
-        summary: Agency billing, rebates and client invoicing marts left in place and queried under Unity Catalog.
-        category: Finance Data Warehouse
-        what_it_is: Agency billing, rebates and client invoicing marts kept in existing warehouses and queried in place through federation.
-        who_uses_it: Finance, Billing and Rebate teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale billing history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

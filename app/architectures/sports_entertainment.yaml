@@ -200,6 +200,23 @@ sources:
               - structured
             volume: sub-GB/day
             interval: Hourly punch + schedule sync
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: League Data Marts
+        icon: fed
+        summary: Official league statistics and schedule marts queried in place under Unity Catalog.
+        category: League Statistics Data Warehouse
+        what_it_is: Official league statistics and schedule marts kept at the league and queried in place through federation.
+        who_uses_it: Analytics, Broadcast and Commercial teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale reference marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -220,23 +237,6 @@ sources:
         fmt: 'IPTC'
         summary: 'IPTC linked-data Sport Schema for modelling sports events and entities.'
         spec_url: https://iptc.org/standards/sport-schema/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: League Data Marts
-        icon: fed
-        summary: Official league statistics and schedule marts queried in place under Unity Catalog.
-        category: League Statistics Data Warehouse
-        what_it_is: Official league statistics and schedule marts kept at the league and queried in place through federation.
-        who_uses_it: Analytics, Broadcast and Commercial teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale reference marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

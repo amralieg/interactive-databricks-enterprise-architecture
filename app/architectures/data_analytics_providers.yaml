@@ -282,6 +282,23 @@ sources:
               - structured
             volume: GBs of client + subscription data
             interval: Daily + intraday updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Market Data Billing
+        icon: fed
+        summary: The market-data billing and revenue-accounting mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited subscription and usage numbers.
+        category: Revenue / Billing Data Mart
+        what_it_is: The market-data billing and revenue-accounting mart kept in the incumbent warehouse and queried in place, giving one audited view of subscription and usage numbers.
+        who_uses_it: Licensing and entitlements, finance and the data business.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale billing + usage history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -310,23 +327,6 @@ sources:
         fmt: 'RWF'
         summary: 'LSEG Refinitiv Wire Format, the binary encoding behind real-time data feeds.'
         spec_url: https://developers.lseg.com/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Market Data Billing
-        icon: fed
-        summary: The market-data billing and revenue-accounting mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited subscription and usage numbers.
-        category: Revenue / Billing Data Mart
-        what_it_is: The market-data billing and revenue-accounting mart kept in the incumbent warehouse and queried in place, giving one audited view of subscription and usage numbers.
-        who_uses_it: Licensing and entitlements, finance and the data business.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale billing + usage history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -204,6 +204,24 @@ sources:
               - semi-structured
             volume: continuous instrument metrics
             interval: Continuous during runs
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: CRO Analysis Results
+        icon: fed
+        summary: Contract research organisation variant reports left at partners and queried in place under Unity Catalog.
+        category: CRO Bioinformatics Results
+        what_it_is: Variant and QC analysis results produced by contract research organisations, left at the partner and queried in place through federation rather than copied.
+        who_uses_it: Bioinformatics, Regulatory & Quality and Compliance Leads.
+        data_out:
+          batch:
+            types:
+              - structured
+              - semi-structured
+            volume: TB-scale partner results
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -239,24 +257,6 @@ sources:
           - 'Illumina DRAGEN'
           - 'Broad GATK'
           - '10x Genomics'
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: CRO Analysis Results
-        icon: fed
-        summary: Contract research organisation variant reports left at partners and queried in place under Unity Catalog.
-        category: CRO Bioinformatics Results
-        what_it_is: Variant and QC analysis results produced by contract research organisations, left at the partner and queried in place through federation rather than copied.
-        who_uses_it: Bioinformatics, Regulatory & Quality and Compliance Leads.
-        data_out:
-          batch:
-            types:
-              - structured
-              - semi-structured
-            volume: TB-scale partner results
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

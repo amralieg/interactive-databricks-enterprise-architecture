@@ -195,6 +195,23 @@ sources:
               - semi-structured
             volume: 2-10k events/sec at peak
             interval: Continuous clickstream
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Franchisee POS
+        icon: fed
+        summary: Licensed store sales and inventory left at franchise operators and queried in place under Unity Catalog.
+        category: Licensed Store Data Source
+        what_it_is: Licensed-store sales and inventory left at franchise operators and queried in place through federation instead of nightly flat-file collection.
+        who_uses_it: Franchise Operations, Merchandising and Finance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: 10s-100s GB (federated)
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -230,23 +247,6 @@ sources:
         fmt: 'EPC'
         summary: 'GS1 event standard for perishables traceability and freshness visibility.'
         spec_url: https://www.gs1.org/standards/epcis
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Franchisee POS
-        icon: fed
-        summary: Licensed store sales and inventory left at franchise operators and queried in place under Unity Catalog.
-        category: Licensed Store Data Source
-        what_it_is: Licensed-store sales and inventory left at franchise operators and queried in place through federation instead of nightly flat-file collection.
-        who_uses_it: Franchise Operations, Merchandising and Finance analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: 10s-100s GB (federated)
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

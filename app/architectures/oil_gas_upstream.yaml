@@ -218,6 +218,23 @@ sources:
               - unstructured
             volume: 10s-100s of GB/survey
             interval: Per-survey (periodic campaigns)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Treasury Mart
+        icon: fed
+        summary: Hedge effectiveness and working-capital marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Corporate treasury hedge-effectiveness and working-capital marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Treasury, Finance and Risk analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -246,23 +263,6 @@ sources:
         fmt: 'LAS'
         summary: 'CWLS Log ASCII Standard for well-log curve data.'
         spec_url: https://www.cwls.org/products/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Corporate Treasury Mart
-        icon: fed
-        summary: Hedge effectiveness and working-capital marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Corporate treasury hedge-effectiveness and working-capital marts kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Treasury, Finance and Risk analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

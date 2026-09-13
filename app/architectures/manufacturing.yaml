@@ -199,6 +199,23 @@ sources:
               - structured
             volume: 100s of images/sec + vectors
             interval: Continuous inline capture
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Data Warehouse
+        icon: fed
+        summary: Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost allocations.
+        who_uses_it: Finance, HR analytics and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -234,23 +251,6 @@ sources:
         fmt: 'SPKP'
         summary: 'Eclipse MQTT topic/payload spec for interoperable IIoT device data.'
         spec_url: https://sparkplug.eclipse.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Corporate Data Warehouse
-        icon: fed
-        summary: Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost allocations.
-        category: Enterprise Data Warehouse
-        what_it_is: Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost allocations.
-        who_uses_it: Finance, HR analytics and Cost accounting.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

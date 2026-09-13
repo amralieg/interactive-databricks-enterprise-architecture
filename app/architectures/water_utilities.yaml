@@ -238,6 +238,23 @@ sources:
               - semi-structured
             volume: tens-hundreds of readings/sec
             interval: Continuous sensor series
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Regional Agency Marts
+        icon: fed
+        summary: Wholesale and intertie flow marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Wholesale and intertie flow marts kept in the regional-agency warehouse and queried in place through federation rather than copied.
+        who_uses_it: Source water team, operations planning and regulatory teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -258,23 +275,6 @@ sources:
         fmt: 'INP'
         summary: 'EPA EPANET input file format for water distribution network models.'
         spec_url: https://www.epa.gov/water-research/epanet
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Regional Agency Marts
-        icon: fed
-        summary: Wholesale and intertie flow marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Wholesale and intertie flow marts kept in the regional-agency warehouse and queried in place through federation rather than copied.
-        who_uses_it: Source water team, operations planning and regulatory teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

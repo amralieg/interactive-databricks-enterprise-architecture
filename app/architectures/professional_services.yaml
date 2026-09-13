@@ -248,6 +248,23 @@ sources:
               - semi-structured
             volume: 5-30 GB/day docs + metadata
             interval: Nightly batch + hourly deltas
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Revenue & GL Mart
+        icon: fed
+        summary: Audited revenue recognition and general-ledger marts left in the finance warehouse and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Finance Data Warehouse / Marts
+        what_it_is: Audited revenue-recognition and general-ledger marts kept in the finance warehouse and queried in place through federation.
+        who_uses_it: CFO, controllership and revenue accounting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale audited marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -268,23 +285,6 @@ sources:
         fmt: 'SAFT'
         summary: 'OECD Standard Audit File for Tax, a standardised export of accounting records.'
         spec_url: https://www.oecd.org/tax/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Revenue & GL Mart
-        icon: fed
-        summary: Audited revenue recognition and general-ledger marts left in the finance warehouse and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
-        category: Finance Data Warehouse / Marts
-        what_it_is: Audited revenue-recognition and general-ledger marts kept in the finance warehouse and queried in place through federation.
-        who_uses_it: CFO, controllership and revenue accounting analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale audited marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

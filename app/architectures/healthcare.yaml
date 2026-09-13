@@ -213,6 +213,24 @@ sources:
               - semi-structured
             volume: MBs-GBs (surveys)
             interval: Weekly / survey cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Affiliate EHR Feeds
+        icon: fed
+        summary: Joint venture and affiliated clinic clinical summaries left at partner systems and queried in place under Unity Catalog.
+        category: Affiliated EHR / HIE Source
+        what_it_is: Joint-venture and affiliated-clinic clinical summaries kept at partner systems and queried in place through federation instead of being copied.
+        who_uses_it: Population Health, Clinical Operations and clinical-analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+              - unstructured
+            volume: GB-scale affiliate marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -262,24 +280,6 @@ sources:
         fmt: 'X12N'
         summary: 'HIPAA X12N EDI for claims, eligibility and remittance with payers.'
         spec_url: https://x12.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Affiliate EHR Feeds
-        icon: fed
-        summary: Joint venture and affiliated clinic clinical summaries left at partner systems and queried in place under Unity Catalog.
-        category: Affiliated EHR / HIE Source
-        what_it_is: Joint-venture and affiliated-clinic clinical summaries kept at partner systems and queried in place through federation instead of being copied.
-        who_uses_it: Population Health, Clinical Operations and clinical-analytics teams.
-        data_out:
-          batch:
-            types:
-              - structured
-              - unstructured
-            volume: GB-scale affiliate marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

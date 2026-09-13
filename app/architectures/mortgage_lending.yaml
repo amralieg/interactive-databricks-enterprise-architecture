@@ -300,6 +300,23 @@ sources:
               - unstructured
             volume: Title + settlement + CD documents
             interval: Nightly batch
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Loan & Finance Marts
+        icon: fed
+        summary: Enterprise loan, servicing and general-ledger marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited book of record.
+        category: Loan & Finance Data Mart
+        what_it_is: Enterprise loan, servicing and general-ledger marts kept in the incumbent warehouses and queried in place, avoiding a second copy of the audited book of record.
+        who_uses_it: Finance, risk and servicing operations.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale loan + GL history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -335,23 +352,6 @@ sources:
         fmt: 'ULDD'
         summary: 'Uniform Loan Delivery Dataset for loan delivery to Fannie Mae and Freddie Mac.'
         spec_url: https://singlefamily.fanniemae.com/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Loan & Finance Marts
-        icon: fed
-        summary: Enterprise loan, servicing and general-ledger marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the audited book of record.
-        category: Loan & Finance Data Mart
-        what_it_is: Enterprise loan, servicing and general-ledger marts kept in the incumbent warehouses and queried in place, avoiding a second copy of the audited book of record.
-        who_uses_it: Finance, risk and servicing operations.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale loan + GL history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

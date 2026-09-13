@@ -237,6 +237,23 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous gate / appointment events
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Shipper TMS Marts
+        icon: fed
+        summary: Shipper order and ASN marts queried in place under Unity Catalog.
+        category: Shipper Data Warehouse
+        what_it_is: Shipper-side order and ASN marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Commercial & Pricing, Shipper account and Finance & Claims analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -260,23 +277,6 @@ sources:
         fmt: 'EPC'
         summary: 'GS1 event standard for shipment visibility and chain-of-custody events.'
         spec_url: https://www.gs1.org/standards/epcis
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Shipper TMS Marts
-        icon: fed
-        summary: Shipper order and ASN marts queried in place under Unity Catalog.
-        category: Shipper Data Warehouse
-        what_it_is: Shipper-side order and ASN marts kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Commercial & Pricing, Shipper account and Finance & Claims analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

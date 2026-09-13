@@ -224,6 +224,23 @@ sources:
               - semi-structured
             volume: GBs/day
             interval: Daily feed
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Finance Close Mart
+        icon: fed
+        summary: Trade spend accrual marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Trade-spend accrual and close marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Finance, Revenue Management and Accounting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -254,23 +271,6 @@ sources:
         fmt: 'GDSN'
         summary: 'Global Data Synchronisation Network catalogue messages for trusted product master data.'
         spec_url: https://www.gs1.org/services/gdsn
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Finance Close Mart
-        icon: fed
-        summary: Trade spend accrual marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Trade-spend accrual and close marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Finance, Revenue Management and Accounting analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

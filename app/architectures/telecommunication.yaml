@@ -286,6 +286,23 @@ sources:
               - structured
             volume: 1-3 GB/day
             interval: Daily
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: MVNO Partner Marts
+        icon: fed
+        summary: Wholesale usage and settlement marts queried in place under Unity Catalog.
+        category: Wholesale / Partner Data Warehouse
+        what_it_is: Wholesale usage and settlement marts kept in existing warehouses and queried in place through federation.
+        who_uses_it: Wholesale, Revenue assurance and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale settlement history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -314,23 +331,6 @@ sources:
         fmt: 'TMF'
         summary: 'TM Forum Open APIs for standardised BSS/OSS integration.'
         spec_url: https://www.tmforum.org/oda/open-apis/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: MVNO Partner Marts
-        icon: fed
-        summary: Wholesale usage and settlement marts queried in place under Unity Catalog.
-        category: Wholesale / Partner Data Warehouse
-        what_it_is: Wholesale usage and settlement marts kept in existing warehouses and queried in place through federation.
-        who_uses_it: Wholesale, Revenue assurance and Finance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale settlement history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

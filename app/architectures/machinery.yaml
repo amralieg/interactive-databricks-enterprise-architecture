@@ -207,6 +207,23 @@ sources:
               - semi-structured
             volume: 10s-100s of GB/day at fleet scale
             interval: Continuous (MQTT / cellular)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Data Warehouse
+        icon: fed
+        summary: Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost and margin figures.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost, margin and cash reporting.
+        who_uses_it: Finance, HR analytics and Cost accounting.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -225,23 +242,6 @@ sources:
         fmt: '15143'
         summary: 'ISO AEMP telematics standard for mixed-fleet construction/machinery equipment data.'
         spec_url: https://www.iso.org/standard/76394.html
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Corporate Data Warehouse
-        icon: fed
-        summary: Finance and HR marts left where they are and queried in place under Unity Catalog, avoiding a second copy of audited cost and margin figures.
-        category: Enterprise Data Warehouse
-        what_it_is: Legacy finance and HR marts kept in the incumbent warehouse and queried in place through federation instead of being copied for audited cost, margin and cash reporting.
-        who_uses_it: Finance, HR analytics and Cost accounting.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -186,6 +186,23 @@ sources:
               - structured
             volume: hundreds of thousands of utility and emissions rows
             interval: Monthly billing cycle
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Investor Reporting Mart
+        icon: fed
+        summary: Fund NAV and waterfall marts queried in place under Unity Catalog.
+        category: Federated Data Warehouse / Marts
+        what_it_is: Fund NAV and waterfall marts queried in place under Unity Catalog, avoiding a second copy of numbers finance already closed.
+        who_uses_it: Head of Investor Relations, CFO & Treasury and Governance Engineering teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: millions of NAV and waterfall rows queried in place
+            interval: Query-time federation
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -209,23 +226,6 @@ sources:
         fmt: 'OSCRE'
         summary: 'OSCRE Industry Data Model for commercial real-estate information exchange.'
         spec_url: https://www.oscre.org/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Investor Reporting Mart
-        icon: fed
-        summary: Fund NAV and waterfall marts queried in place under Unity Catalog.
-        category: Federated Data Warehouse / Marts
-        what_it_is: Fund NAV and waterfall marts queried in place under Unity Catalog, avoiding a second copy of numbers finance already closed.
-        who_uses_it: Head of Investor Relations, CFO & Treasury and Governance Engineering teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: millions of NAV and waterfall rows queried in place
-            interval: Query-time federation
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

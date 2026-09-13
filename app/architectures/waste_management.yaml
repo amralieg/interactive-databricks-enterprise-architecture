@@ -223,19 +223,6 @@ sources:
               - structured
             volume: 0.5-2 GB/day
             interval: Daily + reporting cycles
-  - name: Data Formats
-    icon: zbraces
-    tiles:
-      - name: 'EPA Waste Manifest'
-        icon: zbraces
-        fmt: 'EPA'
-        summary: 'US EPA Uniform Hazardous Waste Manifest for cradle-to-grave waste tracking.'
-        spec_url: https://www.epa.gov/hwgenerators/uniform-hazardous-waste-manifest
-      - name: 'EPA e-Manifest'
-        icon: zbraces
-        fmt: 'eMAN'
-        summary: 'EPA electronic manifest system and API for hazardous-waste shipment data.'
-        spec_url: https://www.epa.gov/e-manifest
   - name: Federation Sources
     icon: fed
     from: fed
@@ -253,6 +240,19 @@ sources:
               - structured
             volume: TB-scale historical marts
             interval: Queried on demand (federated)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'EPA Waste Manifest'
+        icon: zbraces
+        fmt: 'EPA'
+        summary: 'US EPA Uniform Hazardous Waste Manifest for cradle-to-grave waste tracking.'
+        spec_url: https://www.epa.gov/hwgenerators/uniform-hazardous-waste-manifest
+      - name: 'EPA e-Manifest'
+        icon: zbraces
+        fmt: 'eMAN'
+        summary: 'EPA electronic manifest system and API for hazardous-waste shipment data.'
+        spec_url: https://www.epa.gov/e-manifest
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

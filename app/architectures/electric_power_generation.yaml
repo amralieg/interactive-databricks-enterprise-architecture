@@ -234,6 +234,23 @@ sources:
               - structured
             volume: 0.5-2 GB/day schedules
             interval: Outage cycles + daily updates
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Corporate Finance Warehouse
+        icon: fed
+        summary: Fuel cost, project-finance and asset ledgers left where they are and queried in place under Unity Catalog, avoiding a second copy of the audited numbers.
+        category: Enterprise Data Warehouse
+        what_it_is: Fuel cost, project-finance and asset ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.
+        who_uses_it: CFO & treasury, fuel management and portfolio analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical ledgers
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -252,23 +269,6 @@ sources:
         fmt: '61400'
         summary: 'IEC standard for monitoring and control communications of wind power plants.'
         spec_url: https://webstore.iec.ch/en/publication/5433
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Corporate Finance Warehouse
-        icon: fed
-        summary: Fuel cost, project-finance and asset ledgers left where they are and queried in place under Unity Catalog, avoiding a second copy of the audited numbers.
-        category: Enterprise Data Warehouse
-        what_it_is: Fuel cost, project-finance and asset ledgers kept in the incumbent finance warehouse and queried in place through federation rather than copied.
-        who_uses_it: CFO & treasury, fuel management and portfolio analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical ledgers
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

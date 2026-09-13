@@ -322,6 +322,23 @@ sources:
               - structured
             volume: GBs of deal + league-table data
             interval: Daily + on-demand
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Firm Balance Sheet
+        icon: fed
+        summary: The firm ledger, funding and balance-sheet mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited positions and capital.
+        category: Firm Ledger / Balance-Sheet Mart
+        what_it_is: The firm ledger, funding and balance-sheet mart kept in the incumbent system and queried in place, giving one audited view of positions, funding and capital.
+        who_uses_it: Product control, treasury and finance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical positions
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -357,23 +374,6 @@ sources:
         fmt: 'CDM'
         summary: 'ISDA/FINOS Common Domain Model standardising trade and lifecycle event data.'
         spec_url: https://www.finos.org/common-domain-model
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Firm Balance Sheet
-        icon: fed
-        summary: The firm ledger, funding and balance-sheet mart left where it is and queried in place under Unity Catalog, which avoids a second copy of the audited positions and capital.
-        category: Firm Ledger / Balance-Sheet Mart
-        what_it_is: The firm ledger, funding and balance-sheet mart kept in the incumbent system and queried in place, giving one audited view of positions, funding and capital.
-        who_uses_it: Product control, treasury and finance.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical positions
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -224,6 +224,23 @@ sources:
               - semi-structured
             volume: hundreds of checks/sec at peak
             interval: Continuous (POS transactions)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Ownership Group Marts
+        icon: fed
+        summary: Owner reporting and STR benchmark marts queried in place under Unity Catalog.
+        category: Owner Reporting Data Warehouse
+        what_it_is: Owner-reporting and STR benchmark marts kept in the incumbent warehouse and queried in place through federation rather than copied.
+        who_uses_it: Asset management, Owner relations and Finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -254,23 +271,6 @@ sources:
         fmt: 'PNR'
         summary: 'Passenger Name Record data shared across travel booking and itinerary systems.'
         spec_url: https://www.iata.org/en/programs/passenger/
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Ownership Group Marts
-        icon: fed
-        summary: Owner reporting and STR benchmark marts queried in place under Unity Catalog.
-        category: Owner Reporting Data Warehouse
-        what_it_is: Owner-reporting and STR benchmark marts kept in the incumbent warehouse and queried in place through federation rather than copied.
-        who_uses_it: Asset management, Owner relations and Finance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

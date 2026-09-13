@@ -311,6 +311,23 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous (runtime)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Enterprise Audit Marts
+        icon: fed
+        summary: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories left in their existing warehouses and queried in place under Unity Catalog, so identity and asset context enriches detections without a second copy of sensitive data.
+        category: Enterprise Data Warehouse / Audit
+        what_it_is: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories kept in existing warehouses and queried in place through federation.
+        who_uses_it: GRC, insider-risk and SOC analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale audit history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -329,23 +346,6 @@ sources:
         fmt: 'TAXII'
         summary: 'Trusted Automated eXchange of Intelligence Information transport for sharing STIX.'
         spec_url: https://oasis-open.github.io/cti-documentation/taxii/intro
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Enterprise Audit Marts
-        icon: fed
-        summary: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories left in their existing warehouses and queried in place under Unity Catalog, so identity and asset context enriches detections without a second copy of sensitive data.
-        category: Enterprise Data Warehouse / Audit
-        what_it_is: Cloud-provider audit trails, HR joiner-mover-leaver records and asset inventories kept in existing warehouses and queried in place through federation.
-        who_uses_it: GRC, insider-risk and SOC analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale audit history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

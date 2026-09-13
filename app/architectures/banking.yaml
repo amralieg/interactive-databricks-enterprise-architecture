@@ -234,6 +234,23 @@ sources:
               - semi-structured
             volume: 100s-1000s of events/sec
             interval: Continuous (API)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Data Warehouse Mart
+        icon: fed
+        summary: Historical GL and risk marts queried in place under Unity Catalog.
+        category: Enterprise Data Warehouse
+        what_it_is: Legacy general-ledger and risk marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Finance, Risk and Regulatory reporting analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -269,23 +286,6 @@ sources:
         fmt: 'ACH'
         summary: 'US automated clearing house file format for batch debit and credit transfers.'
         spec_url: https://achdevguide.nacha.org/ach-file-details
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Data Warehouse Mart
-        icon: fed
-        summary: Historical GL and risk marts queried in place under Unity Catalog.
-        category: Enterprise Data Warehouse
-        what_it_is: Legacy general-ledger and risk marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Finance, Risk and Regulatory reporting analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

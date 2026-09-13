@@ -305,6 +305,23 @@ sources:
               - structured
             volume: 0.5-2 GB/day
             interval: Daily / monthly billing cycles
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Utility & Energy Mkts
+        icon: fed
+        summary: Utility interval-meter reads, wholesale energy-market prices and renewable-energy-certificate and PPA registries left in their existing warehouses and queried in place under Unity Catalog, so cost and carbon attribution join facility telemetry without a second copy.
+        category: Energy Market & Utility Data
+        what_it_is: Utility interval-meter reads, wholesale energy-market prices and REC/PPA registries kept in existing warehouses and queried in place through federation.
+        who_uses_it: Energy procurement, sustainability and finance teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale market + meter history
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -323,23 +340,6 @@ sources:
         fmt: 'IPMI'
         summary: 'Legacy Intelligent Platform Management Interface for out-of-band server monitoring.'
         spec_url: https://www.dmtf.org/standards/ipmi
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Utility & Energy Mkts
-        icon: fed
-        summary: Utility interval-meter reads, wholesale energy-market prices and renewable-energy-certificate and PPA registries left in their existing warehouses and queried in place under Unity Catalog, so cost and carbon attribution join facility telemetry without a second copy.
-        category: Energy Market & Utility Data
-        what_it_is: Utility interval-meter reads, wholesale energy-market prices and REC/PPA registries kept in existing warehouses and queried in place through federation.
-        who_uses_it: Energy procurement, sustainability and finance teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale market + meter history
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

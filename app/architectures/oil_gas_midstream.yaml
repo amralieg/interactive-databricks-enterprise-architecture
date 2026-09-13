@@ -233,19 +233,6 @@ sources:
               - unstructured
             volume: 10s-100s of GB/survey
             interval: Per-survey (periodic campaigns)
-  - name: Data Formats
-    icon: zbraces
-    tiles:
-      - name: 'PODS'
-        icon: zbraces
-        fmt: 'PODS'
-        summary: 'Pipeline Open Data Standard model for pipeline integrity and asset data.'
-        spec_url: https://pods.org/
-      - name: 'NAESB Nominations'
-        icon: zbraces
-        fmt: 'NAESB'
-        summary: 'NAESB standards for natural-gas nominations, scheduling and capacity.'
-        spec_url: https://www.naesb.org/
   - name: Federation Sources
     icon: fed
     from: fed
@@ -263,6 +250,19 @@ sources:
               - structured
             volume: TB-scale historical marts
             interval: Queried on demand (federated)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'PODS'
+        icon: zbraces
+        fmt: 'PODS'
+        summary: 'Pipeline Open Data Standard model for pipeline integrity and asset data.'
+        spec_url: https://pods.org/
+      - name: 'NAESB Nominations'
+        icon: zbraces
+        fmt: 'NAESB'
+        summary: 'NAESB standards for natural-gas nominations, scheduling and capacity.'
+        spec_url: https://www.naesb.org/
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

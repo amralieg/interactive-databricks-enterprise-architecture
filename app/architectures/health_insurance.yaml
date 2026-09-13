@@ -155,6 +155,23 @@ sources:
               - semi-structured
             volume: 5-20 GB/submission
             interval: Submission windows + response files
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: TPA Sub-claims
+        icon: fed
+        summary: Third-party administrator claim detail left at TPAs and queried in place under Unity Catalog.
+        category: Third-Party Administrator System
+        what_it_is: Third-party-administrator claim detail kept at TPAs and queried in place through federation instead of being copied into the payer estate.
+        who_uses_it: Actuarial & Finance, claims operations and Fraud & Integrity teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale TPA marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -178,23 +195,6 @@ sources:
         fmt: 'RTPB'
         summary: 'NCPDP Real-Time Prescription Benefit for member-specific price and coverage checks.'
         spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: TPA Sub-claims
-        icon: fed
-        summary: Third-party administrator claim detail left at TPAs and queried in place under Unity Catalog.
-        category: Third-Party Administrator System
-        what_it_is: Third-party-administrator claim detail kept at TPAs and queried in place through federation instead of being copied into the payer estate.
-        who_uses_it: Actuarial & Finance, claims operations and Fraud & Integrity teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale TPA marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

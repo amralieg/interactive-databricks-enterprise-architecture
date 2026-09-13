@@ -321,6 +321,23 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous (messaging events)
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Warehouse Marts
+        icon: fed
+        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
+        category: Cloud Data Warehouse
+        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation, avoiding a second copy of the reported numbers.
+        who_uses_it: Finance, RevOps and Analytics teams.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -356,23 +373,6 @@ sources:
         fmt: 'CAL'
         summary: '1EdTech learning-event data standard for capturing analytics across tools.'
         spec_url: https://www.1edtech.org/standards/caliper
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Warehouse Marts
-        icon: fed
-        summary: Existing cloud data warehouse finance and analytics marts left where they are and queried in place under Unity Catalog, which avoids a second copy of the reported numbers.
-        category: Cloud Data Warehouse
-        what_it_is: Existing finance and analytics marts kept in the incumbent cloud warehouse and queried in place through federation, avoiding a second copy of the reported numbers.
-        who_uses_it: Finance, RevOps and Analytics teams.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

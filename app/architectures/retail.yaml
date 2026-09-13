@@ -207,6 +207,23 @@ sources:
               - semi-structured
             volume: GBs (surveys + verbatims)
             interval: Daily feed
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Wholesale Partner Mart
+        icon: fed
+        summary: Owned-brand department store sell-in marts queried in place under Unity Catalog.
+        category: Wholesale Data Mart
+        what_it_is: Owned-brand department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
+        who_uses_it: Wholesale, Merchandising and Finance analysts.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: TB-scale historical marts
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -235,23 +252,6 @@ sources:
         fmt: 'EPC'
         summary: 'GS1 event standard for item-level visibility and traceability.'
         spec_url: https://www.gs1.org/standards/epcis
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Wholesale Partner Mart
-        icon: fed
-        summary: Owned-brand department store sell-in marts queried in place under Unity Catalog.
-        category: Wholesale Data Mart
-        what_it_is: Owned-brand department-store sell-in and chargeback marts kept in the incumbent warehouse and queried in place through federation instead of being copied.
-        who_uses_it: Wholesale, Merchandising and Finance analysts.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: TB-scale historical marts
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl

@@ -270,6 +270,23 @@ sources:
               - semi-structured
             volume: engagement events as they occur
             interval: Continuous CDC
+  - name: Federation Sources
+    icon: fed
+    from: fed
+    tail: true
+    tiles:
+      - name: Partner CMO Inventory
+        icon: fed
+        summary: Contract manufacturer batch status queried in place under Unity Catalog.
+        category: Contract Manufacturer (CMO) Inventory System
+        what_it_is: Batch status and inventory held at contract manufacturers, queried in place through federation rather than copied into the platform.
+        who_uses_it: Supply Chain Planning, Manufacturing Operations and Quality Assurance.
+        data_out:
+          batch:
+            types:
+              - structured
+            volume: GB-scale partner inventory
+            interval: Queried on demand (federated)
   - name: Data Formats
     icon: zbraces
     tiles:
@@ -300,23 +317,6 @@ sources:
         fmt: 'CDISC'
         summary: 'CDISC clinical data standards (SDTM/ADaM) used across drug development.'
         spec_url: https://www.cdisc.org/standards
-  - name: Federation Sources
-    icon: fed
-    from: fed
-    tail: true
-    tiles:
-      - name: Partner CMO Inventory
-        icon: fed
-        summary: Contract manufacturer batch status queried in place under Unity Catalog.
-        category: Contract Manufacturer (CMO) Inventory System
-        what_it_is: Batch status and inventory held at contract manufacturers, queried in place through federation rather than copied into the platform.
-        who_uses_it: Supply Chain Planning, Manufacturing Operations and Quality Assurance.
-        data_out:
-          batch:
-            types:
-              - structured
-            volume: GB-scale partner inventory
-            interval: Queried on demand (federated)
 cloud_integrations:
   - name: Cloud ETL
     icon: etl
