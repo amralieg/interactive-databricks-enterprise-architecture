@@ -604,10 +604,14 @@
      unicode glyphs and the text controls in a 28px-tall bar. */
   .ico-svg { width:15px; height:15px; display:block; fill:none; stroke:currentColor;
     stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  /* Highlights glyph is the corner-dot motif, filled and deliberately muted so it
-     reads as a quiet legend, not a glowing call to action. */
-  .ico-svg.hl-ico { opacity:.85; overflow:visible; }
-  .ico-svg.hl-ico circle { fill:currentColor; stroke:none; filter:drop-shadow(0 0 1.4px currentColor); }
+  /* Highlights glyph is the corner-dot motif: four solid dots, each in one of the
+     highlight-kind colours, so the button previews the legend it opens. */
+  .ico-svg.hl-ico { opacity:1; }
+  .ico-svg.hl-ico circle { stroke:none; }
+  .ico-svg.hl-ico circle:nth-of-type(1){ fill:#ff5f2e; }
+  .ico-svg.hl-ico circle:nth-of-type(2){ fill:#12b6ef; }
+  .ico-svg.hl-ico circle:nth-of-type(3){ fill:#f5b400; }
+  .ico-svg.hl-ico circle:nth-of-type(4){ fill:#8b5cf6; }
   /* Industry decides what the whole board is about, so it leads the bar as a
      wider, emphasised control rather than one chip among equals. */
   #ind-btn { font-weight:750; color:var(--ink); border-color:var(--line-strong); }
