@@ -218,6 +218,34 @@ sources:
               - unstructured
             volume: 10s-100s of GB/survey
             interval: Per-survey (periodic campaigns)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'WITSML'
+        icon: zbraces
+        fmt: 'WITS'
+        summary: 'Energistics Wellsite Information Transfer Standard for drilling and well data.'
+        spec_url: https://www.energistics.org/witsml-data-standards
+      - name: 'PRODML'
+        icon: zbraces
+        fmt: 'PROD'
+        summary: 'Energistics standard for production operations and flow-network data.'
+        spec_url: https://www.energistics.org/prodml-data-standards
+      - name: 'RESQML'
+        icon: zbraces
+        fmt: 'RESQ'
+        summary: 'Energistics standard for reservoir and earth-model data exchange.'
+        spec_url: https://www.energistics.org/resqml-data-standards
+      - name: 'SEG-Y'
+        icon: zbraces
+        fmt: 'SEGY'
+        summary: 'SEG standard format for storing seismic reflection trace data.'
+        spec_url: https://library.seg.org/pb-assets/technical-standards/seg_y_rev2_0-mar2017-1686080998003.pdf
+      - name: 'LAS'
+        icon: zbraces
+        fmt: 'LAS'
+        summary: 'CWLS Log ASCII Standard for well-log curve data.'
+        spec_url: https://www.cwls.org/products/
   - name: Federation Sources
     icon: fed
     from: fed

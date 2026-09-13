@@ -260,6 +260,29 @@ sources:
               - semi-structured
             volume: 0.5-3 GB/day
             interval: Daily + reporting cycles
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'SDMX'
+        icon: zbraces
+        fmt: 'SDMX'
+        summary: 'Statistical Data and Metadata eXchange standard for official statistics.'
+        spec_url: https://sdmx.org/
+      - name: 'DCAT'
+        icon: zbraces
+        fmt: 'DCAT'
+        summary: 'W3C Data Catalog Vocabulary for describing open government datasets.'
+        spec_url: https://www.w3.org/TR/vocab-dcat-3/
+      - name: 'LegalDocML'
+        icon: zbraces
+        fmt: 'LDML'
+        summary: 'OASIS Akoma Ntoso XML for legislation and legal documents.'
+        spec_url: https://www.oasis-open.org/committees/legaldocml/
+      - name: 'LegalXML ECF'
+        icon: zbraces
+        fmt: 'ECF'
+        summary: 'OASIS Electronic Court Filing standard for court document exchange.'
+        spec_url: https://docs.oasis-open.org/legalxml-courtfiling/ecf/v5.0/ecf-v5.0.html
   - name: Federation Sources
     icon: fed
     from: fed

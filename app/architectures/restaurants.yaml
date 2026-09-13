@@ -193,6 +193,14 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous (redemption events)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'RTN Customer Record'
+        icon: zbraces
+        fmt: 'RTN'
+        summary: 'Restaurant Technology Network open API customer-record data standard.'
+        spec_url: https://restauranttechnologynetwork.com/
   - name: Federation Sources
     icon: fed
     from: fed

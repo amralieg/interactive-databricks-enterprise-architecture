@@ -193,6 +193,29 @@ sources:
               - structured
             volume: 0.1-0.5 GB/day
             interval: Daily
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'MXF'
+        icon: zbraces
+        fmt: 'MXF'
+        summary: 'SMPTE Material eXchange Format container for professional video and metadata.'
+        spec_url: https://www.smpte.org/
+      - name: 'IMF'
+        icon: zbraces
+        fmt: 'IMF'
+        summary: 'SMPTE Interoperable Master Format for versioned finished content mastering.'
+        spec_url: https://www.smpte.org/standards/st2067-1
+      - name: 'SMPTE ST 2110'
+        icon: zbraces
+        fmt: '2110'
+        summary: 'SMPTE suite for professional media over managed IP networks.'
+        spec_url: https://www.smpte.org/standards/st2110
+      - name: 'SDI/HD-SDI'
+        icon: zbraces
+        fmt: 'SDI'
+        summary: 'SMPTE Serial Digital Interface for uncompressed video transport over coax.'
+        spec_url: https://www.smpte.org/
   - name: Federation Sources
     icon: fed
     from: fed

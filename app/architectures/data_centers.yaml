@@ -305,6 +305,24 @@ sources:
               - structured
             volume: 0.5-2 GB/day
             interval: Daily / monthly billing cycles
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'Redfish'
+        icon: zbraces
+        fmt: 'RF'
+        summary: 'DMTF RESTful API standard for managing servers, storage and facilities hardware.'
+        spec_url: https://www.dmtf.org/standards/redfish
+      - name: 'PLDM RDE'
+        icon: zbraces
+        fmt: 'PLDM'
+        summary: 'Platform Level Data Model for Redfish Device Enablement over management interfaces.'
+        spec_url: https://www.dmtf.org/standards/pmci
+      - name: 'IPMI'
+        icon: zbraces
+        fmt: 'IPMI'
+        summary: 'Legacy Intelligent Platform Management Interface for out-of-band server monitoring.'
+        spec_url: https://www.dmtf.org/standards/ipmi
   - name: Federation Sources
     icon: fed
     from: fed

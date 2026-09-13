@@ -237,6 +237,29 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous gate / appointment events
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'EDIFACT Transport'
+        icon: zbraces
+        fmt: 'EDI'
+        summary: 'UN/EDIFACT transport messages (IFTMIN/IFTSTA) for freight instructions and status.'
+        spec_url: https://unece.org/trade/uncefact/introducing-unedifact
+      - name: 'X12 EDI'
+        icon: zbraces
+        fmt: 'X12'
+        summary: 'ANSI X12 EDI transaction sets for shipments, tenders and status in logistics.'
+        spec_url: https://x12.org/
+      - name: 'Bill of Lading'
+        icon: zbraces
+        fmt: 'BOL'
+        summary: 'Standardised freight bill of lading data for shipment documentation.'
+        spec_url: https://www.gs1us.org/
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for shipment visibility and chain-of-custody events.'
+        spec_url: https://www.gs1.org/standards/epcis
   - name: Federation Sources
     icon: fed
     from: fed

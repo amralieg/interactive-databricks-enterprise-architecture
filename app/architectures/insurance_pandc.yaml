@@ -314,6 +314,19 @@ sources:
               - structured
             volume: GBs (property + hazard reference)
             interval: Periodic refresh + on-demand
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ACORD P&C XML'
+        icon: zbraces
+        fmt: 'ACORD'
+        summary: 'ACORD Property & Casualty XML standards for policy, claims and billing data.'
+        spec_url: https://www.acord.org/standards-architecture/acord-data-standards
+      - name: 'ACORD AL3'
+        icon: zbraces
+        fmt: 'AL3'
+        summary: 'Legacy ACORD flat-file standard for agency-carrier P&C data interchange.'
+        spec_url: https://www.acord.org/standards-architecture/acord-data-standards
   - name: Federation Sources
     icon: fed
     from: fed

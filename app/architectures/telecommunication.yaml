@@ -286,6 +286,34 @@ sources:
               - structured
             volume: 1-3 GB/day
             interval: Daily
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'CDR'
+        icon: zbraces
+        fmt: 'CDR'
+        summary: 'Call Detail Records capturing usage events for billing and network analytics.'
+        spec_url: https://www.databricks.com/resources/architectures/telecom-next-best-action-reference-architecture
+      - name: 'TAP3'
+        icon: zbraces
+        fmt: 'TAP3'
+        summary: 'GSMA Transferred Account Procedure for roaming usage settlement between operators.'
+        spec_url: https://www.gsma.com/
+      - name: 'RAP'
+        icon: zbraces
+        fmt: 'RAP'
+        summary: 'GSMA Returned Account Procedure for rejecting and correcting roaming TAP files.'
+        spec_url: https://www.gsma.com/
+      - name: 'NRTRDE'
+        icon: zbraces
+        fmt: 'NRT'
+        summary: 'GSMA Near Real Time Roaming Data Exchange for fast roaming fraud control.'
+        spec_url: https://www.gsma.com/
+      - name: 'TMF Open APIs'
+        icon: zbraces
+        fmt: 'TMF'
+        summary: 'TM Forum Open APIs for standardised BSS/OSS integration.'
+        spec_url: https://www.tmforum.org/oda/open-apis/
   - name: Federation Sources
     icon: fed
     from: fed

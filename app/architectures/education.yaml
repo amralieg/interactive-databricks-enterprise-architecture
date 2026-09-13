@@ -198,6 +198,34 @@ sources:
               - semi-structured
             volume: hundreds of events/sec at peak
             interval: Continuous clickstream
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'Ed-Fi'
+        icon: zbraces
+        fmt: 'EdFi'
+        summary: 'Ed-Fi data standard and API for unifying K-12 student information across systems.'
+        spec_url: https://www.ed-fi.org/
+      - name: 'CEDS'
+        icon: zbraces
+        fmt: 'CEDS'
+        summary: 'US Common Education Data Standards for shared education data definitions.'
+        spec_url: https://ceds.ed.gov/
+      - name: 'SIF'
+        icon: zbraces
+        fmt: 'SIF'
+        summary: 'Systems Interoperability Framework for exchanging K-12 administrative data.'
+        spec_url: https://a4l.org/
+      - name: 'PESC Transcripts'
+        icon: zbraces
+        fmt: 'PESC'
+        summary: 'PESC XML standard for electronic academic transcripts and records.'
+        spec_url: https://www.pesc.org/
+      - name: 'OneRoster'
+        icon: zbraces
+        fmt: '1R'
+        summary: '1EdTech standard for roster, enrolment and grade exchange.'
+        spec_url: https://www.1edtech.org/standards/oneroster
   - name: Federation Sources
     icon: fed
     from: fed

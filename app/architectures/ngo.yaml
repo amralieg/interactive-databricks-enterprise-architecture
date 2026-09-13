@@ -198,6 +198,19 @@ sources:
               - semi-structured
             volume: check-in and incident events
             interval: Continuous (event-driven)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'IATI'
+        icon: zbraces
+        fmt: 'IATI'
+        summary: 'International Aid Transparency Initiative XML standard for publishing aid activity data.'
+        spec_url: https://iatistandard.org/
+      - name: 'HXL'
+        icon: zbraces
+        fmt: 'HXL'
+        summary: 'Humanitarian Exchange Language, lightweight hashtags added to humanitarian datasets.'
+        spec_url: https://hxlstandard.org/
   - name: Federation Sources
     icon: fed
     from: fed

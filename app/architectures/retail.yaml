@@ -207,6 +207,34 @@ sources:
               - semi-structured
             volume: GBs (surveys + verbatims)
             interval: Daily feed
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ARTS POSLog'
+        icon: zbraces
+        fmt: 'POS'
+        summary: 'NRF ARTS POSLog XML for point-of-sale transaction data.'
+        spec_url: https://www.omg.org/retail/
+      - name: 'ARTS Digital Receipt'
+        icon: zbraces
+        fmt: 'RCPT'
+        summary: 'NRF ARTS standard for structured digital receipts.'
+        spec_url: https://www.omg.org/spec/DRAPI/
+      - name: 'X12 EDI'
+        icon: zbraces
+        fmt: 'X12'
+        summary: 'ANSI X12 EDI transaction sets for merchandise supply-chain messaging.'
+        spec_url: https://x12.org/
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for order-to-cash with suppliers.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for item-level visibility and traceability.'
+        spec_url: https://www.gs1.org/standards/epcis
   - name: Federation Sources
     icon: fed
     from: fed

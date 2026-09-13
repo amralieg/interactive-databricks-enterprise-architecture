@@ -155,6 +155,29 @@ sources:
               - semi-structured
             volume: 5-20 GB/submission
             interval: Submission windows + response files
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'X12N'
+        icon: zbraces
+        fmt: 'X12N'
+        summary: 'HIPAA-mandated X12N EDI for claims, eligibility, remittance and enrolment.'
+        spec_url: https://x12.org/
+      - name: 'ACH CCD+'
+        icon: zbraces
+        fmt: 'CCD+'
+        summary: 'Nacha ACH corporate payment with addenda used for healthcare EFT remittance.'
+        spec_url: https://www.nacha.org/
+      - name: 'NCPDP F&B'
+        icon: zbraces
+        fmt: 'F&B'
+        summary: 'NCPDP Formulary and Benefit standard for exchanging drug coverage information.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
+      - name: 'NCPDP RTPB'
+        icon: zbraces
+        fmt: 'RTPB'
+        summary: 'NCPDP Real-Time Prescription Benefit for member-specific price and coverage checks.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
   - name: Federation Sources
     icon: fed
     from: fed

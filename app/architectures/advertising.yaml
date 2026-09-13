@@ -273,6 +273,29 @@ sources:
               - semi-structured
             volume: 0.5-2 GB/day
             interval: Hourly
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'OpenRTB'
+        icon: zbraces
+        fmt: 'RTB'
+        summary: 'IAB real-time bidding protocol for programmatic ad auctions between exchanges, SSPs and DSPs.'
+        spec_url: https://iabtechlab.com/standards/openrtb/
+      - name: 'VAST'
+        icon: zbraces
+        fmt: 'VAST'
+        summary: 'IAB Digital Video Ad Serving Template for delivering and tracking video ad creatives to players.'
+        spec_url: https://iabtechlab.com/standards/vast/
+      - name: 'OpenDirect'
+        icon: zbraces
+        fmt: 'OD'
+        summary: 'IAB API standard for automating direct-sold (guaranteed) advertising orders.'
+        spec_url: https://iabtechlab.com/standards/openmedia/
+      - name: 'AdCOM'
+        icon: zbraces
+        fmt: 'ADC'
+        summary: 'IAB Advertising Common Object Model, the shared object layer OpenRTB and OpenDirect build on.'
+        spec_url: https://iabtechlab.com/standards/openmedia/
   - name: Federation Sources
     icon: fed
     from: fed

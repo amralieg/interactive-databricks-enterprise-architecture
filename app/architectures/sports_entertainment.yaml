@@ -200,6 +200,19 @@ sources:
               - structured
             volume: sub-GB/day
             interval: Hourly punch + schedule sync
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'SportsML'
+        icon: zbraces
+        fmt: 'SML'
+        summary: 'IPTC SportsML-G2 XML for exchanging sports schedules, results and statistics.'
+        spec_url: https://iptc.org/standards/sportsml-g2/
+      - name: 'IPTC Sport Schema'
+        icon: zbraces
+        fmt: 'IPTC'
+        summary: 'IPTC linked-data Sport Schema for modelling sports events and entities.'
+        spec_url: https://iptc.org/standards/sport-schema/
   - name: Federation Sources
     icon: fed
     from: fed

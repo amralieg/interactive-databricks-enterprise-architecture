@@ -220,6 +220,19 @@ sources:
               - semi-structured
             volume: 100s-1000s of readings/sec
             interval: Continuous telemetry
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'Chem eStandards'
+        icon: zbraces
+        fmt: 'CHEM'
+        summary: 'OAGi chemical industry XML standards for orders, shipments and invoices.'
+        spec_url: https://oagi.org/pages/chem-estandards
+      - name: 'DEXPI'
+        icon: zbraces
+        fmt: 'DEXPI'
+        summary: 'Data Exchange in the Process Industry model for P&ID and plant engineering data.'
+        spec_url: https://dexpi.org/
   - name: Federation Sources
     icon: fed
     from: fed

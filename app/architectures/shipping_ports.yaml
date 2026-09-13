@@ -226,6 +226,29 @@ sources:
               - structured
             volume: MBs-GBs (rates + events)
             interval: Daily rate refresh
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'EDIFACT Maritime'
+        icon: zbraces
+        fmt: 'EDI'
+        summary: 'UN/EDIFACT maritime messages for container, manifest and port operations.'
+        spec_url: https://unece.org/trade/uncefact/introducing-unedifact
+      - name: 'DCSA eBL'
+        icon: zbraces
+        fmt: 'eBL'
+        summary: 'Digital Container Shipping Association electronic Bill of Lading standard.'
+        spec_url: https://dcsa.org/standards/ebill-of-lading
+      - name: 'DCSA Track & Trace'
+        icon: zbraces
+        fmt: 'T&T'
+        summary: 'DCSA standard for interoperable container track-and-trace events.'
+        spec_url: https://dcsa.org/standards/track-and-trace
+      - name: 'Bill of Lading'
+        icon: zbraces
+        fmt: 'BOL'
+        summary: 'DCSA standardised electronic bill of lading data model.'
+        spec_url: https://dcsa.org/standards/ebill-of-lading
   - name: Federation Sources
     icon: fed
     from: fed

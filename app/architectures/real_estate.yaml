@@ -186,6 +186,29 @@ sources:
               - structured
             volume: hundreds of thousands of utility and emissions rows
             interval: Monthly billing cycle
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'RESO Data Dictionary'
+        icon: zbraces
+        fmt: 'RESO'
+        summary: 'RESO standard vocabulary for real-estate listing and property data.'
+        spec_url: https://www.reso.org/data-dictionary/
+      - name: 'RESO Web API'
+        icon: zbraces
+        fmt: 'API'
+        summary: 'RESO OData-based API standard for accessing MLS listing data.'
+        spec_url: https://www.reso.org/reso-web-api/
+      - name: 'RESO Common Format'
+        icon: zbraces
+        fmt: 'RCF'
+        summary: 'RESO standardised replication format for bulk listing data exchange.'
+        spec_url: https://www.reso.org/
+      - name: 'OSCRE IDM'
+        icon: zbraces
+        fmt: 'OSCRE'
+        summary: 'OSCRE Industry Data Model for commercial real-estate information exchange.'
+        spec_url: https://www.oscre.org/
   - name: Federation Sources
     icon: fed
     from: fed

@@ -233,6 +233,29 @@ sources:
               - semi-structured
             volume: 100s of MB
             interval: Per sampling / issuance cycle
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ADAPT'
+        icon: zbraces
+        fmt: 'ADPT'
+        summary: 'AgGateway Agricultural Data Application Programming Toolkit for cross-vendor field operation data.'
+        spec_url: https://adaptframework.org/
+      - name: 'ISOXML'
+        icon: zbraces
+        fmt: 'ISOX'
+        summary: 'ISO 11783-10 task data format for exchanging prescriptions and as-applied data with machinery.'
+        spec_url: https://www.iso.org/standard/61581.html
+      - name: 'ISOBUS'
+        icon: zbraces
+        fmt: 'BUS'
+        summary: 'ISO 11783 in-cab network standard connecting tractors and implements across brands.'
+        spec_url: https://www.aef-online.org/the-aef/isobus.html
+      - name: 'Ag eStandards'
+        icon: zbraces
+        fmt: 'eAG'
+        summary: 'AgGateway XML e-business standards for orders, shipments and product catalogues in agriculture.'
+        spec_url: https://aggateway.org/GetConnected/StandardsGuidelines/XML.aspx
   - name: Federation Sources
     icon: fed
     from: fed

@@ -319,6 +319,29 @@ sources:
               - semi-structured
             volume: hundreds of fill events/sec at peak
             interval: Continuous (dispensing telemetry)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'NCPDP Telecom'
+        icon: zbraces
+        fmt: 'TELE'
+        summary: 'NCPDP Telecommunication standard for real-time pharmacy claim adjudication.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
+      - name: 'NCPDP SCRIPT'
+        icon: zbraces
+        fmt: 'SCRP'
+        summary: 'NCPDP SCRIPT standard for electronic prescribing between prescribers and pharmacies.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
+      - name: 'NCPDP F&B'
+        icon: zbraces
+        fmt: 'F&B'
+        summary: 'NCPDP Formulary and Benefit standard for drug coverage information.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
+      - name: 'NCPDP RTPB'
+        icon: zbraces
+        fmt: 'RTPB'
+        summary: 'NCPDP Real-Time Prescription Benefit for point-of-care price and coverage checks.'
+        spec_url: https://www.ncpdp.org/Standards-Development/Standards-Information
   - name: Federation Sources
     icon: fed
     from: fed

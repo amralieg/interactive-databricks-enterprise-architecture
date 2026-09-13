@@ -265,6 +265,34 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous CDC
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'X12 EDI'
+        icon: zbraces
+        fmt: 'X12'
+        summary: 'ANSI X12 EDI transaction sets for POs, invoices and ship notices with trading partners.'
+        spec_url: https://x12.org/
+      - name: 'ASN'
+        icon: zbraces
+        fmt: 'ASN'
+        summary: 'Advance Ship Notice (EDI 856) detailing inbound shipment contents.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for distribution visibility and traceability.'
+        spec_url: https://www.gs1.org/standards/epcis
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for wholesale order-to-cash messaging.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 XML'
+        icon: zbraces
+        fmt: 'GS1X'
+        summary: 'GS1 XML business messages for supply-chain transactions.'
+        spec_url: https://www.gs1.org/standards/edi-xml
   - name: Federation Sources
     icon: fed
     from: fed

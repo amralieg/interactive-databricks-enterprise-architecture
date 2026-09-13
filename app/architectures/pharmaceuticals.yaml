@@ -270,6 +270,29 @@ sources:
               - semi-structured
             volume: engagement events as they occur
             interval: Continuous CDC
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'eCTD'
+        icon: zbraces
+        fmt: 'eCTD'
+        summary: 'Electronic Common Technical Document for regulatory drug submissions to agencies.'
+        spec_url: https://www.fda.gov/drugs/electronic-regulatory-submission-and-review/electronic-common-technical-document-ectd
+      - name: 'ICH E2B(R3)'
+        icon: zbraces
+        fmt: 'E2B'
+        summary: 'ICH standard for electronic transmission of individual case safety reports.'
+        spec_url: https://www.ich.org/page/multidisciplinary-guidelines
+      - name: 'SPL'
+        icon: zbraces
+        fmt: 'SPL'
+        summary: 'FDA Structured Product Labeling XML for drug product and label information.'
+        spec_url: https://www.fda.gov/industry/fda-data-standards-advisory-board/structured-product-labeling-resources
+      - name: 'CDISC'
+        icon: zbraces
+        fmt: 'CDISC'
+        summary: 'CDISC clinical data standards (SDTM/ADaM) used across drug development.'
+        spec_url: https://www.cdisc.org/standards
   - name: Federation Sources
     icon: fed
     from: fed

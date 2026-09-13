@@ -194,6 +194,29 @@ sources:
               - structured
             volume: 1-5 GB/day
             interval: Daily + settlement cycles
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for farm-to-fork traceability and recall readiness.'
+        spec_url: https://www.gs1.org/standards/epcis
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for orders, dispatch and invoices with retailers.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 XML'
+        icon: zbraces
+        fmt: 'GS1X'
+        summary: 'GS1 XML business messages for supply-chain transactions.'
+        spec_url: https://www.gs1.org/standards/edi-xml
+      - name: 'GDSN'
+        icon: zbraces
+        fmt: 'GDSN'
+        summary: 'Global Data Synchronisation Network catalogue messages for product master data.'
+        spec_url: https://www.gs1.org/services/gdsn
   - name: Federation Sources
     icon: fed
     from: fed

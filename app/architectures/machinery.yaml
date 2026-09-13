@@ -207,6 +207,24 @@ sources:
               - semi-structured
             volume: 10s-100s of GB/day at fleet scale
             interval: Continuous (MQTT / cellular)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'MTConnect'
+        icon: zbraces
+        fmt: 'MTC'
+        summary: 'Open standard for read-only data from CNC machines and shop-floor equipment.'
+        spec_url: https://www.mtconnect.org/
+      - name: 'OPC UA'
+        icon: zbraces
+        fmt: 'OPCUA'
+        summary: 'OPC Unified Architecture for secure, model-based industrial data exchange.'
+        spec_url: https://opcfoundation.org/about/opc-technologies/opc-ua/
+      - name: 'ISO 15143-3'
+        icon: zbraces
+        fmt: '15143'
+        summary: 'ISO AEMP telematics standard for mixed-fleet construction/machinery equipment data.'
+        spec_url: https://www.iso.org/standard/76394.html
   - name: Federation Sources
     icon: fed
     from: fed

@@ -238,6 +238,19 @@ sources:
               - semi-structured
             volume: tens-hundreds of readings/sec
             interval: Continuous sensor series
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'WaterML'
+        icon: zbraces
+        fmt: 'WML'
+        summary: 'OGC WaterML standard for exchanging hydrological time-series observations.'
+        spec_url: https://www.ogc.org/standard/waterml/
+      - name: 'EPANET INP'
+        icon: zbraces
+        fmt: 'INP'
+        summary: 'EPA EPANET input file format for water distribution network models.'
+        spec_url: https://www.epa.gov/water-research/epanet
   - name: Federation Sources
     icon: fed
     from: fed

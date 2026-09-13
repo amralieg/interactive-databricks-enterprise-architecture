@@ -195,6 +195,24 @@ sources:
               - unstructured
             volume: GB-scale reference + usage
             interval: Periodic + on-demand
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'LEDES'
+        icon: zbraces
+        fmt: 'LEDES'
+        summary: 'Legal Electronic Data Exchange Standard for e-billing between firms and clients.'
+        spec_url: https://ledes.org/
+      - name: 'LegalDocML'
+        icon: zbraces
+        fmt: 'LDML'
+        summary: 'OASIS Akoma Ntoso XML for legislative, judicial and legal documents.'
+        spec_url: https://www.oasis-open.org/committees/legaldocml/
+      - name: 'LegalXML ECF'
+        icon: zbraces
+        fmt: 'ECF'
+        summary: 'OASIS Electronic Court Filing standard for exchanging court documents.'
+        spec_url: https://docs.oasis-open.org/legalxml-courtfiling/ecf/v5.0/ecf-v5.0.html
   - name: Federation Sources
     icon: fed
     from: fed

@@ -198,6 +198,19 @@ sources:
               - unstructured
             volume: 10s-100s of GB/survey
             interval: Per-survey (periodic campaigns)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'PIDX XML'
+        icon: zbraces
+        fmt: 'PIDX'
+        summary: 'Petroleum Industry Data Exchange XML for procurement and invoicing in oil & gas.'
+        spec_url: https://pidx.org/
+      - name: 'DEXPI'
+        icon: zbraces
+        fmt: 'DEXPI'
+        summary: 'Data Exchange in the Process Industry model for P&ID and refinery engineering data.'
+        spec_url: https://dexpi.org/
   - name: Federation Sources
     icon: fed
     from: fed

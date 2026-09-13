@@ -210,6 +210,19 @@ sources:
               - semi-structured
             volume: 1-10k events/sec
             interval: Continuous (event-driven)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'OMF'
+        icon: zbraces
+        fmt: 'OMF'
+        summary: 'Open Mining Format for exchanging geologic and block-model data between tools.'
+        spec_url: https://gmggroup.org/
+      - name: 'IREDES'
+        icon: zbraces
+        fmt: 'IRED'
+        summary: 'International Rock Excavation Data Exchange Standard for mining equipment data.'
+        spec_url: https://iredes.org/
   - name: Federation Sources
     icon: fed
     from: fed

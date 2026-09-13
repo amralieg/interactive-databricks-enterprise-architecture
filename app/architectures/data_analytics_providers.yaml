@@ -282,6 +282,34 @@ sources:
               - structured
             volume: GBs of client + subscription data
             interval: Daily + intraday updates
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'FIX'
+        icon: zbraces
+        fmt: 'FIX'
+        summary: 'Financial Information eXchange protocol underpinning quote and trade data feeds.'
+        spec_url: https://www.fixtrading.org/standards/fix-protocol/
+      - name: 'FAST'
+        icon: zbraces
+        fmt: 'FAST'
+        summary: 'FIX Adapted for STreaming, a compression encoding for high-volume market data.'
+        spec_url: https://www.fixtrading.org/standards/fast/
+      - name: 'SBE'
+        icon: zbraces
+        fmt: 'SBE'
+        summary: 'Simple Binary Encoding for ultra-low-latency market-data and order messages.'
+        spec_url: https://www.fixtrading.org/standards/sbe/
+      - name: 'ITCH'
+        icon: zbraces
+        fmt: 'ITCH'
+        summary: 'Nasdaq direct-feed protocol broadcasting full order-book market data.'
+        spec_url: https://www.nasdaq.com/solutions/nasdaq-totalview-itch
+      - name: 'LSEG RWF'
+        icon: zbraces
+        fmt: 'RWF'
+        summary: 'LSEG Refinitiv Wire Format, the binary encoding behind real-time data feeds.'
+        spec_url: https://developers.lseg.com/
   - name: Federation Sources
     icon: fed
     from: fed

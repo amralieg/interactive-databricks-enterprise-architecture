@@ -224,6 +224,29 @@ sources:
               - semi-structured
             volume: hundreds of checks/sec at peak
             interval: Continuous (POS transactions)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'OpenTravel XML'
+        icon: zbraces
+        fmt: 'OTA'
+        summary: 'OpenTravel Alliance XML messages for travel and hospitality distribution.'
+        spec_url: https://opentravel.org/
+      - name: 'OpenTravel 2.0'
+        icon: zbraces
+        fmt: 'OTA2'
+        summary: 'OpenTravel 2.0 model-based message suite for modern travel integrations.'
+        spec_url: https://opentravel.org/
+      - name: 'HTNG Open Payments'
+        icon: zbraces
+        fmt: 'HTNG'
+        summary: 'Hospitality Technology open payments messaging for hotel systems.'
+        spec_url: https://www.htng.org/
+      - name: 'PNR'
+        icon: zbraces
+        fmt: 'PNR'
+        summary: 'Passenger Name Record data shared across travel booking and itinerary systems.'
+        spec_url: https://www.iata.org/en/programs/passenger/
   - name: Federation Sources
     icon: fed
     from: fed

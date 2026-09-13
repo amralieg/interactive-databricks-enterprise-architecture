@@ -275,6 +275,34 @@ sources:
               - semi-structured
             volume: MBs-GBs emissions data
             interval: Monthly / quarterly reporting
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'SunSpec Modbus'
+        icon: zbraces
+        fmt: 'SUN'
+        summary: 'SunSpec Modbus device models for solar inverters and DER interoperability.'
+        spec_url: https://sunspec.org/sunspec-modbus-specifications/
+      - name: 'IEC 61400-25'
+        icon: zbraces
+        fmt: '61400'
+        summary: 'IEC standard for wind power plant monitoring and control communications.'
+        spec_url: https://webstore.iec.ch/en/publication/5433
+      - name: 'IEC 61850 DER'
+        icon: zbraces
+        fmt: '61850'
+        summary: 'IEC 61850-7-420 information model for distributed energy resources.'
+        spec_url: https://webstore.iec.ch/en/publication/6028
+      - name: 'OCPP'
+        icon: zbraces
+        fmt: 'OCPP'
+        summary: 'Open Charge Point Protocol between EV chargers and management systems.'
+        spec_url: https://openchargealliance.org/protocols/open-charge-point-protocol/
+      - name: 'OCPI'
+        icon: zbraces
+        fmt: 'OCPI'
+        summary: 'Open Charge Point Interface for roaming across EV charging networks.'
+        spec_url: https://evroaming.org/ocpi-background/
   - name: Federation Sources
     icon: fed
     from: fed

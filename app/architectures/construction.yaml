@@ -230,6 +230,29 @@ sources:
               - semi-structured
             volume: 0.5-2 GB/day
             interval: Hourly / daily sync
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'IFC'
+        icon: zbraces
+        fmt: 'IFC'
+        summary: 'buildingSMART Industry Foundation Classes, the open BIM model for building data exchange.'
+        spec_url: https://technical.buildingsmart.org/standards/ifc/
+      - name: 'BCF'
+        icon: zbraces
+        fmt: 'BCF'
+        summary: 'BIM Collaboration Format for exchanging model-based issues and coordination comments.'
+        spec_url: https://technical.buildingsmart.org/standards/bcf/
+      - name: 'IDS'
+        icon: zbraces
+        fmt: 'IDS'
+        summary: 'Information Delivery Specification defining checkable BIM data requirements.'
+        spec_url: https://technical.buildingsmart.org/standards/ids/
+      - name: 'COBie'
+        icon: zbraces
+        fmt: 'COBie'
+        summary: 'Construction-Operations Building Information Exchange for asset handover data.'
+        spec_url: https://www.nibs.org/
   - name: Federation Sources
     icon: fed
     from: fed

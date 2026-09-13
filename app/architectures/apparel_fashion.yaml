@@ -235,6 +235,29 @@ sources:
               - semi-structured
             volume: MBs/month
             interval: Periodic certification updates
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'X12 EDI'
+        icon: zbraces
+        fmt: 'X12'
+        summary: 'ANSI ASC X12 EDI transaction sets for POs, invoices and ship notices across the retail supply chain.'
+        spec_url: https://x12.org/
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for item-level visibility and traceability from factory to store.'
+        spec_url: https://www.gs1.org/standards/epcis
+      - name: 'ASN'
+        icon: zbraces
+        fmt: 'ASN'
+        summary: 'Advance Ship Notice (EDI 856) detailing the contents and packing of an inbound shipment.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 BOL'
+        icon: zbraces
+        fmt: 'BOL'
+        summary: 'GS1 US Bill of Lading guideline for standardised freight documentation.'
+        spec_url: https://www.gs1us.org/
   - name: Federation Sources
     icon: fed
     from: fed

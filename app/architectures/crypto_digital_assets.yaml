@@ -346,6 +346,19 @@ sources:
               - semi-structured
             volume: Payment messages + statements
             interval: Multiple settlement cycles daily
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'IVMS 101'
+        icon: zbraces
+        fmt: 'IVMS'
+        summary: 'interVASP data model for Travel Rule originator/beneficiary information exchange.'
+        spec_url: https://www.intervasp.org/
+      - name: 'TRISA'
+        icon: zbraces
+        fmt: 'TRISA'
+        summary: 'Travel Rule Information Sharing Architecture for compliant VASP-to-VASP data exchange.'
+        spec_url: https://trisa.io/
   - name: Federation Sources
     icon: fed
     from: fed

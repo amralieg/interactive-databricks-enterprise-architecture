@@ -314,6 +314,24 @@ sources:
               - structured
             volume: 0.5-2 GB/day
             interval: Nightly
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'SPDX'
+        icon: zbraces
+        fmt: 'SPDX'
+        summary: 'ISO/Linux Foundation Software Package Data Exchange for SBOMs and license data.'
+        spec_url: https://spdx.dev/
+      - name: 'CycloneDX'
+        icon: zbraces
+        fmt: 'CDX'
+        summary: 'OWASP CycloneDX SBOM standard for software supply-chain components.'
+        spec_url: https://cyclonedx.org/
+      - name: 'SPDX VEX'
+        icon: zbraces
+        fmt: 'VEX'
+        summary: 'Vulnerability Exploitability eXchange for communicating vulnerability impact.'
+        spec_url: https://spdx.dev/
   - name: Federation Sources
     icon: fed
     from: fed

@@ -224,6 +224,29 @@ sources:
               - semi-structured
             volume: GBs/day
             interval: Daily feed
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for orders, dispatch advices and invoices between CPG and retail.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 XML'
+        icon: zbraces
+        fmt: 'GS1X'
+        summary: 'GS1 XML business messages for order-to-cash and master-data exchange.'
+        spec_url: https://www.gs1.org/standards/edi-xml
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for supply-chain visibility and item traceability.'
+        spec_url: https://www.gs1.org/standards/epcis
+      - name: 'GDSN'
+        icon: zbraces
+        fmt: 'GDSN'
+        summary: 'Global Data Synchronisation Network catalogue messages for trusted product master data.'
+        spec_url: https://www.gs1.org/services/gdsn
   - name: Federation Sources
     icon: fed
     from: fed

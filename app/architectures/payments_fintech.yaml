@@ -219,6 +219,29 @@ sources:
               - semi-structured
             volume: Campaign + engagement events
             interval: Continuous (events)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ISO 20022'
+        icon: zbraces
+        fmt: '20022'
+        summary: 'Rich financial messaging standard now the global rail for modern payments.'
+        spec_url: https://www.iso20022.org/
+      - name: 'ISO 8583'
+        icon: zbraces
+        fmt: '8583'
+        summary: 'Card transaction message standard behind ATM and POS authorisation flows.'
+        spec_url: https://www.iso.org/standard/31628.html
+      - name: 'Nacha ACH'
+        icon: zbraces
+        fmt: 'ACH'
+        summary: 'US automated clearing house file format for batch electronic transfers.'
+        spec_url: https://achdevguide.nacha.org/ach-file-details
+      - name: 'nexo Acquirer'
+        icon: zbraces
+        fmt: 'nexo'
+        summary: 'nexo standards for interoperable card acceptance between terminals and acquirers.'
+        spec_url: https://www.nexo-standards.org/
   - name: Federation Sources
     icon: fed
     from: fed

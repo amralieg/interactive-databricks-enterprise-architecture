@@ -248,6 +248,19 @@ sources:
               - semi-structured
             volume: 5-30 GB/day docs + metadata
             interval: Nightly batch + hourly deltas
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'XBRL GL'
+        icon: zbraces
+        fmt: 'XBRL'
+        summary: 'XBRL Global Ledger taxonomy for transaction-level accounting data exchange.'
+        spec_url: https://www.xbrl.org/the-standard/what/gl/
+      - name: 'SAF-T'
+        icon: zbraces
+        fmt: 'SAFT'
+        summary: 'OECD Standard Audit File for Tax, a standardised export of accounting records.'
+        spec_url: https://www.oecd.org/tax/
   - name: Federation Sources
     icon: fed
     from: fed

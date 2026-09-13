@@ -251,6 +251,34 @@ sources:
               - unstructured
             volume: 100s of MB/day
             interval: Periodic content updates
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ASAM MDF'
+        icon: zbraces
+        fmt: 'MDF'
+        summary: 'ASAM Measurement Data Format for storing high-volume vehicle and test-bench measurement data.'
+        spec_url: https://www.asam.net/standards/detail/mdf/
+      - name: 'OpenDRIVE'
+        icon: zbraces
+        fmt: 'ODR'
+        summary: 'ASAM logical road-network description for simulation and automated-driving development.'
+        spec_url: https://www.asam.net/standards/detail/opendrive/
+      - name: 'OpenSCENARIO'
+        icon: zbraces
+        fmt: 'OSC'
+        summary: 'ASAM standard describing dynamic driving scenarios for ADAS/AD verification.'
+        spec_url: https://www.asam.net/standards/detail/openscenario/
+      - name: 'ASAM OSI'
+        icon: zbraces
+        fmt: 'OSI'
+        summary: 'Open Simulation Interface for sensor and environment data exchange in AD simulation.'
+        spec_url: https://www.asam.net/standards/detail/osi/
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for orders, dispatch and invoices across the automotive supply base.'
+        spec_url: https://www.gs1.org/standards/edi
   - name: Federation Sources
     icon: fed
     from: fed

@@ -233,6 +233,34 @@ sources:
               - structured
             volume: MBs-GBs/day price feeds
             interval: Intraday to daily benchmarks
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'STDF'
+        icon: zbraces
+        fmt: 'STDF'
+        summary: 'Standard Test Data Format for semiconductor test and yield data.'
+        spec_url: https://www.semi.org/en/standards
+      - name: 'SECS-II'
+        icon: zbraces
+        fmt: 'SECS'
+        summary: 'SEMI Equipment Communications Standard message content for fab equipment.'
+        spec_url: https://www.semi.org/en/standards
+      - name: 'GEM'
+        icon: zbraces
+        fmt: 'GEM'
+        summary: 'SEMI Generic Equipment Model for host-to-tool factory automation.'
+        spec_url: https://www.semi.org/en/standards
+      - name: 'HSMS'
+        icon: zbraces
+        fmt: 'HSMS'
+        summary: 'SEMI High-Speed SECS Message Services for equipment communications over TCP/IP.'
+        spec_url: https://www.semi.org/en/standards
+      - name: 'SEMI EDA'
+        icon: zbraces
+        fmt: 'EDA'
+        summary: 'SEMI Equipment Data Acquisition (Interface A) for rich equipment data collection.'
+        spec_url: https://www.semi.org/en/standards
   - name: Federation Sources
     icon: fed
     from: fed

@@ -309,6 +309,24 @@ sources:
               - semi-structured
             volume: simulation outputs per field-scenario
             interval: Per model run
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ADAPT'
+        icon: zbraces
+        fmt: 'ADPT'
+        summary: 'AgGateway toolkit that normalises field operation data across mixed equipment fleets.'
+        spec_url: https://adaptframework.org/
+      - name: 'ISOXML'
+        icon: zbraces
+        fmt: 'ISOX'
+        summary: 'ISO 11783-10 task data format for prescriptions and as-applied telemetry from machinery.'
+        spec_url: https://www.iso.org/standard/61581.html
+      - name: 'ISOBUS'
+        icon: zbraces
+        fmt: 'BUS'
+        summary: 'ISO 11783 plug-and-play network between tractors, implements and displays.'
+        spec_url: https://www.aef-online.org/the-aef/isobus.html
   - name: Federation Sources
     icon: fed
     from: fed

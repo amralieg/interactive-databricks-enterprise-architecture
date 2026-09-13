@@ -301,6 +301,29 @@ sources:
               - semi-structured
             volume: tens of payment events/sec
             interval: Continuous (webhook / API)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'FHIR'
+        icon: zbraces
+        fmt: 'FHIR'
+        summary: 'HL7 Fast Healthcare Interoperability Resources, the modern REST standard for health data.'
+        spec_url: https://www.hl7.org/fhir/overview.html
+      - name: 'HL7 v2'
+        icon: zbraces
+        fmt: 'HL7'
+        summary: 'Widely deployed HL7 v2 messaging for clinical events across health systems.'
+        spec_url: https://blog.hl7.org/what_is_hl7_and_introduction_to_products_fhir_cda_v2
+      - name: 'CDA/C-CDA'
+        icon: zbraces
+        fmt: 'CDA'
+        summary: 'HL7 Clinical Document Architecture for structured clinical documents like care summaries.'
+        spec_url: https://www.hl7.org/implement/standards/product_brief.cfm?product_id=492
+      - name: 'SMART Health Cards'
+        icon: zbraces
+        fmt: 'SHC'
+        summary: 'Verifiable, signed FHIR-based health credentials for portable patient records.'
+        spec_url: https://smarthealth.cards/
   - name: Federation Sources
     icon: fed
     from: fed

@@ -195,6 +195,34 @@ sources:
               - semi-structured
             volume: 2-10k events/sec at peak
             interval: Continuous clickstream
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'X12 EDI'
+        icon: zbraces
+        fmt: 'X12'
+        summary: 'ANSI X12 EDI transaction sets for POs, invoices and ship notices with suppliers.'
+        spec_url: https://x12.org/
+      - name: 'ASN'
+        icon: zbraces
+        fmt: 'ASN'
+        summary: 'Advance Ship Notice (EDI 856) describing inbound shipment contents.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for grocery order-to-cash messaging.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 XML'
+        icon: zbraces
+        fmt: 'GS1X'
+        summary: 'GS1 XML business messages for supply-chain transactions.'
+        spec_url: https://www.gs1.org/standards/edi-xml
+      - name: 'EPCIS'
+        icon: zbraces
+        fmt: 'EPC'
+        summary: 'GS1 event standard for perishables traceability and freshness visibility.'
+        spec_url: https://www.gs1.org/standards/epcis
   - name: Federation Sources
     icon: fed
     from: fed

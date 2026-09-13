@@ -199,6 +199,34 @@ sources:
               - structured
             volume: 100s of images/sec + vectors
             interval: Continuous inline capture
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'OPC UA'
+        icon: zbraces
+        fmt: 'OPCUA'
+        summary: 'OPC Unified Architecture, the backbone protocol for Industry 4.0 data exchange.'
+        spec_url: https://opcfoundation.org/about/opc-technologies/opc-ua/
+      - name: 'MTConnect'
+        icon: zbraces
+        fmt: 'MTC'
+        summary: 'Open standard for streaming machine-tool and shop-floor equipment data.'
+        spec_url: https://www.mtconnect.org/
+      - name: 'B2MML'
+        icon: zbraces
+        fmt: 'B2MML'
+        summary: 'Business To Manufacturing Markup Language implementing ISA-95 integration.'
+        spec_url: https://www.mesa.org/topics-resources/b2mml-batchml/
+      - name: 'BatchML'
+        icon: zbraces
+        fmt: 'BML'
+        summary: 'XML implementation of ISA-88 for batch process control information.'
+        spec_url: https://www.mesa.org/topics-resources/b2mml-batchml/
+      - name: 'Sparkplug'
+        icon: zbraces
+        fmt: 'SPKP'
+        summary: 'Eclipse MQTT topic/payload spec for interoperable IIoT device data.'
+        spec_url: https://sparkplug.eclipse.org/
   - name: Federation Sources
     icon: fed
     from: fed

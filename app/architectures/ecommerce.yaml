@@ -234,6 +234,24 @@ sources:
               - structured
             volume: GBs/day
             interval: Daily order + payout feed
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'UBL'
+        icon: zbraces
+        fmt: 'UBL'
+        summary: 'OASIS Universal Business Language XML for orders, invoices and dispatch documents.'
+        spec_url: https://docs.oasis-open.org/ubl/UBL-2.1.html
+      - name: 'EANCOM'
+        icon: zbraces
+        fmt: 'EANC'
+        summary: 'GS1 EDIFACT subset for order-to-cash messaging with suppliers.'
+        spec_url: https://www.gs1.org/standards/edi
+      - name: 'GS1 XML'
+        icon: zbraces
+        fmt: 'GS1X'
+        summary: 'GS1 XML business messages for orders, shipments and product data.'
+        spec_url: https://www.gs1.org/standards/edi-xml
   - name: Federation Sources
     icon: fed
     from: fed

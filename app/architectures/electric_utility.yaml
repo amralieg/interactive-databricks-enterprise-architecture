@@ -241,6 +241,34 @@ sources:
               - semi-structured
             volume: 100s-1000s of GPS + event reads/sec
             interval: Continuous (vehicle + crew telemetry)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'CIM'
+        icon: zbraces
+        fmt: 'CIM'
+        summary: 'IEC Common Information Model for grid network topology and asset data exchange.'
+        spec_url: https://webstore.iec.ch/en/publication/6199
+      - name: 'IEC 61850'
+        icon: zbraces
+        fmt: '61850'
+        summary: 'IEC standard for substation automation and protection communications.'
+        spec_url: https://webstore.iec.ch/en/publication/6028
+      - name: 'DNP3'
+        icon: zbraces
+        fmt: 'DNP3'
+        summary: 'Distributed Network Protocol for SCADA communications across T&D networks.'
+        spec_url: https://www.dnp.org/About/Overview-of-DNP3-Protocol
+      - name: 'IEC 60870-5'
+        icon: zbraces
+        fmt: '60870'
+        summary: 'IEC telecontrol protocol suite (101/104) for SCADA over serial and IP networks.'
+        spec_url: https://webstore.iec.ch/en/publication/3755
+      - name: 'COMTRADE'
+        icon: zbraces
+        fmt: 'CTR'
+        summary: 'IEC transient data exchange format from fault recorders and relays.'
+        spec_url: https://webstore.iec.ch/en/publication/24421
   - name: Federation Sources
     icon: fed
     from: fed

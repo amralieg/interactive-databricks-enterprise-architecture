@@ -300,6 +300,34 @@ sources:
               - unstructured
             volume: Title + settlement + CD documents
             interval: Nightly batch
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'MISMO'
+        icon: zbraces
+        fmt: 'MISMO'
+        summary: 'MISMO XML data standard for the US mortgage origination and servicing lifecycle.'
+        spec_url: https://www.mismo.org/
+      - name: 'MISMO SMART Doc'
+        icon: zbraces
+        fmt: 'SMART'
+        summary: 'MISMO standard for tamper-evident electronic mortgage documents.'
+        spec_url: https://www.mismo.org/
+      - name: 'iLAD'
+        icon: zbraces
+        fmt: 'iLAD'
+        summary: 'MISMO Industry Loan Application Dataset for standardised loan application data.'
+        spec_url: https://www.mismo.org/
+      - name: 'UCD'
+        icon: zbraces
+        fmt: 'UCD'
+        summary: 'Uniform Closing Dataset for delivering Closing Disclosure data to the GSEs.'
+        spec_url: https://singlefamily.fanniemae.com/
+      - name: 'ULDD'
+        icon: zbraces
+        fmt: 'ULDD'
+        summary: 'Uniform Loan Delivery Dataset for loan delivery to Fannie Mae and Freddie Mac.'
+        spec_url: https://singlefamily.fanniemae.com/
   - name: Federation Sources
     icon: fed
     from: fed

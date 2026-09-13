@@ -204,6 +204,34 @@ sources:
               - semi-structured
             volume: continuous instrument metrics
             interval: Continuous during runs
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'FASTA'
+        icon: zbraces
+        fmt: 'FA'
+        summary: 'Text format for nucleotide and protein sequences, the lingua franca of bioinformatics.'
+        spec_url: https://www.ncbi.nlm.nih.gov/genbank/fastaformat/
+      - name: 'FASTQ'
+        icon: zbraces
+        fmt: 'FQ'
+        summary: 'Sequence format pairing reads with per-base quality scores from sequencers.'
+        spec_url: https://github.com/samtools/hts-specs
+      - name: 'BAM'
+        icon: zbraces
+        fmt: 'BAM'
+        summary: 'Binary Alignment/Map format for compressed sequence alignments to a reference.'
+        spec_url: https://github.com/samtools/hts-specs
+      - name: 'CRAM'
+        icon: zbraces
+        fmt: 'CRAM'
+        summary: 'Reference-based compressed alignment format, smaller than BAM.'
+        spec_url: https://github.com/samtools/hts-specs
+      - name: 'VCF'
+        icon: zbraces
+        fmt: 'VCF'
+        summary: 'Variant Call Format for storing genetic variants against a reference genome.'
+        spec_url: https://github.com/samtools/hts-specs
   - name: Federation Sources
     icon: fed
     from: fed

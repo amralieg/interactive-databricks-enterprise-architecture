@@ -234,6 +234,24 @@ sources:
               - structured
             volume: 0.5-2 GB/day schedules
             interval: Outage cycles + daily updates
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'IEC 61850'
+        icon: zbraces
+        fmt: '61850'
+        summary: 'IEC standard for substation and plant automation communications.'
+        spec_url: https://webstore.iec.ch/en/publication/6028
+      - name: 'COMTRADE'
+        icon: zbraces
+        fmt: 'CTR'
+        summary: 'IEC Common format for Transient Data Exchange from protection relays and recorders.'
+        spec_url: https://webstore.iec.ch/en/publication/24421
+      - name: 'IEC 61400-25'
+        icon: zbraces
+        fmt: '61400'
+        summary: 'IEC standard for monitoring and control communications of wind power plants.'
+        spec_url: https://webstore.iec.ch/en/publication/5433
   - name: Federation Sources
     icon: fed
     from: fed

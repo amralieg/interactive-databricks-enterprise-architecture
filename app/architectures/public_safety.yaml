@@ -284,6 +284,24 @@ sources:
               - semi-structured
             volume: thousands of status/location events/sec
             interval: Continuous (real-time)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'CAP'
+        icon: zbraces
+        fmt: 'CAP'
+        summary: 'OASIS Common Alerting Protocol for all-hazard public warning messages.'
+        spec_url: https://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2.html
+      - name: 'EDXL'
+        icon: zbraces
+        fmt: 'EDXL'
+        summary: 'OASIS Emergency Data Exchange Language suite for incident and resource messaging.'
+        spec_url: https://www.oasis-open.org/committees/emergency/
+      - name: 'NENA i3'
+        icon: zbraces
+        fmt: 'i3'
+        summary: 'NENA standard for Next Generation 9-1-1 IP-based emergency call handling.'
+        spec_url: https://www.nena.org/page/i3_Stage3
   - name: Federation Sources
     icon: fed
     from: fed

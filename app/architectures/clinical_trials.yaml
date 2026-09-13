@@ -236,6 +236,34 @@ sources:
               - structured
             volume: MBs (standards + controlled terminology)
             interval: Periodic standard releases
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'CDISC SDTM'
+        icon: zbraces
+        fmt: 'SDTM'
+        summary: 'CDISC Study Data Tabulation Model for organising collected clinical trial data for submission.'
+        spec_url: https://www.cdisc.org/standards/foundational/sdtm
+      - name: 'CDISC ADaM'
+        icon: zbraces
+        fmt: 'ADaM'
+        summary: 'CDISC Analysis Data Model for analysis-ready datasets supporting statistical results.'
+        spec_url: https://www.cdisc.org/standards/foundational/adam
+      - name: 'ODM-XML'
+        icon: zbraces
+        fmt: 'ODM'
+        summary: 'CDISC Operational Data Model for capturing, exchanging and archiving eCRF data.'
+        spec_url: https://www.cdisc.org/standards/data-exchange/odm-xml
+      - name: 'Define-XML'
+        icon: zbraces
+        fmt: 'DEF'
+        summary: 'CDISC metadata standard describing dataset structure for regulatory submissions.'
+        spec_url: https://www.cdisc.org/standards/data-exchange/define-xml
+      - name: 'SAS XPORT'
+        icon: zbraces
+        fmt: 'XPT'
+        summary: 'SAS transport file format required for FDA clinical dataset submissions.'
+        spec_url: https://www.cdisc.org/standards/data-exchange
   - name: Federation Sources
     icon: fed
     from: fed

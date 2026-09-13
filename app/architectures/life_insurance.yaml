@@ -196,6 +196,19 @@ sources:
               - semi-structured
             volume: 1-5 GB/cycle
             interval: Monthly / quarterly treaty cycle
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ACORD L&A XML'
+        icon: zbraces
+        fmt: 'ACORD'
+        summary: 'ACORD Life & Annuity XML standards for new business, policy and claims data.'
+        spec_url: https://www.acord.org/standards-architecture/acord-data-standards
+      - name: 'ACORD L&A EDI'
+        icon: zbraces
+        fmt: 'L&A'
+        summary: 'ACORD Life & Annuity transaction standards for carrier-distributor interchange.'
+        spec_url: https://www.acord.org/standards-architecture/acord-data-standards
   - name: Federation Sources
     icon: fed
     from: fed

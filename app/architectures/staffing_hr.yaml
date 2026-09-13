@@ -230,6 +230,24 @@ sources:
               - semi-structured
             volume: GBs across datasets
             interval: Weekly / on-demand API
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'HR-XML'
+        icon: zbraces
+        fmt: 'HRX'
+        summary: 'HR Open Standards XML for recruiting, staffing and workforce data exchange.'
+        spec_url: https://www.hropenstandards.org/
+      - name: 'HR-JSON'
+        icon: zbraces
+        fmt: 'HRJ'
+        summary: 'HR Open Standards JSON encodings of the HR data model for modern APIs.'
+        spec_url: https://www.hropenstandards.org/
+      - name: 'LER-RS'
+        icon: zbraces
+        fmt: 'LER'
+        summary: 'Learning and Employment Record Resource Standard for verifiable credentials.'
+        spec_url: https://www.hropenstandards.org/
   - name: Federation Sources
     icon: fed
     from: fed

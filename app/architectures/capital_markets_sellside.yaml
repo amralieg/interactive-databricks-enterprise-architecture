@@ -322,6 +322,34 @@ sources:
               - structured
             volume: GBs of deal + league-table data
             interval: Daily + on-demand
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'FIX'
+        icon: zbraces
+        fmt: 'FIX'
+        summary: 'Financial Information eXchange protocol for order management and execution reporting.'
+        spec_url: https://www.fixtrading.org/standards/fix-protocol/
+      - name: 'FpML'
+        icon: zbraces
+        fmt: 'FpML'
+        summary: 'XML standard for OTC derivatives trade representation and lifecycle processing.'
+        spec_url: https://www.fpml.org/
+      - name: 'ISO 15022'
+        icon: zbraces
+        fmt: '15022'
+        summary: 'Securities settlement and corporate-action messaging with custodians and CSDs.'
+        spec_url: https://www.iso15022.org/
+      - name: 'ISO 20022'
+        icon: zbraces
+        fmt: '20022'
+        summary: 'Rich financial messaging across payments, securities and cash reporting.'
+        spec_url: https://www.iso20022.org/
+      - name: 'CDM'
+        icon: zbraces
+        fmt: 'CDM'
+        summary: 'ISDA/FINOS Common Domain Model standardising trade and lifecycle event data.'
+        spec_url: https://www.finos.org/common-domain-model
   - name: Federation Sources
     icon: fed
     from: fed

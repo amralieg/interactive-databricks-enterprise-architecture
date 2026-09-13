@@ -331,6 +331,19 @@ sources:
               - semi-structured
             volume: thousands of events/sec at peak
             interval: Continuous (in-session)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'glTF'
+        icon: zbraces
+        fmt: 'glTF'
+        summary: 'Khronos GL Transmission Format, the open standard for delivering 3D scenes and models.'
+        spec_url: https://www.khronos.org/gltf/
+      - name: 'OpenRTB'
+        icon: zbraces
+        fmt: 'RTB'
+        summary: 'IAB real-time bidding protocol powering in-game and mobile ad monetisation.'
+        spec_url: https://iabtechlab.com/standards/openrtb/
   - name: Federation Sources
     icon: fed
     from: fed

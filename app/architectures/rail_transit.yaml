@@ -259,6 +259,34 @@ sources:
               - semi-structured
             volume: GBs per inspection run
             interval: Per inspection run (weekly/monthly)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'GTFS Schedule'
+        icon: zbraces
+        fmt: 'GTFS'
+        summary: 'General Transit Feed Specification for publishing transit schedules and stops.'
+        spec_url: https://gtfs.org/
+      - name: 'GTFS Realtime'
+        icon: zbraces
+        fmt: 'GTFS'
+        summary: 'GTFS Realtime extension for live vehicle positions, trip updates and alerts.'
+        spec_url: https://gtfs.org/realtime/
+      - name: 'NeTEx'
+        icon: zbraces
+        fmt: 'NeTEx'
+        summary: 'CEN Network Timetable Exchange for detailed public-transport network data.'
+        spec_url: https://netex-cen.eu/
+      - name: 'SIRI'
+        icon: zbraces
+        fmt: 'SIRI'
+        summary: 'CEN Service Interface for Real Time Information across transit operators.'
+        spec_url: https://www.transmodel-cen.eu/standards/siri/
+      - name: 'railML'
+        icon: zbraces
+        fmt: 'railML'
+        summary: 'Open XML standard for exchanging railway infrastructure and timetable data.'
+        spec_url: https://www.railml.org/
   - name: Federation Sources
     icon: fed
     from: fed

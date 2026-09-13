@@ -311,6 +311,24 @@ sources:
               - semi-structured
             volume: tens of events/sec
             interval: Continuous (runtime)
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'OCSF'
+        icon: zbraces
+        fmt: 'OCSF'
+        summary: 'Open Cybersecurity Schema Framework, a vendor-agnostic taxonomy for security telemetry.'
+        spec_url: https://schema.ocsf.io/
+      - name: 'STIX'
+        icon: zbraces
+        fmt: 'STIX'
+        summary: 'Structured Threat Information eXpression for representing cyber threat intelligence.'
+        spec_url: https://oasis-open.github.io/cti-documentation/stix/intro
+      - name: 'TAXII'
+        icon: zbraces
+        fmt: 'TAXII'
+        summary: 'Trusted Automated eXchange of Intelligence Information transport for sharing STIX.'
+        spec_url: https://oasis-open.github.io/cti-documentation/taxii/intro
   - name: Federation Sources
     icon: fed
     from: fed

@@ -314,6 +314,29 @@ sources:
               - structured
             volume: 0.2-1 GB/day QC results
             interval: Per-run + daily peer comparison
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'HL7 v2'
+        icon: zbraces
+        fmt: 'HL7'
+        summary: 'HL7 version 2 messaging for orders and results between lab and clinical systems.'
+        spec_url: https://blog.hl7.org/what_is_hl7_and_introduction_to_products_fhir_cda_v2
+      - name: 'FHIR'
+        icon: zbraces
+        fmt: 'FHIR'
+        summary: 'HL7 FHIR REST/resources standard for modern interoperable lab and health data.'
+        spec_url: https://www.hl7.org/fhir/overview.html
+      - name: 'CLSI LIS01'
+        icon: zbraces
+        fmt: 'LIS01'
+        summary: 'CLSI standard for low-level connectivity between lab instruments and information systems.'
+        spec_url: https://clsi.org/shop/standards/lis01/
+      - name: 'CLSI LIS02'
+        icon: zbraces
+        fmt: 'LIS02'
+        summary: 'CLSI message specification for transferring lab orders and results.'
+        spec_url: https://clsi.org/shop/standards/lis02/
   - name: Federation Sources
     icon: fed
     from: fed

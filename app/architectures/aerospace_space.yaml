@@ -280,6 +280,34 @@ sources:
               - unstructured
             volume: TBs per test campaign
             interval: High-rate during test + batch
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'ARINC 429'
+        icon: zbraces
+        fmt: '429'
+        summary: 'Avionics data bus standard for digital information transfer between aircraft systems.'
+        spec_url: https://www.aviation-ia.com/product-categories/arinc-standards
+      - name: 'CCSDS Telemetry'
+        icon: zbraces
+        fmt: 'TM'
+        summary: 'CCSDS space packet telemetry standard for downlinking spacecraft data.'
+        spec_url: https://ccsds.org/Pubs/102x0b5s.pdf
+      - name: 'XTCE'
+        icon: zbraces
+        fmt: 'XTCE'
+        summary: 'XML Telemetric and Command Exchange for describing spacecraft telemetry and command databases.'
+        spec_url: https://ccsds.org/Pubs/660x0b2.pdf
+      - name: 'CCSDS Orbit Messages'
+        icon: zbraces
+        fmt: 'OEM'
+        summary: 'CCSDS orbit data messages (OEM/OMM/OPM) for exchanging spacecraft ephemeris and orbit state.'
+        spec_url: https://ccsds.org/Pubs/502x0b3e1.pdf
+      - name: 'CCSDS Attitude Messages'
+        icon: zbraces
+        fmt: 'AEM'
+        summary: 'CCSDS attitude data messages for exchanging spacecraft orientation and pointing state.'
+        spec_url: https://ccsds.org/Pubs/505x0b1s.pdf
   - name: Federation Sources
     icon: fed
     from: fed

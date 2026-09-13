@@ -222,6 +222,29 @@ sources:
               - semi-structured
             volume: 1-10k events/sec at fleet scale
             interval: Continuous security events
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'IPC-2581'
+        icon: zbraces
+        fmt: '2581'
+        summary: 'Open PCB manufacturing data exchange (design-to-fabrication) standard.'
+        spec_url: https://www.ipc.org/ipc-2581
+      - name: 'IPC-CFX'
+        icon: zbraces
+        fmt: 'CFX'
+        summary: 'IPC Connected Factory Exchange (IPC-2591) machine-to-machine standard for SMT lines.'
+        spec_url: https://www.ipc.org/ipc-cfx
+      - name: 'RosettaNet PIPs'
+        icon: zbraces
+        fmt: 'PIP'
+        summary: 'RosettaNet Partner Interface Processes for B2B supply-chain transactions in electronics.'
+        spec_url: https://resources.gs1us.org/RosettaNet
+      - name: 'IPC-Hermes-9852'
+        icon: zbraces
+        fmt: 'HRM'
+        summary: 'Vendor-independent board-flow handoff standard between SMT machines.'
+        spec_url: https://www.ipc.org/ipc-hermes-9852
   - name: Federation Sources
     icon: fed
     from: fed

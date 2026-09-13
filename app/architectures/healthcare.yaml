@@ -213,6 +213,34 @@ sources:
               - semi-structured
             volume: MBs-GBs (surveys)
             interval: Weekly / survey cycle
+  - name: Data Formats
+    icon: zbraces
+    tiles:
+      - name: 'HL7 v2'
+        icon: zbraces
+        fmt: 'HL7'
+        summary: 'HL7 version 2 messaging, still the backbone of clinical event exchange.'
+        spec_url: https://blog.hl7.org/what_is_hl7_and_introduction_to_products_fhir_cda_v2
+      - name: 'FHIR'
+        icon: zbraces
+        fmt: 'FHIR'
+        summary: 'HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON health standard.'
+        spec_url: https://www.hl7.org/fhir/overview.html
+      - name: 'CDA/C-CDA'
+        icon: zbraces
+        fmt: 'CDA'
+        summary: 'HL7 Clinical Document Architecture for structured documents like discharge summaries.'
+        spec_url: https://www.hl7.org/implement/standards/product_brief.cfm?product_id=492
+      - name: 'DICOM'
+        icon: zbraces
+        fmt: 'DCM'
+        summary: 'Digital Imaging and Communications in Medicine for medical images and metadata.'
+        spec_url: https://www.dicomstandard.org/
+      - name: 'X12N'
+        icon: zbraces
+        fmt: 'X12N'
+        summary: 'HIPAA X12N EDI for claims, eligibility and remittance with payers.'
+        spec_url: https://x12.org/
   - name: Federation Sources
     icon: fed
     from: fed
