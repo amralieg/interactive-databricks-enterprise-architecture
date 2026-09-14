@@ -596,6 +596,7 @@
      30x28, 9px radius) so the bar reads Industry-first. */
   .hbtn.ico-only { width:30px; padding:0; gap:0; border-radius:9px; font-size:14px; }
   .hbtn.ico-only .btn-lbl { display:none; }
+  .ext-mark { font-size:.62em; line-height:1; margin-left:1px; opacity:.7; vertical-align:super; }
   /* The palette's identity IS its five swatches, so it keeps them as its glyph
      and sizes to fit them rather than the fixed 30px square, which was clipping
      the last swatch. */
@@ -1931,7 +1932,7 @@
   /* One dot per highlight kind, each its own colour. A tile can carry several,
      so the position comes from an hl-p* anchor assigned by paintHighlights: a
      lone dot sits top-left, extras line up beside it left-to-right. */
-  .hl-accel { --bd:#ff5f2e; }
+  .hl-accel { --bd:#f97316; }
   .hl-conn  { --bd:#12b6ef; }
   .hl-story { --bd:#f5b400; }
   .hl-tour  { --bd:#8b5cf6; }
@@ -1991,7 +1992,7 @@
   }
   .d-badge { margin:4px 0 2px; padding:9px 11px; border:1px solid var(--bd); border-radius:8px;
     background:var(--bdbg); }
-  .d-badge.accel { --bd:#ff5f2e; --bdbg:rgba(255,95,46,.08); }
+  .d-badge.accel { --bd:#f97316; --bdbg:rgba(249,115,22,.08); }
   .d-badge.conn  { --bd:#12b6ef; --bdbg:rgba(18,182,239,.09); }
   .d-badge .db-h { display:flex; align-items:center; gap:7px; font-weight:800; font-size:12.5px;
     letter-spacing:.01em; }
@@ -2722,7 +2723,7 @@
   <div class="htools">
   <!-- Industry leads the toolbar, ahead of the cloud switch: it decides what the
        whole board is about, where the cloud switch only decides one band. -->
-  <button class="hbtn" id="feedback-btn" title="Share your feedback on this reference architecture (opens a form in a new tab)"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg> <span id="feedback-lbl">Share feedback</span></button>
+  <button class="hbtn" id="feedback-btn" title="Share your feedback on this reference architecture (opens a form in a new tab)"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg> <span id="feedback-lbl">Feedback</span><sup class="ext-mark" aria-hidden="true">&#8599;</sup></button>
   <div class="pal-wrap" id="share-wrap">
     <button class="hbtn" id="share-btn" title="Share this reference architecture on LinkedIn, X, Reddit and more (links straight to this industry)"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="18" cy="18" r="2.4"/><path d="M8.1 10.9l7.8-3.7M8.1 13.1l7.8 3.7"/></svg> <span id="share-lbl">Share</span></button>
     <div class="pal-menu share-menu" id="share-menu"></div>
@@ -2737,14 +2738,6 @@
     <button class="hbtn ico-only" id="region-btn" title="Pick a cloud region to see which products are available there"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/><path d="M12 3a14 14 0 0 0 0 18"/></svg> <span id="region-lbl" class="btn-lbl">Region</span></button>
     <div class="pal-menu" id="region-menu"></div>
   </div>
-  <div class="pal-wrap" id="pal-wrap">
-    <button class="hbtn ico-only" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span></button>
-    <div class="pal-menu" id="pal-menu"></div>
-  </div>
-  <div class="pal-wrap" id="shape-wrap">
-    <button class="hbtn ico-only" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span></button>
-    <div class="pal-menu" id="shape-menu"></div>
-  </div>
   <div class="pal-wrap" id="stage-wrap">
     <button class="hbtn ico-only" id="stage-btn" title="Choose which release stages the platform box shows"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg> <span id="stage-lbl" class="btn-lbl">Stage</span></button>
     <div class="pal-menu" id="stage-menu"></div>
@@ -2752,6 +2745,14 @@
   <div class="pal-wrap" id="hl-wrap">
     <button class="hbtn ico-only" id="hl-btn" title="Choose which highlight dots the boxes show"><svg class="ico-svg hl-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><circle cx="8" cy="16" r="3"/><circle cx="16" cy="16" r="3"/></svg> <span id="hl-lbl" class="btn-lbl">Highlights</span></button>
     <div class="pal-menu" id="hl-menu"></div>
+  </div>
+  <div class="pal-wrap" id="pal-wrap">
+    <button class="hbtn ico-only" id="pal-btn" title="Choose a colour scheme. Each one works in both light and dark, and downloads follow the choice."><span class="pal-dots" id="pal-dots" aria-hidden="true"></span></button>
+    <div class="pal-menu" id="pal-menu"></div>
+  </div>
+  <div class="pal-wrap" id="shape-wrap">
+    <button class="hbtn ico-only" id="shape-btn" title="Choose the shape the platform is drawn in"><span id="shape-ico">Z</span></button>
+    <div class="pal-menu" id="shape-menu"></div>
   </div>
   <div class="dl-wrap" id="dl-wrap">
     <button class="hbtn ico-only" id="dl-btn" title="Download this architecture"><svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
@@ -3203,7 +3204,7 @@ function connectorFor(t){
 }
 const LAKEFLOW_OFFICIAL = [
   [/salesforce marketing cloud/i, "Salesforce Marketing Cloud"],
-  [/\bsalesforce\b/i, "Salesforce"],
+  [/\bsalesforce\b(?!.*commerce)/i, "Salesforce"],
   [/\bservicenow\b/i, "ServiceNow"],
   [/\bworkday\b/i, "Workday"],
   [/\bnetsuite\b/i, "NetSuite"],
@@ -3642,7 +3643,7 @@ const ARCH = {
       { box:"Data Formats", ic:"zbraces", tiles:[
         { n:"FHIR · Healthcare", fmt:"FHIR", ic:"zbraces", long:"HL7 Fast Healthcare Interoperability Resources, the modern REST/JSON standard for exchanging health data.", spec_url:"https://www.hl7.org/fhir/overview.html", spark_connector:"dbignite", spark_repo:"https://github.com/databrickslabs/dbignite", databricks_resource:"https://www.databricks.com/solutions/accelerators/fhir" },
         { n:"ISO 20022 · Payments", fmt:"20022", ic:"zbraces", long:"Rich XML/JSON financial messaging standard, now the global rail for modern payments.", spec_url:"https://www.iso20022.org/", spark_connector:"spark-xml", spark_repo:"https://github.com/databricks/spark-xml", databricks_resource:"https://docs.databricks.com/aws/en/query/formats/xml" },
-        { n:"FIX · Capital Markets", fmt:"FIX", ic:"zbraces", long:"Financial Information eXchange protocol for real-time order routing and trade execution.", spec_url:"https://www.fixtrading.org/standards/fix-protocol/" },
+        { n:"FIX · Capital Markets", fmt:"FIX", ic:"zbraces", long:"Financial Information eXchange protocol for real-time order routing and trade execution.", spec_url:"https://www.fixtrading.org/standards/fix-protocol/", databricks_resource:"https://www.databricks.com/resources/architectures/financial-services-investment-management-reference-architecture" },
         { n:"DICOM · Medical Imaging", fmt:"DCM", ic:"zbraces", long:"Digital Imaging and Communications in Medicine for medical images and metadata.", spec_url:"https://www.dicomstandard.org/", spark_connector:"pixels", spark_repo:"https://github.com/databricks-industry-solutions/pixels", databricks_resource:"https://www.databricks.com/blog/2023/03/16/building-lakehouse-healthcare-and-life-sciences-processing-dicom-images.html" },
       ]},
     ]},
@@ -5099,7 +5100,7 @@ function renderTop(target){
 
 /* ---------- full build ---------- */
 const CUSTOM_LS = "dbxarch.dais2026.custom";
-const SCHEMA = 34;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
+const SCHEMA = 35;  /* bump whenever the shape OR the baked-in content of a persisted branch changes */
 /* Keys inside a provider dataset that hold tile arrays. Every surface that shows
    provider-specific content reads from this list, so adding a surface later means
    adding one key here rather than hunting for loops. */
@@ -5584,6 +5585,7 @@ function isDatabricksUrl(u){
   if(h === "youtube.com" || h.endsWith(".youtube.com") || h === "youtu.be") return true;
   if(h === "learn.microsoft.com") return p.startsWith("/azure/databricks");
   if(h === "github.com") return /^\/databricks(-|\/|$)/.test(p);
+  if(h.endsWith(".github.io")) return h.indexOf("databricks") === 0;
   return false;
 }
 /* Regional availability for the cloud in the header. Only Databricks products
@@ -5710,25 +5712,30 @@ function academyLinks(t){
   return `<h4>${esc(head)}${sectionDot("course")}</h4>${note}<div class="d-links">${rows}</div>`;
 }
 
-/* Every id in INDUSTRY_CATALOG is also the folder name under data-models in the
-   published repo, which is why the menu was built from those names in the first
-   place. So the id doubles as the path and there is no second table to keep in
-   step: a new industry gets its model link for free. */
-const MODELS_REPO = "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models";
+/* The published model gallery covers a fixed set of industries; a board whose id
+   is in that set deep-links straight to its model, and any other board points to
+   the Vibe Data Modeling agent so the reader can generate one for that industry. */
+const MODELS_GALLERY = "https://databricks-industry-solutions.github.io/lakehouse-industry-data-models/";
+const VIBE_AGENT_URL = "https://github.com/databricks-industry-solutions/lakehouse-industry-data-models/tree/main/model-agent";
+const MODEL_INDUSTRIES = new Set(["advertising","agriculture","airlines","apparel_fashion","automotive","banking","chemical_mfg","clinical_trials","construction","consumer_goods","ecommerce","education","energy_utilities","food_beverage","gaming","genomics_biotech","grocery","health_insurance","healthcare","images","legal","life_insurance","manufacturing","media_broadcasting","mining","ngo","oil_gas","payments_fintech","pharmaceuticals","real_estate","restaurants","retail","semiconductors","shipping_ports","sports_entertainment","staffing_hr","telecommunication","transport_shipping","travel_hospitality","waste_management","water_utilities"]);
 function modelUrl(id){
-  return MODELS_REPO + "/tree/main/data-models" + (id && id !== "generic" ? "/" + id : "");
+  if(!id || id === "generic") return MODELS_GALLERY;
+  if(MODEL_INDUSTRIES.has(id)) return MODELS_GALLERY + "?industry=" + encodeURIComponent(id) + "&flavour=mvm";
+  return VIBE_AGENT_URL;
 }
 /* The medallion strip is where a reader stops asking what the architecture does
    and starts asking what the actual tables are, so that is where the published
    data model belongs. On the standard reference board there is no one industry
    to point at, so it lands on the index of all forty. */
 function modelLinks(){
-  const id = ARCH.industry, own = id !== "generic";
-  return `<h4>${esc(T("Data model"))}</h4><div class="d-links">` + linkRow(modelUrl(id),
-    own ? "Open " + industryLabel(id) + " Industry Data Model"
-                 : T("Databricks Industry Data Models"),
-    own ? "github.com, entities and columns per layer" : "github.com, forty industry models") +
-    `</div>`;
+  const id = ARCH.industry, own = id !== "generic", noModel = own && !MODEL_INDUSTRIES.has(id);
+  const label = noModel ? "Build Your Own Data Model using Vibe Modeling Agent"
+              : own ? "Open " + industryLabel(id) + " Industry Data Model"
+              : T("Databricks Industry Data Models");
+  const sub = noModel ? "Vibe Data Modeling agent, generate the model for this industry"
+            : own ? "Model gallery, entities and columns per layer"
+            : "Model gallery, all industry models";
+  return `<h4>${esc(T("Data model"))}</h4><div class="d-links">` + linkRow(modelUrl(id), label, sub) + `</div>`;
 }
 
 /* Says what a stage means rather than just naming it, because "Beta" alone is
@@ -7632,11 +7639,13 @@ function coverCloudLine(){
    drift. First the living version of this exact board, then the data model the
    medallion on it is built from. */
 function coverLinks(){
-  const own = ARCH.industry !== "generic";
+  const id = ARCH.industry, own = id !== "generic", noModel = own && !MODEL_INDUSTRIES.has(id);
+  const label = noModel ? "Build Your Own Data Model using Vibe Modeling Agent"
+              : own ? dt("modelOwn", { ind:T(industryLabel(id)) })
+              : T("Databricks industry data models");
   return [
     { label:T("Open the live diagram"), url:liveUrl() },
-    { label: own ? dt("modelOwn", { ind:T(industryLabel(ARCH.industry)) })
-                 : T("Databricks industry data models"), url:modelUrl(ARCH.industry) },
+    { label, url:modelUrl(id) },
   ];
 }
 function dlName(ext){
@@ -11346,7 +11355,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.5";
+const BUILD = "0.3.7";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
@@ -11456,14 +11465,22 @@ function bootLang(){
       body:"Export the current view as a multi-page PDF or PowerPoint (a cover, the board, a slide per use case and closing links), or as a PNG, an animated GIF, or interactive HTML. Exports follow the theme and language on screen." },
     { sel:"#share-btn", place:"bottom", title:"Share this architecture",
       body:"Post the board straight to LinkedIn, X, Facebook, Reddit, Hacker News, WhatsApp, Telegram or email, or copy the link. The link reopens exactly this industry for whoever you send it to, titled \u201CDatabricks Reference Architecture for \u2039industry\u203A\u201D." },
-    { sel:"#shape-btn", place:"bottom", title:"Shape, palette and stage",
-      body:"Draw the platform as a Z, an I-beam and other shapes, recolour it to a palette that suits your screen or projector, and filter which release stages the platform shows." },
+    { sel:"#shape-btn", place:"bottom", title:"Shape and palette",
+      body:"Draw the platform as a Z, an I-beam and other shapes, and recolour it to a palette that suits your screen or projector." },
     { sel:"#theme-btn", place:"bottom", title:"Light or dark",
       body:"Switch between the light and dark palette. Whatever is on screen is exactly what your PDF, PowerPoint, PNG and GIF exports capture." },
     { sel:"#cloud-seg", place:"bottom", title:"Your cloud",
       body:"Switch the cloud services band between Azure, AWS and GCP. Federation sources, native ingest and the BI tools follow the choice." },
     { sel:"#display-seg", place:"bottom", title:"Brand or generic names",
       body:"Show every product by its commercial brand name, or rooted back to its generic category. Handy when the room knows the category but not the product name." },
+    { sel:"#region-btn", place:"bottom", title:"Filter by cloud region",
+      body:"Pick a cloud region and the board dims any product that region cannot run yet, so you only pitch what is actually available where the customer deploys." },
+    { sel:"#stage-btn", place:"bottom", title:"Release stage",
+      body:"Filter the platform box by release stage, so you can show only what is GA, or include Public Preview and Beta when the conversation is about what is coming." },
+    { sel:"#hl-btn", place:"bottom", title:"Highlight what matters",
+      body:"Switch on glowing dots to spotlight boxes that carry a data connector, a solution accelerator, a demo, a tour, a course, a video or a customer story. Each category has its own colour, so you can scan the board for one kind of resource at a glance." },
+    { sel:"#feedback-btn", place:"bottom", title:"Tell us what to fix",
+      body:"Send feedback on this reference architecture. The arrow means it opens a short form in a new tab, and your notes shape the next revision." },
   ];
 
   let idx = 0, dir = 1, open = false, shownIdx = -1;
@@ -11495,7 +11512,15 @@ function bootLang(){
   function build(){
     catcher = document.createElement("div");
     catcher.className = "tour-catch";
-    catcher.addEventListener("click", () => stop());
+    catcher.addEventListener("click", (e) => {
+      let hit = false;
+      if(hole){ const b = hole.getBoundingClientRect();
+        hit = e.clientX >= b.left && e.clientX <= b.right && e.clientY >= b.top && e.clientY <= b.bottom; }
+      const x = e.clientX, y = e.clientY;
+      e.stopPropagation();
+      stop();
+      if(hit){ const el = document.elementFromPoint(x, y); if(el && el.click) el.click(); }
+    });
     hole = document.createElement("div");
     hole.className = "tour-hole";
     pop = document.createElement("div");
