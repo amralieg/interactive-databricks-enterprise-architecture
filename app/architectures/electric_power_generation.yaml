@@ -338,10 +338,9 @@ pipelines:
           - name: Chief Sustainability
             cares: emissions and audited disclosure.
         ucs:
-          - Financial Analytics
-          - Investment Simulation
-          - Emissions Monitoring
-          - Plant Performance
+          - Sustainability & Circular Economy
+          - Capital Investment Simulation
+          - Production Monitoring
       - name: Plant Operations
         mark: Lakehouse//RT
         summary: Control-room operators and performance engineers on availability, output and heat rate across gas, nuclear and renewable units on blue-sky and peak days.
@@ -360,10 +359,10 @@ pipelines:
           - name: Shift Managers
             cares: forced-outage risk and start reliability.
         ucs:
-          - Plant Performance
-          - Heat-Rate Optimization
-          - Predictive Maintenance
-          - Generation Forecasting
+          - Production Monitoring
+          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
+          - Demand Forecasting
       - name: Trading & Commercial
         mark: Model Serving
         summary: Power traders scheduling and hedging fleet generation into the ISO; originators structuring PPAs and offtake; schedulers arbitraging storage and ancillary markets.
@@ -382,9 +381,9 @@ pipelines:
           - name: Schedulers
             cares: storage and ancillary-market arbitrage.
         ucs:
-          - Power Trading
-          - Generation Forecasting
-          - Financial Analytics
+          - Commodity & Energy Trading
+          - Demand Forecasting
+          - Sustainability & Circular Economy
       - name: Nuclear & Safety
         mark: MLflow
         summary: Reactor engineers on core and safety-system margins; licensing on technical specifications and the regulatory record; radiation protection on dose and effluent within limits.
@@ -403,9 +402,8 @@ pipelines:
           - name: Radiation Protection
             cares: dose and effluent held within limits.
         ucs:
-          - Nuclear Safety & Optimization
-          - Compliance Reporting
-          - Predictive Maintenance
+          - Regulation Compliance, & External Reporting
+          - Predictive Maintenance & Asset Health
       - name: Reliability & Outages
         mark: Lakeflow
         summary: Reliability engineers on forced-outage risk across the fleet; maintenance planning on the outage window and spares; asset management on which units to overhaul, life-extend or retire.
@@ -424,9 +422,9 @@ pipelines:
           - name: Asset Management
             cares: overhaul, life-extension and retire decisions.
         ucs:
-          - Predictive Maintenance
-          - Plant Performance
-          - Investment Simulation
+          - Predictive Maintenance & Asset Health
+          - Production Monitoring
+          - Capital Investment Simulation
   - name: Technical
     icon: code
     tiles:
@@ -448,9 +446,9 @@ pipelines:
           - name: Streaming Platform
             cares: plant telemetry landed at control-room latency.
         ucs:
-          - Plant Performance
-          - Generation Forecasting
-          - Predictive Maintenance
+          - Production Monitoring
+          - Demand Forecasting
+          - Predictive Maintenance & Asset Health
       - name: Data Scientists
         mark: MLflow
         summary: Heat-rate, remaining-life, generation and price models, and whether they still hold a season after deployment across the fleet.
@@ -469,10 +467,10 @@ pipelines:
           - name: Market Science
             cares: generation and price forecasting.
         ucs:
-          - Heat-Rate Optimization
-          - Predictive Maintenance
-          - Generation Forecasting
-          - Power Trading
+          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
+          - Demand Forecasting
+          - Commodity & Energy Trading
       - name: App Developers
         mark: Apps
         summary: Ship the plant-performance, trading and outage-planning apps the fleet works in, hosted next to governed plant data with governed writes back to DCS and EAM.
@@ -491,9 +489,9 @@ pipelines:
           - name: Agent Developers
             cares: agents that draft against governed tools.
         ucs:
-          - Plant Performance
-          - Power Trading
-          - Predictive Maintenance
+          - Production Monitoring
+          - Commodity & Energy Trading
+          - Predictive Maintenance & Asset Health
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -681,6 +679,7 @@ agent_usecases:
           - What was availability and capacity factor by unit yesterday versus plan?
           - Which units are running the worst heat rate this week?
           - Which assets are predicted to fail before the next outage window?
+          - What corrective action and outage window is recommended for the units most at risk?
           - What drove the forced outages on the fleet this month?
           - Which units have the poorest start reliability this quarter?
       - name: Nuclear & Safety Agent
@@ -736,13 +735,98 @@ agent_usecases:
           - How is fuel cost tracking against dispatch this quarter?
           - What are Scope 1 emissions and CO2 intensity by unit quarter to date?
           - How is capital spend tracking against the approved plan?
+          - Are we inside our emissions and reporting limits this filing period, and where are we closest to a breach?
           - Which build, life-extension or retire cases give the best return and emissions?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Predictive Maintenance
+      - name: Production Monitoring
+        short: Live plant state
+        icon: gauge
+        summary: Availability, capacity factor and output across gas, nuclear and renewable units measured against the performance case on one governed set.
+        problem: Unit performance hides in per-plant DCS and historian silos and monthly reports, so a derate or a start failure is spotted weeks after the generation and margin are already lost.
+        who_benefits: Plant Operations
+        how_built: DCS and historian feeds are conformed to certified Gold; availability, capacity factor and losses are explored in AI/BI and surfaced in the Plant Performance Cockpit on Unity Catalog definitions.
+        components:
+          - Plant Performance Cockpit
+          - AVEVA PI System
+          - AI/BI
+          - Unity Catalog
+          - Lakehouse//RT
+        stories:
+          - title: E.ON advances asset management with Databricks
+            url: https://www.databricks.com/customers/eon
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+      - name: Commodity & Energy Trading
+        short: Wholesale market & PPA
+        icon: market
+        summary: Scheduling and hedging fleet generation into the ISO and valuing PPAs, so revenue is captured across price, spread and contract shape.
+        problem: Generation, price forecasts and fuel positions live in different systems, so bids are placed without the spread or the hedge in view and imbalance and offtake risk are settled after the fact.
+        who_benefits: Trading & Commercial
+        how_built: ETRM positions and ICE forward curves are conformed in the lakehouse; price and generation models score each schedule through Model Serving behind the Trading & Dispatch Desk.
+        components:
+          - Trading & Dispatch Desk
+          - ION Commodities ETRM
+          - ICE Power Markets
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: 'Octopus Energy: data-powered clean energy on Databricks'
+            url: https://www.databricks.com/customers/octopus-energy
+          - title: SSE Energy Solutions lowers emissions with Databricks
+            url: https://www.databricks.com/customers/sse
+      - name: Operations Resource Efficiency
+        short: Heat rate & fuel
+        icon: stream
+        summary: Combustion, steam-cycle and cooling setpoints tuned against live conditions so each thermal unit burns the least fuel per MWh within its operating envelope.
+        problem: Units run on conservative, static setpoints tuned for the worst case, so heat rate drifts and fuel and carbon are spent holding margins the live conditions do not need.
+        who_benefits: Plant Operations
+        how_built: DCS and historian telemetry land in Lakehouse//RT; heat-rate models tracked in MLflow score against live load in Model Serving and are delivered as DCS Setpoint Advisories for engineer approval.
+        components:
+          - Emerson Ovation DCS
+          - Lakehouse//RT
+          - Model Serving
+          - MLflow
+          - DCS Setpoint Advisories
+        stories:
+          - title: Vattenfall builds real-time energy intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
+      - name: Sustainability & Circular Economy
+        short: Emissions intensity
+        icon: globe
+        summary: CEMS and fuel data reconciled to CO2, NOx and SOx intensity by unit, so emissions are reported continuously and optimised against dispatch.
+        problem: Emissions are reassembled each reporting cycle from CEMS extracts and spreadsheets the auditors cannot see into, so disclosures lag the operation and there is no live view to optimise dispatch against.
+        who_benefits: Plant Operations
+        how_built: CEMS and fuel feeds are conformed to Gold with lineage in Unity Catalog; CO2, NOx and SOx intensity are published as governed Data Products and read in AI/BI for reporting and dispatch.
+        components:
+          - CEMS Analyzers
+          - AI/BI
+          - Unity Catalog
+          - Data Products
+          - Lakeflow
+          - Delta Lake
+        stories:
+          - title: Vattenfall quantifies carbon impact at second-level granularity
+            url: https://www.databricks.com/customers/vattenfall/genie
+          - title: TotalEnergies powers cleaner energy with Databricks
+            url: https://www.databricks.com/customers/totalenergies
+      - name: Capital Investment Simulation
+        short: Build & retire cases
+        icon: product
+        summary: Build, life-extension and retire decisions simulated against generation, margin and emissions, so capital follows the units that earn and decarbonise the fleet.
+        problem: Build, overhaul and retire cases are argued in spreadsheets on static assumptions, so capital chases the last failure or the loudest plant instead of the risk-and-return ranking that would defend the plan.
+        who_benefits: Executive Office
+        how_built: Generation, cost and reliability history are conformed against finance marts and simulated in AI/BI with models tracked in MLflow, so build, life-extension and retire cases are ranked on return and emissions.
+        components:
+          - Corporate Finance Warehouse
+          - AI/BI
+          - MLflow
+          - Model Serving
+          - Unity Catalog
+      - name: Predictive Maintenance & Asset Health
         short: Asset health
         icon: iot
         summary: Turbine, generator and balance-of-plant failures predicted from DCS and historian telemetry so components are changed on a planned outage, not a forced one.
@@ -760,73 +844,24 @@ agent_usecases:
             url: https://www.databricks.com/customers/rolls-royce
           - title: What is predictive maintenance on the Databricks platform
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Plant Performance
-        short: Production
-        icon: gauge
-        summary: Availability, capacity factor and output across gas, nuclear and renewable units measured against the performance case on one governed set.
-        problem: Unit performance hides in per-plant DCS and historian silos and monthly reports, so a derate or a start failure is spotted weeks after the generation and margin are already lost.
-        who_benefits: Plant Operations
-        how_built: DCS and historian feeds are conformed to certified Gold; availability, capacity factor and losses are explored in AI/BI and surfaced in the Plant Performance Cockpit on Unity Catalog definitions.
+      - name: Prescriptive Maintenance
+        short: Guided repair actions
+        icon: erp
+        summary: Predicted failures turned into a recommended corrective action, part and outage window per unit, so reliability teams act on a prioritised, costed plan rather than a raw alert.
+        problem: Failure predictions arrive as alerts without the recommended fix, part or timing, so reliability engineers still triage each one by hand and the cheapest window to act in is often missed.
+        who_benefits: Reliability & Outages
+        how_built: Remaining-life and anomaly scores from MLflow join Maximo work-order history and spares in the lakehouse; Model Serving ranks the corrective action and window, delivered through the Outage Planner and written back as Maximo Work Orders.
         components:
-          - Plant Performance Cockpit
-          - AVEVA PI System
-          - AI/BI
-          - Unity Catalog
-          - Lakehouse//RT
-        stories:
-          - title: E.ON advances asset management with Databricks
-            url: https://www.databricks.com/customers/eon
-          - title: Databricks for Energy
-            url: https://www.databricks.com/solutions/industries/energy
-      - name: Nuclear Safety & Optimization
-        short: Nuclear
-        icon: zshield
-        summary: Safety-system margins, equipment reliability and fuel-cycle performance monitored as non-safety observational analytics against approved limits and cycle plans, with licensed systems and engineers authoritative, so the plant runs to its licensing basis and optimises the cycle within limits.
-        problem: Safety-parameter, equipment-reliability and fuel-cycle data live in separate I&C and engineering systems, so margin erosion and reliability trends are reconstructed by hand rather than watched continuously against the licensing basis.
-        who_benefits: Nuclear & Safety
-        how_built: Teleperm XS and plant-computer signals conform under Unity Catalog with lineage as non-safety observational data with as-of freshness; reliability and margin models tracked in MLflow are scored in Model Serving for reactor engineering and licensing, which remain authoritative over the licensing basis.
-        components:
-          - Framatome Teleperm XS
-          - Nuclear Plant Computer
-          - Unity Catalog
-          - MLflow
-          - Model Serving
-      - name: Power Trading
-        short: Market
-        icon: market
-        summary: Scheduling and hedging fleet generation into the ISO and valuing PPAs, so revenue is captured across price, spread and contract shape.
-        problem: Generation, price forecasts and fuel positions live in different systems, so bids are placed without the spread or the hedge in view and imbalance and offtake risk are settled after the fact.
-        who_benefits: Trading & Commercial
-        how_built: ETRM positions and ICE forward curves are conformed in the lakehouse; price and generation models score each schedule through Model Serving behind the Trading & Dispatch Desk.
-        components:
-          - Trading & Dispatch Desk
-          - ION Commodities ETRM
-          - ICE Power Markets
-          - Model Serving
-          - AI/BI
-        stories:
-          - title: 'Octopus Energy: data-powered clean energy on Databricks'
-            url: https://www.databricks.com/customers/octopus-energy
-          - title: SSE Energy Solutions lowers emissions with Databricks
-            url: https://www.databricks.com/customers/sse
-      - name: Heat-Rate Optimization
-        short: Efficiency
-        icon: stream
-        summary: Combustion, steam-cycle and cooling setpoints tuned against live conditions so each thermal unit burns the least fuel per MWh within its operating envelope.
-        problem: Units run on conservative, static setpoints tuned for the worst case, so heat rate drifts and fuel and carbon are spent holding margins the live conditions do not need.
-        who_benefits: Plant Operations
-        how_built: DCS and historian telemetry land in Lakehouse//RT; heat-rate models tracked in MLflow score against live load in Model Serving and are delivered as DCS Setpoint Advisories for engineer approval.
-        components:
-          - Emerson Ovation DCS
-          - Lakehouse//RT
+          - Outage Planner
           - Model Serving
           - MLflow
-          - DCS Setpoint Advisories
+          - IBM Maximo EAM
+          - Maximo Work Orders
         stories:
-          - title: Vattenfall builds real-time energy intelligence
-            url: https://www.databricks.com/customers/vattenfall/genie
-      - name: Generation Forecasting
-        short: Dispatch
+          - title: Rolls-Royce keeps their engines running with data intelligence
+            url: https://www.databricks.com/customers/rolls-royce
+      - name: Demand Forecasting
+        short: Generation & net load
         icon: chart
         summary: Short- and medium-term generation and net-load forecasts conditioned on weather and unit availability, so schedules and hedges are priced on what the fleet will actually produce.
         problem: Renewable output is intermittent and thermal availability shifts with outages, so forecasts built on stale weather and disconnected telemetry are wrong at exactly the hours that price imbalance the hardest.
@@ -843,55 +878,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/helen
           - title: Sympower scales forecasting and grid balancing on Databricks
             url: https://www.databricks.com/customers/sympower
-      - name: Emissions Monitoring
-        short: Sustainability
-        icon: globe
-        summary: CEMS and fuel data reconciled to CO2, NOx and SOx intensity by unit, so emissions are reported continuously and optimised against dispatch.
-        problem: Emissions are reassembled each reporting cycle from CEMS extracts and spreadsheets the auditors cannot see into, so disclosures lag the operation and there is no live view to optimise dispatch against.
-        who_benefits: Plant Operations
-        how_built: CEMS and fuel feeds are conformed to Gold with lineage in Unity Catalog; CO2, NOx and SOx intensity are published as governed Data Products and read in AI/BI for reporting and dispatch.
-        components:
-          - AI/BI
-          - Unity Catalog
-          - Data Products
-          - Lakeflow
-          - Delta Lake
-        stories:
-          - title: Vattenfall quantifies carbon impact at second-level granularity
-            url: https://www.databricks.com/customers/vattenfall/genie
-          - title: TotalEnergies powers cleaner energy with Databricks
-            url: https://www.databricks.com/customers/totalenergies
-      - name: Financial Analytics
-        short: Finance
-        icon: sheet
-        summary: Fleet margin, fuel cost and capital tracked on governed ledgers against live generation and settlement, so the P&L tracks reality not quarter-close.
-        problem: Margin, fuel cost and capital are modelled in spreadsheets against stale production, so the fleet's real performance is only known at quarter close and each board pack rebuilds the numbers.
-        who_benefits: Executive Office
-        how_built: Generation, settlement and cost feeds are conformed against the corporate finance marts; margin and cost are analysed in AI/BI and asked of Genie One, published as governed Data Products.
-        components:
-          - Corporate Finance Warehouse
-          - AI/BI
-          - Genie One
-          - Unity Catalog
-          - Data Products
-        stories:
-          - title: TotalEnergies powers cleaner energy with Databricks
-            url: https://www.databricks.com/customers/totalenergies
-      - name: Investment Simulation
-        short: Capital
-        icon: product
-        summary: Build, life-extension and retire decisions simulated against generation, margin and emissions, so capital follows the units that earn and decarbonise the fleet.
-        problem: Build, overhaul and retire cases are argued in spreadsheets on static assumptions, so capital chases the last failure or the loudest plant instead of the risk-and-return ranking that would defend the plan.
-        who_benefits: Executive Office
-        how_built: Generation, cost and reliability history are conformed against finance marts and simulated in AI/BI with models tracked in MLflow, so build, life-extension and retire cases are ranked on return and emissions.
-        components:
-          - Corporate Finance Warehouse
-          - AI/BI
-          - MLflow
-          - Model Serving
-          - Unity Catalog
-      - name: Compliance Reporting
-        short: Regulatory
+      - name: Regulation Compliance, & External Reporting
+        short: Regulatory filings
         icon: gavel
         summary: Reliability, nuclear and environmental filings produced from the same governed tables the fleet runs on, traceable back to source.
         problem: Reliability, nuclear and environmental filings are rebuilt each cycle from exports the regulator cannot trace, so filings lag and a number that cannot be sourced is one a regulator can strike.
@@ -903,6 +891,20 @@ agent_usecases:
           - Data Products
           - Delta Lake
           - Lakeflow
+      - name: Scenario Planning & Business Simulation
+        short: Portfolio scenarios
+        icon: sheet
+        summary: Fleet-wide what-if scenarios across fuel price, carbon cost, weather and demand run against generation, margin and emissions, so the portfolio plan is stress-tested before commitments are made.
+        problem: Portfolio and dispatch scenarios are modelled in disconnected spreadsheets on stale assumptions, so fuel, carbon and weather shocks are only understood after they have already hit the P&L.
+        who_benefits: Executive Office
+        how_built: Generation, cost and settlement history conform against the corporate finance marts; scenario models tracked in MLflow are simulated in AI/BI and asked of Genie One, so fuel, carbon and demand cases are ranked on margin and emissions.
+        components:
+          - Corporate Finance Warehouse
+          - AI/BI
+          - Genie One
+          - MLflow
+          - Unity Catalog
+        stories: []
 medallion:
   Bronze:
     short: Raw plant & market feeds

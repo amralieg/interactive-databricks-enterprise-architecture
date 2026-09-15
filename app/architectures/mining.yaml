@@ -312,10 +312,10 @@ pipelines:
           - name: Site Finance
             cares: cost per tonne, sustaining capital and the stockpile and demurrage working capital.
         ucs:
-          - Orebody & Grade Control
-          - Mill Recovery
-          - Fleet Optimisation
-          - Emissions & Tailings
+          - Design Space Simulation & Exploration
+          - Production Monitoring
+          - Operations Resource Efficiency
+          - Sustainability & Circular Economy
       - name: Mine Operations
         mark: Lakehouse//RT
         summary: Pit sequencing, dig rates and truck queue times when a shovel goes down, protecting fleet productivity and unit cost per tonne moved.
@@ -334,9 +334,9 @@ pipelines:
           - name: Drill & Blast Engineer
             cares: blast design, fragmentation and how it feeds the dig blocks and grade.
         ucs:
-          - Orebody & Grade Control
-          - Fleet Optimisation
-          - Haul Fleet & Mill Reliability
+          - Design Space Simulation & Exploration
+          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
       - name: Processing
         mark: AI/BI
         summary: Mill stability, reagent consumption and recovered metal per tonne milled when feed grade and ore hardness shift through the shift.
@@ -355,9 +355,9 @@ pipelines:
           - name: Grade Control Geologist
             cares: ore-versus-waste calls and reconciling assays back to the block model.
         ucs:
-          - Mill Recovery
-          - Orebody & Grade Control
-          - Haul Fleet & Mill Reliability
+          - Production Monitoring
+          - Design Space Simulation & Exploration
+          - Predictive Maintenance & Asset Health
       - name: Marketing & Sales
         mark: AI/BI
         summary: Contract delivery, assay disputes and hedge exposure against benchmark moves, tracked on realised price and TC/RC terms by cargo.
@@ -376,9 +376,7 @@ pipelines:
           - name: Treasury & Hedging
             cares: benchmark exposure and hedge effectiveness against the physical book.
         ucs:
-          - Mine-to-Market Traceability
-          - Consumables & Supply Planning
-          - Commodity Demand Forecasting
+          - Capital Investment Simulation
       - name: Safety & ESG
         mark: Unity Catalog
         summary: Fatal-risk protocols, Scope 1 emissions and community commitments the board signs, tracked on TRIFR and permit-breach counts before audit.
@@ -397,9 +395,9 @@ pipelines:
           - name: Community & Governance
             cares: the commitments the board signs and the disclosures regulators read.
         ucs:
-          - Fatal-Risk & Safety
-          - Emissions & Tailings
-          - Regulatory & ESG Reporting
+          - Workforce Safety
+          - Sustainability & Circular Economy
+          - Regulation Compliance, & External Reporting
   - name: Technical
     icon: code
     tiles:
@@ -421,9 +419,8 @@ pipelines:
           - name: Platform & Governance
             cares: Unity Catalog lineage so head grade means one thing mine to plant.
         ucs:
-          - Orebody & Grade Control
-          - Fleet Optimisation
-          - Mine-to-Market Traceability
+          - Design Space Simulation & Exploration
+          - Operations Resource Efficiency
       - name: Data Scientists
         mark: MLflow
         summary: Grade-control, recovery, haul-truck RUL and demurrage models, and whether they still hold six months after deployment across pit and plant.
@@ -442,9 +439,9 @@ pipelines:
           - name: Operations Research
             cares: fleet, blending and logistics optimisation against demurrage and cost.
         ucs:
-          - Mill Recovery
-          - Haul Fleet & Mill Reliability
-          - Orebody & Grade Control
+          - Production Monitoring
+          - Predictive Maintenance & Asset Health
+          - Design Space Simulation & Exploration
       - name: App Developers
         mark: Apps
         summary: Ship the pit control, plant performance and shipment applications operators and marketers work in, hosted next to governed mine data.
@@ -463,9 +460,8 @@ pipelines:
           - name: Agent Builders
             cares: governed agents that draft a fleet reallocation or a work order.
         ucs:
-          - Fleet Optimisation
-          - Mill Recovery
-          - Mine-to-Market Traceability
+          - Operations Resource Efficiency
+          - Production Monitoring
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -647,25 +643,30 @@ agent_usecases:
     tiles:
       - name: Pit Operations Agent
         icon: genie
-        summary: Ask about payload, cycle time, queue and fleet productivity across the pit in plain language.
+        summary: Ask about production, payload, cycle time, queue, fleet efficiency and haul-truck, shovel and fixed-plant equipment health across the pit in plain language.
         feeds:
           - Modular Mining DISPATCH
           - Hexagon MineOperate
           - High-Precision GPS
+          - Metso Metrics
+          - IBM Maximo
           - Conformed block, fleet
         teams:
           - Mine Operations
           - Site Leadership
           - Dispatch Controller
         questions:
-          - What was fleet productivity by shift yesterday?
+          - What were tonnes moved and fleet productivity by shift yesterday?
           - Where are truck queues building right now and why?
           - Which trucks and shovels are underperforming their payload target?
           - How much did idle time cost us in diesel this week?
           - Which pit areas are limiting dig rate against the plan?
+          - Which haul trucks, shovels and mills are trending toward failure this month?
+          - What is remaining life on the critical fleet and fixed-plant components?
+          - What is the maintenance work-order backlog by asset class, and which repair should we schedule first?
       - name: Recovery & Metallurgy Agent
         icon: genie
-        summary: Explore head grade, recovery and metal accounting across mine and plant.
+        summary: Explore mill production, head grade, recovery and orebody models across mine and plant.
         feeds:
           - LIMS Assay Lab
           - Maptek BlastLogic
@@ -676,14 +677,14 @@ agent_usecases:
           - Grade Control Geologist
           - Plant Metallurgist
         questions:
-          - What was mill recovery yesterday versus plan?
-          - Which circuit is constraining recovery today?
+          - What was mill throughput and recovery yesterday versus plan?
+          - Which circuit is constraining recovery today and what change is recommended?
           - How does reconciled grade compare to the block model this month?
           - How much metal did we lose to tailings this shift?
           - Which blast blocks are diluting mill feed right now?
       - name: Logistics & Market Agent
         icon: genie
-        summary: Answer questions on realised price, TC/RC terms, cargoes and demurrage.
+        summary: Answer questions on realised price, cargoes, demurrage and how a market or capital scenario flows to margin.
         feeds:
           - SAP IS-Mining
           - Metal Bulletin
@@ -695,13 +696,13 @@ agent_usecases:
           - Treasury & Hedging
         questions:
           - What is our realised price versus benchmark by cargo this month?
+          - How would a benchmark price drop flow through to margin and the capital plan?
           - What is our current demurrage exposure across vessels?
-          - Which cargoes are at risk of missing their laycan?
-          - How effective are our hedges against the physical book?
-          - Which contracts have open assay disputes right now?
+          - Which cargoes are at risk of missing their laycan if a rail outage hits?
+          - How does realised margin hold across price and disruption scenarios by cargo?
       - name: Safety & Environment Agent
         icon: genie
-        summary: Ask about safety leading indicators, permits and emissions across the operation.
+        summary: Ask about safety leading indicators, emissions intensity, water reuse and permit compliance across the operation.
         feeds:
           - Intelex EHS
           - Wearable Proximity
@@ -714,55 +715,21 @@ agent_usecases:
         questions:
           - What is our TRIFR trend this year?
           - How many proximity or zone-breach events happened this week?
-          - Which permits are closest to a breach right now?
-          - What is our Scope 1 emissions intensity per tonne this month?
+          - Which permits are closest to a breach before we file?
+          - What is our Scope 1 emissions intensity and water reuse per tonne this month?
           - Where are dust or vibration readings approaching community thresholds?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Orebody & Grade Control
-        short: Ore body
-        icon: sheet
-        summary: Orebody knowledge and short-term grade models updated from drilling, blast, dig and assay before material is misrouted.
-        problem: The block model lags the dig face and exploration and grade-control data sit apart, so ore and waste are called from sparse assays, misrouted material dilutes mill feed and grade is reconciled long after the shovel has moved.
-        who_benefits: Mine Operations
-        how_built: Drillhole, blast, dig, assay and survey feeds land through Lakeflow and conform on Delta Lake under Unity Catalog, then grade-control and orebody models score short-term block updates in the Grade Control app before the shovel moves.
-        components:
-          - Grade Control
-          - Maptek BlastLogic
-          - LIMS Assay Lab
-          - Satellite Imagery
-          - Model Serving
-          - Delta Lake
-        stories:
-          - title: Nexa mines less waste and more value with AI-driven insights
-            url: https://www.databricks.com/customers/nexa
-      - name: Fleet Optimisation
-        short: Productivity
-        icon: iot
-        summary: Truck and shovel matching tuned to queue time and fuel not static rules.
-        problem: Truck and shovel assignment runs on static rules and a controller's judgement, so queues build at shovel and crusher, diesel burns idling and fleet productivity swings shift to shift.
-        who_benefits: Mine Operations
-        how_built: Dispatch, GPS and payload state stream into Lakehouse//RT, and matching models scored in Model Serving feed reallocation options to the Pit Control Tower before the shift plan changes.
-        components:
-          - Pit Control Tower
-          - Modular Mining DISPATCH
-          - High-Precision GPS
-          - Lakehouse//RT
-          - Model Serving
-          - Delta Lake
-        stories:
-          - title: Sandvik enables collaboration and real-time equipment insight
-            url: https://www.databricks.com/customers/sandvik
-      - name: Mill Recovery
-        short: Processing
+      - name: Production Monitoring
+        short: Throughput live
         icon: gauge
-        summary: Circuit recovery maximised when feed grade and hardness shift.
-        problem: Feed grade and ore hardness drift through the shift, and by the time recovery drops in the lab result metal has already been lost to tailings that no reagent change can bring back.
+        summary: Mill throughput, recovery and recovered metal per tonne monitored live as feed grade and ore hardness shift through the shift.
+        problem: Feed grade and ore hardness drift through the shift, and by the time throughput and recovery drop in the lab result metal has already been lost to tailings that no reagent change can bring back.
         who_benefits: Processing
-        how_built: Concentrator historian and assay tags conform on Delta Lake, and recovery models scored in Model Serving flag circuit constraints in the Plant Performance app before metal is lost.
+        how_built: Concentrator historian and assay tags conform on Delta Lake, and recovery models scored in Model Serving flag throughput and circuit constraints in the Plant Performance app before metal is lost.
         components:
           - Plant Performance
           - AVEVA PI System
@@ -773,8 +740,8 @@ agent_usecases:
         stories:
           - title: Nexa mines less waste and more value with AI-driven insights
             url: https://www.databricks.com/customers/nexa
-      - name: Haul Fleet & Mill Reliability
-        short: Assets
+      - name: Predictive Maintenance & Asset Health
+        short: Asset health
         icon: stream
         summary: Haul-truck, shovel and mill failures predicted from telemetry before they remove capacity from the plan.
         problem: Mobile fleet and fixed plant fail between inspections and pull capacity out of the plan, so a component is found broken after the machine stops rather than predicted from the telemetry it was already emitting.
@@ -793,35 +760,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/sandvik
           - title: What is predictive maintenance on the Databricks platform
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Consumables & Supply Planning
-        short: Materials
-        icon: partner
-        summary: Reagents, tyres, grinding media and explosives planned to real consumption and lead times to reduce the risk a stockout stops the pit or plant.
-        problem: Critical consumables are planned from static reorder points and spreadsheets, so the operation carries too much of the wrong stock and still runs short on the reagent, tyre or grinding media that stops a shovel or a mill.
-        who_benefits: Mine Operations
-        how_built: SAP consumption and supplier lead-time data conform on Delta Lake and are scored in Model Serving, so the Shipment Tracker and certified AI/BI views tune buffers to real variability and flag single-source exposure before a stockout.
-        components:
-          - Shipment Tracker
-          - SAP IS-Mining
-          - Model Serving
-          - AI/BI
-          - Delta Lake
-      - name: Mine-to-Market Traceability
-        short: Provenance
-        icon: globe
-        summary: Every tonne traced from pit through stockpile and rail to vessel, with product provenance and metal accounting reconciled end to end.
-        problem: Movements across pit, stockpile, rail and port are reconciled by nightly spreadsheet, so metal accounting drifts, a cargo waits on ore or a ship on a berth, and provenance for responsibly-sourced metal cannot be proven to a buyer.
-        who_benefits: Marketing & Sales
-        how_built: Dispatch, survey, rail telemetry and port feeds land through Lakeflow and conform on Delta Lake under Unity Catalog, so the Shipment Tracker reconciles mine-to-vessel movement, metal accounting and provenance for the marketing desk.
-        components:
-          - Shipment Tracker
-          - Rail Wagon Telemetry
-          - Port Community System
-          - Unity Catalog
-          - Delta Lake
-          - AI/BI
-      - name: Fatal-Risk & Safety
-        short: Risk
+      - name: Workforce Safety
+        short: Fatal-risk
         icon: gavel
         summary: Fatal-risk leading indicators and proximity events surfaced before a recordable occurs.
         problem: Incidents, near-misses and proximity events sit in separate systems and are read after the fact, so leading indicators of fatal-risk exposure are joined up only after a recordable happens.
@@ -835,12 +775,10 @@ agent_usecases:
           - AI/BI
           - Model Serving
         stories:
-          - title: BP's geospatial AI engine transforms safety and operations
-            url: https://www.databricks.com/blog/bps-geospatial-ai-engine-transforming-safety-and-operations-databricks
           - title: Nexa mines less waste and more value with AI-driven insights
             url: https://www.databricks.com/customers/nexa
-      - name: Emissions & Tailings
-        short: ESG
+      - name: Sustainability & Circular Economy
+        short: Emissions & reuse
         icon: observ
         summary: Diesel, power and water intensity per tonne plus tailings and reuse tracked for disclosure, cost and circularity.
         problem: Diesel, power, water and tailings are metered per site weeks late, so intensity per tonne is a month-end estimate and neither the cost lever, the Scope 1 disclosure nor the water-reuse case traces back to the equipment and process that drove it.
@@ -858,24 +796,78 @@ agent_usecases:
             url: https://www.databricks.com/customers/gerdau
           - title: How Dow built a carbon footprint ledger on Databricks
             url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-      - name: Commodity Demand Forecasting
-        short: Demand
+      - name: Capital Investment Simulation
+        short: Capital planning
         icon: market
-        summary: Commodity demand and price signals forecast so production, sales and hedging plan against the market not the spreadsheet.
-        problem: Demand and price live in benchmark feeds and analyst spreadsheets disconnected from production, so sales commitments, stockpile plans and hedge cover are set on stale views and margin is left on the table.
-        who_benefits: Marketing & Sales
-        how_built: Benchmark price, contract and production feeds conform on Delta Lake under Unity Catalog and are scored in Model Serving, so demand and price forecasts drive sales, stockpile and hedge decisions in AI/BI and Genie One for the marketing desk.
+        summary: Fleet renewal, plant expansion and mine-life capital simulated against grade, price and cost before capital is committed.
+        problem: Capital cases for fleet renewal, plant expansion and mine-life extension are built in disconnected spreadsheets on stale grade, price and cost assumptions, so the committee sees one point estimate and cannot test how a price or ore-grade move changes the return before capital is committed.
+        who_benefits: Site Finance
+        how_built: Production, cost, reserve and benchmark-price feeds conform on Delta Lake under Unity Catalog and are scored in Model Serving, so capital and sustaining-spend scenarios run against grade, price and cost in AI/BI and Genie One before the investment committee commits.
         components:
-          - Metal Bulletin
           - SAP IS-Mining
+          - Metal Bulletin
           - Model Serving
           - AI/BI
           - Genie One
+          - Delta Lake
         stories:
           - title: Vale transforms finance with agentic AI at scale
             url: https://www.databricks.com/customers/vale/agent-bricks
-      - name: Regulatory & ESG Reporting
-        short: Compliance
+      - name: Design Space Simulation & Exploration
+        short: Orebody design
+        icon: sheet
+        summary: Orebody knowledge and short-term grade and mine-design models updated from drilling, blast, dig and assay before material is misrouted.
+        problem: The block model lags the dig face and exploration and grade-control data sit apart, so ore and waste are called from sparse assays, misrouted material dilutes mill feed and grade is reconciled long after the shovel has moved.
+        who_benefits: Mine Operations
+        how_built: Drillhole, blast, dig, assay and survey feeds land through Lakeflow and conform on Delta Lake under Unity Catalog, then orebody and mine-design models score short-term block updates in the Grade Control app before the shovel moves.
+        components:
+          - Grade Control
+          - Maptek BlastLogic
+          - LIMS Assay Lab
+          - Satellite Imagery
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: Nexa mines less waste and more value with AI-driven insights
+            url: https://www.databricks.com/customers/nexa
+      - name: Prescriptive Maintenance
+        short: Maintenance actions
+        icon: gauge
+        summary: The specific repair, its timing and the parts and crew to schedule recommended, not just a failure predicted.
+        problem: A predicted haul-truck or mill failure still lands on a planner who decides by hand what to fix, when to take the machine down and which parts and crew to line up, so the window between the alert and the shutdown is lost to manual triage.
+        who_benefits: Mine Operations
+        how_built: Remaining-life scores from streaming telemetry combine with Maximo work-order and spares data on Delta Lake, and models scored in Model Serving recommend the repair, timing and parts, drafting the CMMS work order through Agent Bricks before the machine leaves service.
+        components:
+          - IBM Maximo
+          - Metso Metrics
+          - Lakehouse//RT
+          - Model Serving
+          - Agent Bricks
+          - Delta Lake
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Sandvik enables collaboration and real-time equipment insight
+            url: https://www.databricks.com/customers/sandvik
+      - name: Operations Resource Efficiency
+        short: Fuel & fleet
+        icon: iot
+        summary: Truck and shovel matching, fuel burn and idle time tuned to queue and cost, not static rules.
+        problem: Truck and shovel assignment runs on static rules and a controller's judgement, so queues build at shovel and crusher, diesel burns idling and fleet productivity swings shift to shift.
+        who_benefits: Mine Operations
+        how_built: Dispatch, GPS and payload state stream into Lakehouse//RT, and matching models scored in Model Serving feed reallocation options to the Pit Control Tower before the shift plan changes.
+        components:
+          - Pit Control Tower
+          - Modular Mining DISPATCH
+          - High-Precision GPS
+          - Lakehouse//RT
+          - Model Serving
+          - Delta Lake
+        stories:
+          - title: Sandvik enables collaboration and real-time equipment insight
+            url: https://www.databricks.com/customers/sandvik
+      - name: Regulation Compliance, & External Reporting
+        short: Disclosures
         icon: gavel
         summary: Mine-safety, emissions and resource-and-reserve disclosures produced from the same governed tables the operation runs on.
         problem: Regulator submissions and ESG disclosures are assembled by hand from EHS, environmental and production systems, so filing is slow, every regulator's format is a fresh manual export and the numbers cannot be traced to source.
@@ -888,6 +880,23 @@ agent_usecases:
           - Unity Catalog
           - Delta Lake
           - Data Products
+      - name: Scenario Planning & Business Simulation
+        short: What-if planning
+        icon: market
+        summary: Production, sales, stockpile and hedge plans simulated end to end so the operation tests a market move or disruption before it commits.
+        problem: Production, commercial and treasury plan in separate spreadsheets, so a price move, a rail outage or a grade change is absorbed reactively and no one can see how a scenario flows from pit through stockpile and cargo to realised margin and cash.
+        who_benefits: Marketing & Sales
+        how_built: Production, benchmark-price, contract and logistics feeds conform on Delta Lake under Unity Catalog and are scored in Model Serving, so mine-to-market scenarios run against price, demand and disruption in AI/BI and Genie One for commercial and operations leadership.
+        components:
+          - SAP IS-Mining
+          - Metal Bulletin
+          - Port Community System
+          - Model Serving
+          - AI/BI
+          - Genie One
+        stories:
+          - title: Vale transforms finance with agentic AI at scale
+            url: https://www.databricks.com/customers/vale/agent-bricks
 medallion:
   Bronze:
     short: Raw pit feeds

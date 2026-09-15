@@ -398,9 +398,9 @@ pipelines:
           - name: Chief engineer
             cares: technical performance, risk and design maturity.
         ucs:
-          - Program EVM & Risk
-          - Supply Chain Risk
-          - Digital Thread
+          - Engineering Program Management & Bid Creation
+          - Supply & Materials Planning
+          - Product & Process Traceability
       - name: Eng & Design
         mark: AI/BI
         summary: Systems engineering on requirements and design maturity in the digital thread, structural, thermal and CFD analysts validating models against test, and MBSE teams keeping CATIA, Teamcenter and Windchill in one coherent thread.
@@ -419,8 +419,8 @@ pipelines:
           - name: Design & MBSE
             cares: CATIA, Teamcenter and Windchill kept in one coherent thread.
         ucs:
-          - Digital Thread
-          - Simulation & Test
+          - Product & Process Traceability
+          - Design Space Simulation & Exploration
       - name: Mfg & Quality
         mark: Lakehouse//RT
         summary: Production and assembly on rate, takt and station performance, quality and MRB on nonconformance and first-pass yield, and supply chain on part availability and supplier quality across the extended aerospace supply base.
@@ -439,10 +439,10 @@ pipelines:
           - name: Supply chain
             cares: part availability and supplier quality across the supply base.
         ucs:
-          - MES Yield & Quality
-          - FOD & Defect Detection
+          - Quality Event Root Cause Analysis
+          - Defect Detection
           - Workforce Safety
-          - Supply Chain Risk
+          - Supply & Materials Planning
       - name: Mission & Fleet
         mark: Lakehouse//RT
         summary: Mission operations on satellite health, orbits and anomaly response, the ground segment on telemetry, tracking and command across the constellation, and fleet reliability on engine and airframe health across the delivered fleet.
@@ -461,8 +461,8 @@ pipelines:
           - name: Fleet reliability
             cares: engine and airframe health across the delivered fleet.
         ucs:
-          - Satellite Telemetry
-          - Predictive Maintenance
+          - Incident & Field Service Assistant
+          - Predictive Maintenance & Asset Health
       - name: Compliance & Sec
         mark: Unity Catalog
         summary: Export and ITAR control over technical data and licensing, compliance and audit on AS9100, DO-178C and contract terms, and security over controlled unclassified information and who may see which part of the program.
@@ -481,9 +481,9 @@ pipelines:
           - name: Security
             cares: controlled unclassified information and access.
         ucs:
-          - ITAR & Export Control
-          - Program EVM & Risk
-          - Digital Thread
+          - Cyber Threat Monitoring & Detection
+          - Engineering Program Management & Bid Creation
+          - Product & Process Traceability
   - name: Technical
     icon: code
     tiles:
@@ -737,11 +737,12 @@ agent_usecases:
           - Where is cost of quality highest across the portfolio?
       - name: Digital Thread Agent
         icon: genie
-        summary: Explore requirements, change orders and as-built configuration across PLM and MES.
+        summary: Explore requirements, change orders, as-built configuration and design-space trade-offs across PLM, simulation and MES.
         feeds:
           - CATIA / 3DEXPERIENCE
           - Siemens Teamcenter
           - Siemens Opcenter MES
+          - Ansys Simulation
           - Conformed program, part, vehicle
         teams:
           - Eng & Design
@@ -753,31 +754,36 @@ agent_usecases:
           - Which serials were built to a superseded revision?
           - Where does the as-built diverge from the as-designed configuration?
           - Which parts have open nonconformances against this program?
+          - Where do simulation results diverge from the design baseline as we explore design-space trade-offs before freeze?
       - name: Mission & Fleet Health Agent
         icon: genie
-        summary: Answer satellite health, anomaly and fleet-reliability questions from telemetry.
+        summary: Answer satellite health, anomaly, fleet-reliability and ground-segment threat questions from telemetry.
         feeds:
           - CCSDS Telemetry
           - Engine Health Monitor
           - AVEVA PI Historian
+          - Kratos OpenSpace
           - EVM, yield, fleet reliability
         teams:
           - Mission & Fleet
           - Mission operations
           - Fleet reliability
+          - Security
         questions:
           - Which satellites show anomaly signatures this pass?
           - Which engines are predicted for removal in the next 30 days?
           - What is fleet reliability by subsystem this quarter?
           - Which telemetry parameters are trending out of limits?
           - What is the anomaly and removal rate by vehicle?
+          - Which ground-system, historian or access signals look like a cyber threat or unauthorized command this pass?
       - name: Yield & Supply Chain Agent
         icon: genie
-        summary: Ask about first-pass yield, nonconformance and supplier risk across the supply base.
+        summary: Ask about first-pass yield, nonconformance, supplier risk and floor safety across the supply base and shop floor.
         feeds:
           - DELMIA Apriso
           - SAP S/4HANA
           - Supplier EDI / Ariba
+          - AVEVA PI Historian
           - Conformed program, part, vehicle
         teams:
           - Mfg & Quality
@@ -786,16 +792,47 @@ agent_usecases:
         questions:
           - What is first-pass yield by line and station this month?
           - Which suppliers or components are most exposed to shortage?
-          - Which nonconformances are open in MRB right now?
-          - Which parts are single-source across the supply base?
+          - Which open nonconformances share a common root cause across MRB?
+          - Which parts are single-source and need a materials plan across the supply base?
           - Where is OEE lowest and why on the pulse line?
+          - Where are near-miss and hazard signals concentrated on the factory and test floor by area and shift?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Predictive Maintenance
-        short: Reliability
+      - name: Defect Detection
+        short: In-line FOD detection
+        icon: observ
+        summary: Foreign-object debris and assembly defects caught in-line with machine vision before a unit moves down the pulse line.
+        problem: Foreign-object debris and assembly defects are caught at final inspection or, worse, in the field, long after the station that caused them, and on a safety-critical aerostructure a single missed FOD event is a grounding risk.
+        who_benefits: Mfg & Quality
+        how_built: MES station records and in-line inspection imagery are conformed under Unity Catalog; vision and defect models score in Model Serving with features in Feature Store, so the Yield & MRB Cockpit, the manufacturing-quality module of the Digital Thread View, flags FOD and defects at the station before a unit is at risk.
+        components:
+          - Digital Thread View
+          - Siemens Opcenter MES
+          - DELMIA Apriso
+          - Model Serving
+          - Feature Store
+      - name: Product & Process Traceability
+        short: Digital thread traceability
+        icon: network
+        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision and every part are traceable from requirement to serial, with provenance anomalies flagged for investigation.
+        problem: Requirements, CAD, change orders and the as-built record live in CATIA, Teamcenter and Windchill separately, so tracing a requirement to the serial that flew is a manual reconciliation, and an unauthorised or counterfeit part can slip into the build undetected.
+        who_benefits: Eng & Design
+        how_built: PLM, requirements and MES genealogy are conformed in Silver under Unity Catalog; the Digital Thread View traces a requirement from design to the as-built serial and its test evidence, and flags parts whose genealogy or supplier provenance does not reconcile.
+        components:
+          - CATIA / 3DEXPERIENCE
+          - Siemens Teamcenter
+          - PTC Windchill
+          - Unity Catalog
+          - Digital Thread View
+          - Delta Lake
+        stories:
+          - title: Databricks for Manufacturing
+            url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
+      - name: Predictive Maintenance & Asset Health
+        short: Engine & fleet reliability
         icon: iot
         summary: Predicting engine and component removal from on-wing telemetry and defect history so an unplanned removal becomes a planned shop visit with a shorter MRO turnaround.
         problem: An unplanned engine or component removal grounds a vehicle and cascades through the fleet, and when the shop visit does come, parts, slots and task cards are planned late so MRO turnaround drags and the asset sits on the ground.
@@ -813,60 +850,13 @@ agent_usecases:
             url: https://www.databricks.com/customers/rolls-royce
           - title: Collins Aerospace transforms data into value with Databricks
             url: https://www.databricks.com/customers/collins-aerospace
-      - name: Satellite Telemetry
-        short: Mission ops
-        icon: stream
-        summary: Billions of rows of live satellite telemetry ingested and served at low latency so operations dashboards and anomaly checks keep up with the pass.
-        problem: Constellation telemetry arrives faster than legacy ground software can land and query it, so mission dashboards lag the pass and a second serving layer has to be maintained alongside the data platform.
-        who_benefits: Mission & Fleet
-        how_built: Decommutated CCSDS telemetry events and ground-station downlink stream through Zerobus into Lakehouse//RT; operations dashboards and anomaly checks run directly on the live tables with no separate serving system.
-        components:
-          - Mission Control
-          - CCSDS Telemetry
-          - Ground Station Feeds
-          - Lakehouse//RT
-          - Zerobus
-          - Kratos OpenSpace
-        stories:
-          - title: Zerobus Ingest for telemetry and IoT at scale
-            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
-      - name: FOD & Defect Detection
-        short: Manufacturing
-        icon: observ
-        summary: Foreign-object debris and assembly defects caught in-line with machine vision before a unit moves down the pulse line.
-        problem: Foreign-object debris and assembly defects are caught at final inspection or, worse, in the field, long after the station that caused them, and on a safety-critical aerostructure a single missed FOD event is a grounding risk.
-        who_benefits: Mfg & Quality
-        how_built: MES station records and in-line inspection imagery are conformed under Unity Catalog; vision and defect models score in Model Serving with features in Feature Store, so the Yield & MRB Cockpit flags FOD and defects at the station before a unit is at risk.
-        components:
-          - Yield & MRB Cockpit
-          - Siemens Opcenter MES
-          - DELMIA Apriso
-          - Model Serving
-          - Feature Store
-      - name: Digital Thread
-        short: Engineering
-        icon: network
-        summary: Requirements, CAD, change orders and the as-built configuration stitched so a design decision and every part are traceable from requirement to serial, with provenance anomalies flagged for investigation.
-        problem: Requirements, CAD, change orders and the as-built record live in CATIA, Teamcenter and Windchill separately, so tracing a requirement to the serial that flew is a manual reconciliation, and an unauthorised or counterfeit part can slip into the build undetected.
-        who_benefits: Eng & Design
-        how_built: PLM, requirements and MES genealogy are conformed in Silver under Unity Catalog; the Digital Thread View traces a requirement from design to the as-built serial and its test evidence, and flags parts whose genealogy or supplier provenance does not reconcile.
-        components:
-          - CATIA / 3DEXPERIENCE
-          - Siemens Teamcenter
-          - PTC Windchill
-          - Unity Catalog
-          - Digital Thread View
-          - Delta Lake
-        stories:
-          - title: Databricks for Manufacturing
-            url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
-      - name: Simulation & Test
-        short: Engineering
+      - name: Design Space Simulation & Exploration
+        short: Design & simulation studies
         icon: compute
-        summary: Simulation results and physical test data joined so models are validated against test and surrogate models cut the next analysis cycle.
+        summary: Simulation results and physical test data joined so models are validated against test and surrogate models cut the next design-space exploration cycle.
         problem: Simulation output and flight- and rig-test data never meet, so validating a model against test is a manual export and each design iteration waits on another full analysis run.
         who_benefits: Eng & Design
-        how_built: Ansys simulation output and test-stand and flight telemetry are conformed in the lakehouse; surrogate and reliability models tracked in MLflow are validated against test and used for inference, with Feature Store providing their engineered inputs.
+        how_built: Ansys simulation output and test-stand and flight telemetry are conformed in the lakehouse; surrogate and reliability models tracked in MLflow are validated against test and used to explore the design space, with Feature Store providing their engineered inputs.
         components:
           - Ansys Simulation
           - Test & Flight Data
@@ -875,47 +865,29 @@ agent_usecases:
           - Feature Store
           - AVEVA PI Historian
         stories:
-          - title: Joby Aviation powers real-time telemetry with Databricks
+          - title: Joby Aviation powers near real-time telemetry with Databricks
             url: https://www.databricks.com/customers/joby/lakeflow-connect
-      - name: MES Yield & Quality
-        short: Manufacturing
+      - name: Quality Event Root Cause Analysis
+        short: Quality root cause
         icon: gauge
-        summary: First-pass yield and nonconformance attacked at the station with in-line defect scoring rather than at final inspection.
-        problem: First-pass yield and scrap are reviewed after the unit, so a drifting process is caught at final inspection or in qualification instead of at the station where it can still be fixed.
+        summary: Nonconformance and first-pass yield traced to the station, process and lot that caused them so a quality event is root-caused rather than reviewed after the unit.
+        problem: First-pass yield and scrap are reviewed after the unit, so a drifting process is caught at final inspection or in qualification instead of at the station where the quality event can still be root-caused and fixed.
         who_benefits: Mfg & Quality
-        how_built: MES, historian and inspection data are conformed to certified Metric Views; defect and yield models score in-line in Model Serving and the Yield & MRB Cockpit flags units at risk before disposition.
+        how_built: MES, historian and inspection data are conformed to certified Metric Views; defect and yield models score in-line in Model Serving and the Yield & MRB Cockpit module of the Digital Thread View traces each nonconformance to its station, process and lot before disposition.
         components:
           - Siemens Opcenter MES
           - DELMIA Apriso
           - AVEVA PI Historian
           - Model Serving
           - AI/BI
-        stories:
-          - title: Joby Aviation optimizes manufacturing with Databricks
-            url: https://www.databricks.com/customers/joby/lakeflow-connect
-      - name: Supply Chain Risk
-        short: Supply chain
-        icon: network
-        summary: Supplier and component exposure scored so a shortage or a bad lot is moved before it stops a build or reaches a vehicle.
-        problem: Single-source components and opaque supplier quality across a deep aerospace supply base mean a shortage or a nonconformance is discovered at the line, after it has already stopped a build.
-        who_benefits: Mfg & Quality
-        how_built: ERP, supplier EDI and MES feeds are joined in the lakehouse; risk models score supplier and component exposure in Model Serving so buffers and qualifications are moved before a shortage lands.
-        components:
-          - SAP S/4HANA
-          - Supplier EDI / Ariba
-          - Genie
-          - Model Serving
-          - AI/BI
-        stories:
-          - title: Supply chain and distribution optimization on Databricks
-            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
-      - name: Program EVM & Risk
-        short: Program
+        stories: []
+      - name: Engineering Program Management & Bid Creation
+        short: Program EVM & bid
         icon: sheet
-        summary: Earned-value cost and schedule variance surfaced by control account so an overrun is seen forming, not reported after the fact.
-        problem: Cost, schedule and technical performance live in Deltek and Primavera separately, so earned-value variance is assembled by hand for the monthly review, long after the overrun could have been acted on.
+        summary: Earned-value cost and schedule variance surfaced by control account and should-cost history reused to price the next bid, so an overrun is seen forming and a proposal is grounded in actuals.
+        problem: Cost, schedule and technical performance live in Deltek and Primavera separately, so earned-value variance is assembled by hand for the monthly review and a new bid is priced without the program's own should-cost history.
         who_benefits: Program Leaders
-        how_built: Cobra cost actuals, Primavera schedule and Costpoint accounting are conformed to Gold; the Program Cockpit surfaces earned-value variance by control account on the same certified definitions the customer report is filed from.
+        how_built: Cobra cost actuals, Primavera schedule and Costpoint accounting are conformed to Gold; the Program Cockpit surfaces earned-value variance by control account on the same certified definitions the customer report is filed from, and the same actuals ground should-cost for the next bid.
         components:
           - Program Cockpit
           - Deltek Cobra EVM
@@ -926,24 +898,8 @@ agent_usecases:
         stories:
           - title: Databricks for Federal Government
             url: https://www.databricks.com/solutions/industries/federal-government
-      - name: ITAR & Export Control
-        short: Compliance
-        icon: gavel
-        summary: Controlled technical data governed so export-controlled information reaches only compliance-authorized, licensed people and every access is auditable.
-        problem: Export-controlled technical data is scattered across engineering and program systems, so proving that only cleared, licensed people saw ITAR-controlled data is a manual, error-prone audit.
-        who_benefits: Compliance & Sec
-        how_built: Technical data is governed under Unity Catalog with row, column and tag policy; AI Functions infer advisory export markings for compliance review, and access is conditioned on compliance-approved classifications, eligibility and licensing, auditable from the ITAR & Export Filing tables.
-        components:
-          - Unity Catalog
-          - AI Functions
-          - Genie
-          - Siemens Teamcenter
-          - ITAR & Export Filing
-        stories:
-          - title: Databricks for Federal Government
-            url: https://www.databricks.com/solutions/industries/federal-government
       - name: Workforce Safety
-        short: EHS
+        short: Factory floor safety
         icon: iot
         summary: Safety events and near-misses on the factory and test floor surfaced from sensor, historian and machine signals to enable earlier intervention.
         problem: Safety incidents and near-misses are logged after the fact on paper, so the leading signals in historian, machine and test-stand data that precede an injury on the floor are never acted on in time.
@@ -955,6 +911,57 @@ agent_usecases:
           - Model Serving
           - AI Functions
           - AI/BI
+      - name: Cyber Threat Monitoring & Detection
+        short: IT/OT threat detection
+        icon: observ
+        summary: Ground-system, OT and access telemetry monitored together so a cyber threat against the mission ground segment or the factory floor is detected and triaged, not found after the fact.
+        problem: Security-relevant signals from ground systems, OT historians and access logs sit in separate tools, so a threat against a defense program's ground segment or shop floor is pieced together manually long after the intrusion.
+        who_benefits: Compliance & Sec
+        how_built: Ground-segment, historian and access telemetry are conformed on Delta Lake under Unity Catalog; AI Functions and anomaly models in Model Serving score threat and intrusion patterns, surfaced in AI/BI so security triages a detection in the operational window.
+        components:
+          - Kratos OpenSpace
+          - AVEVA PI Historian
+          - Unity Catalog
+          - AI Functions
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
+      - name: Supply & Materials Planning
+        short: Supplier & materials risk
+        icon: network
+        summary: Supplier and component exposure scored against demand and commodity prices so materials are planned and a shortage or a bad lot is moved before it stops a build or reaches a vehicle.
+        problem: Single-source components, opaque supplier quality and volatile metals prices across a deep aerospace supply base mean a shortage or a nonconformance is discovered at the line, after it has already stopped a build.
+        who_benefits: Mfg & Quality
+        how_built: ERP, supplier EDI and commodity feeds are joined in the lakehouse; risk and planning models score supplier and component exposure in Model Serving so buffers, materials and qualifications are moved before a shortage lands.
+        components:
+          - SAP S/4HANA
+          - Supplier EDI / Ariba
+          - Fastmarkets Commodity Prices
+          - Genie
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: Supply chain and distribution optimization on Databricks
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+      - name: Incident & Field Service Assistant
+        short: Anomaly & MRO response
+        icon: stream
+        summary: An assistant that triages a satellite anomaly or a fleet incident from live telemetry and drafts the response or the work order for controller and engineer review.
+        problem: When a satellite anomaly or an in-service fleet incident hits, controllers and field engineers reconstruct context from telemetry and manuals by hand, so the response and the work order are drafted slowly under time pressure.
+        who_benefits: Mission & Fleet
+        how_built: Decommutated CCSDS telemetry streams into Lakehouse//RT; agents built with Agent Bricks read the live tables and governed history to draft an anomaly response or a Maintenix work order from Mission Control, with the authorized ground system validating any command before execution.
+        components:
+          - Mission Control
+          - CCSDS Telemetry
+          - Agent Bricks
+          - Genie
+          - IFS Maintenix
+          - Kratos OpenSpace
+        stories:
+          - title: Zerobus Ingest for telemetry and IoT at scale
+            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
 medallion:
   Bronze:
     short: Raw engineering and telemetry feeds

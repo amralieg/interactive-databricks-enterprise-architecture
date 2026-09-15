@@ -335,8 +335,8 @@ pipelines:
           - name: Chief Operating Officer
             cares: uptime, integrity risk and the HSE and compliance record across the system.
         ucs:
-          - Throughput & Linepack Monitoring
-          - Capacity Marketing & Trading
+          - Production Monitoring
+          - Commodity & Energy Trading
           - Cyber Threat Monitoring & Detection
       - name: Pipeline Control & Operations
         mark: Lakehouse//RT
@@ -356,9 +356,9 @@ pipelines:
           - name: Gas Control
             cares: system balance and the response when a delivery point swings.
         ucs:
-          - Throughput & Linepack Monitoring
-          - Nominations & Scheduling
-          - Compressor & Pump Reliability
+          - Production Monitoring
+          - Distribution & Logistics Optimization
+          - Predictive Maintenance & Asset Health
       - name: Integrity & Reliability
         mark: AI/BI
         summary: Integrity and reliability engineers on metal loss, corrosion rate and station health, prioritising digs and work before a threat becomes a leak.
@@ -377,9 +377,8 @@ pipelines:
           - name: Corrosion Specialist
             cares: coupon and inspection data reconciled to the actual corrosion picture.
         ucs:
-          - Pipeline Integrity Management
-          - Compressor & Pump Reliability
-          - Incident & Field Service
+          - Prescriptive Maintenance
+          - Predictive Maintenance & Asset Health
       - name: Commercial & Scheduling
         mark: Model Serving
         summary: Capacity marketing and scheduling on transport deals, exposure and network plans, marking positions to basis and transport differentials.
@@ -398,9 +397,8 @@ pipelines:
           - name: Risk & Middle Office
             cares: exposure limits, mark-to-market and hedge effectiveness across the book.
         ucs:
-          - Capacity Marketing & Trading
-          - Nominations & Scheduling
-          - Network Scenario Planning
+          - Commodity & Energy Trading
+          - Distribution & Logistics Optimization
       - name: HSE & Compliance
         mark: Unity Catalog
         summary: Process safety and environmental teams on emissions, permits and incident trends, tracked on TRIR and blowdown volumes before regulator inspections.
@@ -420,8 +418,7 @@ pipelines:
             cares: permit limits and the evidence trail before regulator inspections.
         ucs:
           - Workforce Safety
-          - Regulatory Compliance
-          - Incident & Field Service
+          - Regulation Compliance, & External Reporting
   - name: Technical
     icon: code
     tiles:
@@ -443,9 +440,9 @@ pipelines:
           - name: Integrity & Accounting Eng
             cares: in-line inspection, allocation and imbalance feeds landed for integrity and finance.
         ucs:
-          - Throughput & Linepack Monitoring
-          - Pipeline Integrity Management
-          - Regulatory Compliance
+          - Production Monitoring
+          - Prescriptive Maintenance
+          - Regulation Compliance, & External Reporting
       - name: Data Scientists
         mark: MLflow
         summary: Corrosion-rate, station-failure, throughput and scenario models, and whether they still hold six months after deployment across the network.
@@ -464,9 +461,8 @@ pipelines:
           - name: Optimisation DS
             cares: throughput, linepack and scenario models across live nominations.
         ucs:
-          - Compressor & Pump Reliability
-          - Pipeline Integrity Management
-          - Network Scenario Planning
+          - Predictive Maintenance & Asset Health
+          - Prescriptive Maintenance
       - name: App Developers
         mark: Apps
         summary: Ship the control-room, scheduling and integrity applications control and desk teams work in, hosted next to governed network data.
@@ -485,9 +481,8 @@ pipelines:
           - name: Writeback & Integration
             cares: nomination and setpoint writeback into SCADA and pipeline systems.
         ucs:
-          - Nominations & Scheduling
-          - Incident & Field Service
-          - Capacity Marketing & Trading
+          - Distribution & Logistics Optimization
+          - Commodity & Energy Trading
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -685,13 +680,14 @@ agent_usecases:
           - Which compressors and pumps are trending toward failure this month?
           - How much throughput is at risk from the current integrity threats?
           - Which digs should we prioritise this quarter, and why?
-      - name: Throughput & Nominations Agent
+      - name: Network Operations Agent
         icon: genie
-        summary: Explore linepack, nominations, throughput and network scenarios across the system.
+        summary: Explore linepack, throughput, nominations, fuel-gas efficiency and OT-security signals across the pipeline network.
         feeds:
           - Quorum PGAS
           - Emerson Ovation
           - Cognite Data Fusion
+          - Dragos Platform
           - Conformed segment, cargo
         teams:
           - Pipeline Control & Operations
@@ -701,8 +697,8 @@ agent_usecases:
           - Which segments are running the largest imbalances today?
           - How does linepack compare to nominations across the system?
           - Which delivery points are constraining throughput this week?
-          - What would a station outage do to network throughput before it happens?
-          - Which nominations are at risk of being cut this cycle?
+          - Where is compressor fuel gas per unit of throughput drifting highest?
+          - Which pipeline SCADA or control-system anomalies need OT-security investigation now?
       - name: Capacity Trading Agent
         icon: genie
         summary: Answer questions on capacity positions, exposure, hedge effectiveness and working capital.
@@ -721,9 +717,9 @@ agent_usecases:
           - How effective are our current hedges against basis moves?
           - What is our working-capital position across the network this month?
           - Which contracts are up for renewal against current basis?
-      - name: Crew Safety Agent
+      - name: Safety & Compliance Agent
         icon: genie
-        summary: Ask about emissions, blowdown volumes, permits, incidents and field-service response across the system.
+        summary: Ask about workforce safety, emissions, blowdown volumes, permits and regulatory risk across the system.
         feeds:
           - Enablon EHS
           - Sphera Risk Mgmt
@@ -738,32 +734,16 @@ agent_usecases:
           - Which permits are closest to their limit right now?
           - How many leaks were detected and how many are still open?
           - What is our TRIR trend across the network this year?
-          - Which open incidents need a field crew dispatched today?
+          - Which segments carry the highest regulatory and integrity risk ahead of the next review?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Pipeline Integrity Management
-        short: Integrity
-        icon: observ
-        summary: Metal loss and corrosion scored against assessment intervals to prioritise digs before a threat becomes a leak.
-        problem: In-line inspection features and corrosion readings arrive on run cycles, so integrity risk is judged against a fixed interval rather than the actual growth the data shows, and digs are prioritised late.
-        who_benefits: Integrity & Reliability
-        how_built: Inspection and historian data feed corrosion and feature-growth models tracked in MLflow and scored in Model Serving, so risk-based intervals and digs are prioritised on the Integrity Console.
-        components:
-          - Integrity Console
-          - ROSEN ILI
-          - AVEVA PI System
-          - Model Serving
-          - MLflow
-        stories:
-          - title: Pipeline Flow Monitoring on the Databricks Platform
-            url: https://www.databricks.com/blog/pipeline-flow-monitoring
-      - name: Compressor & Pump Reliability
-        short: Reliability
+      - name: Predictive Maintenance & Asset Health
+        short: Compressor & pump health
         icon: gauge
-        summary: Compressor and pump-station failures predicted before throughput is curtailed.
+        summary: Compressor and pump-station failures predicted from sensor drift before throughput is curtailed.
         problem: A compressor or pump-station failure curtails throughput for hours, yet failures are found after the unit stops rather than predicted from the sensor drift that preceded them.
         who_benefits: Integrity & Reliability
         how_built: Historian tags stream into Lakehouse//RT and feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders on the Integrity Console.
@@ -778,8 +758,61 @@ agent_usecases:
             url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
           - title: Building ML models for predictive maintenance in oil & gas
             url: https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html
-      - name: Throughput & Linepack Monitoring
-        short: Operations
+      - name: Workforce Safety
+        short: Pipeline crew safety
+        icon: gavel
+        summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.
+        problem: Safety signals live across permit-to-work, incident and barrier systems, so leading indicators of an unsafe condition are only connected after an incident when the investigation reconstructs them.
+        who_benefits: HSE & Compliance
+        how_built: Permit, incident and barrier data conform under Unity Catalog on Delta Lake, and leading-indicator models scored in Model Serving surface unsafe trends for the team on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Sphera Risk Mgmt
+          - Model Serving
+          - Unity Catalog
+          - Delta Lake
+      - name: Cyber Threat Monitoring & Detection
+        short: OT/SCADA security
+        icon: observ
+        summary: OT and IT telemetry correlated across the pipeline network so threats to SCADA and control systems are detected and investigated early, with authorized response owned by existing OT and security teams.
+        problem: OT threat detection, asset inventory and IT security logs sit in separate tools, so an intrusion into pipeline SCADA or a control-system anomaly is seen late and the blast radius across stations is hard to scope when it matters.
+        who_benefits: Corporate & Network Leaders
+        how_built: Dragos OT telemetry, historian signals and IT security logs conform under Unity Catalog on Delta Lake, and detection models scored in Model Serving correlate and surface threats across the network for investigation on the Control Room, routing authorized response to OT and security teams.
+        components:
+          - Control Room
+          - Dragos Platform
+          - AVEVA PI System
+          - Model Serving
+          - Unity Catalog
+          - Delta Lake
+      - name: Distribution & Logistics Optimization
+        short: Nominations & scheduling
+        icon: stream
+        summary: Nominations, cuts and confirmations optimised to minimise imbalance penalties across the network.
+        problem: Nominations, cuts and confirmations move across separate scheduling tools and cycles, so schedulers rebalance late and imbalance penalties surface after the confirmations are already out.
+        who_benefits: Commercial & Scheduling
+        how_built: Nomination and allocation feeds conform on Delta Lake, optimisation models scored in Model Serving rebalance the schedule, and schedulers act from the Control Room on certified AI/BI views.
+        components:
+          - Control Room
+          - Quorum PGAS
+          - Model Serving
+          - Delta Lake
+          - AI/BI
+      - name: Regulation Compliance, & External Reporting
+        short: Emissions & integrity filings
+        icon: erp
+        summary: Permit limits and evidence assembled from governed data before an inspection or external filing.
+        problem: Regulatory evidence is stitched from extracts and spreadsheets at inspection time, so permit limits and the trail behind a filing are hard to trace from source to submission when a regulator asks.
+        who_benefits: HSE & Compliance
+        how_built: Permit, emissions and integrity data conform under Unity Catalog on Delta Lake, giving one auditable lineage from source to filing surfaced for compliance on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - Enablon EHS
+          - ROSEN ILI
+          - Unity Catalog
+          - Delta Lake
+      - name: Production Monitoring
+        short: Throughput & linepack
         icon: iot
         summary: Linepack, flow and imbalance watched live so the network stays balanced through the pipeline day.
         problem: Linepack, nominations and actual flow drift apart across a pipeline day, so imbalances are discovered after gate close when there is no time left to rebalance the system.
@@ -794,21 +827,22 @@ agent_usecases:
         stories:
           - title: Pipeline Flow Monitoring on the Databricks Platform
             url: https://www.databricks.com/blog/pipeline-flow-monitoring
-      - name: Nominations & Scheduling
-        short: Logistics
-        icon: stream
-        summary: Nominations, cuts and confirmations optimised to minimise imbalance penalties.
-        problem: Nominations, cuts and confirmations move across separate scheduling tools and cycles, so schedulers rebalance late and imbalance penalties surface after the confirmations are already out.
-        who_benefits: Commercial & Scheduling
-        how_built: Nomination and allocation feeds conform on Delta Lake, optimisation models scored in Model Serving rebalance the schedule, and schedulers act from the Control Room on certified AI/BI views.
+      - name: Prescriptive Maintenance
+        short: Integrity dig prioritisation
+        icon: observ
+        summary: Metal loss and corrosion scored against assessment intervals to prescribe the digs and repairs to run before a threat becomes a leak.
+        problem: In-line inspection features and corrosion readings arrive on run cycles, so integrity risk is judged against a fixed interval rather than the actual growth the data shows, and digs are prioritised late.
+        who_benefits: Integrity & Reliability
+        how_built: Inspection and historian data feed corrosion and feature-growth models tracked in MLflow and scored in Model Serving, so risk-based intervals and digs are prioritised on the Integrity Console.
         components:
-          - Control Room
-          - Quorum PGAS
+          - Integrity Console
+          - ROSEN ILI
+          - AVEVA PI System
           - Model Serving
-          - Delta Lake
-          - AI/BI
-      - name: Capacity Marketing & Trading
-        short: Commercial
+          - MLflow
+        stories: []
+      - name: Commodity & Energy Trading
+        short: Capacity & transport
         icon: market
         summary: Transport and capacity positions reconciled before exposure limits breach.
         problem: Transport deals, hedges and basis curves are marked in different tools, so the desk sees exposure late and a limit breach surfaces only after the position has moved.
@@ -823,72 +857,32 @@ agent_usecases:
         stories:
           - title: Data and AI in action across the energy industry
             url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
-      - name: Incident & Field Service
-        short: Field ops
-        icon: chat
-        summary: Incidents triaged and field crews dispatched with a governed assistant instead of phone-tree guesswork.
-        problem: When an alarm or leak report comes in, controllers piece together the location, history and nearest crew from separate systems by phone, so response is slow and the record of what was decided is thin.
-        who_benefits: HSE & Compliance
-        how_built: Incident, GIS and asset data conform under Unity Catalog, and an Agent Bricks assistant grounded on governed tools drafts the response and dispatch on the Control Room over Lakebase.
+      - name: Operations Resource Efficiency
+        short: Compressor fuel efficiency
+        icon: iot
+        summary: Compressor fuel gas and pump power optimised so the network moves throughput at the lowest energy per unit.
+        problem: Compressor fuel gas and pump-station power are the largest controllable operating cost, but energy per unit of throughput is reviewed monthly on spreadsheets, so drift and inefficient unit dispatch are caught long after the fuel is burned.
+        who_benefits: Pipeline Control & Operations
+        how_built: Historian and Cognite-contextualised station data conform on Delta Lake and mirror in Lakehouse//RT, and energy-efficiency models scored in Model Serving surface fuel-per-throughput drift and optimal unit dispatch for controllers on the Control Room over certified AI/BI views.
         components:
           - Control Room
-          - Sphera Risk Mgmt
-          - Agent Bricks
-          - Lakebase
-          - Unity Catalog
-      - name: Regulatory Compliance
-        short: Regulatory
-        icon: erp
-        summary: Permit limits and evidence assembled from governed data before an inspection.
-        problem: Regulatory evidence is stitched from extracts and spreadsheets at inspection time, so permit limits and the trail behind a filing are hard to trace from source to submission when a regulator asks.
-        who_benefits: HSE & Compliance
-        how_built: Permit, emissions and integrity data conform under Unity Catalog on Delta Lake, giving one auditable lineage from source to filing surfaced for compliance on the HSE Dashboard.
-        components:
-          - HSE Dashboard
-          - Enablon EHS
-          - ROSEN ILI
-          - Unity Catalog
-          - Delta Lake
-      - name: Network Scenario Planning
-        short: Planning
-        icon: sheet
-        summary: Outage, demand and expansion scenarios simulated before they are committed on the network.
-        problem: Outage, demand and expansion questions are answered on spreadsheets against a stale model, so the network impact of a station outage or a demand swing is only understood after it has already constrained throughput.
-        who_benefits: Commercial & Scheduling
-        how_built: Historian, nomination and asset data conform on Delta Lake and mirror in Lakehouse//RT, and simulation models in Model Serving tracked in MLflow test outage and demand scenarios before they are committed.
-        components:
-          - Control Room
-          - Cognite Data Fusion
-          - Lakehouse//RT
-          - Model Serving
-          - MLflow
-      - name: Workforce Safety
-        short: HSE
-        icon: gavel
-        summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.
-        problem: Safety signals live across permit-to-work, incident and barrier systems, so leading indicators of an unsafe condition are only connected after an incident when the investigation reconstructs them.
-        who_benefits: HSE & Compliance
-        how_built: Permit, incident and barrier data conform under Unity Catalog on Delta Lake, and leading-indicator models scored in Model Serving surface unsafe trends for the team on the HSE Dashboard.
-        components:
-          - HSE Dashboard
-          - Sphera Risk Mgmt
-          - Model Serving
-          - Unity Catalog
-          - Delta Lake
-      - name: Cyber Threat Monitoring & Detection
-        short: OT security
-        icon: observ
-        summary: OT and IT telemetry correlated across the pipeline network so threats to SCADA and control systems are detected and investigated early, with authorized response owned by existing OT and security teams.
-        problem: OT threat detection, asset inventory and IT security logs sit in separate tools, so an intrusion into pipeline SCADA or a control-system anomaly is seen late and the blast radius across stations is hard to scope when it matters.
-        who_benefits: Corporate & Network Leaders
-        how_built: Dragos OT telemetry, historian signals and IT security logs conform under Unity Catalog on Delta Lake, and detection models scored in Model Serving correlate and surface threats across the network for investigation on the Control Room, routing authorized response to OT and security teams.
-        components:
-          - Control Room
-          - Dragos Platform
           - AVEVA PI System
+          - Cognite Data Fusion
+          - Model Serving
+          - AI/BI
+      - name: Regulatory Risk Reviews
+        short: Integrity risk reviews
+        icon: gavel
+        summary: Integrity and regulatory risk on each segment ranked against evidence before the next assessment or regulator review.
+        problem: Regulatory and integrity risk reviews are assembled by hand from inspection runs, class-location and incident history, so a high-consequence segment can approach a review with its risk case scattered across systems and reconstructed late.
+        who_benefits: HSE & Compliance
+        how_built: Inspection, GIS class-location and incident data conform under Unity Catalog on Delta Lake, and risk-scoring models scored in Model Serving rank segments by regulatory and integrity risk for review on the HSE Dashboard.
+        components:
+          - HSE Dashboard
+          - ROSEN ILI
+          - Esri ArcGIS
           - Model Serving
           - Unity Catalog
-          - Delta Lake
 medallion:
   Bronze:
     short: Raw field and market

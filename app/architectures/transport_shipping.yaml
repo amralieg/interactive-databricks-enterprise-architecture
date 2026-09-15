@@ -349,10 +349,8 @@ pipelines:
           - name: Network Strategy
             cares: lane design, capacity commitments and the network's carbon footprint.
         ucs:
-          - Scope 3 Emissions
-          - Route Optimization
-          - Fleet Planning & Optimization
-          - Shipper Customer 360
+          - Distribution & Logistics Optimization
+          - Scenario Planning & Business Simulation
       - name: Transportation Ops
         mark: Lakehouse//RT
         summary: Dispatchers on tender acceptance, in-transit exceptions and appointment compliance, moving loads before ETA risk becomes a detention charge.
@@ -369,10 +367,10 @@ pipelines:
           - name: In-Transit Exceptions
             cares: ETA risk and the detention clock while freight is moving.
         ucs:
-          - Route Optimization
-          - Fleet Planning & Optimization
-          - Vehicle Predictive Maintenance
-          - Incident & Roadside Assistant
+          - Distribution & Logistics Optimization
+          - Scenario Planning & Business Simulation
+          - Predictive Maintenance & Asset Health
+          - Incident & Field Service Assistant
       - name: Warehouse Ops
         mark: Apps
         summary: DC managers on pick rate, labour balance and outbound cut-off, releasing waves so the dock clears before the carrier appointment closes.
@@ -389,9 +387,8 @@ pipelines:
           - name: Yard & Dock
             cares: trailer moves, dock-door assignment and yard turns.
         ucs:
-          - Detention & Freight Audit
-          - Driver & Workforce Safety
-          - Incident & Roadside Assistant
+          - Workforce Safety
+          - Incident & Field Service Assistant
       - name: Commercial & Pricing
         mark: Model Serving
         summary: Pricing analysts on lane rates, accessorials and shipper contracts, scoring spot versus contract margin before a load is tendered.
@@ -408,9 +405,8 @@ pipelines:
           - name: Bid & Sales
             cares: shipper RFPs and the contract book behind tendered volume.
         ucs:
-          - Freight Demand Forecasting
-          - Dynamic Freight Pricing
-          - Shipper Customer 360
+          - Demand Forecasting
+          - Dynamic Pricing
       - name: Finance & Claims
         mark: AI/BI
         summary: Freight audit and claims teams on detention, fuel surcharge recovery and accrual variance, matching each invoice to contract and POD.
@@ -427,9 +423,7 @@ pipelines:
           - name: Claims
             cares: loss, damage and the POD evidence behind each claim.
         ucs:
-          - Detention & Freight Audit
-          - Freight Demand Forecasting
-          - Shipper Customer 360
+          - Demand Forecasting
   - name: Technical
     icon: code
     tiles:
@@ -451,9 +445,8 @@ pipelines:
           - name: Platform Reliability
             cares: the pager when an OTIF or cost-per-mile table breaks.
         ucs:
-          - Route Optimization
-          - Detention & Freight Audit
-          - Vehicle Predictive Maintenance
+          - Distribution & Logistics Optimization
+          - Predictive Maintenance & Asset Health
       - name: Data Scientists
         mark: MLflow
         summary: Predictive-ETA, route-optimisation, dynamic-pricing and carrier-scoring models, and whether they still hold as lanes and fuel indices shift.
@@ -472,9 +465,9 @@ pipelines:
           - name: Carrier & Network
             cares: carrier scoring and network-flow models on shifting capacity.
         ucs:
-          - Route Optimization
-          - Freight Demand Forecasting
-          - Vehicle Predictive Maintenance
+          - Distribution & Logistics Optimization
+          - Demand Forecasting
+          - Predictive Maintenance & Asset Health
       - name: App Developers
         mark: Apps
         summary: Ship the Control Tower, Warehouse Pulse and Rate Engine apps operations and pricing teams work in, next to governed TMS and WMS data.
@@ -493,9 +486,9 @@ pipelines:
           - name: Agents & Writeback
             cares: tender-response agents and appointment writeback on Lakebase.
         ucs:
-          - Fleet Planning & Optimization
-          - Incident & Roadside Assistant
-          - Dynamic Freight Pricing
+          - Scenario Planning & Business Simulation
+          - Incident & Field Service Assistant
+          - Dynamic Pricing
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -671,7 +664,7 @@ agent_usecases:
     tiles:
       - name: Shipment Tracking & Routing Agent
         icon: genie
-        summary: Track where a load is, why it is late and which shipments are at ETA risk right now.
+        summary: Track where a load is, why it is late, which shipments are at ETA risk and which drivers are flagged for safety.
         feeds:
           - project44 Visibility
           - FourKites
@@ -684,75 +677,75 @@ agent_usecases:
         questions:
           - Which shipments are at risk of missing their delivery appointment today?
           - What is our on-time delivery rate by lane this week versus last?
-          - Which loads are currently in a detention or dwell exception?
+          - Which in-transit incidents or breakdowns need a re-route and customer update right now?
+          - Which drivers show the most unsafe-driving or fatigue events this week?
           - How accurate has our predicted ETA been against actual arrival by carrier?
-          - Which customers have the most late shipments this month and why?
       - name: Fleet & Carrier Agent
         icon: genie
-        summary: Optimize carrier OTIF, cost per mile and freight spend across lanes and modes.
+        summary: Price lanes, forecast freight demand and predict fleet failures across carriers and modes.
         feeds:
           - MercuryGate TMS
-          - EDI VAN (Cleo)
-          - SAP TM Settlement
+          - Samsara Fleet
+          - Geotab Fleet
           - OTIF, cost per mile
         teams:
           - Commercial & Pricing
           - Carrier Procurement
-          - Finance & Claims
+          - Transportation Ops
         questions:
-          - Which carriers have the best OTIF and lowest cost per mile on our top lanes?
-          - What is our tender acceptance rate by carrier this quarter?
           - Which lanes are running above contract rate on the spot market?
-          - How much freight spend goes to accessorials by carrier?
-          - Which carriers have the highest claims rate against tendered volume?
+          - How should we price this lane given live demand, capacity and fuel?
+          - Which tractors and trailers are most likely to fail before their next scheduled service?
+          - What is forecast freight volume by lane and week for next quarter?
+          - Which carriers have the best OTIF and lowest cost per mile on our top lanes?
       - name: Warehouse & Yard Agent
         icon: genie
-        summary: Run pick rate, dock and yard operations across the DC network.
+        summary: Run DC inventory, order and tender processing and yard flow across the network.
         feeds:
           - Manhattan Active WMS
           - SAP EWM
+          - EDI X12 214/210
           - Transporeon
-          - Conformed shipment, leg, asset
         teams:
           - Warehouse Ops
           - DC Manager
           - Yard & Dock
         questions:
+          - Which SKUs are at risk of stockout versus overstock by DC this week?
+          - Where is safety stock tying up capital against actual demand and lead time?
+          - How many inbound orders and tenders processed automatically without manual keying today?
+          - Which tenders or orders are stuck on validation errors right now?
           - What is pick rate by DC and shift against the outbound cut-off?
-          - Which dock doors are the bottleneck for outbound loads today?
-          - How long are trailers dwelling in the yard before they are worked?
-          - Which waves are behind plan and at risk of missing the carrier appointment?
-          - What is labour utilisation versus the planned staffing by DC?
-      - name: Detention & Freight Audit Agent
+      - name: Network Planning & Scenario Agent
         icon: genie
-        summary: Recover detention exposure, accessorials and invoice-to-contract variance.
+        summary: Simulate lane, capacity and cost scenarios so the network office can test commitments before making them.
         feeds:
-          - Transporeon
-          - SAP TM Settlement
-          - EDI X12 214/210
+          - Oracle OTM
+          - Blue Yonder TMS
+          - FourKites
           - OTIF, cost per mile
         teams:
-          - Finance & Claims
-          - Freight Audit & Pay
-          - Detention & Accessorials
+          - CEO & Network Office
+          - Network Strategy
+          - Commercial & Pricing
         questions:
-          - Which shipments are accruing detention past contracted free time right now?
-          - How much recoverable detention did we fail to bill last month?
-          - Which carriers show the most invoice-to-contract variance?
-          - What is our duplicate-charge rate on audited freight bills?
-          - How much fuel surcharge did we recover versus the index this quarter?
+          - How would shifting these lanes to intermodal change cost and service?
+          - What is the margin and OTIF impact if freight volume rises 15% next quarter?
+          - Where should we add DC or lane capacity given the demand forecast?
+          - What is forecast freight volume and required capacity by region next quarter?
+          - Which network changes would cut empty miles without hurting service?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Route Optimization
-        short: Planning
+      - name: Distribution & Logistics Optimization
+        short: Network routing
         icon: sheet
-        summary: Multi-stop routes optimised for miles, HOS and appointment windows.
-        problem: Multi-stop routes are built by hand against static maps, so miles, driver-hour limits and appointment windows never line up and every re-plan after a disruption is slow guesswork.
+        summary: Multi-stop routes and network flows optimised for miles, HOS and appointment windows.
+        problem: Multi-stop routes and lane assignments are built by hand against static maps, so miles, driver-hour limits and appointment windows never line up and every re-plan after a disruption is slow guesswork.
         who_benefits: Transportation Ops
-        how_built: TMS orders land through Lakeflow onto Delta Lake, distance and time matrices are built with Apache Spark, and optimised stop sequences are scored in Model Serving and pushed to the Control Tower.
+        how_built: TMS orders land through Lakeflow onto Delta Lake, distance and time matrices are built with Apache Spark, and optimised stop sequences and network flows are scored in Model Serving and pushed to the Control Tower.
         components:
           - Control Tower
           - Oracle OTM
@@ -766,53 +759,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/ifood
           - title: Cleanaway optimises its collection fleet with Databricks
             url: https://www.databricks.com/customers/cleanaway
-      - name: Freight Demand Forecasting
-        short: Planning
-        icon: chart
-        summary: Freight volume forecast by lane and week so capacity and carrier commitments track real demand.
-        problem: Freight volume by lane and week is guessed from last year and the sales pipeline, so capacity is committed and carriers are contracted against demand that never shows or arrives all at once.
-        who_benefits: Commercial & Pricing
-        how_built: TMS order and tender history conform on Delta Lake, lane and seasonality features are read from Feature Store, and demand models tracked in MLflow score by lane in Model Serving to feed capacity and bid decisions in AI/BI.
-        components:
-          - Oracle OTM
-          - Blue Yonder TMS
-          - Feature Store
-          - Model Serving
-          - MLflow
-          - AI/BI
-      - name: Fleet Planning & Optimization
-        short: Fleet
-        icon: network
-        summary: Tractors, trailers and drivers positioned against committed volume to cut idle equipment and empty miles.
-        problem: Tractors, trailers and drivers are positioned by habit, so equipment sits idle in one region while another turns down loads, and empty repositioning miles quietly eat the margin.
-        who_benefits: Transportation Ops
-        how_built: Telematics and TMS assignments stream into Lakehouse//RT and conform on Delta Lake, and network-flow and positioning models in Model Serving balance equipment and drivers against committed volume in the Control Tower.
-        components:
-          - Control Tower
-          - Samsara Fleet
-          - Oracle OTM
-          - Lakehouse//RT
-          - Model Serving
-          - MLflow
-        stories:
-          - title: 'J.B. Hunt: dynamic freight matching at scale'
-            url: https://www.databricks.com/customers/jbhunt
-      - name: Dynamic Freight Pricing
-        short: Pricing
-        icon: market
-        summary: Lane rates, accessorials and fuel surcharges priced against live demand, capacity and cost so bids win on margin, not just volume.
-        problem: Lane rates are quoted from static contract sheets and last quarter's spot averages, so bids are won at prices that no longer reflect live demand, capacity or fuel, and margin leaks on every mispriced load.
-        who_benefits: Commercial & Pricing
-        how_built: MercuryGate rating, tender history and fuel indices conform on Delta Lake, and demand- and cost-aware pricing models tracked in MLflow score each lane through Model Serving, surfaced in the Rate Engine Workbench before a quote or tender.
-        components:
-          - Rate Engine Workbench
-          - MercuryGate TMS
-          - Model Serving
-          - MLflow
-          - Fuel Index APIs
-          - Delta Lake
-      - name: Vehicle Predictive Maintenance
-        short: Asset health
+      - name: Predictive Maintenance & Asset Health
+        short: Fleet asset health
         icon: iot
         summary: Tractor and trailer failures predicted from engine and fault signals before they strand a load.
         problem: Tractors and trailers break down on the road with no warning, so a failure strands a load, triggers an emergency roadside repair and blows the delivery window, while engine and fault signals sit unused in telematics.
@@ -825,39 +773,59 @@ agent_usecases:
           - Lakehouse//RT
           - Model Serving
           - MLflow
-      - name: Incident & Roadside Assistant
-        short: Field service
-        icon: globe
-        summary: An agent that pulls the accident, breakdown or exception together and drafts the roadside response, re-route and customer update.
-        problem: When a truck is in an accident, breakdown or exception, dispatch pieces the story together from phone calls and disparate systems, so the right roadside response, re-route and customer update all lag the event.
-        who_benefits: Transportation Ops
-        how_built: Dashcam, ELD and visibility exception events land in Lakehouse//RT, and a Mosaic AI agent grounded on governed shipment and asset data drafts the roadside response, re-route and customer notification in the Control Tower.
-        components:
-          - Control Tower
-          - Samsara Fleet
-          - Omnitracs ELD
-          - project44 Visibility
-          - Mosaic AI
-          - Lakehouse//RT
-      - name: Shipper Customer 360
-        short: Customer
-        icon: custlake
-        summary: One account view of every shipper's orders, service and billing so churn and whitespace are seen before a shipper leaves.
-        problem: A 3PL's shippers are managed account by account with no unified view, so churn signals, service complaints and whitespace hide across TMS, visibility and billing systems until a shipper is already leaving.
+      - name: Dynamic Pricing
+        short: Lane pricing
+        icon: market
+        summary: Lane rates, accessorials and fuel surcharges priced against live demand, capacity and cost so bids win on margin, not just volume.
+        problem: Lane rates are quoted from static contract sheets and last quarter's spot averages, so bids are won at prices that no longer reflect live demand, capacity or fuel, and margin leaks on every mispriced load.
         who_benefits: Commercial & Pricing
-        how_built: Shipper orders, service events and billing conform under Unity Catalog into one account view, and churn and share-of-wallet models score in Model Serving, surfaced with Genie and AI/BI for the account team.
+        how_built: MercuryGate rating, tender history and fuel indices conform on Delta Lake, and demand- and cost-aware pricing models tracked in MLflow score each lane through Model Serving, surfaced in the Rate Engine Workbench before a quote or tender.
         components:
-          - Shipper TMS Marts
-          - Oracle OTM
-          - project44 Visibility
+          - Rate Engine Workbench
+          - MercuryGate TMS
           - Model Serving
-          - AI/BI
-          - Genie One
+          - MLflow
+          - Fuel Index APIs
+          - Delta Lake
+      - name: Cyber Threat Monitoring & Detection
+        short: Fleet cyber defense
+        icon: zshield
+        summary: Threats to TMS, telematics and EDI systems detected from access and network logs before they divert freight or payments.
+        problem: TMS, WMS and telematics logins, API calls and EDI exchanges throw off security signals that sit unwatched across systems, so a compromised carrier account or a hijacked tender feed is caught only after freight or payments are already diverted.
+        who_benefits: Data Engineers
+        how_built: TMS, telematics and EDI access and network logs land through Lakeflow on Delta Lake, and anomaly-detection models tracked in MLflow score in Model Serving under Unity Catalog to flag account takeover, tender spoofing and data exfiltration for review.
+        components:
+          - Lakeflow
+          - Delta Lake
+          - Model Serving
+          - MLflow
+          - Unity Catalog
         stories:
-          - title: 'Customer Story: J.B. Hunt'
+          - title: Threat Detection solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/threat-detection
+          - title: Databricks for Cybersecurity
+            url: https://www.databricks.com/solutions/industries/cybersecurity
+      - name: Demand Forecasting
+        short: Freight demand
+        icon: chart
+        summary: Freight volume forecast by lane and week so capacity and carrier commitments track real demand.
+        problem: Freight volume by lane and week is guessed from last year and the sales pipeline, so capacity is committed and carriers are contracted against demand that never shows or arrives all at once.
+        who_benefits: Commercial & Pricing
+        how_built: TMS order and tender history conform on Delta Lake, lane and seasonality features are read from Feature Store, and demand models tracked in MLflow score by lane in Model Serving to feed capacity and bid decisions in AI/BI.
+        components:
+          - Oracle OTM
+          - Blue Yonder TMS
+          - Feature Store
+          - Model Serving
+          - MLflow
+          - AI/BI
+        stories:
+          - title: Demand Forecasting solution accelerator
+            url: https://www.databricks.com/solutions/accelerators/demand-forecasting
+          - title: J.B. Hunt builds an efficient freight network on Databricks
             url: https://www.databricks.com/customers/jbhunt
-      - name: Driver & Workforce Safety
-        short: Safety
+      - name: Workforce Safety
+        short: Driver safety
         icon: gavel
         summary: Unsafe driving and fatigue surfaced from dashcam, harsh-driving and HOS signals to prioritise driver coaching and reduce incident risk.
         problem: Unsafe driving and fatigue surface only after a crash or a CSA score hit, while the dashcam, harsh-driving and hours-of-service signals that predict them sit unaggregated across telematics and ELD systems.
@@ -870,38 +838,62 @@ agent_usecases:
           - FMCSA SAFER Feed
           - Model Serving
           - AI/BI
-      - name: Detention & Freight Audit
-        short: Working capital
-        icon: market
-        summary: Detention caught before free time expires and every carrier invoice matched to contract and POD before payment.
-        problem: Free-time clocks live in emails and driver texts while carrier invoices are checked by hand, so detention accrues unbilled, claims miss the filing window and overbilling and duplicate charges quietly get paid.
-        who_benefits: Finance & Claims
-        how_built: Arrival, departure, invoice and POD events land through Lakeflow on Delta Lake, AI Functions match each charge to rate and accessorial rules under Unity Catalog, and detention exposure and audit exceptions surface in the Control Tower and Rate Engine Workbench.
+      - name: Inventory Optimization
+        short: DC inventory
+        icon: db
+        summary: Warehouse stock positioned and replenished against demand and velocity so DCs hold the right SKUs without tying up capital.
+        problem: Stock is positioned across DCs by static min-max rules, so fast movers stock out while slow movers clog prime slots, and safety stock is set by habit rather than demand and lead-time variability.
+        who_benefits: Warehouse Ops
+        how_built: Manhattan and SAP EWM movements conform on Delta Lake, demand and lead-time features are read from Feature Store, and inventory and slotting models tracked in MLflow score in Model Serving, surfaced in Warehouse Pulse and AI/BI.
         components:
-          - Control Tower
-          - Rate Engine Workbench
-          - Transporeon
-          - SAP TM Settlement
+          - Warehouse Pulse
+          - Manhattan Active WMS
+          - SAP EWM
+          - Feature Store
+          - Model Serving
+          - AI/BI
+      - name: Order Processing Automation
+        short: Tender automation
+        icon: stream
+        summary: Inbound orders and carrier tenders parsed, validated and actioned automatically from EDI and TMS so loads move without manual keying.
+        problem: Orders and tenders arrive as EDI messages, portal entries and emails that clerks re-key into the TMS, so mismatched references, missing accessorials and slow acknowledgements delay tendering and invite errors downstream.
+        who_benefits: Transportation Ops
+        how_built: EDI 204/214 messages and TMS orders land through Lakeflow on Delta Lake, AI Functions extract and validate order and tender fields under Unity Catalog, and clean loads are written back to Oracle OTM through governed apps.
+        components:
+          - Oracle OTM
+          - EDI VAN (Cleo)
+          - Lakeflow
           - AI Functions
           - Unity Catalog
-      - name: Scope 3 Emissions
-        short: Sustainability
-        icon: gavel
-        summary: Emissions per shipment calculated for shipper Scope 3 reporting, distinct from the carrier's own inventory boundary.
-        problem: Shippers demand emissions per shipment, but the mileage, mode and fuel data needed sit across TMS and telematics, so carbon is estimated with crude averages that will not survive an audit.
-        who_benefits: CEO & Network Office
-        how_built: Shipment, mode and fuel data are conformed under Unity Catalog, emissions per load are computed on Delta Lake, and certified figures publish as Data Products shared to shippers over OpenSharing.
-        components:
-          - Data Products
-          - OpenSharing
-          - Unity Catalog
           - Delta Lake
+      - name: Incident & Field Service Assistant
+        short: Roadside response
+        icon: globe
+        summary: An agent that pulls the accident, breakdown or exception together and drafts the roadside response, re-route and customer update.
+        problem: When a truck is in an accident, breakdown or exception, dispatch pieces the story together from phone calls and disparate systems, so the right roadside response, re-route and customer update all lag the event.
+        who_benefits: Transportation Ops
+        how_built: Dashcam, ELD and visibility exception events land in Lakehouse//RT, and a Mosaic AI agent grounded on governed shipment and asset data drafts the roadside response, re-route and customer notification in the Control Tower.
+        components:
+          - Control Tower
+          - Samsara Fleet
+          - Omnitracs ELD
+          - project44 Visibility
+          - Mosaic AI
+          - Lakehouse//RT
+      - name: Scenario Planning & Business Simulation
+        short: Network simulation
+        icon: network
+        summary: Network, capacity and cost scenarios simulated across lanes and modes so the network office can test commitments before they are made.
+        problem: Big decisions on lane commitments, DC placement and mode shifts are made in spreadsheets that cannot model how demand swings, fuel and capacity interact, so the network is redesigned on gut feel and reacts late to disruption.
+        who_benefits: CEO & Network Office
+        how_built: Conformed shipment, cost and capacity data on Delta Lake feed network-flow and what-if simulations built with Apache Spark, scored in Model Serving and explored with Genie and AI/BI so planners compare scenarios on margin and service.
+        components:
+          - Oracle OTM
+          - Apache Spark
+          - Model Serving
           - AI/BI
-        stories:
-          - title: How Dow Built a Carbon Footprint Ledger on Databricks
-            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
-          - title: Michelin democratizes business insights with Databricks
-            url: https://www.databricks.com/customers/michelin
+          - Genie One
+          - Delta Lake
 medallion:
   Bronze:
     short: Raw shipment and fleet feeds

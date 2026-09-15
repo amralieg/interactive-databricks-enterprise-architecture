@@ -377,10 +377,10 @@ pipelines:
           - name: CFO & Treasury
             cares: the revenue requirement, capital spend and the return the commission allows.
         ucs:
-          - Outage Response
-          - Financial Analytics
-          - Regulatory Reporting
-          - Load Forecasting
+          - Agentic Customer Support & Outage Response
+          - Capital Investment Simulation
+          - Regulation Compliance, & External Reporting
+          - Demand Forecasting
       - name: Grid Operations
         mark: Lakehouse//RT
         summary: Control-centre operators and distribution planners on faults, switching orders and end-of-line voltage violations across blue-sky and storm days.
@@ -399,10 +399,10 @@ pipelines:
           - name: Storm Coordinators
             cares: crew staging, mutual aid and estimated restoration times.
         ucs:
-          - Outage Response
-          - Grid Management
-          - Load Forecasting
-          - Transformer & Feeder Health
+          - Agentic Customer Support & Outage Response
+          - Grid Management & Energy Mix
+          - Demand Forecasting
+          - Predictive Maintenance & Asset Health
       - name: Customer Operations
         mark: AI/BI
         summary: Contact centre and field service on high-bill complaints, move-in and move-out volume, payment arrangements and collections effectiveness.
@@ -421,8 +421,7 @@ pipelines:
           - name: Revenue Protection
             cares: meter tamper, theft cases and unbilled usage on the estate.
         ucs:
-          - Customer 360
-          - Outage Comms
+          - Agentic Customer Support & Outage Response
       - name: Asset Management
         mark: Lakeflow
         summary: Engineering and vegetation management on inspection backlogs, transformer and conductor failure risk, and which assets to replace before the fault.
@@ -441,9 +440,8 @@ pipelines:
           - name: Capital Programs
             cares: replacement prioritisation against reliability and financial targets.
         ucs:
-          - Transformer & Feeder Health
-          - Predictive Maintenance
-          - Financial Analytics
+          - Predictive Maintenance & Asset Health
+          - Capital Investment Simulation
       - name: Regulatory & Rates
         mark: AI/BI
         summary: Regulatory affairs on cost-of-service studies, class revenue requirements and rate design that survives a commission challenge.
@@ -462,8 +460,8 @@ pipelines:
           - name: Cost of Service
             cares: jurisdictional cost allocation across finance and operations.
         ucs:
-          - Regulatory Reporting
-          - Financial Analytics
+          - Regulation Compliance, & External Reporting
+          - Capital Investment Simulation
   - name: Technical
     icon: code
     tiles:
@@ -485,9 +483,9 @@ pipelines:
           - name: Streaming Platform
             cares: storm-day event volume and the freshness the control centre reads by.
         ucs:
-          - Outage Response
-          - Load Forecasting
-          - Grid Management
+          - Agentic Customer Support & Outage Response
+          - Demand Forecasting
+          - Grid Management & Energy Mix
       - name: Data Scientists
         mark: MLflow
         summary: Load-forecasting, non-technical-loss and asset failure-risk models, and whether they still hold a season after deployment.
@@ -506,10 +504,9 @@ pipelines:
           - name: Asset Risk
             cares: failure-risk and remaining-life models on grid plant.
         ucs:
-          - Load Forecasting
-          - Predictive Maintenance
-          - Transformer & Feeder Health
-          - Grid Management
+          - Demand Forecasting
+          - Predictive Maintenance & Asset Health
+          - Grid Management & Energy Mix
       - name: App Developers
         mark: Apps
         summary: Ship the OMS control tower, asset-health and collections applications operations works in, hosted next to governed data.
@@ -528,9 +525,8 @@ pipelines:
           - name: Agents & Writeback
             cares: switching-plan and work-order drafting against governed tools.
         ucs:
-          - Outage Response
-          - Field Crew Assistant
-          - Customer 360
+          - Agentic Customer Support & Outage Response
+          - Incident & Field Service Assistant
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -704,11 +700,12 @@ agent_usecases:
     tiles:
       - name: Grid & Outage Agent
         icon: genie
-        summary: Ask about grid state, DER, outages and restoration in plain language.
+        summary: Ask about grid state, DER, demand forecast, line losses, outages and restoration in plain language.
         feeds:
           - GE Vernova ADMS
           - Milsoft OMS
           - AutoGrid Flex DERMS
+          - Weather Telemetry
           - SAIDI, losses, collections
         teams:
           - Grid Operations
@@ -718,8 +715,10 @@ agent_usecases:
           - What was SAIDI by district yesterday?
           - How many customers are out now and what is the estimated restoration time?
           - Which feeders are approaching thermal or voltage limits right now?
-          - How much behind-the-meter solar is offsetting load by feeder right now?
+          - How much behind-the-meter solar and storage is offsetting load and carbon by feeder right now?
           - How does this storm's restoration pace compare to the last major event?
+          - What is our day-ahead peak load forecast and how accurate was last week's forecast by district?
+          - What are our technical and non-technical line losses by feeder this month?
       - name: Asset & Reliability Agent
         icon: genie
         summary: Answer questions on transformer and feeder health, failure risk and replacement priority.
@@ -771,83 +770,16 @@ agent_usecases:
         questions:
           - What is our revenue requirement and allowed return this rate case?
           - What were SAIDI and SAIFI for the reliability filing this period?
-          - How is capital spend tracking against the approved plan?
-          - What is collections effectiveness and the write-off trend this quarter?
-          - What is our DER interconnection backlog for the regulator?
+          - How is capital spend tracking against the approved investment plan and which projects give the most reliability per dollar?
+          - What is our net position and purchased-power cost against wholesale market prices this week?
+          - How would the revenue requirement and peak demand shift under a high-electrification scenario?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Transformer & Feeder Health
-        short: Asset risk
-        icon: iot
-        summary: Distribution transformer and feeder failure risk scored from loading, condition and AMI voltage so replacements happen before the fault.
-        problem: Transformer and feeder condition sits across EAM records, SCADA analogs and AMI voltage, so overloaded and aging assets fail in service instead of being replaced on a risk-ranked plan.
-        who_benefits: Asset Management
-        how_built: EAM condition, PI historian loading and AMI voltage are conformed on Delta Lake and scored for failure risk in Model Serving tracked in MLflow, ranking assets in the Asset Health Cockpit.
-        components:
-          - Asset Health Cockpit
-          - ABB Ellipse EAM
-          - AVEVA PI Historian
-          - Model Serving
-          - MLflow
-        stories:
-          - title: AusNet Services predicts asset risk with Databricks
-            url: https://www.databricks.com/customers/ausnet-services
-      - name: Grid Management
-        short: Energy mix
-        icon: stream
-        summary: Feeder load, DER output and switching balanced so the distribution grid holds voltage and thermal limits as the energy mix shifts.
-        problem: DER, storage and flexible load swing feeder state minute to minute while dispatch signals, inverter telemetry and the network model live apart, so the grid runs conservatively and hosting capacity is left unused.
-        who_benefits: Grid Operations
-        how_built: ADMS, DERMS and IEEE 2030.5 telemetry land in Lakehouse//RT; DER voltage setpoint advisories are scored in Model Serving and routed through DERMS, while discrete switching plans are proposed for operator approval and executed through ADMS; Lakebase holds a governed working copy of approved feeder constraints, with incumbent systems retaining approval and execution.
-        components:
-          - Lakehouse//RT
-          - Model Serving
-          - GE Vernova ADMS
-          - AutoGrid Flex DERMS
-          - ADMS Switching Orders
-        stories:
-          - title: Octopus Energy builds the world's largest virtual power plant (2026 Customer Awards)
-            url: https://www.databricks.com/blog/announcing-winners-2026-databricks-customer-awards
-      - name: Predictive Maintenance
-        short: Reliability
-        icon: gauge
-        summary: Failures on breakers, regulators and transformers predicted from condition and SCADA telemetry so plant is serviced on a planned window.
-        problem: Grid plant is maintained on a calendar, so a failing breaker or regulator is found when it trips a feeder, not on a planned window, and crews chase symptoms across disconnected systems.
-        who_benefits: Asset Management
-        how_built: PI historian and EAM condition data feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders from the Asset Health Cockpit.
-        components:
-          - Asset Health Cockpit
-          - AVEVA PI Historian
-          - ABB Ellipse EAM
-          - MLflow
-          - Model Serving
-        stories:
-          - title: What is predictive maintenance on the Databricks platform
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
-      - name: Outage Response
-        short: Storm & reliability
-        icon: gauge
-        summary: Restoring feeders and customers after weather and grid anomalies, optimising crew routing and switching against critical premises.
-        problem: When a storm hits, outages, crews and switching orders live in separate systems, so the control centre restores feeders blind to which fix strands another circuit or a critical customer.
-        who_benefits: Grid Operations
-        how_built: AMI, SCADA, OMS and crew-vehicle telematics feeds land in Lakehouse//RT; restoration and crew-routing options are scored in Model Serving and run from the OMS Control Tower on Lakebase, writing switching back to ADMS.
-        components:
-          - OMS Control Tower
-          - Lakehouse//RT
-          - Model Serving
-          - Milsoft OMS
-          - Verizon Connect Fleet
-          - Lakebase
-        stories:
-          - title: Alabama Power leverages Databricks for outage and storm modeling
-            url: https://www.databricks.com/blog/alabama-power-leverages-databricks-outage-and-storm-modeling
-          - title: Revolutionizing utility outage response with Databricks
-            url: https://www.databricks.com/blog/revolutionizing-utility-outage-response
-      - name: Load Forecasting
-        short: Demand
+      - name: Demand Forecasting
+        short: Peak & net load
         icon: chart
         summary: Short- and long-term demand forecasts that account for weather, DER and electrification load growth.
         problem: Demand is shifting under electrification, rooftop solar and heat waves, but forecasts built on last year's load and a spreadsheet miss the peaks that set purchased-power cost.
@@ -862,50 +794,74 @@ agent_usecases:
         stories:
           - title: Unlocking the future of energy with smart meter innovation (Southern Company)
             url: https://www.databricks.com/blog/unlocking-future-energy-smart-meter-innovation
-      - name: Customer 360
-        short: Customer
-        icon: custlake
-        summary: A single governed view of every premise, joining billing, AMI usage and interactions so the contact centre and programs act on one profile.
-        problem: Customer data is split across CIS, payments and AMI, so agents answer high-bill and program questions from partial records and outreach targets the wrong premises.
-        who_benefits: Customer Operations
-        how_built: SAP IS-U, Oracle CCB and AMI usage conform on CustomerLake under Unity Catalog, so the contact centre, billing and programs read one governed premise profile in AI/BI.
+      - name: Grid Management & Energy Mix
+        short: DER & energy mix
+        icon: stream
+        summary: Feeder load, DER output and switching balanced so the distribution grid holds voltage and thermal limits as the energy mix shifts.
+        problem: DER, storage and flexible load swing feeder state minute to minute while dispatch signals, inverter telemetry and the network model live apart, so the grid runs conservatively and hosting capacity is left unused.
+        who_benefits: Grid Operations
+        how_built: ADMS, DERMS and IEEE 2030.5 telemetry land in Lakehouse//RT; DER voltage setpoint advisories are scored in Model Serving and routed through DERMS, while discrete switching plans are proposed for operator approval and executed through ADMS; Lakebase holds a governed working copy of approved feeder constraints, with incumbent systems retaining approval and execution.
         components:
-          - CustomerLake
-          - SAP IS-U
-          - Oracle Utilities CCB
+          - Lakehouse//RT
+          - Model Serving
+          - GE Vernova ADMS
+          - AutoGrid Flex DERMS
+          - ADMS Switching Orders
+        stories:
+          - title: Octopus Energy builds the world's largest virtual power plant (2026 Customer Awards)
+            url: https://www.databricks.com/blog/announcing-winners-2026-databricks-customer-awards
+      - name: Predictive Maintenance & Asset Health
+        short: Grid asset health
+        icon: gauge
+        summary: Transformer, feeder, breaker and regulator failure risk scored from loading, condition and SCADA telemetry so plant is replaced or serviced before the fault.
+        problem: Asset condition sits across EAM records, SCADA analogs and AMI voltage while plant is maintained on a calendar, so overloaded and aging assets fail in service instead of being replaced on a risk-ranked plan.
+        who_benefits: Asset Management
+        how_built: EAM condition, PI historian loading and AMI voltage are conformed on Delta Lake and scored for failure risk and remaining life in Model Serving tracked in MLflow, raising work orders and ranking assets in the Asset Health Cockpit.
+        components:
+          - Asset Health Cockpit
+          - AVEVA PI Historian
+          - ABB Ellipse EAM
+          - Model Serving
+          - MLflow
+        stories:
+          - title: AusNet Services predicts asset risk with Databricks
+            url: https://www.databricks.com/customers/ausnet-services
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+      - name: Sustainability & Circular Economy
+        short: Emissions & losses
+        icon: globe
+        summary: Grid emissions, technical and non-technical losses and DER-driven decarbonisation tracked and reduced on governed data, with asset reuse weighed against replacement.
+        problem: Emissions factors, line-loss data, DER output and asset-disposal records sit in separate systems, so the utility cannot report decarbonisation progress or target the losses and asset waste that erode both cost and sustainability goals.
+        who_benefits: Grid Operations
+        how_built: AMI loss data, DERMS output and PI historian records conform under Unity Catalog; loss and emissions metrics are modelled in AI/BI and published as governed Reliability Reporting products so decarbonisation and loss-reduction progress is traceable to source.
+        components:
+          - AutoGrid Flex DERMS
+          - AVEVA PI Historian
           - Unity Catalog
           - AI/BI
-      - name: Outage Comms
-        short: Comms
+          - Reliability Reporting
+        stories: []
+      - name: Agentic Customer Support & Outage Response
+        short: Agentic outage care
         icon: chat
-        summary: Outage scope, estimated restoration and proactive notifications drafted for customers by an agent grounded in live OMS state.
-        problem: During an event the contact centre and notification channels lag the control centre, so customers get stale or no restoration times and call volume spikes exactly when crews are stretched.
+        summary: An agent grounded in live outage and billing state that drafts restoration ETAs, outage notifications and answers to high-bill and program questions for agent approval.
+        problem: During an event the contact centre and notification channels lag the control centre, so customers get stale restoration times and high-bill answers from partial records exactly when call volume spikes and crews are stretched.
         who_benefits: Customer Operations
-        how_built: Milsoft OMS state and Kubra channels join in Lakehouse//RT; an agent on Agent Bricks drafts restoration ETAs and outage notifications against governed tools for agent approval.
+        how_built: Milsoft OMS state, Oracle CCB billing and Kubra channels join in Lakehouse//RT; an agent on Agent Bricks drafts restoration ETAs, outage notifications and customer answers against governed tools and AI Functions for agent approval.
         components:
           - Milsoft OMS
+          - Oracle Utilities CCB
           - Kubra Payment Portal
           - Agent Bricks
-          - Lakehouse//RT
           - AI Functions
         stories:
           - title: 'Hawaiian Electric: AI agents transforming electric grid operations'
             url: https://www.databricks.com/blog/manual-autonomous-how-ai-agents-are-transforming-electric-grid-operations
-      - name: Field Crew Assistant
-        short: Field ops
-        icon: apps
-        summary: An assistant that gives field crews the switching plan, asset history and safety context for the job, and closes the work order on mobile.
-        problem: Crews arrive with paper switching orders and no asset history, so jobs stall on missing context and completions are keyed in later, leaving the network model and work records stale.
-        who_benefits: Grid Operations
-        how_built: EAM history, the GIS network model and OMS dispatch conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back through OMS Crew Dispatch, which relays completion to the authoritative EAM work record.
-        components:
-          - OMS Crew Dispatch
-          - Esri ArcGIS Utility
-          - Agent Bricks
-          - Lakebase
-          - Unity Catalog
-      - name: Regulatory Reporting
-        short: Regulatory
+          - title: Alabama Power leverages Databricks for outage and storm modeling
+            url: https://www.databricks.com/blog/alabama-power-leverages-databricks-outage-and-storm-modeling
+      - name: Regulation Compliance, & External Reporting
+        short: Reliability filings
         icon: gavel
         summary: Reliability, DER and sustainability filings produced from the same governed tables operations runs on, traceable back to source.
         problem: SAIDI, SAIFI, DER interconnection and emissions filings are rebuilt each cycle from ledgers and exports the commission cannot trace, so filings lag and a number that cannot be sourced is one a regulator can strike.
@@ -917,19 +873,63 @@ agent_usecases:
           - AI/BI
           - Regulatory Cost Accounting
           - Data Products
-      - name: Financial Analytics
-        short: Finance
-        icon: sheet
-        summary: Revenue requirement, capital spend and collections tracked on governed ledgers so finance and rate design work from one set of numbers.
-        problem: Cost-of-service, capital and collections numbers are spread across finance and operations systems, so each rate case and board pack rebuilds them and the numbers rarely reconcile.
+        stories: []
+      - name: Scenario Planning & Business Simulation
+        short: Electrification scenarios
+        icon: model
+        summary: Electrification, DER-growth, weather and rate scenarios simulated end to end so grid and financial outcomes are tested before capital and rate decisions are made.
+        problem: Planning and rate teams model electrification, DER penetration and rate scenarios in disconnected spreadsheets, so grid load, reliability and revenue impacts never reconcile and decisions rest on a single static case.
         who_benefits: Regulatory & Rates
-        how_built: Jurisdictional cost ledgers are queried in place under Unity Catalog and modelled in AI/BI with Genie One, so revenue requirement, capital and collections are read from one governed set for rate cases and the board.
+        how_built: Conformed load, DER, asset and financial data are modelled in AI/BI with Genie One and scored through scenario models in Model Serving tracked in MLflow, so planners and rate teams compare grid and revenue outcomes across cases.
+        components:
+          - Load Forecast Console
+          - Feature Store
+          - Model Serving
+          - MLflow
+          - AI/BI
+        stories: []
+      - name: Incident & Field Service Assistant
+        short: Field crew ops
+        icon: apps
+        summary: An assistant that gives field crews the switching plan, asset history and safety context for the job, and closes the work order on mobile.
+        problem: Crews arrive with paper switching orders and no asset history, so jobs stall on missing context and completions are keyed in later, leaving the network model and work records stale.
+        who_benefits: Grid Operations
+        how_built: EAM history, the GIS network model and OMS dispatch conform under Unity Catalog; an assistant on Agent Bricks serves crews from Databricks Apps over Lakebase, writing completions back through OMS Crew Dispatch, which relays completion to the authoritative EAM work record.
+        components:
+          - OMS Crew Dispatch
+          - Esri ArcGIS Utility
+          - Agent Bricks
+          - Lakebase
+          - Unity Catalog
+        stories: []
+      - name: Commodity & Energy Trading
+        short: Purchased-power procurement
+        icon: market
+        summary: Purchased-power procurement and DER dispatch optimised against load forecasts and ISO/RTO price signals, so the wires utility buys the power it must serve at least cost.
+        problem: Load, DER availability and ISO/RTO market prices sit in separate systems, so purchased power is procured on stale views and the DER value that could offset peak purchases at the transmission-distribution interface is left on the table.
+        who_benefits: Grid Operations
+        how_built: TSO/DSO market data, DERMS dispatch and load forecasts conform in Lakehouse//RT; purchased-power procurement and DER-offset optimisation is scored in Model Serving tracked in MLflow for procurement and DER operations.
+        components:
+          - TSO/DSO Market Integration
+          - AutoGrid Flex DERMS
+          - Load Forecast Console
+          - Model Serving
+          - MLflow
+        stories: []
+      - name: Capital Investment Simulation
+        short: Grid capital plan
+        icon: sheet
+        summary: Capital plan prioritisation, revenue requirement and reliability-per-dollar simulated on governed ledgers so finance and rate design work from one set of numbers.
+        problem: Capital, cost-of-service and reliability numbers are spread across finance and operations systems, so each rate case and board pack rebuilds them, the numbers rarely reconcile and capital tradeoffs cannot be simulated.
+        who_benefits: Regulatory & Rates
+        how_built: Jurisdictional cost ledgers are queried in place under Unity Catalog and modelled in AI/BI with Genie One, so revenue requirement, capital and reliability-per-dollar scenarios are simulated from one governed set for rate cases and the board.
         components:
           - Regulatory Cost Accounting
           - Unity Catalog
           - AI/BI
           - Genie One
           - Rate Case Submissions
+        stories: []
 medallion:
   Bronze:
     short: Raw meter and SCADA

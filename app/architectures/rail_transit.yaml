@@ -375,10 +375,9 @@ pipelines:
           - name: Chief Operating Officer
             cares: on-time performance, disruption cost and asset availability.
         ucs:
-          - Delay Prediction
-          - Predictive Maintenance
-          - Ridership & Freight Demand Forecast
-          - Farebox Recovery & Working Capital
+          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
+          - Demand Forecasting
       - name: Network Ops
         mark: Lakehouse//RT
         summary: Dispatchers and network controllers running a live railroad; crew control repairing rosters when the operation moves; passenger information teams keeping riders accurately informed through disruption.
@@ -397,11 +396,9 @@ pipelines:
           - name: Passenger information
             cares: real-time arrivals and disruption messaging to riders.
         ucs:
-          - Delay Prediction
-          - Network Dispatch Opt
-          - Freight & Yard Operations
-          - Energy & Traction Opt
-          - Rider & Passenger 360
+          - Operations Resource Efficiency
+          - Distribution & Logistics Optimization
+          - Demand Forecasting
       - name: Fleet & Assets
         mark: Model Serving
         summary: Rolling-stock and infrastructure engineers on predicted component removals, track condition and the Maximo work orders raised against the fleet and network they already run.
@@ -420,9 +417,9 @@ pipelines:
           - name: Maintenance planning
             cares: depot capacity, spares and the planned-work window against fleet availability.
         ucs:
-          - Predictive Maintenance
-          - Workforce & Track-Worker Safety
-          - Energy & Traction Opt
+          - Predictive Maintenance & Asset Health
+          - Workforce Safety
+          - Operations Resource Efficiency
       - name: Revenue & Fares
         mark: AI/BI
         summary: Revenue and ridership teams on farebox recovery, demand and fares including freight lane and tonnage planning; fare collection teams on AFC integrity, reconciliation and revenue protection.
@@ -441,9 +438,7 @@ pipelines:
           - name: Commercial planning
             cares: fare policy, concession schemes and origin-destination demand by line.
         ucs:
-          - Ridership & Freight Demand Forecast
-          - Farebox Recovery & Working Capital
-          - Rider & Passenger 360
+          - Demand Forecasting
       - name: Safety & Reg
         mark: Unity Catalog
         summary: Safety and compliance teams on signaling and PTC event analysis, incident investigation and the punctuality, safety and emissions reporting filed with the authority.
@@ -462,9 +457,8 @@ pipelines:
           - name: Incident investigation
             cares: root-cause analysis and corrective actions after a SPAD or incident.
         ucs:
-          - Incident & Field Assistant
-          - Workforce & Track-Worker Safety
-          - Predictive Maintenance
+          - Workforce Safety
+          - Predictive Maintenance & Asset Health
   - name: Technical
     icon: code
     tiles:
@@ -486,9 +480,8 @@ pipelines:
           - name: Platform & governance
             cares: Unity Catalog permissions and pipeline SLAs.
         ucs:
-          - Delay Prediction
-          - Predictive Maintenance
-          - Freight & Yard Operations
+          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
       - name: Data Scientists
         mark: MLflow
         summary: Delay-probability, remaining-useful-life, demand and energy-optimisation models, and whether they still hold six months after deployment.
@@ -507,9 +500,9 @@ pipelines:
           - name: MLOps
             cares: tracking and serving models in the operational path.
         ucs:
-          - Predictive Maintenance
-          - Delay Prediction
-          - Ridership & Freight Demand Forecast
+          - Predictive Maintenance & Asset Health
+          - Operations Resource Efficiency
+          - Demand Forecasting
       - name: App Developers
         mark: Apps
         summary: Ship the dispatch, asset-health, ridership and safety applications the railroad works in, hosted next to governed data.
@@ -528,8 +521,8 @@ pipelines:
           - name: Agent developers
             cares: recovery-plan and work-order drafting agents.
         ucs:
-          - Network Dispatch Opt
-          - Incident & Field Assistant
+          - Distribution & Logistics Optimization
+          - Workforce Safety
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -702,7 +695,7 @@ agent_usecases:
     tiles:
       - name: Network Operations Agent
         icon: genie
-        summary: Run on-time performance, delay causes and where the network is running late right now.
+        summary: Run on-time performance, movement flow, delay causes and traction-energy efficiency across the network right now.
         feeds:
           - AVL / GPS Telemetry
           - GTFS / GTFS-RT
@@ -714,13 +707,13 @@ agent_usecases:
           - Executive Team
         questions:
           - What was on-time performance by line yesterday and this week?
-          - Which delay causes are driving the most lost minutes right now?
+          - Which delay causes and movement conflicts are driving the most lost minutes right now?
           - Where is knock-on delay propagating across the network this hour?
+          - Where is traction energy per train-km highest, and what is driving it?
           - Which services are most at risk of running late in the next window?
-          - How does punctuality compare to the same period last year?
       - name: Fleet & Track Agent
         icon: genie
-        summary: Maintain component condition, predicted removals and the work-order backlog.
+        summary: Maintain component condition and predicted removals, surface track and wheel defects, and recommend the next maintenance action.
         feeds:
           - IBM Maximo
           - Wayside Detectors
@@ -732,17 +725,17 @@ agent_usecases:
           - Maintenance planning
         questions:
           - Which components are predicted to be removed in the next 30 days?
-          - What is mean distance between failures by fleet class?
           - Which track segments have the worst geometry defects right now?
-          - How large is the maintenance work-order backlog by depot?
-          - Which wayside detector alarms have not yet been actioned?
+          - Which wayside detector alarms show wheel or bearing defects not yet actioned?
+          - What maintenance action and depot slot are recommended for the highest-risk assets?
+          - What is mean distance between failures by fleet class?
       - name: Ridership & Revenue Agent
         icon: genie
-        summary: Grow ridership, origin-destination demand and farebox recovery, with a freight lane and tonnage demand variant.
+        summary: Grow ridership and freight demand, test fare and freight-rate changes, and simulate fleet and network investment.
         feeds:
           - Cubic AFC
-          - GIRO HASTUS
           - GTFS / GTFS-RT
+          - Cost & Revenue Marts
           - OTP, availability, ridership
         teams:
           - Revenue & Fares
@@ -750,35 +743,52 @@ agent_usecases:
           - Commercial planning
         questions:
           - What is ridership by line and time band this week versus last?
-          - Which origin-destination pairs are growing fastest?
-          - What is farebox recovery by line this quarter?
-          - Which freight lanes and commodities are forecast to grow in tonnage?
+          - Which origin-destination pairs and freight lanes are forecast to grow fastest?
+          - How would a demand-based fare or freight-rate change affect ridership and revenue?
+          - Which fleet or line investments give the best modelled reliability and revenue return?
           - Where is capacity most mismatched to demand at peak?
-          - How did the last fare change affect ridership and revenue?
-      - name: Safety & Compliance Agent
+      - name: Safety & Workforce Agent
         icon: genie
-        summary: Assure signaling and PTC events, incident precursors and regulatory metrics.
+        summary: Assure track-worker safety from signaling and PTC events and manage crew rostering, duty limits and training.
         feeds:
           - Wabtec I-ETMS PTC
           - Alstom Signalling
-          - IBM Maximo
+          - GIRO HASTUS
           - OTP, availability, ridership
         teams:
           - Safety & Reg
           - Safety assurance
-          - Incident investigation
+          - Crew control
         questions:
-          - How many PTC enforcements occurred this month and where?
-          - Which signaling exceedances cluster around the same locations?
-          - What are the leading precursor patterns before recent incidents?
-          - Which corrective actions from past incidents are still open?
-          - What punctuality and safety metrics are due to the authority this cycle?
+          - Which roadway-worker or PTC proximity events cluster around the same locations?
+          - What are the leading precursor patterns before recent safety incidents?
+          - Which crews are approaching duty-hour limits this week?
+          - Which crew certifications or training are due to expire?
+          - Which track-access and duty controls have open corrective actions?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Predictive Maintenance
+      - name: Distribution & Logistics Optimization
+        short: Movement & car flow
+        icon: network
+        summary: Optimising train movements, meets, passes and freight-car flow across a congested network so throughput and reliability rise without new track.
+        problem: On a single-track or congested network, meet-and-pass, dispatch and car-flow decisions made locally leave capacity and reliability on the table that a network-wide view would recover.
+        who_benefits: Network Ops
+        how_built: Movement, TMS, waybill and infrastructure feeds are conformed and served in Lakehouse//RT; movement- and car-flow-optimisation models are scored through Model Serving and surfaced as controller-approved plans passed to the incumbent dispatch and signaling systems from the Dispatch Cockpit on Lakebase.
+        components:
+          - Dispatch Cockpit
+          - RailConnect TMS
+          - Model Serving
+          - Lakehouse//RT
+          - Lakebase
+        stories:
+          - title: J.B. Hunt builds its transportation network on Databricks (cross-mode transportation context)
+            url: https://www.databricks.com/customers/jbhunt
+          - title: A major freight railroad scales pipelines with Genie Code (data-engineering enablement)
+            url: https://www.databricks.com/blog/how-major-freight-railroad-scaled-pipeline-creation-genie-code
+      - name: Predictive Maintenance & Asset Health
         short: Fleet & track
         icon: iot
         summary: Predicting rolling-stock and track failures from sensor, telematics, geometry and defect history so a failure in service becomes a planned depot or track visit.
@@ -801,106 +811,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/artc
           - title: 'Sporveien: analysing Oslo metro operations on Databricks'
             url: https://www.databricks.com/blog/2017/06/14/analyzing-metro-operations-using-apache-spark.html
-      - name: Delay Prediction
-        short: Punctuality
-        icon: stream
-        summary: Predicting where the network will run late from live movement, signaling and knock-on effects, so controllers intervene before the delay propagates.
-        problem: On-time performance is lost to knock-on delay that propagates faster than a controller can see it. Explained after the fact it is a report; predicted, it is a decision.
-        who_benefits: Network Ops
-        how_built: AVL, signaling and GTFS-RT feeds stream into Lakehouse//RT; delay-probability models score each service through Model Serving and surface in the Dispatch Cockpit and AI/BI.
-        components:
-          - Dispatch Cockpit
-          - Lakehouse//RT
-          - Model Serving
-          - GTFS / GTFS-RT
-          - AI/BI
-        stories:
-          - title: BKK transforms Budapest city mobility with Databricks
-            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
-      - name: Network Dispatch Opt
-        short: Movement planning
-        icon: network
-        summary: Optimising train movements, meets and passes across a congested network so throughput and reliability rise without new track.
-        problem: On a single-track or congested network, meet-and-pass and dispatch decisions made locally leave capacity and reliability on the table that a network-wide view would recover.
-        who_benefits: Network Ops
-        how_built: Movement, TMS and infrastructure feeds are conformed and served in Lakehouse//RT; movement-optimisation models are scored through Model Serving and surfaced as controller-approved recovery plans passed to the incumbent dispatch and signaling systems from the Dispatch Cockpit on Lakebase.
-        components:
-          - Dispatch Cockpit
-          - RailConnect TMS
-          - Model Serving
-          - Lakehouse//RT
-          - Lakebase
-        stories:
-          - title: J.B. Hunt builds its transportation network on Databricks (cross-mode transportation context)
-            url: https://www.databricks.com/customers/jbhunt
-          - title: A major freight railroad scales pipelines with Genie Code (data-engineering enablement)
-            url: https://www.databricks.com/blog/how-major-freight-railroad-scaled-pipeline-creation-genie-code
-      - name: Ridership & Freight Demand Forecast
-        short: Demand
-        icon: market
-        summary: Forecasting passenger ridership and freight demand from AFC taps, waybills, schedules and events so service and capacity match how people and tonnage actually move.
-        problem: Service and capacity are planned on last year's timetable while passenger and freight demand shift with events, seasons and land use. Overcrowded trains, empty trains and missed tonnage are all the same missing forecast.
-        who_benefits: Revenue & Fares
-        how_built: AFC tap, waybill and ridership data are conformed with schedule and event feeds; demand models score each line, lane and time band through Model Serving and Feature Store, explored in Ridership Studio.
-        components:
-          - Ridership Studio
-          - Cubic AFC
-          - Model Serving
-          - AI/BI
-          - Feature Store
-        stories:
-          - title: BKK transforms Budapest city mobility with Databricks
-            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
-          - title: Grab unifies transport data with C360 on Databricks
-            url: https://www.databricks.com/customers/grab
-      - name: Freight & Yard Operations
-        short: Logistics
-        icon: db
-        summary: Freight car flow, blocking and yard-to-mainline handoff optimised so cars move to plan and terminals do not clog.
-        problem: Freight cars, blocks and consists are managed terminal by terminal, so cars dwell in yards, connections are missed and the network moves tonnage slower than the track can carry.
-        who_benefits: Network Ops
-        how_built: RailConnect TMS waybills, AVL movement and Onvia control-centre events conform in Lakehouse//RT, and car-flow and blocking models in Model Serving surface plans in the Dispatch Cockpit on Delta Lake.
-        components:
-          - Dispatch Cockpit
-          - RailConnect TMS
-          - AVL / GPS Telemetry
-          - Model Serving
-          - Lakehouse//RT
-          - Delta Lake
-      - name: Energy & Traction Opt
-        short: Cost & emissions
-        icon: chart
-        summary: Cutting traction energy and emissions through driving-style, timetable and route decisions scored against live speed and load data.
-        problem: Traction energy is a top controllable cost and emissions line, yet driving-style and timetable decisions are made without the speed, gradient and load data that would optimise them.
-        who_benefits: Network Ops
-        how_built: AVL, speed and load data are conformed to Gold; energy-optimisation recommendations are scored in Model Serving and reconciled against the network's sustainability reporting.
-        components:
-          - AVL / GPS Telemetry
-          - Model Serving
-          - AI/BI
-          - Lakeflow
-        stories:
-          - title: BKK optimises route performance and energy with Databricks
-            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
-      - name: Incident & Field Assistant
-        short: Field service
-        icon: gavel
-        summary: An assistant that pulls signaling, PTC and incident data together, surfaces the precursors of a SPAD or collision and drafts the field response.
-        problem: Signaling exceedances, PTC enforcements and near-misses hold the precursors of the next serious event, but scattered across systems they are counted after the fact, and the field response to an incident is assembled by hand.
-        who_benefits: Safety & Reg
-        how_built: PTC, signaling and Maximo incident feeds are governed in Unity Catalog and analysed in Delta Lake; a Mosaic AI agent classifies incident narratives, surfaces precursor patterns and drafts the field and corrective response in Safety Insights.
-        components:
-          - Safety Insights
-          - Wabtec I-ETMS PTC
-          - Alstom Signalling
-          - Mosaic AI
-          - Unity Catalog
-          - Delta Lake
-        stories:
-          - title: Hitachi makes railways safer with AI on Databricks
-            url: https://www.databricks.com/customers/hitachi
-      - name: Workforce & Track-Worker Safety
-        short: Safety
+      - name: Workforce Safety
+        short: Track-worker safety
         icon: people
         summary: Track-worker proximity and crew fatigue risk indicators flagged from roadway-worker, movement and duty data to support safe-access and duty decisions.
         problem: Roadway-worker protection and crew fatigue depend on signals scattered across PTC, movement and rostering systems, so unsafe track access and over-limit duties are caught after the near-miss, not before.
@@ -913,39 +825,108 @@ agent_usecases:
           - Model Serving
           - MLflow
           - AI/BI
-      - name: Rider & Passenger 360
-        short: Rider experience
-        icon: custlake
-        summary: A unified rider view across taps, ticketing and journeys, powering accurate live arrivals, personalised info and demand insight.
-        problem: Riders are known only as anonymous taps and trips scattered across AFC, mobile ticketing and journey systems, so live arrivals lag, disruption messaging is generic and demand insight is thin.
+        stories: []
+      - name: Defect Detection
+        short: Track & wheel defects
+        icon: iot
+        summary: Detecting rail, wheel and bearing defects from wayside detector readings and track-geometry runs so a failing component is caught on the network before it derails a train.
+        problem: Rail, wheel and bearing defects are read by wayside detectors and geometry cars but reviewed in separate systems, so a developing defect is actioned late and a slow order or derailment risk builds unseen.
+        who_benefits: Fleet & Assets
+        how_built: Wayside detector, track-geometry and Maximo defect feeds conform on Delta Lake; defect-classification and severity models tracked in MLflow score in Model Serving and raise the worst defects as work orders in Asset Health Watch.
+        components:
+          - Wayside Detectors
+          - Track Geometry
+          - Asset Health Watch
+          - Model Serving
+          - MLflow
+        stories: []
+      - name: Operations Resource Efficiency
+        short: Energy & traction
+        icon: chart
+        summary: Cutting traction energy, emissions and resource use through driving-style, timetable and route decisions scored against live speed and load data.
+        problem: Traction energy is a top controllable cost and emissions line, yet driving-style, timetable and resourcing decisions are made without the speed, gradient and load data that would optimise them.
+        who_benefits: Network Ops
+        how_built: AVL, speed and load data are conformed to Gold; energy- and resource-optimisation recommendations are scored in Model Serving and reconciled against the network's sustainability reporting.
+        components:
+          - AVL / GPS Telemetry
+          - Model Serving
+          - AI/BI
+          - Lakeflow
+        stories:
+          - title: BKK optimises route performance and energy with Databricks
+            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
+      - name: Dynamic Pricing
+        short: Fare & freight yield
+        icon: market
+        summary: Demand-based fare and freight-rate optimisation from AFC taps, ridership and waybill demand so pricing reflects willingness to pay and available capacity.
+        problem: Passenger fares and freight rates are set on fixed tables while demand shifts with time of day, season and lane, so trains run over- or under-priced and revenue and load factor are both left behind.
         who_benefits: Revenue & Fares
-        how_built: Cubic AFC taps, mobile ticketing and GTFS-RT trips conform under Unity Catalog into one rider view, predicted arrivals publish through GTFS-RT open feeds, and ridership and personalisation models score in Model Serving surfaced in Ridership Studio.
+        how_built: Cubic AFC taps, ridership and waybill demand join the federated cost and revenue marts under Unity Catalog; price-elasticity and yield models score in Model Serving with features from Feature Store and surface in Ridership Studio.
         components:
           - Ridership Studio
           - Cubic AFC
-          - Mobile Ticketing
-          - GTFS / GTFS-RT
+          - Model Serving
+          - Feature Store
+          - Unity Catalog
+        stories: []
+      - name: Workforce Management & Training
+        short: Crew & rostering
+        icon: people
+        summary: Crew rostering, duty-limit compliance and certification and training tracking from HASTUS rosters and crew-calling data so qualified crew is available without over-limit duties.
+        problem: Crew rosters, duty limits and training records sit across scheduling and crew-calling systems, so short-notice roster repair, fatigue risk and expiring certifications are managed by hand and surface too late.
+        who_benefits: Network Ops
+        how_built: GIRO HASTUS rosters and RailConnect crew-calling data conform under Unity Catalog; availability, fatigue-risk and certification models score in Model Serving and surface roster and training gaps in AI/BI.
+        components:
+          - GIRO HASTUS
+          - RailConnect TMS
           - Model Serving
           - AI/BI
+          - Unity Catalog
+        stories: []
+      - name: Demand Forecasting
+        short: Ridership & freight
+        icon: market
+        summary: Forecasting passenger ridership and freight demand from AFC taps, waybills, schedules and events so service and capacity match how people and tonnage actually move.
+        problem: Service and capacity are planned on last year's timetable while passenger and freight demand shift with events, seasons and land use. Overcrowded trains, empty trains and missed tonnage are all the same missing forecast.
+        who_benefits: Revenue & Fares
+        how_built: AFC tap, waybill and ridership data are conformed with schedule and event feeds; demand models score each line, lane and time band through Model Serving and Feature Store, explored in Ridership Studio.
+        components:
+          - Ridership Studio
+          - Cubic AFC
+          - Model Serving
+          - AI/BI
+          - Feature Store
         stories:
           - title: Grab unifies transport data with C360 on Databricks
             url: https://www.databricks.com/customers/grab
-          - title: BKK transforms Budapest city mobility with Databricks
-            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
-      - name: Farebox Recovery & Working Capital
-        short: Fare integrity
-        icon: gauge
-        summary: Fare revenue leakage closed and farebox recovery, subsidy and cost per train-km tracked so the cash the network earns actually lands.
-        problem: Fare revenue leaks through evasion, mis-taps and reconciliation gaps while farebox recovery, subsidy and cost per train-km sit in separate ledgers, so the money the network earns and spends is only reconciled at audit.
-        who_benefits: Revenue & Fares
-        how_built: AFC tap, gate and reconciliation data join the federated cost and revenue marts under Unity Catalog; evasion and anomaly models score in Model Serving and AI Functions flags reconciliation breaks, with farebox recovery certified in Ridership Studio.
+      - name: Prescriptive Maintenance
+        short: Work-order optimisation
+        icon: iot
+        summary: Recommending the optimal maintenance action, depot slot and spares from predicted condition so remaining-useful-life becomes a scheduled, cost-optimal work plan.
+        problem: Predicted removals tell engineering what will fail but not the best action, when, at which depot or with which spares, so maintenance is planned conservatively and depot capacity and spares are used inefficiently.
+        who_benefits: Fleet & Assets
+        how_built: Maximo work orders, predicted removals and depot-capacity and spares data conform under Unity Catalog; optimisation models score in Model Serving and an Agent Bricks agent drafts the recommended action and depot slot in Asset Health Watch.
         components:
-          - Ridership Studio
-          - Cubic AFC
-          - Cost & Revenue Marts
+          - IBM Maximo
+          - Asset Health Watch
           - Model Serving
-          - AI Functions
+          - MLflow
+          - Agent Bricks
+        stories: []
+      - name: Capital Investment Simulation
+        short: Fleet & track renewal
+        icon: gauge
+        summary: Simulating fleet-renewal, track-renewal and network-expansion scenarios against cost, demand and reliability so capital is committed on modelled outcomes, not backlog age.
+        problem: Fleet and track renewal and expansion cases are built in spreadsheets against backlog age, disconnected from demand, reliability and cost data, so capital is committed without a modelled view of the return.
+        who_benefits: Executive Team
+        how_built: Bentley AssetWise renewal history, reliability data and the federated cost and revenue marts join under Unity Catalog; scenario models score in Model Serving and the trade-offs surface for the capital program in AI/BI.
+        components:
+          - Cost & Revenue Marts
+          - Bentley AssetWise
+          - Model Serving
+          - AI/BI
           - Unity Catalog
+        stories: []
 medallion:
   Bronze:
     short: Raw operational feeds

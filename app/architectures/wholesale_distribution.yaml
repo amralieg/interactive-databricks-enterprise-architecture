@@ -382,10 +382,10 @@ pipelines:
           - name: Strategy & M&A
             cares: which categories, branches and customers to expand, acquire or exit.
         ucs:
-          - Working Capital & Cash Flow
+          - Working Capital & Cash Flow Optimization
           - Demand Forecasting
-          - Dynamic B2B Pricing
-          - Customer 360 & Retention
+          - Dynamic Pricing
+          - Customer 360
       - name: Sales & Commercial
         mark: Model Serving
         summary: Field sales, inside sales and account management growing wallet share across the customer base, defending price and catching accounts before they drift away.
@@ -404,8 +404,8 @@ pipelines:
           - name: Inside sales & e-commerce
             cares: conversion and basket size across the branch and web channels.
         ucs:
-          - Dynamic B2B Pricing
-          - Customer 360 & Retention
+          - Dynamic Pricing
+          - Customer 360
           - Order Processing Automation
       - name: Category & Merch
         mark: AI/BI
@@ -426,8 +426,7 @@ pipelines:
             cares: supplier terms, rebates and lead-time performance.
         ucs:
           - Demand Forecasting
-          - Supplier Scorecards & Sourcing
-          - Working Capital & Cash Flow
+          - Working Capital & Cash Flow Optimization
       - name: Supply Chain & Ops
         mark: Lakehouse//RT
         summary: Planning, warehouse and transport teams moving product from supplier to branch to customer at the promised service level and the lowest landed cost.
@@ -447,9 +446,7 @@ pipelines:
             cares: route, carrier and last-mile execution to branch and customer.
         ucs:
           - Inventory Optimization
-          - Route & Logistics Optimization
-          - Warehouse Labor & Throughput
-          - Delivery Fleet & Equipment Health
+          - Distribution & Logistics Optimization
       - name: Finance & Rebates
         mark: AI/BI
         summary: The CFO's office running margin, cash and the rebate and chargeback programs that make or break net profit in a thin-margin distribution business.
@@ -468,8 +465,7 @@ pipelines:
           - name: Credit & AR
             cares: customer credit exposure and collections across the book.
         ucs:
-          - Working Capital & Cash Flow
-          - Supplier Scorecards & Sourcing
+          - Working Capital & Cash Flow Optimization
           - Order Processing Automation
   - name: Technical
     icon: code
@@ -714,7 +710,7 @@ agent_usecases:
           - Which SKU-locations are about to stock out on current demand?
           - What is fill rate by customer and branch this week?
           - Which open orders are at risk of missing OTIF today?
-          - Where is working capital tied up in slow-moving inventory?
+          - Which delivery routes are running under-loaded and driving up freight cost?
           - Which SKUs are dead stock across the branch network?
       - name: Margin & Cash Agent
         icon: genie
@@ -734,6 +730,7 @@ agent_usecases:
           - Which customer chargebacks look invalid and worth disputing?
           - Which customers and SKUs are loss-making after rebates?
           - How much earned rebate is still uncaptured against contract terms?
+          - Which quotes and contract prices are drifting from cost and the margin floor and should be repriced?
       - name: Customer Growth Agent
         icon: genie
         summary: Grow estimated share of wallet, spotting churn and cross-sell across the account base.
@@ -748,10 +745,10 @@ agent_usecases:
           - Inside sales & e-commerce
         questions:
           - Which accounts are drifting and reducing order frequency?
-          - Where is the biggest cross-sell whitespace by account?
+          - Which accounts should get the next-best commercial offer this week?
           - What is estimated share of wallet, against a modeled category-spend denominator, on our top 100 customers?
-          - Which reps are below target on productivity this quarter?
-          - How is the B2B web channel converting versus the branch?
+          - Which open leads should reps prioritise by conversion likelihood?
+          - What reorder should the guided buying assistant suggest for this account?
       - name: Demand & Supply Agent
         icon: genie
         summary: Forecast SKU-location demand and supplier lead-time reliability.
@@ -770,31 +767,14 @@ agent_usecases:
           - How does forecast bias vary by category and season?
           - Which suppliers have the worst fill rate on our purchase orders?
           - Where should assortment change based on demand signals?
+          - How many EDI, portal and email orders posted straight through versus stuck on validation exceptions today?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Demand Forecasting
-        short: Planning
-        icon: chart
-        summary: SKU-location demand forecasts across a long-tail catalog and a branch network, blending sell-through, order history, seasonality and promotions.
-        problem: A distributor forecasts hundreds of thousands of SKU-location pairs on a spreadsheet cadence, so slow movers overstock and fast movers stock out between refreshes.
-        who_benefits: Category & Merch
-        how_built: Order, POS and promotion feeds are conformed to Gold; fine-grained forecasts are trained in MLflow and scored per SKU-location, feeding replenishment and buy decisions.
-        components:
-          - Demand Forecasting
-          - Model Serving
-          - SAP S/4HANA
-          - AI/BI
-          - Feature Store
-        stories:
-          - title: Demand Forecasting at Scale on Databricks
-            url: https://www.databricks.com/solutions/accelerators/demand-forecasting
-          - title: Mondelez scales model experimentation on Databricks
-            url: https://www.databricks.com/customers/mondelez
       - name: Inventory Optimization
-        short: Stock
+        short: Stock & service
         icon: store
         summary: Safety-stock, reorder-point and assortment decisions tuned to service-level targets and the cash tied up in inventory across every branch.
         problem: Inventory is set by static min-max rules per branch, so millions in working capital sit in the wrong SKUs while service levels still miss on the ones that matter.
@@ -809,71 +789,26 @@ agent_usecases:
         stories:
           - title: Supply Chain Distribution Optimization
             url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
-      - name: Route & Logistics Optimization
-        short: Logistics
-        icon: stream
-        summary: Delivery routes, carrier choice and last-mile execution optimised across the branch and DC network to cut freight cost and hit the delivery window.
-        problem: Routes and carrier assignments are planned in silos per branch, so trucks run half-empty, freight spend climbs and delivery windows slip.
-        who_benefits: Supply Chain & Ops
-        how_built: Order, shipment and TMS feeds are conformed; route and load plans are generated in Model Serving, reviewed in the OTIF Control Tower and handed to Oracle OTM for transport execution against live in-transit state.
-        components:
-          - OTIF Control Tower
-          - Oracle OTM
-          - project44
-          - Model Serving
-          - Lakehouse//RT
-        stories:
-          - title: Scalable Route Generation on Databricks
-            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
-      - name: Order Processing Automation
-        short: Order-to-cash
-        icon: api
-        summary: EDI, portal and email orders parsed, validated and posted to the ERP automatically so the cash cycle no longer waits on manual keying.
-        problem: Customer orders arrive as EDI, email, portal and phone in dozens of formats, so branch teams key them by hand into the ERP, errors creep in and the cash cycle waits on the backlog.
-        who_benefits: Supply Chain & Ops
-        how_built: SPS and TrueCommerce EDI and SAP Commerce orders land through Lakeflow, AI Functions and Mosaic AI parse and validate each order against the SAP catalog, and clean orders write to the ERP with exception state held on Lakebase.
-        components:
-          - SPS Commerce EDI
-          - TrueCommerce EDI
-          - SAP Commerce Cloud
-          - AI Functions
-          - Lakeflow
-          - Lakebase
-      - name: Supplier Scorecards & Sourcing
-        short: Sourcing
-        icon: sheet
-        summary: Supplier performance and sourcing decisions measured on lead-time reliability, fill rate, quality and rebate compliance across every purchase order, not the last complaint.
-        problem: Supplier reviews run on anecdote and the loudest incident, because lead-time and fill data live in the ERP and never get turned into a scorecard the buy is planned against.
+      - name: Demand Forecasting
+        short: SKU-location planning
+        icon: chart
+        summary: SKU-location demand forecasts across a long-tail catalog and a branch network, blending sell-through, order history, seasonality and promotions.
+        problem: A distributor forecasts hundreds of thousands of SKU-location pairs on a spreadsheet cadence, so slow movers overstock and fast movers stock out between refreshes.
         who_benefits: Category & Merch
-        how_built: Purchase-order, receipt and EDI feeds are conformed to Gold; supplier scorecards are published as certified Metric Views and shared back to suppliers over Delta Sharing to steer sourcing.
+        how_built: Order, POS and promotion feeds are conformed to Gold; fine-grained forecasts are trained in MLflow and scored per SKU-location, feeding replenishment and buy decisions.
         components:
-          - AI/BI
-          - SAP S/4HANA
-          - SPS Commerce EDI
-          - Unity Catalog
-          - Genie One
-        stories:
-          - title: 'Unilever: GenAI powers smarter operations'
-            url: https://www.databricks.com/customers/unilever
-      - name: Working Capital & Cash Flow
-        short: Finance
-        icon: gauge
-        summary: Cash tied up in inventory, receivables and unclaimed rebates surfaced by branch so the CFO steers days-of-cash before a thin-margin quarter squeezes.
-        problem: Cash is trapped across inventory, receivables and unclaimed rebates in separate ledgers, so the CFO cannot see days-of-cash by branch or act before a thin-margin quarter turns into a cash squeeze.
-        who_benefits: Finance & Rebates
-        how_built: ERP receivables and inventory and the federated rebate mart are conformed under Unity Catalog, credit and payment-risk models score in Model Serving, and days-of-cash and exposure surface in AI/BI with Genie for ad hoc questions.
-        components:
-          - SAP S/4HANA
-          - Finance & Rebate Mart
-          - Dun & Bradstreet
+          - Inventory Command
           - Model Serving
+          - SAP S/4HANA
           - AI/BI
-          - Genie One
+          - Feature Store
         stories:
-          - title: Reckitt on Databricks
-            url: https://www.databricks.com/customers/reckitt
-      - name: Customer 360 & Retention
-        short: Growth
+          - title: Demand Forecasting at Scale on Databricks
+            url: https://www.databricks.com/solutions/accelerators/demand-forecasting
+          - title: ReaderLink, North America's largest book distributor, forecasts demand on Databricks
+            url: https://www.databricks.com/blog/revolutionizing-enterprise-data-analytics-readerlink-sql-ai-powered-insights
+      - name: Customer 360
+        short: Account 360
         icon: custlake
         summary: A unified account view predicting which customers are drifting and which product lines they should be buying, scored against the order history the CRM and ERP already hold.
         problem: 'A distributor loses accounts quietly: orders taper for months before anyone notices, and cross-sell whitespace sits unworked because no one scores it.'
@@ -888,12 +823,41 @@ agent_usecases:
         stories:
           - title: Calculate Customer Lifetime Value
             url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
-          - title: 'Grainger: GenAI product discovery across 2.5M SKUs'
-            url: https://www.databricks.com/customers/grainger
-          - title: Recommendation Engines for Personalization
-            url: https://www.databricks.com/solutions/accelerators/recommendation-engines
-      - name: Dynamic B2B Pricing
-        short: Revenue
+      - name: Distribution & Logistics Optimization
+        short: Route & freight
+        icon: stream
+        summary: Delivery routes, carrier choice and last-mile execution optimised across the branch and DC network to cut freight cost and hit the delivery window.
+        problem: Routes and carrier assignments are planned in silos per branch, so trucks run half-empty, freight spend climbs and delivery windows slip.
+        who_benefits: Supply Chain & Ops
+        how_built: Order, shipment and TMS feeds are conformed; route and load plans are generated in Model Serving, reviewed in the OTIF Control Tower and handed to Oracle OTM for transport execution against live in-transit state.
+        components:
+          - OTIF Control Tower
+          - Oracle OTM
+          - project44
+          - Model Serving
+          - Lakehouse//RT
+        stories:
+          - title: Scalable Route Generation on Databricks
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+      - name: Working Capital & Cash Flow Optimization
+        short: Cash & margin
+        icon: gauge
+        summary: Cash tied up in inventory, receivables and unclaimed rebates surfaced by branch so the CFO steers days-of-cash before a thin-margin quarter squeezes.
+        problem: Cash is trapped across inventory, receivables and unclaimed rebates in separate ledgers, so the CFO cannot see days-of-cash by branch or act before a thin-margin quarter turns into a cash squeeze.
+        who_benefits: Finance & Rebates
+        how_built: ERP receivables and inventory and the federated rebate mart are conformed under Unity Catalog, credit and payment-risk models score in Model Serving, and days-of-cash and exposure surface in AI/BI with Genie for ad hoc questions.
+        components:
+          - SAP S/4HANA
+          - Finance & Rebate Mart
+          - Dun & Bradstreet
+          - Model Serving
+          - AI/BI
+          - Genie One
+        stories:
+          - title: Volvo Group increases spare-parts inventory visibility with Databricks
+            url: https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines
+      - name: Dynamic Pricing
+        short: Contract & quote
         icon: market
         summary: Contract and quote prices set per customer, product and volume against cost, competitor context and willingness to pay rather than a static price book.
         problem: Thousands of negotiated contract prices drift from cost, so margin leaks quietly on renewals and reps discount to the floor without knowing where the floor is.
@@ -905,37 +869,67 @@ agent_usecases:
           - PROS Pricing
           - Model Serving
           - AI/BI
+        stories: []
+      - name: Order Processing Automation
+        short: EDI order-to-cash
+        icon: api
+        summary: EDI, portal and email orders parsed, validated and posted to the ERP automatically so the cash cycle no longer waits on manual keying.
+        problem: Customer orders arrive as EDI, email, portal and phone in dozens of formats, so branch teams key them by hand into the ERP, errors creep in and the cash cycle waits on the backlog.
+        who_benefits: Supply Chain & Ops
+        how_built: SPS and TrueCommerce EDI and SAP Commerce orders land through Lakeflow, AI Functions and Mosaic AI parse and validate each order against the SAP catalog, and clean orders write to the ERP with exception state held on Lakebase.
+        components:
+          - SPS Commerce EDI
+          - TrueCommerce EDI
+          - SAP Commerce Cloud
+          - AI Functions
+          - Lakeflow
+          - Lakebase
+      - name: Next-Best Commercial Offer
+        short: Cross-sell offers
+        icon: custlake
+        summary: Ranked next-best product and reorder offers per account, so reps and the B2B portal pitch what a customer is most likely to buy next instead of a generic catalog.
+        problem: Cross-sell whitespace across a long-tail catalog goes unworked because no one scores which product a given account should buy next, so reps default to reorders and the portal shows a generic catalog.
+        who_benefits: Sales & Commercial
+        how_built: Order, CRM and commerce history are conformed through CustomerLake and Feature Store; next-best-offer models score in Model Serving and surface in the rep's Salesforce view and the SAP Commerce portal.
+        components:
+          - CustomerLake
+          - Feature Store
+          - Model Serving
+          - Salesforce Sales Cloud
+          - SAP Commerce Cloud
         stories:
-          - title: Databricks for Retail and Consumer Goods
-            url: https://www.databricks.com/solutions/industries/retail-industry-solutions
-      - name: Warehouse Labor & Throughput
-        short: Operations
-        icon: db
-        summary: DC labor and pick paths balanced to real throughput so pickers land where the volume is and overtime stops piling up at peak.
-        problem: DC labor is planned on last year's averages, so pickers are misallocated across shifts and branches, throughput sags at peak and overtime climbs while another site sits idle.
-        who_benefits: Supply Chain & Ops
-        how_built: Manhattan, Blue Yonder and Körber WMS move events stream into Lakehouse//RT and conform on Delta Lake, and labor and throughput models in Model Serving balance staffing and pick paths shown in the Inventory Command app on AI/BI and handed to the existing WMS workflow.
+          - title: Recommendation Engines for Personalization
+            url: https://www.databricks.com/solutions/accelerators/recommendation-engines
+      - name: Lead Scoring & Prioritization
+        short: Pipeline scoring
+        icon: chart
+        summary: Inbound leads and open opportunities scored and ranked by conversion likelihood and account potential, so inside sales works the accounts most likely to grow first.
+        problem: Leads and open opportunities are worked in list order, so reps chase low-probability accounts while high-potential buyers wait, and the firmographic signals that would rank them sit unused.
+        who_benefits: Sales & Commercial
+        how_built: Salesforce pipeline, order history and Dun & Bradstreet firmographics are conformed through Feature Store; propensity-to-convert models score in Model Serving and rank the queue in the rep's CRM view on AI/BI.
         components:
-          - Inventory Command
-          - Manhattan Active WMS
-          - Blue Yonder WMS
-          - Körber WMS
-          - Lakehouse//RT
+          - Salesforce Sales Cloud
+          - Dun & Bradstreet
+          - Feature Store
           - Model Serving
-      - name: Delivery Fleet & Equipment Health
-        short: Reliability
-        icon: iot
-        summary: Delivery trucks and warehouse material-handling equipment watched for failures before a breakdown strands a route or stalls a pick line.
-        problem: Delivery trucks and warehouse material-handling equipment fail without warning, so a breakdown strands a route or stalls a pick line and the automation telemetry that would have flagged it goes unused.
-        who_benefits: Supply Chain & Ops
-        how_built: Asset-condition and maintenance-history inputs, with Körber automation telemetry and TMS and project44 movement signals, stream into Lakehouse//RT, and remaining-life models score component failure risk in Model Serving tracked in MLflow while movement anomalies raise operational alerts, so failures become planned repairs before a route or line stops.
+          - AI/BI
+        stories: []
+      - name: Guided Buying Assistant
+        short: B2B buying copilot
+        icon: api
+        summary: A conversational buying assistant on the B2B portal that helps customers find the right SKU, check contract price and availability, and reorder in natural language across a long-tail catalog.
+        problem: B2B buyers hunt through a huge catalog and punchout screens to find the right product and their contract price, so orders stall, wrong items get bought and reorders default to phone and email.
+        who_benefits: Sales & Commercial
+        how_built: Product, contract-price and availability data are governed under Unity Catalog; Agent Bricks agents grounded on the SAP Commerce catalog and order history answer buying questions and draft reorders served into the portal.
         components:
-          - Körber WMS
-          - Oracle OTM
-          - project44
-          - Lakehouse//RT
+          - Agent Bricks
+          - SAP Commerce Cloud
+          - Unity Catalog
           - Model Serving
-          - MLflow
+          - AI Functions
+        stories:
+          - title: 'Grainger: GenAI product discovery across 2.5M SKUs'
+            url: https://www.databricks.com/customers/grainger
 medallion:
   Bronze:
     short: Raw ERP, WMS, EDI feeds

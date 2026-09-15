@@ -353,10 +353,9 @@ pipelines:
           - name: Member Board
             cares: patronage returns and the long-term value delivered back to grower-owners.
         ucs:
-          - Input & Harvest Logistics
-          - Fleet & Equipment Reliability
-          - Seed & Hybrid Placement Simulation
-          - Input Cost & Nitrogen Efficiency
+          - Distribution & Logistics Optimization
+          - Design Space Simulation & Exploration
+          - Operations Resource Efficiency
       - name: Agronomy
         mark: AI/BI
         summary: Hybrid selection, variable-rate prescriptions and scouting priorities, judged on yield per acre, input cost per bushel and nitrogen use.
@@ -373,9 +372,9 @@ pipelines:
           - name: Precision Ag Specialist
             cares: productivity-zone mapping and nitrogen use efficiency by field.
         ucs:
-          - In-Season Yield Monitoring
-          - Variable-Rate Input Prescriptions
-          - Seed & Hybrid Placement Simulation
+          - Production Monitoring
+          - Feedstock, Formulation, & Recipe Control
+          - Design Space Simulation & Exploration
       - name: Grain Merchandising
         mark: Model Serving
         summary: Basis trading, hedging and origination against futures and local bids, managed on position, basis exposure and hedge P&L.
@@ -392,9 +391,9 @@ pipelines:
           - name: Risk Desk
             cares: position limits and futures and basis exposure across locations.
         ucs:
-          - Grain Demand Forecasting
-          - Input & Harvest Logistics
-          - Input Cost & Nitrogen Efficiency
+          - Demand Forecasting
+          - Distribution & Logistics Optimization
+          - Operations Resource Efficiency
       - name: Sustainability
         mark: Lakehouse//RT
         summary: Carbon programs, practice verification and Scope 3 reporting, tracked on carbon intensity, enrolled acres and credits issued per grower.
@@ -411,8 +410,8 @@ pipelines:
           - name: Scope 3 Reporting
             cares: carbon intensity and water metrics reported to food-company buyers.
         ucs:
-          - Carbon MRV
-          - Field-to-Elevator Traceability
+          - Sustainability & Circular Economy
+          - Product & Process Traceability
       - name: Finance & Risk
         mark: AI/BI
         summary: Patronage, crop insurance and counterparty exposure, watching patronage pools, indemnity exposure and off-margin contracts.
@@ -429,9 +428,8 @@ pipelines:
           - name: Counterparty Risk
             cares: off-margin contracts and counterparty exposure across the book.
         ucs:
-          - Grain & Input Inventory
-          - Input Cost & Nitrogen Efficiency
-          - Grain Demand Forecasting
+          - Operations Resource Efficiency
+          - Demand Forecasting
   - name: Technical
     icon: code
     tiles:
@@ -453,9 +451,9 @@ pipelines:
           - name: Data Quality
             cares: expectations on machine, imagery and FMIS feeds before agronomy reads them.
         ucs:
-          - In-Season Yield Monitoring
-          - Grain Demand Forecasting
-          - Input & Harvest Logistics
+          - Production Monitoring
+          - Demand Forecasting
+          - Distribution & Logistics Optimization
       - name: Data Scientists
         mark: MLflow
         summary: Yield-forecast, basis and soil-carbon quantification models built from imagery and trial data, and whether they still hold across a shifting season.
@@ -474,9 +472,9 @@ pipelines:
           - name: Carbon Quantification
             cares: soil-carbon models that survive third-party verification.
         ucs:
-          - In-Season Yield Monitoring
-          - Grain Demand Forecasting
-          - Carbon MRV
+          - Production Monitoring
+          - Demand Forecasting
+          - Sustainability & Circular Economy
       - name: App Developers
         mark: Apps
         summary: Ship the harvest command, prescription workbench and carbon registry apps agronomy and merchandising work in, hosted next to governed field data.
@@ -495,9 +493,9 @@ pipelines:
           - name: Agent Builders
             cares: agents that draft prescriptions and offers against governed tools.
         ucs:
-          - Input & Harvest Logistics
-          - Variable-Rate Input Prescriptions
-          - Carbon MRV
+          - Distribution & Logistics Optimization
+          - Feedstock, Formulation, & Recipe Control
+          - Sustainability & Circular Economy
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -684,9 +682,9 @@ agent_usecases:
         questions:
           - What is the current yield estimate by field and hybrid?
           - Which fields show declining crop condition on recent imagery?
-          - How did variable-rate prescriptions perform versus flat rate?
-          - Which fields have the best nitrogen use efficiency this season?
-          - Where is pest or disease pressure building right now?
+          - How did variable-rate seed and nitrogen prescriptions perform versus flat rate?
+          - Which hybrid and variety placements simulate best for next season by zone?
+          - Which fields have the best nitrogen use efficiency and input cost per bushel?
       - name: Grain Merchandising Agent
         icon: genie
         summary: Explore grain demand, basis positions and origination against futures and local bids.
@@ -700,11 +698,11 @@ agent_usecases:
           - Head Merchandiser
           - Risk Desk
         questions:
-          - What is our basis position by location right now?
-          - How much futures and basis exposure is open against limits?
+          - What is our basis position and open exposure by location right now?
+          - What is hedge P&L by commodity this month against limits?
           - Where should we bid to fill the elevator at target basis?
-          - What is hedge P&L by commodity this month?
-          - Which contracts are off-margin at current prices?
+          - What is forecast grain demand by crop and location versus plan?
+          - Which contracts are off-margin at current futures and cash prices?
       - name: Harvest Operations Agent
         icon: genie
         summary: Answer harvest progress, elevator throughput and logistics bottleneck questions.
@@ -719,10 +717,10 @@ agent_usecases:
           - Origination
         questions:
           - What is harvest progress by region and crop today?
-          - Where are elevator and dryer queues building right now?
-          - Which routes have the longest truck wait at receiving?
+          - Where are elevator and dryer queues and the longest truck waits building?
+          - Which spray or harvest windows carry heat or weather safety risk this week?
+          - Which fields or elevators show unsafe equipment or grain-handling conditions right now?
           - What is cost per acre this harvest versus plan?
-          - Which spray or harvest windows are at weather risk this week?
       - name: Carbon & MRV Agent
         icon: genie
         summary: Ask about enrolled acres, practice verification and credits issued per grower.
@@ -736,20 +734,20 @@ agent_usecases:
           - Carbon Program Lead
           - MRV & Verification
         questions:
-          - How many acres are enrolled in carbon programs by practice?
+          - How many acres are enrolled in carbon and regenerative programs by practice?
           - Which enrolled fields are missing practice verification evidence?
+          - Can we trace lot lineage from field and grower through elevator to buyer?
           - How many credits have been issued per grower this cycle?
-          - What is carbon intensity by crop for Scope 3 reporting?
-          - Which practices are at risk of failing third-party verification?
+          - What is carbon intensity by crop for Scope 3 reporting to buyers?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: In-Season Yield Monitoring
-        short: Production
+      - name: Production Monitoring
+        short: In-season yield tracking
         icon: chart
-        summary: In-season yield estimates and field crop-condition tracked from imagery, weather and hybrid response.
+        summary: In-season yield estimates and field crop-condition monitored from imagery, weather and hybrid response.
         problem: Yield is guessed from last year's average and a windshield survey, so seed, input and marketing decisions are made months before anyone has a defensible number per field.
         who_benefits: Agronomy
         how_built: Satellite imagery, weather and hybrid-trial features are engineered in Feature Store and scored through Model Serving, with runs tracked in MLflow across the season.
@@ -760,69 +758,25 @@ agent_usecases:
           - Feature Store
           - MLflow
         stories:
-          - title: Agerpoint partners with Databricks for agriculture data intelligence
-            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
           - title: Databricks spatial joins for crop yield analysis and forecasting
             url: https://www.databricks.com/blog/databricks-spatial-joins-now-17x-faster-out-box
-      - name: Variable-Rate Input Prescriptions
-        short: Agronomy
-        icon: iot
-        summary: Seed, nitrogen and chemical rates optimized by productivity zone rather than flat application.
-        problem: Inputs go on at flat rates because field, soil and yield layers live in different tools and never line up, so money is spent on acres that cannot return it.
+      - name: Design Space Simulation & Exploration
+        short: Seed & hybrid design
+        icon: chart
+        summary: Hybrid and variety placement simulated across zone, soil and weather scenarios before seed is ordered.
+        problem: Hybrid and variety choices are made from last year's plots and a rep's pitch, so the seed-by-zone design space is never simulated and a poor placement is only discovered at harvest when the yield is already lost.
         who_benefits: Agronomy
-        how_built: Soil, yield and imagery layers are scored with AI Functions and Model Serving in the Prescription Workbench, then written back to the applicator and Deere Operations Center as VR files.
+        how_built: Hybrid-trial, imagery and weather data are conformed on Delta Lake, and Mosaic AI models tracked in MLflow simulate variety response across zone, soil and weather so agronomy ranks placements in the Prescription Workbench before seed is ordered.
         components:
           - Prescription Workbench
-          - Model Serving
-          - AI Functions
-          - John Deere Operations Center
-          - Delta Lake
-        stories:
-          - title: 'Geospatial Unbounded: variable-rate prescription from soil, zones and weather'
-            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
-      - name: Grain Demand Forecasting
-        short: Merchandising
-        icon: market
-        summary: Grain demand and origination volume forecast by crop and location against futures, cash bids and USDA balance sheets.
-        problem: Origination and sales volumes are forecast from last year and gut feel, so the elevator either bids for grain it cannot move or misses demand it could have filled, and the plan never ties to the market.
-        who_benefits: Grain Merchandising
-        how_built: Futures, cash-bid and USDA balance-sheet feeds are conformed on Delta Lake, and demand models scored in Model Serving forecast crop and location demand in the Merchandising Desk for origination to plan against.
-        components:
-          - Merchandising Desk
-          - CME Group Futures
-          - DTN ProphetX
-          - Model Serving
-          - Delta Lake
-      - name: Input & Harvest Logistics
-        short: Supply
-        icon: stream
-        summary: Seed and input supply and harvest grain movement planned across trucks, elevators and dryers to minimize wait and shrink.
-        problem: Input deliveries before the season and grain movement at harvest are coordinated by phone, so seed and chemical arrive late, elevator and dryer queues build, grain shrinks in the wait, and no one sees the network bottleneck until it is too late.
-        who_benefits: Co-op Executive Board
-        how_built: Input orders, scale tickets, equipment telemetry and elevator status stream into Lakehouse//RT and route-and-scheduling logic surfaces live input supply, queues and dryer capacity in Harvest Command.
-        components:
-          - Harvest Command
-          - Lakehouse//RT
-          - John Deere Operations Center
-          - Model Serving
-          - Delta Lake
-      - name: Grain & Input Inventory
-        short: Inventory
-        icon: gavel
-        summary: Elevator grain positions and input stock tuned to real throughput and lead time rather than static reorder tables.
-        problem: Grain piles up in some elevators and input stock sits idle at others because positions are tracked in separate accounting systems, so working capital is locked in the wrong inventory while a location runs short at the worst moment.
-        who_benefits: Finance & Risk
-        how_built: Grain accounting, receiving and input-purchase data are conformed on Delta Lake, and inventory and reorder models scored in Model Serving tune elevator grain positions and input stock to real throughput and lead time, with recommendations presented in AI/BI.
-        components:
-          - Agvance (SSI)
-          - SAP S/4HANA Agribusiness
-          - Delta Lake
-          - AI/BI
-          - Genie One
-      - name: Carbon MRV
-        short: Sustainability
+          - Climate FieldView
+          - Planet Labs Imagery
+          - Mosaic AI
+          - MLflow
+      - name: Sustainability & Circular Economy
+        short: Carbon & regen programs
         icon: partner
-        summary: Practice verification and quantification for credit programs.
+        summary: Practice verification, carbon quantification and regenerative program outcomes for credit and Scope 3 programs.
         problem: Carbon programs enroll acres faster than they can prove the outcome, and practice evidence stitched from spreadsheets and one-off models will not survive third-party verification.
         who_benefits: Sustainability
         how_built: Imagery, practice and soil data feed carbon models scored in Model Serving, with Unity Catalog holding auditable lineage from field practice to issued credit in the Carbon Registry.
@@ -833,10 +787,26 @@ agent_usecases:
           - Unity Catalog
           - Planet Labs Imagery
         stories:
-          - title: Agerpoint partners with Databricks for agriculture and nature systems
-            url: https://www.agerpoint.com/blog/agerpoint-partners-with-databricks-to-scale-enterprise-data-intelligence-for-agriculture-and-nature-systems
-      - name: Field-to-Elevator Traceability
-        short: Traceability
+          - title: UPL cultivates innovation on Agent Bricks
+            url: https://www.databricks.com/your-ai/customers/upl
+      - name: Feedstock, Formulation, & Recipe Control
+        short: Input rate formulation
+        icon: iot
+        summary: Seed, nitrogen and chemical rates formulated by productivity zone rather than flat application.
+        problem: Inputs go on at flat rates because field, soil and yield layers live in different tools and never line up, so money is spent on acres that cannot return it.
+        who_benefits: Agronomy
+        how_built: Soil, yield and imagery layers are scored with AI Functions and Model Serving in the Prescription Workbench, then written back to the applicator and Deere Operations Center as variable-rate files.
+        components:
+          - Prescription Workbench
+          - Model Serving
+          - AI Functions
+          - John Deere Operations Center
+          - Delta Lake
+        stories:
+          - title: 'Geospatial Unbounded: variable-rate prescription from soil, zones and weather'
+            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
+      - name: Product & Process Traceability
+        short: Field-to-elevator lineage
         icon: product
         summary: Lot lineage from field and grower through elevator to customer, with sourcing claims intact.
         problem: Provenance from field to customer is scattered across ERP, elevator and grower systems, so lot lineage and sourcing claims are assembled by hand and hard to defend to a buyer or auditor.
@@ -849,10 +819,65 @@ agent_usecases:
           - OpenSharing
           - Delta Lake
         stories:
+          - title: Bayer transforms global data management with Databricks
+            url: https://www.databricks.com/customers/bayer
+      - name: Demand Forecasting
+        short: Grain demand forecasting
+        icon: market
+        summary: Grain demand and origination volume forecast by crop and location against futures, cash bids and USDA balance sheets.
+        problem: Origination and sales volumes are forecast from last year and gut feel, so the elevator either bids for grain it cannot move or misses demand it could have filled, and the plan never ties to the market.
+        who_benefits: Grain Merchandising
+        how_built: Futures, cash-bid and USDA balance-sheet feeds are conformed on Delta Lake, and demand models scored in Model Serving forecast crop and location demand in the Merchandising Desk for origination to plan against.
+        components:
+          - Merchandising Desk
+          - CME Group Futures
+          - DTN ProphetX
+          - Model Serving
+          - Delta Lake
+        stories:
           - title: UPL optimizes supply chain operations with demand forecasting
             url: https://www.databricks.com/customers/upl
-      - name: Input Cost & Nitrogen Efficiency
-        short: Efficiency
+      - name: Commodity & Energy Trading
+        short: Basis & hedge trading
+        icon: market
+        summary: Basis positions, hedging and origination managed against futures, cash bids and local elevator prices.
+        problem: Basis and hedge decisions are made in spreadsheets against yesterday's settlements, so position, exposure and hedge P&L drift out of view and grain is priced without a live market picture.
+        who_benefits: Grain Merchandising
+        how_built: CME futures, DTN cash bids and Barchart curves are conformed on Delta Lake, and basis-forecast models scored in Model Serving surface live position, exposure and hedge P&L in the Merchandising Desk.
+        components:
+          - Merchandising Desk
+          - CME Group Futures
+          - DTN ProphetX
+          - Barchart cmdty
+          - Model Serving
+      - name: Workforce Safety
+        short: Field & elevator safety
+        icon: gavel
+        summary: Equipment, elevator and field hazards surfaced from machine telemetry and weather so injuries are prevented before crews are exposed.
+        problem: Grain handling, equipment operation and chemical spraying are among the most dangerous jobs in agriculture, but near-misses and hazardous conditions sit unread in telemetry and weather feeds until an incident forces the review.
+        who_benefits: Co-op Executive Board
+        how_built: Machine telemetry, elevator events and DTN Weather stream into Lakehouse//RT, and risk models scored in Model Serving flag hazardous heat, equipment and grain-handling conditions in Harvest Command before crews are sent out.
+        components:
+          - Harvest Command
+          - John Deere Operations Center
+          - DTN Weather
+          - Lakehouse//RT
+          - Model Serving
+      - name: Distribution & Logistics Optimization
+        short: Harvest grain logistics
+        icon: stream
+        summary: Seed and input supply and harvest grain movement planned across trucks, elevators and dryers to minimize wait and shrink.
+        problem: Input deliveries before the season and grain movement at harvest are coordinated by phone, so seed and chemical arrive late, elevator and dryer queues build, grain shrinks in the wait, and no one sees the network bottleneck until it is too late.
+        who_benefits: Co-op Executive Board
+        how_built: Input orders, scale tickets, equipment telemetry and elevator status stream into Lakehouse//RT and route-and-scheduling logic surfaces live input supply, queues and dryer capacity in Harvest Command.
+        components:
+          - Harvest Command
+          - Lakehouse//RT
+          - John Deere Operations Center
+          - Model Serving
+          - Delta Lake
+      - name: Operations Resource Efficiency
+        short: Input & nitrogen efficiency
         icon: erp
         summary: Seed, chemical and nitrogen spend per bushel and nitrogen use efficiency tracked against plan.
         problem: Seed, chemical and nitrogen spend is reconciled against plan long after the season, so overspend and poor nitrogen use efficiency on an acre or a hybrid are found at close rather than while there is still time to change the order.
@@ -867,32 +892,6 @@ agent_usecases:
         stories:
           - title: FMC optimizes harvests with data and AI
             url: https://www.databricks.com/customers/fmc-corporation
-      - name: Fleet & Equipment Reliability
-        short: Reliability
-        icon: stream
-        summary: Combine, planter, sprayer and tractor failures predicted from machine telemetry before they stop a field operation.
-        problem: A combine or planter breakdown in a narrow harvest or planting window costs the crop, but machine faults hide in equipment telemetry no one watches, so maintenance is reactive and the failure lands at the worst possible moment.
-        who_benefits: Co-op Executive Board
-        how_built: Machine telemetry from Deere Operations Center and mixed-fleet ADAPT feeds streams into Lakehouse//RT, and remaining-life models tracked in MLflow and scored in Model Serving flag at-risk machines in Harvest Command before the operation.
-        components:
-          - Harvest Command
-          - John Deere Operations Center
-          - AgGateway ADAPT
-          - Model Serving
-          - MLflow
-      - name: Seed & Hybrid Placement Simulation
-        short: R&D
-        icon: chart
-        summary: Hybrid and variety placement simulated across zone, soil and weather scenarios before seed is ordered.
-        problem: Hybrid and variety choices are made from last year's plots and a rep's pitch, so the seed-by-zone design space is never simulated and a poor placement is only discovered at harvest when the yield is already lost.
-        who_benefits: Agronomy
-        how_built: Hybrid-trial, imagery and weather data are conformed on Delta Lake, and Mosaic AI models tracked in MLflow simulate variety response across zone, soil and weather so agronomy ranks placements in the Prescription Workbench before seed is ordered.
-        components:
-          - Prescription Workbench
-          - Climate FieldView
-          - Planet Labs Imagery
-          - Mosaic AI
-          - MLflow
 medallion:
   Bronze:
     short: Raw field and market feeds

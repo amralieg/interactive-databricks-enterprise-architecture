@@ -331,7 +331,7 @@ pipelines:
           - name: Pricing & Packaging
             cares: attach, entitlement and what customers will pay for.
         ucs:
-          - Product Feature-Usage Analytics
+          - Product Feature Usage Analytics
           - Customer 360
           - Demand Forecasting
       - name: Manufacturing Ops
@@ -352,9 +352,8 @@ pipelines:
           - name: Manufacturing Engineering
             cares: rework routes and the cost of a defect escape.
         ucs:
-          - SMT Assembly Defect Detection
-          - Quality Event Root-Cause
-          - Inventory Optimisation
+          - Predictive Maintenance & Asset Health
+          - Inventory Optimization
       - name: Quality & Reliability
         mark: Model Serving
         summary: Quality and reliability teams on defect root-cause, field returns and warranty cost tied back to the board, lot and supplier.
@@ -373,9 +372,8 @@ pipelines:
           - name: Warranty Analyst
             cares: warranty cost per unit and the failure modes driving claims.
         ucs:
-          - Quality Event Root-Cause
-          - Warranty Cost Optimisation
-          - SMT Assembly Defect Detection
+          - Predictive Maintenance & Asset Health
+          - Warranty Cost Optimization
       - name: Engineering & Product Security
         mark: MLflow
         summary: Silicon, board and firmware engineering on design-space trade-offs and code velocity, and product security on threats across the deployed fleet.
@@ -394,9 +392,8 @@ pipelines:
           - name: Product Security
             cares: threats, integrity and the response across the deployed fleet.
         ucs:
-          - SoC & Board Design Simulation
-          - Embedded Engineering Copilot
-          - Device Threat Monitoring
+          - Design Space Simulation & Exploration
+          - Cyber Threat Monitoring & Detection
       - name: Commercial & Aftermarket
         mark: AI/BI
         summary: Sales and customer success on account health and device registration, and aftermarket on warranty, RMA and service margin across the installed base.
@@ -416,8 +413,8 @@ pipelines:
             cares: sell-through and partner performance across the network.
         ucs:
           - Customer 360
-          - Warranty Cost Optimisation
-          - Product Feature-Usage Analytics
+          - Warranty Cost Optimization
+          - Product Feature Usage Analytics
       - name: Supply Chain
         mark: AI/BI
         summary: Demand and materials planners on component lead times, allocation and inventory, trading inventory cost against line-down and stock-out risk.
@@ -437,8 +434,8 @@ pipelines:
             cares: single-source exposure and allocation on critical components.
         ucs:
           - Demand Forecasting
-          - Inventory Optimisation
-          - Warranty Cost Optimisation
+          - Inventory Optimization
+          - Warranty Cost Optimization
   - name: Technical
     icon: code
     tiles:
@@ -460,9 +457,8 @@ pipelines:
           - name: Pipeline On-call
             cares: freshness on the yield and fleet tables the line reads.
         ucs:
-          - Product Feature-Usage Analytics
-          - SMT Assembly Defect Detection
-          - Device Threat Monitoring
+          - Product Feature Usage Analytics
+          - Cyber Threat Monitoring & Detection
       - name: Data Scientists
         mark: MLflow
         summary: Demand, defect-vision, warranty and threat-anomaly models, and whether they still hold six months after deployment on the line and in the field.
@@ -482,8 +478,8 @@ pipelines:
             cares: anomaly and threat models on device security events.
         ucs:
           - Demand Forecasting
-          - Quality Event Root-Cause
-          - Warranty Cost Optimisation
+          - Predictive Maintenance & Asset Health
+          - Warranty Cost Optimization
       - name: App Developers
         mark: Apps
         summary: Ship the product analytics, quality cockpit and threat console applications product, quality and security teams work in, hosted next to governed device data.
@@ -502,9 +498,8 @@ pipelines:
           - name: Agent Developer
             cares: coding assistants and agents against the governed code base.
         ucs:
-          - Embedded Engineering Copilot
           - Customer 360
-          - Product Feature-Usage Analytics
+          - Product Feature Usage Analytics
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -676,68 +671,68 @@ agent_usecases:
     span: 3
     cols: 2
     tiles:
-      - name: Product Realization Agent
+      - name: Product & Fleet Agent
         icon: genie
-        summary: Ask about first-pass yield, SMT defects and quality root-cause across the lines in plain language.
+        summary: Ask about feature adoption, warranty cost and device health across the shipped fleet in plain language.
         feeds:
-          - Siemens Opcenter
-          - Koh Young AOI
-          - In-Circuit & Functional Test
+          - Device Telemetry
+          - ServiceMax
+          - MasterControl QMS
           - Yield, defect, warranty
         teams:
-          - Manufacturing Ops
+          - Product Leadership
           - Quality & Reliability
-          - Process Engineering
+          - Commercial & Aftermarket
         questions:
-          - What is first-pass yield by line and product this week?
-          - Which SMT defect types are trending on which lines?
-          - Which lots are held by out-of-spec test results?
-          - Where is process capability drifting toward a limit?
-          - What is the defect escape rate versus final test?
-      - name: Silicon Design & Security Agent
+          - Which features are adopted by segment this quarter?
+          - Which failure modes drive the most warranty cost?
+          - How many units are trending toward a field failure?
+          - What is retention and attach by product line?
+          - Which devices should be serviced before they fail?
+      - name: Engineering & Security Agent
         icon: genie
-        summary: Explore design-space trade-offs, code velocity and device threats across engineering and security.
+        summary: Explore design-space trade-offs and device threats across engineering and product security.
         feeds:
           - Cadence Design Platform
-          - GitHub Enterprise
+          - Altium PCB
           - Device Security Events
-          - Conformed board, unit, fleet
+          - Threat Intelligence Feed
         teams:
           - Engineering & Product Security
           - Silicon & Board Engineering
           - Product Security
         questions:
           - Which design-space options best trade power, performance and area?
-          - Where is firmware defect escape concentrated by module?
+          - Where do simulation results diverge from targets before freeze?
           - Which devices in the field show anomalous security signals?
           - Which CVEs affect firmware currently deployed in the fleet?
-          - Where should the coding assistant focus to lift code velocity?
-      - name: Customer & Aftermarket Agent
+          - Where is a threat spreading across the installed base right now?
+      - name: Customer & Commercial Agent
         icon: genie
-        summary: Answer feature adoption, account health and warranty questions across the installed base.
+        summary: Answer account 360, device pricing and support questions across the installed base.
         feeds:
-          - Device Telemetry
           - Salesforce
           - ServiceMax
-          - Yield, defect, warranty
+          - Device Telemetry
+          - Conformed board, unit, fleet
         teams:
-          - Product Leadership
           - Commercial & Aftermarket
+          - Product Leadership
           - Quality & Reliability
         questions:
-          - Which features are adopted by segment this quarter?
+          - What is the full account, order and device picture for a customer?
           - Which accounts are below device-utilisation target?
-          - Which failure modes drive the most warranty cost?
-          - How many units are trending toward a field failure?
-          - What is retention and attach by product line?
+          - Where is margin leaking against recommended device pricing?
+          - Which channel discounts are out of line with demand?
+          - Which support cases can an agent resolve without escalation?
       - name: Supply & Demand Agent
         icon: genie
         summary: Ask about demand accuracy, component allocation and inventory across products and sites.
         feeds:
           - SAP S/4HANA
           - Kinaxis Maestro
+          - Oracle SCM Cloud
           - EDI ASN / DESADV
-          - Conformed board, unit, fleet
         teams:
           - Supply Chain
           - Demand Planning
@@ -753,8 +748,8 @@ agent_usecases:
     span: 8
     cols: 5
     tiles:
-      - name: Product Feature-Usage Analytics
-        short: Product
+      - name: Product Feature Usage Analytics
+        short: Feature adoption
         icon: gauge
         summary: How the shipped fleet actually uses each feature by segment, grounding the roadmap in adoption not opinion.
         problem: Product decisions are made on orders and anecdote, so the team invests in features the installed base rarely uses and misses the ones that drive retention.
@@ -767,7 +762,7 @@ agent_usecases:
           - Delta Lake
           - Unity Catalog
       - name: Demand Forecasting
-        short: Planning
+        short: Component demand planning
         icon: sheet
         summary: Product and component demand forecast against real signals so the plan holds when allocation tightens.
         problem: Demand lives in spreadsheets and stale ERP extracts, so forecasts miss, the wrong components are bought and either builds stall or excess inventory piles up.
@@ -785,7 +780,7 @@ agent_usecases:
           - title: Part-level demand forecasting at scale for the chip supply chain
             url: https://www.databricks.com/blog/part-level-demand-forecasting-scale
       - name: Customer 360
-        short: Commercial
+        short: Account & device 360
         icon: crm
         summary: Account, order, device and support history joined so sales and success see the whole customer, not fragments.
         problem: Sales sees orders, success sees tickets and product sees telemetry, and none of them meet, so the customer is served from fragments and churn signals are missed.
@@ -797,8 +792,8 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
           - Delta Lake
-      - name: Inventory Optimisation
-        short: Working capital
+      - name: Inventory Optimization
+        short: Component working capital
         icon: market
         summary: Safety stock and reorder points tuned to actual component lead-time variability not static policy tables.
         problem: Safety stock and reorder points are set from static policy, so the network carries too much of the wrong components and still stocks out when allocation and lead times vary.
@@ -813,21 +808,21 @@ agent_usecases:
         stories:
           - title: Smarter supply chains with data and AI
             url: https://www.databricks.com/blog/smarter-supply-chains-data-and-ai-why-its-time-rethink-inventory-management
-      - name: Device Threat Monitoring
-        short: Product security
+      - name: Cyber Threat Monitoring & Detection
+        short: Device security
         icon: observ
-        summary: Deployed devices scored on security events so an emerging threat is caught across the fleet before exposure grows.
+        summary: Deployed devices scored on security events so an emerging cyber threat is caught across the fleet before exposure grows.
         problem: Security events and threat intel sit in separate systems read after the fact, so a firmware exploit or anomaly spreads across the fleet before anyone joins the signals.
         who_benefits: Engineering & Product Security
         how_built: Device security events stream into Lakehouse//RT and correlate with the Threat Intelligence Feed on Delta Lake, and anomaly models in Model Serving surface threats to the Threat Console before exposure grows.
         components:
           - Threat Console
           - Device Security Events
+          - Threat Intelligence Feed
           - Model Serving
           - Lakehouse//RT
-          - Unity Catalog
-      - name: Warranty Cost Optimisation
-        short: Warranty
+      - name: Warranty Cost Optimization
+        short: Board & device warranty
         icon: product
         summary: Warranty claims joined to build genealogy and field telemetry so failure modes are fixed at the root, not paid repeatedly.
         problem: Warranty claims are paid and closed without joining them to the lot, supplier and telemetry that caused them, so the same failure mode is paid over and over and never designed out.
@@ -839,8 +834,24 @@ agent_usecases:
           - Device Telemetry
           - Model Serving
           - AI/BI
-      - name: SoC & Board Design Simulation
-        short: Engineering
+      - name: Dynamic Pricing
+        short: Channel pricing
+        icon: market
+        summary: Device and channel prices set from demand, attach and competitive signals so margin holds without hand-set discounts.
+        problem: Prices and channel discounts are set from static tables and gut feel, so margin leaks on fast-moving devices while slow movers sit unsold and competitors reprice far quicker.
+        who_benefits: Commercial & Aftermarket
+        how_built: Salesforce orders, SAP pricing and device demand signals conform on Delta Lake and are scored by pricing models in Model Serving, so recommended device and channel prices are read in AI/BI under Unity Catalog and written back through the commercial path.
+        components:
+          - Salesforce
+          - SAP S/4HANA
+          - Model Serving
+          - AI/BI
+          - Unity Catalog
+        stories:
+          - title: Steelcase boosts deal velocity with AI-powered pricing on Databricks
+            url: https://www.databricks.com/customers/steelcase
+      - name: Design Space Simulation & Exploration
+        short: SoC & board trade-offs
         icon: sheet
         summary: Design-space trade-offs across power, performance and area explored on silicon and board data before tape-out and layout freeze.
         problem: Design-space trade-offs are explored in siloed EDA tools on old assumptions, so power, performance and area targets are missed and re-spins cost weeks and mask money.
@@ -855,51 +866,40 @@ agent_usecases:
         stories:
           - title: Semiconductors on the Databricks Data Intelligence Platform
             url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
-      - name: Embedded Engineering Copilot
-        short: Coding assistant
-        icon: code
-        summary: A domain-specific coding assistant grounded in the governed firmware code base, design data and standards to lift embedded engineering velocity.
-        problem: Firmware engineers lose time hunting through a sprawling code base, past defects and design docs, and generic assistants do not know the product's own standards and history.
-        who_benefits: Engineering & Product Security
-        how_built: GitHub source, issues and design data are governed under Unity Catalog, and Agent Bricks grounds a domain-specific coding assistant in that governed context, served through Genie and Model Serving.
+      - name: Agentic Customer Support & Outage Response
+        short: Device fleet support
+        icon: crm
+        summary: Agents that resolve customer and field support cases and coordinate outage response across the installed base, grounded in governed telemetry and service history.
+        problem: Support and outage handling rely on people searching manuals, tickets and telemetry by hand, so resolution is slow, escalations pile up and a fleet-wide fault is triaged case by case instead of at once.
+        who_benefits: Commercial & Aftermarket
+        how_built: ServiceMax cases, device telemetry and product documentation are governed under Unity Catalog, and Agent Bricks grounds support and outage-response agents in that context, served through Genie and Model Serving with writes back to the service path.
         components:
-          - GitHub Enterprise
-          - Genie
+          - ServiceMax
+          - Device Telemetry
           - Agent Bricks
-          - Unity Catalog
+          - Genie
           - Model Serving
-      - name: Quality Event Root-Cause
-        short: Quality
-        icon: gavel
-        summary: Defect and quality events linked to probable contributors across board, lot, supplier and process rather than reconstructed by hand.
-        problem: When a quality event hits, root cause is reconstructed by hand across MES, inspection and QMS, so the same escape recurs and CAPA backlog ages toward the next audit.
-        who_benefits: Quality & Reliability
-        how_built: AOI inspection, MES genealogy and QMS non-conformances conform on Delta Lake, and models in Model Serving with AI Functions surface probable cause in the Quality Cockpit for CAPA.
-        components:
-          - Quality Cockpit
-          - Koh Young AOI
-          - MasterControl QMS
-          - Model Serving
-          - AI Functions
         stories:
-          - title: Acond advances equipment anomaly detection with Databricks
-            url: https://www.databricks.com/customers/acond/datasentics
-      - name: SMT Assembly Defect Detection
-        short: Line quality
+          - title: Lippert improves customer support with GenAI agents on Databricks
+            url: https://www.databricks.com/customers/lippert
+      - name: Predictive Maintenance & Asset Health
+        short: Fleet asset health
         icon: observ
-        summary: Solder and placement defects scored inline from optical inspection rather than caught at functional test or in the field.
-        problem: SMT solder and placement defects are reviewed after the board is built, so a drifting stencil or feeder is caught at functional test or in the field instead of at the line.
-        who_benefits: Manufacturing Ops
-        how_built: Koh Young AOI images and test signals become features in Feature Store scored by vision models in Model Serving and tracked in MLflow, so the Quality Cockpit flags defects inline before disposition.
+        summary: Shipped devices scored on telemetry and failure history so degradation is caught and serviced before a unit fails in the field.
+        problem: Field failures are handled reactively after a device fails, so downtime hits the customer, truck rolls spike and the failure mode is only understood after the return.
+        who_benefits: Quality & Reliability
+        how_built: Device telemetry and ServiceMax service history conform on Delta Lake and feed remaining-life models tracked in MLflow and scored in Model Serving, so predicted failures raise field service orders before a unit fails.
         components:
-          - Quality Cockpit
-          - Koh Young AOI
-          - In-Circuit & Functional Test
+          - Device Telemetry
+          - ServiceMax
           - Model Serving
           - MLflow
+          - Delta Lake
         stories:
-          - title: How Corning built end-to-end ML on Databricks
-            url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
+          - title: Husqvarna predicts maintenance across connected devices with Databricks
+            url: https://www.databricks.com/customers/husqvarna
+          - title: Acond advances equipment anomaly detection with Databricks
+            url: https://www.databricks.com/customers/acond/datasentics
 medallion:
   Bronze:
     short: Raw line and fleet feeds
