@@ -794,6 +794,10 @@ agent_usecases:
         stories:
           - title: Unlocking the future of energy with smart meter innovation (Southern Company)
             url: https://www.databricks.com/blog/unlocking-future-energy-smart-meter-innovation
+          - title: Kraken deploys Delta Sharing to scale secure global operations
+            url: https://www.databricks.com/customers/kraken
+          - title: Accelerating Europe's energy transition with energy flexibility
+            url: https://www.databricks.com/customers/sympower
       - name: Grid Management & Energy Mix
         short: DER & energy mix
         icon: stream
@@ -828,6 +832,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/ausnet-services
           - title: What is predictive maintenance on the Databricks platform
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
       - name: Sustainability & Circular Economy
         short: Emissions & losses
         icon: globe
@@ -841,7 +847,11 @@ agent_usecases:
           - Unity Catalog
           - AI/BI
           - Reliability Reporting
-        stories: []
+        stories:
+          - title: SSE Energy Solutions lowers carbon emissions with Databricks
+            url: https://www.databricks.com/customers/sse
+          - title: Powering a sustainable future that's always on
+            url: https://www.databricks.com/customers/uk-power-networks
       - name: Agentic Customer Support & Outage Response
         short: Agentic outage care
         icon: chat
@@ -873,7 +883,11 @@ agent_usecases:
           - AI/BI
           - Regulatory Cost Accounting
           - Data Products
-        stories: []
+        stories:
+          - title: Hawaiian Electric Boosts Regulatory Efficiency
+            url: https://www.databricks.com/customers/hawaiian-electric-company/agent-bricks
+          - title: Maintaining regulatory compliance with ease
+            url: https://www.databricks.com/customers/hawaiian-electric-company
       - name: Scenario Planning & Business Simulation
         short: Electrification scenarios
         icon: model
@@ -901,7 +915,9 @@ agent_usecases:
           - Agent Bricks
           - Lakebase
           - Unity Catalog
-        stories: []
+        stories:
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
       - name: Commodity & Energy Trading
         short: Purchased-power procurement
         icon: market
@@ -929,7 +945,9 @@ agent_usecases:
           - AI/BI
           - Genie One
           - Rate Case Submissions
-        stories: []
+        stories:
+          - title: How telecom CFOs can make smarter network capex decisions with AI
+            url: https://www.databricks.com/blog/how-telecom-cfos-can-make-smarter-network-capex-decisions-ai
 medallion:
   Bronze:
     short: Raw meter and SCADA

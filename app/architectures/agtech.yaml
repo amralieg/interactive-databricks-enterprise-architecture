@@ -821,6 +821,8 @@ agent_usecases:
         stories:
           - title: Bayer transforms global data management with Databricks
             url: https://www.databricks.com/customers/bayer
+          - title: FMC Optimizes Harvests With Data and AI
+            url: https://www.databricks.com/customers/fmc-corporation
       - name: Design Space Simulation & Exploration
         short: Crop genetics R&D
         icon: notebook
@@ -896,6 +898,8 @@ agent_usecases:
         stories:
           - title: Accelerating Corteva's data source onboarding with Lakeflow
             url: https://www.databricks.com/dataaisummit/session/accelerating-cortevas-data-source-onboarding-lakeflow
+          - title: Optimizing supply chain operations with demand forecasting
+            url: https://www.databricks.com/customers/upl
       - name: Commodity & Energy Trading
         short: Procurement hedging
         icon: market
@@ -935,6 +939,9 @@ agent_usecases:
           - CNH AFS Connect
           - Model Serving
           - Delta Lake
+        stories:
+          - title: Barilla streamlines food manufacturing operations with Databricks Lakehouse
+            url: https://www.databricks.com/customers/barilla
       - name: Operations Resource Efficiency
         short: Fleet efficiency
         icon: iot

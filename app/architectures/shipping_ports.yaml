@@ -744,7 +744,9 @@ agent_usecases:
           - Navis N4 TOS
           - Lakeflow
           - Delta Lake
-        stories: []
+        stories:
+          - title: "Solution Accelerator: Scalable Route Generation With Databricks and OSRM"
+            url: https://www.databricks.com/blog/solution-accelerator-scalable-route-generation-databricks-and-osrm
       - name: Predictive Maintenance & Asset Health
         short: Crane asset health
         icon: iot
@@ -786,6 +788,9 @@ agent_usecases:
           - Lakeflow
           - Model Serving
           - Mosaic AI
+        stories:
+          - title: "The Rosetta stone of CPS: Claroty's AI-powered library"
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Demand Forecasting
         short: Throughput forecast
         icon: chart

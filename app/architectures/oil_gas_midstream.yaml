@@ -785,6 +785,11 @@ agent_usecases:
           - Model Serving
           - Unity Catalog
           - Delta Lake
+        stories:
+          - title: Announcing Data Intelligence for Cybersecurity
+            url: https://www.databricks.com/blog/transforming-cybersecurity-data-intelligence
+          - title: "The Rosetta stone of CPS: Claroty's AI-powered library"
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Distribution & Logistics Optimization
         short: Nominations & scheduling
         icon: stream
@@ -811,6 +816,9 @@ agent_usecases:
           - ROSEN ILI
           - Unity Catalog
           - Delta Lake
+        stories:
+          - title: Transforming Finance With Agentic AI at Scale
+            url: https://www.databricks.com/customers/vale/agent-bricks
       - name: Production Monitoring
         short: Throughput & linepack
         icon: iot

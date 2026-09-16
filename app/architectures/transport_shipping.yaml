@@ -805,6 +805,8 @@ agent_usecases:
             url: https://www.databricks.com/solutions/accelerators/threat-detection
           - title: Databricks for Cybersecurity
             url: https://www.databricks.com/solutions/industries/cybersecurity
+          - title: "The Rosetta stone of CPS: Claroty's AI-powered library"
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Demand Forecasting
         short: Freight demand
         icon: chart

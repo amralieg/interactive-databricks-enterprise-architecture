@@ -747,8 +747,6 @@ agent_usecases:
           - Which accounts are drifting and reducing order frequency?
           - Which accounts should get the next-best commercial offer this week?
           - What is estimated share of wallet, against a modeled category-spend denominator, on our top 100 customers?
-          - Which open leads should reps prioritise by conversion likelihood?
-          - What reorder should the guided buying assistant suggest for this account?
       - name: Demand & Supply Agent
         icon: genie
         summary: Forecast SKU-location demand and supplier lead-time reliability.
@@ -768,27 +766,12 @@ agent_usecases:
           - Which suppliers have the worst fill rate on our purchase orders?
           - Where should assortment change based on demand signals?
           - How many EDI, portal and email orders posted straight through versus stuck on validation exceptions today?
+          - Which trading-partner EDI feeds or ERP accounts show anomalous access that could signal a cyber threat?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Inventory Optimization
-        short: Stock & service
-        icon: store
-        summary: Safety-stock, reorder-point and assortment decisions tuned to service-level targets and the cash tied up in inventory across every branch.
-        problem: Inventory is set by static min-max rules per branch, so millions in working capital sit in the wrong SKUs while service levels still miss on the ones that matter.
-        who_benefits: Supply Chain & Ops
-        how_built: Forecasts and lead-time variability feed multi-echelon optimisation in Model Serving; recommendations surface in the Inventory Command app and write back to the ERP.
-        components:
-          - Inventory Command
-          - Model Serving
-          - Manhattan Active WMS
-          - Lakehouse//RT
-          - MLflow
-        stories:
-          - title: Supply Chain Distribution Optimization
-            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
       - name: Demand Forecasting
         short: SKU-location planning
         icon: chart
@@ -807,22 +790,36 @@ agent_usecases:
             url: https://www.databricks.com/solutions/accelerators/demand-forecasting
           - title: ReaderLink, North America's largest book distributor, forecasts demand on Databricks
             url: https://www.databricks.com/blog/revolutionizing-enterprise-data-analytics-readerlink-sql-ai-powered-insights
-      - name: Customer 360
-        short: Account 360
-        icon: custlake
-        summary: A unified account view predicting which customers are drifting and which product lines they should be buying, scored against the order history the CRM and ERP already hold.
-        problem: 'A distributor loses accounts quietly: orders taper for months before anyone notices, and cross-sell whitespace sits unworked because no one scores it.'
-        who_benefits: Sales & Commercial
-        how_built: Order and CRM history are activated through CustomerLake; churn and next-best-order models are scored in Model Serving and served into the rep's account view.
+      - name: Inventory Optimization
+        short: Stock & service
+        icon: store
+        summary: Safety-stock, reorder-point and assortment decisions tuned to service-level targets and the cash tied up in inventory across every branch.
+        problem: Inventory is set by static min-max rules per branch, so millions in working capital sit in the wrong SKUs while service levels still miss on the ones that matter.
+        who_benefits: Supply Chain & Ops
+        how_built: Forecasts and lead-time variability feed multi-echelon optimisation in Model Serving; recommendations surface in the Inventory Command app and write back to the ERP.
         components:
-          - Feature Store
+          - Inventory Command
           - Model Serving
-          - Salesforce Sales Cloud
-          - CustomerLake
-          - AI/BI
+          - Manhattan Active WMS
+          - Lakehouse//RT
+          - MLflow
         stories:
-          - title: Calculate Customer Lifetime Value
-            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
+          - title: Supply Chain Distribution Optimization
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+      - name: Dynamic Pricing
+        short: Contract & quote
+        icon: market
+        summary: Contract and quote prices set per customer, product and volume against cost, competitor context and willingness to pay rather than a static price book.
+        problem: Thousands of negotiated contract prices drift from cost, so margin leaks quietly on renewals and reps discount to the floor without knowing where the floor is.
+        who_benefits: Sales & Commercial
+        how_built: Vendavo and PROS pricing data are conformed in the lakehouse; elasticity and win-probability models score each quote through Model Serving behind the Pricing Cockpit.
+        components:
+          - Pricing Cockpit
+          - Vendavo Pricing
+          - PROS Pricing
+          - Model Serving
+          - AI/BI
+        stories: []
       - name: Distribution & Logistics Optimization
         short: Route & freight
         icon: stream
@@ -839,6 +836,89 @@ agent_usecases:
         stories:
           - title: Scalable Route Generation on Databricks
             url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+          - title: Scalable Route Generation With Databricks
+            url: https://www.databricks.com/blog/solution-accelerator-scalable-route-generation-databricks-and-osrm
+      - name: Customer 360
+        short: Account 360
+        icon: custlake
+        summary: A unified account view predicting which customers are drifting and which product lines they should be buying, scored against the order history the CRM and ERP already hold.
+        problem: 'A distributor loses accounts quietly: orders taper for months before anyone notices, and cross-sell whitespace sits unworked because no one scores it.'
+        who_benefits: Sales & Commercial
+        how_built: Order and CRM history are activated through CustomerLake; churn and next-best-order models are scored in Model Serving and served into the rep's account view.
+        components:
+          - Feature Store
+          - Model Serving
+          - Salesforce Sales Cloud
+          - CustomerLake
+          - AI/BI
+        stories:
+          - title: Calculate Customer Lifetime Value
+            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
+      - name: Supply & Materials Planning
+        short: Supplier lead-time risk
+        icon: partner
+        summary: Supplier lead-time reliability and single-source exposure surfaced across the buy so shortages are caught before they stall branch replenishment.
+        problem: Supplier risk and lead-time variability sit unread across the ERP and inbound EDI feeds, so a slipping supplier or single-source SKU only becomes visible after a stockout has already hit the branches.
+        who_benefits: Supply Chain & Ops
+        how_built: SAP S/4HANA purchase orders and SPS Commerce EDI ASNs are conformed to Gold; lead-time and supplier-risk models score in Model Serving, and exposure surfaces in the Inventory Command app with Genie One for ad hoc questions.
+        components:
+          - SAP S/4HANA
+          - SPS Commerce EDI
+          - Dun & Bradstreet
+          - Model Serving
+          - Inventory Command
+          - Genie One
+        stories:
+          - title: 'Customer Story: J.B. Hunt'
+            url: https://www.databricks.com/customers/jbhunt
+          - title: Fleet optimization with CARTO & Databricks
+            url: https://www.databricks.com/blog/fleet-optimization-carto-databricks
+      - name: Next-Best Commercial Offer
+        short: Cross-sell offers
+        icon: custlake
+        summary: Ranked next-best product and reorder offers per account, so reps and the B2B portal pitch what a customer is most likely to buy next instead of a generic catalog.
+        problem: Cross-sell whitespace across a long-tail catalog goes unworked because no one scores which product a given account should buy next, so reps default to reorders and the portal shows a generic catalog.
+        who_benefits: Sales & Commercial
+        how_built: Order, CRM and commerce history are conformed through CustomerLake and Feature Store; next-best-offer models score in Model Serving and surface in the rep's Salesforce view and the SAP Commerce portal.
+        components:
+          - CustomerLake
+          - Feature Store
+          - Model Serving
+          - Salesforce Sales Cloud
+          - SAP Commerce Cloud
+        stories:
+          - title: Recommendation Engines for Personalization
+            url: https://www.databricks.com/solutions/accelerators/recommendation-engines
+      - name: Order Processing Automation
+        short: EDI order-to-cash
+        icon: api
+        summary: EDI, portal and email orders parsed, validated and posted to the ERP automatically so the cash cycle no longer waits on manual keying.
+        problem: Customer orders arrive as EDI, email, portal and phone in dozens of formats, so branch teams key them by hand into the ERP, errors creep in and the cash cycle waits on the backlog.
+        who_benefits: Supply Chain & Ops
+        how_built: SPS and TrueCommerce EDI and SAP Commerce orders land through Lakeflow, AI Functions and Mosaic AI parse and validate each order against the SAP catalog, and clean orders write to the ERP with exception state held on Lakebase.
+        components:
+          - SPS Commerce EDI
+          - TrueCommerce EDI
+          - SAP Commerce Cloud
+          - AI Functions
+          - Lakeflow
+          - Lakebase
+      - name: Cyber Threat Monitoring & Detection
+        short: Systems cyber defense
+        icon: zshield
+        summary: Threats to the ERP, WMS, TMS and EDI systems detected from access and network logs before they divert orders, freight or payments.
+        problem: ERP, WMS, TMS and EDI logins, API calls and document exchanges throw off security signals that sit unwatched across systems, so a compromised account or a spoofed trading-partner feed is caught only after orders or payments are already diverted.
+        who_benefits: Supply Chain Data Eng
+        how_built: ERP, WMS, TMS and EDI access and network logs land through Lakeflow, and anomaly-detection models tracked in MLflow score in Model Serving under Unity Catalog to flag account takeover, feed spoofing and data exfiltration for review.
+        components:
+          - Lakeflow
+          - Model Serving
+          - MLflow
+          - Unity Catalog
+          - Lakehouse//RT
+        stories:
+          - title: 'The Rosetta stone of CPS: Claroty’s AI-powered library'
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Working Capital & Cash Flow Optimization
         short: Cash & margin
         icon: gauge
@@ -856,80 +936,6 @@ agent_usecases:
         stories:
           - title: Volvo Group increases spare-parts inventory visibility with Databricks
             url: https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines
-      - name: Dynamic Pricing
-        short: Contract & quote
-        icon: market
-        summary: Contract and quote prices set per customer, product and volume against cost, competitor context and willingness to pay rather than a static price book.
-        problem: Thousands of negotiated contract prices drift from cost, so margin leaks quietly on renewals and reps discount to the floor without knowing where the floor is.
-        who_benefits: Sales & Commercial
-        how_built: Vendavo and PROS pricing data are conformed in the lakehouse; elasticity and win-probability models score each quote through Model Serving behind the Pricing Cockpit.
-        components:
-          - Pricing Cockpit
-          - Vendavo Pricing
-          - PROS Pricing
-          - Model Serving
-          - AI/BI
-        stories: []
-      - name: Order Processing Automation
-        short: EDI order-to-cash
-        icon: api
-        summary: EDI, portal and email orders parsed, validated and posted to the ERP automatically so the cash cycle no longer waits on manual keying.
-        problem: Customer orders arrive as EDI, email, portal and phone in dozens of formats, so branch teams key them by hand into the ERP, errors creep in and the cash cycle waits on the backlog.
-        who_benefits: Supply Chain & Ops
-        how_built: SPS and TrueCommerce EDI and SAP Commerce orders land through Lakeflow, AI Functions and Mosaic AI parse and validate each order against the SAP catalog, and clean orders write to the ERP with exception state held on Lakebase.
-        components:
-          - SPS Commerce EDI
-          - TrueCommerce EDI
-          - SAP Commerce Cloud
-          - AI Functions
-          - Lakeflow
-          - Lakebase
-      - name: Next-Best Commercial Offer
-        short: Cross-sell offers
-        icon: custlake
-        summary: Ranked next-best product and reorder offers per account, so reps and the B2B portal pitch what a customer is most likely to buy next instead of a generic catalog.
-        problem: Cross-sell whitespace across a long-tail catalog goes unworked because no one scores which product a given account should buy next, so reps default to reorders and the portal shows a generic catalog.
-        who_benefits: Sales & Commercial
-        how_built: Order, CRM and commerce history are conformed through CustomerLake and Feature Store; next-best-offer models score in Model Serving and surface in the rep's Salesforce view and the SAP Commerce portal.
-        components:
-          - CustomerLake
-          - Feature Store
-          - Model Serving
-          - Salesforce Sales Cloud
-          - SAP Commerce Cloud
-        stories:
-          - title: Recommendation Engines for Personalization
-            url: https://www.databricks.com/solutions/accelerators/recommendation-engines
-      - name: Lead Scoring & Prioritization
-        short: Pipeline scoring
-        icon: chart
-        summary: Inbound leads and open opportunities scored and ranked by conversion likelihood and account potential, so inside sales works the accounts most likely to grow first.
-        problem: Leads and open opportunities are worked in list order, so reps chase low-probability accounts while high-potential buyers wait, and the firmographic signals that would rank them sit unused.
-        who_benefits: Sales & Commercial
-        how_built: Salesforce pipeline, order history and Dun & Bradstreet firmographics are conformed through Feature Store; propensity-to-convert models score in Model Serving and rank the queue in the rep's CRM view on AI/BI.
-        components:
-          - Salesforce Sales Cloud
-          - Dun & Bradstreet
-          - Feature Store
-          - Model Serving
-          - AI/BI
-        stories: []
-      - name: Guided Buying Assistant
-        short: B2B buying copilot
-        icon: api
-        summary: A conversational buying assistant on the B2B portal that helps customers find the right SKU, check contract price and availability, and reorder in natural language across a long-tail catalog.
-        problem: B2B buyers hunt through a huge catalog and punchout screens to find the right product and their contract price, so orders stall, wrong items get bought and reorders default to phone and email.
-        who_benefits: Sales & Commercial
-        how_built: Product, contract-price and availability data are governed under Unity Catalog; Agent Bricks agents grounded on the SAP Commerce catalog and order history answer buying questions and draft reorders served into the portal.
-        components:
-          - Agent Bricks
-          - SAP Commerce Cloud
-          - Unity Catalog
-          - Model Serving
-          - AI Functions
-        stories:
-          - title: 'Grainger: GenAI product discovery across 2.5M SKUs'
-            url: https://www.databricks.com/customers/grainger
 medallion:
   Bronze:
     short: Raw ERP, WMS, EDI feeds

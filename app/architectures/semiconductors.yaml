@@ -748,6 +748,8 @@ agent_usecases:
             url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
           - title: Semiconductors on the Databricks Data Intelligence Platform
             url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
+          - title: Resolving Manufacturing Quality with Machine Vision and MLOps
+            url: https://www.databricks.com/blog/resolving-manufacturing-quality-machine-vision-and-mlops
       - name: Demand Forecasting
         short: Part-level demand
         icon: globe
@@ -879,6 +881,11 @@ agent_usecases:
           - Model Serving
           - Unity Catalog
           - Delta Lake
+        stories:
+          - title: Announcing Data Intelligence for Cybersecurity
+            url: https://www.databricks.com/blog/transforming-cybersecurity-data-intelligence
+          - title: 'The Rosetta stone of CPS: Claroty''s AI-powered library'
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
 medallion:
   Bronze:
     short: Raw fab and test feeds

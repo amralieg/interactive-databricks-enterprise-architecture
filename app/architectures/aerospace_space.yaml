@@ -814,6 +814,11 @@ agent_usecases:
           - DELMIA Apriso
           - Model Serving
           - Feature Store
+        stories:
+          - title: Predictive quality starts where defect detection stops
+            url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+          - title: Resolving Manufacturing Quality with Machine Vision and MLOps
+            url: https://www.databricks.com/blog/resolving-manufacturing-quality-machine-vision-and-mlops
       - name: Product & Process Traceability
         short: Digital thread traceability
         icon: network
@@ -880,7 +885,9 @@ agent_usecases:
           - AVEVA PI Historian
           - Model Serving
           - AI/BI
-        stories: []
+        stories:
+          - title: Manufacturing Root Cause Analysis with Causal AI
+            url: https://www.databricks.com/blog/manufacturing-root-cause-analysis-causal-ai
       - name: Engineering Program Management & Bid Creation
         short: Program EVM & bid
         icon: sheet
@@ -928,6 +935,10 @@ agent_usecases:
         stories:
           - title: Databricks for Federal Government
             url: https://www.databricks.com/solutions/industries/federal-government
+          - title: Announcing Data Intelligence for Cybersecurity
+            url: https://www.databricks.com/blog/transforming-cybersecurity-data-intelligence
+          - title: 'The Rosetta stone of CPS: Claroty''s AI-powered library'
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Supply & Materials Planning
         short: Supplier & materials risk
         icon: network

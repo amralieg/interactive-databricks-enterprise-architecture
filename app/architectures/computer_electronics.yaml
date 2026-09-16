@@ -761,6 +761,9 @@ agent_usecases:
           - AI/BI
           - Delta Lake
           - Unity Catalog
+        stories:
+          - title: How HP is optimizing the 3D Printing supply chain using Delta Sharing
+            url: https://www.databricks.com/blog/how-hp-optimizing-3d-printing-supply-chain-using-delta-sharing
       - name: Demand Forecasting
         short: Component demand planning
         icon: sheet
@@ -821,6 +824,11 @@ agent_usecases:
           - Threat Intelligence Feed
           - Model Serving
           - Lakehouse//RT
+        stories:
+          - title: Announcing Data Intelligence for Cybersecurity
+            url: https://www.databricks.com/blog/transforming-cybersecurity-data-intelligence
+          - title: 'The Rosetta stone of CPS: Claroty''s AI-powered library'
+            url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Warranty Cost Optimization
         short: Board & device warranty
         icon: product
@@ -834,6 +842,9 @@ agent_usecases:
           - Device Telemetry
           - Model Serving
           - AI/BI
+        stories:
+          - title: Insulet simplifies life for people living with diabetes
+            url: https://www.databricks.com/customers/insulet/lakeflow-connect
       - name: Dynamic Pricing
         short: Channel pricing
         icon: market

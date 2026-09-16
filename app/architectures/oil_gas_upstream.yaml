@@ -331,8 +331,8 @@ pipelines:
             cares: asset uptime, hydrocarbon loss and the HSE and compliance record across the portfolio.
         ucs:
           - Design Space Simulation & Exploration
-          - Commodity & Energy Trading
-          - Sustainability & Circular Economy
+          - Scenario Planning & Business Simulation
+          - Regulatory Risk Reviews
       - name: Field & Production Operations
         mark: Lakehouse//RT
         summary: Field superintendents on well uptime, deferment volume and artificial lift when alarms spike, protecting net production and hydrocarbon loss rate.
@@ -352,8 +352,7 @@ pipelines:
             cares: rotating-equipment health and the failures that defer production.
         ucs:
           - Production Monitoring
-          - Prescriptive Maintenance
-          - Operations Resource Efficiency
+          - Predictive Maintenance & Asset Health
       - name: Subsurface & Reservoir
         mark: AI/BI
         summary: Geoscience and reservoir teams on seismic interpretation, well tests and depletion, reconciling models to actual production before booking.
@@ -372,7 +371,6 @@ pipelines:
           - name: Production Geologist
             cares: well placement and the correlation between logs and performance.
         ucs:
-          - Subsurface Intelligence
           - Design Space Simulation & Exploration
           - Production Monitoring
       - name: Commercial & Supply
@@ -393,7 +391,7 @@ pipelines:
           - name: Materials & Procurement
             cares: supplier lead times and the materials that keep field work on schedule.
         ucs:
-          - Commodity & Energy Trading
+          - Distribution & Logistics Optimization
       - name: HSE & Compliance
         mark: Unity Catalog
         summary: Process safety and environmental teams on emissions, permits and incident trends, tracked on TRIR and flare volumes before regulator inspections.
@@ -412,8 +410,7 @@ pipelines:
           - name: Regulatory Compliance
             cares: permit limits and the evidence trail before regulator inspections.
         ucs:
-          - Regulation Compliance, & External Reporting
-          - Sustainability & Circular Economy
+          - Regulatory Risk Reviews
   - name: Technical
     icon: code
     tiles:
@@ -436,8 +433,8 @@ pipelines:
             cares: allocation, work-order and royalty feeds landed for finance and reliability.
         ucs:
           - Production Monitoring
-          - Prescriptive Maintenance
-          - Regulation Compliance, & External Reporting
+          - Predictive Maintenance & Asset Health
+          - Regulatory Risk Reviews
       - name: Data Scientists
         mark: MLflow
         summary: Well-decline, lift-optimisation, seismic-interpretation and equipment-failure models, and whether they still hold six months after deployment across assets.
@@ -456,9 +453,8 @@ pipelines:
           - name: Reliability DS
             cares: equipment-failure and remaining-life models and whether they still hold.
         ucs:
-          - Prescriptive Maintenance
+          - Predictive Maintenance & Asset Health
           - Design Space Simulation & Exploration
-          - Subsurface Intelligence
       - name: App Developers
         mark: Apps
         summary: Ship the production control, reservoir and marketing applications field and desk teams work in, hosted next to governed asset data.
@@ -478,7 +474,7 @@ pipelines:
             cares: setpoint and requisition writeback into SCADA and procurement systems.
         ucs:
           - Production Monitoring
-          - Commodity & Energy Trading
+          - Incident & Field Service Assistant
 consumers:
   - name: BI & Productivity
     icon: chart
@@ -672,9 +668,9 @@ agent_usecases:
         questions:
           - What was net production by asset yesterday versus plan?
           - Which wells are deferring the most volume right now, and why?
-          - Which lifted wells are running off their optimum setpoint today?
           - Where does the latest seismic interpretation and reservoir characterisation see the best remaining subsurface potential?
           - Which wells are diverging most from the reservoir simulation forecast?
+          - When a well or facility trips, what is the likely cause and the next step from asset history?
           - What is our hydrocarbon loss rate by asset this quarter?
       - name: Asset Reliability Agent
         icon: genie
@@ -691,28 +687,28 @@ agent_usecases:
         questions:
           - Which compressors and ESPs are trending toward failure this month?
           - What is the maintenance backlog by facility and asset class?
-          - Which facilities are using the most fuel gas and pump power per barrel produced?
           - How much deferred production traces back to equipment trips?
           - Which work orders are overdue against their planned window?
       - name: Crude Marketing Agent
         icon: genie
-        summary: Answer questions on netback, exposure, hedge effectiveness and materials supply.
+        summary: Answer questions on offtake demand, crude and materials logistics, materials supply and portfolio and capital scenarios.
         feeds:
           - ION Openlink Endur
           - Platts Price Assess
           - SAP IS-Oil
+          - SAP Ariba
+          - SAP S/4HANA
           - Production, margin, loss
         teams:
           - Commercial & Supply
           - Risk & Middle Office
           - Corporate & Asset Leaders
         questions:
-          - What is our crude netback by stream today?
-          - Which desks are closest to their exposure limits right now?
-          - How effective are our current hedges against benchmark moves?
-          - What is unit lifting cost by asset this month?
           - How does the portfolio programme re-plan across our latest price and production scenarios?
           - Which development and capital options rank best across our price, cost and production scenarios?
+          - What is the forecast offtake demand by crude and gas stream this month?
+          - Which crude liftings and field movements are at risk of demurrage or short delivery against the plan?
+          - Which materials and long-lead spares are short against planned field work?
       - name: HSE & Emissions Agent
         icon: genie
         summary: Ask about emissions, flare volumes, permits and safety incidents across facilities.
@@ -726,29 +722,48 @@ agent_usecases:
           - Environmental & Emissions
           - Process Safety
         questions:
-          - What are our flare and vent volumes by facility this month?
+          - Which wells and facilities carry the highest regulatory and environmental risk ahead of the next review?
           - Which permits are closest to their limit right now?
           - How many leaks were detected and how many are still open?
-          - Which external and regulatory filings are due, and is the evidence trail complete?
-          - Which facilities are driving the most greenhouse-gas emissions?
+          - Is the evidence trail complete for the filings and reviews that are due?
   - name: Business Use Cases
     icon: ztarget
     span: 8
     cols: 5
     tiles:
-      - name: Subsurface Intelligence
-        short: Seismic & reservoir
+      - name: Predictive Maintenance & Asset Health
+        short: Rotating equipment health
+        icon: gauge
+        summary: Compressor, ESP and rotating-equipment failures predicted from sensor drift before production is deferred.
+        problem: Rotating-equipment and artificial-lift failures defer production for hours, yet failures are found after the unit trips rather than predicted from the sensor drift that preceded them.
+        who_benefits: Field & Production Operations
+        how_built: Historian tags stream into Lakehouse//RT and feed remaining-life and anomaly models tracked in MLflow and scored in Model Serving, raising work orders on the Production Control screen.
+        components:
+          - Production Control
+          - AVEVA PI System
+          - IBM Maximo
+          - Model Serving
+          - MLflow
+        stories:
+          - title: 'BP''s Geospatial AI Engine: transforming safety and operations with Databricks'
+            url: https://www.databricks.com/blog/bps-geospatial-ai-engine-transforming-safety-and-operations-databricks
+          - title: 'Databricks and Shell: industrial time series analytics on the Lakehouse'
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: Building ML models for predictive maintenance in oil & gas
+            url: https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html
+      - name: Design Space Simulation & Exploration
+        short: Subsurface & reservoir
         icon: network
-        summary: Seismic volumes, well logs and reservoir models interpreted together to locate and produce hydrocarbons with confidence.
-        problem: Seismic interpretation, well-log analysis and reservoir characterisation live on isolated geoscience workstations, so the structural and depletion picture is slow to update and the compute to reprocess a survey or re-run a reservoir model is hard to marshal when a well or development decision is due.
+        summary: Seismic, logs and reservoir models simulated at scale to explore the subsurface and guide field development.
+        problem: Seismic volumes, well logs and reservoir models are interpreted on isolated workstations, so the structural and depletion picture is slow to update and the compute to explore a new development case is hard to marshal when a decision is due.
         who_benefits: Subsurface & Reservoir
-        how_built: Seismic, log and well-test data land on Delta Lake under Unity Catalog, and interpretation, attribute and reservoir-characterisation models tracked in MLflow and scored in Model Serving surface interpreted horizons and reservoir models on the Reservoir Workbench.
+        how_built: Seismic, log and production data land on Delta Lake under Unity Catalog, and interpretation, attribute and reservoir-simulation models tracked in MLflow and scored in Model Serving surface interpreted horizons and depletion scenarios on the Reservoir Workbench.
         components:
           - Reservoir Workbench
           - SLB Petrel
-          - SLB OFM
           - Model Serving
           - MLflow
+          - Delta Lake
         stories:
           - title: Devon Energy reimagines analytics and ML for oil & gas exploration
             url: https://www.databricks.com/customers/devon-energy
@@ -770,70 +785,6 @@ agent_usecases:
             url: https://www.databricks.com/customers/devon-energy
           - title: ARC Resources optimises drilling performance with real-time data
             url: https://www.databricks.com/blog/2022/05/24/arc-uses-a-lakehouse-architecture-for-real-time-data-insights-that-optimize-drilling-performance-and-lower-carbon-emissions.html
-      - name: Design Space Simulation & Exploration
-        short: Subsurface & reservoir
-        icon: network
-        summary: Seismic, logs and reservoir models simulated at scale to explore the subsurface and guide field development.
-        problem: Seismic volumes, well logs and reservoir models are interpreted on isolated workstations, so the structural and depletion picture is slow to update and the compute to explore a new development case is hard to marshal when a decision is due.
-        who_benefits: Subsurface & Reservoir
-        how_built: Seismic, log and production data land on Delta Lake under Unity Catalog, and interpretation, attribute and reservoir-simulation models tracked in MLflow and scored in Model Serving surface interpreted horizons and depletion scenarios on the Reservoir Workbench.
-        components:
-          - Reservoir Workbench
-          - SLB Petrel
-          - Model Serving
-          - MLflow
-          - Delta Lake
-        stories:
-          - title: Devon Energy reimagines analytics and ML for oil & gas exploration
-            url: https://www.databricks.com/customers/devon-energy
-      - name: Commodity & Energy Trading
-        short: Crude & gas trading
-        icon: market
-        summary: Physical crude and gas books and hedges reconciled and marked before exposure limits breach.
-        problem: Physical deals, paper hedges and benchmark curves are marked in different tools, so the desk sees exposure late and a limit breach surfaces only after the position has moved.
-        who_benefits: Commercial & Supply
-        how_built: Deal capture and price feeds conform under Unity Catalog, netback and mark-to-market models scored in Model Serving mark books consistently, and the desk works exposure from the Trading Workbench.
-        components:
-          - Trading Workbench
-          - ION Openlink Endur
-          - Platts Price Assess
-          - Model Serving
-          - Unity Catalog
-        stories:
-          - title: Data and AI in action across the energy industry
-            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
-      - name: Prescriptive Maintenance
-        short: Lift & equipment actions
-        icon: gauge
-        summary: Lift, compressor and pump interventions prescribed to prevent failures and lift more barrels at less energy.
-        problem: Artificial-lift and rotating-equipment setpoints and interventions are decided by hand on rounds, so wells run off their optimum and preventable failures climb between visits while the telemetry that would prescribe the next action goes unused.
-        who_benefits: Field & Production Operations
-        how_built: Lift and equipment telemetry stream into Lakehouse//RT and feed optimisation and prescriptive models tracked in MLflow and scored in Model Serving, writing approved setpoints and work orders back through the Production Control screen.
-        components:
-          - Production Control
-          - Emerson Zedi
-          - Model Serving
-          - MLflow
-          - Lakehouse//RT
-        stories:
-          - title: ARC Resources optimises drilling performance with real-time data
-            url: https://www.databricks.com/blog/2022/05/24/arc-uses-a-lakehouse-architecture-for-real-time-data-insights-that-optimize-drilling-performance-and-lower-carbon-emissions.html
-      - name: Sustainability & Circular Economy
-        short: Emissions & flaring
-        icon: observ
-        summary: Flare, vent and leak volumes cut and filed from governed historian lineage.
-        problem: Regulatory greenhouse filings are stitched from historian extracts and spreadsheets, so flare, vent and leak volumes are hard to trace from sensor to submission and hard to act on to cut emissions.
-        who_benefits: HSE & Compliance
-        how_built: Flare and emissions events conform on Delta Lake against EPA GHGRP layouts under Unity Catalog. Optical-gas detections, method-based emissions estimates and approved filing values stay distinct, giving one auditable lineage on the HSE Dashboard.
-        components:
-          - HSE Dashboard
-          - EPA GHGRP Templates
-          - FLIR Optical Gas Img
-          - Unity Catalog
-          - Delta Lake
-        stories:
-          - title: Repsol drives sustainability efforts with Databricks
-            url: https://www.databricks.com/customers/repsol
       - name: Scenario Planning & Business Simulation
         short: Price & portfolio scenarios
         icon: chart
@@ -848,22 +799,19 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
         stories: []
-      - name: Operations Resource Efficiency
-        short: Energy per barrel
-        icon: iot
-        summary: Lift power and compressor fuel optimised so each barrel is produced at the lowest energy and emissions cost.
-        problem: Artificial-lift power and compressor fuel gas are among the largest controllable operating costs, but energy per barrel is reviewed monthly on spreadsheets, so drift and inefficient equipment dispatch are caught long after the energy is spent and the emissions are released.
-        who_benefits: Field & Production Operations
-        how_built: Wellhead, lift and compressor tags land in Lakehouse//RT beside historian data on Delta Lake, and energy-efficiency models scored in Model Serving surface energy-per-barrel drift and optimal equipment dispatch on the Production Control screen over certified AI/BI views.
+      - name: Regulatory Risk Reviews
+        short: Well & facility risk reviews
+        icon: gavel
+        summary: Regulatory and environmental risk on each well and facility ranked against evidence before the next permit review or inspection.
+        problem: Regulatory and environmental risk reviews are assembled by hand from incident history, permit limits and lease and well locations, so a high-risk asset can approach a review with its risk case scattered across systems and reconstructed late.
+        who_benefits: HSE & Compliance
+        how_built: Incident, permit and GIS lease-location data conform under Unity Catalog on Delta Lake, and risk-scoring models scored in Model Serving rank wells and facilities by regulatory and environmental risk for review on the HSE Dashboard.
         components:
-          - Production Control
-          - AVEVA PI System
-          - Emerson Zedi
+          - HSE Dashboard
+          - Enablon EHS
+          - Esri ArcGIS
           - Model Serving
-          - AI/BI
-        stories:
-          - title: ARC Resources optimises drilling performance with real-time data
-            url: https://www.databricks.com/blog/2022/05/24/arc-uses-a-lakehouse-architecture-for-real-time-data-insights-that-optimize-drilling-performance-and-lower-carbon-emissions.html
+          - Unity Catalog
       - name: Capital Investment Simulation
         short: Field development capital
         icon: sheet
@@ -878,19 +826,61 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
         stories: []
-      - name: Regulation Compliance, & External Reporting
-        short: Permits & reporting
-        icon: erp
-        summary: Permit limits, filings and external reports assembled from governed data before an inspection.
-        problem: Regulatory evidence is stitched from extracts and spreadsheets at inspection time, so permit limits and the trail behind a filing are hard to trace from source to submission when a regulator asks.
-        who_benefits: HSE & Compliance
-        how_built: Permit, emissions and production data conform under Unity Catalog on Delta Lake, giving one auditable lineage from source to filing surfaced for compliance on the HSE Dashboard.
+      - name: Supply & Materials Planning
+        short: Materials & spares
+        icon: stream
+        summary: Materials and long-lead spares planned against field work orders so a shortage never stops a well intervention.
+        problem: Requisitions, supplier lead times and maintenance work orders sit in separate systems, so materials for field work are ordered late and a stockout defers a well intervention.
+        who_benefits: Commercial & Supply
+        how_built: SAP Ariba requisitions, Maximo work orders and S/4HANA materials master conform under Unity Catalog on Delta Lake, and demand models scored in Model Serving forecast materials need against planned field work on certified AI/BI views.
         components:
-          - HSE Dashboard
-          - Enablon EHS
+          - SAP Ariba
+          - IBM Maximo
+          - SAP S/4HANA
+          - Model Serving
+          - AI/BI
+        stories:
+          - title: 'Customer Story: Shell'
+            url: https://www.databricks.com/customers/shell
+      - name: Distribution & Logistics Optimization
+        short: Crude movements & logistics
+        icon: globe
+        summary: Crude movements and field logistics optimised against offtake plans and weather windows to avoid demurrage and short deliveries.
+        problem: Crude liftings, field materials movements and offshore logistics live in separate systems and weather windows, so movements slip and cargoes or supplies are short or long before anyone sees the whole logistics picture.
+        who_benefits: Commercial & Supply
+        how_built: Movement, offtake and metocean data conform on Delta Lake, optimisation models scored in Model Serving align movements to weather windows, and marketing works the plan from the Trading Workbench on certified AI/BI views.
+        components:
+          - Trading Workbench
+          - SAP S/4HANA
+          - Weather & Metocean Data
+          - Model Serving
+          - AI/BI
+      - name: Incident & Field Service Assistant
+        short: Field incident response
+        icon: iot
+        summary: Field operators get guided diagnosis, asset history and next steps the moment a well or facility incident is raised.
+        problem: When a well or facility trips, the operator works from tribal knowledge and scattered manuals while asset history, past failures and open work orders sit in systems they cannot reach from the field.
+        who_benefits: Field & Production Operations
+        how_built: Historian telemetry and work-order history conform on Delta Lake and mirror in Lakehouse//RT, and an Agent Bricks assistant grounded on governed asset history drafts diagnosis and next steps on the Production Control screen.
+        components:
+          - Production Control
+          - AVEVA PI System
+          - IBM Maximo
+          - Agent Bricks
+          - Lakehouse//RT
+      - name: Demand Forecasting
+        short: Offtake demand
+        icon: market
+        summary: Crude and gas offtake demand forecast by stream and buyer so liftings and production targets plan against real pull.
+        problem: Offtake and nomination demand is forecast from history in spreadsheets, so lifting schedules and production targets chase stale signals and swing between missed liftings and constrained storage.
+        who_benefits: Commercial & Supply
+        how_built: Allocation, deal and benchmark data conform under Unity Catalog on Delta Lake, and forecasting models tracked in MLflow and scored in Model Serving push stream-level offtake demand onto certified AI/BI views for marketing.
+        components:
           - SAP IS-Oil
-          - Unity Catalog
-          - Delta Lake
+          - Platts Price Assess
+          - Model Serving
+          - MLflow
+          - AI/BI
 medallion:
   Bronze:
     short: Raw field and market

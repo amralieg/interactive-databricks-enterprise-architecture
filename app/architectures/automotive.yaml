@@ -779,6 +779,8 @@ agent_usecases:
             url: https://www.databricks.com/customers/rivian
           - title: Mercedes-Benz transforms the car experience with Databricks
             url: https://www.databricks.com/customers/mercedes-benz
+          - title: What Separates the Winners and Losers in the Connected Vehicle Data Revolution
+            url: https://www.databricks.com/blog/what-separates-winners-and-losers-connected-vehicle-data-revolution
       - name: Defect Detection
         short: Torque & vision checks
         icon: iot
@@ -795,6 +797,8 @@ agent_usecases:
         stories:
           - title: Predictive quality starts where defect detection stops
             url: https://www.databricks.com/blog/predictive-quality-starts-where-defect-detection-stops
+          - title: Resolving Manufacturing Quality with Machine Vision and MLOps
+            url: https://www.databricks.com/blog/resolving-manufacturing-quality-machine-vision-and-mlops
       - name: Demand Forecasting
         short: Parts & aftermarket demand
         icon: product
@@ -811,6 +815,8 @@ agent_usecases:
         stories:
           - title: Volvo Group increases inventory visibility with Databricks
             url: https://www.databricks.com/customers/volvo/lakeflow-declarative-pipelines
+          - title: Part-level demand forecasting Solution Accelerator
+            url: https://github.com/databricks-industry-solutions/parts-demand-forecasting
       - name: Prescriptive Maintenance
         short: Guided fleet repairs
         icon: iot
@@ -870,7 +876,9 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
           - SAP Aftermarket
-        stories: []
+        stories:
+          - title: Manufacturing Root Cause Analysis with Causal AI
+            url: https://www.databricks.com/blog/manufacturing-root-cause-analysis-causal-ai
       - name: Customer 360
         short: Owner & dealer 360
         icon: custlake
@@ -900,7 +908,9 @@ agent_usecases:
           - Model Serving
           - Unity Catalog
           - AI/BI
-        stories: []
+        stories:
+          - title: Transforming data pipelines to power faster credit decisions
+            url: https://www.databricks.com/customers/capital-one
       - name: Engineering Program Management & Bid Creation
         short: Vehicle program & bids
         icon: network

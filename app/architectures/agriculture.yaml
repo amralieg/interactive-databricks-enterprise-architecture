@@ -773,6 +773,9 @@ agent_usecases:
           - Planet Labs Imagery
           - Mosaic AI
           - MLflow
+        stories:
+          - title: Syngenta Accelerates Crop Protection Research
+            url: https://www.databricks.com/customers/syngenta
       - name: Sustainability & Circular Economy
         short: Carbon & regen programs
         icon: partner
@@ -876,6 +879,9 @@ agent_usecases:
           - John Deere Operations Center
           - Model Serving
           - Delta Lake
+        stories:
+          - title: Barilla streamlines food manufacturing operations with Databricks Lakehouse
+            url: https://www.databricks.com/customers/barilla
       - name: Operations Resource Efficiency
         short: Input & nitrogen efficiency
         icon: erp

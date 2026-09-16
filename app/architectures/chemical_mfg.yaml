@@ -759,6 +759,9 @@ agent_usecases:
           - Mosaic AI
           - MLflow
           - AI/BI
+        stories:
+          - title: Driving eco-innovation in the energy sector for a cleaner future
+            url: https://www.databricks.com/customers/omv
       - name: Operations Resource Efficiency
         short: Energy per ton
         icon: chart

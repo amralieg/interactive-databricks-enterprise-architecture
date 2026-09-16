@@ -798,7 +798,9 @@ agent_usecases:
           - Model Serving
           - MLflow
           - ICE Power Markets
-        stories: []
+        stories:
+          - title: Vattenfall Builds Real-Time Energy Intelligence
+            url: https://www.databricks.com/customers/vattenfall/genie
       - name: Sustainability & Circular Economy
         short: RECs & carbon
         icon: gavel
