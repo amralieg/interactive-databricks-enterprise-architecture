@@ -866,7 +866,11 @@ agent_usecases:
           - IBM Maximo EAM
           - Model Serving
           - MLflow
-        stories: []
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: "Databricks and Shell: industrial time series analytics on the Lakehouse"
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
       - name: Demand Forecasting
         short: Production & weather
         icon: chart
@@ -916,7 +920,11 @@ agent_usecases:
           - Model Serving
           - MLflow
           - AI/BI
-        stories: []
+        stories:
+          - title: Stress Testing Supply Chain Networks at Scale on Databricks
+            url: https://www.databricks.com/blog/stress-testing-supply-chain-networks-scale-databricks
+          - title: "Solution Accelerator: Supply Chain Stress Testing with Digital Twins"
+            url: https://github.com/databricks-industry-solutions/supply-chain-stress-test
 medallion:
   Bronze:
     short: Raw asset & market feeds

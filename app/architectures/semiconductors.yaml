@@ -769,6 +769,11 @@ agent_usecases:
           - title: Part-level demand forecasting at scale for the chip supply chain
             url: https://www.databricks.com/blog/part-level-demand-forecasting-scale
       - name: Feedstock, Formulation, & Recipe Control
+        stories:
+          - title: "Geospatial Unbounded: variable-rate prescription from soil, zones and weather"
+            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
+          - title: How John Deere uses industrial AI for precision agriculture
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
         short: Recipe & APC control
         icon: erp
         summary: Closed-loop recipe and process-material control within guard bands against inline metrology.
@@ -782,6 +787,9 @@ agent_usecases:
           - AI Functions
           - Lakehouse//RT
       - name: Engineering Program Management & Bid Creation
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
         short: Tape-out programs
         icon: sheet
         summary: Tracking tape-out programs, NPI milestones and foundry bid creation across engineering.
@@ -811,6 +819,9 @@ agent_usecases:
           - title: HP cuts consumable traceability from days to minutes with Unity Catalog
             url: https://www.databricks.com/customers/hp-indigo
       - name: Design Space Simulation & Exploration
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
         short: DTCO & design rules
         icon: sheet
         summary: Exploring design and process trade-offs from silicon data back into design rules and IP.
@@ -856,6 +867,11 @@ agent_usecases:
           - title: 'Agents for production lines: trusted decisions and draft work orders in real time'
             url: https://www.databricks.com/blog/agents-production-lines-trusted-decisions-real-time
       - name: Supply & Materials Planning
+        stories:
+          - title: Supply chain and distribution optimization on Databricks
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+          - title: "John Deere's AI for Precision Farming"
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
         short: Wafer allocation & risk
         icon: market
         summary: Wafer allocation and multi-tier supplier risk set against materials lead times.

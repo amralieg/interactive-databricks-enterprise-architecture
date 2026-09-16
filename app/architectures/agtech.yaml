@@ -852,7 +852,11 @@ agent_usecases:
           - Planet Imagery
           - Unity Catalog
           - AI/BI
-        stories: []
+        stories:
+          - title: How Dow built a carbon footprint ledger on Databricks
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Feedstock, Formulation, & Recipe Control
         short: Variable-rate ag
         icon: sheet
@@ -870,6 +874,11 @@ agent_usecases:
           - title: How John Deere uses industrial AI for precision agriculture
             url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
       - name: Product & Process Traceability
+        stories:
+          - title: Databricks for Manufacturing
+            url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
+          - title: Managing recalls with barcode traceability in the data lakehouse
+            url: https://www.databricks.com/blog/managing-recalls-barcode-traceability-delta-lake
         short: Crop provenance
         icon: share
         summary: Crop and input provenance followed from field and grower to processor so deforestation-free and scope-3 claims are backed by governed evidence, not attestation.
@@ -901,6 +910,9 @@ agent_usecases:
           - title: Optimizing supply chain operations with demand forecasting
             url: https://www.databricks.com/customers/upl
       - name: Commodity & Energy Trading
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
         short: Procurement hedging
         icon: market
         summary: Input procurement cost and margin variance across the input supply chain tracked against orders and plan, so margin holds as feedstock and energy costs move.
@@ -914,6 +926,9 @@ agent_usecases:
           - AI/BI
           - Unity Catalog
       - name: Workforce Safety
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
         short: Operator safety
         icon: iot
         summary: Operator and field-worker safety events and near-misses surfaced from machine telemetry and sensor data so unsafe conditions are caught before an injury.

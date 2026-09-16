@@ -764,6 +764,9 @@ agent_usecases:
           - title: Databricks announces Lakehouse for Manufacturing
             url: https://www.databricks.com/company/newsroom/press-releases/databricks-announces-lakehouse-manufacturing-empowering-worlds
       - name: Design Space Simulation & Exploration
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
         short: Field-informed design
         icon: network
         summary: Design trade-offs on weight, durability and cost ranked against real field-reliability and duty-cycle evidence, so the next revision is grounded in how machines actually perform rather than assumption.
@@ -810,6 +813,9 @@ agent_usecases:
           - title: How Corning built end-to-end ML on Databricks
             url: https://www.databricks.com/blog/2023/01/05/how-corning-built-end-end-ml-databricks-lakehouse-platform.html
       - name: Engineering Program Management & Bid Creation
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
         short: Programs and bids
         icon: dev
         summary: Configured-to-order programs and bids grounded in as-built cost and milestone history rather than gut feel.
@@ -852,7 +858,9 @@ agent_usecases:
           - Lakehouse//RT
           - AI/BI
           - Genie One
-        stories: []
+        stories:
+          - title: How HP is optimizing the 3D Printing supply chain using Delta Sharing
+            url: https://www.databricks.com/blog/how-hp-optimizing-3d-printing-supply-chain-using-delta-sharing
       - name: Workforce Safety
         short: Plant safety
         icon: gavel
@@ -866,7 +874,9 @@ agent_usecases:
           - Machine Vision QC
           - Siemens Opcenter
           - Model Serving
-        stories: []
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
       - name: Supply & Materials Planning
         short: Long-lead casting risk
         icon: partner

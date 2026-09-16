@@ -827,7 +827,11 @@ agent_usecases:
           - PagerDuty
           - AI/BI
           - Unity Catalog
-        stories: []
+        stories:
+          - title: Announcing GA of Databricks Assistant and AI-Generated Comments
+            url: https://www.databricks.com/blog/announcing-general-availability-databricks-assistant-and-ai-generated-comments
+          - title: Use Databricks Assistant (Databricks documentation)
+            url: https://docs.databricks.com/aws/en/notebooks/use-databricks-assistant
       - name: Customer 360
         short: Unified profile
         icon: custlake
@@ -841,7 +845,9 @@ agent_usecases:
           - Feature Store
           - CRM Health Writeback
           - Unity Catalog
-        stories: []
+        stories:
+          - title: Calculate Customer Lifetime Value
+            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
       - name: AI-Driven Product Design and Prototyping
         short: Design & prototyping
         icon: ztarget
@@ -888,7 +894,11 @@ agent_usecases:
           - Any MCP Harness
           - Unity Gateway
           - Model Serving
-        stories: []
+        stories:
+          - title: Introducing Databricks Assistant, a context-aware AI assistant
+            url: https://www.databricks.com/blog/introducing-databricks-assistant
+          - title: Introducing Databricks Assistant Data Science Agent
+            url: https://www.databricks.com/blog/introducing-databricks-assistant-data-science-agent
       - name: Cross-Selling & Upsell Recommender
         short: Expansion recommender
         icon: market

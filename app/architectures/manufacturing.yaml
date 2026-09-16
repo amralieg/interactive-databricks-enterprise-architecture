@@ -731,6 +731,11 @@ agent_usecases:
           - title: What is predictive maintenance on the Databricks platform
             url: https://www.databricks.com/blog/what-is-predictive-maintenance
       - name: Incident & Field Service Assistant
+        stories:
+          - title: Zerobus Ingest for telemetry and IoT at scale
+            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
         short: Field service response
         icon: iot
         summary: Field technicians get guided diagnosis and repair history the moment an incident is raised on a machine.
@@ -744,6 +749,9 @@ agent_usecases:
           - Model Serving
           - Lakehouse//RT
       - name: Design Space Simulation & Exploration
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
         short: Design simulation
         icon: network
         summary: A live virtual model of the line and its assets, so a process or capacity change is explored in simulation before it runs on the floor.
@@ -757,6 +765,11 @@ agent_usecases:
           - MLflow
           - AI Functions
       - name: Warranty Cost Optimization
+        stories:
+          - title: Manufacturing Solutions on Databricks
+            url: https://www.databricks.com/solutions/industries/manufacturing-industry-solutions
+          - title: Lippert improves support and warranty intelligence with GenAI on Databricks
+            url: https://www.databricks.com/customers/lippert
         short: Warranty cost
         icon: product
         summary: Warranty claims traced back to build, lot and supplier so recurring failure modes are priced and designed out.
@@ -788,6 +801,9 @@ agent_usecases:
           - title: 'IoT in manufacturing: strategy, components and use cases'
             url: https://www.databricks.com/blog/iot-in-manufacturing
       - name: Engineering Program Management & Bid Creation
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
         short: Programs & bids
         icon: product
         summary: Engineering programs and new-product bids tracked on cost, schedule and ramp readiness before commitment.
@@ -819,6 +835,9 @@ agent_usecases:
           - title: Mondelez facilitates model experimentation at enterprise scale
             url: https://www.databricks.com/customers/mondelez
       - name: Product Feature Usage Analytics
+        stories:
+          - title: How HP is optimizing the 3D Printing supply chain using Delta Sharing
+            url: https://www.databricks.com/blog/how-hp-optimizing-3d-printing-supply-chain-using-delta-sharing
         short: Feature usage
         icon: network
         summary: Machine and line telemetry shows which run modes, recipes and line configurations are actually used most across the plant.
@@ -833,6 +852,9 @@ agent_usecases:
           - Model Serving
           - AI/BI
       - name: Workforce Safety
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
         short: Plant safety
         icon: gauge
         summary: Machine-state and environmental hazard signals from the floor surfaced before an incident, not investigated after one.

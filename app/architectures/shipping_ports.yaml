@@ -748,6 +748,11 @@ agent_usecases:
           - title: "Solution Accelerator: Scalable Route Generation With Databricks and OSRM"
             url: https://www.databricks.com/blog/solution-accelerator-scalable-route-generation-databricks-and-osrm
       - name: Predictive Maintenance & Asset Health
+        stories:
+          - title: What Separates the Winners and Losers in the Connected Vehicle Data Revolution
+            url: https://www.databricks.com/blog/what-separates-winners-and-losers-connected-vehicle-data-revolution
+          - title: Predictive maintenance on the Databricks Lakehouse
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
         short: Crane asset health
         icon: iot
         summary: STS and RTG crane and yard-equipment failures predicted from telemetry before they stop a berth.
@@ -762,6 +767,9 @@ agent_usecases:
           - MLflow
           - Delta Lake
       - name: Dynamic Pricing
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
         short: Tariff pricing
         icon: market
         summary: Handling, storage and demurrage tariffs priced to live demand, yard congestion and free-dwell risk rather than a static rate card.
@@ -792,6 +800,11 @@ agent_usecases:
           - title: "The Rosetta stone of CPS: Claroty's AI-powered library"
             url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Demand Forecasting
+        stories:
+          - title: Part-level demand forecasting Solution Accelerator
+            url: https://github.com/databricks-industry-solutions/parts-demand-forecasting
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
         short: Throughput forecast
         icon: chart
         summary: Container and vessel volume forecast by week and service so berths, labour and yard are sized to real demand.
@@ -806,6 +819,9 @@ agent_usecases:
           - MLflow
           - AI/BI
       - name: Workforce Safety
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
         short: Quay & yard safety
         icon: people
         summary: Equipment-proximity and near-miss risk in shared quay and yard zones flagged from equipment position and gate movement for supervisor review.
@@ -854,6 +870,11 @@ agent_usecases:
           - title: Hapag-Lloyd uses Databricks to enhance audit and compliance efficiency
             url: https://www.databricks.com/customers/hapag-lloyd
       - name: Incident & Field Service Assistant
+        stories:
+          - title: Zerobus Ingest for telemetry and IoT at scale
+            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
         short: Incident response
         icon: gavel
         summary: Security breaches, dangerous-goods anomalies and equipment incidents triaged from sensor and declaration data and routed to a field response as they happen.
@@ -868,6 +889,11 @@ agent_usecases:
           - Model Serving
           - Mosaic AI
       - name: Scenario Planning & Business Simulation
+        stories:
+          - title: Stress Testing Supply Chain Networks at Scale on Databricks
+            url: https://www.databricks.com/blog/stress-testing-supply-chain-networks-scale-databricks
+          - title: "Solution Accelerator: Supply Chain Stress Testing with Digital Twins"
+            url: https://github.com/databricks-industry-solutions/supply-chain-stress-test
         short: Capacity scenarios
         icon: gauge
         summary: Berth, yard and labour capacity simulated under volume, service-change and disruption scenarios so the terminal plans capital and staffing to what could happen.

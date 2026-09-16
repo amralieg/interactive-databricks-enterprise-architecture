@@ -733,6 +733,11 @@ agent_usecases:
           - title: Chevron Phillips Chemical tackles GenAI with Databricks
             url: https://www.databricks.com/customers/chevron-phillips-chemical
       - name: Workforce Safety
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
+          - title: "BP's Geospatial AI Engine: transforming safety and operations with Databricks"
+            url: https://www.databricks.com/blog/bps-geospatial-ai-engine-transforming-safety-and-operations-databricks
         short: Process safety
         icon: gavel
         summary: Process-safety and permit signals surfaced so unsafe conditions are caught before an incident.
@@ -791,7 +796,11 @@ agent_usecases:
           - Model Serving
           - Delta Lake
           - AI/BI
-        stories: []
+        stories:
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+          - title: Databricks spatial joins for crop yield analysis and forecasting
+            url: https://www.databricks.com/blog/databricks-spatial-joins-now-17x-faster-out-box
       - name: Commodity & Energy Trading
         short: Feedstock trading
         icon: market
@@ -805,7 +814,9 @@ agent_usecases:
           - Model Serving
           - Delta Lake
           - AI/BI
-        stories: []
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Supply & Materials Planning
         short: Bulk supply
         icon: stream
@@ -819,7 +830,11 @@ agent_usecases:
           - Model Serving
           - Lakehouse//RT
           - AI/BI
-        stories: []
+        stories:
+          - title: Supply chain and distribution optimization on Databricks
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+          - title: "John Deere's AI for Precision Farming"
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
       - name: Demand Forecasting
         short: Grade demand
         icon: aibi
@@ -833,7 +848,11 @@ agent_usecases:
           - Model Serving
           - Delta Lake
           - AI/BI
-        stories: []
+        stories:
+          - title: Part-level demand forecasting Solution Accelerator
+            url: https://github.com/databricks-industry-solutions/parts-demand-forecasting
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
       - name: Regulation Compliance, & External Reporting
         short: REACH & TRI
         icon: gavel
@@ -863,7 +882,11 @@ agent_usecases:
           - Model Serving
           - MLflow
           - Lakehouse//RT
-        stories: []
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: "Databricks and Shell: industrial time series analytics on the Lakehouse"
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
 medallion:
   Bronze:
     short: Raw historian and LIMS feeds

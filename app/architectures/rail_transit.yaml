@@ -805,8 +805,6 @@ agent_usecases:
         stories:
           - title: 'Hitachi: predictive maintenance on railway overhead lines'
             url: https://www.databricks.com/customers/hitachi
-          - title: Predictive maintenance on the Databricks Lakehouse
-            url: https://www.databricks.com/blog/what-is-predictive-maintenance
           - title: ARTC unifies 8,500km of rail network data on Databricks
             url: https://www.databricks.com/customers/artc
           - title: 'Sporveien: analysing Oslo metro operations on Databricks'
@@ -840,7 +838,44 @@ agent_usecases:
           - AVL / GPS Telemetry
           - Agent Bricks
           - Lakehouse//RT
-        stories: []
+        stories:
+          - title: Zerobus Ingest for telemetry and IoT at scale
+            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
+      - name: Dynamic Pricing
+        short: Fare & freight yield
+        icon: market
+        summary: Demand-based fare and freight-rate optimisation from AFC taps, ridership and waybill demand so pricing reflects willingness to pay and available capacity.
+        problem: Passenger fares and freight rates are set on fixed tables while demand shifts with time of day, season and lane, so trains run over- or under-priced and revenue and load factor are both left behind.
+        who_benefits: Revenue & Fares
+        how_built: Cubic AFC taps, ridership and waybill demand join the federated cost and revenue marts under Unity Catalog; price-elasticity and yield models score in Model Serving with features from Feature Store and surface in Ridership Studio.
+        components:
+          - Ridership Studio
+          - Cubic AFC
+          - Model Serving
+          - Feature Store
+          - Unity Catalog
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
+      - name: Workforce Safety
+        short: Track-worker safety
+        icon: people
+        summary: Track-worker proximity and crew fatigue risk indicators flagged from roadway-worker, movement and duty data to support safe-access and duty decisions.
+        problem: Roadway-worker protection and crew fatigue depend on signals scattered across PTC, movement and rostering systems, so unsafe track access and over-limit duties are caught after the near-miss, not before.
+        who_benefits: Fleet & Assets
+        how_built: PTC roadway-worker events, AVL movement and HASTUS duty state conform on Delta Lake, and proximity and fatigue-risk models tracked in MLflow score in Model Serving so supervisor-reviewed risk indicators surface in AI/BI to support existing track-access and duty controls.
+        components:
+          - Wabtec I-ETMS PTC
+          - AVL / GPS Telemetry
+          - GIRO HASTUS
+          - Model Serving
+          - MLflow
+          - AI/BI
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
       - name: Distribution & Logistics Optimization
         short: Movement & car flow
         icon: network
@@ -861,35 +896,6 @@ agent_usecases:
             url: https://www.databricks.com/blog/how-major-freight-railroad-scaled-pipeline-creation-genie-code
           - title: 'Solution Accelerator: Scalable Route Generation With Databricks and OSRM'
             url: https://www.databricks.com/blog/solution-accelerator-scalable-route-generation-databricks-and-osrm
-      - name: Prescriptive Maintenance
-        short: Work-order optimisation
-        icon: iot
-        summary: Recommending the optimal maintenance action, depot slot and spares from predicted condition so remaining-useful-life becomes a scheduled, cost-optimal work plan.
-        problem: Predicted removals tell engineering what will fail but not the best action, when, at which depot or with which spares, so maintenance is planned conservatively and depot capacity and spares are used inefficiently.
-        who_benefits: Fleet & Assets
-        how_built: Maximo work orders, predicted removals and depot-capacity and spares data conform under Unity Catalog; optimisation models score in Model Serving and an Agent Bricks agent drafts the recommended action and depot slot in Asset Health Watch.
-        components:
-          - IBM Maximo
-          - Asset Health Watch
-          - Model Serving
-          - MLflow
-          - Agent Bricks
-        stories: []
-      - name: Workforce Safety
-        short: Track-worker safety
-        icon: people
-        summary: Track-worker proximity and crew fatigue risk indicators flagged from roadway-worker, movement and duty data to support safe-access and duty decisions.
-        problem: Roadway-worker protection and crew fatigue depend on signals scattered across PTC, movement and rostering systems, so unsafe track access and over-limit duties are caught after the near-miss, not before.
-        who_benefits: Fleet & Assets
-        how_built: PTC roadway-worker events, AVL movement and HASTUS duty state conform on Delta Lake, and proximity and fatigue-risk models tracked in MLflow score in Model Serving so supervisor-reviewed risk indicators surface in AI/BI to support existing track-access and duty controls.
-        components:
-          - Wabtec I-ETMS PTC
-          - AVL / GPS Telemetry
-          - GIRO HASTUS
-          - Model Serving
-          - MLflow
-          - AI/BI
-        stories: []
       - name: Operations Resource Efficiency
         short: Energy & traction
         icon: chart
@@ -905,20 +911,24 @@ agent_usecases:
         stories:
           - title: BKK optimises route performance and energy with Databricks
             url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
-      - name: Dynamic Pricing
-        short: Fare & freight yield
-        icon: market
-        summary: Demand-based fare and freight-rate optimisation from AFC taps, ridership and waybill demand so pricing reflects willingness to pay and available capacity.
-        problem: Passenger fares and freight rates are set on fixed tables while demand shifts with time of day, season and lane, so trains run over- or under-priced and revenue and load factor are both left behind.
-        who_benefits: Revenue & Fares
-        how_built: Cubic AFC taps, ridership and waybill demand join the federated cost and revenue marts under Unity Catalog; price-elasticity and yield models score in Model Serving with features from Feature Store and surface in Ridership Studio.
+      - name: Prescriptive Maintenance
+        short: Work-order optimisation
+        icon: iot
+        summary: Recommending the optimal maintenance action, depot slot and spares from predicted condition so remaining-useful-life becomes a scheduled, cost-optimal work plan.
+        problem: Predicted removals tell engineering what will fail but not the best action, when, at which depot or with which spares, so maintenance is planned conservatively and depot capacity and spares are used inefficiently.
+        who_benefits: Fleet & Assets
+        how_built: Maximo work orders, predicted removals and depot-capacity and spares data conform under Unity Catalog; optimisation models score in Model Serving and an Agent Bricks agent drafts the recommended action and depot slot in Asset Health Watch.
         components:
-          - Ridership Studio
-          - Cubic AFC
+          - IBM Maximo
+          - Asset Health Watch
           - Model Serving
-          - Feature Store
-          - Unity Catalog
-        stories: []
+          - MLflow
+          - Agent Bricks
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: "Databricks and Shell: industrial time series analytics on the Lakehouse"
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
       - name: Capital Investment Simulation
         short: Fleet & track renewal
         icon: gauge
@@ -932,7 +942,9 @@ agent_usecases:
           - Model Serving
           - AI/BI
           - Unity Catalog
-        stories: []
+        stories:
+          - title: How telecom CFOs can make smarter network capex decisions with AI
+            url: https://www.databricks.com/blog/how-telecom-cfos-can-make-smarter-network-capex-decisions-ai
 medallion:
   Bronze:
     short: Raw operational feeds

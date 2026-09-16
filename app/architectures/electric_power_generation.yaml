@@ -814,6 +814,9 @@ agent_usecases:
           - title: TotalEnergies powers cleaner energy with Databricks
             url: https://www.databricks.com/customers/totalenergies
       - name: Capital Investment Simulation
+        stories:
+          - title: How telecom CFOs can make smarter network capex decisions with AI
+            url: https://www.databricks.com/blog/how-telecom-cfos-can-make-smarter-network-capex-decisions-ai
         short: Build & retire cases
         icon: product
         summary: Build, life-extension and retire decisions simulated against generation, margin and emissions, so capital follows the units that earn and decarbonise the fleet.
@@ -879,6 +882,11 @@ agent_usecases:
           - title: Sympower scales forecasting and grid balancing on Databricks
             url: https://www.databricks.com/customers/sympower
       - name: Regulation Compliance, & External Reporting
+        stories:
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+          - title: How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
         short: Regulatory filings
         icon: gavel
         summary: Reliability, nuclear and environmental filings produced from the same governed tables the fleet runs on, traceable back to source.
@@ -904,7 +912,11 @@ agent_usecases:
           - Genie One
           - MLflow
           - Unity Catalog
-        stories: []
+        stories:
+          - title: Stress Testing Supply Chain Networks at Scale on Databricks
+            url: https://www.databricks.com/blog/stress-testing-supply-chain-networks-scale-databricks
+          - title: "Solution Accelerator: Supply Chain Stress Testing with Digital Twins"
+            url: https://github.com/databricks-industry-solutions/supply-chain-stress-test
 medallion:
   Bronze:
     short: Raw plant & market feeds

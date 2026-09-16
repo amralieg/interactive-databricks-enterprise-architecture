@@ -798,8 +798,17 @@ agent_usecases:
           - Model Serving
           - AI/BI
           - Unity Catalog
-        stories: []
+        stories:
+          - title: Stress Testing Supply Chain Networks at Scale on Databricks
+            url: https://www.databricks.com/blog/stress-testing-supply-chain-networks-scale-databricks
+          - title: "Solution Accelerator: Supply Chain Stress Testing with Digital Twins"
+            url: https://github.com/databricks-industry-solutions/supply-chain-stress-test
       - name: Regulatory Risk Reviews
+        stories:
+          - title: Hawaiian Electric maintains regulatory compliance with RAG on Databricks
+            url: https://www.databricks.com/customers/hawaiian-electric-company
+          - title: From emissions reporting to decarbonization decisions
+            url: https://www.databricks.com/blog/emissions-reporting-decarbonization-decisions
         short: Well & facility risk reviews
         icon: gavel
         summary: Regulatory and environmental risk on each well and facility ranked against evidence before the next permit review or inspection.
@@ -825,7 +834,9 @@ agent_usecases:
           - Model Serving
           - AI/BI
           - Unity Catalog
-        stories: []
+        stories:
+          - title: How telecom CFOs can make smarter network capex decisions with AI
+            url: https://www.databricks.com/blog/how-telecom-cfos-can-make-smarter-network-capex-decisions-ai
       - name: Supply & Materials Planning
         short: Materials & spares
         icon: stream
@@ -843,6 +854,11 @@ agent_usecases:
           - title: 'Customer Story: Shell'
             url: https://www.databricks.com/customers/shell
       - name: Distribution & Logistics Optimization
+        stories:
+          - title: Scalable Route Generation on Databricks
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+          - title: Maximizing equipment utilization through geospatial analytics
+            url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
         short: Crude movements & logistics
         icon: globe
         summary: Crude movements and field logistics optimised against offtake plans and weather windows to avoid demurrage and short deliveries.
@@ -856,6 +872,11 @@ agent_usecases:
           - Model Serving
           - AI/BI
       - name: Incident & Field Service Assistant
+        stories:
+          - title: Zerobus Ingest for telemetry and IoT at scale
+            url: https://www.databricks.com/blog/announcing-public-preview-zerobus-ingest
+          - title: Introducing the Data + AI Platform for Energy
+            url: https://www.databricks.com/blog/introducing-data-intelligence-platform-energy
         short: Field incident response
         icon: iot
         summary: Field operators get guided diagnosis, asset history and next steps the moment a well or facility incident is raised.
@@ -869,6 +890,11 @@ agent_usecases:
           - Agent Bricks
           - Lakehouse//RT
       - name: Demand Forecasting
+        stories:
+          - title: Part-level demand forecasting Solution Accelerator
+            url: https://github.com/databricks-industry-solutions/parts-demand-forecasting
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
         short: Offtake demand
         icon: market
         summary: Crude and gas offtake demand forecast by stream and buyer so liftings and production targets plan against real pull.

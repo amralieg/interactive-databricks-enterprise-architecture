@@ -750,6 +750,9 @@ agent_usecases:
     cols: 5
     tiles:
       - name: Engineering Program Management & Bid Creation
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
         short: Preconstruction
         icon: market
         summary: Win probability, unit-cost basis and subcontractor risk brought together for GC preconstruction, with pursuit milestones and program deliverables tracked against the schedule so bids and program commitments are priced and paced on evidence, not memory.
@@ -782,6 +785,11 @@ agent_usecases:
           - title: Novade improves construction safety and efficiency with Databricks
             url: https://www.databricks.com/customers/novade
       - name: Workforce Management & Training
+        stories:
+          - title: "Addressing HR's widening capacity gap with AI"
+            url: https://www.databricks.com/blog/addressing-hrs-widening-capacity-gap-ai
+          - title: Upskill on foundational data and AI competencies with free Databricks training
+            url: https://www.databricks.com/blog/upskill-foundational-data-and-ai-competencies-free-training-databricks
         short: Craft labor
         icon: people
         summary: Craft labor productivity, crew deployment and certification currency tracked so a trained crew is on the critical path.
@@ -796,6 +804,9 @@ agent_usecases:
           - Delta Lake
           - AI/BI
       - name: Design Space Simulation & Exploration
+        stories:
+          - title: Semiconductors on the Databricks Data Intelligence Platform
+            url: https://www.databricks.com/blog/semiconductors-data-intelligence-platform
         short: BIM design
         icon: product
         summary: Clashes and 4D sequence options explored across the design space against the schedule before the field ever builds them.
@@ -827,6 +838,11 @@ agent_usecases:
           - title: Hanwha builds an integrated data system for smarter decision making
             url: https://www.databricks.com/customers/hanwha-corporation
       - name: Scenario Planning & Business Simulation
+        stories:
+          - title: Stress Testing Supply Chain Networks at Scale on Databricks
+            url: https://www.databricks.com/blog/stress-testing-supply-chain-networks-scale-databricks
+          - title: "Solution Accelerator: Supply Chain Stress Testing with Digital Twins"
+            url: https://github.com/databricks-industry-solutions/supply-chain-stress-test
         short: Portfolio what-if
         icon: chart
         summary: Schedule-recovery, buyout-timing and cash what-ifs simulated on one certified basis so the portfolio is steered on evidence.
@@ -858,6 +874,11 @@ agent_usecases:
           - title: Colas unifies data across 50 countries with Databricks
             url: https://www.databricks.com/customers/colas
       - name: Production Monitoring
+        stories:
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+          - title: Databricks spatial joins for crop yield analysis and forecasting
+            url: https://www.databricks.com/blog/databricks-spatial-joins-now-17x-faster-out-box
         short: Field production
         icon: iot
         summary: 360 site capture and daily logs turned into percent-complete, quality and production signals against the plan.
@@ -872,6 +893,11 @@ agent_usecases:
           - MLflow
           - Delta Lake
       - name: Supply & Materials Planning
+        stories:
+          - title: Supply chain and distribution optimization on Databricks
+            url: https://www.databricks.com/solutions/accelerators/supply-chain-distribution-optimization
+          - title: "John Deere's AI for Precision Farming"
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
         short: Procurement
         icon: zplug
         summary: Long-lead materials and buyout tied to the schedule so late delivery risk is surfaced earlier against the critical path.

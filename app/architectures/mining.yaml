@@ -867,6 +867,11 @@ agent_usecases:
           - title: Sandvik enables collaboration and real-time equipment insight
             url: https://www.databricks.com/customers/sandvik
       - name: Regulation Compliance, & External Reporting
+        stories:
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+          - title: How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
         short: Disclosures
         icon: gavel
         summary: Mine-safety, emissions and resource-and-reserve disclosures produced from the same governed tables the operation runs on.

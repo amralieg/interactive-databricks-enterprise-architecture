@@ -804,7 +804,29 @@ agent_usecases:
           - Model Serving
           - MLflow
           - Delta Lake
-        stories: []
+        stories:
+          - title: "Geospatial Unbounded: variable-rate prescription from soil, zones and weather"
+            url: https://www.databricks.com/blog/geospatial-unbounded-spatial-sql-ga-aibi-maps-delta-sharing-and-iceberg-v3
+          - title: How John Deere uses industrial AI for precision agriculture
+            url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
+      - name: Customer 360
+        short: Shopper & D2C
+        icon: market
+        summary: Shopper and D2C signals unified across syndicated POS, panel and loyalty for segmentation and activation.
+        problem: Consumer signals are scattered across syndicated POS, household panel, D2C and loyalty systems, so a manufacturer that rarely owns the shopper cannot build a single consumer view or measure who actually buys and repeats.
+        who_benefits: Sales & Marketing
+        how_built: POS, panel, D2C and loyalty data are resolved into governed consumer entities in CustomerLake under Unity Catalog and scored with Model Serving for segmentation and lifetime value in AI/BI.
+        components:
+          - NielsenIQ POS
+          - Circana/IRI Panel
+          - CustomerLake
+          - Unity Catalog
+          - AI/BI
+        stories:
+          - title: Reckitt empowers marketing teams to drive greater impact
+            url: https://www.databricks.com/customers/reckitt
+          - title: 'Customer Story: Gousto'
+            url: https://www.databricks.com/customers/gousto
       - name: Demand Forecasting
         short: Promo & seasonal
         icon: sheet
@@ -857,24 +879,6 @@ agent_usecases:
         stories:
           - title: John Deere's AI for Precision Farming
             url: https://www.databricks.com/blog/2021/07/09/down-to-the-individual-grain-how-john-deere-uses-industrial-ai-to-increase-crop-yields-through-precision-agriculture.html
-      - name: Customer 360
-        short: Shopper & D2C
-        icon: market
-        summary: Shopper and D2C signals unified across syndicated POS, panel and loyalty for segmentation and activation.
-        problem: Consumer signals are scattered across syndicated POS, household panel, D2C and loyalty systems, so a manufacturer that rarely owns the shopper cannot build a single consumer view or measure who actually buys and repeats.
-        who_benefits: Sales & Marketing
-        how_built: POS, panel, D2C and loyalty data are resolved into governed consumer entities in CustomerLake under Unity Catalog and scored with Model Serving for segmentation and lifetime value in AI/BI.
-        components:
-          - NielsenIQ POS
-          - Circana/IRI Panel
-          - CustomerLake
-          - Unity Catalog
-          - AI/BI
-        stories:
-          - title: Reckitt empowers marketing teams to drive greater impact
-            url: https://www.databricks.com/customers/reckitt
-          - title: 'Customer Story: Gousto'
-            url: https://www.databricks.com/customers/gousto
 medallion:
   Bronze:
     short: Raw plant and ERP

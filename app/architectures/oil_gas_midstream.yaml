@@ -759,6 +759,11 @@ agent_usecases:
           - title: Building ML models for predictive maintenance in oil & gas
             url: https://www.databricks.com/blog/2021/04/08/efficiently-building-ml-models-for-predictive-maintenance-in-the-oil-and-gas-industry-with-databricks.html
       - name: Workforce Safety
+        stories:
+          - title: "BP's Geospatial AI Engine: transforming safety and operations with Databricks"
+            url: https://www.databricks.com/blog/bps-geospatial-ai-engine-transforming-safety-and-operations-databricks
+          - title: Puma Energy enhances workplace safety with multimodal GenAI on Databricks
+            url: https://www.databricks.com/customers/puma-energy
         short: Pipeline crew safety
         icon: gavel
         summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.
@@ -791,6 +796,11 @@ agent_usecases:
           - title: "The Rosetta stone of CPS: Claroty's AI-powered library"
             url: https://www.databricks.com/blog/rosetta-stone-cps-clarotys-ai-powered-library
       - name: Distribution & Logistics Optimization
+        stories:
+          - title: Scalable Route Generation on Databricks
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+          - title: Maximizing equipment utilization through geospatial analytics
+            url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
         short: Nominations & scheduling
         icon: stream
         summary: Nominations, cuts and confirmations optimised to minimise imbalance penalties across the network.
@@ -848,7 +858,11 @@ agent_usecases:
           - AVEVA PI System
           - Model Serving
           - MLflow
-        stories: []
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: "Databricks and Shell: industrial time series analytics on the Lakehouse"
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
       - name: Commodity & Energy Trading
         short: Capacity & transport
         icon: market
@@ -866,6 +880,11 @@ agent_usecases:
           - title: Data and AI in action across the energy industry
             url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Operations Resource Efficiency
+        stories:
+          - title: Databricks and Shell collaborate to simplify industrial time series analytics on the Lakehouse
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
+          - title: BKK optimises route performance and energy with Databricks
+            url: https://www.databricks.com/blog/driving-budapest-forward-how-bkk-uses-databricks-transform-city-mobility
         short: Compressor fuel efficiency
         icon: iot
         summary: Compressor fuel gas and pump power optimised so the network moves throughput at the lowest energy per unit.
@@ -879,6 +898,11 @@ agent_usecases:
           - Model Serving
           - AI/BI
       - name: Regulatory Risk Reviews
+        stories:
+          - title: Hawaiian Electric maintains regulatory compliance with RAG on Databricks
+            url: https://www.databricks.com/customers/hawaiian-electric-company
+          - title: From emissions reporting to decarbonization decisions
+            url: https://www.databricks.com/blog/emissions-reporting-decarbonization-decisions
         short: Integrity risk reviews
         icon: gavel
         summary: Integrity and regulatory risk on each segment ranked against evidence before the next assessment or regulator review.

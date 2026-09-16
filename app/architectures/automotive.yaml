@@ -830,7 +830,11 @@ agent_usecases:
           - Mitchell Repair
           - Model Serving
           - MLflow
-        stories: []
+        stories:
+          - title: What is predictive maintenance on the Databricks platform
+            url: https://www.databricks.com/blog/what-is-predictive-maintenance
+          - title: "Databricks and Shell: industrial time series analytics on the Lakehouse"
+            url: https://www.databricks.com/blog/developing-time-series-lakehouse-shell
       - name: Supply & Materials Planning
         short: JIS/JIT materials supply
         icon: network
@@ -924,7 +928,9 @@ agent_usecases:
           - SAP S/4HANA
           - AI/BI
           - Agent Bricks
-        stories: []
+        stories:
+          - title: Databricks for Federal Government
+            url: https://www.databricks.com/solutions/industries/federal-government
 medallion:
   Bronze:
     short: Raw plant and vehicle feeds

@@ -783,6 +783,9 @@ agent_usecases:
           - title: Part-level demand forecasting at scale for the chip supply chain
             url: https://www.databricks.com/blog/part-level-demand-forecasting-scale
       - name: Customer 360
+        stories:
+          - title: Calculate Customer Lifetime Value
+            url: https://www.databricks.com/solutions/accelerators/customer-lifetime-value
         short: Account & device 360
         icon: crm
         summary: Account, order, device and support history joined so sales and success see the whole customer, not fragments.

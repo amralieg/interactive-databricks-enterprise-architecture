@@ -819,7 +819,9 @@ agent_usecases:
           - PROS Pricing
           - Model Serving
           - AI/BI
-        stories: []
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Distribution & Logistics Optimization
         short: Route & freight
         icon: stream
@@ -890,6 +892,11 @@ agent_usecases:
           - title: Recommendation Engines for Personalization
             url: https://www.databricks.com/solutions/accelerators/recommendation-engines
       - name: Order Processing Automation
+        stories:
+          - title: What is Intelligent Document Processing?
+            url: https://www.databricks.com/blog/intelligent-document-processing
+          - title: Document Intelligence on Databricks
+            url: https://www.databricks.com/product/artificial-intelligence/document-intelligence
         short: EDI order-to-cash
         icon: api
         summary: EDI, portal and email orders parsed, validated and posted to the ERP automatically so the cash cycle no longer waits on manual keying.

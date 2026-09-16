@@ -815,6 +815,11 @@ agent_usecases:
           - title: Data and AI in action across the energy industry
             url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Distribution & Logistics Optimization
+        stories:
+          - title: Scalable Route Generation on Databricks
+            url: https://www.databricks.com/solutions/accelerators/scalable-route-generation
+          - title: Maximizing equipment utilization through geospatial analytics
+            url: https://www.databricks.com/blog/maximizing-equipment-utilization-through-geospatial-analytics
         short: Rack & terminal lifts
         icon: globe
         summary: Rack, terminal and movement plans aligned to production and demand to reduce the risk of short lifts.
@@ -828,6 +833,11 @@ agent_usecases:
           - AI/BI
           - Delta Lake
       - name: Regulation Compliance, & External Reporting
+        stories:
+          - title: Databricks for Energy
+            url: https://www.databricks.com/solutions/industries/energy
+          - title: How Dow Built a Carbon Footprint Ledger on Databricks to Accelerate Sustainability at Scale
+            url: https://www.databricks.com/blog/how-dow-built-carbon-footprint-ledger-databricks-accelerate-sustainability-scale
         short: Permit & fuels filing
         icon: erp
         summary: Permit limits, fuels and product evidence assembled from governed data before an inspection.
@@ -857,6 +867,11 @@ agent_usecases:
           - title: Data and AI in action across the energy industry
             url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
       - name: Workforce Safety
+        stories:
+          - title: "BP's Geospatial AI Engine: transforming safety and operations with Databricks"
+            url: https://www.databricks.com/blog/bps-geospatial-ai-engine-transforming-safety-and-operations-databricks
+          - title: Puma Energy enhances workplace safety with multimodal GenAI on Databricks
+            url: https://www.databricks.com/customers/puma-energy
         short: Leading safety signals
         icon: gavel
         summary: Incident, permit and barrier signals surfaced so unsafe conditions are caught early.

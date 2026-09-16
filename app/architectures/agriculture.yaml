@@ -841,6 +841,9 @@ agent_usecases:
           - title: UPL optimizes supply chain operations with demand forecasting
             url: https://www.databricks.com/customers/upl
       - name: Commodity & Energy Trading
+        stories:
+          - title: Data and AI in action across the energy industry
+            url: https://www.databricks.com/blog/powering-future-data-and-ai-action-across-energy-industry
         short: Basis & hedge trading
         icon: market
         summary: Basis positions, hedging and origination managed against futures, cash bids and local elevator prices.
@@ -854,6 +857,9 @@ agent_usecases:
           - Barchart cmdty
           - Model Serving
       - name: Workforce Safety
+        stories:
+          - title: StrongArm Tech cuts workplace injuries with IoT and ML on Databricks
+            url: https://www.databricks.com/customers/strongarm
         short: Field & elevator safety
         icon: gavel
         summary: Equipment, elevator and field hazards surfaced from machine telemetry and weather so injuries are prevented before crews are exposed.
