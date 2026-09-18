@@ -5498,8 +5498,11 @@ function isDatabricksUrl(u){
   const h = url.hostname.toLowerCase(), p = url.pathname.toLowerCase();
   if(h === "databricks.com" || h.endsWith(".databricks.com")) return true;
   if(h === "youtube.com" || h.endsWith(".youtube.com") || h === "youtu.be") return true;
-  if(h === "learn.microsoft.com") return p.startsWith("/azure/databricks");
-  if(h === "github.com") return /^\/databricks(-|\/|$)/.test(p);
+  if(h === "learn.microsoft.com"){
+    if(p.startsWith("/azure/databricks")) return true;
+    return p.indexOf("/search") !== -1 && (url.searchParams.get("scope") || "").toLowerCase().indexOf("azure databricks") !== -1;
+  }
+  if(h === "github.com") return /^\/databricks(labs)?(-|\/|$)/.test(p);
   if(h.endsWith(".github.io")) return h.indexOf("databricks") === 0;
   return false;
 }
@@ -5661,22 +5664,24 @@ function openDetail(id, via){
      generic `what` leads instead; commercial mode shows both. */
   const catMode = (displayMode === "category" && !!t.cat);
   if(!catMode) html += `<h4>${esc(T("What it is"))}</h4><p>${esc(dispProse(t.long) || T("No description yet."))}</p>`;
-  /* A data-format tile links straight to the governing specification. This is the
-     one place the drawer links off-Databricks: standards-body specs (IATA, HL7,
-     GS1, IEC, OASIS) are neutral authoritative references, not vendor marketing,
-     so linkRow's Databricks-only rule is deliberately bypassed here. */
+  /* A data-format tile shows its governing standard. A standards-body spec URL is
+     not Databricks-managed, so per the Databricks-only rule it resolves to the
+     cloud-correct Databricks docs-search for the format, never the external spec
+     (which is also sometimes a dead standards-body page). */
   if(t.spec_url){
+    const specHref = isDatabricksUrl(t.spec_url) ? t.spec_url : docsSearchUrl(displayName(t));
     html += `<h4>${esc(T("Standard reference"))}</h4><div class="d-links">` +
-      `<a class="d-link" href="${esc(t.spec_url)}" target="_blank" rel="noopener">` +
+      `<a class="d-link" href="${esc(specHref)}" target="_blank" rel="noopener">` +
       `<span class="dl-t">${esc(displayName(t))}</span>` +
-      `<span class="dl-s">${esc(host(t.spec_url))}</span>` +
+      `<span class="dl-s">${esc(host(specHref))}</span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a></div>`;
   }
   if(t.spark_connector){
+    const repoHref = isDatabricksUrl(t.spark_repo) ? t.spark_repo : docsSearchUrl(t.spark_connector);
     html += `<h4>${esc(T("Spark connector"))}</h4><div class="d-links">` +
-      `<a class="d-link" href="${esc(t.spark_repo)}" target="_blank" rel="noopener">` +
+      `<a class="d-link" href="${esc(repoHref)}" target="_blank" rel="noopener">` +
       `<span class="dl-t">${esc(t.spark_connector)}</span>` +
-      `<span class="dl-s">${esc(host(t.spark_repo))}</span>` +
+      `<span class="dl-s">${esc(host(repoHref))}</span>` +
       `<span class="dl-go" aria-hidden="true">&#8599;</span></a>` +
       (t.databricks_resource ? `<a class="d-link" href="${esc(t.databricks_resource)}" target="_blank" rel="noopener">` +
         `<span class="dl-t">${esc(T("Databricks resource"))}</span>` +
@@ -5767,6 +5772,14 @@ function openDetail(id, via){
   if(t.rel && t.rel.length){
     const chips = t.rel.map(r=> chipHtml(r)).join("");
     if(chips) html += `<h4>${esc(T("Related"))}</h4><div>${chips}</div>`;
+  }
+  if(html.indexOf("href=") === -1 && html.indexOf("data-go") === -1){
+    const learnHref = docsSearchUrl(displayName(t));
+    html += `<h4>${esc(T("Documentation"))}</h4><div class="d-links">` +
+      `<a class="d-link" href="${esc(learnHref)}" target="_blank" rel="noopener">` +
+      `<span class="dl-t">${esc(displayName(t))}</span>` +
+      `<span class="dl-s">${esc(host(learnHref))}</span>` +
+      `<span class="dl-go" aria-hidden="true">&#8599;</span></a></div>`;
   }
   document.getElementById("d-body").innerHTML = html;
   document.querySelectorAll(".chip[data-go]").forEach(c=> c.onclick = ()=> openDetail(c.dataset.go));
@@ -10680,7 +10693,7 @@ function paintBrandLogo(){
    new HTML. This AI variant sets <base href="../">, so "version.json" already
    resolves to app/version.json, the one file both apps share.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.3.7";
+const BUILD = "0.4.2";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
