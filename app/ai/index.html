@@ -787,6 +787,21 @@
      a peer of the caps without crowding them, and the 16px flex gap above keeps
      clear air between the glyph and the "D" at every fit scale. */
   .ph-mark { width:20px; height:20px; flex:0 0 auto; margin-right:0; }
+  /* Title + industry qualifier travel as ONE flex item, so the plat-head's 16px
+     flex gap sits only between the mark and this pair and never inside the
+     sentence; the words within it space like running text (.32em ~ one space at
+     this size) instead of being pushed apart by the layout gap. */
+  .ph-line { display:flex; align-items:center; gap:.32em; min-width:0; }
+  .ph-title { white-space:nowrap; }
+  /* The industry the board is specialised for, shown inline after the platform
+     title with its own line-art glyph. It inherits the title's weight (800),
+     size and colour verbatim so the two read as one heading; the plat-head ink
+     itself is chosen for the current accent at runtime (applyPlatInk) so both
+     stay sharp on every palette. */
+  .ph-ind { display:flex; align-items:center; gap:.34em; white-space:nowrap; }
+  .ph-ind[hidden] { display:none; }
+  .ph-ind-ic { display:inline-flex; align-items:center; }
+  .ph-ind-ic svg { width:.92em; height:.92em; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
   /* The pockets are sub-zones of the middle row, so they take a smaller type than
      the full-height columns. The BOX is the same height as a column heading
      though: the four zone headings read as one family, and a shorter pocket
@@ -2035,10 +2050,15 @@
      before the button existed, and keeps .plat-head's measured height unchanged
      for the zring geometry that takes the heading bar in. */
   .plat-head { position:relative; }
+  /* Glyph, border and fill all track the heading's own ink (currentColor) rather
+     than a hard white, so on the light-accent palettes where applyPlatInk flips
+     the title to a dark ink the zoom control flips with it and stays legible;
+     on the red default and every dark accent currentColor IS white, so this is
+     visually identical to the previous hard-coded values. */
   .ph-max { position:absolute; right:9px; top:50%; transform:translateY(-50%);
     width:27px; height:27px; display:flex; align-items:center; justify-content:center;
-    padding:0; border:1px solid rgba(255,255,255,.42); border-radius:7px;
-    background:rgba(255,255,255,.14); color:var(--on-accent); cursor:pointer;
+    padding:0; border:1px solid color-mix(in srgb, currentColor 42%, transparent); border-radius:7px;
+    background:color-mix(in srgb, currentColor 14%, transparent); color:inherit; cursor:pointer;
     font:inherit; font-size:14px; line-height:1;
     transition:background .15s ease, border-color .15s ease; }
   .ph-max svg { width:14px; height:14px; display:block; }
@@ -2047,9 +2067,9 @@
   .ph-max .ph-max-in { display:none; }
   body.plat-only .ph-max .ph-max-out { display:none; }
   body.plat-only .ph-max .ph-max-in { display:inline; }
-  .ph-max:hover { background:rgba(255,255,255,.3); border-color:rgba(255,255,255,.72); }
-  .ph-max:focus-visible { outline:2px solid var(--on-accent); outline-offset:2px; }
-  body.plat-only .ph-max { background:rgba(255,255,255,.34); border-color:rgba(255,255,255,.8); }
+  .ph-max:hover { background:color-mix(in srgb, currentColor 30%, transparent); border-color:color-mix(in srgb, currentColor 72%, transparent); }
+  .ph-max:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+  body.plat-only .ph-max { background:color-mix(in srgb, currentColor 34%, transparent); border-color:color-mix(in srgb, currentColor 80%, transparent); }
   /* PDF goes through the print dialog rather than the SVG clone, so the raster
      path's removal does not reach it. */
   @media print { .ph-max { display:none; } }
@@ -2735,9 +2755,7 @@
     <div class="gutter g1"><span class="flow"></span></div>
     <div class="gutter g0"><span class="flow"></span></div>
     <div class="colhead plat-head" data-en="Databricks Data Intelligence Platform">
-      <svg class="ph-mark" viewBox="0 0 516 537.3" fill="currentColor" aria-hidden="true"><g transform="translate(-124,-115.5)"><path fill="currentColor" d="M 333 142.128 C 305.775 156.913, 247.613 188.455, 203.750 212.223 L 124 255.436 124.034 262.968 L 124.069 270.500 182.784 302.262 C 215.078 319.731, 263.100 345.748, 289.500 360.078 C 315.900 374.408, 347.562 391.563, 359.859 398.200 L 382.218 410.266 385.859 408.533 C 389.145 406.968, 475.580 359.984, 573.814 306.367 C 594.336 295.165, 611.556 286, 612.081 286 C 612.667 286, 612.931 295.844, 612.767 311.582 L 612.500 337.164 574.500 357.884 C 553.600 369.281, 501.886 397.448, 459.579 420.479 L 382.658 462.352 376.079 458.797 C 346.542 442.833, 275.833 404.429, 184.337 354.656 C 158.397 340.545, 136.694 329, 136.109 329 C 135.523 329, 132.559 330.219, 129.522 331.708 L 124 334.417 124.008 382.958 L 124.015 431.500 143.258 441.900 C 153.841 447.621, 175.550 459.394, 191.500 468.064 C 311.018 533.027, 381.536 571, 382.658 571 C 383.384 571, 388.371 568.592, 393.739 565.648 C 399.108 562.705, 417.225 552.858, 434 543.767 C 450.775 534.675, 496 510.148, 534.500 489.261 C 573 468.375, 606.413 450.312, 608.750 449.123 L 613 446.959 613 472.755 L 613 498.550 567.750 523.196 C 542.862 536.752, 491.029 564.983, 452.564 585.931 L 382.628 624.019 345.064 603.632 C 324.404 592.419, 294.450 576.155, 278.500 567.488 C 201.854 525.841, 167.136 506.989, 152.130 498.869 L 135.759 490.011 129.880 493.145 L 124 496.279 124.004 504.389 L 124.008 512.500 142.254 522.400 C 152.289 527.846, 189.525 548.026, 225 567.245 C 260.475 586.465, 294.675 605.016, 301 608.469 C 307.325 611.923, 326 622.055, 342.500 630.984 C 359 639.913, 374.776 648.474, 377.557 650.009 L 382.614 652.799 399.557 643.551 C 417.049 634.003, 486.777 596.109, 568 552.012 C 593.575 538.126, 620.237 523.640, 627.250 519.820 L 640 512.875 639.999 464.187 L 639.998 415.500 635.102 412.750 C 632.409 411.237, 629.637 410, 628.943 410 C 628.249 410, 621.566 413.324, 614.091 417.387 C 606.616 421.450, 571.250 440.632, 535.500 460.015 C 499.750 479.397, 452.050 505.263, 429.500 517.494 C 406.950 529.725, 387.112 540.440, 385.414 541.307 L 382.329 542.881 363.414 532.598 C 353.012 526.942, 324.700 511.611, 300.500 498.527 C 276.300 485.444, 237.600 464.510, 214.500 452.007 C 191.400 439.504, 168.116 426.926, 162.759 424.056 C 157.401 421.185, 152.783 418.458, 152.498 417.996 C 151.809 416.882, 151.678 367.988, 152.362 367.305 C 152.654 367.013, 173.054 377.687, 197.696 391.026 C 222.338 404.364, 261.625 425.617, 285 438.255 C 308.375 450.892, 335.150 465.386, 344.500 470.463 C 353.850 475.541, 366.271 482.238, 372.103 485.347 L 382.706 490.998 392.603 485.621 C 398.046 482.664, 415.550 473.153, 431.500 464.486 C 447.450 455.820, 468.375 444.467, 478 439.258 C 487.625 434.050, 498.413 428.198, 501.972 426.254 C 515.892 418.655, 588.234 379.350, 601 372.451 C 608.425 368.438, 620.125 362.083, 627 358.328 L 639.500 351.500 639.500 303.169 L 639.500 254.839 633.500 251.536 L 627.500 248.233 607.500 259.174 C 596.500 265.192, 578.950 274.746, 568.500 280.405 C 558.050 286.065, 512.058 311.014, 466.296 335.848 C 420.533 360.681, 382.873 381, 382.607 381 C 382.154 381, 348.309 362.806, 258 314.015 C 237.375 302.872, 208.350 287.223, 193.500 279.241 C 178.650 271.258, 165.951 264.224, 165.281 263.608 C 164.357 262.761, 168.477 260.091, 182.281 252.590 C 205.699 239.864, 294.417 191.761, 344.057 164.874 L 382.613 143.989 472.557 192.853 L 562.500 241.717 570.231 237.609 L 577.961 233.500 577.981 227.453 L 578 221.407 549.250 205.809 C 533.438 197.230, 489.675 173.465, 452 152.997 C 414.325 132.530, 383.275 115.663, 383 115.515 C 382.725 115.367, 360.225 127.343, 333 142.128" stroke="none" fill-rule="evenodd"/></g></svg>
-      Databricks Data Intelligence Platform
-      <button class="ph-max" id="plat-max" type="button" aria-pressed="false" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="ph-max-out" d="M6 2H2v4M10 2h4v4M10 14h4v-4M6 14H2v-4"/><path class="ph-max-in" d="M2 6h4V2M14 6h-4V2M14 10h-4v4M2 10h4v4"/></svg></button>
+      <svg class="ph-mark" viewBox="0 0 516 537.3" fill="currentColor" aria-hidden="true"><g transform="translate(-124,-115.5)"><path fill="currentColor" d="M 333 142.128 C 305.775 156.913, 247.613 188.455, 203.750 212.223 L 124 255.436 124.034 262.968 L 124.069 270.500 182.784 302.262 C 215.078 319.731, 263.100 345.748, 289.500 360.078 C 315.900 374.408, 347.562 391.563, 359.859 398.200 L 382.218 410.266 385.859 408.533 C 389.145 406.968, 475.580 359.984, 573.814 306.367 C 594.336 295.165, 611.556 286, 612.081 286 C 612.667 286, 612.931 295.844, 612.767 311.582 L 612.500 337.164 574.500 357.884 C 553.600 369.281, 501.886 397.448, 459.579 420.479 L 382.658 462.352 376.079 458.797 C 346.542 442.833, 275.833 404.429, 184.337 354.656 C 158.397 340.545, 136.694 329, 136.109 329 C 135.523 329, 132.559 330.219, 129.522 331.708 L 124 334.417 124.008 382.958 L 124.015 431.500 143.258 441.900 C 153.841 447.621, 175.550 459.394, 191.500 468.064 C 311.018 533.027, 381.536 571, 382.658 571 C 383.384 571, 388.371 568.592, 393.739 565.648 C 399.108 562.705, 417.225 552.858, 434 543.767 C 450.775 534.675, 496 510.148, 534.500 489.261 C 573 468.375, 606.413 450.312, 608.750 449.123 L 613 446.959 613 472.755 L 613 498.550 567.750 523.196 C 542.862 536.752, 491.029 564.983, 452.564 585.931 L 382.628 624.019 345.064 603.632 C 324.404 592.419, 294.450 576.155, 278.500 567.488 C 201.854 525.841, 167.136 506.989, 152.130 498.869 L 135.759 490.011 129.880 493.145 L 124 496.279 124.004 504.389 L 124.008 512.500 142.254 522.400 C 152.289 527.846, 189.525 548.026, 225 567.245 C 260.475 586.465, 294.675 605.016, 301 608.469 C 307.325 611.923, 326 622.055, 342.500 630.984 C 359 639.913, 374.776 648.474, 377.557 650.009 L 382.614 652.799 399.557 643.551 C 417.049 634.003, 486.777 596.109, 568 552.012 C 593.575 538.126, 620.237 523.640, 627.250 519.820 L 640 512.875 639.999 464.187 L 639.998 415.500 635.102 412.750 C 632.409 411.237, 629.637 410, 628.943 410 C 628.249 410, 621.566 413.324, 614.091 417.387 C 606.616 421.450, 571.250 440.632, 535.500 460.015 C 499.750 479.397, 452.050 505.263, 429.500 517.494 C 406.950 529.725, 387.112 540.440, 385.414 541.307 L 382.329 542.881 363.414 532.598 C 353.012 526.942, 324.700 511.611, 300.500 498.527 C 276.300 485.444, 237.600 464.510, 214.500 452.007 C 191.400 439.504, 168.116 426.926, 162.759 424.056 C 157.401 421.185, 152.783 418.458, 152.498 417.996 C 151.809 416.882, 151.678 367.988, 152.362 367.305 C 152.654 367.013, 173.054 377.687, 197.696 391.026 C 222.338 404.364, 261.625 425.617, 285 438.255 C 308.375 450.892, 335.150 465.386, 344.500 470.463 C 353.850 475.541, 366.271 482.238, 372.103 485.347 L 382.706 490.998 392.603 485.621 C 398.046 482.664, 415.550 473.153, 431.500 464.486 C 447.450 455.820, 468.375 444.467, 478 439.258 C 487.625 434.050, 498.413 428.198, 501.972 426.254 C 515.892 418.655, 588.234 379.350, 601 372.451 C 608.425 368.438, 620.125 362.083, 627 358.328 L 639.500 351.500 639.500 303.169 L 639.500 254.839 633.500 251.536 L 627.500 248.233 607.500 259.174 C 596.500 265.192, 578.950 274.746, 568.500 280.405 C 558.050 286.065, 512.058 311.014, 466.296 335.848 C 420.533 360.681, 382.873 381, 382.607 381 C 382.154 381, 348.309 362.806, 258 314.015 C 237.375 302.872, 208.350 287.223, 193.500 279.241 C 178.650 271.258, 165.951 264.224, 165.281 263.608 C 164.357 262.761, 168.477 260.091, 182.281 252.590 C 205.699 239.864, 294.417 191.761, 344.057 164.874 L 382.613 143.989 472.557 192.853 L 562.500 241.717 570.231 237.609 L 577.961 233.500 577.981 227.453 L 578 221.407 549.250 205.809 C 533.438 197.230, 489.675 173.465, 452 152.997 C 414.325 132.530, 383.275 115.663, 383 115.515 C 382.725 115.367, 360.225 127.343, 333 142.128" stroke="none" fill-rule="evenodd"/></g></svg><span class="ph-line"><span class="ph-title">Databricks Data Intelligence Platform</span><span class="ph-ind" hidden></span></span><button class="ph-max" id="plat-max" type="button" aria-pressed="false" title="Zoom into the platform on its own: hides sources, consumers, the apps band and cloud services"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="ph-max-out" d="M6 2H2v4M10 2h4v4M10 14h4v-4M6 14H2v-4"/><path class="ph-max-in" d="M2 6h4V2M14 6h-4V2M14 10h-4v4M2 10h4v4"/></svg></button>
     </div>
     <section class="plat-top" id="plat-top"></section>
     <!-- The waist of the H90 I-beam, and nothing at all in the other four
@@ -4451,6 +4469,11 @@ async function applyLang(code, persist){
    and its click identity is preserved by the data-en stamped on .plat-head. */
 const STATIC_HEADS = { zsrc:"Sources", zcons:"Consumers", zfunnel:"External Ingestion", people:"Teams" };
 function setLeadText(el, english){
+  /* The platform heading holds its title in a dedicated .ph-title span (so the
+     "for <Industry>" qualifier can sit beside it without the localiser touching
+     it); every other head keeps its title as a bare text node. */
+  const t = el.querySelector(".ph-title");
+  if(t){ t.textContent = T(english); return; }
   for(const n of el.childNodes){
     if(n.nodeType === 3 && n.textContent.trim()){ n.textContent = T(english); return; }
   }
@@ -6577,7 +6600,54 @@ function syncIndustryBtn(){
      pick), and each tab carries its own board's glyph */
   const indIco = document.getElementById("ind-ico");
   if(indIco) indIco.innerHTML = indMenuIcon(on ? ARCH.industry : "generic");
+  platHeadInd();
   paintTabIcons();
+}
+
+/* Stamp "for <Industry>" plus that industry's line-art glyph onto the platform
+   title, so every board says which industry it is specialised for. Re-run from
+   syncIndustryBtn on every industry switch and every language change; a separate
+   span leaves setLeadText's title text node untouched. Hidden on the generic
+   board, which is not specialised for any one industry. */
+function platHeadInd(){
+  const span = document.querySelector(".plat-head .ph-ind");
+  if(!span) return;
+  const on = ARCH.industry && ARCH.industry !== "generic";
+  if(on){
+    span.innerHTML = esc(T("for")) + " " + esc(T(industryLabel(ARCH.industry))) +
+      '<span class="ph-ind-ic">' + indMenuIcon(ARCH.industry) + "</span>";
+    span.hidden = false;
+  } else {
+    span.textContent = "";
+    span.hidden = true;
+  }
+  applyPlatInk();
+}
+
+/* The plat-head bar is painted in the palette's --plat-accent, but the twelve
+   palettes span the whole lightness range: white title text is crisp on the
+   default red and every dark accent, yet washes out on the light ones (Mono's
+   grey, Neon's mint, Pop's cyan). Rather than hand-pick an ink for each of the
+   26 accent/theme blocks, the ink is chosen from the LIVE accent every time the
+   board is laid out: keep the theme's --on-accent while white clears AA for
+   large bold text (>=3:1), otherwise flip to a near-black that does. One rule
+   covers every current palette and any added later, and because it is set on
+   the element it rides into the PNG/PDF/PPTX export with the cloned board. */
+function platInkFor(accent){
+  const m = /#?([0-9a-fA-F]{6})/.exec(accent || "");
+  if(!m) return "";
+  const n = parseInt(m[1], 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const cWhite = 1.05 / (L + 0.05);           /* contrast of #fff on the accent  */
+  const cDark  = (L + 0.05) / (0.0148 + 0.05); /* contrast of #12161b on the accent */
+  return (cWhite >= 3.0 || cWhite >= cDark) ? "" : "#12161b";
+}
+function applyPlatInk(){
+  const ph = document.querySelector(".plat-head");
+  if(!ph) return;
+  const acc = getComputedStyle(document.body).getPropertyValue("--plat-accent");
+  ph.style.color = platInkFor(acc);
 }
 
 /* Inline Lucide line-art for a menu row, from the single SVG source shared with
@@ -10559,6 +10629,7 @@ function staggerFlows(){
   });
 }
 function fitBoard(){
+  applyPlatInk();   /* re-solve the plat-head ink for the live accent (theme/palette swap) */
   fitLayout();
   /* a soloed region hides the Z, its connectors and the pockets' flows, so the
      ring/connector geometry has nothing to measure and must not run */
@@ -10693,7 +10764,7 @@ function paintBrandLogo(){
    new HTML. This AI variant sets <base href="../">, so "version.json" already
    resolves to app/version.json, the one file both apps share.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.4.2";
+const BUILD = "0.4.4";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
