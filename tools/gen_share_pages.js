@@ -66,7 +66,7 @@ function stub(id, label, desc, file, cloud) {
      per-industry card. They do not run JS, so the script below moves a human onto
      the board while a scraper still reads this page's own Open Graph tags. -->
 <link rel="canonical" href="${esc(url)}">
-<script>location.replace(${JSON.stringify(target)} + location.hash);</script>
+<script>(function(){try{var i=new URLSearchParams(location.search);i.delete("industry");i.delete("cloud");var e=i.toString();location.replace(${JSON.stringify(target)}+(e?"&"+e:"")+location.hash);}catch(_){location.replace(${JSON.stringify(target)}+location.hash);}})();</script>
 </head>
 <body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#071820;color:#EAF2F5;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center">
 <div><p>Opening the ${esc(title)}&hellip;</p><p><a style="color:#FF6A54" href="${esc(target)}">Continue</a></p></div>

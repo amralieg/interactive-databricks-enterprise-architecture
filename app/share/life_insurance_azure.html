@@ -24,7 +24,7 @@
      per-industry card. They do not run JS, so the script below moves a human onto
      the board while a scraper still reads this page's own Open Graph tags. -->
 <link rel="canonical" href="https://amralieg.github.io/interactive-databricks-enterprise-architecture/app/share/life_insurance_azure.html">
-<script>location.replace("../index.html?industry=life_insurance&cloud=azure" + location.hash);</script>
+<script>(function(){try{var i=new URLSearchParams(location.search);i.delete("industry");i.delete("cloud");var e=i.toString();location.replace("../index.html?industry=life_insurance&cloud=azure"+(e?"&"+e:"")+location.hash);}catch(_){location.replace("../index.html?industry=life_insurance&cloud=azure"+location.hash);}})();</script>
 </head>
 <body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#071820;color:#EAF2F5;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center">
 <div><p>Opening the Databricks Reference Architecture for Life Insurance on Azure&hellip;</p><p><a style="color:#FF6A54" href="../index.html?industry=life_insurance&amp;cloud=azure">Continue</a></p></div>

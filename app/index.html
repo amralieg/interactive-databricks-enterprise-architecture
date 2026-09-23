@@ -2719,11 +2719,16 @@
      rather than three scripts down, or the visitor sees this browser's own
      theme flash before the link's theme replaces it. */
   var q=new URLSearchParams(location.search), qt=q.get("theme"), qp=q.get("pal");
-  var s=(qt==="dark"||qt==="light") ? qt : localStorage.getItem("dbx-arch-theme");
+  /* A shared link is authoritative: when the URL carries any board state, a
+     MISSING theme/palette means "the default", so it must NOT fall back to this
+     browser's saved look (which would repaint the sender's board). */
+  var link=["industry","cloud","shape","pal","theme","platform","lang","stage","region","hl"]
+    .some(function(k){return q.get(k)!==null;});
+  var s=(qt==="dark"||qt==="light") ? qt : (link ? "light" : localStorage.getItem("dbx-arch-theme"));
   var d = s === "dark" || (!s && window.matchMedia
     && window.matchMedia("(prefers-color-scheme: dark)").matches);
   if(d) document.body.classList.add("theme-dark");
-  var p=(qp && /^[a-z]+$/.test(qp)) ? qp : localStorage.getItem("dbx-arch-pal");
+  var p=(qp && /^[a-z]+$/.test(qp)) ? qp : (link ? "" : localStorage.getItem("dbx-arch-pal"));
   if(p && /^[a-z]+$/.test(p)) document.body.classList.add("pal-"+p);}catch(e){}})();</script>
 <header class="top">
   <div class="logo" id="brand-logo" aria-label="Databricks"></div>
@@ -6881,21 +6886,14 @@ function updateFavicon(){
   if(DBX_FAVICON === null) DBX_FAVICON = el.getAttribute("href");
   try { el.setAttribute("href", faviconHref()); } catch(e){}
 }
-/* The URL a share posts. For a named industry it is the static
-   /share/<id>_<cloud>.html stub, NOT the live query link: a scraper reads that
-   stub's per-industry, per-cloud Open Graph tags for the card (title + image) and
-   a human is redirected to the board on that cloud. The reference/generic board
-   (and any transient import) posts index.html, whose default OG tags describe the
-   whole site. Both land the reader on the board. */
-function shareLandingUrl(){
-  const id = ARCH.industry;
-  const named = id && id !== "generic" && id.indexOf("__import__") !== 0;
-  const cloud = (ARCH.cloud && ARCH.cloud.provider) || "aws";
-  const base = /^https?:$/.test(location.protocol)
-    ? location.origin + location.pathname.replace(/[^/]*$/, "")
-    : HOME_URL;
-  return named ? base + "share/" + id + "_" + cloud + ".html" : base + "index.html";
-}
+/* The URL a share posts: the same shareableUrl() the address bar carries, so a
+   posted link reopens the EXACT board (industry, cloud, palette, theme, stage,
+   region, highlights, language). For a named industry that is the static
+   /share/<id>_<cloud>.html stub with the state as a query string — a scraper
+   reads the stub's per-industry, per-cloud Open Graph card (crawlers ignore the
+   query), while a human is forwarded on with the full state. Generic/import
+   boards post index.html with the state. Both land the reader on the board. */
+function shareLandingUrl(){ return shareableUrl(); }
 const SHARE_TARGETS = [
   { k:"linkedin", label:"LinkedIn", svg:'<svg class="sh-ic" viewBox="0 0 24 24" style="fill:#0A66C2" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>',
     href:(u,t)=> "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(u) },
@@ -7410,6 +7408,7 @@ function setRegion(code){
   regionSel = code;
   store.set(REGION_STORE, code);
   applyRegionFilter();
+  syncUrl();   /* region does not re-fit the board, so mirror the URL here */
   if(openId && byId[openId]) openDetail(openId, "keep");  /* refresh the drawer line */
 }
 function paintRegionMenu(){
@@ -7527,6 +7526,7 @@ function setHighlights(off){
   HL_ORDER.forEach(k=> document.body.classList.toggle("hl-off-" + k, off.indexOf(k) >= 0));
   store.set(HL_STORE, off.join(","));
   paintHighlights();
+  syncUrl();   /* highlights do not re-fit the board, so mirror the URL here */
 }
 document.getElementById("hl-btn").onclick = e=>{
   e.stopPropagation(); hlWrap.classList.toggle("open");
@@ -7672,18 +7672,80 @@ function urlParam(k){
    picture", and that means a URL that reopens THIS board and not the default
    one: same industry, cloud, shape, palette, theme and platform zoom. Every
    parameter here is read back by seedFromUrl at the bottom of this script. */
-function liveUrl(){
-  const base = /^https?:$/.test(location.protocol)
-    ? location.origin + location.pathname : HOME_URL;
+/* The directory the app is served from, captured ONCE at load. Every state URL
+   is built from this fixed base, never from location.pathname, because syncUrl()
+   rewrites the address bar to the per-industry /share/ stub and reading the
+   mutated path back would compound it (…/share/share/…). The app itself always
+   boots at index.html (the stub redirects a human there), so this is stable. */
+const APP_BASE = /^https?:$/.test(location.protocol)
+  ? location.origin + location.pathname.replace(/[^/]*$/, "")
+  : "";
+/* Every query key that carries board state. The presence of ANY of these marks
+   a visit as "opened from a shared link", which is authoritative over this
+   browser's saved settings — following a link shows the sender's board, not the
+   reader's own defaults. */
+const URL_STATE_KEYS = ["industry","cloud","shape","pal","theme","platform","lang","stage","region","hl"];
+function linkSeeded(){
+  try { const q = new URLSearchParams(location.search); return URL_STATE_KEYS.some(k=> q.get(k) !== null); }
+  catch(e){ return false; }
+}
+/* The live board state as query params — the single source of truth shared by
+   the address-bar sync, the share links and the export "open live diagram" link
+   so the four cannot drift. Defaults are omitted (a missing key means default),
+   except cloud/shape/theme which are always written so a link is unambiguous.
+   Every key here is read back by seedFromUrl/seedViewFromUrl/bootLang on load. */
+function stateParams(){
   const q = new URLSearchParams();
-  if(ARCH.industry && ARCH.industry !== "generic" && ARCH.industry.indexOf("__import__") !== 0) q.set("industry", ARCH.industry);
   q.set("cloud", ARCH.cloud.provider);
   q.set("shape", shapeDef().k);
-  const pal = currentPal();
-  if(pal) q.set("pal", pal);
+  const pal = currentPal(); if(pal) q.set("pal", pal);
   q.set("theme", document.body.classList.contains("theme-dark") ? "dark" : "light");
   if(document.body.classList.contains("plat-only")) q.set("platform", "1");
-  return base + "?" + q.toString();
+  if(typeof I18N !== "undefined" && I18N.lang && I18N.lang !== "en") q.set("lang", I18N.lang);
+  const stageOff = STAGES.filter(s=> document.body.classList.contains("st-off-" + s.k)).map(s=> s.k);
+  if(stageOff.length) q.set("stage", stageOff.join(","));
+  if(typeof regionSel !== "undefined" && regionSel) q.set("region", regionSel);
+  const hlOff = HL_ORDER.filter(k=> document.body.classList.contains("hl-off-" + k));
+  if(hlOff.length) q.set("hl", hlOff.join(","));
+  return q;
+}
+/* The shareable URL for the CURRENT board. For a named industry it is the
+   /share/<id>_<cloud>.html stub, whose STATIC per-industry Open Graph tags give
+   LinkedIn/Facebook/Slack the right preview image when the raw address-bar URL
+   is pasted (crawlers do not run JS and ignore the query string, so the image
+   must live in the fetched HTML); the stub forwards a human — with all of these
+   params — onto the board. Generic/import boards use index.html. */
+function shareableUrl(){
+  const id = ARCH.industry;
+  const named = id && id !== "generic" && id.indexOf("__import__") !== 0;
+  const base = APP_BASE || HOME_URL;
+  const q = stateParams();
+  if(named){
+    const cloud = ARCH.cloud.provider;
+    q.delete("cloud");   /* the stub filename carries the cloud and re-adds it on forward */
+    const qs = q.toString();
+    return base + "share/" + id + "_" + cloud + ".html" + (qs ? "?" + qs : "");
+  }
+  const qs = q.toString();
+  return base + "index.html" + (qs ? "?" + qs : "");
+}
+/* The name the exports call; now one line so the export link, the share buttons
+   and the address bar are the exact same URL. */
+function liveUrl(){ return shareableUrl(); }
+/* Reflect every board change in the address bar with replaceState (no history
+   spam), so copy/pasting the URL reproduces the exact board — and pastes into
+   social with the right per-industry card. No-op on file:// where a cross-path
+   replaceState is not meaningful, and inside an exported/frozen copy. */
+/* Held true through the whole boot/seed phase so a fit triggered while the board
+   is still being seeded cannot rewrite location.search out from under the seeders
+   (seedViewFromUrl/bootLang read the incoming params LIVE). Released once, at the
+   end of boot, after which the address bar tracks the board. */
+let urlSeeding = true;
+function syncUrl(){
+  if(urlSeeding) return;
+  if(!/^https?:$/.test(location.protocol)) return;
+  if(document.getElementById("frozen-lang-code")) return;
+  try { history.replaceState(null, "", shareableUrl()); } catch(e){}
 }
 /* The freshest date across the availability data the board shows (the region
    matrix and the Academy catalogue), shown in the corner credit and the region
@@ -11307,6 +11369,7 @@ function staggerFlows(){
 }
 function fitBoard(){
   applyPlatInk();   /* re-solve the plat-head ink for the live accent (theme/palette swap) */
+  syncUrl();        /* mirror the live board state into the address bar */
   fitLayout();
   /* a soloed region hides the Z, its connectors and the pockets' flows, so the
      ring/connector geometry has nothing to measure and must not run */
@@ -11419,6 +11482,28 @@ async function seedFromUrl(){
   if(ind && isKnownIndustry(ind)){ await applyIndustry(ind, false); return true; }
   return false;
 }
+/* The view-state half of a shared link: stage filter, region and highlights.
+   Applied AFTER the board is built (they toggle classes on the live atoms), and
+   ONLY when the link carries state — then the link is authoritative, so a key it
+   omits means the default (all stages on / all regions / all highlights on),
+   NOT this browser's saved choice. A plain visit skips this and keeps whatever
+   seedView() already restored from storage. */
+function seedViewFromUrl(){
+  if(!linkSeeded()) return;
+  const b = document.body;
+  const st = urlParam("stage");
+  STAGES.forEach(s=> b.classList.remove("st-off-" + s.k));
+  if(st) st.split(",").filter(k=> STAGES.some(s=> s.k === k)).forEach(k=> b.classList.add("st-off-" + k));
+  b.classList.add("st-set");
+  applyStageFilter();
+  const hl = urlParam("hl");
+  HL_ORDER.forEach(k=> b.classList.remove("hl-off-" + k));
+  if(hl) hl.split(",").filter(k=> HL_ORDER.indexOf(k) >= 0).forEach(k=> b.classList.add("hl-off-" + k));
+  b.classList.add("hl-set");
+  paintHighlights();
+  regionSel = urlParam("region") || "";
+  applyRegionFilter();
+}
 /* Resources power the reference board, so they load before the first build();
    the industry overlay (if any) is applied after, fetching its module on the
    way. Wrapped in an async IIFE because the loads are awaited. */
@@ -11439,7 +11524,7 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.4.4";
+const BUILD = "0.4.5";
 async function staleReload(){
   try {
     const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
@@ -11467,10 +11552,16 @@ async function staleReload(){
     else
       build();
   }
+  seedViewFromUrl();   /* stage/region/highlights from a shared link, after the build */
   fitBoard();
   restoreActiveTab();
   updatePageTitle();
   bootLang();
+  /* Seeding is done: let the address bar track the board from here on, and
+     normalise it once now (so a plain visit or a stub link shows the shareable
+     URL). bootLang's applyLang, if any, will re-sync with the language param. */
+  urlSeeding = false;
+  syncUrl();
 })();
 
 /* Re-apply a remembered content language after the first board is on screen, so
@@ -11481,7 +11572,10 @@ function bootLang(){
      whatever this browser last saved, so the file opens as it was exported. */
   let saved = null;
   try { const el = document.getElementById("frozen-lang-code"); if(el) saved = el.textContent.trim(); } catch(e){}
-  if(!saved) saved = store.get(LANG_LS);
+  /* A shared link's language wins over saved; and when the link carries state but
+     no lang, it means English (default), so saved is NOT consulted. */
+  if(!saved){ const u = urlParam("lang"); if(u) saved = u; }
+  if(!saved && !linkSeeded()) saved = store.get(LANG_LS);
   /* built !== false: never boot into a language whose corpus is incomplete, even
      if it was saved before it was hidden. A frozen offline copy carries its own
      dict, so its pinned code is honoured regardless of the built flag. */
