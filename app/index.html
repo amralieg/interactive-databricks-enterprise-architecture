@@ -4329,7 +4329,7 @@ async function loadIndustry(id){
        Validate by successful parse rather than content-type (YAML MIME varies by
        host). The offline frozen-arch path above returns the terse object directly,
        so it never needs js-yaml. */
-    const r = await fetch("architectures/" + id + ".yaml", { cache:"no-store" });
+    const r = await fetch(APP_BASE + "architectures/" + id + ".yaml", { cache:"no-store" });
     if(!r.ok) return false;
     const text = await r.text();
     if(typeof jsyaml === "undefined" || typeof ArchSchema === "undefined") return false;
@@ -4377,10 +4377,10 @@ async function loadResources(){
   const names = ["links", "references", "accelerators", "connectors", "regions", "academy", "platform_docs"];
   const out = {};
   await Promise.all(names.map(async n => {
-    try { const r = await fetch("resources/" + n + ".json", { cache:"no-store" }); out[n] = r.ok ? await r.json() : (n === "references" ? [] : {}); }
+    try { const r = await fetch(APP_BASE + "resources/" + n + ".json", { cache:"no-store" }); out[n] = r.ok ? await r.json() : (n === "references" ? [] : {}); }
     catch(e){ out[n] = (n === "references" ? [] : {}); }
   }));
-  try { const r = await fetch("architectures/manifest.json", { cache:"no-store" }); if(r.ok) out.manifest = await r.json(); } catch(e){}
+  try { const r = await fetch(APP_BASE + "architectures/manifest.json", { cache:"no-store" }); if(r.ok) out.manifest = await r.json(); } catch(e){}
   navDone();
   useResources(out);
 }
@@ -4463,7 +4463,7 @@ async function loadLang(code){
   if(frozen && frozen[code]){ I18N.commonCache[code] = frozen[code]; I18N.dict = Object.assign({}, frozen[code]); return; }
   if(!I18N.commonCache[code]){
     try {
-      const r = await fetch("translations/" + code + "/_common.json", { cache:"no-store" });
+      const r = await fetch(APP_BASE + "translations/" + code + "/_common.json", { cache:"no-store" });
       I18N.commonCache[code] = (r.ok && (r.headers.get("content-type") || "").indexOf("json") >= 0) ? await r.json() : {};
     } catch(e){ I18N.commonCache[code] = {}; }
   }
@@ -4481,7 +4481,7 @@ async function loadIndustryLang(code, id){
   const key = code + "/" + id;
   if(!(key in I18N.shardCache)){
     try {
-      const r = await fetch("translations/" + code + "/" + id + ".json", { cache:"no-store" });
+      const r = await fetch(APP_BASE + "translations/" + code + "/" + id + ".json", { cache:"no-store" });
       I18N.shardCache[key] = (r.ok && (r.headers.get("content-type") || "").indexOf("json") >= 0) ? await r.json() : {};
     } catch(e){ I18N.shardCache[key] = {}; }
   }
@@ -11524,10 +11524,10 @@ function paintBrandLogo(){
    query so no CDN edge can answer it): when its build differs from this build,
    reload once onto a cache-busting URL so the browser must pull the new HTML.
    BUILD here and app/version.json MUST be bumped together on every deploy. */
-const BUILD = "0.4.5";
+const BUILD = "0.4.6";
 async function staleReload(){
   try {
-    const r = await fetch("version.json?_=" + Date.now(), { cache:"no-store" });
+    const r = await fetch(APP_BASE + "version.json?_=" + Date.now(), { cache:"no-store" });
     if(!r.ok) return false;
     const latest = (await r.json()).build;
     if(latest && latest !== BUILD){
